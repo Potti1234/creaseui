@@ -103,6 +103,23 @@ const exportedFunctions = file => {
   return names
 }
 
+/* Rules the strict preset enables per owned role (see creaseui.js). */
+const REQUIRED_RULES = {
+  raw: [
+    'no-raw-controls',
+    'no-raw-composition',
+    'component-contract',
+    'no-unverifiable-ui',
+  ],
+  theme: [
+    'no-raw-controls',
+    'no-raw-composition',
+    'no-unapproved-renderer',
+    'component-contract',
+    'no-unverifiable-ui',
+  ],
+}
+
 const rendersHtml = file => /\bHtmlBuilder\b/u.test(readFileSync(file, 'utf8'))
 
 const VARIANTS = /(?:Variants?|variants)$/u
@@ -457,9 +474,14 @@ const doctor = async values => {
         )
       }
     } else {
-      if (owned.rawRendering && !active('component-contract')) {
+      /* The rules the strict preset applies to this role and grant must
+         still be active after every imported policy module. */
+      const required = owned.rawRendering
+        ? REQUIRED_RULES.raw
+        : (REQUIRED_RULES[owned.role] ?? [])
+      for (const ruleId of required.filter(ruleId => !active(ruleId))) {
         incomplete += 1
-        fail(`${relative} (registered ${owned.role}) lost component-contract`)
+        fail(`${relative} (registered ${owned.role}) lost ${ruleId}`)
       }
       if (
         owned.role === 'renderer' &&

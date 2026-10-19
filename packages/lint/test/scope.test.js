@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { test } from 'node:test'
@@ -106,5 +106,61 @@ test('scope reports enforcement changes against a trusted baseline', () => {
 
   assert.equal(scope(root, '--baseline', 'no-such-ref').status, 2)
   assert.equal(scope(root).status, 2)
+  rmSync(root, { force: true, recursive: true })
+})
+
+test('scope follows imported policy modules and every receipt field', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'creaseui-scope-'))
+  const git = (...args) =>
+    execFileSync(
+      'git',
+      ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args],
+      { cwd: root },
+    )
+  git('init', '-q')
+  const files = [
+    {
+      path: 'src/design/row.ts',
+      rawElements: ['svg', 'path'],
+      rawRendering: true,
+      role: 'renderer',
+    },
+  ]
+  write(root, 'crease.lock.json', receipt(files))
+  write(
+    root,
+    'eslint.config.js',
+    "import policy from './config/policy.mjs'\nexport default [...policy]\n",
+  )
+  mkdirSync(path.join(root, 'config'))
+  write(
+    root,
+    'config/policy.mjs',
+    "import extra from './extra.mjs'\nexport default [...extra]\n",
+  )
+  write(root, 'config/extra.mjs', 'export default []\n')
+  git('add', '.')
+  git('commit', '-q', '-m', 'baseline')
+  assert.equal(scope(root, '--baseline', 'HEAD').status, 0)
+
+  write(
+    root,
+    'config/extra.mjs',
+    "export default [{ files: ['src/design/row.ts'], rules: { 'crease/no-raw-controls': 'off' } }]\n",
+  )
+  const policy = scope(root, '--baseline', 'HEAD')
+  assert.equal(policy.status, 1, policy.stdout + policy.stderr)
+  assert.match(policy.stdout, /changes config\/extra\.mjs/u)
+  write(root, 'config/extra.mjs', 'export default []\n')
+
+  const moved = receipt(files)
+  moved.artifacts[0].exports[0].propsArgument = 2
+  write(root, 'crease.lock.json', moved)
+  const field = scope(root, '--baseline', 'HEAD')
+  assert.equal(field.status, 1, field.stdout + field.stderr)
+  assert.match(
+    field.stdout,
+    /changes propsArgument of src\/design\/row\.ts#row/u,
+  )
   rmSync(root, { force: true, recursive: true })
 })

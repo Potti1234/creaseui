@@ -190,6 +190,40 @@ test('alias-only renderers and renamed re-exports are covered and enforced', asy
   rmSync(directory, { force: true, recursive: true })
 })
 
+test('doctor reconciles every required rule through imported policy modules', () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'dir',
+  )
+  const initArgs = ['init', '--renderer', 'pleat', '--components', 'src/design']
+  assert.equal(run(directory, ...initArgs).status, 0)
+  const config = path.join(directory, 'eslint.config.js')
+  writeFileSync(
+    path.join(directory, 'crease-base.mjs'),
+    readFileSync(config, 'utf8'),
+  )
+  writeFileSync(
+    config,
+    "import base from './crease-base.mjs'\nimport policy from './policy.mjs'\nexport default [...base, ...policy]\n",
+  )
+  writeFileSync(path.join(directory, 'policy.mjs'), 'export default []\n')
+  assert.equal(run(directory, 'doctor').status, 0)
+  writeFileSync(
+    path.join(directory, 'policy.mjs'),
+    "export default [{ files: ['src/design/button.ts'], rules: { 'crease/no-raw-controls': 'off' } }]\n",
+  )
+  const loosened = run(directory, 'doctor')
+  assert.notEqual(loosened.status, 0, loosened.stdout)
+  assert.match(
+    loosened.stdout,
+    /src\/design\/button\.ts \(registered renderer\) lost no-raw-controls/u,
+  )
+  rmSync(directory, { force: true, recursive: true })
+})
+
 test('doctor reports installed components missing from the receipt', () => {
   const directory = scratch()
   mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })

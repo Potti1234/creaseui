@@ -111,8 +111,14 @@ const manifestChanges = (beforeText, afterText) => {
       changes.push(`crease.lock.json removes the contract for ${key}`)
       continue
     }
-    for (const field of ['contract', 'variants', 'renderKind', 'visibility'])
-      if (!same(record[field], previous[field]))
+    /* Every field shapes enforcement (`propsArgument` picks the checked
+       argument); foundations may only grow. */
+    const fields = new Set([...Object.keys(previous), ...Object.keys(record)])
+    for (const field of [...fields].sort())
+      if (
+        !['file', 'foundations', 'name'].includes(field) &&
+        !same(record[field], previous[field])
+      )
         changes.push(`crease.lock.json changes ${field} of ${key}`)
     if (
       (previous.foundations ?? []).some(
@@ -145,6 +151,38 @@ const packageChanges = (beforeText, afterText) => {
   return changes
 }
 
+const LOCAL_IMPORT =
+  /(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+|\brequire\s*\(\s*)['"](\.{1,2}\/[^'"]+)['"]/gu
+
+/** Local modules the ESLint/lint configs import, on either side: a rule
+    switched off in `./policy.mjs` changes enforcement as much as one in
+    eslint.config.js. */
+const policyModules = (rootDir, baseline) => {
+  const found = new Set()
+  const visit = (file, read) => {
+    const text = read(file)
+    if (text === null) return
+    for (const match of text.matchAll(LOCAL_IMPORT)) {
+      const target = path.posix.normalize(
+        path.posix.join(path.posix.dirname(file), match[1]),
+      )
+      if (target.startsWith('..') || found.has(target)) continue
+      found.add(target)
+      visit(target, read)
+    }
+  }
+  const current = file => {
+    const absolute = path.join(rootDir, file)
+    return existsSync(absolute) ? readFileSync(absolute, 'utf8') : null
+  }
+  const previous = file => atBaseline(rootDir, baseline, file)
+  for (const file of INPUTS.filter(input => /\.[cm]?[jt]s$/u.test(input))) {
+    visit(file, current)
+    visit(file, previous)
+  }
+  return [...found].filter(file => !INPUTS.includes(file)).sort()
+}
+
 export const enforcementChanges = ({ baseline, rootDir }) => {
   try {
     git(rootDir, ['rev-parse', '--verify', `${baseline}^{commit}`])
@@ -154,7 +192,7 @@ export const enforcementChanges = ({ baseline, rootDir }) => {
     )
   }
   const changes = []
-  for (const file of INPUTS) {
+  for (const file of [...INPUTS, ...policyModules(rootDir, baseline)]) {
     const before = atBaseline(rootDir, baseline, file)
     const absolute = path.join(rootDir, file)
     const after = existsSync(absolute) ? readFileSync(absolute, 'utf8') : null
