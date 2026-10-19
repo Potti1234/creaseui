@@ -1280,11 +1280,11 @@ test('dialog matches upstream sections, restores focus, and scrolls long content
   const hero = page.locator('[aria-label="Edit profile preview"]')
   const heroTrigger = hero.getByRole('button', { name: 'Open Dialog' })
   await heroTrigger.click()
-  const heroDialog = page.locator('#docs-dialog-7')
+  const heroDialog = page.locator('#docs-dialog-8')
   await expect(heroDialog).toBeVisible()
   await expect(heroDialog).toHaveAttribute(
     'aria-labelledby',
-    'docs-dialog-7-dialog-title',
+    'docs-dialog-8-dialog-title',
   )
   await expect(heroDialog.getByRole('button', { name: 'Cancel' })).toBeFocused()
   const nameInput = heroDialog.getByRole('textbox', {
