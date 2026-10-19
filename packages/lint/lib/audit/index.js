@@ -14,6 +14,7 @@ export const AUDIT_ENGINE = Object.freeze({
 export const AUDIT_RULES = Object.freeze([
   'accessible-name',
   'label-reference',
+  'form-association',
   'document-overflow',
   'overlay-bounds',
   'target-size',

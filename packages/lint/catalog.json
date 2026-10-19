@@ -227,6 +227,7 @@
       "exports": ["button", "buttonLink", "buttonVariants"],
       "install": "npx shadcn@latest add Potti1234/creaseui/button",
       "item": "button",
+      "recipes": ["dialog-form"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Button"
@@ -272,6 +273,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/card",
       "item": "card",
+      "recipes": ["metric-grid"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Card"
@@ -624,6 +626,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/dialog",
       "item": "dialog",
+      "recipes": ["dialog-form"],
       "renderer": "tailwind",
       "state": "parent-model",
       "title": "Dialog"
@@ -740,6 +743,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/field",
       "item": "field",
+      "recipes": ["dialog-form"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Field"
@@ -779,6 +783,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/form",
       "item": "form",
+      "recipes": ["dialog-form"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Form"
@@ -790,6 +795,7 @@
       "exports": ["grid", "gridSpan"],
       "install": "npx shadcn@latest add Potti1234/creaseui/grid",
       "item": "grid",
+      "recipes": ["metric-grid"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Grid"
@@ -900,6 +906,7 @@
       "exports": ["input"],
       "install": "npx shadcn@latest add Potti1234/creaseui/input",
       "item": "input",
+      "recipes": ["dialog-form"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Input"
@@ -1687,6 +1694,7 @@
       "exports": ["stat"],
       "install": "npx shadcn@latest add Potti1234/creaseui/stat",
       "item": "stat",
+      "recipes": ["metric-grid"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Stat"
@@ -2291,6 +2299,7 @@
       "exports": ["button", "buttonLink", "buttonVisualStyles"],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-button",
       "item": "stylex-button",
+      "recipes": ["dialog-form"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Button"
@@ -2336,6 +2345,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-card",
       "item": "stylex-card",
+      "recipes": ["metric-grid"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Card"
@@ -2688,6 +2698,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-dialog",
       "item": "stylex-dialog",
+      "recipes": ["dialog-form"],
       "renderer": "stylex",
       "state": "parent-model",
       "title": "Dialog"
@@ -2804,6 +2815,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-field",
       "item": "stylex-field",
+      "recipes": ["dialog-form"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Field"
@@ -2843,6 +2855,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-form",
       "item": "stylex-form",
+      "recipes": ["dialog-form"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Form"
@@ -2854,6 +2867,7 @@
       "exports": ["grid", "gridSpan"],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-grid",
       "item": "stylex-grid",
+      "recipes": ["metric-grid"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Grid"
@@ -2964,6 +2978,7 @@
       "exports": ["input"],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-input",
       "item": "stylex-input",
+      "recipes": ["dialog-form"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Input"
@@ -3752,6 +3767,7 @@
       "exports": ["stat"],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-stat",
       "item": "stylex-stat",
+      "recipes": ["metric-grid"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Stat"
@@ -4356,6 +4372,7 @@
       "exports": ["button", "buttonLink", "buttonVisualStyles"],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-button",
       "item": "pleat-button",
+      "recipes": ["dialog-form"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Button"
@@ -4401,6 +4418,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-card",
       "item": "pleat-card",
+      "recipes": ["metric-grid"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Card"
@@ -4753,6 +4771,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-dialog",
       "item": "pleat-dialog",
+      "recipes": ["dialog-form"],
       "renderer": "pleat",
       "state": "parent-model",
       "title": "Dialog"
@@ -4869,6 +4888,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-field",
       "item": "pleat-field",
+      "recipes": ["dialog-form"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Field"
@@ -4908,6 +4928,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-form",
       "item": "pleat-form",
+      "recipes": ["dialog-form"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Form"
@@ -4919,6 +4940,7 @@
       "exports": ["grid", "gridSpan"],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-grid",
       "item": "pleat-grid",
+      "recipes": ["metric-grid"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Grid"
@@ -5029,6 +5051,7 @@
       "exports": ["input"],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-input",
       "item": "pleat-input",
+      "recipes": ["dialog-form"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Input"
@@ -5817,6 +5840,7 @@
       "exports": ["stat"],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-stat",
       "item": "pleat-stat",
+      "recipes": ["metric-grid"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Stat"

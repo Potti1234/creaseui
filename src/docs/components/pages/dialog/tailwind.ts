@@ -10,11 +10,15 @@ import {
   dialogLorem,
   dialogRtlFields,
   dialogShareUrl,
+  dialogInviteFormId,
+  inviteErrorFor,
+  invitedSummaryText,
 } from '@/docs/components/pages/dialog/shared'
 import { cn } from '@/lib/utils'
 import * as Button from '@/ui/button'
 import * as Dialog from '@/ui/dialog'
 import * as Field from '@/ui/field'
+import * as Form from '@/ui/form'
 import * as Input from '@/ui/input'
 
 const DialogPreviewMessage = defineMessageUnion({
@@ -22,6 +26,9 @@ const DialogPreviewMessage = defineMessageUnion({
   GotDialogPreviewMessage: { message: Dialog.Message },
   ChangedName: { value: S.String },
   ChangedUsername: { value: S.String },
+  ChangedInviteEmail: { value: S.String },
+  SubmittedInvite: {},
+  CancelledInvite: {},
 })
 type DialogPreviewMessage = typeof DialogPreviewMessage.Type
 const DialogPreviewModel = S.Struct({
@@ -29,6 +36,9 @@ const DialogPreviewModel = S.Struct({
   dialog: Dialog.Model,
   name: S.String,
   username: S.String,
+  inviteEmail: S.String,
+  inviteError: S.NullOr(S.String),
+  invited: S.Array(S.String),
 })
 type DialogPreviewModel = typeof DialogPreviewModel.Type
 
@@ -144,6 +154,65 @@ const primaryAction = (
     [label],
   )
 
+const inviteForm = (
+  model: DialogPreviewModel,
+  h: HtmlBuilder<DialogPreviewMessage>,
+): Html =>
+  Form.form(
+    {
+      id: dialogInviteFormId,
+      ariaLabel: 'Invite member',
+      onSubmit: DialogPreviewMessage.SubmittedInvite(),
+      children: [
+        Field.controlField(
+          {
+            id: 'docs-dialog-invite-email',
+            label: 'Email',
+            ...(model.inviteError === null ? {} : { error: model.inviteError }),
+            toControl: (parts, controlH) =>
+              Input.input(
+                {
+                  id: parts.controlId,
+                  name: 'email',
+                  type: 'email',
+                  autocomplete: 'email',
+                  isRequired: true,
+                  value: model.inviteEmail,
+                  onInput: value =>
+                    DialogPreviewMessage.ChangedInviteEmail({ value }),
+                  ...(parts.describedBy === undefined
+                    ? {}
+                    : { describedBy: parts.describedBy }),
+                  isInvalid: parts.isInvalid,
+                },
+                controlH,
+              ),
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  )
+
+const inviteFooter = (
+  h: HtmlBuilder<DialogPreviewMessage>,
+): ReadonlyArray<Html> => [
+  Button.button(
+    {
+      type: 'button',
+      variant: 'outline',
+      onClick: DialogPreviewMessage.CancelledInvite(),
+      children: ['Cancel'],
+    },
+    h,
+  ),
+  Button.button(
+    { type: 'submit', form: dialogInviteFormId, children: ['Send invite'] },
+    h,
+  ),
+]
+
 const dialogView = (
   index: number,
   fixture: DialogFixture,
@@ -243,6 +312,16 @@ const dialogView = (
         { ...shared, content: () => [scrollableContent(h)] },
         h,
       )
+    case 'invite':
+      return Dialog.dialog(
+        {
+          ...shared,
+          class: 'sm:max-w-md',
+          content: () => [inviteForm(model, h)],
+          footer: () => inviteFooter(h),
+        },
+        h,
+      )
     case 'rtl':
       return Dialog.dialog(
         {
@@ -305,6 +384,16 @@ const dialogView = (
   }
 }
 
+const withDialog = (
+  model: DialogPreviewModel,
+  result: ReturnType<typeof Dialog.close>,
+) => ({
+  model: { ...model, dialog: result.model },
+  commands: Command.mapMessages(result.commands ?? [], next =>
+    DialogPreviewMessage.GotDialogPreviewMessage({ message: next }),
+  ),
+})
+
 export const dialogTailwindPreviewProgram = definePreviewProgram<
   DialogPreviewModel,
   DialogPreviewMessage
@@ -319,6 +408,9 @@ export const dialogTailwindPreviewProgram = definePreviewProgram<
     }),
     name: 'Pedro Duarte',
     username: '@peduarte',
+    inviteEmail: '',
+    inviteError: null,
+    invited: [],
   }),
   update: (model, message) => {
     switch (message._tag) {
@@ -326,6 +418,28 @@ export const dialogTailwindPreviewProgram = definePreviewProgram<
         return { model: { ...model, name: message.value } }
       case 'ChangedUsername':
         return { model: { ...model, username: message.value } }
+      case 'ChangedInviteEmail':
+        return {
+          model: { ...model, inviteEmail: message.value, inviteError: null },
+        }
+      case 'SubmittedInvite': {
+        const inviteError = inviteErrorFor(model.inviteEmail, model.invited)
+        if (inviteError !== null) return { model: { ...model, inviteError } }
+        return withDialog(
+          {
+            ...model,
+            inviteEmail: '',
+            inviteError: null,
+            invited: [...model.invited, model.inviteEmail.trim()],
+          },
+          Dialog.close(model.dialog),
+        )
+      }
+      case 'CancelledInvite':
+        return withDialog(
+          { ...model, inviteEmail: '', inviteError: null },
+          Dialog.close(model.dialog),
+        )
       default: {
         const result =
           message._tag === 'OpenedDialogPreview'
@@ -354,6 +468,14 @@ export const dialogTailwindPreviewProgram = definePreviewProgram<
           h,
         ),
         dialogView(index, fixture, model, h),
+        ...(fixture.kind === 'invite'
+          ? [
+              h.p(
+                [h.Class('text-sm text-muted-foreground')],
+                [invitedSummaryText(model.invited)],
+              ),
+            ]
+          : []),
       ],
     )
   },

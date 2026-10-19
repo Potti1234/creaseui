@@ -136,6 +136,10 @@ export const lintPreview = <Msg>(
           h,
         ),
       )
+    case 'form-association/unknown-form-tailwind':
+    case 'form-association/unknown-form-stylex':
+    case 'form-association/unknown-form-pleat':
+      return one(button({ children: ['Send invite'] }, h))
     case 'no-foldkit-inline-style/inline-style-tailwind':
     case 'no-foldkit-inline-style/inline-style-stylex':
     case 'no-foldkit-inline-style/inline-style-pleat':

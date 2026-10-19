@@ -95,6 +95,7 @@ test(
     for (const rule of [
       'accessible-name',
       'label-reference',
+      'form-association',
       'document-overflow',
       'overlay-bounds',
       'target-size',
@@ -102,6 +103,13 @@ test(
       'numeric-text',
     ])
       assert.ok(rules.has(rule), `missing ${rule}`)
+    assert.deepEqual(
+      report.findings
+        .filter(finding => finding.rule === 'form-association')
+        .map(finding => finding.selector)
+        .sort(),
+      ['#dangling-submit', '#orphan-submit'],
+    )
     assert.deepEqual(
       report.findings
         .filter(finding => finding.rule === 'numeric-text')

@@ -21,6 +21,9 @@ const components = Object.entries(registries).flatMap(([renderer, file]) =>
       exports: item.meta.crease.publicExports ?? [],
       install: `npx shadcn@latest add Potti1234/creaseui/${item.name}`,
       item: item.name,
+      ...(item.meta.crease.recipes === undefined
+        ? {}
+        : { recipes: item.meta.crease.recipes.map(recipe => recipe.id) }),
       renderer,
       state: item.meta.crease.stateOwnership,
       title: item.title,

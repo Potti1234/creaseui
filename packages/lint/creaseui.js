@@ -68,7 +68,10 @@ export const creaseui = (options = {}) => {
       files,
       ignores: paths(() => true),
       name: '@creaseui/lint/strict/application',
-      rules: levels(STRICT_RULE_IDS, strictLevel),
+      rules: {
+        ...levels(STRICT_RULE_IDS, strictLevel),
+        'crease/form-association': strictLevel,
+      },
     },
   ]
   if (strict.preset === 'migration')

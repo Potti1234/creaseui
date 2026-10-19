@@ -78,7 +78,9 @@ and reason (`rule: 'text-contrast'` for unresolved contrast,
 `rule: 'unsupported-content'` for frames/shadow roots); it is recorded under
 `excluded` in the report.
 
-Rules: `accessible-name`, `label-reference`, `document-overflow`,
+Rules: `accessible-name`, `label-reference`, `form-association` (a submit
+control belongs to a form, nested or through `form=`, and `form=` names a
+rendered form), `document-overflow`,
 `overlay-bounds`, `target-size` (warning), `text-contrast` and
 `numeric-text`. `numeric-text` applies only where a contract declares
 numbers: Stat value/delta slots and elements marked `data-numeric` (or

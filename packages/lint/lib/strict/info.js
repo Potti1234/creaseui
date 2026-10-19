@@ -3,6 +3,7 @@ import path from 'node:path'
 
 import ts from 'typescript'
 
+import { recipesFor } from './recipes.js'
 import { optionsFor } from './render-exports.js'
 
 /* Foldkit-aware project information for `creaseui-lint info` and `inspect`,
@@ -209,6 +210,12 @@ export const inspectComponent = ({ component, manifest, rootDir }) => {
     stateOwnership: stateful
       ? 'parent-model: keep its Model in yours, route its Message through update and render view'
       : 'stateless: call it from your view with props',
+    recipes: recipesFor(
+      String(artifact.id)
+        .split('/')
+        .at(-1)
+        .replace(/^(?:stylex|pleat)-/u, ''),
+    ),
     docs: stateful
       ? `Stateful Foldkit component (${program.join(', ')}): embed its Model in your Model, start it from init, wrap its Message in one of yours and forward it to its update, and render it with view and your HtmlBuilder. Customize the installed source, not global CSS.`
       : 'Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS.',

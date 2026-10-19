@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { CONTRACT_REPLACEMENTS } from '../packages/lint/lib/strict/contracts.js'
+import { recipesFor } from '../packages/lint/lib/strict/recipes.js'
 
 /* meta.crease and docs for registry items, generated from the source and the
    lint contracts so agents see Foldkit facts instead of shadcn's React
@@ -65,6 +66,7 @@ export const creaseMeta = ({ category, component, renderer, source }) => {
   const program = programParts(source)
   const stateful = program.includes('Model') && program.includes('update')
   const docsPage = `${DOCS}/docs/registry.md`
+  const recipes = recipesFor(component)
   return {
     ...(category === undefined ? {} : { categories: [category.toLowerCase()] }),
     docs: stateful
@@ -78,6 +80,7 @@ export const creaseMeta = ({ category, component, renderer, source }) => {
         frameworkVersion: foldkitVersion,
         program,
         publicExports: exportNames(source),
+        ...(recipes.length === 0 ? {} : { recipes }),
         renderer,
         replaces: replacedContracts.get(component) ?? [],
         schemaVersion: 1,

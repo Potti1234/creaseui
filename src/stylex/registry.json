@@ -882,6 +882,14 @@
             "buttonLink",
             "buttonVisualStyles"
           ],
+          "recipes": [
+            {
+              "id": "dialog-form",
+              "title": "Dialog — Invite member form",
+              "docs": "https://creaseui.com/docs/components/dialog",
+              "summary": "Put a Form with an id in the Dialog content; the footer Button is type: 'submit' with form: that id, Cancel is type: 'button'. Native required/type=email checks run only on a real submit, never on an onClick message; the parent update owns domain validation and shows errors on the Field."
+            }
+          ],
           "renderer": "stylex",
           "replaces": [
             "control.button"
@@ -1046,6 +1054,14 @@
             "cardFooter",
             "cardHeader",
             "cardTitle"
+          ],
+          "recipes": [
+            {
+              "id": "metric-grid",
+              "title": "Grid — Adaptive Metric Cards",
+              "docs": "https://creaseui.com/docs/components/grid",
+              "summary": "Lay out Stat cards with Grid columns { minWidth: 240, max: 3, repeat: 'fit' } in a product-owned metricGrid wrapper instead of columns: 3, which clips values on phones."
+            }
           ],
           "renderer": "stylex",
           "replaces": [],
@@ -2755,6 +2771,14 @@
             "open",
             "update"
           ],
+          "recipes": [
+            {
+              "id": "dialog-form",
+              "title": "Dialog — Invite member form",
+              "docs": "https://creaseui.com/docs/components/dialog",
+              "summary": "Put a Form with an id in the Dialog content; the footer Button is type: 'submit' with form: that id, Cancel is type: 'button'. Native required/type=email checks run only on a real submit, never on an onClick message; the parent update owns domain validation and shows errors on the Field."
+            }
+          ],
           "renderer": "stylex",
           "replaces": [
             "overlay.dialog"
@@ -3116,6 +3140,14 @@
             "fieldTitle",
             "fieldVariants"
           ],
+          "recipes": [
+            {
+              "id": "dialog-form",
+              "title": "Dialog — Invite member form",
+              "docs": "https://creaseui.com/docs/components/dialog",
+              "summary": "Put a Form with an id in the Dialog content; the footer Button is type: 'submit' with form: that id, Cancel is type: 'button'. Native required/type=email checks run only on a real submit, never on an onClick message; the parent update owns domain validation and shows errors on the Field."
+            }
+          ],
           "renderer": "stylex",
           "replaces": [
             "control.field"
@@ -3233,6 +3265,14 @@
             "formLabel",
             "formMessage"
           ],
+          "recipes": [
+            {
+              "id": "dialog-form",
+              "title": "Dialog — Invite member form",
+              "docs": "https://creaseui.com/docs/components/dialog",
+              "summary": "Put a Form with an id in the Dialog content; the footer Button is type: 'submit' with form: that id, Cancel is type: 'button'. Native required/type=email checks run only on a real submit, never on an onClick message; the parent update owns domain validation and shows errors on the Field."
+            }
+          ],
           "renderer": "stylex",
           "replaces": [
             "composition.form"
@@ -3304,6 +3344,14 @@
           "publicExports": [
             "grid",
             "gridSpan"
+          ],
+          "recipes": [
+            {
+              "id": "metric-grid",
+              "title": "Grid — Adaptive Metric Cards",
+              "docs": "https://creaseui.com/docs/components/grid",
+              "summary": "Lay out Stat cards with Grid columns { minWidth: 240, max: 3, repeat: 'fit' } in a product-owned metricGrid wrapper instead of columns: 3, which clips values on phones."
+            }
           ],
           "renderer": "stylex",
           "replaces": [
@@ -3695,6 +3743,14 @@
           "program": [],
           "publicExports": [
             "input"
+          ],
+          "recipes": [
+            {
+              "id": "dialog-form",
+              "title": "Dialog — Invite member form",
+              "docs": "https://creaseui.com/docs/components/dialog",
+              "summary": "Put a Form with an id in the Dialog content; the footer Button is type: 'submit' with form: that id, Cancel is type: 'button'. Native required/type=email checks run only on a real submit, never on an onClick message; the parent update owns domain validation and shows errors on the Field."
+            }
           ],
           "renderer": "stylex",
           "replaces": [
@@ -6542,6 +6598,14 @@
           "program": [],
           "publicExports": [
             "stat"
+          ],
+          "recipes": [
+            {
+              "id": "metric-grid",
+              "title": "Grid — Adaptive Metric Cards",
+              "docs": "https://creaseui.com/docs/components/grid",
+              "summary": "Lay out Stat cards with Grid columns { minWidth: 240, max: 3, repeat: 'fit' } in a product-owned metricGrid wrapper instead of columns: 3, which clips values on phones."
+            }
           ],
           "renderer": "stylex",
           "replaces": [],
