@@ -68,8 +68,10 @@ export const Model = S.Struct({
   presetInput: S.String,
   presetError: S.NullOr(S.String),
   isPresetCopied: S.Boolean,
-  section: S.Literals(['theme', 'color', 'shape', 'type', 'motion']),
+  section: S.Literals(['theme', 'color', 'shape', 'type', 'motion', 'tokens']),
   scheme: S.Literals(['system', 'light', 'dark']),
+  tokenScheme: S.Literals(['light', 'dark']),
+  openToken: S.NullOr(S.String),
   canvas: S.Literals(['board', 'components', 'type', 'palette']),
   pickerPopovers: S.Struct({
     style: Popover.Model,
@@ -152,8 +154,24 @@ export const Message = defineMessageUnion({
   },
   ChoseCreateTheme: { name: S.String },
   ChoseCreateSection: {
-    section: S.Literals(['theme', 'color', 'shape', 'type', 'motion']),
+    section: S.Literals([
+      'theme',
+      'color',
+      'shape',
+      'type',
+      'motion',
+      'tokens',
+    ]),
   },
+  ChoseCreateTokenScheme: {
+    scheme: S.Literals(['light', 'dark']),
+  },
+  ToggledCreateToken: { token: S.String },
+  ChangedCreateToken: {
+    token: S.String,
+    value: S.String,
+  },
+  ClickedResetCreateTokens: {},
   ChoseCreateScheme: { scheme: S.Literals(['system', 'light', 'dark']) },
   ChoseCreateCanvas: {
     canvas: S.Literals(['board', 'components', 'type', 'palette']),
@@ -196,6 +214,8 @@ export const init = (): Model => ({
   isPresetCopied: false,
   section: 'theme',
   scheme: 'system',
+  tokenScheme: 'light',
+  openToken: null,
   canvas: 'board',
   pickerPopovers: {
     style: Popover.init({ id: 'create-style-picker', isAnimated: true }),
@@ -342,6 +362,41 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           scheme: () => scheme,
         }),
       }),
+      ChoseCreateTokenScheme: ({ scheme }) => ({
+        model: modifyFields(model, {
+          tokenScheme: () => scheme,
+          openToken: () => null,
+        }),
+      }),
+      ToggledCreateToken: ({ token }) => ({
+        model: modifyFields(model, {
+          openToken: () => (model.openToken === token ? null : token),
+        }),
+      }),
+      ChangedCreateToken: ({ token, value }) => {
+        const overrides = { ...model.preset.overrides }
+        if (value === '') delete overrides[token]
+        else overrides[token] = value
+        const preset = { ...model.preset, overrides }
+        return {
+          model: modifyFields(model, {
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+          }),
+        }
+      },
+      ClickedResetCreateTokens: () => {
+        const preset = { ...model.preset, overrides: {} }
+        return {
+          model: modifyFields(model, {
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+            openToken: () => null,
+          }),
+        }
+      },
       ChoseCreateCanvas: ({ canvas }) => ({
         model: modifyFields(model, {
           canvas: () => canvas,
@@ -917,6 +972,226 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
   const pane = (children: ReadonlyArray<Html>): Html =>
     h.div([h.Class('space-y-5 p-4')], [...children])
 
+  /* tweakcn-style token editor: derived values plus per-scheme overrides. */
+  const tokenGroups: ReadonlyArray<
+    readonly [string, ReadonlyArray<Preset.OverridableToken>]
+  > = [
+    ['Primary', ['primary', 'primary-foreground']],
+    ['Secondary', ['secondary', 'secondary-foreground']],
+    ['Accent', ['accent', 'accent-foreground']],
+    ['Base', ['background', 'foreground']],
+    ['Card', ['card', 'card-foreground']],
+    ['Popover', ['popover', 'popover-foreground']],
+    ['Muted', ['muted', 'muted-foreground']],
+    ['Destructive', ['destructive', 'destructive-foreground']],
+    ['Border & Input', ['border', 'input', 'ring']],
+    ['Chart', ['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5']],
+    [
+      'Sidebar',
+      [
+        'sidebar',
+        'sidebar-foreground',
+        'sidebar-primary',
+        'sidebar-primary-foreground',
+        'sidebar-accent',
+        'sidebar-accent-foreground',
+      ],
+    ],
+  ]
+  const effectiveTokens = Preset.presetTokens(model.preset, model.tokenScheme)
+  const customCount = Object.keys(model.preset.overrides).length
+
+  const tokenEditor = (
+    token: string,
+    key: string,
+    value: string,
+    hex: Option.Option<string>,
+  ): Html => {
+    const setValue = (value: string): Message =>
+      Message['ChangedCreateToken']({ token: key, value })
+    return h.div(
+      [
+        h.Class(
+          'space-y-2 rounded-lg border border-white/10 bg-black/30 p-2.5',
+        ),
+      ],
+      [
+        h.div(
+          [h.Class('flex items-center gap-2')],
+          [
+            Option.isSome(hex)
+              ? h.input([
+                  h.Type('color'),
+                  h.Value(hex.value),
+                  h.AriaLabel(`${token} color`),
+                  h.OnInput(input =>
+                    setValue(
+                      Option.getOrElse(Preset.hexToToken(input), () => input),
+                    ),
+                  ),
+                  h.Class(
+                    'h-8 w-9 shrink-0 cursor-pointer rounded-md border-0 bg-transparent p-0',
+                  ),
+                ])
+              : h.span(
+                  [
+                    h.Class(
+                      'h-8 w-9 shrink-0 rounded-md ring-1 ring-inset ring-white/15',
+                    ),
+                    h.Style({ background: value }),
+                  ],
+                  [],
+                ),
+            h.input([
+              h.Type('text'),
+              h.Value(Option.getOrElse(hex, () => value)),
+              h.AriaLabel(`${token} value`),
+              h.Placeholder('#rrggbb or oklch(…)'),
+              h.OnInput(input => {
+                const trimmed = input.trim()
+                const token_ = Option.getOrElse(
+                  Preset.hexToToken(trimmed),
+                  () =>
+                    /^(oklch|oklab|hsl|hsla|rgb|rgba|#)/iu.test(trimmed)
+                      ? trimmed
+                      : '',
+                )
+                return setValue(token_)
+              }),
+              h.Class(
+                'h-8 min-w-0 flex-1 rounded-md border border-white/10 bg-black/20 px-2 font-mono text-xs text-white outline-none focus-visible:ring-2 focus-visible:ring-white/30',
+              ),
+            ]),
+            h.button(
+              [
+                h.Type('button'),
+                h.AriaLabel(`Reset ${token}`),
+                h.OnClick(setValue('')),
+                h.Class(
+                  'h-8 shrink-0 rounded-md border border-white/10 px-2 text-[10px] font-semibold text-white/70 hover:bg-white/[0.08]',
+                ),
+              ],
+              ['Reset'],
+            ),
+          ],
+        ),
+        h.p([h.Class('truncate font-mono text-[10px] text-white/40')], [value]),
+      ],
+    )
+  }
+
+  const tokenRow = (token: Preset.OverridableToken): Html => {
+    const key = model.tokenScheme === 'dark' ? `dark:${token}` : token
+    const value = effectiveTokens[token] ?? ''
+    const overridden = key in model.preset.overrides
+    const open = model.openToken === key
+    const pair = token.endsWith('-foreground')
+      ? token.slice(0, -'-foreground'.length)
+      : null
+    const ratio =
+      pair === null
+        ? Option.none<number>()
+        : Preset.contrastRatio(value, effectiveTokens[pair] ?? '')
+    return h.div(
+      [h.DataAttribute('token', key)],
+      [
+        h.button(
+          [
+            h.Type('button'),
+            h.Id(`create-token-${key.replaceAll(':', '-')}`),
+            h.AriaExpanded(open),
+            h.OnClick(Message['ToggledCreateToken']({ token: key })),
+            h.Class(
+              `flex w-full items-center gap-2.5 rounded-lg border px-2.5 py-2 text-left transition-colors ${
+                overridden
+                  ? 'border-white/30 bg-white/[0.06]'
+                  : 'border-white/10 bg-white/[0.02] hover:bg-white/[0.05]'
+              }`,
+            ),
+          ],
+          [
+            h.span(
+              [
+                h.Class(
+                  'size-6 shrink-0 rounded-md ring-1 ring-inset ring-white/15',
+                ),
+                h.Style({ background: value }),
+              ],
+              [],
+            ),
+            h.span(
+              [h.Class('min-w-0 flex-1')],
+              [
+                h.span(
+                  [h.Class('block text-xs font-medium leading-tight')],
+                  [token],
+                ),
+                h.span(
+                  [
+                    h.Class(
+                      'block truncate font-mono text-[10px] leading-tight text-white/50',
+                    ),
+                  ],
+                  [value],
+                ),
+              ],
+            ),
+            ...Option.match(ratio, {
+              onNone: () => [],
+              onSome: each => [
+                h.span(
+                  [
+                    h.Class(
+                      `shrink-0 rounded px-1 py-0.5 text-[9px] font-semibold ${
+                        each >= 4.5
+                          ? 'bg-emerald-400/20 text-emerald-300'
+                          : each >= 3
+                            ? 'bg-amber-400/20 text-amber-300'
+                            : 'bg-red-400/20 text-red-300'
+                      }`,
+                    ),
+                  ],
+                  [each.toFixed(1)],
+                ),
+              ],
+            }),
+            ...(overridden
+              ? [
+                  h.span(
+                    [
+                      h.Class(
+                        'shrink-0 rounded bg-white/15 px-1 py-0.5 text-[9px] font-semibold uppercase',
+                      ),
+                    ],
+                    ['custom'],
+                  ),
+                ]
+              : []),
+          ],
+        ),
+        ...(open
+          ? [tokenEditor(token, key, value, Preset.tokenToHex(value))]
+          : []),
+      ],
+    )
+  }
+
+  const tokenSchemeTab = (scheme: Model['tokenScheme'], label: string): Html =>
+    h.button(
+      [
+        h.Type('button'),
+        h.OnClick(Message['ChoseCreateTokenScheme']({ scheme })),
+        h.Class(
+          `rounded-md px-3 py-1 text-[11px] font-semibold transition-colors ${
+            model.tokenScheme === scheme
+              ? 'bg-white text-black'
+              : 'text-white/60 hover:text-white'
+          }`,
+        ),
+      ],
+      [label],
+    )
+
   const panes: Record<Model['section'], Html> = {
     theme: pane([
       h.div([h.Class('grid grid-cols-2 gap-2')], Preset.presets.map(tile)),
@@ -959,6 +1234,47 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
       knob('motion'),
       optionSeg('Easing', 'easing', Preset.EASINGS),
     ]),
+    tokens: pane([
+      h.div(
+        [h.Class('flex items-center justify-between gap-2')],
+        [
+          h.div(
+            [h.Class('flex gap-1 rounded-lg bg-white/[0.04] p-1')],
+            [tokenSchemeTab('light', 'Light'), tokenSchemeTab('dark', 'Dark')],
+          ),
+          ...(customCount > 0
+            ? [
+                h.button(
+                  [
+                    h.Type('button'),
+                    h.OnClick(Message['ClickedResetCreateTokens']()),
+                    h.Class(
+                      'rounded-md border border-white/10 px-2 py-1 text-[10px] font-semibold text-white/70 hover:bg-white/[0.08]',
+                    ),
+                  ],
+                  [`Clear ${customCount} custom`],
+                ),
+              ]
+            : []),
+        ],
+      ),
+      ...tokenGroups.map(([group, tokens]) =>
+        h.div(
+          [h.Class('space-y-1.5')],
+          [
+            h.div(
+              [
+                h.Class(
+                  'text-[10px] font-semibold uppercase tracking-wider text-white/40',
+                ),
+              ],
+              [group],
+            ),
+            ...tokens.map(tokenRow),
+          ],
+        ),
+      ),
+    ]),
   }
 
   return h.aside(
@@ -990,6 +1306,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
               sectionTab('shape', 'Shape'),
               sectionTab('type', 'Type'),
               sectionTab('motion', 'Motion'),
+              sectionTab('tokens', 'Tokens'),
             ],
           ),
         ],
