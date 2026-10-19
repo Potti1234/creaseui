@@ -210,3 +210,65 @@ ECharts integration items. Pass item names to target a smaller install:
 npm run test:registry
 npm run test:registry -- stylex-data-table stylex-integrations-echarts
 ```
+
+## Recipes
+
+### Adaptive metric cards
+
+Dashboards should not default to `columns: 3`: at phone widths each card gets
+about 100px and Card's `overflow: hidden` clips values and deltas while the
+page itself still reports no horizontal overflow. Grid already adapts:
+
+```ts
+type GridColumns =
+  | number
+  | Readonly<{ minWidth: number; max?: number; repeat?: 'fill' | 'fit' }>
+```
+
+The Grid docs example "Grid — Adaptive Metric Cards" (all three renderers)
+composes Grid + Card + Stat with `{ minWidth: 240, max: 3, repeat: 'fit' }`.
+Wrap those choices in a product-owned component so feature code passes only
+children (import from `@/stylex/grid` or `@/pleat/grid` on the other
+renderers):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { grid } from '@/ui/grid'
+
+export const metricGrid = <Msg>(
+  props: Readonly<{ children: ReadonlyArray<Html> }>,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  grid(
+    {
+      columns: { minWidth: 240, max: 3, repeat: 'fit' },
+      gap: 4,
+      children: props.children,
+    },
+    h,
+  )
+```
+
+The track width and gap are product decisions; check them against your real
+labels, values and deltas. To keep feature code on the wrapper, scope an
+import restriction to the feature surface only. Fixed grids stay valid
+elsewhere (matrices, tools, deliberately constrained layouts):
+
+```js
+{
+  files: ['src/features/**/*.ts'],
+  rules: {
+    'no-restricted-imports': ['error', {
+      paths: [{ name: '@/ui/grid', message: 'Lay out metrics with metricGrid.' }],
+    }],
+  },
+}
+```
+
+`packages/lint/test/product-wrapper-policy.test.js` proves the allowed and
+forbidden cases. `e2e/content-fit.ts` is the reusable visual audit: it checks
+every text run against its clipping ancestors rather than the root
+`scrollWidth`, and skips intentional truncation (`text-overflow: ellipsis`,
+scroll regions, `[data-clip-intended]`) and screen-reader-only text.
+`e2e/sites/content-fit.spec.ts` runs it on the metric cards at 390, 768 and
+1440px on every renderer.

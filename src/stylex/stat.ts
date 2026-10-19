@@ -29,6 +29,7 @@ const styles = stylex.create({
     gap: '0.5rem',
     alignItems: 'baseline',
     display: 'flex',
+    flexWrap: 'wrap',
     minWidth: 0,
   },
   value: {
