@@ -1068,14 +1068,14 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                 h.AriaLabel(`Reset ${token}`),
                 h.OnClick(setValue('')),
                 h.Class(
-                  'h-8 shrink-0 rounded-md border border-white/10 px-2 text-[10px] font-semibold text-white/70 hover:bg-white/[0.08]',
+                  'h-8 shrink-0 rounded-md border border-white/10 px-2 text-xs font-semibold text-white/70 hover:bg-white/[0.08]',
                 ),
               ],
               ['Reset'],
             ),
           ],
         ),
-        h.p([h.Class('truncate font-mono text-[10px] text-white/40')], [value]),
+        h.p([h.Class('truncate font-mono text-xs text-white/40')], [value]),
       ],
     )
   }
@@ -1129,7 +1129,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                 h.span(
                   [
                     h.Class(
-                      'block truncate font-mono text-[10px] leading-tight text-white/50',
+                      'block truncate font-mono text-xs leading-tight text-white/50',
                     ),
                   ],
                   [value],
@@ -1142,12 +1142,12 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                 h.span(
                   [
                     h.Class(
-                      `shrink-0 rounded px-1 py-0.5 text-[9px] font-semibold ${
+                      `shrink-0 rounded px-1 py-0.5 text-xs font-semibold ${
                         each >= 4.5
-                          ? 'bg-emerald-400/20 text-emerald-300'
+                          ? 'bg-success/20 text-success'
                           : each >= 3
-                            ? 'bg-amber-400/20 text-amber-300'
-                            : 'bg-red-400/20 text-red-300'
+                            ? 'bg-warning/20 text-warning'
+                            : 'bg-destructive/20 text-destructive'
                       }`,
                     ),
                   ],
@@ -1160,7 +1160,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                   h.span(
                     [
                       h.Class(
-                        'shrink-0 rounded bg-white/15 px-1 py-0.5 text-[9px] font-semibold uppercase',
+                        'shrink-0 rounded bg-white/15 px-1 py-0.5 text-xs font-semibold uppercase',
                       ),
                     ],
                     ['custom'],
@@ -1182,7 +1182,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
         h.Type('button'),
         h.OnClick(Message['ChoseCreateTokenScheme']({ scheme })),
         h.Class(
-          `rounded-md px-3 py-1 text-[11px] font-semibold transition-colors ${
+          `rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
             model.tokenScheme === scheme
               ? 'bg-white text-black'
               : 'text-white/60 hover:text-white'
@@ -1249,7 +1249,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
                     h.Type('button'),
                     h.OnClick(Message['ClickedResetCreateTokens']()),
                     h.Class(
-                      'rounded-md border border-white/10 px-2 py-1 text-[10px] font-semibold text-white/70 hover:bg-white/[0.08]',
+                      'rounded-md border border-white/10 px-2 py-1 text-xs font-semibold text-white/70 hover:bg-white/[0.08]',
                     ),
                   ],
                   [`Clear ${customCount} custom`],
@@ -1265,7 +1265,7 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
             h.div(
               [
                 h.Class(
-                  'text-[10px] font-semibold uppercase tracking-wider text-white/40',
+                  'text-xs font-semibold uppercase tracking-wider text-white/40',
                 ),
               ],
               [group],
