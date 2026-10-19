@@ -26,13 +26,17 @@ const project = files => {
   return root
 }
 
+/* Receipt paths are POSIX on every platform. */
+const relative = (root, file) =>
+  path.relative(root, file).split(path.sep).join('/')
+
 const audit = (files, options = {}) => {
   const root = project(files)
   const run = createCssAudit({
-    isOwned: file => (options.owned ?? []).includes(path.relative(root, file)),
+    isOwned: file => (options.owned ?? []).includes(relative(root, file)),
     rootDir: root,
     rootsOf: file =>
-      (options.owned ?? []).includes(path.relative(root, file))
+      (options.owned ?? []).includes(relative(root, file))
         ? options.roots
         : undefined,
   })

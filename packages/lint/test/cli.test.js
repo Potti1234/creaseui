@@ -92,7 +92,7 @@ test('init and doctor cover public aliases of rendering exports', () => {
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
   )
   const button = path.join(directory, 'src/design/button.ts')
   const lock = () =>
@@ -132,7 +132,7 @@ test('alias-only renderers and renamed re-exports are covered and enforced', asy
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
   )
   /* No HtmlBuilder text: only the type checker sees that this renders. */
   writeFileSync(
@@ -196,7 +196,7 @@ test('doctor reconciles every required rule through imported policy modules', ()
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
   )
   const initArgs = ['init', '--renderer', 'pleat', '--components', 'src/design']
   assert.equal(run(directory, ...initArgs).status, 0)
@@ -230,7 +230,7 @@ test('doctor reports installed components missing from the receipt', () => {
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
   )
   writeFileSync(
     path.join(directory, 'components.json'),
@@ -262,7 +262,7 @@ test('doctor reports the archived tutorial as feature-only coverage', () => {
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
   )
   const result = run(directory, 'doctor')
   assert.equal(result.status, 2, result.stdout + result.stderr)
@@ -467,7 +467,7 @@ test('re-running init registers new installs without rewriting the receipt or co
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
   )
   writeFileSync(
     path.join(directory, 'components.json'),
@@ -507,7 +507,7 @@ test('doctor reports theme roles that installed components read but no styleshee
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
   )
   writeFileSync(
     path.join(directory, 'components.json'),

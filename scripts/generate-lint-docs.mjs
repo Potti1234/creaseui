@@ -178,10 +178,12 @@ const cliProject = item => {
   cpSync(fixture, root, { recursive: true })
   rmSync(path.join(root, 'crease.lock.json'))
   mkdirSync(path.join(root, 'node_modules/@creaseui'), { recursive: true })
+  /* A junction needs no administrator rights on Windows; the type is ignored
+     elsewhere. */
   symlinkSync(
     path.join(repo, 'packages/lint'),
     path.join(root, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
   )
   writeFileSync(
     path.join(root, 'components.json'),
