@@ -5,13 +5,17 @@ import { Option } from 'effect'
 import {
   DEFAULT_CONFIG,
   accentForTheme,
+  contrastRatio,
   decodePreset,
   encodePreset,
+  hexToToken,
   parsePresetInput,
   presetInstallCss,
   presetManifest,
   presetRegistryJson,
+  presetTokens,
   shufflePreset,
+  tokenToHex,
 } from '../src/demo/create-preset.ts'
 
 describe('shadcn preset compatibility', () => {
@@ -105,5 +109,100 @@ describe('shadcn preset compatibility', () => {
       shuffled,
     )
     assert.notDeepEqual(shufflePreset(), shuffled)
+  })
+})
+
+describe('token overrides', () => {
+  const overridden: typeof DEFAULT_CONFIG = {
+    ...DEFAULT_CONFIG,
+    overrides: {
+      primary: 'oklch(0.6 0.2 150)',
+      'dark:primary': 'oklch(0.7 0.15 150)',
+      'bogus-token': 'oklch(0.5 0.1 0)',
+    },
+  }
+
+  it('round-trips overrides in the preset code suffix', () => {
+    const code = encodePreset(overridden)
+    assert.match(code, /^c[0-9A-Za-z]+\.[0-9A-Za-z_-]+$/u)
+    assert.deepEqual(Option.getOrThrow(decodePreset(code)), {
+      ...overridden,
+      overrides: {
+        primary: 'oklch(0.6 0.2 150)',
+        'dark:primary': 'oklch(0.7 0.15 150)',
+      },
+    })
+  })
+
+  it('keeps plain codes suffix-free', () => {
+    assert.match(encodePreset(DEFAULT_CONFIG), /^c[0-9A-Za-z]+$/u)
+  })
+
+  it('layers overrides over the derived palette per scheme', () => {
+    const light = presetTokens(overridden, 'light')
+    const dark = presetTokens(overridden, 'dark')
+    assert.equal(light['primary'], 'oklch(0.6 0.2 150)')
+    assert.equal(dark['primary'], 'oklch(0.7 0.15 150)')
+    /* dark declares its own --primary, so a light override doesn't cascade
+       there — but it does reach tokens dark leaves undeclared (sidebar). */
+    const lightOnly = presetTokens(
+      {
+        ...overridden,
+        overrides: {
+          primary: 'oklch(0.6 0.2 150)',
+          sidebar: 'oklch(0.4 0.1 90)',
+        },
+      },
+      'dark',
+    )
+    assert.equal(
+      lightOnly['primary'],
+      presetTokens(DEFAULT_CONFIG, 'dark')['primary'],
+    )
+    assert.equal(lightOnly['sidebar'], 'oklch(0.4 0.1 90)')
+    /* untouched tokens keep derived values */
+    assert.equal(
+      light['secondary'],
+      presetTokens(DEFAULT_CONFIG, 'light')['secondary'],
+    )
+  })
+
+  it('emits destructive and chart-5 tokens for both schemes', () => {
+    for (const scheme of ['light', 'dark'] as const) {
+      const tokens = presetTokens(DEFAULT_CONFIG, scheme)
+      for (const name of [
+        'destructive',
+        'destructive-foreground',
+        'chart-3',
+        'chart-4',
+        'chart-5',
+      ]) {
+        assert.ok(tokens[name], `${scheme} --${name}`)
+      }
+    }
+    assert.match(presetInstallCss(DEFAULT_CONFIG), /--destructive:/)
+  })
+
+  it('converts between oklch literals and hex', () => {
+    assert.deepEqual(tokenToHex('oklch(0.985 0 0)'), Option.some('#fafafa'))
+    assert.deepEqual(tokenToHex('oklch(0.145 0 0)'), Option.some('#0a0a0a'))
+    assert.ok(Option.isNone(tokenToHex('color-mix(in oklch,red 50%,white)')))
+    assert.deepEqual(hexToToken('#ffffff'), Option.some('oklch(1 0 0)'))
+    assert.ok(Option.isNone(hexToToken('#xyz')))
+    /* round trip within tolerance */
+    const oklch = Option.getOrThrow(hexToToken('#3b82f6'))
+    assert.ok(Math.abs(parseFloat(oklch.split(' ')[2]!) - 262) < 5)
+  })
+
+  it('computes WCAG contrast for oklch pairs', () => {
+    const ratio = Option.getOrThrow(
+      contrastRatio('oklch(0.145 0 0)', 'oklch(0.985 0 0)'),
+    )
+    assert.ok(ratio > 15)
+    assert.ok(
+      Option.isNone(
+        contrastRatio('color-mix(in oklch,red 50%,white)', 'oklch(0.985 0 0)'),
+      ),
+    )
   })
 })

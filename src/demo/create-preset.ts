@@ -159,8 +159,64 @@ export const Config = S.Struct({
   menuColor: S.String,
   iconLibrary: S.String,
   chartColor: S.String,
+  /* Per-token overrides layered on top of the knob-derived palette — the
+     tweakcn-style escape hatch. Keys are token names for the light scheme,
+     `dark:name` for the dark scheme; values are CSS color strings. */
+  overrides: S.Record(S.String, S.String),
 })
 export type Config = typeof Config.Type
+
+/** Color tokens the token editor may override. */
+export const OVERRIDABLE_TOKENS = [
+  'background',
+  'foreground',
+  'card',
+  'card-foreground',
+  'popover',
+  'popover-foreground',
+  'primary',
+  'primary-foreground',
+  'secondary',
+  'secondary-foreground',
+  'accent',
+  'accent-foreground',
+  'muted',
+  'muted-foreground',
+  'destructive',
+  'destructive-foreground',
+  'border',
+  'input',
+  'ring',
+  'chart-1',
+  'chart-2',
+  'chart-3',
+  'chart-4',
+  'chart-5',
+  'sidebar',
+  'sidebar-foreground',
+  'sidebar-primary',
+  'sidebar-primary-foreground',
+  'sidebar-accent',
+  'sidebar-accent-foreground',
+] as const
+export type OverridableToken = (typeof OVERRIDABLE_TOKENS)[number]
+
+const OVERRIDABLE_SET = new Set<string>(OVERRIDABLE_TOKENS)
+
+/** Splits stored overrides into the tokens that apply to one scheme. */
+const overridesFor = (
+  overrides: Readonly<Record<string, string>>,
+  scheme: 'light' | 'dark',
+): Readonly<Record<string, string>> => {
+  const prefix = scheme === 'dark' ? 'dark:' : ''
+  return Object.fromEntries(
+    Object.entries(overrides).flatMap(([key, value]) =>
+      key.startsWith(prefix) && OVERRIDABLE_SET.has(key.slice(prefix.length))
+        ? [[key.slice(prefix.length), value]]
+        : [],
+    ),
+  )
+}
 
 export const sameConfig = S.toEquivalence(Config)
 
@@ -285,6 +341,7 @@ export const DEFAULT_CONFIG: Config = {
   menuColor: 'default',
   iconLibrary: 'lucide',
   chartColor: 'neutral',
+  overrides: {},
 }
 
 /* Presets are whole knob-sets, foldkit-plus style: choosing one installs every
@@ -671,7 +728,38 @@ export const encodePreset = (config: Config): string => {
     }),
     enumPacked,
   )
-  return `c${toBase62(packed)}`
+  const base = `c${toBase62(packed)}`
+  return Object.keys(config.overrides).length === 0
+    ? base
+    : `${base}.${encodeOverrides(config.overrides)}`
+}
+
+/* Overrides travel after a '.' as base64url JSON — arbitrary CSS values can't
+   bit-pack, and the suffix keeps every earlier code valid. */
+const encodeOverrides = (overrides: Readonly<Record<string, string>>): string =>
+  btoa(JSON.stringify(overrides))
+    .replaceAll('+', '-')
+    .replaceAll('/', '_')
+    .replace(/=+$/u, '')
+
+const decodeOverrides = (tail: string): Record<string, string> => {
+  try {
+    const json: unknown = JSON.parse(
+      atob(tail.replaceAll('-', '+').replaceAll('_', '/')),
+    )
+    if (typeof json !== 'object' || json === null || Array.isArray(json))
+      return {}
+    return Object.fromEntries(
+      Object.entries(json).flatMap(([key, value]) => {
+        const token = key.startsWith('dark:') ? key.slice(5) : key
+        return OVERRIDABLE_SET.has(token) && typeof value === 'string'
+          ? [[key, value]]
+          : []
+      }),
+    )
+  } catch {
+    return {}
+  }
 }
 
 const LEGACY_RADIUS: Readonly<Record<string, number>> = {
@@ -748,8 +836,9 @@ const decodeLegacy = (code: string): Option.Option<Config> => {
 }
 
 const decodeV3 = (code: string): Option.Option<Config> => {
-  if (!/^c[0-9A-Za-z]{1,24}$/.test(code)) return Option.none()
-  return Option.map(fromBase62(code.slice(1)), packed => {
+  const [head, tail] = code.split('.')
+  if (!/^c[0-9A-Za-z]{1,24}$/.test(head ?? '')) return Option.none()
+  return Option.map(fromBase62(head!.slice(1)), packed => {
     const afterEnums = V3_ENUM_FIELDS.reduce<{
       values: Record<string, string | number>
       offset: bigint
@@ -784,7 +873,10 @@ const decodeV3 = (code: string): Option.Option<Config> => {
         offset: state.offset + BigInt(field.bits),
       }
     }, afterEnums)
-    return S.decodeUnknownSync(Config)(values)
+    return S.decodeUnknownSync(Config)({
+      ...values,
+      overrides: tail === undefined ? {} : decodeOverrides(tail),
+    })
   })
 }
 
@@ -1092,8 +1184,86 @@ const buildCss = (
             `--text-${name}:calc(${rem}rem*${config.textScale});--text-${name}--line-height:calc(${lh}rem*${config.leading});`,
         ).join('')
 
+  /* Token maps: every emitted custom property, derived from the knobs and
+     then merged with per-scheme overrides. Order is kept for readability of
+     the emitted CSS. */
+  const lightTokens: Record<string, string> = {
+    background: page,
+    foreground: ink,
+    card: page,
+    'card-foreground': ink,
+    popover: page,
+    'popover-foreground': ink,
+    primary: accent,
+    'primary-foreground': primaryFg,
+    secondary: muted,
+    'secondary-foreground': ink,
+    muted,
+    'muted-foreground': `color-mix(in oklch,${ink} 62%,white)`,
+    accent: hoverSurface,
+    'accent-foreground': ink,
+    destructive: 'oklch(0.577 0.245 27.325)',
+    'destructive-foreground': 'oklch(0.985 0 0)',
+    border: borderL,
+    input: inputL,
+    ring: accent,
+    'chart-1': chart[0],
+    'chart-2': chart[1],
+    'chart-3': `color-mix(in oklch,${chart[0]} 72%,${muted})`,
+    'chart-4': `color-mix(in oklch,${chart[1]} 68%,${accent})`,
+    'chart-5': `color-mix(in oklch,${chart[0]} 52%,white)`,
+    sidebar: translucentMenu
+      ? `color-mix(in oklch,${sidebar} 82%,transparent)`
+      : sidebar,
+    'sidebar-foreground': invertedMenu ? nearWhite : ink,
+    'sidebar-primary': accent,
+    'sidebar-primary-foreground': primaryFg,
+    'sidebar-accent': boldMenu
+      ? accent
+      : invertedMenu
+        ? `color-mix(in oklch,${ink} 88%,white)`
+        : muted,
+    'sidebar-accent-foreground': boldMenu || invertedMenu ? primaryFg : ink,
+    radius: radiusRem,
+    'font-sans': fontFamily(config.font),
+  }
+  const darkTokens: Record<string, string> = {
+    background: pageDark,
+    foreground: nearWhite,
+    card: `color-mix(in oklch,${pageDark} 92%,white)`,
+    'card-foreground': nearWhite,
+    popover: `color-mix(in oklch,${pageDark} 92%,white)`,
+    'popover-foreground': nearWhite,
+    primary: accentDark,
+    'primary-foreground': ink,
+    secondary: surfaceDark,
+    'secondary-foreground': nearWhite,
+    muted: surfaceDark,
+    'muted-foreground': `color-mix(in oklch,${pageDark} 45%,white)`,
+    accent: hoverSurfaceDark,
+    'accent-foreground': nearWhite,
+    destructive: 'oklch(0.704 0.191 22.216)',
+    'destructive-foreground': 'oklch(0.985 0 0)',
+    border: borderD,
+    input: inputD,
+    ring: accentDark,
+    'chart-1': chart[1],
+    'chart-2': chart[0],
+    'chart-3': `color-mix(in oklch,${chart[1]} 72%,${pageDark})`,
+    'chart-4': `color-mix(in oklch,${chart[0]} 68%,white)`,
+    'chart-5': `color-mix(in oklch,${chart[1]} 52%,white)`,
+    'sidebar-primary': accentDark,
+    'sidebar-primary-foreground': ink,
+  }
+  Object.assign(lightTokens, overridesFor(config.overrides, 'light'))
+  Object.assign(darkTokens, overridesFor(config.overrides, 'dark'))
+  const decls = (tokens: Record<string, string>): string =>
+    Object.entries(tokens)
+      .map(([name, value]) => `--${name}:${value}`)
+      .join(';')
+
   const headingPrefix = rulePrefix === '' ? '' : `${rulePrefix} `
-  const theme = `${scope}{--background:${page};--foreground:${ink};--card:${page};--card-foreground:${ink};--popover:${page};--popover-foreground:${ink};--primary:${accent};--primary-foreground:${primaryFg};--secondary:${muted};--secondary-foreground:${ink};--muted:${muted};--muted-foreground:color-mix(in oklch,${ink} 62%,white);--accent:${hoverSurface};--accent-foreground:${ink};--border:${borderL};--input:${inputL};--ring:${accent};--chart-1:${chart[0]};--chart-2:${chart[1]};--sidebar:${translucentMenu ? `color-mix(in oklch,${sidebar} 82%,transparent)` : sidebar};--sidebar-foreground:${invertedMenu ? nearWhite : ink};--sidebar-primary:${accent};--sidebar-primary-foreground:${primaryFg};--sidebar-accent:${boldMenu ? accent : invertedMenu ? `color-mix(in oklch,${ink} 88%,white)` : muted};--sidebar-accent-foreground:${boldMenu || invertedMenu ? primaryFg : ink};--radius:${radiusRem};--font-sans:${fontFamily(config.font)};${textVars}font-family:var(--font-sans);${translucentMenu ? 'backdrop-filter:blur(16px);' : ''}}${headingPrefix}h1,${headingPrefix}h2,${headingPrefix}h3,${headingPrefix}h4{font-family:${heading};font-weight:${config.headingWeight};letter-spacing:${config.tracking}em}${config.headingScale === 1 ? '' : `${headingPrefix}h1{font-size:calc(${HEADING_SIZES.h1}em*${config.headingScale})}${headingPrefix}h2{font-size:calc(${HEADING_SIZES.h2}em*${config.headingScale})}${headingPrefix}h3{font-size:calc(${HEADING_SIZES.h3}em*${config.headingScale})}${headingPrefix}h4{font-size:calc(${HEADING_SIZES.h4}em*${config.headingScale})}`}${darkScope}{--background:${pageDark};--foreground:${nearWhite};--card:color-mix(in oklch,${pageDark} 92%,white);--card-foreground:${nearWhite};--popover:color-mix(in oklch,${pageDark} 92%,white);--popover-foreground:${nearWhite};--primary:${accentDark};--primary-foreground:${ink};--secondary:${surfaceDark};--secondary-foreground:${nearWhite};--muted:${surfaceDark};--muted-foreground:color-mix(in oklch,${pageDark} 45%,white);--accent:${hoverSurfaceDark};--accent-foreground:${nearWhite};--border:${borderD};--input:${inputD};--ring:${accentDark};--chart-1:${chart[1]};--chart-2:${chart[0]};--sidebar-primary:${accentDark};--sidebar-primary-foreground:${ink}}`
+  const theme = `${scope}{${decls(lightTokens)};${textVars}font-family:var(--font-sans);${translucentMenu ? 'backdrop-filter:blur(16px);' : ''}}${headingPrefix}h1,${headingPrefix}h2,${headingPrefix}h3,${headingPrefix}h4{font-family:${heading};font-weight:${config.headingWeight};letter-spacing:${config.tracking}em}${config.headingScale === 1 ? '' : `${headingPrefix}h1{font-size:calc(${HEADING_SIZES.h1}em*${config.headingScale})}${headingPrefix}h2{font-size:calc(${HEADING_SIZES.h2}em*${config.headingScale})}${headingPrefix}h3{font-size:calc(${HEADING_SIZES.h3}em*${config.headingScale})}${headingPrefix}h4{font-size:calc(${HEADING_SIZES.h4}em*${config.headingScale})}`}${darkScope}{${decls(darkTokens)}}`
 
   const style = (STYLE_RULES[config.style] ?? '').replaceAll(
     ':where(',
@@ -1107,7 +1277,6 @@ const buildCss = (
     remixicon: '2.25',
   }
   const icons = `${scope} svg{stroke-width:${strokeWidths[config.iconLibrary] ?? '2'}}`
-  const enhancements = `${scope}{--chart-3:color-mix(in oklch,${chart[0]} 72%,${muted});--chart-4:color-mix(in oklch,${chart[1]} 68%,${accent});--chart-5:color-mix(in oklch,${chart[0]} 52%,white)}${darkScope}{--chart-3:color-mix(in oklch,${chart[1]} 72%,${pageDark});--chart-4:color-mix(in oklch,${chart[0]} 68%,white);--chart-5:color-mix(in oklch,${chart[1]} 52%,white)}`
 
   const borderRule =
     config.border === 1
@@ -1122,7 +1291,7 @@ const buildCss = (
       ? ''
       : `${rulePrefix} *{${config.motion === 1 ? '' : `transition-duration:calc(150ms*${config.motion});animation-duration:calc(1.2s*${config.motion});`}${config.easing === 'ease' ? '' : `transition-timing-function:${SPRING_EASE};animation-timing-function:${SPRING_EASE};`}}`
 
-  return `${theme}${enhancements}${shadows ? `${scope}{${shadows}}` : ''}${style}${icons}${reliefRules(config, config.outlines === 'soft' ? borderL : `color-mix(in oklch,${ink} 88%,transparent)`).replaceAll(':where(', `${rulePrefix} :where(`)}${borderRule}${shapeRule}${motionRule}`
+  return `${theme}${shadows ? `${scope}{${shadows}}` : ''}${style}${icons}${reliefRules(config, config.outlines === 'soft' ? borderL : `color-mix(in oklch,${ink} 88%,transparent)`).replaceAll(':where(', `${rulePrefix} :where(`)}${borderRule}${shapeRule}${motionRule}`
 }
 
 /* The board scope: `.create-board-theme` on the preview element. Dark vars
@@ -1204,3 +1373,129 @@ export const presetRegistryItem = (
 
 export const presetRegistryJson = (config: Config): string =>
   `${JSON.stringify(presetRegistryItem(config), null, 2)}\n`
+
+/** The effective CSS custom-property values for one scheme — derived tokens
+ *  merged with that scheme's overrides (dark inherits light, then its own). */
+export const presetTokens = (
+  config: Config,
+  scheme: 'light' | 'dark',
+): Readonly<Record<string, string>> => {
+  const css = buildCss(config, 'SCOPE', 'DARKSCOPE', '')
+  const light = declsOf(css, 'SCOPE')
+  return scheme === 'light' ? light : { ...light, ...declsOf(css, 'DARKSCOPE') }
+}
+
+const declsOf = (css: string, scope: string): Record<string, string> => {
+  const start = css.indexOf(`${scope}{`) + scope.length + 1
+  const body = css.slice(start, css.indexOf('}', start))
+  return Object.fromEntries(
+    body
+      .split(';')
+      .filter(declaration => declaration.startsWith('--'))
+      .map(declaration => {
+        const at = declaration.indexOf(':')
+        return [declaration.slice(2, at), declaration.slice(at + 1)]
+      }),
+  )
+}
+
+/* -- Color conversion + contrast for the token editor -------------------- */
+
+const clamp01 = (value: number): number => Math.min(1, Math.max(0, value))
+
+const linearToSrgb = (value: number): number =>
+  value <= 0.0031308 ? 12.92 * value : 1.055 * value ** (1 / 2.4) - 0.055
+
+const srgbToLinear = (value: number): number =>
+  value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+
+const oklchToLinearRgb = (
+  l: number,
+  c: number,
+  h: number,
+): readonly [number, number, number] => {
+  const a = c * Math.cos((h * Math.PI) / 180)
+  const b = c * Math.sin((h * Math.PI) / 180)
+  const l_ = (l + 0.3963377774 * a + 0.2158037573 * b) ** 3
+  const m_ = (l - 0.1055613458 * a - 0.0638541728 * b) ** 3
+  const s_ = (l - 0.0894841775 * a - 1.291485548 * b) ** 3
+  return [
+    4.0767416621 * l_ - 3.3077115913 * m_ + 0.2309699292 * s_,
+    -1.2684380046 * l_ + 2.6097574011 * m_ - 0.3413193965 * s_,
+    -0.0041960863 * l_ - 0.7034186147 * m_ + 1.707614701 * s_,
+  ]
+}
+
+const parseOklch = (
+  value: string,
+): Option.Option<readonly [number, number, number]> => {
+  const match = value.match(/oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)/u)
+  return match === null
+    ? Option.none()
+    : Option.some([
+        Number(match[1]),
+        Number(match[2]),
+        Number(match[3]),
+      ] as const)
+}
+
+const linearRgbToOklch = (
+  r: number,
+  g: number,
+  b: number,
+): readonly [number, number, number] => {
+  const l_ = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b)
+  const m_ = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b)
+  const s_ = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
+  const l = 0.2104542553 * l_ + 0.793617785 * m_ - 0.0040720468 * s_
+  const a = 1.9779984951 * l_ - 2.428592205 * m_ + 0.4505937099 * s_
+  const b2 = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.808675766 * s_
+  const c = Math.sqrt(a * a + b2 * b2)
+  const h = c < 0.0005 ? 0 : ((Math.atan2(b2, a) * 180) / Math.PI + 360) % 360
+  return [l, c, h]
+}
+
+/** 'oklch(0.5 0.1 20)' → '#xxxxxx'; none for values a hex can't express. */
+export const tokenToHex = (value: string): Option.Option<string> =>
+  Option.map(parseOklch(value), ([l, c, h]) => {
+    const [r, g, b] = oklchToLinearRgb(l, c, h)
+    const channel = (v: number): string =>
+      Math.round(clamp01(linearToSrgb(v)) * 255)
+        .toString(16)
+        .padStart(2, '0')
+    return `#${channel(r)}${channel(g)}${channel(b)}`
+  })
+
+/** '#rrggbb' → 'oklch(l c h)'. */
+export const hexToToken = (hex: string): Option.Option<string> => {
+  const match = hex.match(/^#?([0-9a-f]{6})$/iu)
+  if (match === null) return Option.none()
+  const channel = (at: number): number =>
+    srgbToLinear(parseInt(match[1]!.slice(at, at + 2), 16) / 255)
+  const [l, c, h] = linearRgbToOklch(channel(0), channel(2), channel(4))
+  return Option.some(
+    `oklch(${Number(l.toFixed(4))} ${Number(c.toFixed(4))} ${Number(h.toFixed(2))})`,
+  )
+}
+
+/** WCAG contrast between two oklch literals; none when either can't parse. */
+export const contrastRatio = (
+  foreground: string,
+  background: string,
+): Option.Option<number> =>
+  Option.flatMap(parseOklch(foreground), fg =>
+    Option.map(parseOklch(background), bg => {
+      const luminance = ([l, c, h]: readonly [number, number, number]) => {
+        const [r, g, b] = oklchToLinearRgb(l, c, h)
+        return (
+          0.2126 * Math.max(0, r) +
+          0.7152 * Math.max(0, g) +
+          0.0722 * Math.max(0, b)
+        )
+      }
+      const [fgLum, bgLum] = [luminance(fg), luminance(bg)]
+      const hi = Math.max(fgLum, bgLum)
+      const lo = Math.min(fgLum, bgLum)
+      return (hi + 0.05) / (lo + 0.05)
+    }),
+  )
