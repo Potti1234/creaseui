@@ -299,3 +299,16 @@ Toasts die before the click→console round-trip completes. Arm a MutationObserv
   scheme, so a manually-chosen scheme persists after Apply.
 - 'Nova' names both a preset tile and a Style seg option — scope selectors to
   `[data-seg="Style"]` or the tile grid.
+- The "Tokens" tab lists 30 rows with `data-token="<key>"` (bare name = light,
+  `dark:<name>` = dark scope); the row toggle is `#create-token-<key>` with
+  `:→-`, and `aria-expanded` marks the open editor. Each row: swatch (inline
+  `background`), name, value, optional contrast badge on `*-foreground` rows
+  vs their pair, `custom` badge when overridden.
+- The editor's text input is a _draft_: overrides only commit when the value
+  is a complete color (`validTokenValue` — 3/6-digit hex or `fn(...)`), so
+  partial typing never reaches the preset code. Assert overrides via the
+  `.<base64url>` suffix on the `c...` code — `atob`-decoding it (after
+  `-→+`,`_→/`) yields the JSON overrides map. "Clear N custom" resets all;
+  each row's "Reset" removes one.
+- Two `data-crease-style` elements exist on /create — use `.last()` for the
+  code display.
