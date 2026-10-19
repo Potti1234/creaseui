@@ -4,6 +4,7 @@ import { Option } from 'effect'
 
 import {
   DEFAULT_CONFIG,
+  accentForTheme,
   decodePreset,
   encodePreset,
   parsePresetInput,
@@ -15,22 +16,30 @@ import {
 
 describe('shadcn preset compatibility', () => {
   it('decodes current official create presets', () => {
-    assert.deepEqual(Option.getOrThrow(decodePreset('b27GcrRo')), {
-      menuColor: 'default',
-      menuAccent: 'subtle',
-      radius: 'default',
-      font: 'inter',
-      iconLibrary: 'lucide',
-      theme: 'neutral',
-      baseColor: 'neutral',
-      style: 'rhea',
-      chartColor: 'neutral',
-      fontHeading: 'inherit',
-    })
-    assert.equal(
-      encodePreset(Option.getOrThrow(decodePreset('b4xFeBLg4O'))),
-      'b4xFeBLg4O',
+    const decoded = Option.getOrThrow(decodePreset('b27GcrRo'))
+    assert.equal(decoded.style, 'rhea')
+    assert.equal(decoded.base, 'neutral')
+    assert.equal(decoded.radius, 1)
+    assert.equal(decoded.font, 'inter')
+    assert.equal(decoded.fontHeading, 'inherit')
+    assert.equal(decoded.iconLibrary, 'lucide')
+    assert.equal(decoded.menuAccent, 'subtle')
+    assert.equal(decoded.menuColor, 'default')
+    assert.equal(decoded.chartColor, 'neutral')
+
+    const reDecoded = Option.getOrThrow(
+      decodePreset(encodePreset(Option.getOrThrow(decodePreset('b4xFeBLg4O')))),
     )
+    assert.deepEqual(
+      reDecoded,
+      Option.getOrThrow(decodePreset(encodePreset(reDecoded))),
+    )
+  })
+
+  it('round-trips a default config through the v3 code', () => {
+    const code = encodePreset(DEFAULT_CONFIG)
+    assert.match(code, /^c[0-9A-Za-z]+$/)
+    assert.deepEqual(Option.getOrThrow(decodePreset(code)), DEFAULT_CONFIG)
   })
 
   it('accepts codes, CLI flags, and shadcn create URLs', () => {
@@ -47,13 +56,14 @@ describe('shadcn preset compatibility', () => {
   it('materializes every design-system choice into installable output', () => {
     const css = presetInstallCss({
       ...DEFAULT_CONFIG,
-      style: 'maia',
-      baseColor: 'stone',
-      theme: 'blue',
+      style: 'nova',
+      base: 'stone',
+      ...accentForTheme('blue'),
       chartColor: 'rose',
       font: 'lora',
       fontHeading: 'playfair-display',
-      radius: 'large',
+      radius: 1.4,
+      controlShape: 'pill',
       menuAccent: 'bold',
       menuColor: 'inverted-translucent',
     })
@@ -88,12 +98,12 @@ describe('shadcn preset compatibility', () => {
   })
 
   it('shuffles to a different, still round-trippable preset', () => {
-    const shuffled = shufflePreset(DEFAULT_CONFIG)
+    const shuffled = shufflePreset()
     assert.notDeepEqual(shuffled, DEFAULT_CONFIG)
     assert.deepEqual(
       Option.getOrThrow(decodePreset(encodePreset(shuffled))),
       shuffled,
     )
-    assert.notDeepEqual(shufflePreset(shuffled), shuffled)
+    assert.notDeepEqual(shufflePreset(), shuffled)
   })
 })
