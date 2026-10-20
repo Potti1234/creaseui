@@ -1121,7 +1121,7 @@ export const gridKeysMount = <Msg>(
 /* autofocus only applies on initial page load, so the mount focuses the
    editor when it enters the DOM. Removing a focused editor drops focus to
    <body>, where grid keys never arrive; on release the grid takes focus back
-   unless the user pointed somewhere outside it meanwhile. */
+   unless the user's last pointer press landed outside it. */
 export const FocusCellEditor = Mount.defineStream('FocusCellEditor', {
   args: {},
   messages: [EditorMountMessage.GridEditorFocused],
@@ -1135,10 +1135,19 @@ export const FocusCellEditor = Mount.defineStream('FocusCellEditor', {
             const state = { pointedOutside: false }
             const onPointerDown = (event: PointerEvent): void => {
               if (!(event.target instanceof Node) || grid === null) return
-              if (!grid.contains(event.target)) state.pointedOutside = true
+              state.pointedOutside = !grid.contains(event.target)
             }
             document.addEventListener('pointerdown', onPointerDown, true)
-            element.focus()
+            /* a rebuilt editor (its row moved) must not take focus back from
+               a control outside the grid the user is typing into */
+            const active = document.activeElement
+            if (
+              grid === null ||
+              active === null ||
+              active === document.body ||
+              grid.contains(active)
+            )
+              element.focus()
             Queue.offerUnsafe(queue, EditorMountMessage.GridEditorFocused({}))
             return { grid, state, onPointerDown }
           }),

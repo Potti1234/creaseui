@@ -121,3 +121,42 @@ test('after an Enter commit the keyboard stays with the grid', async ({
   await expect(page.getByRole('grid', { name: 'Data grid' })).toBeFocused()
   expect(errors).toEqual([])
 })
+
+test('a rebuilt editor leaves focus in the toolbar filter being typed into', async ({
+  page,
+}, info) => {
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto(`/blocks/preview/${info.project.name}--tablecn-grid`)
+  await expect(cell(page, 2)).toBeVisible()
+  const name = (await cell(page, 2).innerText()).trim()
+  await cell(page, 2).dblclick()
+  await expect(cell(page, 2).locator('input')).toBeFocused()
+
+  /* each filter keystroke moves the edited row, which rebuilds its editor */
+  await page.getByRole('button', { name: 'Filter', exact: true }).click()
+  const filter = page
+    .locator('input[type="text"]:not([data-slot="grid-cell"] input)')
+    .first()
+  await filter.click()
+  await page.keyboard.type(name.slice(0, 4), { delay: 40 })
+  await expect(filter).toHaveValue(name.slice(0, 4))
+  await expect(filter).toBeFocused()
+  await expect(
+    page.locator('[data-slot="grid-cell"] input:not([type="checkbox"])'),
+  ).toHaveValue(name)
+})
+
+test('returning to the editor after a click outside still hands focus back', async ({
+  page,
+}, info) => {
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto(`/blocks/preview/${info.project.name}--tablecn-grid`)
+  await expect(cell(page, 2)).toBeVisible()
+  await cell(page, 2).dblclick()
+  await page.locator('body').click({ position: { x: 2, y: 2 } })
+  await cell(page, 2).locator('input').click()
+  await page.keyboard.press('End')
+  await page.keyboard.type('W')
+  await page.keyboard.press('Enter')
+  await expect(page.getByRole('grid', { name: 'Data grid' })).toBeFocused()
+})
