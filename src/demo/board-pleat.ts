@@ -42,6 +42,7 @@ import * as SyncingState from '@/demo/pleat-cards/syncing-state'
 import * as TransferFunds from '@/demo/pleat-cards/transfer-funds'
 import * as UpcomingPayments from '@/demo/pleat-cards/upcoming-payments'
 import * as Preset from '@/demo/create-preset'
+import * as ColorPicker from '@/pleat/color-picker'
 import * as Popover from '@/pleat/popover'
 import * as ScrollArea from '@/pleat/scroll-area'
 import * as Icon from '@/lib/icon'
@@ -594,15 +595,6 @@ const styles = {
     display: 'flex',
     gap: '0.5rem',
   }),
-  tokenColorInput: Style.make({
-    borderWidth: 0,
-    cursor: interactionTokens.cursorAction,
-    height: '2rem',
-    padding: 0,
-    width: '2.25rem',
-    flexShrink: 0,
-    backgroundColor: boardTokens.transparent,
-  }),
   tokenTextInput: Style.make({
     backgroundColor: boardTokens.panelInput,
     borderColor: boardTokens.border,
@@ -893,6 +885,7 @@ export const Model = S.Struct({
   tokenScheme: S.Literals(['light', 'dark']),
   openToken: S.NullOr(S.String),
   tokenDrafts: S.Record(S.String, S.String),
+  tokenPicker: ColorPicker.Model,
   canvas: S.Literals(['board', 'components', 'type', 'palette']),
   primitiveInspector: S.Struct({
     boxPadding: S.Literals(['responsive', 'none', 'sm', 'md', 'xl']),
@@ -1001,6 +994,9 @@ export const Message = defineMessageUnion({
     token: S.String,
     value: S.String,
   },
+  GotCreateTokenPickerMessage: {
+    message: ColorPicker.Message,
+  },
   ClickedResetCreateTokens: {},
   ChoseCreateScheme: { scheme: S.Literals(['system', 'light', 'dark']) },
   ChoseCreateCanvas: {
@@ -1065,6 +1061,7 @@ export const init = (): Model => ({
   tokenScheme: 'light',
   openToken: null,
   tokenDrafts: {},
+  tokenPicker: ColorPicker.init({ id: 'create-token-picker' }),
   canvas: 'board',
   primitiveInspector: {
     boxPadding: 'responsive',
@@ -1255,15 +1252,31 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           openToken: () => null,
         }),
       }),
-      ToggledCreateToken: ({ token }) => ({
-        model: modifyFields(model, {
-          openToken: () => (model.openToken === token ? null : token),
-          tokenDrafts: drafts => {
-            const { [token]: _dropped, ...rest } = drafts
-            return rest
-          },
-        }),
-      }),
+      ToggledCreateToken: ({ token }) => {
+        const opening = model.openToken !== token
+        const name = token.startsWith('dark:') ? token.slice(5) : token
+        const hex = opening
+          ? Option.flatMap(
+              Option.fromNullishOr(
+                Preset.presetTokens(model.preset, model.tokenScheme)[name],
+              ),
+              Preset.tokenToHex,
+            )
+          : Option.none<string>()
+        return {
+          model: modifyFields(model, {
+            openToken: () => (opening ? token : null),
+            tokenDrafts: drafts => {
+              const { [token]: _dropped, ...rest } = drafts
+              return rest
+            },
+            tokenPicker: picker =>
+              Option.isSome(hex)
+                ? ColorPicker.reflectValue(picker, hex.value)
+                : picker,
+          }),
+        }
+      },
       ChangedCreateToken: ({ token, value }) => {
         /* Drafts hold the raw text so the input never reverts mid-typing;
            overrides only take complete normalized values — a fragment like
@@ -1283,6 +1296,48 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
           }),
+        }
+      },
+      GotCreateTokenPickerMessage: ({ message: pickerMessage }) => {
+        /* Picker emits the selected color in its display format; normalize any
+           parseable color through oklch so overrides stay on the preset's
+           canonical token shape regardless of the format select. The target
+           token is the currently open row — the picker only renders there. */
+        const next = ColorPicker.update(model.tokenPicker, pickerMessage)
+        const normalized =
+          model.openToken === null
+            ? undefined
+            : Option.getOrElse(
+                Option.flatMap(Option.fromNullishOr(next.outMessage), change =>
+                  Option.flatMap(
+                    ColorPicker.parseColorString(change.value),
+                    rgb => Preset.hexToToken(ColorPicker.rgbToHex(rgb)),
+                  ),
+                ),
+                () => undefined,
+              )
+        const preset =
+          model.openToken !== null &&
+          normalized !== undefined &&
+          Preset.validTokenValue(normalized)
+            ? {
+                ...model.preset,
+                overrides: {
+                  ...model.preset.overrides,
+                  [model.openToken]: normalized,
+                },
+              }
+            : model.preset
+        return {
+          model: modifyFields(model, {
+            tokenPicker: () => next.model,
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+          }),
+          commands: Command.mapMessages(next.commands ?? [], child =>
+            Message.GotCreateTokenPickerMessage({ message: child }),
+          ),
         }
       },
       ClickedResetCreateTokens: () => {
@@ -1915,21 +1970,6 @@ export const presetCustomizer = (
         h.div(
           [h.Class(className(styles.tokenEditorRow))],
           [
-            Option.isSome(hex)
-              ? h.input([
-                  h.Type('color'),
-                  h.Value(hex.value),
-                  h.AriaLabel(`${token} color`),
-                  h.OnInput(setValue),
-                  h.Class(className(reset.input, styles.tokenColorInput)),
-                ])
-              : h.span(
-                  [
-                    h.Class(className(styles.tokenSwatch)),
-                    h.Style({ background: value }),
-                  ],
-                  [],
-                ),
             h.input([
               h.Type('text'),
               h.Value(shown),
@@ -1949,6 +1989,19 @@ export const presetCustomizer = (
             ),
           ],
         ),
+        ...(Option.isSome(hex)
+          ? [
+              ColorPicker.colorPicker(
+                {
+                  model: model.tokenPicker,
+                  toParentMessage: message =>
+                    Message.GotCreateTokenPickerMessage({ message }),
+                  inline: true,
+                },
+                h,
+              ),
+            ]
+          : []),
         h.p([h.Class(className(reset.text, styles.tokenValue))], [value]),
       ],
     )
@@ -2752,5 +2805,10 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
   Subscription.lift(RollerShades.subscriptions)<Model, Message>({
     toChildModel: model => model.rollerShades,
     toParentMessage: message => Message.GotRollerShadesMessage({ message }),
+  }),
+  ColorPicker.subscriptions<Model, Message>({
+    toChildModel: model => model.tokenPicker,
+    toParentMessage: message =>
+      Message.GotCreateTokenPickerMessage({ message }),
   }),
 )

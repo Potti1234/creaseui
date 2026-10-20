@@ -36,6 +36,8 @@ export const subscriptions = Picker.subscriptions
 export const channelElementId = Picker.channelElementId
 export const hex = Picker.hex
 export const formattedValue = Picker.formattedValue
+export const parseColorString = Picker.parseColorString
+export const rgbToHex = Picker.rgbToHex
 export const colorFormats = Picker.colorFormats
 export type { ColorFormat, DragChannel } from '@/lib/color-picker'
 
