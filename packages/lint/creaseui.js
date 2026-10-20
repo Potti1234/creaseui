@@ -14,6 +14,44 @@ export const STRICT_RULE_IDS = [
   'no-unverifiable-ui',
 ]
 
+/* Rules the strict preset applies to an owned file, by its grant. `doctor`
+   reconciles the effective config against this same map. */
+export const RULES_BY_GRANT = {
+  raw: [
+    'no-raw-controls',
+    'no-raw-composition',
+    'component-contract',
+    'no-unverifiable-ui',
+  ],
+  theme: [
+    'no-raw-controls',
+    'no-raw-composition',
+    'no-unapproved-renderer',
+    'component-contract',
+    'no-unverifiable-ui',
+  ],
+  setup: [
+    'no-raw-controls',
+    'no-raw-composition',
+    'no-unapproved-renderer',
+    'no-unverifiable-ui',
+  ],
+  /* Owned renderers without a raw grant compose installed components, so
+     they keep every application rule. */
+  composing: STRICT_RULE_IDS,
+  /* Non-rendering logic (state machines, vendored style engines). */
+  behavior: [],
+}
+
+export const grantOf = file =>
+  file.rawRendering
+    ? 'raw'
+    : file.role === 'renderer'
+      ? 'composing'
+      : file.role === 'theme' || file.role === 'setup'
+        ? file.role
+        : 'behavior'
+
 const levels = (names, level) =>
   Object.fromEntries(names.map(name => [`crease/${name}`, level]))
 
@@ -27,9 +65,10 @@ export const creaseui = (options = {}) => {
   const files = options.files ?? ['src/**/*.{ts,tsx,mts,js,jsx,mjs}']
   const owned = [...strict.ownership.files.values()]
   const paths = filter => owned.filter(filter).map(file => file.path)
-  const raw = paths(file => file.rawRendering)
-  const theme = paths(file => file.role === 'theme')
-  const setup = paths(file => file.role === 'setup')
+  const raw = paths(file => grantOf(file) === 'raw')
+  const theme = paths(file => grantOf(file) === 'theme')
+  const setup = paths(file => grantOf(file) === 'setup')
+  const composing = paths(file => grantOf(file) === 'composing')
   const projects =
     strict.tsconfig === undefined
       ? undefined
@@ -92,15 +131,7 @@ export const creaseui = (options = {}) => {
         ...rendererConfig.rules,
         /* Whole-file raw grants skip these; `rawElements` grants are held to
            exactly the listed elements. */
-        ...levels(
-          [
-            'no-raw-controls',
-            'no-raw-composition',
-            'component-contract',
-            'no-unverifiable-ui',
-          ],
-          strictLevel,
-        ),
+        ...levels(RULES_BY_GRANT.raw, strictLevel),
       },
     })
   if (theme.length > 0)
@@ -108,31 +139,24 @@ export const creaseui = (options = {}) => {
       ...shared,
       files: theme,
       name: '@creaseui/lint/strict/theme',
-      rules: levels(
-        [
-          'no-raw-controls',
-          'no-raw-composition',
-          'no-unapproved-renderer',
-          'component-contract',
-          'no-unverifiable-ui',
-        ],
-        strictLevel,
-      ),
+      rules: levels(RULES_BY_GRANT.theme, strictLevel),
     })
   if (setup.length > 0)
     entries.push({
       ...shared,
       files: setup,
       name: '@creaseui/lint/strict/setup-entry',
-      rules: levels(
-        [
-          'no-raw-controls',
-          'no-raw-composition',
-          'no-unapproved-renderer',
-          'no-unverifiable-ui',
-        ],
-        strictLevel,
-      ),
+      rules: levels(RULES_BY_GRANT.setup, strictLevel),
+    })
+  if (composing.length > 0)
+    entries.push({
+      ...shared,
+      files: composing,
+      name: '@creaseui/lint/strict/composing',
+      rules: {
+        ...levels(RULES_BY_GRANT.composing, strictLevel),
+        'crease/form-association': strictLevel,
+      },
     })
   return entries
 }

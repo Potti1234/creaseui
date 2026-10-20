@@ -190,6 +190,98 @@ test('alias-only renderers and renamed re-exports are covered and enforced', asy
   rmSync(directory, { force: true, recursive: true })
 })
 
+test('owned renderers without a raw grant keep every application rule', async () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'junction',
+  )
+  /* The builder type below is computed from the installed Foldkit types. */
+  symlinkSync(
+    fileURLToPath(new URL('../../../node_modules/foldkit', import.meta.url)),
+    path.join(directory, 'node_modules/foldkit'),
+    'junction',
+  )
+  /* Review F1: no HtmlBuilder text, so init registers them with no raw grant. */
+  writeFileSync(
+    path.join(directory, 'src/design/wrapper.ts'),
+    [
+      "import { button } from './button'",
+      "import { layoutStyle } from './contracts'",
+      'type Builder = Parameters<typeof button>[1]',
+      "export const wrapper = (h: Builder) => button({ children: ['Bad'], layoutStyle: layoutStyle({ height: '12px' }) }, h)",
+      '',
+    ].join('\n'),
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/raw-wrapper.ts'),
+    [
+      "import { button } from './button'",
+      'type Builder = Parameters<typeof button>[1]',
+      "export const rawWrapper = (h: Builder) => h.button([], ['Unapproved raw button'])",
+      '',
+    ].join('\n'),
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/approved.ts'),
+    [
+      "import { button } from './button'",
+      'type Builder = Parameters<typeof button>[1]',
+      "export const approved = (h: Builder) => button({ variant: 'outline', children: ['Fine'] }, h)",
+      '',
+    ].join('\n'),
+  )
+  const initArgs = ['init', '--renderer', 'pleat', '--components', 'src/design']
+  assert.equal(run(directory, ...initArgs).status, 0)
+  const receipt = JSON.parse(
+    readFileSync(path.join(directory, 'crease.lock.json'), 'utf8'),
+  )
+  const fileOf = name =>
+    receipt.artifacts
+      .flatMap(artifact => artifact.files)
+      .find(file => file.path === `src/design/${name}.ts`)
+  for (const name of ['wrapper', 'raw-wrapper', 'approved'])
+    assert.equal(fileOf(name).rawRendering, false, name)
+  const files = ['wrapper', 'raw-wrapper', 'approved'].map(
+    name => `src/design/${name}.ts`,
+  )
+  const results = await new ESLint({
+    cwd: directory,
+    overrideConfig: creaseui({
+      files: ['src/**/*.ts'],
+      renderer: 'pleat',
+      rootDir: directory,
+    }),
+    overrideConfigFile: true,
+  }).lintFiles(files)
+  const rules = Object.fromEntries(
+    results.map(result => [
+      path.basename(result.filePath, '.ts'),
+      [...new Set(result.messages.map(message => message.ruleId))].sort(),
+    ]),
+  )
+  assert.deepEqual(rules.wrapper, ['crease/component-contract'])
+  assert.ok(
+    rules['raw-wrapper'].includes('crease/no-raw-controls'),
+    JSON.stringify(results.map(result => result.messages)),
+  )
+  assert.deepEqual(rules.approved, [])
+  writeFileSync(
+    path.join(directory, 'src/design/raw-wrapper.ts'),
+    [
+      "import { button } from './button'",
+      'type Builder = Parameters<typeof button>[1]',
+      "export const rawWrapper = (h: Builder) => button({ children: ['Fixed'] }, h)",
+      '',
+    ].join('\n'),
+  )
+  const doctor = run(directory, 'doctor')
+  assert.doesNotMatch(doctor.stdout, /lost crease\//u, doctor.stdout)
+  rmSync(directory, { force: true, recursive: true })
+})
+
 test('doctor reconciles every required rule through imported policy modules', () => {
   const directory = scratch()
   mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })

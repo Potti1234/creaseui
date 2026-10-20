@@ -11,6 +11,7 @@ import {
   POLICY_VERSION,
   RENDERERS,
 } from '../lib/strict/contracts.js'
+import { RULES_BY_GRANT, grantOf } from '../creaseui.js'
 import { createCssAudit, findStylesheets } from '../lib/strict/css.js'
 import { verifyFoundations } from '../lib/strict/foundations.js'
 import { inspectComponent, projectInfo } from '../lib/strict/info.js'
@@ -101,23 +102,6 @@ const exportedFunctions = file => {
           names.push(declaration.name.text)
   }
   return names
-}
-
-/* Rules the strict preset enables per owned role (see creaseui.js). */
-const REQUIRED_RULES = {
-  raw: [
-    'no-raw-controls',
-    'no-raw-composition',
-    'component-contract',
-    'no-unverifiable-ui',
-  ],
-  theme: [
-    'no-raw-controls',
-    'no-raw-composition',
-    'no-unapproved-renderer',
-    'component-contract',
-    'no-unverifiable-ui',
-  ],
 }
 
 /** Class and slot names the sources of a stylesheet's owner mention. */
@@ -495,9 +479,7 @@ const doctor = async values => {
     } else {
       /* The rules the strict preset applies to this role and grant must
          still be active after every imported policy module. */
-      const required = owned.rawRendering
-        ? REQUIRED_RULES.raw
-        : (REQUIRED_RULES[owned.role] ?? [])
+      const required = RULES_BY_GRANT[grantOf(owned)]
       for (const ruleId of required.filter(ruleId => !active(ruleId))) {
         incomplete += 1
         fail(`${relative} (registered ${owned.role}) lost ${ruleId}`)
