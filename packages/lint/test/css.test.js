@@ -143,6 +143,38 @@ test('base rules check values, @apply and @scope, not only property names', () =
   )
 })
 
+/* Review F3: raw colours mixed with a token, and utility families outside the
+   allowed base grammar. */
+export const GLOBAL_PAINT_CASES = [
+  '@layer base { * { background: color-mix(in srgb, var(--background) 10%, hotpink); } }',
+  '@layer base { * { color: var(--foreground, red); } }',
+  '@layer base { * { @apply opacity-50 rotate-45; } }',
+  '@layer base { body { @apply scale-150; } }',
+  '@layer base { body { @apply text-center; } }',
+  '@layer base { body { @apply border-2; } }',
+]
+
+test('base paint is token-only and @apply follows an allow-list', () => {
+  for (const css of GLOBAL_PAINT_CASES)
+    assert.ok(
+      kinds(audit({ 'src/styles.css': css })).includes('violation'),
+      css,
+    )
+  assert.deepEqual(
+    audit({
+      'src/styles.css': [
+        '@layer base {',
+        '  * { @apply border-border outline-ring/50; }',
+        '  body { @apply bg-background text-foreground font-sans antialiased; }',
+        '  html { background: color-mix(in oklab, var(--ring) 50%, transparent); color: var(--foreground); }',
+        '  ::selection { background-color: color-mix(in oklch, var(--primary) 20%, var(--background)); }',
+        '}',
+      ].join('\n'),
+    }),
+    [],
+  )
+})
+
 test('stylesheets imported from outside src are audited', () => {
   const findings = audit({
     'src/entry.ts': "import '../styles/product.css'\n",

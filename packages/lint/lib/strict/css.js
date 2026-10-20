@@ -76,12 +76,19 @@ const tokenValue = value =>
   /^(?:var\(--[\w-]+(?:\s*,[^)]*)?\)\s*)+$/u.test(value)
 const baseValueAllowed = (property, raw) => {
   const value = raw.trim().toLowerCase()
-  if (RESET_VALUES.has(value) || tokenValue(value)) return true
-  /* color-mix(in oklab, var(--ring) 50%, transparent): tokens only */
+  if (RESET_VALUES.has(value)) return true
+  if (!BASE_PAINT.test(property) && tokenValue(value)) return true
+  /* color-mix(in oklab, var(--ring) 50%, transparent): every word must be a
+     token, a mix keyword or a percentage, so named colours fail. */
   if (BASE_PAINT.test(property))
     return (
       value.includes('var(--') &&
-      !/#|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(/u.test(value)
+      value
+        .split(/[\s,()]+/u)
+        .filter(word => word !== '')
+        .every(
+          word => PAINT_WORDS.has(word) || /^--[\w-]+$|^[\d.]+%$/u.test(word),
+        )
     )
   if (BASE_LENGTH.test(property))
     return BASE_LENGTH_VALUES.has(value) || /^[\d.]+$/u.test(value)
@@ -89,8 +96,36 @@ const baseValueAllowed = (property, raw) => {
       : false
   return true
 }
-/* Utilities a base/theme rule may @apply: semantic colour tokens only, no
-   spacing, sizing, radius or palette colours. */
+const PAINT_WORDS = new Set([
+  'var',
+  'color-mix',
+  'in',
+  'srgb',
+  'srgb-linear',
+  'display-p3',
+  'oklab',
+  'oklch',
+  'lab',
+  'lch',
+  'hsl',
+  'hwb',
+  'xyz',
+  'xyz-d50',
+  'xyz-d65',
+  'shorter',
+  'longer',
+  'increasing',
+  'decreasing',
+  'hue',
+  'transparent',
+  'currentcolor',
+])
+/* Utilities a base/theme rule may @apply: semantic colour roles, the theme
+   font families and font smoothing. Anything else, including unknown
+   utility families, fails. */
+const BASE_APPLY_ALLOWED =
+  /^(?:(?:bg|text|border|outline|ring|fill|stroke|accent|caret|decoration|placeholder|divide)-(?!(?:xs|sm|base|lg|[2-9]?xl|left|right|center|justify|start|end|wrap|nowrap|balance|pretty|clip|ellipsis|none|solid|dashed|dotted|double|hidden|inset|offset|collapse|separate|x|y|t|r|b|l|s|e|auto)(?:$|-))[a-z][a-z-]*(?:\/\d+)?|font-(?:sans|serif|mono)|antialiased|subpixel-antialiased)$/u
+/* Palette colours are never semantic roles. */
 const BASE_APPLY_FORBIDDEN =
   /^(?:-?(?:p|px|py|pt|pr|pb|pl|ps|pe|m|mx|my|mt|mr|mb|ml|ms|me|w|h|size|min-w|min-h|max-w|max-h|gap|inset|top|left|right|bottom|text-(?:xs|sm|base|lg|[2-9]?xl))-|rounded|shadow|ring-\d|border-\d|.*-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|black|white)(?:-\d+)?(?:\/\d+)?$|.*\[)/u
 const RESET_PROPERTIES =
@@ -420,14 +455,15 @@ export const createCssAudit = ({
               .filter(
                 token =>
                   token !== '' &&
-                  BASE_APPLY_FORBIDDEN.test(token.split(':').at(-1)),
+                  (BASE_APPLY_FORBIDDEN.test(token.split(':').at(-1)) ||
+                    !BASE_APPLY_ALLOWED.test(token.split(':').at(-1))),
               )
             if (forbidden.length > 0)
               add(
                 file,
                 child,
                 'violation',
-                `@apply ${forbidden.join(' ')} on \`${node.selector}\` sets component spacing, size or palette colours globally; base rules may only apply semantic tokens`,
+                `@apply ${forbidden.join(' ')} on \`${node.selector}\` is outside what base rules may apply (semantic colour roles, font family, font smoothing); it would restyle every component globally`,
               )
           }
         }

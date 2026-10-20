@@ -386,6 +386,42 @@ test('doctor reports the archived tutorial as feature-only coverage', () => {
   rmSync(directory, { force: true, recursive: true })
 })
 
+test('css and doctor reject raw base paint and unlisted base utilities', () => {
+  for (const css of [
+    '@layer base { * { background: color-mix(in srgb, var(--background) 10%, hotpink); } }',
+    '@layer base { * { @apply opacity-50 rotate-45; } }',
+  ]) {
+    const directory = scratch()
+    mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+      recursive: true,
+    })
+    symlinkSync(
+      fileURLToPath(new URL('..', import.meta.url)),
+      path.join(directory, 'node_modules/@creaseui/lint'),
+      'junction',
+    )
+    assert.equal(
+      run(
+        directory,
+        'init',
+        '--renderer',
+        'pleat',
+        '--components',
+        'src/design',
+      ).status,
+      0,
+    )
+    writeFileSync(path.join(directory, 'src/global.css'), `${css}\n`)
+    const result = run(directory, 'css')
+    assert.equal(result.status, 1, css + result.stdout + result.stderr)
+    assert.match(result.stdout, /[1-9]\d* violations/u, css)
+    const doctor = run(directory, 'doctor')
+    assert.notEqual(doctor.status, 0, css + doctor.stdout)
+    assert.match(doctor.stdout, /src\/global\.css:1/u, css)
+    rmSync(directory, { force: true, recursive: true })
+  }
+})
+
 test('info and inspect report Foldkit facts and actionable gaps', () => {
   const directory = fileURLToPath(
     new URL('./fixtures/tutorial-attempt-01/', import.meta.url),
