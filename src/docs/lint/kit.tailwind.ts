@@ -1,4 +1,7 @@
 import { button } from '@/ui/button'
+import * as Field from '@/ui/field'
+import * as Form from '@/ui/form'
+import * as Input from '@/ui/input'
 
 import type { LintRendererKit } from './previews'
 
@@ -45,5 +48,48 @@ export const tailwindLintKit: LintRendererKit = {
         children: [...props.children],
       },
       h,
+    ),
+  inviteForm: (props, h) =>
+    h.div(
+      [],
+      [
+        Form.form(
+          {
+            id: props.formId,
+            ariaLabel: 'Invite member',
+            onSubmit: props.submitted,
+            children: [
+              Field.controlField(
+                {
+                  id: `${props.formId}-email`,
+                  label: 'Email',
+                  toControl: (parts, controlH) =>
+                    Input.input(
+                      {
+                        id: parts.controlId,
+                        name: 'email',
+                        type: 'email',
+                        isRequired: true,
+                        value: '',
+                      },
+                      controlH,
+                    ),
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+        button(
+          {
+            type: 'submit',
+            form: props.submitsTo,
+            children: ['Send invite'],
+            class: 'mt-4',
+          },
+          h,
+        ),
+      ],
     ),
 }

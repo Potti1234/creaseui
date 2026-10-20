@@ -28,11 +28,15 @@ import {
 } from '@/route'
 import { COMPONENT_GROUPS, toSlug } from '@/docs/component-metadata'
 
+/** The guide code props plus the message a live preview form submits. */
+export type LintDocsProps<Msg> = DocsGuideCodeProps<Msg> &
+  Readonly<{ previewSubmitted: Msg }>
+
 export const view = <Msg>(
   rule: string,
   h: HtmlBuilder<Msg>,
   styles: DocsGuideStyles,
-  codeBlock: DocsGuideCodeProps<Msg>,
+  codeBlock: LintDocsProps<Msg>,
   kit: LintRendererKit,
 ): Html => {
   const current = rule === '' ? undefined : findLintRule(rule)
@@ -232,7 +236,7 @@ const rulePage = <Msg>(
   ruleId: string,
   summary: string,
   h: HtmlBuilder<Msg>,
-  codeBlock: DocsGuideCodeProps<Msg>,
+  codeBlock: LintDocsProps<Msg>,
   kit: LintRendererKit,
 ): ReadonlyArray<Html> => {
   const { styles } = kit
@@ -310,7 +314,13 @@ const rulePage = <Msg>(
               : 'With the installed component',
           ],
         ),
-        lintPreview(kit, `${item.rule}/${item.id}`, kind, h),
+        lintPreview(
+          kit,
+          `${item.rule}/${item.id}`,
+          kind,
+          h,
+          codeBlock.previewSubmitted,
+        ),
         code(kind === 'bad' ? item.bad : item.good, item.file),
         ...(kind === 'bad' ? [diagnosticsView(item)] : []),
       ],
@@ -344,7 +354,13 @@ const rulePage = <Msg>(
             kind === 'bad' ? 'What the project renders' : 'After the fix',
           ],
         ),
-        lintPreview(kit, `${item.check}/${item.id}`, kind, h),
+        lintPreview(
+          kit,
+          `${item.check}/${item.id}`,
+          kind,
+          h,
+          codeBlock.previewSubmitted,
+        ),
         CodeBlock.codeBlock(
           {
             model: codeBlock.model,

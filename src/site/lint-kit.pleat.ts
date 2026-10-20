@@ -2,6 +2,9 @@ import { Style } from '@pleat/core'
 
 import type { LintRendererKit } from '@/docs/lint/previews'
 import { button } from '@/pleat/button'
+import * as Field from '@/pleat/field'
+import * as Form from '@/pleat/form'
+import * as Input from '@/pleat/input'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import { layoutStyle } from '@/pleat/contracts'
 import { reset } from '@/pleat/reset'
@@ -129,6 +132,7 @@ const layout = {
   }) as ComponentLayoutStyle,
   fullWidth: layoutStyle({ width: '100%' }),
   start: layoutStyle({ alignSelf: 'flex-start' }),
+  footer: layoutStyle({ marginTop: '1rem' }),
   padded: Style.make({
     alignSelf: 'flex-start',
     padding: '24px',
@@ -179,5 +183,48 @@ export const pleatLintKit: LintRendererKit = {
         children: [...props.children],
       },
       h,
+    ),
+  inviteForm: (props, h) =>
+    h.div(
+      [],
+      [
+        Form.form(
+          {
+            id: props.formId,
+            ariaLabel: 'Invite member',
+            onSubmit: props.submitted,
+            children: [
+              Field.controlField(
+                {
+                  id: `${props.formId}-email`,
+                  label: 'Email',
+                  toControl: (parts, controlH) =>
+                    Input.input(
+                      {
+                        id: parts.controlId,
+                        name: 'email',
+                        type: 'email',
+                        isRequired: true,
+                        value: '',
+                      },
+                      controlH,
+                    ),
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+        button(
+          {
+            type: 'submit',
+            form: props.submitsTo,
+            children: ['Send invite'],
+            layoutStyle: layout.footer,
+          },
+          h,
+        ),
+      ],
     ),
 }

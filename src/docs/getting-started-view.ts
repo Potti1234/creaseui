@@ -1,7 +1,7 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { view as docsGuideView } from '@/docs/getting-started-content'
-import { view as lintDocsView } from '@/docs/lint-content'
+import { type LintDocsProps, view as lintDocsView } from '@/docs/lint-content'
 import { tailwindLintKit } from '@/docs/lint/kit.tailwind'
 import type * as CodeBlock from '@/ui/code-block'
 
@@ -55,7 +55,7 @@ export const themingView = <Msg>(
 ): Html => docsGuideView('theming', h, styles, codeBlock)
 
 export const lintView = <Msg>(
-  codeBlock: DocsGuideCodeProps<Msg>,
+  codeBlock: LintDocsProps<Msg>,
   rule: string,
   h: HtmlBuilder<Msg>,
 ): Html => lintDocsView(rule, h, styles, codeBlock, tailwindLintKit)
