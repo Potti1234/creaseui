@@ -64,6 +64,7 @@ import { nativeSelectStyleXPreview } from '@/docs/components/pages/native-select
 import { progressStyleXPreview } from '@/docs/components/pages/progress/stylex'
 import { sliderStyleXPreview } from '@/docs/components/pages/slider/stylex'
 import { collapsibleStyleXPreview } from '@/docs/components/pages/collapsible/stylex'
+import { colorPickerStyleXPreview } from '@/docs/components/pages/color-picker/stylex'
 import { dateRangeInputStyleXPreview } from '@/docs/components/pages/date-range-input/stylex'
 import { dateTimeInputStyleXPreview } from '@/docs/components/pages/date-time-input/stylex'
 import { dialogStyleXPreview } from '@/docs/components/pages/dialog/stylex'
@@ -172,6 +173,7 @@ installExamplePreviewProvider('native-select', nativeSelectStyleXPreview)
 installExamplePreviewProvider('progress', progressStyleXPreview)
 installExamplePreviewProvider('slider', sliderStyleXPreview)
 installExamplePreviewProvider('collapsible', collapsibleStyleXPreview)
+installExamplePreviewProvider('color-picker', colorPickerStyleXPreview)
 installExamplePreviewProvider('date-range-input', dateRangeInputStyleXPreview)
 installExamplePreviewProvider('date-time-input', dateTimeInputStyleXPreview)
 installExamplePreviewProvider('dialog', dialogStyleXPreview)

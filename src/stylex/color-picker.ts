@@ -10,7 +10,11 @@ import type { Html, HtmlBuilder, KeyboardModifiers } from 'foldkit/html'
 import * as Picker from '@/lib/color-picker'
 import type { ColorFormat, DragChannel } from '@/lib/color-picker'
 import { icon } from '@/lib/icon'
-import type { ComponentLayoutStyle } from './contracts'
+import type {
+  ButtonSize,
+  ButtonVariant,
+  ComponentLayoutStyle,
+} from './contracts'
 import { reset } from './reset'
 import { className } from './style'
 import { foundationTokens } from './foundations-tokens.stylex'
@@ -512,6 +516,9 @@ export type ColorPickerProps<Msg> = Readonly<{
   model: Model
   toParentMessage: (message: Message) => Msg
   trigger?: Html
+  /** Render the trigger with the Button component (keeps popover behavior). */
+  triggerButtonVariant?: ButtonVariant
+  triggerButtonSize?: ButtonSize
   triggerLayoutStyle?: ComponentLayoutStyle
   inline?: boolean
   side?: Popover.PopoverSide
@@ -554,6 +561,12 @@ export const colorPicker = <Msg>(
       content: panel,
       side: props.side ?? 'bottom',
       align: props.align ?? 'start',
+      ...(props.triggerButtonVariant === undefined
+        ? {}
+        : { triggerButtonVariant: props.triggerButtonVariant }),
+      ...(props.triggerButtonSize === undefined
+        ? {}
+        : { triggerButtonSize: props.triggerButtonSize }),
       ...(props.triggerLayoutStyle === undefined
         ? {}
         : { triggerLayoutStyle: props.triggerLayoutStyle }),

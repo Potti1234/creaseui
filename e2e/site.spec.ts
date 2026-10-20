@@ -564,6 +564,7 @@ test('authored helper pages publish complete application source', async ({
     'carousel',
     'checkbox',
     'collapsible',
+    'color-picker',
     'combobox',
     'command',
     'context-menu',

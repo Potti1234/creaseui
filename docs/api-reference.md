@@ -417,6 +417,41 @@ Source: [`src/ui/collapsible.ts`](../src/ui/collapsible.ts)
 | `CollapsibleProps` | type | `CollapsibleProps<Msg> = Readonly<{ id: string; isOpen: boolean; onToggle: (isOpen: boolean) => Msg; trigger: Html \| string; content: Html \| string; isDisabled?: boolean; ariaLabel?: string; class?: string; triggerClass?: string; contentClass?: string; }>` |
 | `collapsible` | function | `collapsible<Msg>(props: CollapsibleProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Color Picker
+
+Source: [`src/ui/color-picker.ts`](../src/ui/color-picker.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `init` | value | `init: value` |
+| `update` | value | `update: value` |
+| `reflectValue` | value | `reflectValue: value` |
+| `subscriptions` | value | `subscriptions: value` |
+| `channelElementId` | value | `channelElementId: value` |
+| `hex` | value | `hex: value` |
+| `formattedValue` | value | `formattedValue: value` |
+| `colorFormats` | value | `colorFormats: value` |
+| `ColorFormat` | re-export | `export { ColorFormat } from '@/lib/color-picker'` |
+| `DragChannel` | re-export | `export { DragChannel } from '@/lib/color-picker'` |
+| `colorPickerArea` | function | `colorPickerArea<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `colorPickerHueSlider` | function | `colorPickerHueSlider<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `colorPickerAlphaSlider` | function | `colorPickerAlphaSlider<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `ColorPickerSwatchProps` | type | `ColorPickerSwatchProps = Readonly<{ color: string; class?: string; }>` |
+| `colorPickerSwatch` | function | `colorPickerSwatch<Msg>(props: ColorPickerSwatchProps, h: HtmlBuilder<Msg>): Html` |
+| `ColorPickerEyeDropperProps` | type | `ColorPickerEyeDropperProps<Msg> = ChannelProps<Msg>` |
+| `colorPickerEyeDropper` | function | `colorPickerEyeDropper<Msg>(props: ColorPickerEyeDropperProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `colorPickerFormatSelect` | function | `colorPickerFormatSelect<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `colorPickerInput` | function | `colorPickerInput<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `colorPickerContent` | function | `colorPickerContent<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `ColorPickerProps` | type | `ColorPickerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?: string; contentClass?: string; }>` |
+| `colorPicker` | function | `colorPicker<Msg>(props: ColorPickerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
 ## Combobox
 
 Source: [`src/ui/combobox.ts`](../src/ui/combobox.ts)

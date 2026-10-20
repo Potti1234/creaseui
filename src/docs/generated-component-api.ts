@@ -1218,6 +1218,148 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "collapsible<Msg>(props: CollapsibleProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "color-picker": [
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "value",
+      "signature": "OutMessage: value"
+    },
+    {
+      "name": "OutMessage",
+      "kind": "type",
+      "signature": "OutMessage = typeof OutMessage.Type"
+    },
+    {
+      "name": "init",
+      "kind": "value",
+      "signature": "init: value"
+    },
+    {
+      "name": "update",
+      "kind": "value",
+      "signature": "update: value"
+    },
+    {
+      "name": "reflectValue",
+      "kind": "value",
+      "signature": "reflectValue: value"
+    },
+    {
+      "name": "subscriptions",
+      "kind": "value",
+      "signature": "subscriptions: value"
+    },
+    {
+      "name": "channelElementId",
+      "kind": "value",
+      "signature": "channelElementId: value"
+    },
+    {
+      "name": "hex",
+      "kind": "value",
+      "signature": "hex: value"
+    },
+    {
+      "name": "formattedValue",
+      "kind": "value",
+      "signature": "formattedValue: value"
+    },
+    {
+      "name": "colorFormats",
+      "kind": "value",
+      "signature": "colorFormats: value"
+    },
+    {
+      "name": "ColorFormat",
+      "kind": "re-export",
+      "signature": "export { ColorFormat } from '@/lib/color-picker'"
+    },
+    {
+      "name": "DragChannel",
+      "kind": "re-export",
+      "signature": "export { DragChannel } from '@/lib/color-picker'"
+    },
+    {
+      "name": "colorPickerArea",
+      "kind": "function",
+      "signature": "colorPickerArea<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "colorPickerHueSlider",
+      "kind": "function",
+      "signature": "colorPickerHueSlider<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "colorPickerAlphaSlider",
+      "kind": "function",
+      "signature": "colorPickerAlphaSlider<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "ColorPickerSwatchProps",
+      "kind": "type",
+      "signature": "ColorPickerSwatchProps = Readonly<{ color: string; class?: string; }>"
+    },
+    {
+      "name": "colorPickerSwatch",
+      "kind": "function",
+      "signature": "colorPickerSwatch<Msg>(props: ColorPickerSwatchProps, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "ColorPickerEyeDropperProps",
+      "kind": "type",
+      "signature": "ColorPickerEyeDropperProps<Msg> = ChannelProps<Msg>"
+    },
+    {
+      "name": "colorPickerEyeDropper",
+      "kind": "function",
+      "signature": "colorPickerEyeDropper<Msg>(props: ColorPickerEyeDropperProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "colorPickerFormatSelect",
+      "kind": "function",
+      "signature": "colorPickerFormatSelect<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "colorPickerInput",
+      "kind": "function",
+      "signature": "colorPickerInput<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "colorPickerContent",
+      "kind": "function",
+      "signature": "colorPickerContent<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "ColorPickerProps",
+      "kind": "type",
+      "signature": "ColorPickerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?: string; contentClass?: string; }>"
+    },
+    {
+      "name": "colorPicker",
+      "kind": "function",
+      "signature": "colorPicker<Msg>(props: ColorPickerProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "combobox": [
     {
       "name": "Model",
