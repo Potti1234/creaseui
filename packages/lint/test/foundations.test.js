@@ -44,6 +44,13 @@ export const helperShell = (items: string[]) => ({ tag: 'main', children: [nav(i
 export const mappedShell = (groups: string[][]) => ({ tag: 'main', children: groups.map(items => sidebar({ children: items })) })
 export const unusedClosure = (items: string[]) => { const unused = () => sidebar({ children: items }); return { tag: 'main', children: items, unused: typeof unused } }
 export const discardedCall = (items: string[]) => { sidebar({ children: items }); return { tag: 'main', children: items } }
+const keep = (_view: unknown, items: string[]) => ({ tag: 'main', children: items })
+export const discardedArgument = (items: string[]) => keep(sidebar({ children: items }), items)
+export const stringified = (items: string[]) => ({ tag: 'main', children: [String(sidebar({ children: items }))] })
+const frame = (content: unknown) => ({ tag: 'main', children: [content] })
+export const framedShell = (items: string[]) => frame(sidebar({ children: items }))
+const pick = ({ body }: { body: unknown }) => ({ tag: 'main', children: [body] })
+export const destructuredShell = (items: string[]) => pick({ body: sidebar({ children: items }) })
 `,
   )
   const shell = name => ({
@@ -86,6 +93,10 @@ export const discardedCall = (items: string[]) => { sidebar({ children: items })
             'mappedShell',
             'unusedClosure',
             'discardedCall',
+            'discardedArgument',
+            'stringified',
+            'framedShell',
+            'destructuredShell',
           ].map(shell),
           files: [
             {
@@ -108,8 +119,15 @@ export const discardedCall = (items: string[]) => { sidebar({ children: items })
     rootDir: root,
   })
   rmSync(root, { force: true, recursive: true })
-  assert.equal(problems.length, 4, problems.join('\n'))
-  for (const name of ['unusedClosure', 'discardedCall'])
+  /* Review F6: arguments count only through parameters that reach the
+     helper's output; discarded and stringified calls do not. */
+  assert.equal(problems.length, 6, problems.join('\n'))
+  for (const name of [
+    'unusedClosure',
+    'discardedCall',
+    'discardedArgument',
+    'stringified',
+  ])
     assert.match(
       problems.join('\n'),
       new RegExp(

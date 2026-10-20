@@ -96,21 +96,49 @@ const returnedOf = fn => {
 }
 
 /* Contracts whose calls flow into the returned view: through children,
-   props, branches, local consts, callbacks and private helpers. */
+   props, branches, local consts, callbacks and helpers. A helper argument
+   counts only when the helper's matching parameter reaches its own returned
+   output; arguments to unknown functions (`String(...)`, imported utilities
+   without a body) are not evidence. */
 const renderedContracts = (checker, declaration, contractOf) => {
   const rendered = new Set()
-  const seen = new Set()
   const declarationOf = symbol =>
     symbol?.valueDeclaration ?? symbol?.declarations?.[0]
-  const output = (node, depth) => {
+  const NO_BINDINGS = new Map()
+  const parameterOf = target => {
+    let node = target
+    while (node !== undefined && ts.isBindingElement(node))
+      node = node.parent?.parent
+    return node !== undefined && ts.isParameter(node) ? node : undefined
+  }
+  const output = (node, depth, bindings) => {
     node = strip(node)
     if (node === undefined || depth > 12) return
     if (ts.isCallExpression(node)) {
       const symbol = calleeSymbol(checker, node.expression)
       const contract = contractOf(symbol)
-      if (contract !== undefined) rendered.add(contract)
-      else helper(declarationOf(symbol), depth)
-      for (const argument of node.arguments) output(argument, depth)
+      if (contract !== undefined) {
+        rendered.add(contract)
+        for (const argument of node.arguments) output(argument, depth, bindings)
+        return
+      }
+      const fn = functionOf(declarationOf(symbol))
+      if (fn !== undefined) {
+        const passed = new Map()
+        fn.parameters.forEach((parameter, index) => {
+          const argument = parameter.dotDotDotToken
+            ? undefined
+            : node.arguments[index]
+          if (argument !== undefined)
+            passed.set(parameter, { bindings, node: argument })
+        })
+        helper(fn, depth, passed)
+        return
+      }
+      /* Element builders and collection methods (`h.div(...)`,
+         `items.map(...)`) place their arguments in the output. */
+      if (ts.isPropertyAccessExpression(node.expression))
+        for (const argument of node.arguments) output(argument, depth, bindings)
       return
     }
     if (ts.isArrayLiteralExpression(node)) {
@@ -118,31 +146,37 @@ const renderedContracts = (checker, declaration, contractOf) => {
         output(
           ts.isSpreadElement(element) ? element.expression : element,
           depth,
+          bindings,
         )
       return
     }
     if (ts.isObjectLiteralExpression(node)) {
       for (const property of node.properties)
         if (ts.isPropertyAssignment(property))
-          output(property.initializer, depth)
+          output(property.initializer, depth, bindings)
         else if (ts.isShorthandPropertyAssignment(property))
-          output(property.name, depth)
+          output(property.name, depth, bindings)
         else if (ts.isSpreadAssignment(property))
-          output(property.expression, depth)
+          output(property.expression, depth, bindings)
       return
     }
     if (ts.isConditionalExpression(node)) {
-      output(node.whenTrue, depth)
-      output(node.whenFalse, depth)
+      output(node.whenTrue, depth, bindings)
+      output(node.whenFalse, depth, bindings)
       return
     }
-    if (ts.isBinaryExpression(node)) {
-      output(node.left, depth)
-      output(node.right, depth)
+    if (
+      ts.isBinaryExpression(node) &&
+      (node.operatorToken.kind === ts.SyntaxKind.BarBarToken ||
+        node.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken ||
+        node.operatorToken.kind === ts.SyntaxKind.QuestionQuestionToken)
+    ) {
+      output(node.left, depth, bindings)
+      output(node.right, depth, bindings)
       return
     }
     if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
-      helper(node, depth)
+      helper(node, depth, NO_BINDINGS)
       return
     }
     if (ts.isIdentifier(node)) {
@@ -153,23 +187,26 @@ const renderedContracts = (checker, declaration, contractOf) => {
         return
       }
       const target = declarationOf(symbol)
-      if (target !== undefined && ts.isVariableDeclaration(target)) {
-        if (seen.has(target)) return
-        seen.add(target)
-        output(target.initializer, depth + 1)
-      } else helper(target, depth)
+      const parameter = target === undefined ? undefined : parameterOf(target)
+      if (parameter !== undefined) {
+        const argument = bindings.get(parameter)
+        if (argument !== undefined)
+          output(argument.node, depth + 1, argument.bindings)
+        return
+      }
+      if (target !== undefined && ts.isVariableDeclaration(target))
+        output(target.initializer, depth + 1, bindings)
+      else helper(functionOf(target), depth, NO_BINDINGS)
     }
   }
-  const helper = (target, depth) => {
-    const fn = functionOf(target)
-    if (fn === undefined || seen.has(fn)) return
-    seen.add(fn)
-    for (const returned of returnedOf(fn)) output(returned, depth + 1)
+  const helper = (fn, depth, bindings) => {
+    if (fn === undefined) return
+    for (const returned of returnedOf(fn)) output(returned, depth + 1, bindings)
   }
   const fn = functionOf(declaration)
-  if (fn !== undefined) helper(fn, 0)
+  if (fn !== undefined) helper(fn, 0, NO_BINDINGS)
   else if (ts.isVariableDeclaration(declaration))
-    output(declaration.initializer, 0)
+    output(declaration.initializer, 0, NO_BINDINGS)
   return rendered
 }
 
