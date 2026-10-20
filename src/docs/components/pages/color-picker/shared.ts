@@ -12,11 +12,22 @@ export type ColorPickerFixture = Readonly<{
   withoutAlpha?: boolean
   disabled?: boolean
   controlled?: boolean
+  /** Renders only as the page hero, with its own model instance — needed
+      for popover fixtures so the hero and a named twin never share ids. */
+  heroOnly?: boolean
 }>
 
 export const colorPickerFixtures: Readonly<
   [ColorPickerFixture, ...ReadonlyArray<ColorPickerFixture>]
 > = [
+  {
+    id: 'hero',
+    title: 'Swatch Trigger',
+    kind: 'popover',
+    trigger: 'swatch',
+    initialValue: '#3b82f6',
+    heroOnly: true,
+  },
   {
     id: 'swatch',
     title: 'Swatch Trigger',
@@ -117,7 +128,7 @@ const pickerSource = (
         ? `ColorPicker.colorPicker({
       model: model.picker,
       toParentMessage: message => GotColorPickerMessage({ message }),
-      trigger: h.span([h.Class('flex items-center gap-2')], [
+      trigger: h.span([h.Class('flex items-center gap-2 whitespace-nowrap')], [
         ColorPicker.colorPickerSwatch({ color: ColorPicker.hex(model.picker) }, h),
         'Pick a color',
       ]),
@@ -127,7 +138,7 @@ const pickerSource = (
           ? `ColorPicker.colorPicker({
       model: model.picker,
       toParentMessage: message => GotColorPickerMessage({ message }),
-      trigger: h.span([h.Class('flex items-center gap-2')], [
+      trigger: h.span([h.Class('flex items-center gap-2 whitespace-nowrap')], [
         ColorPicker.colorPickerSwatch({ color: ColorPicker.hex(model.picker) }, h),
         h.span([h.Class('font-mono text-xs')], [model.value]),
       ]),
@@ -226,5 +237,6 @@ export const colorPickerExamples = (
     ...(fixture.description === undefined
       ? {}
       : { description: fixture.description }),
+    ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code: pickerSource(fixture, renderer),
   }))

@@ -163,6 +163,18 @@ describe('update', () => {
     assert.equal(hex(typed.model), '#22c55e')
   })
 
+  it('keeps the typed text as the draft while emitting its formatted value', () => {
+    /* Mid-typing a partial prefix like '#000' already parses — the draft
+       must stay the typed text so the rest of '#0000ff' can append. */
+    const typed = update(base, Message.ChangedInput({ text: '#000' }))
+    assert.equal(typed.model.draft, '#000')
+    assert.equal(typed.outMessage?.value, '#000000')
+    const next = update(typed.model, Message.ChangedInput({ text: '#0000ff' }))
+    assert.equal(next.model.draft, '#0000ff')
+    assert.equal(next.outMessage?.value, '#0000ff')
+    assert.equal(hex(next.model), '#0000ff')
+  })
+
   it('resyncs the draft to the committed value on blur', () => {
     const typed = update(base, Message.ChangedInput({ text: 'garbage' }))
     const committed = update(typed.model, Message.CommittedInput())

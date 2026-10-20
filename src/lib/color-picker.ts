@@ -464,7 +464,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
-      GotPopoverMessage: ({ message }) => liftPopover(model, message),
+      GotPopoverMessage: ({ message }) =>
+        model.disabled ? { model } : liftPopover(model, message),
       PressedChannel: ({ channel, x, y }) =>
         model.disabled
           ? { model }
@@ -492,8 +493,12 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         const parsed = parseColorString(text)
         return Option.match(parsed, {
           onNone: () => ({ model: { ...model, draft: text } }),
-          onSome: rgbColor =>
-            changedValue({ ...model, draft: text }, rgbToHsv(rgbColor)),
+          /* Keep the typed text as the draft — rewriting it to the
+             formatted value mid-typing would corrupt longer input. */
+          onSome: rgbColor => {
+            const next = changedValue(model, rgbToHsv(rgbColor))
+            return { ...next, model: { ...next.model, draft: text } }
+          },
         })
       },
       CommittedInput: () => ({

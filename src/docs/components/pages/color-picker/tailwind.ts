@@ -38,7 +38,7 @@ const pickerView = (
         {
           ...base,
           trigger: h.span(
-            [h.Class('flex items-center gap-2')],
+            [h.Class('flex items-center gap-2 whitespace-nowrap')],
             [
               ColorPicker.colorPickerSwatch(
                 { color: ColorPicker.hex(picker) },
@@ -57,7 +57,7 @@ const pickerView = (
         {
           ...base,
           trigger: h.span(
-            [h.Class('flex items-center gap-2')],
+            [h.Class('flex items-center gap-2 whitespace-nowrap')],
             [
               ColorPicker.colorPickerSwatch(
                 { color: ColorPicker.hex(picker) },
