@@ -1285,6 +1285,16 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "formattedValue: value"
     },
     {
+      "name": "parseColorString",
+      "kind": "value",
+      "signature": "parseColorString: value"
+    },
+    {
+      "name": "rgbToHex",
+      "kind": "value",
+      "signature": "rgbToHex: value"
+    },
+    {
       "name": "colorFormats",
       "kind": "value",
       "signature": "colorFormats: value"

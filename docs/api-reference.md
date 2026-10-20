@@ -436,6 +436,8 @@ Source: [`src/ui/color-picker.ts`](../src/ui/color-picker.ts)
 | `channelElementId` | value | `channelElementId: value` |
 | `hex` | value | `hex: value` |
 | `formattedValue` | value | `formattedValue: value` |
+| `parseColorString` | value | `parseColorString: value` |
+| `rgbToHex` | value | `rgbToHex: value` |
 | `colorFormats` | value | `colorFormats: value` |
 | `ColorFormat` | re-export | `export { ColorFormat } from '@/lib/color-picker'` |
 | `DragChannel` | re-export | `export { DragChannel } from '@/lib/color-picker'` |

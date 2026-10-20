@@ -1875,6 +1875,8 @@ Examples: Swatch Trigger, Button Trigger, Input Trigger, Inline, Controlled, Wit
 - `channelElementId: value` (value)
 - `hex: value` (value)
 - `formattedValue: value` (value)
+- `parseColorString: value` (value)
+- `rgbToHex: value` (value)
 - `colorFormats: value` (value)
 - `export { ColorFormat } from '@/lib/color-picker'` (re-export)
 - `export { DragChannel } from '@/lib/color-picker'` (re-export)
