@@ -6,6 +6,8 @@ import { defineMessageUnion } from 'foldkit/message'
 import { defineView } from 'foldkit/submodel'
 import { modifyFields } from 'foldkit/struct'
 
+import * as BlocksBlocks from '@/demo/blocks/creaseui-blocks'
+import * as BlocksDashboards from '@/demo/blocks/creaseui-dashboards'
 import * as AccountAccess from '@/demo/cards/account-access'
 import * as CardOverview from '@/demo/cards/card-overview'
 import * as ClaimableBalance from '@/demo/cards/claimable-balance'
@@ -75,7 +77,7 @@ export const Model = S.Struct({
   openToken: S.NullOr(S.String),
   tokenDrafts: S.Record(S.String, S.String),
   tokenPicker: ColorPicker.Model,
-  canvas: S.Literals(['board', 'components', 'type', 'palette']),
+  canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   pickerPopovers: S.Struct({
     style: Popover.Model,
     base: Popover.Model,
@@ -180,7 +182,7 @@ export const Message = defineMessageUnion({
   ClickedResetCreateTokens: {},
   ChoseCreateScheme: { scheme: S.Literals(['system', 'light', 'dark']) },
   ChoseCreateCanvas: {
-    canvas: S.Literals(['board', 'components', 'type', 'palette']),
+    canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   },
   ClickedResetCreatePreset: {},
   ClickedCopyCreatePreset: {},
@@ -1833,9 +1835,51 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     ],
   )
 
+  const blockFrame = (title: string, block: Html): Html =>
+    h.div(
+      [
+        h.Class(
+          'overflow-hidden rounded-xl bg-background shadow-sm ring-1 ring-border',
+        ),
+      ],
+      [
+        h.div(
+          [h.Class('flex items-center gap-2 border-b border-border px-4 py-2')],
+          [
+            h.span(
+              [h.Class(`${TINY_LABEL} uppercase text-muted-foreground`)],
+              [title],
+            ),
+          ],
+        ),
+        block,
+      ],
+    )
+
+  /* Real blocks from the /blocks catalog, each framed so the canvas reads as
+     distinct pieces rather than a squashed card grid. */
+  const blocksCanvas = h.div(
+    [
+      h.Class(
+        `${themeClass} flex w-280 flex-col gap-(--gap) bg-muted p-(--gap) dark:bg-background`,
+      ),
+      h.DataAttribute('crease-style', model.preset.style),
+      h.DataAttribute('icon-library', model.preset.iconLibrary),
+      h.DataAttribute('slot', 'capture-target'),
+    ],
+    [
+      blockFrame('Kanban board', BlocksBlocks.kanbanBoard<Message>(h)),
+      blockFrame(
+        'Incident console',
+        BlocksDashboards.incidentConsoleDashboard<Message>(h),
+      ),
+      blockFrame('Order detail', BlocksBlocks.orderDetail<Message>(h)),
+    ],
+  )
+
   const canvases: Record<Model['canvas'], Html> = {
     board: themedGrid('w-600 grid-cols-7 md:w-750'),
-    components: themedGrid('w-480 grid-cols-3 md:w-560'),
+    blocks: blocksCanvas,
     type: typeCanvas,
     palette: paletteCanvas,
   }
@@ -1871,7 +1915,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       toolbarSeg(
         [
           ['board', 'Board'],
-          ['components', 'Components'],
+          ['blocks', 'Blocks'],
           ['type', 'Type'],
           ['palette', 'Palette'],
         ],

@@ -10,6 +10,8 @@ import { defineMessageUnion } from 'foldkit/message'
 import { defineView } from 'foldkit/submodel'
 import { modifyFields } from 'foldkit/struct'
 
+import * as BlocksBlocks from '@/demo/blocks-stylex/creaseui-blocks'
+import * as BlocksDashboards from '@/demo/blocks-stylex/creaseui-dashboards'
 import * as AccountAccess from '@/demo/stylex-cards/account-access'
 import * as CardOverview from '@/demo/stylex-cards/card-overview'
 import * as ClaimableBalance from '@/demo/stylex-cards/claimable-balance'
@@ -725,9 +727,46 @@ const styles = stylex.create({
     height: '1.25rem',
     width: 1,
   },
-  boardComponents: {
-    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-    width: { default: '120rem', '@media (min-width: 768px)': '140rem' },
+  blocksCanvas: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: {
+      default: '1rem',
+      '@media (min-width: 1920px)': '3rem',
+      '@media (min-width: 768px)': '2.5rem',
+    },
+    padding: {
+      default: '1rem',
+      '@media (min-width: 1920px)': '3rem',
+      '@media (min-width: 768px)': '2.5rem',
+    },
+    backgroundColor: boardTokens.boardMuted,
+    width: '70rem',
+  },
+  blockFrame: {
+    backgroundColor: tokens.background,
+    borderColor: tokens.border,
+    borderRadius: foundationTokens.radiusMd,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  blockFrameBar: {
+    alignItems: 'center',
+    borderBottomColor: tokens.border,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+    display: 'flex',
+    gap: '0.5rem',
+    paddingBlock: '0.5rem',
+    paddingInline: '1rem',
+  },
+  blockFrameLabel: {
+    color: tokens.mutedForeground,
+    fontFamily:
+      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
+    fontSize: '0.625rem',
+    textTransform: 'uppercase',
   },
   typeCanvas: {
     padding: '2.5rem',
@@ -856,7 +895,7 @@ export const Model = S.Struct({
   openToken: S.NullOr(S.String),
   tokenDrafts: S.Record(S.String, S.String),
   tokenPicker: ColorPicker.Model,
-  canvas: S.Literals(['board', 'components', 'type', 'palette']),
+  canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   primitiveInspector: S.Struct({
     boxPadding: S.Literals(['responsive', 'none', 'sm', 'md', 'xl']),
     boxSurface: S.Literals(['card', 'muted', 'section']),
@@ -970,7 +1009,7 @@ export const Message = defineMessageUnion({
   ClickedResetCreateTokens: {},
   ChoseCreateScheme: { scheme: S.Literals(['system', 'light', 'dark']) },
   ChoseCreateCanvas: {
-    canvas: S.Literals(['board', 'components', 'type', 'palette']),
+    canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   },
   ClickedResetCreatePreset: {},
   ClickedCopyCreatePreset: {},
@@ -2687,9 +2726,40 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     ],
   )
 
+  const blockFrame = (title: string, block: Html): Html =>
+    h.div(
+      [h.Class(className(styles.blockFrame))],
+      [
+        h.div(
+          [h.Class(className(styles.blockFrameBar))],
+          [
+            h.span(
+              [h.Class(className(reset.text, styles.blockFrameLabel))],
+              [title],
+            ),
+          ],
+        ),
+        block,
+      ],
+    )
+
+  /* Real blocks from the /blocks catalog, each framed so the canvas reads as
+     distinct pieces rather than a squashed card grid. */
+  const blocksCanvas = h.div(
+    [...themeAttrs(className(styles.blocksCanvas))],
+    [
+      blockFrame('Kanban board', BlocksBlocks.kanbanBoard<Message>(h)),
+      blockFrame(
+        'Incident console',
+        BlocksDashboards.incidentConsoleDashboard<Message>(h),
+      ),
+      blockFrame('Order detail', BlocksBlocks.orderDetail<Message>(h)),
+    ],
+  )
+
   const canvases: Record<Model['canvas'], Html> = {
     board: boardGrid(),
-    components: boardGrid(styles.boardComponents),
+    blocks: blocksCanvas,
     type: typeCanvas,
     palette: paletteCanvas,
   }
@@ -2725,7 +2795,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       toolbarSeg(
         [
           ['board', 'Board'],
-          ['components', 'Components'],
+          ['blocks', 'Blocks'],
           ['type', 'Type'],
           ['palette', 'Palette'],
         ] as const,
