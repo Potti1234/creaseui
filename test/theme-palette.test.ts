@@ -3,9 +3,10 @@ import { readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
 
 import {
-  BASE_COLORS,
+  BASES,
   DEFAULT_CONFIG,
   THEMES,
+  accentForTheme,
   presetCss,
 } from '../src/demo/create-preset.ts'
 import {
@@ -45,17 +46,22 @@ const resolvedThemes = (): ReadonlyArray<
   ['root:light', rootLight],
   ['root:dark', rootDark],
   ...THEMES.flatMap(theme =>
-    BASE_COLORS.flatMap(baseColor => {
-      const css = presetCss({ ...DEFAULT_CONFIG, theme, baseColor })
+    BASES.flatMap(base => {
+      const css = presetCss({
+        ...DEFAULT_CONFIG,
+        ...accentForTheme(theme),
+        base,
+      })
       const light = declarationsFor(css, '.create-board-theme')
       return [
-        [`${theme}:${baseColor}:light`, { ...rootLight, ...light }],
+        [`${theme}:${base}:light`, { ...rootLight, ...light }],
         [
-          `${theme}:${baseColor}:dark`,
+          `${theme}:${base}:dark`,
           {
             ...rootDark,
             ...light,
-            ...declarationsFor(css, '.dark .create-board-theme'),
+            ...declarationsFor(css, '.dark .create-board-theme:not(.light)'),
+            ...declarationsFor(css, '.create-board-theme.dark'),
           },
         ],
       ] as const

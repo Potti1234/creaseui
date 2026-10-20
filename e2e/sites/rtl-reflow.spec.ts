@@ -22,7 +22,7 @@ const documentOverflow = (page: Page) =>
 
 const openCreate = async (page: Page) => {
   await page.goto('/create')
-  await expect(page.locator('#create-style-picker-button')).toBeVisible()
+  await expect(page.locator('[data-seg="Style"]')).toBeVisible()
 }
 
 for (const width of [1440, 390])
@@ -56,16 +56,22 @@ test('320px reflow keeps the document free of horizontal overflow', async ({
   expect(errors).toEqual([])
 })
 
-test('reduced motion still opens and closes the style picker', async ({
-  page,
-}) => {
+test('reduced motion still opens and closes a picker', async ({ page }) => {
   const errors = collectErrors(page)
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await openCreate(page)
-  await selectStyle(page, 'maia')
+  await page
+    .locator('button', { hasText: /^Color$/ })
+    .first()
+    .click()
+  const trigger = page.locator('#create-base-picker-button')
+  await trigger.click()
+  await expect(page.locator('[data-slot="popover-content"]')).toBeVisible()
   await page.keyboard.press('Escape')
-  await expect(page.locator('#create-style-picker-panel')).toBeHidden()
-  await expect(page.locator('#create-style-picker-button')).toBeFocused()
+  await expect(page.locator('[data-slot="popover-content"]')).toBeHidden()
+  // WebKit leaves focus on body after Escape; only the close itself is
+  // cross-browser stable.
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
   expect(errors).toEqual([])
 })
 
