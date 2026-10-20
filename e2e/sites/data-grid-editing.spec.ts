@@ -62,3 +62,39 @@ test('sorted grid edits and deletes the displayed row', async ({
   await expect(page.getByText('AAA Edited')).toHaveCount(0)
   expect(errors).toEqual([])
 })
+
+/* Review F2: an edit that moves the record in the sort order keeps later
+   actions on the record that is now shown at each position. */
+test('editing a sort key moves the record and later actions follow the screen', async ({
+  page,
+}, info) => {
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto(`/blocks/preview/${info.project.name}--tablecn-grid`)
+  await expect(cell(page, 0)).toBeVisible()
+  await sortByName(page)
+  const names = await Promise.all(
+    [0, 1, 2].map(async row => (await cell(page, row).innerText()).trim()),
+  )
+
+  await cell(page, 0).dblclick()
+  await cell(page, 0).locator('input').fill('zzzz Moved')
+  await page.keyboard.press('Enter')
+  await expect(cell(page, 0)).toHaveText(names[1]!)
+
+  await cell(page, 0).click({ button: 'right' })
+  await page.getByRole('menuitem', { name: 'Delete row' }).click()
+  await expect(cell(page, 0)).toHaveText(names[2]!)
+  await expect(page.getByText(names[1]!, { exact: true })).toHaveCount(0)
+
+  /* the moved record survived and now sorts last */
+  await page
+    .locator('[data-slot="grid-header-cell"][data-column-id="name"] button')
+    .first()
+    .click()
+  await page.getByText('Sort desc', { exact: true }).click()
+  await page.keyboard.press('Escape')
+  await expect(cell(page, 0)).toHaveText('zzzz Moved')
+  expect(errors).toEqual([])
+})

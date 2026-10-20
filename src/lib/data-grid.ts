@@ -371,28 +371,24 @@ export const visibleColumns = (model: Model): Array<string> =>
 
 const emptyCell = { row: -1, column: '' }
 
-const PROJECTION_MESSAGES: ReadonlySet<Message['_tag']> = new Set([
-  'SetSorting',
-  'RemovedSort',
-  'ToggledSort',
-  'AddedFilter',
-  'RemovedFilter',
-])
-
-/* Sorting or filtering reorders the displayed rows; keep focus, the open
-   editor and the selection on the same records instead of the same indexes. */
+/* Any change to the displayed rows (sorting, filtering, an edit to a sort or
+   filter key, insertions, deletions, undo/redo) keeps focus, the open editor,
+   the selection and the context menu on the same records instead of the same
+   indexes. Indexes a message sets refer to the rows the user saw, so
+   post-commit navigation lands on the record that was below the edited one. */
 const reproject = <Row>(
   before: Model,
   after: Model,
   config: DataGridConfig<Row>,
 ): Model => {
   const beforeKeys = displayedRows(before, config).map(config.rowKey)
-  const afterIndexes = new Map(
-    displayedRows(after, config).map((row, index) => [
-      config.rowKey(row),
-      index,
-    ]),
+  const afterKeys = displayedRows(after, config).map(config.rowKey)
+  if (
+    beforeKeys.length === afterKeys.length &&
+    beforeKeys.every((key, index) => key === afterKeys[index])
   )
+    return after
+  const afterIndexes = new Map(afterKeys.map((key, index) => [key, index]))
   const move = (row: number): number => {
     const key = beforeKeys[row]
     return key === undefined ? -1 : (afterIndexes.get(key) ?? -1)
@@ -428,9 +424,7 @@ export const update = <Row>(
   config: DataGridConfig<Row>,
 ): Model => {
   const next = applyMessage(model, message, config)
-  return PROJECTION_MESSAGES.has(message._tag)
-    ? reproject(model, next, config)
-    : next
+  return next === model ? next : reproject(model, next, config)
 }
 
 const applyMessage = <Row>(
@@ -874,16 +868,20 @@ const onGridKey = <Row>(
   if (ctrl) {
     switch (key.toLowerCase()) {
       case 'f':
-        return update(model, Message.ToggledSearch({}), config)
+        return applyMessage(model, Message.ToggledSearch({}), config)
       case 'z':
         return shift
-          ? update(model, Message.Redo({}), config)
-          : update(model, Message.Undo({}), config)
+          ? applyMessage(model, Message.Redo({}), config)
+          : applyMessage(model, Message.Undo({}), config)
       case 'y':
-        return update(model, Message.Redo({}), config)
+        return applyMessage(model, Message.Redo({}), config)
       case 'a': {
         if (isEditing) return model
-        return update(model, Message.ToggledAllRows({ checked: true }), config)
+        return applyMessage(
+          model,
+          Message.ToggledAllRows({ checked: true }),
+          config,
+        )
       }
       default:
         return model
@@ -892,11 +890,19 @@ const onGridKey = <Row>(
   if (isEditing) {
     switch (key) {
       case 'Escape':
-        return update(model, Message.CanceledEdit({}), config)
+        return applyMessage(model, Message.CanceledEdit({}), config)
       case 'Enter':
-        return update(model, Message.CommittedDraft({ move: 'down' }), config)
+        return applyMessage(
+          model,
+          Message.CommittedDraft({ move: 'down' }),
+          config,
+        )
       case 'Tab':
-        return update(model, Message.CommittedDraft({ move: 'right' }), config)
+        return applyMessage(
+          model,
+          Message.CommittedDraft({ move: 'right' }),
+          config,
+        )
       default:
         return model
     }
@@ -904,10 +910,10 @@ const onGridKey = <Row>(
   switch (key) {
     case 'Escape':
       if (model.searchOpen)
-        return update(model, Message.ToggledSearch({}), config)
+        return applyMessage(model, Message.ToggledSearch({}), config)
       if (model.contextMenu.open)
-        return update(model, Message.ClosedContextMenu({}), config)
-      return update(model, Message.ClearedSelection({}), config)
+        return applyMessage(model, Message.ClosedContextMenu({}), config)
+      return applyMessage(model, Message.ClearedSelection({}), config)
     case 'ArrowUp':
       return moveFocus(model, -1, 0, config)
     case 'ArrowDown':
@@ -921,7 +927,7 @@ const onGridKey = <Row>(
     case 'Enter':
     case 'F2':
       if (model.focusedCell.row === -1) return model
-      return update(
+      return applyMessage(
         model,
         Message.StartedEditing({
           row: model.focusedCell.row,
@@ -935,7 +941,11 @@ const onGridKey = <Row>(
       if (model.focusedCell.row === -1) return model
       const rows = [...model.selectedRowIndexes]
       if (rows.length > 1)
-        return update(model, Message.DeletedRows({ indexes: rows }), config)
+        return applyMessage(
+          model,
+          Message.DeletedRows({ indexes: rows }),
+          config,
+        )
       return commitCell(
         model,
         model.focusedCell.row,
@@ -947,7 +957,7 @@ const onGridKey = <Row>(
     default:
       /* type-over: printable char opens editor seeded with the key */
       if (key.length === 1 && model.focusedCell.row !== -1) {
-        return update(
+        return applyMessage(
           model,
           Message.StartedEditing({
             row: model.focusedCell.row,

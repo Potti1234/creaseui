@@ -165,6 +165,109 @@ describe('data grid row identity', () => {
   })
 })
 
+const press = (value: string) =>
+  Grid.Message.GridKey({ key: value, ctrl: false, meta: false, shift: false })
+
+const selectedIds = (model: Grid.Model) =>
+  model.selectedRowIndexes.map(index => displayedIds(model)[index])
+
+/* Review F2: data changes that reorder or hide rows keep interaction state
+   on the same records. */
+describe('data grid identity through data changes', () => {
+  const selectFirstTwo = (model: Grid.Model) =>
+    step(
+      model,
+      Grid.Message.FocusedCell({ row: 0, column: 'name' }),
+      Grid.Message.SelectedRowIndex({
+        index: 0,
+        shiftKey: false,
+        additive: false,
+      }),
+      Grid.Message.SelectedRowIndex({
+        index: 1,
+        shiftKey: false,
+        additive: true,
+      }),
+    )
+
+  it('editing a sort key keeps the selection, and Delete removes the selected records', () => {
+    const selected = selectFirstTwo(sortedByName())
+    assert.deepEqual(selectedIds(selected), ['a', 'm'])
+    const edited = step(
+      selected,
+      press('Enter'),
+      Grid.Message.ChangedDraft({ value: 'ZZZ Alpha' }),
+      press('Enter'),
+    )
+    assert.deepEqual(displayedIds(edited), ['m', 'z', 'a'])
+    assert.deepEqual([...selectedIds(edited)].sort(), ['a', 'm'])
+    assert.equal(byId(edited, 'a')?.name, 'ZZZ Alpha')
+    /* Enter moved down from Alpha to the record shown below it (Mu). */
+    assert.equal(displayedIds(edited)[edited.focusedCell.row], 'm')
+    const deleted = step(edited, press('Delete'))
+    assert.deepEqual(
+      (deleted.rows as ReadonlyArray<Row>).map(row => row.id),
+      ['z'],
+    )
+  })
+
+  it('editing a filter key drops only the record the filter now hides', () => {
+    const filtered = step(
+      sortedByName(),
+      Grid.Message.AddedFilter({ column: 'name', value: 'a' }),
+    )
+    assert.deepEqual(displayedIds(filtered), ['a', 'z'])
+    const selected = step(
+      filtered,
+      Grid.Message.SelectedRowIndex({
+        index: 1,
+        shiftKey: false,
+        additive: false,
+      }),
+      Grid.Message.StartedEditing({ row: 0, column: 'name', seed: '' }),
+      Grid.Message.ChangedDraft({ value: 'Bob' }),
+      Grid.Message.CommittedDraft({ move: 'none' }),
+    )
+    assert.deepEqual(displayedIds(selected), ['z'])
+    assert.deepEqual(selectedIds(selected), ['z'])
+    assert.equal(selected.editingCell.row, -1)
+  })
+
+  it('undo and redo keep the selection on the same records', () => {
+    const selected = step(
+      sortedByName(),
+      Grid.Message.SelectedRowIndex({
+        index: 2,
+        shiftKey: false,
+        additive: false,
+      }),
+      Grid.Message.FocusedCell({ row: 2, column: 'name' }),
+      Grid.Message.StartedEditing({ row: 0, column: 'name', seed: '' }),
+      Grid.Message.ChangedDraft({ value: 'ZZZ Alpha' }),
+      Grid.Message.CommittedDraft({ move: 'none' }),
+    )
+    assert.deepEqual(displayedIds(selected), ['m', 'z', 'a'])
+    assert.deepEqual(selectedIds(selected), ['z'])
+    const undone = step(selected, Grid.Message.Undo())
+    assert.deepEqual(displayedIds(undone), ['a', 'm', 'z'])
+    assert.deepEqual(selectedIds(undone), ['z'])
+    assert.equal(displayedIds(undone)[undone.focusedCell.row], 'z')
+    const redone = step(undone, Grid.Message.Redo())
+    assert.deepEqual(selectedIds(redone), ['z'])
+    assert.equal(displayedIds(redone)[redone.focusedCell.row], 'z')
+  })
+
+  it('inserting and deleting rows keeps focus on the same record', () => {
+    const focused = step(
+      sortedByName(),
+      Grid.Message.FocusedCell({ row: 2, column: 'name' }),
+    )
+    const removed = step(focused, Grid.Message.DeletedRows({ indexes: [0] }))
+    assert.deepEqual(displayedIds(removed), ['m', 'z'])
+    assert.equal(displayedIds(removed)[removed.focusedCell.row], 'z')
+  })
+})
+
 type Contact = {
   id: string
   name: string
