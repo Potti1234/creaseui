@@ -98,3 +98,26 @@ test('editing a sort key moves the record and later actions follow the screen', 
   await expect(cell(page, 0)).toHaveText('zzzz Moved')
   expect(errors).toEqual([])
 })
+
+test('after an Enter commit the keyboard stays with the grid', async ({
+  page,
+}, info) => {
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto(`/blocks/preview/${info.project.name}--tablecn-grid`)
+  await expect(cell(page, 0)).toBeVisible()
+  await sortByName(page)
+  const first = (await cell(page, 0).innerText()).trim()
+
+  await cell(page, 0).dblclick()
+  await cell(page, 0).locator('input').fill('zzzz Moved')
+  await page.keyboard.press('Enter')
+  await expect(page.getByRole('grid', { name: 'Data grid' })).toBeFocused()
+
+  /* undo straight from the keyboard brings the record back on top */
+  await page.keyboard.press('Control+z')
+  await expect(cell(page, 0)).toHaveText(first)
+  await expect(page.getByRole('grid', { name: 'Data grid' })).toBeFocused()
+  expect(errors).toEqual([])
+})

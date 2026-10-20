@@ -1118,16 +1118,55 @@ export const gridKeysMount = <Msg>(
   toParentMessage: (message: MountMessage) => Msg,
 ) => Mount.mapMessage(GridKeys({}), toParentMessage)
 
-/* autofocus only applies on initial page load; a one-shot mount focuses the
-   editor element when the cell editor enters the DOM */
-export const FocusCellEditor = Mount.define('FocusCellEditor', {
+/* autofocus only applies on initial page load, so the mount focuses the
+   editor when it enters the DOM. Removing a focused editor drops focus to
+   <body>, where grid keys never arrive; on release the grid takes focus back
+   unless the user pointed somewhere outside it meanwhile. */
+export const FocusCellEditor = Mount.defineStream('FocusCellEditor', {
   args: {},
   messages: [EditorMountMessage.GridEditorFocused],
   execute: ({ element }) =>
-    Effect.sync(() => {
-      if (element instanceof HTMLElement) element.focus()
-      return EditorMountMessage.GridEditorFocused({})
-    }),
+    Stream.callback<typeof EditorMountMessage.Type>(queue =>
+      Effect.gen(function* () {
+        yield* Effect.acquireRelease(
+          Effect.sync(() => {
+            if (!(element instanceof HTMLElement)) return undefined
+            const grid = element.closest<HTMLElement>('[role="grid"]')
+            const state = { pointedOutside: false }
+            const onPointerDown = (event: PointerEvent): void => {
+              if (!(event.target instanceof Node) || grid === null) return
+              if (!grid.contains(event.target)) state.pointedOutside = true
+            }
+            document.addEventListener('pointerdown', onPointerDown, true)
+            element.focus()
+            Queue.offerUnsafe(queue, EditorMountMessage.GridEditorFocused({}))
+            return { grid, state, onPointerDown }
+          }),
+          resource =>
+            Effect.sync(() => {
+              if (resource === undefined) return
+              document.removeEventListener(
+                'pointerdown',
+                resource.onPointerDown,
+                true,
+              )
+              const { grid, state } = resource
+              /* release can run before the editor leaves the DOM */
+              requestAnimationFrame(() => {
+                const active = document.activeElement
+                if (
+                  grid !== null &&
+                  grid.isConnected &&
+                  !state.pointedOutside &&
+                  (active === null || active === document.body)
+                )
+                  grid.focus({ preventScroll: true })
+              })
+            }),
+        )
+        return yield* Effect.never
+      }),
+    ),
 })
 
 export const gridEditorFocusMount = <Msg>(toParentMessage: () => Msg) =>
