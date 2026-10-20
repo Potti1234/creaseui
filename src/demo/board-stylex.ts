@@ -260,6 +260,17 @@ const styles = stylex.create({
     top: '4.75rem',
     width: { default: '17.625rem', '@media (max-width: 1023px)': 'auto' },
   },
+  customizerDrawer: {
+    overflow: 'hidden',
+    backgroundColor: boardTokens.panel,
+    color: boardTokens.text,
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    position: 'relative',
+    minHeight: 0,
+    width: '100%',
+  },
   customizerBody: {
     padding: '1rem',
     gap: '1rem',
@@ -728,38 +739,38 @@ const styles = stylex.create({
     width: 1,
   },
   blocksCanvas: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: {
-      default: '1rem',
-      '@media (min-width: 1920px)': '3rem',
-      '@media (min-width: 768px)': '2.5rem',
-    },
     padding: {
       default: '1rem',
       '@media (min-width: 1920px)': '3rem',
       '@media (min-width: 768px)': '2.5rem',
     },
+    gap: {
+      default: '1rem',
+      '@media (min-width: 1920px)': '3rem',
+      '@media (min-width: 768px)': '2.5rem',
+    },
     backgroundColor: boardTokens.boardMuted,
+    display: 'flex',
+    flexDirection: 'column',
     width: '70rem',
   },
   blockFrame: {
-    backgroundColor: tokens.background,
     borderColor: tokens.border,
     borderRadius: foundationTokens.radiusMd,
     borderStyle: 'solid',
     borderWidth: 1,
     overflow: 'hidden',
+    backgroundColor: tokens.background,
   },
   blockFrameBar: {
-    alignItems: 'center',
-    borderBottomColor: tokens.border,
-    borderBottomStyle: 'solid',
-    borderBottomWidth: 1,
-    display: 'flex',
     gap: '0.5rem',
     paddingBlock: '0.5rem',
     paddingInline: '1rem',
+    alignItems: 'center',
+    display: 'flex',
+    borderBottomColor: tokens.border,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
   },
   blockFrameLabel: {
     color: tokens.mutedForeground,
@@ -1689,6 +1700,7 @@ export const presetCustomizer = (
   model: Model,
   h: HtmlBuilder<Message>,
   inspector: Html | null = null,
+  placement: 'page' | 'drawer' = 'page',
 ): Html => {
   const picker = (
     label: string,
@@ -2195,7 +2207,18 @@ export const presetCustomizer = (
   }
 
   return h.aside(
-    [h.Class(darkThemeClass + ' ' + className(styles.customizer))],
+    [
+      h.Class(
+        darkThemeClass +
+          ' ' +
+          className(
+            placement === 'drawer'
+              ? styles.customizerDrawer
+              : styles.customizer,
+          ),
+      ),
+      h.DataAttribute('theme-lab-customizer', placement),
+    ],
     [
       h.div(
         [h.Class(className(styles.customizerHeader, styles.group))],
@@ -2552,6 +2575,26 @@ export const presetThemeStyle = (model: Model, h: HtmlBuilder<Message>): Html =>
     [],
     [
       `${Preset.presetCss(model.preset).replaceAll('.create-board-theme', '[data-crease-board-theme]')}${scopedStyleXThemeCss()}`,
+    ],
+  )
+
+/* The theme lab drawer embeds this panel on every page; /create keeps using
+   the 'page' placement inside its own layout. */
+export const createCustomizer = (
+  model: Model,
+  placement: 'page' | 'drawer',
+  h: HtmlBuilder<Message>,
+): Html => presetCustomizer(model, h, null, placement)
+
+/* Site-wide variant of the preset CSS: emitted on :root/.dark so docs, blocks
+   and every other page pick the theme up, plus the StyleX token aliases the
+   components resolve against. Only rendered when the theme lab's apply switch
+   is on. */
+export const globalThemeStyle = <M>(model: Model, h: HtmlBuilder<M>): Html =>
+  h.style(
+    [],
+    [
+      `${Preset.presetInstallCss(model.preset)}${scopedStyleXThemeCss().replaceAll('[data-crease-board-theme]', ':root')}`,
     ],
   )
 

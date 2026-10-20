@@ -36,4 +36,22 @@ export const skin = {
   menu: 'absolute top-11 right-0 z-50 grid min-w-44 gap-4 rounded-lg border bg-background p-4 shadow-sm',
   icon: 'size-4',
   notFound: 'mx-auto max-w-xl px-8 py-16 text-muted-foreground',
+  themeLabLauncher:
+    'fixed right-5 bottom-20 z-40 inline-flex size-11 items-center justify-center rounded-full border bg-background text-foreground shadow-lg outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring',
+  themeLabLauncherIcon: 'size-5',
+  themeLabDot: 'absolute top-2 right-2 size-2 rounded-full bg-primary',
+  themeLabPanel:
+    'fixed top-16 right-5 bottom-5 z-40 flex w-[24rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl bg-[#282828] text-white shadow-xl ring-1 ring-white/10',
+  themeLabHeader:
+    'flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3',
+  themeLabTitle: 'text-sm font-semibold',
+  themeLabHint: 'font-mono text-[10px] text-white/50',
+  themeLabActions: 'flex items-center gap-1',
+  themeLabApply: 'rounded-md px-2 py-1 text-xs font-medium transition-colors',
+  themeLabApplyOn: 'bg-emerald-400/20 text-emerald-300',
+  themeLabApplyOff: 'bg-white/[0.06] text-white/70 hover:bg-white/[0.1]',
+  themeLabIconButton:
+    'inline-flex size-7 items-center justify-center rounded-md text-white/60 outline-none transition-colors hover:bg-white/[0.08] hover:text-white focus-visible:ring-2 focus-visible:ring-white/30',
+  themeLabIcon: 'size-4',
+  themeLabBody: 'flex min-h-0 flex-1 flex-col overflow-hidden',
 } as const

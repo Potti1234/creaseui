@@ -237,6 +237,17 @@ const styles = {
     left: '5.2rem',
     width: '1rem',
   }),
+  customizerDrawer: Style.make({
+    backgroundColor: boardTokens.panel,
+    color: boardTokens.text,
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+    minHeight: 0,
+    overflow: 'hidden',
+    position: 'relative',
+    width: '100%',
+  }),
   customizer: Style.make({
     borderRadius: boardTokens.panelRadius,
     overflow: 'hidden',
@@ -1712,6 +1723,7 @@ export const presetCustomizer = (
   model: Model,
   h: HtmlBuilder<Message>,
   inspector: Html | null = null,
+  placement: 'page' | 'drawer' = 'page',
 ): Html => {
   const picker = (
     label: string,
@@ -2218,7 +2230,18 @@ export const presetCustomizer = (
   }
 
   return h.aside(
-    [h.Class(darkThemeClass + ' ' + className(styles.customizer))],
+    [
+      h.Class(
+        darkThemeClass +
+          ' ' +
+          className(
+            placement === 'drawer'
+              ? styles.customizerDrawer
+              : styles.customizer,
+          ),
+      ),
+      h.DataAttribute('theme-lab-customizer', placement),
+    ],
     [
       h.div(
         [h.Class(className(styles.customizerHeader, styles.group))],
@@ -2575,6 +2598,26 @@ export const presetThemeStyle = (model: Model, h: HtmlBuilder<Message>): Html =>
     [],
     [
       `${Preset.presetCss(model.preset).replaceAll('.create-board-theme', '[data-crease-board-theme]')}${scopedPleatThemeCss()}`,
+    ],
+  )
+
+/* The theme lab drawer embeds this panel on every page; /create keeps using
+   the 'page' placement inside its own layout. */
+export const createCustomizer = (
+  model: Model,
+  placement: 'page' | 'drawer',
+  h: HtmlBuilder<Message>,
+): Html => presetCustomizer(model, h, null, placement)
+
+/* Site-wide variant of the preset CSS: emitted on :root/.dark so docs, blocks
+   and every other page pick the theme up, plus the Pleat token aliases the
+   components resolve against. Only rendered when the theme lab's apply switch
+   is on. */
+export const globalThemeStyle = <M>(model: Model, h: HtmlBuilder<M>): Html =>
+  h.style(
+    [],
+    [
+      `${Preset.presetInstallCss(model.preset)}${scopedPleatThemeCss().replaceAll('[data-crease-board-theme]', ':root')}`,
     ],
   )
 

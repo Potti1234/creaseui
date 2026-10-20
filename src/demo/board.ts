@@ -810,7 +810,13 @@ const CHROME_BUTTON =
   'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent'
 const TINY_LABEL = 'font-mono text-[10px]'
 
-const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
+export type CustomizerPlacement = 'page' | 'drawer'
+
+const customizer = (
+  model: Model,
+  h: HtmlBuilder<Message>,
+  placement: CustomizerPlacement = 'page',
+): Html => {
   const chromeButton = (label: string, onClick: Message): Html =>
     Button.button(
       {
@@ -1347,8 +1353,11 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.aside(
     [
       h.Class(
-        `${DARK_CHROME} fixed top-19 bottom-5 left-5 z-30 flex w-70.5 flex-col overflow-hidden rounded-2xl max-lg:right-3 max-lg:left-3 max-lg:w-auto`,
+        placement === 'drawer'
+          ? `${DARK_CHROME} relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-none shadow-none ring-0`
+          : `${DARK_CHROME} fixed top-19 bottom-5 left-5 z-30 flex w-70.5 flex-col overflow-hidden rounded-2xl max-lg:right-3 max-lg:left-3 max-lg:w-auto`,
       ),
+      h.DataAttribute('theme-lab-customizer', placement),
     ],
     [
       h.div(
@@ -1482,6 +1491,20 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
     ],
   )
 }
+
+/* The theme lab drawer embeds this panel on every page; /create keeps using
+   the 'page' placement inside its own layout. */
+export const createCustomizer = (
+  model: Model,
+  placement: CustomizerPlacement,
+  h: HtmlBuilder<Message>,
+): Html => customizer(model, h, placement)
+
+/* Site-wide variant of the preset CSS: emitted on :root/.dark so docs, blocks
+   and every other page pick the theme up. Only rendered when the theme lab's
+   apply switch is on. */
+export const globalThemeStyle = <M>(model: Model, h: HtmlBuilder<M>): Html =>
+  h.style([], [Preset.presetInstallCss(model.preset)])
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const schemeSuffix = model.scheme === 'system' ? '' : ` ${model.scheme}`
