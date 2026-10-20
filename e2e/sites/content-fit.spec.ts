@@ -25,6 +25,39 @@ test('content-fit audit reports clipped text, not intentional truncation', async
   expect(await clippedText(page.locator('#adaptive'))).toEqual([])
 })
 
+/* Review F8: every clipping ancestor counts, not only the nearest one. */
+test('content-fit audit checks outer clipping behind a box that fits', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 800 })
+  const value =
+    '<span style="white-space:nowrap;font-size:24px">$1,284,930 +12.4%</span>'
+  await page.setContent(`
+    <div id="control" style="width:100px;overflow:hidden">${value}</div>
+    <div id="nested" style="width:100px;overflow:hidden"><div style="width:400px;overflow:hidden">${value}</div></div>
+    <div id="nested-fit" style="width:300px;overflow:hidden"><div style="width:400px;overflow:hidden">${value}</div></div>
+    <div id="scroll-inside" style="width:300px;overflow:hidden"><div style="width:100px;overflow:auto">${value}</div></div>
+    <div id="scroll-outside" style="width:100px;overflow:hidden"><div style="width:400px;overflow:auto">${value}</div></div>
+    <div id="ellipsis-outside" style="width:100px;overflow:hidden"><div style="width:400px;overflow:hidden;text-overflow:ellipsis">${value}</div></div>
+    <div id="intended-inside" style="width:300px;overflow:hidden"><div data-clip-intended style="width:100px;overflow:hidden">${value}</div></div>
+    <div id="sr-only" style="width:100px;overflow:hidden"><span style="position:absolute;width:1px;height:1px;overflow:hidden;white-space:nowrap">$1,284,930 +12.4%</span></div>
+  `)
+  const lost = async (id: string) =>
+    (await clippedText(page.locator(`#${id}`))).map(found => found.overflow)
+  expect(await lost('control')).toHaveLength(1)
+  expect(await lost('nested')).toEqual(await lost('control'))
+  for (const id of [
+    'nested-fit',
+    'scroll-inside',
+    'intended-inside',
+    'sr-only',
+  ])
+    expect(await lost(id), id).toEqual([])
+  /* An intentional region inside a clipper that cuts the region itself. */
+  expect(await lost('scroll-outside')).toHaveLength(1)
+  expect(await lost('ellipsis-outside')).toHaveLength(1)
+})
+
 for (const width of [390, 768, 1440])
   test(`Grid adaptive metric cards keep values and deltas readable at ${width}px`, async ({
     page,

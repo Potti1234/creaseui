@@ -24,6 +24,11 @@ export const clippedText = (
       range.selectNodeContents(node)
       const box = range.getBoundingClientRect()
       if (box.width === 0) continue
+      /* Every clipping ancestor is checked: a wide inner box that fits the
+         text must not hide an outer box that cuts it. An intentional
+         region (ellipsis, scrolling, opt-out) may cut its own content, so
+         from there on its box is what outer clippers must fit. */
+      let measured: { left: number; right: number } = box
       for (
         let ancestor: Element | null = node.parentElement;
         ancestor !== null && ancestor !== document.body;
@@ -31,19 +36,27 @@ export const clippedText = (
       ) {
         const style = getComputedStyle(ancestor)
         const overflow = [style.overflowX, style.overflowY]
+        const rect = ancestor.getBoundingClientRect()
         if (
           ancestor.hasAttribute('data-clip-intended') ||
           style.textOverflow === 'ellipsis' ||
           overflow.some(value => value === 'auto' || value === 'scroll')
-        )
-          break
+        ) {
+          measured = {
+            left: Math.max(measured.left, rect.left),
+            right: Math.min(measured.right, rect.right),
+          }
+          continue
+        }
         if (!overflow.some(value => value === 'hidden' || value === 'clip'))
           continue
-        const clip = ancestor.getBoundingClientRect()
         /* Visually hidden text (sr-only) is a 1px clip by design. */
-        if (clip.width <= 1 || clip.height <= 1) break
-        const lost = Math.max(clip.left - box.left, box.right - clip.right)
-        if (lost > 0.5)
+        if (rect.width <= 1 || rect.height <= 1) break
+        const lost = Math.max(
+          rect.left - measured.left,
+          measured.right - rect.right,
+        )
+        if (lost > 0.5) {
           found.push({
             text,
             overflow: Math.round(lost),
@@ -51,7 +64,8 @@ export const clippedText = (
               ancestor.getAttribute('data-slot') ??
               ancestor.tagName.toLowerCase(),
           })
-        break
+          break
+        }
       }
     }
     return found
