@@ -1,18 +1,29 @@
 import { expect, test } from '@playwright/test'
 
+import {
+  DEFAULT_CONFIG,
+  accentForTheme,
+  encodePreset,
+} from '../../src/demo/create-preset'
+
 /* R1 regression: derived state colors (hover mixes) must resolve against the
-   Create board's scoped palette, not the :root palette, in every renderer. */
-for (const theme of ['Emerald', 'Blue'] as const) {
+   Create board's scoped palette, not the :root palette, in every renderer.
+   The accent is applied through the Open Preset input since the accent is
+   parametric now — a preset code sets hue/chroma/lightness exactly. */
+for (const theme of ['emerald', 'blue'] as const) {
   test(`primary button hover keeps the scoped ${theme} palette`, async ({
     page,
   }) => {
     await page.goto('/create')
-    await page.locator('#create-theme-picker-button').click()
-    await page
-      .locator('#create-theme-picker-panel button', {
-        hasText: new RegExp(`^${theme}$`),
-      })
-      .click()
+    await page.getByText('Open Preset', { exact: true }).click()
+    await page.locator('#create-preset-input').fill(
+      encodePreset({
+        ...DEFAULT_CONFIG,
+        ...accentForTheme(theme),
+        hover: 'accent',
+      }),
+    )
+    await page.getByRole('button', { name: 'Apply Preset' }).click()
     const button = page
       .locator(
         '[data-crease-board-theme] [data-slot="button"], .create-board-theme [data-slot="button"]',

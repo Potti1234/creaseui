@@ -465,15 +465,21 @@ const colorPicker = (
     ),
   )
 
+const STUDIO_RADIUS: Readonly<Record<string, number>> = {
+  none: 0,
+  medium: 1,
+  large: 1.4,
+}
+
 const themeConfig = (
   color: typeof Color.Type,
   radius = 'large',
   font = 'inter',
 ): Preset.Config => ({
   ...Preset.DEFAULT_CONFIG,
-  theme: color,
+  ...Preset.accentForTheme(color),
   chartColor: color,
-  radius,
+  radius: STUDIO_RADIUS[radius] ?? 1,
   font,
 })
 const previewUrl = (block: string, isDark: boolean): string =>

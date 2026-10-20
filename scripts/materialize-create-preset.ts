@@ -1,6 +1,8 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
+import { Option } from 'effect'
+
 import {
   parsePresetInput,
   presetManifest,
@@ -14,12 +16,12 @@ const option = (name: string): string | undefined => {
 
 const input =
   option('--preset') ??
-  process.argv.find(argument => /^[ab][0-9A-Za-z]+$/u.test(argument))
+  process.argv.find(argument => /^[abc][0-9A-Za-z]+$/u.test(argument))
 if (!input) throw new Error('Pass --preset <code> from the Create page.')
 const config = parsePresetInput(input)
-if (!config) throw new Error(`Invalid preset: ${input}`)
+if (Option.isNone(config)) throw new Error(`Invalid preset: ${input}`)
 
-const manifest = presetManifest(config)
+const manifest = presetManifest(config.value)
 const output = resolve(
   option('--output') ?? `.registry/presets/${manifest.preset}`,
 )
