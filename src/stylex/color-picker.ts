@@ -424,6 +424,7 @@ export const colorPickerEyeDropper = <Msg>(
               reset.button,
               styles.eyeDropper,
               props.model.disabled && styles.disabled,
+              props.layoutStyle,
             ),
           ),
           h.DataAttribute('slot', 'color-picker-eye-dropper'),

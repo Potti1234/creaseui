@@ -425,7 +425,9 @@ export const colorPickerEyeDropper = <Msg>(
   window.EyeDropper !== undefined
     ? h.button(
         [
-          h.Class(className(reset.button, styles.eyeDropper)),
+          h.Class(
+            className(reset.button, styles.eyeDropper, props.layoutStyle),
+          ),
           h.DataAttribute('slot', 'color-picker-eye-dropper'),
           h.Type('button'),
           h.Disabled(props.model.disabled),
