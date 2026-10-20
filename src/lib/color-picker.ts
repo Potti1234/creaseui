@@ -546,54 +546,56 @@ const pointerFractions = (
   }
 }
 
-const dragPointer = Subscription.make<
-  { id: string; drag: DragChannel | 'idle' },
-  Message
->()(entry => ({
-  areaDrag: entry(
-    {
-      id: S.String,
-      drag: S.Union([DragChannel, S.Literal('idle')]),
-    },
-    {
-      modelToDependencies: model => ({ id: model.id, drag: model.drag }),
-      dependenciesToStream: ({ id, drag }) =>
-        drag === 'idle'
-          ? Stream.empty
-          : Stream.merge(
-              Subscription.fromEventFilterMap({
-                target: window,
-                type: 'pointermove',
-                filterMapEvent: event => {
-                  const element = findChannelElement(id, drag)
-                  return element === null
-                    ? Option.none()
-                    : Option.some(
-                        Message.MovedDragPointer(
-                          pointerFractions(element, event),
-                        ),
-                      )
-                },
-              }),
-              Subscription.fromEvent({
-                target: window,
-                type: 'pointerup',
-                mapEvent: () => Message.ReleasedDragPointer(),
-              }),
-            ),
-    },
-  ),
-}))
+const dragPointer = (key: string) =>
+  Subscription.make<{ id: string; drag: DragChannel | 'idle' }, Message>()(
+    entry => ({
+      [key]: entry(
+        {
+          id: S.String,
+          drag: S.Union([DragChannel, S.Literal('idle')]),
+        },
+        {
+          modelToDependencies: model => ({ id: model.id, drag: model.drag }),
+          dependenciesToStream: ({ id, drag }) =>
+            drag === 'idle'
+              ? Stream.empty
+              : Stream.merge(
+                  Subscription.fromEventFilterMap({
+                    target: window,
+                    type: 'pointermove',
+                    filterMapEvent: event => {
+                      const element = findChannelElement(id, drag)
+                      return element === null
+                        ? Option.none()
+                        : Option.some(
+                            Message.MovedDragPointer(
+                              pointerFractions(element, event),
+                            ),
+                          )
+                    },
+                  }),
+                  Subscription.fromEvent({
+                    target: window,
+                    type: 'pointerup',
+                    mapEvent: () => Message.ReleasedDragPointer(),
+                  }),
+                ),
+        },
+      ),
+    }),
+  )
 
-/** Aggregates the picker's subscriptions under a parent model. */
+/** Aggregates the picker's drag subscriptions under a parent model. `id`
+    namespaces the record key so a parent can host several pickers. */
 export const subscriptions = <ParentModel, Msg>(
   config: Readonly<{
+    id: string
     toChildModel: (model: ParentModel) => Model
     toParentMessage: (message: Message) => Msg
   }>,
 ): Subscription.Subscriptions<ParentModel, Msg> =>
   Subscription.aggregate<ParentModel, Msg>()(
-    Subscription.lift(dragPointer)<ParentModel, Msg>({
+    Subscription.lift(dragPointer(`${config.id}Drag`))<ParentModel, Msg>({
       toChildModel: config.toChildModel,
       toParentMessage: config.toParentMessage,
     }),

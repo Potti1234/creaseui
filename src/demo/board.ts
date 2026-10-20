@@ -1932,6 +1932,7 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     toParentMessage: message => Message.GotRollerShadesMessage({ message }),
   }),
   ColorPicker.subscriptions<Model, Message>({
+    id: 'create-token-picker',
     toChildModel: model => model.tokenPicker,
     toParentMessage: message =>
       Message.GotCreateTokenPickerMessage({ message }),

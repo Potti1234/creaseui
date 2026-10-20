@@ -136,6 +136,7 @@ export const colorPickerTailwindPreviewProgram = definePreviewProgram<
   subscriptions: Subscription.aggregate<Model, Got>()(
     ...colorPickerFixtures.map(fixture =>
       ColorPicker.subscriptions<Model, Got>({
+        id: fixture.id,
         toChildModel: model => model.pickers[fixture.id] ?? FALLBACK,
         toParentMessage: message =>
           Got.GotColorPickerMessage({ id: fixture.id, message }),

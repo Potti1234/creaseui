@@ -121,7 +121,7 @@ const pickerSource = (
         ColorPicker.colorPickerSwatch({ color: ColorPicker.hex(model.picker) }, h),
         'Pick a color',
       ]),
-      triggerClass: 'inline-flex h-9 items-center rounded-md border bg-background px-3 shadow-xs hover:bg-accent',
+      ${styled ? "triggerButtonVariant: 'outline'," : "triggerClass: 'inline-flex h-9 items-center rounded-md border bg-background px-3 shadow-xs hover:bg-accent',"}
     }, h)`
         : fixture.trigger === 'input'
           ? `ColorPicker.colorPicker({
@@ -131,7 +131,7 @@ const pickerSource = (
         ColorPicker.colorPickerSwatch({ color: ColorPicker.hex(model.picker) }, h),
         h.span([h.Class('font-mono text-xs')], [model.value]),
       ]),
-      triggerClass: 'inline-flex h-9 w-36 items-center gap-2 rounded-md border bg-background px-3 shadow-xs hover:bg-accent',
+      ${styled ? "triggerButtonVariant: 'outline'," : "triggerClass: 'inline-flex h-9 w-36 items-center gap-2 rounded-md border bg-background px-3 shadow-xs hover:bg-accent',"}
     }, h)`
           : `ColorPicker.colorPicker({
       model: model.picker,
@@ -204,6 +204,7 @@ export type Message = typeof Message.Type`,
 }`,
     subscriptions: `export const subscriptions = Subscription.aggregate<Model, Message>()(
   ColorPicker.subscriptions<Model, Message>({
+    id: 'color-picker',
     toChildModel: model => model.picker,
     toParentMessage: message => GotColorPickerMessage({ message }),
   }),

@@ -415,9 +415,11 @@ export const colorPickerSwatch = <Msg>(
     [],
   )
 
+export type ColorPickerEyeDropperProps<Msg> = ChannelProps<Msg>
+
 /** Native EyeDropper button; renders nothing where the API is missing. */
 export const colorPickerEyeDropper = <Msg>(
-  props: ChannelProps<Msg>,
+  props: ColorPickerEyeDropperProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html =>
   window.EyeDropper !== undefined
