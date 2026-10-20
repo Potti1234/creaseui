@@ -164,3 +164,62 @@ test('scope follows imported policy modules and every receipt field', () => {
   )
   rmSync(root, { force: true, recursive: true })
 })
+
+/* Review F4: the packages that select the lint implementation are
+   enforcement inputs too. */
+test('scope tracks lint dependency specs, lockfiles and local artifacts', async () => {
+  const { enforcementChanges } = await import('../lib/strict/scope.js')
+  const root = mkdtempSync(path.join(tmpdir(), 'creaseui-scope-deps-'))
+  const git = (...args) =>
+    execFileSync(
+      'git',
+      ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args],
+      { cwd: root },
+    )
+  git('init', '-q')
+  const manifest = spec => ({
+    devDependencies: { '@creaseui/lint': spec, 'left-pad': '1.0.0' },
+    name: 'app',
+  })
+  const lock = (resolved, leftPad = '1.0.0') => ({
+    lockfileVersion: 3,
+    packages: {
+      '': { devDependencies: { '@creaseui/lint': 'file:vendor/lint.tgz' } },
+      'node_modules/@creaseui/lint': { resolved, version: '0.1.0' },
+      'node_modules/left-pad': { version: leftPad },
+    },
+  })
+  mkdirSync(path.join(root, 'vendor'))
+  write(root, 'package.json', manifest('file:vendor/lint.tgz'))
+  write(root, 'package-lock.json', lock('file:vendor/lint.tgz'))
+  writeFileSync(path.join(root, 'vendor/lint.tgz'), Buffer.from([1, 2, 3]))
+  writeFileSync(path.join(root, 'vendor/previous-lint.tgz'), Buffer.from([4]))
+  git('add', '.')
+  git('commit', '-qm', 'baseline')
+  const changes = () => enforcementChanges({ baseline: 'HEAD', rootDir: root })
+  assert.deepEqual(changes(), [])
+
+  /* unrelated dependency updates stay out of scope */
+  write(root, 'package-lock.json', lock('file:vendor/lint.tgz', '1.3.0'))
+  assert.deepEqual(changes(), [])
+  git('checkout', '-q', '--', '.')
+
+  writeFileSync(path.join(root, 'vendor/lint.tgz'), Buffer.from([9, 9, 9]))
+  assert.deepEqual(changes(), [
+    'changes the local lint/policy package vendor/lint.tgz',
+  ])
+  git('checkout', '-q', '--', '.')
+
+  write(root, 'package.json', manifest('file:vendor/previous-lint.tgz'))
+  assert.match(
+    changes().join('\n'),
+    /package\.json changes devDependencies @creaseui\/lint/u,
+  )
+  git('checkout', '-q', '--', '.')
+
+  write(root, 'package-lock.json', lock('file:vendor/previous-lint.tgz'))
+  assert.deepEqual(changes(), [
+    'package-lock.json changes the resolved lint/policy packages',
+  ])
+  rmSync(root, { force: true, recursive: true })
+})

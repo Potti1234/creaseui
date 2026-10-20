@@ -148,7 +148,121 @@ const packageChanges = (beforeText, afterText) => {
       changes.push(`package.json changes script ${name}`)
   if (!same(before.eslintConfig, after.eslintConfig))
     changes.push('package.json changes eslintConfig')
+  for (const field of DEPENDENCY_FIELDS) {
+    const names = new Set([
+      ...Object.keys(dependenciesIn(before, field)),
+      ...Object.keys(dependenciesIn(after, field)),
+    ])
+    for (const name of [...names].filter(isEnforcementPackage).sort()) {
+      const from = dependenciesIn(before, field)[name]
+      const to = dependenciesIn(after, field)[name]
+      if (!same(from, to))
+        changes.push(
+          `package.json changes ${field} ${name} (${JSON.stringify(from ?? null)} -> ${JSON.stringify(to ?? null)})`,
+        )
+    }
+  }
   return changes
+}
+
+/* Packages that select the lint/policy implementation. Their declared
+   versions, lockfile entries and local artifacts are enforcement inputs;
+   deliberate upgrades go through the reviewed baseline like any other. */
+const isEnforcementPackage = name =>
+  name === '@creaseui/lint' ||
+  name === 'eslint' ||
+  name === 'typescript' ||
+  name === 'typescript-eslint' ||
+  name.startsWith('@typescript-eslint/') ||
+  /^(?:@[^/]+\/)?eslint-plugin(?:-|$)/u.test(name)
+
+const DEPENDENCY_FIELDS = [
+  'dependencies',
+  'devDependencies',
+  'optionalDependencies',
+  'peerDependencies',
+  'overrides',
+  'resolutions',
+  'pnpm.overrides',
+]
+
+const dependenciesIn = (manifest, field) => {
+  const value = field
+    .split('.')
+    .reduce((current, key) => current?.[key], manifest)
+  return value !== null && typeof value === 'object' ? value : {}
+}
+
+const LOCKFILES = [
+  'package-lock.json',
+  'npm-shrinkwrap.json',
+  'pnpm-lock.yaml',
+  'yarn.lock',
+  'bun.lock',
+]
+
+/** Lockfile entries for enforcement packages: exact JSON entries for npm,
+    the lines naming those packages for text lockfiles. */
+const lockEntries = (file, text) => {
+  if (text === null) return null
+  if (file.endsWith('.json')) {
+    const lock = parseJson(text)
+    if (lock === undefined) return text
+    const entries = {}
+    for (const [key, value] of Object.entries(lock.packages ?? {})) {
+      const name = key.replace(/^.*node_modules\//u, '')
+      if (key !== '' && isEnforcementPackage(name)) entries[key] = value
+    }
+    for (const [name, value] of Object.entries(lock.dependencies ?? {}))
+      if (isEnforcementPackage(name)) entries[`dependencies/${name}`] = value
+    const root = lock.packages?.['']
+    for (const field of DEPENDENCY_FIELDS)
+      for (const [name, value] of Object.entries(dependenciesIn(root, field)))
+        if (isEnforcementPackage(name)) entries[`root/${field}/${name}`] = value
+    return JSON.stringify(entries)
+  }
+  return text
+    .split(/\r?\n/u)
+    .filter(line => /@creaseui\/lint|eslint|typescript/u.test(line))
+    .join('\n')
+}
+
+/** Local paths (`file:vendor/lint.tgz`, `link:../lint`) the enforcement
+    packages resolve to on either side. */
+const localArtifacts = (beforeText, afterText) => {
+  const found = new Set()
+  for (const text of [beforeText, afterText]) {
+    const manifest = text === null ? undefined : parseJson(text)
+    for (const field of DEPENDENCY_FIELDS)
+      for (const [name, spec] of Object.entries(
+        dependenciesIn(manifest, field),
+      )) {
+        if (!isEnforcementPackage(name) || typeof spec !== 'string') continue
+        const local = /^(?:file:|link:|portal:)?(\.{0,2}\/.*)$/u.exec(spec)
+        const prefixed = /^(?:file|link|portal):(.+)$/u.exec(spec)
+        const target = prefixed?.[1] ?? local?.[1]
+        if (target !== undefined)
+          found.add(path.posix.normalize(target.replace(/^\.\//u, '')))
+      }
+  }
+  return [...found].filter(target => !target.startsWith('..')).sort()
+}
+
+const artifactChanged = (rootDir, baseline, target) => {
+  try {
+    git(rootDir, ['diff', '--quiet', baseline, '--', target])
+  } catch {
+    return true
+  }
+  return (
+    git(rootDir, [
+      'ls-files',
+      '--others',
+      '--exclude-standard',
+      '--',
+      target,
+    ]).trim() !== ''
+  )
 }
 
 const LOCAL_IMPORT =
@@ -205,5 +319,24 @@ export const enforcementChanges = ({ baseline, rootDir }) => {
       changes.push(...packageChanges(before, after))
     else changes.push(`changes ${file}`)
   }
+  for (const file of LOCKFILES) {
+    const absolute = path.join(rootDir, file)
+    const before = lockEntries(file, atBaseline(rootDir, baseline, file))
+    const after = lockEntries(
+      file,
+      existsSync(absolute) ? readFileSync(absolute, 'utf8') : null,
+    )
+    if (before !== after)
+      changes.push(`${file} changes the resolved lint/policy packages`)
+  }
+  const manifestAfter = existsSync(path.join(rootDir, 'package.json'))
+    ? readFileSync(path.join(rootDir, 'package.json'), 'utf8')
+    : null
+  for (const target of localArtifacts(
+    atBaseline(rootDir, baseline, 'package.json'),
+    manifestAfter,
+  ))
+    if (artifactChanged(rootDir, baseline, target))
+      changes.push(`changes the local lint/policy package ${target}`)
   return changes
 }
