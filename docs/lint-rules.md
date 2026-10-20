@@ -237,7 +237,7 @@ export const view = <Msg>(h: HtmlBuilder<Msg>, isPrimary: boolean): Html =>
 
 ### Form association (`form-association`)
 
-A Button's form: reference names a Form id the module never renders.
+A Button's form: reference names a Form id its own view never renders.
 
 #### A footer submit that names the wrong form
 
@@ -252,14 +252,14 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Button from '@/ui/button'
 import * as Form from '@/ui/form'
 
-export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
-  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
-
-export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  Button.button({ type: 'submit', form: 'invite-form', children: ['Send invite'] }, h)
+export const invite = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  h.div([], [
+    Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h),
+    Button.button({ type: 'submit', form: 'invite-form', children: ['Send invite'] }, h),
+  ])
 ```
 
-- src/app/invite.ts:9:41 `crease/form-association`: button() submits form 'invite-form', but the Forms this module renders have ids 'invite-member-form'. Give the Form id 'invite-form' or fix the reference; if that Form renders elsewhere, check it with the form-association audit.
+- src/app/invite.ts:8:43 `crease/form-association`: button() submits form 'invite-form', but the Forms this view renders have ids 'invite-member-form'. Give the Form id 'invite-form' or fix the reference; if that Form renders elsewhere, check it with the form-association audit.
 
 Good:
 
@@ -268,11 +268,11 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Button from '@/ui/button'
 import * as Form from '@/ui/form'
 
-export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
-  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
-
-export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h)
+export const invite = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  h.div([], [
+    Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h),
+    Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h),
+  ])
 ```
 
 #### A footer submit that names the wrong form
@@ -288,14 +288,14 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Button from '@/stylex/button'
 import * as Form from '@/stylex/form'
 
-export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
-  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
-
-export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  Button.button({ type: 'submit', form: 'invite-form', children: ['Send invite'] }, h)
+export const invite = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  h.div([], [
+    Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h),
+    Button.button({ type: 'submit', form: 'invite-form', children: ['Send invite'] }, h),
+  ])
 ```
 
-- src/app/invite.ts:9:41 `crease/form-association`: button() submits form 'invite-form', but the Forms this module renders have ids 'invite-member-form'. Give the Form id 'invite-form' or fix the reference; if that Form renders elsewhere, check it with the form-association audit.
+- src/app/invite.ts:8:43 `crease/form-association`: button() submits form 'invite-form', but the Forms this view renders have ids 'invite-member-form'. Give the Form id 'invite-form' or fix the reference; if that Form renders elsewhere, check it with the form-association audit.
 
 Good:
 
@@ -304,11 +304,11 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Button from '@/stylex/button'
 import * as Form from '@/stylex/form'
 
-export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
-  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
-
-export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h)
+export const invite = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  h.div([], [
+    Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h),
+    Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h),
+  ])
 ```
 
 #### A footer submit that names the wrong form
@@ -324,14 +324,14 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Button from '@/pleat/button'
 import * as Form from '@/pleat/form'
 
-export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
-  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
-
-export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  Button.button({ type: 'submit', form: 'invite-form', children: ['Send invite'] }, h)
+export const invite = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  h.div([], [
+    Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h),
+    Button.button({ type: 'submit', form: 'invite-form', children: ['Send invite'] }, h),
+  ])
 ```
 
-- src/app/invite.ts:9:41 `crease/form-association`: button() submits form 'invite-form', but the Forms this module renders have ids 'invite-member-form'. Give the Form id 'invite-form' or fix the reference; if that Form renders elsewhere, check it with the form-association audit.
+- src/app/invite.ts:8:43 `crease/form-association`: button() submits form 'invite-form', but the Forms this view renders have ids 'invite-member-form'. Give the Form id 'invite-form' or fix the reference; if that Form renders elsewhere, check it with the form-association audit.
 
 Good:
 
@@ -340,11 +340,11 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Button from '@/pleat/button'
 import * as Form from '@/pleat/form'
 
-export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
-  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
-
-export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h)
+export const invite = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  h.div([], [
+    Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h),
+    Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h),
+  ])
 ```
 
 ## Component-author rules

@@ -60,7 +60,7 @@ export const LINT_RULE_GROUPS: ReadonlyArray<LintRuleGroup> = [
         id: 'form-association',
         title: 'Form association',
         summary:
-          "A Button's form: reference names a Form id the module never renders.",
+          "A Button's form: reference names a Form id its own view never renders.",
       },
     ],
   },

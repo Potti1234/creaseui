@@ -219,20 +219,20 @@ export const view = <Msg>(h: HtmlBuilder<Msg>, isPrimary: boolean): Html =>
       `import * as Button from '@/${mod}/button'
 import * as Form from '@/${mod}/form'
 
-export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
-  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
-
-export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  Button.button({ type: 'submit', form: 'invite-form', children: ['Send invite'] }, h)
+export const invite = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  h.div([], [
+    Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h),
+    Button.button({ type: 'submit', form: 'invite-form', children: ['Send invite'] }, h),
+  ])
 `,
       `import * as Button from '@/${mod}/button'
 import * as Form from '@/${mod}/form'
 
-export const content = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
-  Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h)
-
-export const footer = <Msg>(h: HtmlBuilder<Msg>): Html =>
-  Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h)
+export const invite = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  h.div([], [
+    Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h),
+    Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h),
+  ])
 `,
       "submits form 'invite-form'",
     )
