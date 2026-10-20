@@ -343,6 +343,24 @@ const cases = {
     `${header}import { button, type ButtonProps } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => h.span([], ['h-3'].map(paint => button({ children: ['Bad'], class: paint }, h)))`,
     ['crease/no-unverifiable-ui'],
   ],
+  /* Review F5: naming the callback or moving it into a helper does not make
+     its parameter the wrapper's own props. */
+  'tailwind-raw-named-callback': [
+    `${header}import { button, type ButtonProps } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => {\n  const render = (paint: string): Html => button({ children: ['Bad'], class: paint }, h)\n  return h.span([], ['h-3'].map(render))\n}`,
+    ['crease/no-unverifiable-ui'],
+  ],
+  'tailwind-raw-named-function': [
+    `${header}import { button, type ButtonProps } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => {\n  function render(paint: string): Html {\n    return button({ children: ['Bad'], class: paint }, h)\n  }\n  return h.span([], ['h-3'].map(render))\n}`,
+    ['crease/no-unverifiable-ui'],
+  ],
+  'tailwind-raw-private-helper': [
+    `${header}import { button, type ButtonProps } from '@design/button'\nconst paintButton = (paint: string, h: HtmlBuilder<unknown>): Html => button({ children: ['Bad'], class: paint }, h)\nexport const view = (h: HtmlBuilder<unknown>): Html => paintButton('h-3', h)`,
+    ['crease/no-unverifiable-ui'],
+  ],
+  'tailwind-raw-forward-function': [
+    `${header}import { button, type ButtonProps } from '@design/button'\nexport function view(props: ButtonProps, h: HtmlBuilder<unknown>): Html {\n  return button({ ...props }, h)\n}`,
+    [],
+  ],
   'tailwind-control-fixed': [
     `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['Pinned'], class: 'fixed top-0' }, h)`,
     ['crease/component-contract'],

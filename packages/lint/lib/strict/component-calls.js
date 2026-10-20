@@ -232,6 +232,20 @@ export const isStylexCreate = (analysis, callee) => {
   )
 }
 
+/* The wrapper's own function: an exported module-level function, whatever its
+   syntax. Callbacks, nested helpers and private helpers do not own props. */
+const isWrapperFunction = fn => {
+  const parent = fn.parent
+  if (parent?.type === 'ExportDefaultDeclaration') return true
+  if (fn.type === 'FunctionDeclaration')
+    return parent?.type === 'ExportNamedDeclaration'
+  return (
+    parent?.type === 'VariableDeclarator' &&
+    parent.init === fn &&
+    parent.parent?.parent?.type === 'ExportNamedDeclaration'
+  )
+}
+
 export const analyzeCall = ({
   analysis,
   call,
@@ -256,7 +270,7 @@ export const analyzeCall = ({
     seen.add(variable)
     const definition = variable.defs[0]
     if (definition.type === 'Parameter')
-      return definition.node.parent?.type !== 'CallExpression'
+      return isWrapperFunction(definition.node)
     return (
       definition.type === 'Variable' &&
       definition.parent.kind === 'const' &&
