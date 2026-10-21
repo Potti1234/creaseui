@@ -72,6 +72,7 @@ import { nativeSelectPleatPreview } from '@/docs/components/pages/native-select/
 import { progressPleatPreview } from '@/docs/components/pages/progress/pleat'
 import { sliderPleatPreview } from '@/docs/components/pages/slider/pleat'
 import { collapsiblePleatPreview } from '@/docs/components/pages/collapsible/pleat'
+import { colorPickerPleatPreview } from '@/docs/components/pages/color-picker/pleat'
 import { dateRangeInputPleatPreview } from '@/docs/components/pages/date-range-input/pleat'
 import { dateTimeInputPleatPreview } from '@/docs/components/pages/date-time-input/pleat'
 import { dialogPleatPreview } from '@/docs/components/pages/dialog/pleat'
@@ -180,6 +181,7 @@ installPleatExamplePreviewProvider('native-select', nativeSelectPleatPreview)
 installPleatExamplePreviewProvider('progress', progressPleatPreview)
 installPleatExamplePreviewProvider('slider', sliderPleatPreview)
 installPleatExamplePreviewProvider('collapsible', collapsiblePleatPreview)
+installPleatExamplePreviewProvider('color-picker', colorPickerPleatPreview)
 installPleatExamplePreviewProvider(
   'date-range-input',
   dateRangeInputPleatPreview,

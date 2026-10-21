@@ -36,6 +36,7 @@ import { circularProgressPage } from '@/docs/components/pages/circular-progress'
 import { codePage } from '@/docs/components/pages/code'
 import { codeBlockPage } from '@/docs/components/pages/code-block'
 import { collapsiblePage } from '@/docs/components/pages/collapsible'
+import { colorPickerPage } from '@/docs/components/pages/color-picker'
 import { comboboxPage } from '@/docs/components/pages/combobox'
 import { commandPage } from '@/docs/components/pages/command'
 import { contextMenuPage } from '@/docs/components/pages/context-menu'
@@ -163,6 +164,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       codePage,
       codeBlockPage,
       collapsiblePage,
+      colorPickerPage,
       comboboxPage,
       commandPage,
       contextMenuPage,

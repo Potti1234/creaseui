@@ -1043,6 +1043,19 @@
           "target": "@lib/theme-roles.ts"
         }
       ]
+    },
+    {
+      "name": "color-picker-behavior",
+      "type": "registry:lib",
+      "title": "Color Picker Behavior",
+      "description": "Shared Foldkit behavior and helpers for Color Picker.",
+      "files": [
+        {
+          "path": "color-picker.ts",
+          "type": "registry:lib",
+          "target": "@lib/color-picker.ts"
+        }
+      ]
     }
   ]
 }

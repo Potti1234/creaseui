@@ -47,6 +47,7 @@
 - Code Block: /docs/components/code-block — install with `npx creaseui add code-block`
 - Code: /docs/components/code — install with `npx creaseui add code`
 - Collapsible: /docs/components/collapsible — install with `npx creaseui add collapsible`
+- Color Picker: /docs/components/color-picker — install with `npx creaseui add color-picker`
 - Combobox: /docs/components/combobox — install with `npx creaseui add combobox`
 - Command: /docs/components/command — install with `npx creaseui add command`
 - Context Menu: /docs/components/context-menu — install with `npx creaseui add context-menu`

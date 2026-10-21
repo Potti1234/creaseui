@@ -118,7 +118,7 @@ Checkbox/radio state PERSISTS across close+reopen (submodel keeps it) — toggle
 
 When Chrome runs maximized at `--force-device-scale-factor=2` (real 3264x2440, CSS 1600x1091, tool space 1024x768), the client<->tool mapping is:
 `client_x = tool_x * 1.5625`, `client_y = tool_y * 1.5625 - 85.75`
-(≈80-90 tool px of browser chrome sits above client_y=0). Calibrate once per session with the capture-phase recorder, then read target positions off screenshots directly.
+(≈80-90 tool px of browser chrome sits above client_y=0). These constants DRIFT between sessions (a later run measured scale ≈1.5358 — enough to land clicks in dead zones between adjacent tracks/sliders, looking like a component bug). Calibrate once per session BEFORE any pixel-precise drag: arm a capture-phase `document` pointerdown listener via `browser_console` pushing `{x: e.clientX, y: e.clientY}` into `window.__clicks`, click a known element, read it back, solve scale/offset, and cross-check against the target's `getBoundingClientRect()`. `elementFromPoint` uses client coords — it cannot validate the tool→client mapping.
 
 ## hover:none environment — hover-reveal states UNVERIFIABLE visually
 

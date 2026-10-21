@@ -1170,6 +1170,72 @@
       ]
     },
     {
+      "name": "color-picker",
+      "type": "registry:ui",
+      "title": "Color Picker",
+      "description": "A CreaseUI Color Picker component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "color-picker",
+          "contract": "component.color-picker",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "channelElementId",
+            "colorFormats",
+            "colorPicker",
+            "colorPickerAlphaSlider",
+            "colorPickerArea",
+            "colorPickerContent",
+            "colorPickerEyeDropper",
+            "colorPickerFormatSelect",
+            "colorPickerHueSlider",
+            "colorPickerInput",
+            "colorPickerSwatch",
+            "formattedValue",
+            "hex",
+            "init",
+            "reflectValue",
+            "subscriptions",
+            "update"
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "component-classes"
+        }
+      },
+      "registryDependencies": [
+        "Potti1234/creaseui/color-picker-behavior",
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/popover",
+        "Potti1234/creaseui/utils"
+      ],
+      "files": [
+        {
+          "path": "color-picker.ts",
+          "type": "registry:ui",
+          "target": "@ui/color-picker.ts"
+        }
+      ]
+    },
+    {
       "name": "combobox",
       "type": "registry:ui",
       "title": "Combobox",
