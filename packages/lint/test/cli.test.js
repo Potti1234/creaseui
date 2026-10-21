@@ -742,3 +742,91 @@ test('info --catalog lists installable components before anything is installed',
   assert.match(run(directory, 'info').stdout, /creaseui-lint info --catalog/u)
   rmSync(directory, { force: true, recursive: true })
 })
+
+test('doctor reports foundations that only reach attributes, unselected elements or overwritten keys', () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'junction',
+  )
+  symlinkSync(
+    fileURLToPath(new URL('../../../node_modules/foldkit', import.meta.url)),
+    path.join(directory, 'node_modules/foldkit'),
+    'junction',
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/sidebar.ts'),
+    "import type { Html, HtmlBuilder } from 'foldkit/html'\nexport const sidebar = (h: HtmlBuilder<unknown>): Html => h.aside([], ['Base sidebar'])\n",
+  )
+  /* Review of 9f14670b, F6: the supplied cases, verbatim. */
+  const cases = {
+    atOther: "h.main([], [[sidebar(h), h.div([], ['Other'])].at(1)!])",
+    dynamicAt: 'h.main([], [[sidebar(h)].at(Number(h.div.length))!])',
+    eventPayload: "h.main([h.OnClick(sidebar(h))], ['Rebuilt shell'])",
+    filteredAway: 'h.main([], [sidebar(h)].filter(() => false))',
+    mapDestructured:
+      'h.main([], [{ body: sidebar(h) }].map(({ body }) => body))',
+    mapProperty: 'h.main([], [{ body: sidebar(h) }].map(part => part.body))',
+    overwritten:
+      "{ const parts = { body: sidebar(h) }; return pick({ ...parts, body: h.main([], ['Other']) }) }",
+    slicedAway: "h.main([], [sidebar(h), h.div([], ['Other'])].slice(1))",
+    validDirect: 'h.main([], [sidebar(h)])',
+    validMap: 'h.main([], [sidebar(h)].map(child => child))',
+  }
+  writeFileSync(
+    path.join(directory, 'src/design/shell.ts'),
+    [
+      "import type { Html, HtmlBuilder } from 'foldkit/html'",
+      "import { sidebar } from './sidebar'",
+      'const pick = ({ body }: { body: Html }): Html => body',
+      ...Object.entries(cases).map(
+        ([name, body]) =>
+          `export const ${name} = (h: HtmlBuilder<unknown>): Html => ${body}`,
+      ),
+      '',
+    ].join('\n'),
+  )
+  const initArgs = ['init', '--renderer', 'pleat', '--components', 'src/design']
+  assert.equal(run(directory, ...initArgs).status, 0)
+  const lock = path.join(directory, 'crease.lock.json')
+  const receipt = JSON.parse(readFileSync(lock, 'utf8'))
+  for (const artifact of receipt.artifacts) {
+    if (artifact.files.some(file => file.path === 'src/design/sidebar.ts'))
+      artifact.exports = [
+        {
+          contract: 'navigation.sidebar',
+          file: 'src/design/sidebar.ts',
+          name: 'sidebar',
+        },
+      ]
+    if (artifact.files.some(file => file.path === 'src/design/shell.ts'))
+      artifact.exports = Object.keys(cases).map(name => ({
+        contract: 'tasks.shell',
+        file: 'src/design/shell.ts',
+        foundations: ['navigation.sidebar'],
+        name,
+      }))
+  }
+  writeFileSync(lock, JSON.stringify(receipt, null, 2))
+  const doctor = run(directory, 'doctor')
+  rmSync(directory, { force: true, recursive: true })
+  const reported = pattern =>
+    doctor.stdout
+      .split('\n')
+      .filter(line => pattern.test(line))
+      .map(line => /`(\w+)` declares/u.exec(line)[1])
+      .sort()
+  assert.deepEqual(
+    reported(/never renders it: the call's result does not reach/u),
+    ['atOther', 'eventPayload', 'filteredAway', 'overwritten', 'slicedAway'],
+    doctor.stdout,
+  )
+  assert.deepEqual(
+    reported(/can't verify that the call's result reaches/u),
+    ['dynamicAt'],
+    doctor.stdout,
+  )
+  assert.notEqual(doctor.status, 0)
+})

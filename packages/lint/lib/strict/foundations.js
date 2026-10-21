@@ -99,43 +99,102 @@ const returnedOf = fn => {
   return returned
 }
 
-/* foldkit's element builders (`h.div(...)`), recognised by where the
-   called member is declared rather than by the receiver's name. */
+/* foldkit's builder functions (`h.div(attributes, children)`,
+   `h.keyed('li')(key, attributes, children)`, `h.OnClick(message)`),
+   recognised by the declaration of the resolved signature. Only arguments
+   to a `children` parameter are rendered; attributes and the messages
+   they carry are not. */
 const FOLDKIT_HTML = /[\\/]foldkit[\\/](?:dist|src)[\\/]html[\\/]/u
-const isHtmlBuilderCall = (checker, call) => {
-  if (!ts.isPropertyAccessExpression(call.expression)) return false
-  const symbol = checker.getSymbolAtLocation(call.expression.name)
-  return (
-    symbol?.declarations?.some(declaration =>
-      FOLDKIT_HTML.test(declaration.getSourceFile().fileName),
-    ) ?? false
+const builderChildren = (checker, call) => {
+  const declaration = checker.getResolvedSignature(call)?.getDeclaration()
+  if (
+    declaration === undefined ||
+    !FOLDKIT_HTML.test(declaration.getSourceFile().fileName)
+  )
+    return undefined
+  return declaration.parameters.flatMap((parameter, index) =>
+    ts.isIdentifier(parameter.name) && parameter.name.text === 'children'
+      ? [index]
+      : [],
   )
 }
 
-/* Array operations whose result holds the receiver's elements (and, for
-   `concat`, its arguments'), and those that map them through a callback. */
-const COLLECTING = new Set([
-  'at',
+/* Array operations that keep every element (in another order, or with
+   `concat`'s arguments). Selections (`at`, `slice`, `filter`) are followed
+   only with literal arguments; anything else is unverifiable. */
+const REORDERING = new Set([
   'concat',
-  'filter',
-  'find',
-  'findLast',
-  'flat',
   'reverse',
-  'slice',
   'sort',
   'toReversed',
   'toSorted',
 ])
-const MAPPING = new Set(['flatMap', 'map'])
+
+const PRIMITIVE =
+  ts.TypeFlags.StringLike |
+  ts.TypeFlags.NumberLike |
+  ts.TypeFlags.BigIntLike |
+  ts.TypeFlags.BooleanLike |
+  ts.TypeFlags.Void |
+  ts.TypeFlags.Undefined |
+  ts.TypeFlags.Null |
+  ts.TypeFlags.Never
+
+const literalNumber = node => {
+  node = strip(node)
+  if (node === undefined) return undefined
+  if (ts.isNumericLiteral(node)) return Number(node.text)
+  if (
+    ts.isPrefixUnaryExpression(node) &&
+    node.operator === ts.SyntaxKind.MinusToken &&
+    ts.isNumericLiteral(node.operand)
+  )
+    return -Number(node.operand.text)
+  return undefined
+}
+
+const propertyNameOf = property => {
+  const name = property.name
+  return name !== undefined &&
+    (ts.isIdentifier(name) ||
+      ts.isStringLiteral(name) ||
+      ts.isNumericLiteral(name))
+    ? name.text
+    : undefined
+}
+
+/** `true`/`false` for a filter callback that keeps every view
+    (`Boolean`, `() => true`) or none (`() => false`). */
+const constantPredicate = callback => {
+  callback = strip(callback)
+  if (callback === undefined) return undefined
+  if (ts.isIdentifier(callback) && callback.text === 'Boolean') return true
+  if (!(ts.isArrowFunction(callback) || ts.isFunctionExpression(callback)))
+    return undefined
+  const returned = returnedOf(callback)
+  if (returned.length !== 1) return undefined
+  const value = strip(returned[0])
+  return value?.kind === ts.SyntaxKind.TrueKeyword
+    ? true
+    : value?.kind === ts.SyntaxKind.FalseKeyword
+      ? false
+      : undefined
+}
+
+const ANY = '*'
 
 /* Contracts whose calls flow into the returned view: through children,
-   props, branches, local consts, callbacks and helpers. A helper argument
-   counts only when the helper's matching parameter reaches its own returned
-   output; arguments to unknown functions (`String(...)`, imported utilities
-   without a body) are not evidence. */
+   props, branches, local consts, callbacks and helpers. A value is followed
+   along a path (`['body']`, `['1']`, `[ANY, 'body']` for every element), so
+   a destructured property, a selected array element and the last write of
+   an object key are what counts. A helper argument counts only when the
+   helper's matching parameter reaches its own returned output. Primitive
+   results (`String(...)`, `JSON.stringify(...)`) cannot hold a view; other
+   calls the check can't follow are recorded as `uncertain`, so a missing
+   foundation is reported as unverifiable rather than absent. */
 const renderedContracts = (checker, declaration, contractOf) => {
   const rendered = new Set()
+  const uncertain = []
   const declarationOf = symbol =>
     symbol?.valueDeclaration ?? symbol?.declarations?.[0]
   const NO_BINDINGS = new Map()
@@ -167,70 +226,96 @@ const renderedContracts = (checker, declaration, contractOf) => {
     const type = checker.getTypeAtLocation(node)
     return checker.isArrayType(type) || checker.isTupleType(type)
   }
-  /* The part of `node` at `path` that reaches the output. Paths that
-     can't be followed (opaque values, computed keys) are not evidence. */
-  const project = (node, path, depth, bindings) => {
-    if (path.length === 0) return output(node, depth, bindings)
+  const isPrimitive = node => {
+    const type = checker.getTypeAtLocation(node)
+    return (type.isUnion() ? type.types : [type]).every(
+      part => (part.flags & PRIMITIVE) !== 0,
+    )
+  }
+  const variableInitializer = (node, depth) => {
+    const target = declarationOf(calleeSymbol(checker, node))
+    return target !== undefined &&
+      ts.isVariableDeclaration(target) &&
+      depth <= 12
+      ? strip(target.initializer)
+      : undefined
+  }
+  /** The literal an expression is, through local consts. */
+  const literalOf = (node, test, depth = 0) => {
     node = strip(node)
-    if (node === undefined || depth > 12) return
+    if (node === undefined) return undefined
+    if (test(node)) return node
+    return ts.isIdentifier(node)
+      ? literalOf(variableInitializer(node, depth), test, depth + 1)
+      : undefined
+  }
+  const elementsOf = (node, depth) => {
+    const array = literalOf(node, ts.isArrayLiteralExpression, depth)
+    return array === undefined || array.elements.some(ts.isSpreadElement)
+      ? undefined
+      : array.elements
+  }
+  /** Every element of `elements` along `path`, as if they were an array. */
+  const flowElements = (elements, path, depth, bindings) => {
     const [key, ...rest] = path
-    if (ts.isObjectLiteralExpression(node)) {
-      for (const property of node.properties)
-        if (ts.isSpreadAssignment(property))
-          project(property.expression, path, depth, bindings)
-        else if (
-          (ts.isPropertyAssignment(property) ||
-            ts.isShorthandPropertyAssignment(property)) &&
-          (ts.isIdentifier(property.name) ||
-            ts.isStringLiteral(property.name)) &&
-          property.name.text === key
+    if (key === undefined || key === ANY)
+      for (const element of elements)
+        flow(element, key === undefined ? [] : rest, depth, bindings)
+    else if (elements[Number(key)] !== undefined)
+      flow(elements[Number(key)], rest, depth, bindings)
+  }
+  /* Last write wins: follows the value `key` ends up with, scanning back
+     from the final property. Returns whether the key is definitely set. */
+  const flowKey = (object, key, rest, depth, bindings) => {
+    for (const property of [...object.properties].reverse()) {
+      if (ts.isSpreadAssignment(property)) {
+        const spread = literalOf(
+          property.expression,
+          ts.isObjectLiteralExpression,
+          depth,
         )
-          project(
-            ts.isPropertyAssignment(property)
-              ? property.initializer
-              : property.name,
-            rest,
-            depth,
-            bindings,
-          )
-      return
-    }
-    if (ts.isArrayLiteralExpression(node)) {
-      const element = node.elements[Number(key)]
-      if (element !== undefined && !ts.isSpreadElement(element))
-        project(element, rest, depth, bindings)
-      return
-    }
-    if (ts.isConditionalExpression(node)) {
-      project(node.whenTrue, path, depth, bindings)
-      project(node.whenFalse, path, depth, bindings)
-      return
-    }
-    if (ts.isPropertyAccessExpression(node)) {
-      project(node.expression, [node.name.text, ...path], depth, bindings)
-      return
-    }
-    if (ts.isIdentifier(node)) {
-      const target = declarationOf(calleeSymbol(checker, node))
-      const bound = target === undefined ? undefined : parameterOf(target)
-      if (bound !== undefined) {
-        const argument = bindings.get(bound.parameter)
-        if (argument !== undefined)
-          project(
-            argument.node,
-            [...bound.path, ...path],
-            depth + 1,
-            argument.bindings,
-          )
-        return
+        if (spread === undefined)
+          flow(property.expression, [key, ...rest], depth, bindings)
+        else if (flowKey(spread, key, rest, depth + 1, bindings)) return true
+        continue
       }
-      if (target !== undefined && ts.isVariableDeclaration(target))
-        project(target.initializer, path, depth + 1, bindings)
+      if (propertyNameOf(property) !== key) continue
+      if (ts.isPropertyAssignment(property))
+        flow(property.initializer, rest, depth, bindings)
+      else if (ts.isShorthandPropertyAssignment(property))
+        flow(property.name, rest, depth, bindings)
+      return true
+    }
+    return false
+  }
+  /** Every effective value of an object literal (component props). */
+  const flowValues = (object, seen, depth, bindings) => {
+    for (const property of [...object.properties].reverse()) {
+      if (ts.isSpreadAssignment(property)) {
+        const spread = literalOf(
+          property.expression,
+          ts.isObjectLiteralExpression,
+          depth,
+        )
+        if (spread === undefined) flow(property.expression, [], depth, bindings)
+        else flowValues(spread, seen, depth + 1, bindings)
+        continue
+      }
+      const name = propertyNameOf(property)
+      if (name !== undefined) {
+        if (seen.has(name)) continue
+        seen.add(name)
+      }
+      if (ts.isPropertyAssignment(property))
+        flow(property.initializer, [], depth, bindings)
+      else if (ts.isShorthandPropertyAssignment(property))
+        flow(property.name, [], depth, bindings)
     }
   }
-  /* A callback whose first parameter receives the receiver's elements. */
-  const mapped = (callback, receiver, depth, bindings) => {
-    callback = strip(callback)
+  /* A `map`/`flatMap` callback: its first parameter is one element of the
+     receiver, and its result is one element of the output. */
+  const mapped = (call, method, receiver, path, depth, bindings) => {
+    const callback = strip(call.arguments[0])
     const fn =
       callback !== undefined &&
       (ts.isArrowFunction(callback) || ts.isFunctionExpression(callback))
@@ -238,82 +323,155 @@ const renderedContracts = (checker, declaration, contractOf) => {
         : callback !== undefined && ts.isIdentifier(callback)
           ? functionOf(declarationOf(calleeSymbol(checker, callback)))
           : undefined
-    if (fn === undefined) return
+    const [key, ...rest] = path
+    if (fn === undefined || (method === 'flatMap' && key !== undefined)) {
+      uncertain.push(call)
+      return
+    }
     const passed = new Map()
     if (fn.parameters[0] !== undefined)
-      passed.set(fn.parameters[0], { bindings, node: receiver })
-    helper(fn, depth, passed)
+      passed.set(fn.parameters[0], {
+        bindings,
+        node: receiver,
+        path: [key === undefined || key === ANY ? ANY : key],
+      })
+    helper(fn, key === undefined ? [] : rest, depth, passed)
   }
-  const output = (node, depth, bindings) => {
+  const collection = (call, method, receiver, path, depth, bindings) => {
+    const [key, ...rest] = path
+    const indexed = key !== undefined && key !== ANY
+    if (REORDERING.has(method)) {
+      if (indexed) {
+        uncertain.push(call)
+        return
+      }
+      flow(receiver, path, depth, bindings)
+      if (method === 'concat')
+        for (const argument of call.arguments)
+          flow(
+            argument,
+            isArray(argument) || key === undefined ? path : rest,
+            depth,
+            bindings,
+          )
+      return
+    }
+    if (method === 'map' || method === 'flatMap') {
+      mapped(call, method, receiver, path, depth, bindings)
+      return
+    }
+    if (method === 'filter') {
+      const keep = constantPredicate(call.arguments[0])
+      if (keep === false) return
+      if (keep === true && !indexed) flow(receiver, path, depth, bindings)
+      else uncertain.push(call)
+      return
+    }
+    if (method === 'at' || method === 'slice') {
+      const elements = elementsOf(receiver, depth)
+      const [first, second] = call.arguments
+      const start = first === undefined ? 0 : literalNumber(first)
+      const end =
+        second === undefined ? elements?.length : literalNumber(second)
+      if (elements === undefined || start === undefined || end === undefined) {
+        uncertain.push(call)
+        return
+      }
+      if (method === 'slice')
+        flowElements(elements.slice(start, end), path, depth, bindings)
+      else if (elements.at(start) !== undefined)
+        flow(elements.at(start), path, depth, bindings)
+      return
+    }
+    if (method !== 'flat' || path.length > 0) {
+      if (!isPrimitive(call)) uncertain.push(call)
+      return
+    }
+    flow(receiver, [], depth, bindings)
+  }
+  const flowCall = (node, path, depth, bindings) => {
+    const symbol = calleeSymbol(checker, node.expression)
+    const contract = contractOf(symbol)
+    if (contract !== undefined) {
+      rendered.add(contract)
+      for (const argument of node.arguments) flow(argument, [], depth, bindings)
+      return
+    }
+    const fn = functionOf(declarationOf(symbol))
+    if (fn !== undefined) {
+      const passed = new Map()
+      fn.parameters.forEach((parameter, index) => {
+        const argument = parameter.dotDotDotToken
+          ? undefined
+          : node.arguments[index]
+        if (argument !== undefined)
+          passed.set(parameter, { bindings, node: argument, path: [] })
+      })
+      helper(fn, path, depth, passed)
+      return
+    }
+    const children = builderChildren(checker, node)
+    if (children !== undefined) {
+      for (const index of children)
+        flow(node.arguments[index], [], depth, bindings)
+      return
+    }
+    const callee = node.expression
+    if (ts.isPropertyAccessExpression(callee) && isArray(callee.expression)) {
+      collection(
+        node,
+        callee.name.text,
+        callee.expression,
+        path,
+        depth,
+        bindings,
+      )
+      return
+    }
+    if (!isPrimitive(node)) uncertain.push(node)
+  }
+  const flow = (node, path, depth, bindings) => {
     node = strip(node)
     if (node === undefined || depth > 12) return
+    const [key, ...rest] = path
     if (ts.isCallExpression(node)) {
-      const symbol = calleeSymbol(checker, node.expression)
-      const contract = contractOf(symbol)
-      if (contract !== undefined) {
-        rendered.add(contract)
-        for (const argument of node.arguments) output(argument, depth, bindings)
-        return
-      }
-      const fn = functionOf(declarationOf(symbol))
-      if (fn !== undefined) {
-        const passed = new Map()
-        fn.parameters.forEach((parameter, index) => {
-          const argument = parameter.dotDotDotToken
-            ? undefined
-            : node.arguments[index]
-          if (argument !== undefined)
-            passed.set(parameter, { bindings, node: argument })
-        })
-        helper(fn, depth, passed)
-        return
-      }
-      /* foldkit element builders place their arguments in the output;
-         array operations carry their receiver's elements. Any other call
-         (`JSON.stringify`, unknown methods) is not evidence. */
-      if (isHtmlBuilderCall(checker, node)) {
-        for (const argument of node.arguments) output(argument, depth, bindings)
-        return
-      }
-      const callee = node.expression
-      if (ts.isPropertyAccessExpression(callee) && isArray(callee.expression)) {
-        const method = callee.name.text
-        if (COLLECTING.has(method)) {
-          output(callee.expression, depth, bindings)
-          if (method === 'concat')
-            for (const argument of node.arguments)
-              output(argument, depth, bindings)
-        } else if (MAPPING.has(method))
-          mapped(node.arguments[0], callee.expression, depth, bindings)
-      }
+      flowCall(node, path, depth, bindings)
       return
     }
     if (ts.isPropertyAccessExpression(node)) {
-      project(node.expression, [node.name.text], depth, bindings)
+      flow(node.expression, [node.name.text, ...path], depth, bindings)
+      return
+    }
+    if (ts.isElementAccessExpression(node)) {
+      const argument = strip(node.argumentExpression)
+      if (
+        argument !== undefined &&
+        (ts.isStringLiteral(argument) || ts.isNumericLiteral(argument))
+      )
+        flow(node.expression, [argument.text, ...path], depth, bindings)
+      else uncertain.push(node)
       return
     }
     if (ts.isArrayLiteralExpression(node)) {
-      for (const element of node.elements)
-        output(
-          ts.isSpreadElement(element) ? element.expression : element,
-          depth,
-          bindings,
-        )
+      if (key === undefined || key === ANY) {
+        for (const element of node.elements)
+          if (ts.isSpreadElement(element))
+            flow(element.expression, path, depth, bindings)
+          else flow(element, key === undefined ? [] : rest, depth, bindings)
+        return
+      }
+      if (node.elements.some(ts.isSpreadElement)) uncertain.push(node)
+      else flowElements(node.elements, path, depth, bindings)
       return
     }
     if (ts.isObjectLiteralExpression(node)) {
-      for (const property of node.properties)
-        if (ts.isPropertyAssignment(property))
-          output(property.initializer, depth, bindings)
-        else if (ts.isShorthandPropertyAssignment(property))
-          output(property.name, depth, bindings)
-        else if (ts.isSpreadAssignment(property))
-          output(property.expression, depth, bindings)
+      if (key === undefined) flowValues(node, new Set(), depth, bindings)
+      else if (key !== ANY) flowKey(node, key, rest, depth, bindings)
       return
     }
     if (ts.isConditionalExpression(node)) {
-      output(node.whenTrue, depth, bindings)
-      output(node.whenFalse, depth, bindings)
+      flow(node.whenTrue, path, depth, bindings)
+      flow(node.whenFalse, path, depth, bindings)
       return
     }
     if (
@@ -322,12 +480,12 @@ const renderedContracts = (checker, declaration, contractOf) => {
         node.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken ||
         node.operatorToken.kind === ts.SyntaxKind.QuestionQuestionToken)
     ) {
-      output(node.left, depth, bindings)
-      output(node.right, depth, bindings)
+      flow(node.left, path, depth, bindings)
+      flow(node.right, path, depth, bindings)
       return
     }
     if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
-      helper(node, depth, NO_BINDINGS)
+      if (key === undefined) helper(node, [], depth, NO_BINDINGS)
       return
     }
     if (ts.isIdentifier(node)) {
@@ -342,23 +500,30 @@ const renderedContracts = (checker, declaration, contractOf) => {
       if (bound !== undefined) {
         const argument = bindings.get(bound.parameter)
         if (argument !== undefined)
-          project(argument.node, bound.path, depth + 1, argument.bindings)
+          flow(
+            argument.node,
+            [...argument.path, ...bound.path, ...path],
+            depth + 1,
+            argument.bindings,
+          )
         return
       }
       if (target !== undefined && ts.isVariableDeclaration(target))
-        output(target.initializer, depth + 1, bindings)
-      else helper(functionOf(target), depth, NO_BINDINGS)
+        flow(target.initializer, path, depth + 1, bindings)
+      else if (key === undefined)
+        helper(functionOf(target), [], depth, NO_BINDINGS)
     }
   }
-  const helper = (fn, depth, bindings) => {
+  const helper = (fn, path, depth, bindings) => {
     if (fn === undefined) return
-    for (const returned of returnedOf(fn)) output(returned, depth + 1, bindings)
+    for (const returned of returnedOf(fn))
+      flow(returned, path, depth + 1, bindings)
   }
   const fn = functionOf(declaration)
-  if (fn !== undefined) helper(fn, 0, NO_BINDINGS)
+  if (fn !== undefined) helper(fn, [], 0, NO_BINDINGS)
   else if (ts.isVariableDeclaration(declaration))
-    output(declaration.initializer, 0, NO_BINDINGS)
-  return rendered
+    flow(declaration.initializer, [], 0, NO_BINDINGS)
+  return { rendered, uncertain }
 }
 
 export const verifyFoundations = ({ ownership, rootDir }) => {
@@ -417,15 +582,22 @@ export const verifyFoundations = ({ ownership, rootDir }) => {
       ts.forEachChild(node, visit)
     }
     visit(declaration)
-    const rendered = renderedContracts(checker, declaration, contractOf)
+    const { rendered, uncertain } = renderedContracts(
+      checker,
+      declaration,
+      contractOf,
+    )
     for (const foundation of record.foundations) {
       if (foundation === record.contract || rendered.has(foundation)) continue
+      const unfollowed = uncertain[0]
       problems.push(
-        called.has(foundation)
-          ? `${where} declares foundation ${foundation} but never renders it: the call's result does not reach the returned view (unused closures and discarded calls do not count)`
-          : providers.has(foundation)
-            ? `${where} declares foundation ${foundation} but never renders it; call the installed component (imports, comments and names do not count)`
-            : `${where} declares foundation ${foundation}, but no installed export provides it; install the component before building on it`,
+        called.has(foundation) && unfollowed !== undefined
+          ? `${where} declares foundation ${foundation}, but the check can't verify that the call's result reaches the returned view: it passes through \`${unfollowed.getText().replace(/\s+/gu, ' ').slice(0, 60)}\`, which it can't follow; render it through a foldkit element, an array, a literal selection or a helper with a body`
+          : called.has(foundation)
+            ? `${where} declares foundation ${foundation} but never renders it: the call's result does not reach the returned view (unused closures and discarded calls do not count)`
+            : providers.has(foundation)
+              ? `${where} declares foundation ${foundation} but never renders it; call the installed component (imports, comments and names do not count)`
+              : `${where} declares foundation ${foundation}, but no installed export provides it; install the component before building on it`,
       )
     }
   }

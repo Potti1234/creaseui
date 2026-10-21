@@ -11,6 +11,8 @@ import path from 'node:path'
 import { test } from 'node:test'
 import { fileURLToPath } from 'node:url'
 
+import ts from 'typescript'
+
 import { createStrictContext } from '../lib/strict/context.js'
 import { verifyFoundations } from '../lib/strict/foundations.js'
 
@@ -224,15 +226,52 @@ export const pickedProperty = (h: HtmlBuilder<unknown>): Html =>
   pickBody({ body: sidebar(h), other: h.main([], []) })
 export const accessedProperty = (h: HtmlBuilder<unknown>): Html =>
   framed({ body: sidebar(h) }, h)
+export const eventPayload = (h: HtmlBuilder<unknown>): Html =>
+  h.main([h.OnClick(sidebar(h))], ['Rebuilt shell'])
+export const atOther = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [[sidebar(h), h.div([], ['Other'])].at(1)!])
+export const slicedAway = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [sidebar(h), h.div([], ['Other'])].slice(1))
+export const filteredAway = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [sidebar(h)].filter(() => false))
+export const overwritten = (h: HtmlBuilder<unknown>): Html => {
+  const parts = { body: sidebar(h), other: h.div([], []) }
+  return pickBody({ ...parts, body: h.main([], ['Other']) })
+}
+export const atSelf = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [[h.div([], ['Other']), sidebar(h)].at(-1)!])
+export const slicedKept = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [h.div([], ['Other']), sidebar(h)].slice(1))
+export const keyedChild = (h: HtmlBuilder<unknown>): Html =>
+  h.keyed('main')('shell', [], [sidebar(h)])
+export const spreadKept = (h: HtmlBuilder<unknown>): Html => {
+  const parts = { body: h.main([], ['Other']), other: h.div([], []) }
+  return pickBody({ ...parts, body: sidebar(h) })
+}
+export const mapDestructured = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [{ body: sidebar(h) }].map(({ body }) => body))
+export const mapProperty = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [{ body: sidebar(h) }].map(part => part.body))
+export const dynamicAt = (h: HtmlBuilder<unknown>, index: number): Html =>
+  h.main([], [[sidebar(h)].at(index)!])
+export const dynamicFilter = (h: HtmlBuilder<unknown>, keep: boolean): Html =>
+  h.main([], [sidebar(h)].filter(() => keep))
 `,
   )
   const negatives = [
     'methodDiscard',
     'unpickedProperty',
     'stringifiedMethod',
-    'opaqueMethod',
     'mappedAway',
+    'eventPayload',
+    'atOther',
+    'slicedAway',
+    'filteredAway',
+    'overwritten',
   ]
+  /* Calls and selections the check can't follow: reported, but as
+     unverifiable rather than as a proven absence. */
+  const unverifiable = ['opaqueMethod', 'dynamicAt', 'dynamicFilter']
   const positives = [
     'validDirect',
     'passArray',
@@ -241,6 +280,12 @@ export const accessedProperty = (h: HtmlBuilder<unknown>): Html =>
     'arrowMethod',
     'pickedProperty',
     'accessedProperty',
+    'atSelf',
+    'slicedKept',
+    'keyedChild',
+    'spreadKept',
+    'mapDestructured',
+    'mapProperty',
   ]
   const strict = createStrictContext({
     manifest: {
@@ -263,7 +308,7 @@ export const accessedProperty = (h: HtmlBuilder<unknown>): Html =>
           id: 'crease/sidebar',
         },
         {
-          exports: [...negatives, ...positives].map(name => ({
+          exports: [...negatives, ...unverifiable, ...positives].map(name => ({
             contract: 'app.shell',
             file: 'src/design/shell.ts',
             foundations: ['component.sidebar'],
@@ -285,18 +330,49 @@ export const accessedProperty = (h: HtmlBuilder<unknown>): Html =>
     },
     rootDir: root,
   })
+  /* The fixture is a well-typed consumer view. */
+  const program = ts.createProgram([path.join(root, 'src/design/shell.ts')], {
+    module: ts.ModuleKind.ESNext,
+    moduleResolution: ts.ModuleResolutionKind.Bundler,
+    noEmit: true,
+    skipLibCheck: true,
+    strict: true,
+  })
+  assert.deepEqual(
+    ts
+      .getPreEmitDiagnostics(program)
+      .map(diagnostic =>
+        ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'),
+      ),
+    [],
+  )
   const problems = verifyFoundations({
     ownership: strict.ownership,
     rootDir: root,
   })
   rmSync(root, { force: true, recursive: true })
-  /* Review F6 (Oct 21): unknown methods, unpicked properties and
-     stringified output are not rendered foundations. */
+  /* Review F6 (Oct 21 and its follow-up): unknown methods, unpicked or
+     overwritten properties, attribute payloads, unselected elements and
+     stringified output are not rendered foundations; mapping callbacks
+     receive one element. */
+  const named = pattern =>
+    problems
+      .filter(problem => pattern.test(problem))
+      .map(problem => /`(\w+)`/u.exec(problem)[1])
+      .sort()
   assert.deepEqual(
-    problems.map(problem => /`(\w+)`/u.exec(problem)[1]).sort(),
+    named(/the call's result does not reach the returned view/u),
     [...negatives].sort(),
     problems.join('\n'),
   )
-  for (const problem of problems)
-    assert.match(problem, /the call's result does not reach the returned view/u)
+  assert.deepEqual(
+    named(/can't verify that the call's result reaches the returned view/u),
+    [...unverifiable].sort(),
+    problems.join('\n'),
+  )
+  assert.equal(
+    problems.length,
+    negatives.length + unverifiable.length,
+    problems.join('\n'),
+  )
 })
