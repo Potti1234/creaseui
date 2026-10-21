@@ -41,17 +41,18 @@ export const skin = {
   themeLabLauncherIcon: 'size-5',
   themeLabDot: 'absolute top-2 right-2 size-2 rounded-full bg-primary',
   themeLabPanel:
-    'fixed top-16 right-5 bottom-5 z-40 flex w-[24rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl bg-[#282828] text-white shadow-xl ring-1 ring-white/10',
+    'fixed top-16 right-5 bottom-5 z-40 flex w-[24rem] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl bg-card text-card-foreground shadow-xl ring-1 ring-border',
   themeLabHeader:
-    'flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3',
+    'flex items-center justify-between gap-3 border-b border-border px-4 py-3',
   themeLabTitle: 'text-sm font-semibold',
-  themeLabHint: 'font-mono text-[10px] text-white/50',
+  themeLabHint: 'font-mono text-[10px] text-muted-foreground',
   themeLabActions: 'flex items-center gap-1',
   themeLabApply: 'rounded-md px-2 py-1 text-xs font-medium transition-colors',
-  themeLabApplyOn: 'bg-emerald-400/20 text-emerald-300',
-  themeLabApplyOff: 'bg-white/[0.06] text-white/70 hover:bg-white/[0.1]',
+  themeLabApplyOn: 'bg-success/20 text-success',
+  themeLabApplyOff:
+    'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground',
   themeLabIconButton:
-    'inline-flex size-7 items-center justify-center rounded-md text-white/60 outline-none transition-colors hover:bg-white/[0.08] hover:text-white focus-visible:ring-2 focus-visible:ring-white/30',
+    'inline-flex size-7 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring',
   themeLabIcon: 'size-4',
   themeLabBody: 'flex min-h-0 flex-1 flex-col overflow-hidden',
 } as const
