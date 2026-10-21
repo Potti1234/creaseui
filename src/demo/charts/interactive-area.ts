@@ -170,6 +170,7 @@ export const interactiveAreaOption = (
     yAxis: Chart.valueAxis(theme),
     tooltip: Chart.tooltipOptions(theme, {
       formatHeading: (_name, index) => formatDate(slotDate(index)),
+      formatValue: value => Math.round(value),
     }),
     legend: Chart.legendOptions(theme),
     series: [

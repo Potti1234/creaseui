@@ -206,7 +206,11 @@ type TooltipRow = Readonly<{
   color?: string
 }>
 
-const tooltipRowHtml = (row: TooltipRow, preferName: boolean): string => {
+const tooltipRowHtml = (
+  row: TooltipRow,
+  preferName: boolean,
+  formatValue?: (value: number) => number | string,
+): string => {
   // Item-triggered tooltips describe the datum (pie slice, radar series) —
   // seriesName is an auto-generated 'series0' when the series is unnamed.
   // Axis-triggered tooltips describe the series; the category name is the
@@ -214,7 +218,8 @@ const tooltipRowHtml = (row: TooltipRow, preferName: boolean): string => {
   const label = preferName
     ? row.name || row.seriesName || ''
     : row.seriesName || row.name || ''
-  const value = Array.isArray(row.value) ? row.value[1] : row.value
+  const raw = Array.isArray(row.value) ? row.value[1] : row.value
+  const value = formatValue && typeof raw === 'number' ? formatValue(raw) : raw
 
   return `<div style="display:flex;align-items:center;gap:6px;min-width:8rem">
     <span style="width:10px;height:10px;border-radius:2.5px;background:${row.color ?? 'transparent'};flex-shrink:0"></span>
@@ -232,6 +237,8 @@ export const shadcnTooltip = (
   config: Readonly<{
     trigger?: 'axis' | 'item'
     formatHeading?: (name: string, dataIndex: number) => string
+    /** Resampled slots interpolate between real points — round the leak. */
+    formatValue?: (value: number) => number | string
   }> = {},
 ): NonNullable<EChartsOption['tooltip']> => ({
   trigger: config.trigger ?? 'axis',
@@ -265,7 +272,9 @@ export const shadcnTooltip = (
       : ''
 
     const itemTooltip = config.trigger === 'item'
-    return `${headingHtml}${rows.map(row => tooltipRowHtml(row, itemTooltip)).join('')}`
+    return `${headingHtml}${rows
+      .map(row => tooltipRowHtml(row, itemTooltip, config.formatValue))
+      .join('')}`
   },
 })
 
