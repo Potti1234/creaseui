@@ -175,6 +175,34 @@ test('base paint is token-only and @apply follows an allow-list', () => {
   )
 })
 
+test('base @apply colour utilities must name a theme colour role', () => {
+  for (const utility of [
+    'text-shadow-lg',
+    'bg-cover',
+    'bg-fixed',
+    'border-collapse',
+    'text-ellipsis',
+    'decoration-wavy',
+    'bg-red-500',
+    'text-brand',
+  ])
+    assert.ok(
+      kinds(
+        audit({ 'src/styles.css': `@layer base { * { @apply ${utility}; } }` }),
+      ).includes('violation'),
+      utility,
+    )
+  /* A custom role the project's theme defines is a semantic colour. */
+  assert.deepEqual(
+    audit({
+      'src/theme.css': '@theme { --color-brand: var(--brand); }',
+      'src/styles.css':
+        '@layer base { body { @apply text-brand bg-background/90 ring-offset-background font-mono subpixel-antialiased; } }',
+    }),
+    [],
+  )
+})
+
 test('stylesheets imported from outside src are audited', () => {
   const findings = audit({
     'src/entry.ts': "import '../styles/product.css'\n",

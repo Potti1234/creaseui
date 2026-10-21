@@ -120,14 +120,67 @@ const PAINT_WORDS = new Set([
   'transparent',
   'currentcolor',
 ])
-/* Utilities a base/theme rule may @apply: semantic colour roles, the theme
-   font families and font smoothing. Anything else, including unknown
-   utility families, fails. */
-const BASE_APPLY_ALLOWED =
-  /^(?:(?:bg|text|border|outline|ring|fill|stroke|accent|caret|decoration|placeholder|divide)-(?!(?:xs|sm|base|lg|[2-9]?xl|left|right|center|justify|start|end|wrap|nowrap|balance|pretty|clip|ellipsis|none|solid|dashed|dotted|double|hidden|inset|offset|collapse|separate|x|y|t|r|b|l|s|e|auto)(?:$|-))[a-z][a-z-]*(?:\/\d+)?|font-(?:sans|serif|mono)|antialiased|subpixel-antialiased)$/u
-/* Palette colours are never semantic roles. */
-const BASE_APPLY_FORBIDDEN =
-  /^(?:-?(?:p|px|py|pt|pr|pb|pl|ps|pe|m|mx|my|mt|mr|mb|ml|ms|me|w|h|size|min-w|min-h|max-w|max-h|gap|inset|top|left|right|bottom|text-(?:xs|sm|base|lg|[2-9]?xl))-|rounded|shadow|ring-\d|border-\d|.*-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|black|white)(?:-\d+)?(?:\/\d+)?$|.*\[)/u
+/* Utilities a base/theme rule may @apply: a colour utility naming a theme
+   colour role (`bg-background`, `outline-ring/50`), the theme font families
+   and font smoothing. The role must be one the theme defines; a colour
+   prefix followed by any other word (`text-shadow-lg`, `bg-cover`) is a
+   different styling family and fails. */
+const BASE_APPLY_FIXED = new Set([
+  'font-sans',
+  'font-serif',
+  'font-mono',
+  'antialiased',
+  'subpixel-antialiased',
+])
+const COLOR_UTILITY =
+  /^(?:bg|text|border|outline|ring-offset|ring|fill|stroke|accent|caret|decoration|placeholder|divide)-([a-z][a-z0-9-]*?)(?:\/\d+)?$/u
+/* The roles every Crease theme defines; a project's own `@theme` adds its
+   custom roles through `--color-<role>`. */
+const DEFAULT_COLOR_ROLES = [
+  'background',
+  'foreground',
+  'card',
+  'card-foreground',
+  'popover',
+  'popover-foreground',
+  'primary',
+  'primary-foreground',
+  'secondary',
+  'secondary-foreground',
+  'muted',
+  'muted-foreground',
+  'accent',
+  'accent-foreground',
+  'destructive',
+  'destructive-foreground',
+  'border',
+  'input',
+  'ring',
+  'chart-1',
+  'chart-2',
+  'chart-3',
+  'chart-4',
+  'chart-5',
+  'sidebar',
+  'sidebar-foreground',
+  'sidebar-primary',
+  'sidebar-primary-foreground',
+  'sidebar-accent',
+  'sidebar-accent-foreground',
+  'sidebar-border',
+  'sidebar-ring',
+]
+const THEME_COLOR = /--color-([a-z][a-z0-9-]*)\s*:/gu
+/** `--color-<role>` names declared in a stylesheet's `@theme` blocks. */
+const themeColorRoles = root => {
+  const roles = []
+  root.walkAtRules(/^theme$/iu, rule =>
+    rule.walkDecls(/^--color-/u, decl =>
+      roles.push(decl.prop.slice('--color-'.length)),
+    ),
+  )
+  return roles
+}
 const RESET_PROPERTIES =
   /^(?:font(?:-[a-z-]+)?|letter-spacing|line-height|color|margin(?:-[a-z]+)?|padding(?:-[a-z]+)?|border|background(?:-color)?|appearance|-webkit-appearance|text-transform)$/u
 const RESET_VALUES = new Set([
@@ -284,6 +337,34 @@ export const createCssAudit = ({
     if (keys.has(key)) return
     keys.add(key)
     findings.push({ file: display(file), kind, line, message })
+  }
+
+  /* Roles come from the defaults, every project stylesheet's @theme and
+     the theme text audited so far (imports, registry items). */
+  let projectRoles
+  const auditedRoles = new Set()
+  const colorRoles = () => {
+    if (projectRoles === undefined) {
+      projectRoles = new Set(DEFAULT_COLOR_ROLES)
+      for (const file of rootDir === undefined ? [] : findStylesheets(rootDir))
+        try {
+          for (const role of themeColorRoles(
+            postcss.parse(readFileSync(file, 'utf8'), { from: file }),
+          ))
+            projectRoles.add(role)
+        } catch {
+          /* unparsable files are reported when they are audited */
+        }
+    }
+    return projectRoles
+  }
+  const baseApplyAllowed = token => {
+    const utility = token.split(':').at(-1)
+    if (BASE_APPLY_FIXED.has(utility)) return true
+    const role = COLOR_UTILITY.exec(utility)?.[1]
+    return (
+      role !== undefined && (colorRoles().has(role) || auditedRoles.has(role))
+    )
   }
 
   const checkDeclaration = (file, declaration, kind, owned) => {
@@ -452,12 +533,7 @@ export const createCssAudit = ({
             const forbidden = child.params
               .split(/\s+/u)
               .map(token => token.replace(/^!|!$/gu, ''))
-              .filter(
-                token =>
-                  token !== '' &&
-                  (BASE_APPLY_FORBIDDEN.test(token.split(':').at(-1)) ||
-                    !BASE_APPLY_ALLOWED.test(token.split(':').at(-1))),
-              )
+              .filter(token => token !== '' && !baseApplyAllowed(token))
             if (forbidden.length > 0)
               add(
                 file,
@@ -531,6 +607,7 @@ export const createCssAudit = ({
         }
         auditFile(resolved)
       }
+    for (const role of themeColorRoles(root)) auditedRoles.add(role)
     visit(file, root, [], isOwned(file))
   }
 

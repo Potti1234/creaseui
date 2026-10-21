@@ -390,6 +390,8 @@ test('css and doctor reject raw base paint and unlisted base utilities', () => {
   for (const css of [
     '@layer base { * { background: color-mix(in srgb, var(--background) 10%, hotpink); } }',
     '@layer base { * { @apply opacity-50 rotate-45; } }',
+    '@layer base { * { @apply text-shadow-lg; } }',
+    '@layer base { * { @apply bg-cover; } }',
   ]) {
     const directory = scratch()
     mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
