@@ -21,6 +21,7 @@ export const compactGrid = ECharts.compactGrid
 export const registerChart = ECharts.registerChart
 export const legendOptions = ECharts.legendOptions
 export const tooltipOptions = ECharts.tooltipOptions
+export const updateAnimation = ECharts.updateAnimation
 /** @deprecated Use legendOptions. */
 export const shadcnLegend = ECharts.shadcnLegend
 /** @deprecated Use tooltipOptions. */
