@@ -1440,6 +1440,9 @@ const CHART_DATA = {
     signups: [780, 940, 830, 1320, 1140, 1670, 1960],
   },
 } as const
+/* Stable slot ids keep every period's 7 points name-matched so merge-mode
+   updates morph the shape in place; real labels come from the formatter. */
+const CHART_SLOT_NAMES = Chart.slotIds(7)
 Chart.registerChart(CHART_ID, (theme, variant) => {
   const [period, series] = variant.split(':')
   const data = CHART_DATA[period as keyof typeof CHART_DATA] ?? CHART_DATA.month
@@ -1448,9 +1451,13 @@ Chart.registerChart(CHART_ID, (theme, variant) => {
   return {
     ...Chart.updateAnimation(),
     grid: { left: 8, right: 8, top: 18, bottom: 34, containLabel: true },
-    xAxis: Chart.categoryAxis(theme, data.labels),
+    xAxis: Chart.categoryAxis(theme, CHART_SLOT_NAMES, {
+      axisLabel: { formatter: (_name, index) => data.labels[index] ?? '' },
+    }),
     yAxis: Chart.valueAxis(theme, { showLabels: true }),
-    tooltip: Chart.shadcnTooltip(theme),
+    tooltip: Chart.shadcnTooltip(theme, {
+      formatHeading: (_name, index) => data.labels[index] ?? '',
+    }),
     series: [
       {
         id: 'visitors',
