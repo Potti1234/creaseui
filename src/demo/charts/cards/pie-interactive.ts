@@ -24,18 +24,21 @@ Chart.registerChart(HOST_ID, (theme, variant) => {
     MONTHS.findIndex(month => month.value === variant),
   )
 
-  return pieOption(theme, {
-    names: MONTH_NAMES,
-    values: DESKTOP_VALUES,
-    donut: true,
-    activeIndex,
-    centerValue: (
-      DESKTOP_VALUES[activeIndex] ??
-      DESKTOP_VALUES[0] ??
-      0
-    ).toLocaleString(),
-    centerLabel: 'Visitors',
-  })
+  return {
+    ...Chart.updateAnimation(),
+    ...pieOption(theme, {
+      names: MONTH_NAMES,
+      values: DESKTOP_VALUES,
+      donut: true,
+      activeIndex,
+      centerValue: (
+        DESKTOP_VALUES[activeIndex] ??
+        DESKTOP_VALUES[0] ??
+        0
+      ).toLocaleString(),
+      centerLabel: 'Visitors',
+    }),
+  }
 })
 
 type Props<Msg> = Readonly<{
