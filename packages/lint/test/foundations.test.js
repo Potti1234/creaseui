@@ -1,8 +1,15 @@
 import assert from 'node:assert/strict'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import {
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { test } from 'node:test'
+import { fileURLToPath } from 'node:url'
 
 import { createStrictContext } from '../lib/strict/context.js'
 import { verifyFoundations } from '../lib/strict/foundations.js'
@@ -143,4 +150,153 @@ export const destructuredShell = (items: string[]) => pick({ body: sidebar({ chi
     problems.join('\n'),
     /`ghostShell` declares foundation data\.table, but no installed export provides it/u,
   )
+})
+
+test('foundations flow only through foldkit builders, known collections and followed helpers', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'creaseui-foundations-flow-'))
+  const write = (name, text) => {
+    mkdirSync(path.dirname(path.join(root, name)), { recursive: true })
+    writeFileSync(path.join(root, name), text)
+  }
+  mkdirSync(path.join(root, 'node_modules'))
+  symlinkSync(
+    fileURLToPath(new URL('../../../node_modules/foldkit', import.meta.url)),
+    path.join(root, 'node_modules/foldkit'),
+    'junction',
+  )
+  write(
+    'tsconfig.json',
+    JSON.stringify({
+      compilerOptions: {
+        module: 'esnext',
+        moduleResolution: 'bundler',
+        skipLibCheck: true,
+        strict: true,
+      },
+      include: ['src'],
+    }),
+  )
+  write(
+    'src/design/sidebar.ts',
+    `import type { Html, HtmlBuilder } from 'foldkit/html'
+export const sidebar = (h: HtmlBuilder<unknown>): Html => h.aside([], [])
+`,
+  )
+  write(
+    'src/design/shell.ts',
+    `import type { Html, HtmlBuilder } from 'foldkit/html'
+import { sidebar } from './sidebar'
+declare const opaque: { wrap(child: Html): Html }
+const methods = {
+  discard(child: Html, h: HtmlBuilder<unknown>): Html {
+    return h.main([], ['Rebuilt shell'])
+  },
+  frame(child: Html, h: HtmlBuilder<unknown>): Html {
+    return h.main([], [child])
+  },
+  wrap: (child: Html, h: HtmlBuilder<unknown>): Html => h.main([], [child]),
+}
+const pick = ({ other }: { body: Html; other: Html }): Html => other
+const pickBody = ({ body }: { body: Html; other: Html }): Html => body
+const framed = (parts: { body: Html }, h: HtmlBuilder<unknown>): Html =>
+  h.main([], [parts.body])
+export const methodDiscard = (h: HtmlBuilder<unknown>): Html =>
+  methods.discard(sidebar(h), h)
+export const unpickedProperty = (h: HtmlBuilder<unknown>): Html =>
+  pick({ body: sidebar(h), other: h.main([], ['Rebuilt shell']) })
+export const stringifiedMethod = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [JSON.stringify(sidebar(h))])
+export const opaqueMethod = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [opaque.wrap(sidebar(h))])
+export const mappedAway = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [sidebar(h)].map(() => h.div([], [])))
+export const validDirect = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [sidebar(h)])
+export const passArray = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [sidebar(h)].map(child => child))
+export const filtered = (h: HtmlBuilder<unknown>): Html =>
+  h.main([], [h.header([], [])].concat([sidebar(h)]).filter(Boolean))
+export const methodFrame = (h: HtmlBuilder<unknown>): Html =>
+  methods.frame(sidebar(h), h)
+export const arrowMethod = (h: HtmlBuilder<unknown>): Html =>
+  methods.wrap(sidebar(h), h)
+export const pickedProperty = (h: HtmlBuilder<unknown>): Html =>
+  pickBody({ body: sidebar(h), other: h.main([], []) })
+export const accessedProperty = (h: HtmlBuilder<unknown>): Html =>
+  framed({ body: sidebar(h) }, h)
+`,
+  )
+  const negatives = [
+    'methodDiscard',
+    'unpickedProperty',
+    'stringifiedMethod',
+    'opaqueMethod',
+    'mappedAway',
+  ]
+  const positives = [
+    'validDirect',
+    'passArray',
+    'filtered',
+    'methodFrame',
+    'arrowMethod',
+    'pickedProperty',
+    'accessedProperty',
+  ]
+  const strict = createStrictContext({
+    manifest: {
+      artifacts: [
+        {
+          exports: [
+            {
+              contract: 'component.sidebar',
+              file: 'src/design/sidebar.ts',
+              name: 'sidebar',
+            },
+          ],
+          files: [
+            {
+              path: 'src/design/sidebar.ts',
+              rawRendering: true,
+              role: 'renderer',
+            },
+          ],
+          id: 'crease/sidebar',
+        },
+        {
+          exports: [...negatives, ...positives].map(name => ({
+            contract: 'app.shell',
+            file: 'src/design/shell.ts',
+            foundations: ['component.sidebar'],
+            name,
+          })),
+          files: [
+            {
+              path: 'src/design/shell.ts',
+              rawRendering: true,
+              role: 'renderer',
+            },
+          ],
+          id: 'app/shell',
+        },
+      ],
+      policyVersion: 'crease-default-v1',
+      renderer: 'tailwind',
+      schemaVersion: 1,
+    },
+    rootDir: root,
+  })
+  const problems = verifyFoundations({
+    ownership: strict.ownership,
+    rootDir: root,
+  })
+  rmSync(root, { force: true, recursive: true })
+  /* Review F6 (Oct 21): unknown methods, unpicked properties and
+     stringified output are not rendered foundations. */
+  assert.deepEqual(
+    problems.map(problem => /`(\w+)`/u.exec(problem)[1]).sort(),
+    [...negatives].sort(),
+    problems.join('\n'),
+  )
+  for (const problem of problems)
+    assert.match(problem, /the call's result does not reach the returned view/u)
 })
