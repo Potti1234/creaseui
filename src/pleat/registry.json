@@ -1461,6 +1461,32 @@
       ]
     },
     {
+      "name": "pleat-color-picker",
+      "type": "registry:lib",
+      "title": "Pleat Color Picker Source",
+      "description": "A shared Pleat source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "color-picker.ts",
+          "type": "registry:lib",
+          "target": "@ui/pleat/color-picker.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/color-picker-behavior",
+        "Potti1234/creaseui/crease-theme-css",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
+        "Potti1234/creaseui/pleat-core",
+        "Potti1234/creaseui/pleat-foundations-tokens",
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-popover",
+        "Potti1234/creaseui/pleat-reset",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens"
+      ]
+    },
+    {
       "name": "pleat-combobox",
       "type": "registry:ui",
       "title": "Combobox",

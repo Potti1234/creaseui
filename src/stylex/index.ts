@@ -30,6 +30,7 @@ export * as CircularProgress from './circular-progress.js'
 export * as CodeBlock from './code-block.js'
 export * as Code from './code.js'
 export * as Collapsible from './collapsible.js'
+export * as ColorPicker from './color-picker.js'
 export * as Combobox from './combobox.js'
 export * as Command from './command.js'
 export * as ContextMenu from './context-menu.js'
@@ -156,6 +157,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'code-block',
   'code',
   'collapsible',
+  'color-picker',
   'combobox',
   'command',
   'context-menu',

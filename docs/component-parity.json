@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 123,
+    "registryItems": 124,
     "creaseOnlyRecipes": [
       "action-bar",
       "avatar-group",
@@ -34,6 +34,7 @@
       "circular-progress",
       "code",
       "code-block",
+      "color-picker",
       "data-grid",
       "data-table",
       "date-input",
@@ -557,6 +558,24 @@
         "src/ui/collapsible.ts",
         "src/ui/registry.json#collapsible",
         "/docs/components/collapsible"
+      ]
+    },
+    {
+      "component": "color-picker",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/color-picker.ts",
+        "src/ui/registry.json#color-picker",
+        "/docs/components/color-picker"
       ]
     },
     {

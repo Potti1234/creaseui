@@ -6,6 +6,8 @@ import { defineMessageUnion } from 'foldkit/message'
 import { defineView } from 'foldkit/submodel'
 import { modifyFields } from 'foldkit/struct'
 
+import * as BlocksBlocks from '@/demo/blocks/creaseui-blocks'
+import * as BlocksDashboards from '@/demo/blocks/creaseui-dashboards'
 import * as AccountAccess from '@/demo/cards/account-access'
 import * as CardOverview from '@/demo/cards/card-overview'
 import * as ClaimableBalance from '@/demo/cards/claimable-balance'
@@ -41,6 +43,7 @@ import * as TransferFunds from '@/demo/cards/transfer-funds'
 import * as UpcomingPayments from '@/demo/cards/upcoming-payments'
 import * as Preset from '@/demo/create-preset'
 import * as Button from '@/ui/button'
+import * as ColorPicker from '@/ui/color-picker'
 import * as Popover from '@/ui/popover'
 import * as ScrollArea from '@/ui/scroll-area'
 import * as Icon from '@/lib/icon'
@@ -73,7 +76,8 @@ export const Model = S.Struct({
   tokenScheme: S.Literals(['light', 'dark']),
   openToken: S.NullOr(S.String),
   tokenDrafts: S.Record(S.String, S.String),
-  canvas: S.Literals(['board', 'components', 'type', 'palette']),
+  tokenPicker: ColorPicker.Model,
+  canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   pickerPopovers: S.Struct({
     style: Popover.Model,
     base: Popover.Model,
@@ -172,10 +176,13 @@ export const Message = defineMessageUnion({
     token: S.String,
     value: S.String,
   },
+  GotCreateTokenPickerMessage: {
+    message: ColorPicker.Message,
+  },
   ClickedResetCreateTokens: {},
   ChoseCreateScheme: { scheme: S.Literals(['system', 'light', 'dark']) },
   ChoseCreateCanvas: {
-    canvas: S.Literals(['board', 'components', 'type', 'palette']),
+    canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   },
   ClickedResetCreatePreset: {},
   ClickedCopyCreatePreset: {},
@@ -218,6 +225,7 @@ export const init = (): Model => ({
   tokenScheme: 'light',
   openToken: null,
   tokenDrafts: {},
+  tokenPicker: ColorPicker.init({ id: 'create-token-picker' }),
   canvas: 'board',
   pickerPopovers: {
     style: Popover.init({ id: 'create-style-picker', isAnimated: true }),
@@ -370,15 +378,31 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           openToken: () => null,
         }),
       }),
-      ToggledCreateToken: ({ token }) => ({
-        model: modifyFields(model, {
-          openToken: () => (model.openToken === token ? null : token),
-          tokenDrafts: drafts => {
-            const { [token]: _dropped, ...rest } = drafts
-            return rest
-          },
-        }),
-      }),
+      ToggledCreateToken: ({ token }) => {
+        const opening = model.openToken !== token
+        const name = token.startsWith('dark:') ? token.slice(5) : token
+        const hex = opening
+          ? Option.flatMap(
+              Option.fromNullishOr(
+                Preset.presetTokens(model.preset, model.tokenScheme)[name],
+              ),
+              Preset.tokenToHex,
+            )
+          : Option.none<string>()
+        return {
+          model: modifyFields(model, {
+            openToken: () => (opening ? token : null),
+            tokenDrafts: drafts => {
+              const { [token]: _dropped, ...rest } = drafts
+              return rest
+            },
+            tokenPicker: picker =>
+              Option.isSome(hex)
+                ? ColorPicker.reflectValue(picker, hex.value)
+                : picker,
+          }),
+        }
+      },
       ChangedCreateToken: ({ token, value }) => {
         /* Drafts hold the raw text so the input never reverts mid-typing;
            overrides only take complete normalized values — a fragment like
@@ -398,6 +422,48 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
           }),
+        }
+      },
+      GotCreateTokenPickerMessage: ({ message: pickerMessage }) => {
+        /* Picker emits the selected color in its display format; normalize any
+           parseable color through oklch so overrides stay on the preset's
+           canonical token shape regardless of the format select. The target
+           token is the currently open row — the picker only renders there. */
+        const next = ColorPicker.update(model.tokenPicker, pickerMessage)
+        const normalized =
+          model.openToken === null
+            ? undefined
+            : Option.getOrElse(
+                Option.flatMap(Option.fromNullishOr(next.outMessage), change =>
+                  Option.flatMap(
+                    ColorPicker.parseColorString(change.value),
+                    rgb => Preset.hexToToken(ColorPicker.rgbToHex(rgb)),
+                  ),
+                ),
+                () => undefined,
+              )
+        const preset =
+          model.openToken !== null &&
+          normalized !== undefined &&
+          Preset.validTokenValue(normalized)
+            ? {
+                ...model.preset,
+                overrides: {
+                  ...model.preset.overrides,
+                  [model.openToken]: normalized,
+                },
+              }
+            : model.preset
+        return {
+          model: modifyFields(model, {
+            tokenPicker: () => next.model,
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+          }),
+          commands: Command.mapMessages(next.commands ?? [], child =>
+            Message.GotCreateTokenPickerMessage({ message: child }),
+          ),
         }
       },
       ClickedResetCreateTokens: () => {
@@ -744,7 +810,13 @@ const CHROME_BUTTON =
   'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent'
 const TINY_LABEL = 'font-mono text-[10px]'
 
-const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
+export type CustomizerPlacement = 'page' | 'drawer'
+
+const customizer = (
+  model: Model,
+  h: HtmlBuilder<Message>,
+  placement: CustomizerPlacement = 'page',
+): Html => {
   const chromeButton = (label: string, onClick: Message): Html =>
     Button.button(
       {
@@ -1035,25 +1107,6 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
         h.div(
           [h.Class('flex items-center gap-2')],
           [
-            Option.isSome(hex)
-              ? h.input([
-                  h.Type('color'),
-                  h.Value(hex.value),
-                  h.AriaLabel(`${token} color`),
-                  h.OnInput(setValue),
-                  h.Class(
-                    'h-8 w-9 shrink-0 cursor-pointer rounded-md border-0 bg-transparent p-0',
-                  ),
-                ])
-              : h.span(
-                  [
-                    h.Class(
-                      'h-8 w-9 shrink-0 rounded-md ring-1 ring-inset ring-white/15',
-                    ),
-                    h.Style({ background: value }),
-                  ],
-                  [],
-                ),
             h.input([
               h.Type('text'),
               h.Value(shown),
@@ -1077,6 +1130,24 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
             ),
           ],
         ),
+        ...(Option.isSome(hex)
+          ? [
+              h.div(
+                [h.Class('[&_[data-slot=color-picker]]:w-full')],
+                [
+                  ColorPicker.colorPicker(
+                    {
+                      model: model.tokenPicker,
+                      toParentMessage: message =>
+                        Message.GotCreateTokenPickerMessage({ message }),
+                      inline: true,
+                    },
+                    h,
+                  ),
+                ],
+              ),
+            ]
+          : []),
         h.p([h.Class('truncate font-mono text-xs text-white/40')], [value]),
       ],
     )
@@ -1282,8 +1353,11 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.aside(
     [
       h.Class(
-        `${DARK_CHROME} fixed top-19 bottom-5 left-5 z-30 flex w-70.5 flex-col overflow-hidden rounded-2xl max-lg:right-3 max-lg:left-3 max-lg:w-auto`,
+        placement === 'drawer'
+          ? `${DARK_CHROME} relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-none shadow-none ring-0`
+          : `${DARK_CHROME} fixed top-19 bottom-5 left-5 z-30 flex w-70.5 flex-col overflow-hidden rounded-2xl max-lg:right-3 max-lg:left-3 max-lg:w-auto`,
       ),
+      h.DataAttribute('theme-lab-customizer', placement),
     ],
     [
       h.div(
@@ -1417,6 +1491,20 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
     ],
   )
 }
+
+/* The theme lab drawer embeds this panel on every page; /create keeps using
+   the 'page' placement inside its own layout. */
+export const createCustomizer = (
+  model: Model,
+  placement: CustomizerPlacement,
+  h: HtmlBuilder<Message>,
+): Html => customizer(model, h, placement)
+
+/* Site-wide variant of the preset CSS: emitted on :root/.dark so docs, blocks
+   and every other page pick the theme up. Only rendered when the theme lab's
+   apply switch is on. */
+export const globalThemeStyle = <M>(model: Model, h: HtmlBuilder<M>): Html =>
+  h.style([], [Preset.presetInstallCss(model.preset)])
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const schemeSuffix = model.scheme === 'system' ? '' : ` ${model.scheme}`
@@ -1770,9 +1858,51 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     ],
   )
 
+  const blockFrame = (title: string, block: Html): Html =>
+    h.div(
+      [
+        h.Class(
+          'overflow-hidden rounded-xl bg-background shadow-sm ring-1 ring-border',
+        ),
+      ],
+      [
+        h.div(
+          [h.Class('flex items-center gap-2 border-b border-border px-4 py-2')],
+          [
+            h.span(
+              [h.Class(`${TINY_LABEL} uppercase text-muted-foreground`)],
+              [title],
+            ),
+          ],
+        ),
+        block,
+      ],
+    )
+
+  /* Real blocks from the /blocks catalog, each framed so the canvas reads as
+     distinct pieces rather than a squashed card grid. */
+  const blocksCanvas = h.div(
+    [
+      h.Class(
+        `${themeClass} flex w-280 flex-col gap-(--gap) bg-muted p-(--gap) dark:bg-background`,
+      ),
+      h.DataAttribute('crease-style', model.preset.style),
+      h.DataAttribute('icon-library', model.preset.iconLibrary),
+      h.DataAttribute('slot', 'capture-target'),
+    ],
+    [
+      blockFrame('Kanban board', BlocksBlocks.kanbanBoard<Message>(h)),
+      blockFrame(
+        'Incident console',
+        BlocksDashboards.incidentConsoleDashboard<Message>(h),
+      ),
+      blockFrame('Order detail', BlocksBlocks.orderDetail<Message>(h)),
+    ],
+  )
+
   const canvases: Record<Model['canvas'], Html> = {
     board: themedGrid('w-600 grid-cols-7 md:w-750'),
-    components: themedGrid('w-480 grid-cols-3 md:w-560'),
+    blocks: blocksCanvas,
     type: typeCanvas,
     palette: paletteCanvas,
   }
@@ -1808,7 +1938,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       toolbarSeg(
         [
           ['board', 'Board'],
-          ['components', 'Components'],
+          ['blocks', 'Blocks'],
           ['type', 'Type'],
           ['palette', 'Palette'],
         ],
@@ -1867,5 +1997,11 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
   Subscription.lift(RollerShades.subscriptions)<Model, Message>({
     toChildModel: model => model.rollerShades,
     toParentMessage: message => Message.GotRollerShadesMessage({ message }),
+  }),
+  ColorPicker.subscriptions<Model, Message>({
+    id: 'create-token-picker',
+    toChildModel: model => model.tokenPicker,
+    toParentMessage: message =>
+      Message.GotCreateTokenPickerMessage({ message }),
   }),
 )

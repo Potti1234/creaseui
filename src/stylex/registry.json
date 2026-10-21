@@ -1604,6 +1604,83 @@
       ]
     },
     {
+      "name": "stylex-color-picker",
+      "type": "registry:ui",
+      "title": "Color Picker",
+      "description": "The StyleX Color Picker component for Foldkit.",
+      "categories": [
+        "other"
+      ],
+      "docs": "Stateful Foldkit component: the parent owns its Model, routes its Message through update and renders view; install with the theme, then customize the installed source. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "color-picker",
+          "contract": "component.color-picker",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [
+            "Model",
+            "Message",
+            "init",
+            "update",
+            "subscriptions"
+          ],
+          "publicExports": [
+            "Message",
+            "Model",
+            "OutMessage",
+            "channelElementId",
+            "colorFormats",
+            "colorPicker",
+            "colorPickerAlphaSlider",
+            "colorPickerArea",
+            "colorPickerContent",
+            "colorPickerEyeDropper",
+            "colorPickerFormatSelect",
+            "colorPickerHueSlider",
+            "colorPickerInput",
+            "colorPickerSwatch",
+            "formattedValue",
+            "hex",
+            "init",
+            "reflectValue",
+            "subscriptions",
+            "update"
+          ],
+          "renderer": "stylex",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "parent-model",
+          "stylingOwner": "stylex"
+        }
+      },
+      "files": [
+        {
+          "path": "color-picker.ts",
+          "type": "registry:ui",
+          "target": "@ui/stylex/color-picker.ts"
+        }
+      ],
+      "dependencies": [
+        "@stylexjs/stylex@^0.19.0"
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/color-picker-behavior",
+        "Potti1234/creaseui/crease-theme-css",
+        "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/stylex-contracts",
+        "Potti1234/creaseui/stylex-foundations-tokens-stylex",
+        "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
+        "Potti1234/creaseui/stylex-popover",
+        "Potti1234/creaseui/stylex-reset",
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/stylex-tokens-stylex"
+      ],
+      "devDependencies": [
+        "@stylexjs/unplugin@^0.19.0"
+      ]
+    },
+    {
       "name": "stylex-combobox",
       "type": "registry:ui",
       "title": "Combobox",

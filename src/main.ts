@@ -23,6 +23,7 @@ import * as Blocks from '@/demo/blocks/registry'
 import * as Board from '@/demo/board'
 import * as BoardStyleX from '@/demo/board-stylex'
 import * as BoardPleat from '@/demo/board-pleat'
+import * as Preset from '@/demo/create-preset'
 import * as Landing from '@/demo/landing'
 import * as ChartsArea from '@/demo/charts/area'
 import * as ChartsBar from '@/demo/charts/bar'
@@ -37,11 +38,13 @@ import * as ComponentCatalog from '@/docs/components/catalog'
 import * as GettingStartedPage from '@/docs/getting-started-view'
 import * as CopyFeedback from '@/docs/copy-feedback'
 import * as CodeFile from '@/lib/code-file'
+import * as Icon from '@/lib/icon'
 import * as CodeBlock from '@/ui/code-block'
 import * as Page from '@/app/page'
 import * as Chrome from '@/site/chrome'
 import * as DocsSearch from '@/site/docs-search'
 import { counterpartUrl, renderer } from '@/site/config'
+import { skin } from '@/site/skin'
 import {
   AppRoute,
   type ChartSection,
@@ -65,6 +68,13 @@ export const Model = S.Struct({
   route: AppRoute,
   currentUrl: S.String,
   isDark: S.Boolean,
+  tailwindBoard: Board.Model,
+  styleXBoard: BoardStyleX.Model,
+  pleatBoard: BoardPleat.Model,
+  themeLab: S.Struct({
+    open: S.Boolean,
+    applied: S.Boolean,
+  }),
   page: Page.Page,
   docsSearch: DocsSearch.Model,
 })
@@ -74,11 +84,36 @@ export type Model = typeof Model.Type
 
 export const Flags = S.Struct({
   isDark: S.Boolean,
+  themeLab: S.Struct({
+    applied: S.Boolean,
+    preset: S.NullOr(S.String),
+  }),
 })
 export type Flags = typeof Flags.Type
 
+const THEME_LAB_KEY = 'creaseui-theme-lab'
+
+const readThemeLabValue = (
+  raw: string | null,
+): { applied: boolean; preset: string | null } => {
+  try {
+    if (raw === null) return { applied: false, preset: null }
+    const parsed: unknown = JSON.parse(raw)
+    if (typeof parsed !== 'object' || parsed === null)
+      return { applied: false, preset: null }
+    const record = parsed as Record<string, unknown>
+    return {
+      applied: record['applied'] === true,
+      preset: typeof record['preset'] === 'string' ? record['preset'] : null,
+    }
+  } catch {
+    return { applied: false, preset: null }
+  }
+}
+
 export const flags: Effect.Effect<Flags> = Effect.sync(() => ({
   isDark: document.documentElement.classList.contains('dark'),
+  themeLab: readThemeLabValue(localStorage.getItem(THEME_LAB_KEY)),
 }))
 
 // MESSAGE
@@ -170,6 +205,11 @@ export const Message = defineMessageUnion({
   ObservedDocsSidebarScroll: {},
   SubmittedLintPreview: {},
   GotDocsSearchMessage: { message: DocsSearch.Message },
+  ToggledThemeLab: {},
+  ToggledThemeApply: {},
+  ClickedResetSiteTheme: {},
+  StorageThemeChanged: { value: S.NullOr(S.String) },
+  CompletedPersistThemeLab: {},
 })
 export type Message = typeof Message.Type
 
@@ -180,11 +220,34 @@ export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
   url: Url,
 ) => {
   const route = urlToAppRoute(url)
+  const storedPreset = Option.getOrNull(
+    Option.flatMap(
+      Option.fromNullishOr(flags.themeLab?.preset),
+      Preset.decodePreset,
+    ),
+  )
+  const seedPreset = <M extends { preset: Preset.Config; presetInput: string }>(
+    board: M,
+  ): M =>
+    storedPreset === null
+      ? board
+      : {
+          ...board,
+          preset: storedPreset,
+          presetInput: Preset.encodePreset(storedPreset),
+        }
   return {
     model: {
       route,
       currentUrl: urlToString(url),
       isDark: flags.isDark,
+      tailwindBoard: seedPreset(Board.init()),
+      styleXBoard: seedPreset(BoardStyleX.init()),
+      pleatBoard: seedPreset(BoardPleat.init()),
+      themeLab: {
+        open: false,
+        applied: flags.themeLab?.applied === true && storedPreset !== null,
+      },
       page: Page.init(route),
       docsSearch: DocsSearch.init(),
     },
@@ -246,6 +309,16 @@ const ScrollToFragment = Command.define('ScrollToFragment', {
     ),
 })
 
+const PersistThemeLab = Command.define('PersistThemeLab', {
+  args: { applied: S.Boolean, preset: S.String },
+  messages: [Message.CompletedPersistThemeLab],
+  execute: ({ applied, preset }) =>
+    Effect.sync(() => {
+      localStorage.setItem(THEME_LAB_KEY, JSON.stringify({ applied, preset }))
+      return Message.CompletedPersistThemeLab()
+    }),
+})
+
 const LoadBlockCode = Command.define('LoadBlockCode', {
   args: { renderer: Page.Renderer, name: S.String },
   messages: [Message.LoadedBlockCode],
@@ -262,6 +335,13 @@ const LoadBlockCode = Command.define('LoadBlockCode', {
 type UpdateReturn = Update.Return<Model, Message>
 const withUpdateReturn = M.withReturnType<UpdateReturn>()
 
+const activeBoardPreset = (model: Model): Preset.Config =>
+  renderer === 'stylex'
+    ? model.styleXBoard.preset
+    : renderer === 'pleat'
+      ? model.pleatBoard.preset
+      : model.tailwindBoard.preset
+
 export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     withUpdateReturn,
@@ -271,7 +351,86 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       CompletedScrollToFragment: () => ({ model: model }),
       CompletedLoadExternal: () => ({ model: model }),
       CompletedApplyTheme: () => ({ model: model }),
+      CompletedPersistThemeLab: () => ({ model: model }),
       IgnoredBlocksPreviewInput: () => ({ model: model }),
+      ToggledThemeLab: () => ({
+        model: modifyFields(model, {
+          themeLab: () => ({
+            ...model.themeLab,
+            open: !model.themeLab.open,
+          }),
+        }),
+      }),
+      ToggledThemeApply: () => {
+        const applied = !model.themeLab.applied
+        return {
+          model: modifyFields(model, {
+            themeLab: () => ({ ...model.themeLab, applied }),
+          }),
+          commands: [
+            PersistThemeLab({
+              applied,
+              preset: Preset.encodePreset(activeBoardPreset(model)),
+            }),
+          ],
+        }
+      },
+      ClickedResetSiteTheme: () => {
+        const resetFields = {
+          preset: Preset.DEFAULT_CONFIG,
+          presetInput: Preset.encodePreset(Preset.DEFAULT_CONFIG),
+          presetError: null,
+        }
+        const reset =
+          renderer === 'stylex'
+            ? { styleXBoard: { ...model.styleXBoard, ...resetFields } }
+            : renderer === 'pleat'
+              ? { pleatBoard: { ...model.pleatBoard, ...resetFields } }
+              : { tailwindBoard: { ...model.tailwindBoard, ...resetFields } }
+        return {
+          model: {
+            ...model,
+            ...reset,
+            themeLab: { ...model.themeLab, applied: false },
+          },
+          commands: [
+            PersistThemeLab({
+              applied: false,
+              preset: Preset.encodePreset(Preset.DEFAULT_CONFIG),
+            }),
+          ],
+        }
+      },
+      StorageThemeChanged: ({ value }) => {
+        const stored = readThemeLabValue(value)
+        const config = Option.getOrNull(
+          Option.flatMap(
+            Option.fromNullishOr(stored.preset),
+            Preset.decodePreset,
+          ),
+        )
+        const applyConfig = <
+          M extends { preset: Preset.Config; presetInput: string },
+        >(
+          board: M,
+        ): M =>
+          config === null
+            ? board
+            : {
+                ...board,
+                preset: config,
+                presetInput: Preset.encodePreset(config),
+              }
+        return {
+          model: {
+            ...model,
+            tailwindBoard: applyConfig(model.tailwindBoard),
+            styleXBoard: applyConfig(model.styleXBoard),
+            pleatBoard: applyConfig(model.pleatBoard),
+            themeLab: { ...model.themeLab, applied: stored.applied },
+          },
+        }
+      },
       GotDocsSearchMessage: ({ message }) => {
         const next = DocsSearch.update(model.docsSearch, message)
         return {
@@ -451,21 +610,26 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotBoardMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== 'CreatePage') return { model: model }
-        const currentPage = model.page
         const { model: board, commands: boardCommands__ } = Board.update(
-          currentPage.tailwindBoard,
+          model.tailwindBoard,
           childMessage,
         )
         const commands = boardCommands__ ?? []
         return {
-          model: modifyFields(model, {
-            page: () =>
-              modifyFields(currentPage, { tailwindBoard: () => board }),
-          }),
-          commands: Command.mapMessages(commands, next =>
-            Message.GotBoardMessage({ message: next }),
-          ),
+          model: modifyFields(model, { tailwindBoard: () => board }),
+          commands: [
+            ...Command.mapMessages(commands, next =>
+              Message.GotBoardMessage({ message: next }),
+            ),
+            ...(board.preset === model.tailwindBoard.preset
+              ? []
+              : [
+                  PersistThemeLab({
+                    applied: model.themeLab.applied,
+                    preset: Preset.encodePreset(board.preset),
+                  }),
+                ]),
+          ],
         }
       },
 
@@ -563,38 +727,50 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       },
 
       GotBoardStyleXMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== 'CreatePage') return { model: model }
-        const currentPage = model.page
         const { model: board, commands: boardCommands__ } = BoardStyleX.update(
-          currentPage.styleXBoard,
+          model.styleXBoard,
           childMessage,
         )
         const commands = boardCommands__ ?? []
         return {
-          model: modifyFields(model, {
-            page: () => modifyFields(currentPage, { styleXBoard: () => board }),
-          }),
-          commands: Command.mapMessages(commands, next =>
-            Message.GotBoardStyleXMessage({ message: next }),
-          ),
+          model: modifyFields(model, { styleXBoard: () => board }),
+          commands: [
+            ...Command.mapMessages(commands, next =>
+              Message.GotBoardStyleXMessage({ message: next }),
+            ),
+            ...(board.preset === model.styleXBoard.preset
+              ? []
+              : [
+                  PersistThemeLab({
+                    applied: model.themeLab.applied,
+                    preset: Preset.encodePreset(board.preset),
+                  }),
+                ]),
+          ],
         }
       },
 
       GotBoardPleatMessage: ({ message: childMessage }) => {
-        if (model.page._tag !== 'CreatePage') return { model: model }
-        const currentPage = model.page
         const { model: board, commands: boardCommands__ } = BoardPleat.update(
-          currentPage.pleatBoard,
+          model.pleatBoard,
           childMessage,
         )
         const commands = boardCommands__ ?? []
         return {
-          model: modifyFields(model, {
-            page: () => modifyFields(currentPage, { pleatBoard: () => board }),
-          }),
-          commands: Command.mapMessages(commands, next =>
-            Message.GotBoardPleatMessage({ message: next }),
-          ),
+          model: modifyFields(model, { pleatBoard: () => board }),
+          commands: [
+            ...Command.mapMessages(commands, next =>
+              Message.GotBoardPleatMessage({ message: next }),
+            ),
+            ...(board.preset === model.pleatBoard.preset
+              ? []
+              : [
+                  PersistThemeLab({
+                    applied: model.themeLab.applied,
+                    preset: Preset.encodePreset(board.preset),
+                  }),
+                ]),
+          ],
         }
       },
 
@@ -806,9 +982,26 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
 // SUBSCRIPTIONS
 
-const inactiveBoard = Board.init()
-const inactiveBoardStyleX = BoardStyleX.init()
-const inactiveBoardPleat = BoardPleat.init()
+const themeLabStorage = Subscription.make<Model, Message>()(entry => ({
+  themeLabStorage: entry(
+    {},
+    {
+      modelToDependencies: () => ({}),
+      dependenciesToStream: () =>
+        Subscription.fromEventFilterMap({
+          target: window,
+          type: 'storage',
+          filterMapEvent: event =>
+            event instanceof StorageEvent && event.key === THEME_LAB_KEY
+              ? Option.some(
+                  Message.StorageThemeChanged({ value: event.newValue }),
+                )
+              : Option.none(),
+        }),
+    },
+  ),
+}))
+
 const inactiveCatalogDocs = ComponentCatalog.init()
 const inactiveTanStackTablePage = TanStackTablePage.init()
 const inactiveTailwindFeatured = BlocksTailwindPage.init()
@@ -854,32 +1047,21 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     toParentMessage: message => Message.GotDocsSearchMessage({ message }),
     when: model => model.route._tag !== 'Block',
   }),
+  themeLabStorage,
   Subscription.lift(Board.subscriptions)<Model, Message>({
-    toChildModel: model =>
-      model.page._tag === 'CreatePage'
-        ? model.page.tailwindBoard
-        : inactiveBoard,
+    toChildModel: model => model.tailwindBoard,
     toParentMessage: message => Message.GotBoardMessage({ message }),
-    when: model =>
-      model.page._tag === 'CreatePage' && model.page.renderer === 'tailwind',
+    when: () => renderer === 'tailwind',
   }),
   Subscription.lift(boardStyleXSubscriptions)<Model, Message>({
-    toChildModel: model =>
-      model.page._tag === 'CreatePage'
-        ? model.page.styleXBoard
-        : inactiveBoardStyleX,
+    toChildModel: model => model.styleXBoard,
     toParentMessage: message => Message.GotBoardStyleXMessage({ message }),
-    when: model =>
-      model.page._tag === 'CreatePage' && model.page.renderer === 'stylex',
+    when: () => renderer === 'stylex',
   }),
   Subscription.lift(boardPleatSubscriptions)<Model, Message>({
-    toChildModel: model =>
-      model.page._tag === 'CreatePage'
-        ? model.page.pleatBoard
-        : inactiveBoardPleat,
+    toChildModel: model => model.pleatBoard,
     toParentMessage: message => Message.GotBoardPleatMessage({ message }),
-    when: model =>
-      model.page._tag === 'CreatePage' && model.page.renderer === 'pleat',
+    when: () => renderer === 'pleat',
   }),
   Subscription.lift(ComponentCatalog.subscriptions)<Model, Message>({
     toChildModel: model =>
@@ -943,6 +1125,27 @@ const boardStyleXView = defineView<BoardStyleX.Model, BoardStyleX.Message>(
 )
 const boardPleatView = defineView<BoardPleat.Model, BoardPleat.Message>(
   BoardPleat.view,
+)
+const themeLabTailwindView = defineView<
+  Board.Model,
+  Board.Message,
+  Board.CustomizerPlacement
+>((boardModel, placement, h) =>
+  Board.createCustomizer(boardModel, placement, h),
+)
+const themeLabStyleXView = defineView<
+  BoardStyleX.Model,
+  BoardStyleX.Message,
+  'page' | 'drawer'
+>((boardModel, placement, h) =>
+  BoardStyleX.createCustomizer(boardModel, placement, h),
+)
+const themeLabPleatView = defineView<
+  BoardPleat.Model,
+  BoardPleat.Message,
+  'page' | 'drawer'
+>((boardModel, placement, h) =>
+  BoardPleat.createCustomizer(boardModel, placement, h),
 )
 const landingView = defineView<Landing.Model, Landing.Message, boolean>(
   (landingModel, isDark, h) => Landing.view(landingModel, h, isDark),
@@ -1189,6 +1392,133 @@ const chartsSectionView = (
 
 const notFoundView = Chrome.notFound
 
+/* The theme lab hosts the active renderer's create-board customizer in a
+   devtools-style drawer on every page (except /create, which already shows
+   the editor, and standalone block previews). */
+const themeLabControls = (model: Model, h: HtmlBuilder<Message>): Html => {
+  if (model.route._tag === 'Create' || model.route._tag === 'Block')
+    return h.empty
+  const editor =
+    renderer === 'stylex'
+      ? h.submodel({
+          slotId: 'theme-lab-stylex',
+          model: model.styleXBoard,
+          view: themeLabStyleXView,
+          viewInputs: 'drawer' as const,
+          toParentMessage: (message: BoardStyleX.Message): Message =>
+            Message.GotBoardStyleXMessage({ message }),
+        })
+      : renderer === 'pleat'
+        ? h.submodel({
+            slotId: 'theme-lab-pleat',
+            model: model.pleatBoard,
+            view: themeLabPleatView,
+            viewInputs: 'drawer' as const,
+            toParentMessage: (message: BoardPleat.Message): Message =>
+              Message.GotBoardPleatMessage({ message }),
+          })
+        : h.submodel({
+            slotId: 'theme-lab-tailwind',
+            model: model.tailwindBoard,
+            view: themeLabTailwindView,
+            viewInputs: 'drawer' as const,
+            toParentMessage: (message: Board.Message): Message =>
+              Message.GotBoardMessage({ message }),
+          })
+
+  const launcher = h.button(
+    [
+      h.Type('button'),
+      h.OnClick(Message.ToggledThemeLab()),
+      h.AriaLabel(model.themeLab.open ? 'Close theme lab' : 'Open theme lab'),
+      h.AriaExpanded(model.themeLab.open),
+      h.Class(skin.themeLabLauncher),
+      h.DataAttribute('theme-lab', 'launcher'),
+    ],
+    [
+      Icon.settings({ class: skin.themeLabLauncherIcon }, h),
+      ...(model.themeLab.applied
+        ? [h.span([h.Class(skin.themeLabDot)], [])]
+        : []),
+    ],
+  )
+
+  const panel = !model.themeLab.open
+    ? h.empty
+    : h.div(
+        [h.Class(skin.themeLabPanel), h.DataAttribute('theme-lab', 'panel')],
+        [
+          h.div(
+            [h.Class(skin.themeLabHeader)],
+            [
+              h.div(
+                [],
+                [
+                  h.div([h.Class(skin.themeLabTitle)], ['Theme lab']),
+                  h.div(
+                    [h.Class(skin.themeLabHint)],
+                    [
+                      model.themeLab.applied
+                        ? 'applied to every page'
+                        : 'editing \u2014 not applied',
+                    ],
+                  ),
+                ],
+              ),
+              h.div(
+                [h.Class(skin.themeLabActions)],
+                [
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick(Message.ToggledThemeApply()),
+                      h.Class(
+                        `${skin.themeLabApply} ${model.themeLab.applied ? skin.themeLabApplyOn : skin.themeLabApplyOff}`,
+                      ),
+                      h.DataAttribute('theme-lab', 'apply'),
+                    ],
+                    [model.themeLab.applied ? 'Applied' : 'Apply'],
+                  ),
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick(Message.ClickedResetSiteTheme()),
+                      h.AriaLabel('Reset theme'),
+                      h.Class(skin.themeLabIconButton),
+                      h.DataAttribute('theme-lab', 'reset'),
+                    ],
+                    [Icon.rotateCcw({ class: skin.themeLabIcon }, h)],
+                  ),
+                  h.button(
+                    [
+                      h.Type('button'),
+                      h.OnClick(Message.ToggledThemeLab()),
+                      h.AriaLabel('Close theme lab'),
+                      h.Class(skin.themeLabIconButton),
+                      h.DataAttribute('theme-lab', 'close'),
+                    ],
+                    [Icon.x({ class: skin.themeLabIcon }, h)],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          h.div([h.Class(skin.themeLabBody)], [editor]),
+        ],
+      )
+
+  return h.div([], [launcher, panel])
+}
+
+const appliedThemeStyle = (model: Model, h: HtmlBuilder<Message>): Html =>
+  !model.themeLab.applied
+    ? h.empty
+    : renderer === 'stylex'
+      ? BoardStyleX.globalThemeStyle(model.styleXBoard, h)
+      : renderer === 'pleat'
+        ? BoardPleat.globalThemeStyle(model.pleatBoard, h)
+        : Board.globalThemeStyle(model.tailwindBoard, h)
+
 const lintDocsView = (model: Model, h: HtmlBuilder<Message>): Html =>
   model.page._tag === 'LintDocsPage'
     ? h.keyed('div')(
@@ -1243,7 +1573,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 'page-create-tailwind',
                 h.submodel({
                   slotId: 'create-board-tailwind',
-                  model: model.page.tailwindBoard,
+                  model: model.tailwindBoard,
                   view: boardView,
                   toParentMessage: (message: Board.Message): Message =>
                     Message.GotBoardMessage({ message }),
@@ -1254,7 +1584,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                   'page-create-stylex',
                   h.submodel({
                     slotId: 'create-board-stylex',
-                    model: model.page.styleXBoard,
+                    model: model.styleXBoard,
                     view: boardStyleXView,
                     toParentMessage: (message: BoardStyleX.Message): Message =>
                       Message.GotBoardStyleXMessage({ message }),
@@ -1264,7 +1594,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                   'page-create-pleat',
                   h.submodel({
                     slotId: 'create-board-pleat',
-                    model: model.page.pleatBoard,
+                    model: model.pleatBoard,
                     view: boardPleatView,
                     toParentMessage: (message: BoardPleat.Message): Message =>
                       Message.GotBoardPleatMessage({ message }),
@@ -1436,7 +1766,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
   return {
     title,
     body: isFullPage
-      ? h.div([], [pageView(model, h)])
+      ? h.div([], [appliedThemeStyle(model, h), pageView(model, h)])
       : h.div(
           [],
           [
@@ -1453,6 +1783,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
               },
               h,
             ),
+            appliedThemeStyle(model, h),
             pageView(model, h),
             h.submodel({
               slotId: 'site-docs-search',
@@ -1461,6 +1792,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
               toParentMessage: message =>
                 Message.GotDocsSearchMessage({ message }),
             }),
+            themeLabControls(model, h),
           ],
         ),
   }
