@@ -71,12 +71,21 @@ export const Model = S.Struct({
   presetInput: S.String,
   presetError: S.NullOr(S.String),
   isPresetCopied: S.Boolean,
-  section: S.Literals(['theme', 'color', 'shape', 'type', 'motion', 'tokens']),
+  section: S.Literals(['tokens', 'theme', 'color', 'shape', 'type', 'motion']),
   scheme: S.Literals(['system', 'light', 'dark']),
   tokenScheme: S.Literals(['light', 'dark']),
   openToken: S.NullOr(S.String),
   tokenDrafts: S.Record(S.String, S.String),
   tokenPicker: ColorPicker.Model,
+  /* The Color pane's real color pickers — they write decomposed oklch back
+     into the parametric fields (hue/chroma/lightness, surface lightness +
+     saturation + base, nearest chart family). */
+  colorPickers: S.Struct({
+    accent: ColorPicker.Model,
+    surfaceLight: ColorPicker.Model,
+    surfaceDark: ColorPicker.Model,
+    chart: ColorPicker.Model,
+  }),
   canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   pickerPopovers: S.Struct({
     style: Popover.Model,
@@ -149,10 +158,6 @@ export const Message = defineMessageUnion({
     field: Preset.Field,
     value: S.String,
   },
-  ChangedCreateKnob: {
-    knob: Preset.Knob,
-    value: S.Number,
-  },
   ChangedCreatePresetOption: {
     field: Preset.OptionField,
     value: S.String,
@@ -160,12 +165,12 @@ export const Message = defineMessageUnion({
   ChoseCreateTheme: { name: S.String },
   ChoseCreateSection: {
     section: S.Literals([
+      'tokens',
       'theme',
       'color',
       'shape',
       'type',
       'motion',
-      'tokens',
     ]),
   },
   ChoseCreateTokenScheme: {
@@ -177,6 +182,10 @@ export const Message = defineMessageUnion({
     value: S.String,
   },
   GotCreateTokenPickerMessage: {
+    message: ColorPicker.Message,
+  },
+  GotCreateColorPickerMessage: {
+    target: S.Literals(['accent', 'surfaceLight', 'surfaceDark', 'chart']),
     message: ColorPicker.Message,
   },
   ClickedResetCreateTokens: {},
@@ -197,6 +206,90 @@ export const Message = defineMessageUnion({
 export type Message = typeof Message.Type
 
 type UpdateReturn = Update.Return<Model, Message>
+
+const COLOR_PICKER_TARGETS = [
+  'accent',
+  'surfaceLight',
+  'surfaceDark',
+  'chart',
+] as const
+type ColorPickerTarget = (typeof COLOR_PICKER_TARGETS)[number]
+
+/* The derived color a pane picker edits, as the oklch literal it reflects. */
+const pickerToken = (
+  preset: Preset.Config,
+  target: ColorPickerTarget,
+): string =>
+  target === 'accent'
+    ? Preset.accentToken(preset)
+    : target === 'surfaceLight'
+      ? Preset.surfaceToken(preset, 'light')
+      : target === 'surfaceDark'
+        ? Preset.surfaceToken(preset, 'dark')
+        : Preset.chartToken(preset)
+
+const reflectColorPickers = (
+  preset: Preset.Config,
+  pickers: Model['colorPickers'],
+  except?: ColorPickerTarget,
+): Model['colorPickers'] => {
+  const next = { ...pickers }
+  for (const target of COLOR_PICKER_TARGETS) {
+    if (target === except) continue
+    const hex = Preset.tokenToHex(pickerToken(preset, target))
+    if (Option.isSome(hex)) {
+      next[target] = ColorPicker.reflectValue(next[target], hex.value)
+    }
+  }
+  return next
+}
+
+const initColorPicker = (id: string, token: string): ColorPicker.Model =>
+  Option.getOrElse(
+    Option.map(Preset.tokenToHex(token), hex =>
+      ColorPicker.reflectValue(ColorPicker.init({ id }), hex),
+    ),
+    () => ColorPicker.init({ id }),
+  )
+
+/* A picked color decomposes back into the parametric fields that derive it:
+   accent → hue/chroma/lightness, a surface → its lightness + shared tint +
+   nearest base hue, chart → nearest named family. */
+const applyPickedColor = (
+  preset: Preset.Config,
+  target: ColorPickerTarget,
+  l: number,
+  c: number,
+  h: number,
+): Preset.Config => {
+  const fitAt = (knob: Preset.Knob, value: number): number =>
+    Preset.fit(Preset.rangeOf(knob), value)
+  switch (target) {
+    case 'accent':
+      return {
+        ...preset,
+        hue: fitAt('hue', h),
+        chroma: fitAt('chroma', c),
+        lightness: fitAt('lightness', l * 100),
+      }
+    case 'surfaceLight':
+      return {
+        ...preset,
+        surfaceLightness: fitAt('surfaceLightness', l * 100),
+        surfaceSaturation: fitAt('surfaceSaturation', c),
+        base: Preset.snapBase(h, c),
+      }
+    case 'surfaceDark':
+      return {
+        ...preset,
+        surfaceLightnessDark: fitAt('surfaceLightnessDark', l * 100),
+        surfaceSaturation: fitAt('surfaceSaturation', c),
+        base: Preset.snapBase(h, c),
+      }
+    case 'chart':
+      return { ...preset, chartColor: Preset.snapChartColor(h, c) }
+  }
+}
 
 export const init = (): Model => ({
   accountAccess: AccountAccess.init(),
@@ -220,12 +313,30 @@ export const init = (): Model => ({
   presetInput: Preset.encodePreset(Preset.DEFAULT_CONFIG),
   presetError: null,
   isPresetCopied: false,
-  section: 'theme',
+  section: 'tokens',
   scheme: 'system',
   tokenScheme: 'light',
   openToken: null,
   tokenDrafts: {},
   tokenPicker: ColorPicker.init({ id: 'create-token-picker' }),
+  colorPickers: {
+    accent: initColorPicker(
+      'create-accent-picker',
+      Preset.accentToken(Preset.DEFAULT_CONFIG),
+    ),
+    surfaceLight: initColorPicker(
+      'create-surface-light-picker',
+      Preset.surfaceToken(Preset.DEFAULT_CONFIG, 'light'),
+    ),
+    surfaceDark: initColorPicker(
+      'create-surface-dark-picker',
+      Preset.surfaceToken(Preset.DEFAULT_CONFIG, 'dark'),
+    ),
+    chart: initColorPicker(
+      'create-chart-picker',
+      Preset.chartToken(Preset.DEFAULT_CONFIG),
+    ),
+  },
   canvas: 'board',
   pickerPopovers: {
     style: Popover.init({ id: 'create-style-picker', isAnimated: true }),
@@ -299,6 +410,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
               preset: () => decoded,
               presetInput: () => Preset.encodePreset(decoded),
               presetError: () => null,
+              colorPickers: pickers => reflectColorPickers(decoded, pickers),
             }),
           }),
         })
@@ -315,6 +427,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
             pickerPopovers: current => ({ ...current, [field]: picker }),
+            colorPickers: pickers => reflectColorPickers(preset, pickers),
           }),
           commands: Command.mapMessages(commands, next =>
             Message['GotCreatePresetPickerMessage']({ field, message: next }),
@@ -334,19 +447,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             preset: () => preset,
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
-          }),
-        }
-      },
-      ChangedCreateKnob: ({ knob, value }) => {
-        const preset = {
-          ...model.preset,
-          [knob]: Preset.fit(Preset.rangeOf(knob), value),
-        }
-        return {
-          model: modifyFields(model, {
-            preset: () => preset,
-            presetInput: () => Preset.encodePreset(preset),
-            presetError: () => null,
+            colorPickers: pickers => reflectColorPickers(preset, pickers),
           }),
         }
       },
@@ -359,6 +460,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             presetInput: () => Preset.encodePreset(preset.config),
             presetError: () => null,
             scheme: () => preset.scheme ?? 'system',
+            colorPickers: pickers =>
+              reflectColorPickers(preset.config, pickers),
           }),
         }
       },
@@ -466,6 +569,46 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           ),
         }
       },
+      GotCreateColorPickerMessage: ({ target, message: pickerMessage }) => {
+        /* The pane's pickers decompose a picked color back into the
+           parametric fields that derive it (hue/chroma/lightness for accent,
+           lightness + tint + base for surfaces, nearest family for chart).
+           The dragged picker keeps its own color so mid-drag feedback is
+           smooth; the rest reflect the resulting preset. */
+        const next = ColorPicker.update(
+          model.colorPickers[target],
+          pickerMessage,
+        )
+        const picked = Option.flatMap(
+          Option.fromNullishOr(next.outMessage),
+          change =>
+            Option.flatMap(ColorPicker.parseColorString(change.value), rgb =>
+              Preset.hexToToken(ColorPicker.rgbToHex(rgb)),
+            ),
+        )
+        const preset = Option.getOrElse(
+          Option.map(Option.flatMap(picked, Preset.tokenOklch), ([l, c, h]) =>
+            applyPickedColor(model.preset, target, l, c, h),
+          ),
+          () => model.preset,
+        )
+        const pickers = reflectColorPickers(
+          preset,
+          { ...model.colorPickers, [target]: next.model },
+          target,
+        )
+        return {
+          model: modifyFields(model, {
+            colorPickers: () => pickers,
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+          }),
+          commands: Command.mapMessages(next.commands ?? [], child =>
+            Message.GotCreateColorPickerMessage({ target, message: child }),
+          ),
+        }
+      },
       ClickedResetCreateTokens: () => {
         const preset = { ...model.preset, overrides: {} }
         return {
@@ -488,6 +631,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           preset: () => Preset.DEFAULT_CONFIG,
           presetInput: () => Preset.encodePreset(Preset.DEFAULT_CONFIG),
           presetError: () => null,
+          colorPickers: pickers =>
+            reflectColorPickers(Preset.DEFAULT_CONFIG, pickers),
         }),
       }),
       ClickedShuffleCreatePreset: () => {
@@ -497,6 +642,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             preset: () => preset,
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
+            colorPickers: pickers => reflectColorPickers(preset, pickers),
           }),
         }
       },
@@ -802,12 +948,11 @@ const titleCase = (value: string): string =>
     .map(part => `${part[0]?.toUpperCase() ?? ''}${part.slice(1)}`)
     .join(' ')
 
-/* The customizer chrome is a fixed dark inspector surface in both schemes, so
-   it intentionally uses dark-only colors rather than theme tokens. */
-const DARK_CHROME =
-  'dark bg-[#282828] text-white shadow-xl ring-1 ring-white/10'
+/* The customizer chrome follows the site theme — card/popover tokens so it
+   reads light in light mode and dark in dark mode. */
+const CHROME = 'bg-card text-card-foreground shadow-xl ring-1 ring-border'
 const CHROME_BUTTON =
-  'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent'
+  'w-full border-border bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground'
 const TINY_LABEL = 'font-mono text-[10px]'
 
 export type CustomizerPlacement = 'page' | 'drawer'
@@ -842,7 +987,7 @@ const customizer = (
         side: 'right',
         align: 'start',
         triggerClass:
-          'relative flex h-16.5 w-full items-end justify-between rounded-lg border border-white/10 bg-white/[0.035] px-3 pb-2.5 text-left shadow-none outline-none transition-colors hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-white/30',
+          'relative flex h-16.5 w-full items-end justify-between rounded-lg border border-border bg-muted/40 px-3 pb-2.5 text-left shadow-none outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring',
         trigger: h.div(
           [h.Class('flex min-w-0 flex-1 items-end justify-between')],
           [
@@ -872,13 +1017,13 @@ const customizer = (
                         [],
                       ),
                     ]),
-                Icon.chevronRight({ class: 'size-4 text-white/35' }, h),
+                Icon.chevronRight({ class: 'size-4 text-muted-foreground' }, h),
               ],
             ),
           ],
         ),
         class:
-          'dark w-72 border-white/10 bg-[#3a3a3a] p-2 text-white shadow-xl',
+          'w-72 border-border bg-popover p-2 text-popover-foreground shadow-xl',
         content: ScrollArea.scrollArea<Message>(
           {
             class: 'max-h-80',
@@ -891,7 +1036,7 @@ const customizer = (
                     Message['ChangedCreatePresetField']({ field, value }),
                   ),
                   h.Class(
-                    `flex min-h-10 w-full items-center rounded-md px-3 text-left text-sm font-medium outline-none transition-colors hover:bg-white/10 focus-visible:bg-white/10 ${isSelected ? 'bg-white/15' : ''}`,
+                    `flex min-h-10 w-full items-center rounded-md px-3 text-left text-sm font-medium outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent ${isSelected ? 'bg-accent text-accent-foreground' : ''}`,
                   ),
                 ],
                 [
@@ -923,7 +1068,7 @@ const customizer = (
     h.div(
       [h.Class('space-y-1.5'), h.DataAttribute('seg', label)],
       [
-        h.div([h.Class('text-xs font-medium text-white/60')], [label]),
+        h.div([h.Class('text-xs font-medium text-muted-foreground')], [label]),
         h.div(
           [h.Class('flex flex-wrap gap-1')],
           options.map(([value, optionLabel]) =>
@@ -932,7 +1077,7 @@ const customizer = (
                 h.Type('button'),
                 h.OnClick(onPick(value)),
                 h.Class(
-                  `rounded-md px-2 py-1 text-xs font-medium transition-colors ${value === current ? 'bg-white text-black' : 'bg-white/[0.06] text-white/70 hover:bg-white/[0.12] hover:text-white'}`,
+                  `rounded-md px-2 py-1 text-xs font-medium transition-colors ${value === current ? 'bg-foreground text-background' : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'}`,
                 ),
               ],
               [optionLabel],
@@ -960,41 +1105,6 @@ const customizer = (
       Message['ChangedCreatePresetOption']({ field, value }),
     )
 
-  const knob = (key: Preset.Knob): Html => {
-    const range = Preset.rangeOf(key)
-    const value = model.preset[key]
-    return h.div(
-      [h.Class('space-y-1.5')],
-      [
-        h.div(
-          [h.Class('flex items-baseline justify-between')],
-          [
-            h.span(
-              [h.Class('text-xs font-medium text-white/60')],
-              [range.label],
-            ),
-            h.span(
-              [h.Class(`${TINY_LABEL} text-white/50`)],
-              [`${value}${range.unit}`],
-            ),
-          ],
-        ),
-        h.input([
-          h.Type('range'),
-          h.Min(String(range.min)),
-          h.Max(String(range.max)),
-          h.Step(String(range.step)),
-          h.Value(String(value)),
-          h.AriaLabel(range.label),
-          h.OnInput(next =>
-            Message['ChangedCreateKnob']({ knob: key, value: Number(next) }),
-          ),
-          h.Class('w-full accent-white'),
-        ]),
-      ],
-    )
-  }
-
   const tile = (preset: Preset.Preset): Html => {
     const config = preset.config
     const baseH = Preset.baseHue(config)
@@ -1006,8 +1116,8 @@ const customizer = (
         h.Class(
           `flex flex-col gap-2 rounded-lg border p-2.5 text-left transition-colors ${
             Preset.sameConfig(config, model.preset)
-              ? 'border-white/40 bg-white/10'
-              : 'border-white/10 bg-white/[0.03] hover:bg-white/[0.07]'
+              ? 'border-foreground/40 bg-accent'
+              : 'border-border bg-muted/40 hover:bg-muted'
           }`,
         ),
       ],
@@ -1017,7 +1127,7 @@ const customizer = (
           [
             h.span(
               [
-                h.Class('size-3.5 rounded-full ring-1 ring-white/10'),
+                h.Class('size-3.5 rounded-full ring-1 ring-border'),
                 h.Style({
                   background: `oklch(${config.surfaceLightness}% ${config.surfaceSaturation} ${baseH})`,
                 }),
@@ -1026,7 +1136,7 @@ const customizer = (
             ),
             h.span(
               [
-                h.Class('size-3.5 rounded-full ring-1 ring-white/10'),
+                h.Class('size-3.5 rounded-full ring-1 ring-border'),
                 h.Style({
                   background: `oklch(${config.lightness}% ${config.chroma} ${config.hue})`,
                 }),
@@ -1048,8 +1158,8 @@ const customizer = (
         h.Class(
           `rounded-md px-1 py-1.5 text-[11px] font-semibold transition-colors ${
             model.section === section
-              ? 'bg-white text-black'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-foreground text-background'
+              : 'text-muted-foreground hover:text-foreground'
           }`,
         ),
       ],
@@ -1098,11 +1208,7 @@ const customizer = (
       Message['ChangedCreateToken']({ token: key, value })
     const shown = model.tokenDrafts[key] ?? Option.getOrElse(hex, () => value)
     return h.div(
-      [
-        h.Class(
-          'space-y-2 rounded-lg border border-white/10 bg-black/30 p-2.5',
-        ),
-      ],
+      [h.Class('space-y-2 rounded-lg border border-border bg-muted/40 p-2.5')],
       [
         h.div(
           [h.Class('flex items-center gap-2')],
@@ -1114,7 +1220,7 @@ const customizer = (
               h.Placeholder('#rrggbb or oklch(…)'),
               h.OnInput(setValue),
               h.Class(
-                'h-8 min-w-0 flex-1 rounded-md border border-white/10 bg-black/20 px-2 font-mono text-xs text-white outline-none focus-visible:ring-2 focus-visible:ring-white/30',
+                'h-8 min-w-0 flex-1 rounded-md border border-border bg-background px-2 font-mono text-xs text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring',
               ),
             ]),
             h.button(
@@ -1123,7 +1229,7 @@ const customizer = (
                 h.AriaLabel(`Reset ${token}`),
                 h.OnClick(setValue('')),
                 h.Class(
-                  'h-8 shrink-0 rounded-md border border-white/10 px-2 text-xs font-semibold text-white/70 hover:bg-white/[0.08]',
+                  'h-8 shrink-0 rounded-md border border-border px-2 text-xs font-semibold text-muted-foreground hover:bg-accent hover:text-accent-foreground',
                 ),
               ],
               ['Reset'],
@@ -1148,7 +1254,10 @@ const customizer = (
               ),
             ]
           : []),
-        h.p([h.Class('truncate font-mono text-xs text-white/40')], [value]),
+        h.p(
+          [h.Class('truncate font-mono text-xs text-muted-foreground')],
+          [value],
+        ),
       ],
     )
   }
@@ -1177,8 +1286,8 @@ const customizer = (
             h.Class(
               `flex w-full items-center gap-2.5 rounded-lg border px-2.5 py-2 text-left transition-colors ${
                 overridden
-                  ? 'border-white/30 bg-white/[0.06]'
-                  : 'border-white/10 bg-white/[0.02] hover:bg-white/[0.05]'
+                  ? 'border-foreground/30 bg-accent'
+                  : 'border-border bg-muted/40 hover:bg-muted'
               }`,
             ),
           ],
@@ -1186,7 +1295,7 @@ const customizer = (
             h.span(
               [
                 h.Class(
-                  'size-6 shrink-0 rounded-md ring-1 ring-inset ring-white/15',
+                  'size-6 shrink-0 rounded-md ring-1 ring-inset ring-border',
                 ),
                 h.Style({ background: value }),
               ],
@@ -1202,7 +1311,7 @@ const customizer = (
                 h.span(
                   [
                     h.Class(
-                      'block truncate font-mono text-xs leading-tight text-white/50',
+                      'block truncate font-mono text-xs leading-tight text-muted-foreground',
                     ),
                   ],
                   [value],
@@ -1233,7 +1342,7 @@ const customizer = (
                   h.span(
                     [
                       h.Class(
-                        'shrink-0 rounded bg-white/15 px-1 py-0.5 text-xs font-semibold uppercase',
+                        'shrink-0 rounded bg-secondary px-1 py-0.5 text-xs font-semibold uppercase text-secondary-foreground',
                       ),
                     ],
                     ['custom'],
@@ -1257,12 +1366,59 @@ const customizer = (
         h.Class(
           `rounded-md px-3 py-1 text-xs font-semibold transition-colors ${
             model.tokenScheme === scheme
-              ? 'bg-white text-black'
-              : 'text-white/60 hover:text-white'
+              ? 'bg-foreground text-background'
+              : 'text-muted-foreground hover:text-foreground'
           }`,
         ),
       ],
       [label],
+    )
+
+  /* A color choice in the Color pane: field-styled trigger (label + hex +
+     swatch) opening the color-picker popover, mirroring the enum pickers. */
+  const colorField = (
+    label: string,
+    target: ColorPickerTarget,
+    token: string,
+  ): Html =>
+    ColorPicker.colorPicker<Message>(
+      {
+        model: model.colorPickers[target],
+        toParentMessage: message =>
+          Message.GotCreateColorPickerMessage({ target, message }),
+        side: 'right',
+        align: 'start',
+        triggerClass:
+          'relative flex h-16.5 w-full items-end justify-between rounded-lg border border-border bg-muted/40 px-3 pb-2.5 text-left shadow-none outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring',
+        trigger: h.div(
+          [h.Class('flex min-w-0 flex-1 items-end justify-between')],
+          [
+            h.span(
+              [
+                h.Class(
+                  'absolute top-2.5 left-3 text-xs font-medium text-muted-foreground',
+                ),
+              ],
+              [label],
+            ),
+            h.span(
+              [h.Class('truncate font-mono text-[15px] font-semibold')],
+              [Option.getOrElse(Preset.tokenToHex(token), () => token)],
+            ),
+            h.span(
+              [
+                h.AriaHidden(true),
+                h.Class(
+                  'ml-3 mb-0.5 size-5 rounded-md ring-1 ring-inset ring-border',
+                ),
+                h.Style({ background: token }),
+              ],
+              [],
+            ),
+          ],
+        ),
+      },
+      h,
     )
 
   const panes: Record<Model['section'], Html> = {
@@ -1272,47 +1428,40 @@ const customizer = (
       fieldSeg('Icons', 'iconLibrary', Preset.ICON_LIBRARIES),
     ]),
     color: pane([
-      knob('hue'),
-      knob('chroma'),
-      knob('lightness'),
+      colorField('Accent', 'accent', Preset.accentToken(model.preset)),
+      colorField(
+        'Surface — light',
+        'surfaceLight',
+        Preset.surfaceToken(model.preset, 'light'),
+      ),
+      colorField(
+        'Surface — dark',
+        'surfaceDark',
+        Preset.surfaceToken(model.preset, 'dark'),
+      ),
       picker('Base', 'base', Preset.BASES, 'bg-zinc-400'),
-      knob('surfaceSaturation'),
-      knob('surfaceLightness'),
-      knob('surfaceLightnessDark'),
-      knob('surfaceContrast'),
       optionSeg('Hover', 'hover', Preset.HOVERS),
-      picker('Chart', 'chartColor', Preset.THEMES, 'bg-chart-1'),
+      colorField('Chart', 'chart', Preset.chartToken(model.preset)),
       fieldSeg('Menu accent', 'menuAccent', Preset.MENU_ACCENTS),
       fieldSeg('Menu color', 'menuColor', Preset.MENU_COLORS),
     ]),
     shape: pane([
-      knob('radius'),
       optionSeg('Controls', 'controlShape', Preset.CONTROL_SHAPES),
-      knob('border'),
       optionSeg('Outlines', 'outlines', Preset.OUTLINES),
-      knob('shadow'),
       optionSeg('Shadow style', 'shadowStyle', Preset.SHADOW_STYLES),
       optionSeg('Relief', 'relief', Preset.RELIEFS),
     ]),
     type: pane([
       picker('Font', 'font', Preset.FONTS),
       picker('Heading font', 'fontHeading', Preset.FONT_HEADINGS),
-      knob('textScale'),
-      knob('headingScale'),
-      knob('leading'),
-      knob('headingWeight'),
-      knob('tracking'),
     ]),
-    motion: pane([
-      knob('motion'),
-      optionSeg('Easing', 'easing', Preset.EASINGS),
-    ]),
+    motion: pane([optionSeg('Easing', 'easing', Preset.EASINGS)]),
     tokens: pane([
       h.div(
         [h.Class('flex items-center justify-between gap-2')],
         [
           h.div(
-            [h.Class('flex gap-1 rounded-lg bg-white/[0.04] p-1')],
+            [h.Class('flex gap-1 rounded-lg bg-muted p-1')],
             [tokenSchemeTab('light', 'Light'), tokenSchemeTab('dark', 'Dark')],
           ),
           ...(customCount > 0
@@ -1322,7 +1471,7 @@ const customizer = (
                     h.Type('button'),
                     h.OnClick(Message['ClickedResetCreateTokens']()),
                     h.Class(
-                      'rounded-md border border-white/10 px-2 py-1 text-xs font-semibold text-white/70 hover:bg-white/[0.08]',
+                      'rounded-md border border-border px-2 py-1 text-xs font-semibold text-muted-foreground hover:bg-accent hover:text-accent-foreground',
                     ),
                   ],
                   [`Clear ${customCount} custom`],
@@ -1338,7 +1487,7 @@ const customizer = (
             h.div(
               [
                 h.Class(
-                  'text-xs font-semibold uppercase tracking-wider text-white/40',
+                  'text-xs font-semibold uppercase tracking-wider text-muted-foreground',
                 ),
               ],
               [group],
@@ -1354,35 +1503,35 @@ const customizer = (
     [
       h.Class(
         placement === 'drawer'
-          ? `${DARK_CHROME} relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-none shadow-none ring-0`
-          : `${DARK_CHROME} fixed top-19 bottom-5 left-5 z-30 flex w-70.5 flex-col overflow-hidden rounded-2xl max-lg:right-3 max-lg:left-3 max-lg:w-auto`,
+          ? `${CHROME} relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-none shadow-none ring-0`
+          : `${CHROME} fixed top-19 bottom-5 left-5 z-30 flex w-70.5 flex-col overflow-hidden rounded-2xl max-lg:right-3 max-lg:left-3 max-lg:w-auto`,
       ),
       h.DataAttribute('theme-lab-customizer', placement),
     ],
     [
       h.div(
-        [h.Class('space-y-3 border-b border-white/10 p-4')],
+        [h.Class('space-y-3 border-b border-border p-4')],
         [
           h.div(
             [
               h.Class(
-                'flex h-12 items-center justify-between rounded-xl border border-white/10 px-4',
+                'flex h-12 items-center justify-between rounded-xl border border-border px-4',
               ),
             ],
             [
               h.h1([h.Class('text-sm font-semibold')], ['Theme']),
-              Icon.icon('menu', { class: 'size-5 text-white/80' }, h),
+              Icon.icon('menu', { class: 'size-5' }, h),
             ],
           ),
           h.div(
-            [h.Class('grid grid-cols-3 gap-1 rounded-lg bg-white/[0.04] p-1')],
+            [h.Class('grid grid-cols-3 gap-1 rounded-lg bg-muted p-1')],
             [
+              sectionTab('tokens', 'Tokens'),
               sectionTab('theme', 'Themes'),
               sectionTab('color', 'Color'),
               sectionTab('shape', 'Shape'),
               sectionTab('type', 'Type'),
               sectionTab('motion', 'Motion'),
-              sectionTab('tokens', 'Tokens'),
             ],
           ),
         ],
@@ -1395,14 +1544,14 @@ const customizer = (
         h,
       ),
       h.div(
-        [h.Class('space-y-2 border-t border-white/10 p-4')],
+        [h.Class('space-y-2 border-t border-border p-4')],
         [
           h.div(
             [
               h.DataAttribute('crease-style', model.preset.style),
               h.DataAttribute('icon-library', model.preset.iconLibrary),
               h.Class(
-                'truncate rounded-lg border border-white/10 px-3 py-2 font-mono text-xs text-white/80',
+                'truncate rounded-lg border border-border px-3 py-2 font-mono text-xs text-muted-foreground',
               ),
             ],
             [`--preset ${Preset.encodePreset(model.preset)}`],
@@ -1413,7 +1562,7 @@ const customizer = (
               h.summary(
                 [
                   h.Class(
-                    'flex h-9 cursor-pointer list-none items-center justify-center rounded-lg border border-white/10 text-sm font-medium hover:bg-white/[0.06] [&::-webkit-details-marker]:hidden',
+                    'flex h-9 cursor-pointer list-none items-center justify-center rounded-lg border border-border text-sm font-medium hover:bg-muted [&::-webkit-details-marker]:hidden',
                   ),
                 ],
                 ['Open Preset'],
@@ -1430,7 +1579,7 @@ const customizer = (
                     ),
                     h.Placeholder('Paste code or CreaseUI URL'),
                     h.Class(
-                      'h-9 w-full rounded-lg border border-white/10 bg-black/20 px-3 font-mono text-xs text-white outline-none focus-visible:ring-2 focus-visible:ring-white/30',
+                      'h-9 w-full rounded-lg border border-border bg-background px-3 font-mono text-xs text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring',
                     ),
                   ]),
                   chromeButton(
@@ -1441,7 +1590,7 @@ const customizer = (
                     ? []
                     : [
                         h.p(
-                          [h.Class('text-xs text-red-400')],
+                          [h.Class('text-xs text-destructive')],
                           [model.presetError],
                         ),
                       ]),
@@ -1458,7 +1607,8 @@ const customizer = (
           ),
           Button.button(
             {
-              class: 'relative w-full bg-white text-black hover:bg-white/90',
+              class:
+                'relative w-full bg-primary text-primary-foreground hover:bg-primary/90',
               onClick: Message['ClickedCopyCreatePreset'](),
               children: [
                 Icon.icon(
@@ -1474,8 +1624,7 @@ const customizer = (
                   ? [
                       Icon.check(
                         {
-                          class:
-                            'absolute left-[5.2rem] size-4 text-emerald-600',
+                          class: 'absolute left-[5.2rem] size-4 text-success',
                         },
                         h,
                       ),
@@ -1913,14 +2062,14 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     onPick: (value: V) => Message,
   ): Html =>
     h.div(
-      [h.Class('flex gap-0.5 rounded-lg bg-white/[0.04] p-1')],
+      [h.Class('flex gap-0.5 rounded-lg bg-muted p-1')],
       options.map(([value, label]) =>
         h.button(
           [
             h.Type('button'),
             h.OnClick(onPick(value)),
             h.Class(
-              `rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${value === current ? 'bg-white text-black' : 'text-white/60 hover:text-white'}`,
+              `rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${value === current ? 'bg-foreground text-background' : 'text-muted-foreground hover:text-foreground'}`,
             ),
           ],
           [label],
@@ -1931,7 +2080,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const toolbar = h.div(
     [
       h.Class(
-        `${DARK_CHROME} fixed top-19 right-5 z-30 flex items-center gap-2 rounded-2xl p-2 max-lg:right-3`,
+        `${CHROME} fixed top-19 right-5 z-30 flex items-center gap-2 rounded-2xl p-2 max-lg:right-3`,
       ),
     ],
     [
@@ -1945,7 +2094,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
         model.canvas,
         value => Message['ChoseCreateCanvas']({ canvas: value }),
       ),
-      h.div([h.Class('mx-0.5 h-5 w-px bg-white/10')], []),
+      h.div([h.Class('mx-0.5 h-5 w-px bg-border')], []),
       toolbarSeg(
         [
           ['system', 'Auto'],
@@ -2004,4 +2153,12 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     toParentMessage: message =>
       Message.GotCreateTokenPickerMessage({ message }),
   }),
+  ...COLOR_PICKER_TARGETS.map(target =>
+    ColorPicker.subscriptions<Model, Message>({
+      id: `create-${target === 'surfaceLight' ? 'surface-light' : target === 'surfaceDark' ? 'surface-dark' : target}-picker`,
+      toChildModel: model => model.colorPickers[target],
+      toParentMessage: message =>
+        Message.GotCreateColorPickerMessage({ target, message }),
+    }),
+  ),
 )

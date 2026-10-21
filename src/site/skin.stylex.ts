@@ -259,10 +259,10 @@ const styles = stylex.create({
     flexDirection: 'column',
     overflow: 'hidden',
     borderRadius: '1rem',
-    backgroundColor: '#282828',
-    color: '#fff',
+    backgroundColor: 'var(--card)',
+    color: 'var(--card-foreground)',
     boxShadow:
-      '0 0 0 1px rgba(255,255,255,.1), 0 20px 25px -5px rgba(0,0,0,.3), 0 8px 10px -6px rgba(0,0,0,.3)',
+      '0 0 0 1px var(--border), 0 20px 25px -5px rgba(0,0,0,.3), 0 8px 10px -6px rgba(0,0,0,.3)',
   },
   themeLabHeader: {
     display: 'flex',
@@ -271,7 +271,7 @@ const styles = stylex.create({
     gap: '.75rem',
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,.1)',
+    borderBottomColor: 'var(--border)',
     paddingBlock: '.75rem',
     paddingInline: '1rem',
   },
@@ -279,7 +279,7 @@ const styles = stylex.create({
   themeLabHint: {
     fontFamily: 'monospace',
     fontSize: '.625rem',
-    color: 'rgba(255,255,255,.5)',
+    color: 'var(--muted-foreground)',
   },
   themeLabActions: {
     display: 'flex',
@@ -295,15 +295,18 @@ const styles = stylex.create({
     cursor: 'pointer',
   },
   themeLabApplyOn: {
-    backgroundColor: 'rgba(52,211,153,.2)',
-    color: '#6ee7b7',
+    backgroundColor: 'color-mix(in oklab, var(--success) 20%, transparent)',
+    color: 'var(--success)',
   },
   themeLabApplyOff: {
     backgroundColor: {
-      default: 'rgba(255,255,255,.06)',
-      ':hover': 'rgba(255,255,255,.1)',
+      default: 'var(--muted)',
+      ':hover': 'var(--accent)',
     },
-    color: 'rgba(255,255,255,.7)',
+    color: {
+      default: 'var(--muted-foreground)',
+      ':hover': 'var(--accent-foreground)',
+    },
   },
   themeLabIconButton: {
     display: 'inline-flex',
@@ -314,9 +317,12 @@ const styles = stylex.create({
     borderRadius: '.375rem',
     backgroundColor: {
       default: 'transparent',
-      ':hover': 'rgba(255,255,255,.08)',
+      ':hover': 'var(--accent)',
     },
-    color: { default: 'rgba(255,255,255,.6)', ':hover': '#fff' },
+    color: {
+      default: 'var(--muted-foreground)',
+      ':hover': 'var(--accent-foreground)',
+    },
     cursor: 'pointer',
   },
   themeLabIcon: { width: '1rem', height: '1rem' },

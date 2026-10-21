@@ -273,10 +273,10 @@ const styles = {
     flexDirection: 'column',
     overflow: 'hidden',
     borderRadius: '1rem',
-    backgroundColor: '#282828',
-    color: '#fff',
+    backgroundColor: tokens.card,
+    color: tokens.cardForeground,
     boxShadow:
-      '0 0 0 1px rgba(255,255,255,.1), 0 20px 25px -5px rgba(0,0,0,.3), 0 8px 10px -6px rgba(0,0,0,.3)',
+      '0 0 0 1px var(--border), 0 20px 25px -5px rgba(0,0,0,.3), 0 8px 10px -6px rgba(0,0,0,.3)',
   }),
   themeLabHeader: Style.make({
     display: 'flex',
@@ -285,7 +285,7 @@ const styles = {
     gap: '.75rem',
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,.1)',
+    borderBottomColor: tokens.border,
     paddingBlock: '.75rem',
     paddingInline: '1rem',
   }),
@@ -293,7 +293,7 @@ const styles = {
   themeLabHint: Style.make({
     fontFamily: 'monospace',
     fontSize: '.625rem',
-    color: 'rgba(255,255,255,.5)',
+    color: tokens.mutedForeground,
   }),
   themeLabActions: Style.make({
     display: 'flex',
@@ -309,13 +309,18 @@ const styles = {
     cursor: 'pointer',
   }),
   themeLabApplyOn: Style.make({
-    backgroundColor: 'rgba(52,211,153,.2)',
-    color: '#6ee7b7',
+    backgroundColor: 'color-mix(in oklab, var(--success) 20%, transparent)',
+    color: 'var(--success)',
   }),
   themeLabApplyOff: Style.make({
-    backgroundColor: 'rgba(255,255,255,.06)',
-    color: 'rgba(255,255,255,.7)',
-  }).pipe(Style.when(When.hover, { backgroundColor: 'rgba(255,255,255,.1)' })),
+    backgroundColor: tokens.muted,
+    color: tokens.mutedForeground,
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: tokens.accent,
+      color: tokens.accentForeground,
+    }),
+  ),
   themeLabIconButton: Style.make({
     display: 'inline-flex',
     height: '1.75rem',
@@ -324,12 +329,12 @@ const styles = {
     justifyContent: 'center',
     borderRadius: '.375rem',
     backgroundColor: 'transparent',
-    color: 'rgba(255,255,255,.6)',
+    color: tokens.mutedForeground,
     cursor: 'pointer',
   }).pipe(
     Style.when(When.hover, {
-      backgroundColor: 'rgba(255,255,255,.08)',
-      color: '#fff',
+      backgroundColor: tokens.accent,
+      color: tokens.accentForeground,
     }),
   ),
   themeLabIcon: Style.make({ height: '1rem', width: '1rem' }),
