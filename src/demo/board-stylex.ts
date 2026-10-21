@@ -2006,6 +2006,7 @@ export const presetCustomizer = (
           Message.GotCreateColorPickerMessage({ target, message }),
         side: 'right',
         align: 'start',
+        portal: 'themed',
         triggerLayoutStyle: styles.pickerTriggerLayout,
         trigger: h.div(
           [h.Class(className(styles.pickerTrigger))],

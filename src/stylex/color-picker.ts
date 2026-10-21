@@ -530,6 +530,9 @@ export type ColorPickerProps<Msg> = Readonly<{
   inline?: boolean
   side?: Popover.PopoverSide
   align?: Popover.PopoverAlign
+  portal?: 'themed'
+  /** 'bare' drops the panel surface so the content supplies its own. */
+  surface?: 'default' | 'bare'
   layoutStyle?: ComponentLayoutStyle
   contentLayoutStyle?: ComponentLayoutStyle
 }>
@@ -577,6 +580,8 @@ export const colorPicker = <Msg>(
       ...(props.triggerLayoutStyle === undefined
         ? {}
         : { triggerLayoutStyle: props.triggerLayoutStyle }),
+      ...(props.portal === undefined ? {} : { portal: props.portal }),
+      ...(props.surface === undefined ? {} : { surface: props.surface }),
       ...(props.layoutStyle === undefined
         ? {}
         : { layoutStyle: props.layoutStyle }),
