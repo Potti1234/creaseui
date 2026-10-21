@@ -392,6 +392,10 @@ test('css and doctor reject raw base paint and unlisted base utilities', () => {
     '@layer base { * { @apply opacity-50 rotate-45; } }',
     '@layer base { * { @apply text-shadow-lg; } }',
     '@layer base { * { @apply bg-cover; } }',
+    /* Review of 9f14670b, F3: a declared role doesn't make a utility with
+       another Tailwind meaning a colour. */
+    '@theme { --color-cover: var(--background); } @layer base { * { @apply bg-cover; } }',
+    '@theme { --color-shadow-lg: var(--foreground); } @layer base { * { @apply text-shadow-lg; } }',
   ]) {
     const directory = scratch()
     mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
@@ -829,4 +833,34 @@ test('doctor reports foundations that only reach attributes, unselected elements
     doctor.stdout,
   )
   assert.notEqual(doctor.status, 0)
+})
+
+test('css accepts a custom semantic role and names the collision for an ambiguous one', () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'junction',
+  )
+  const initArgs = ['init', '--renderer', 'pleat', '--components', 'src/design']
+  assert.equal(run(directory, ...initArgs).status, 0)
+  const global = path.join(directory, 'src/global.css')
+  writeFileSync(
+    global,
+    '@theme { --color-brand: var(--foreground); }\n@layer base { * { @apply text-brand; } }\n',
+  )
+  const clean = run(directory, 'css')
+  assert.doesNotMatch(clean.stdout, /global\.css/u, clean.stdout)
+  writeFileSync(
+    global,
+    '@theme { --color-cover: var(--background); }\n@layer base { * { @apply bg-cover; } }\n',
+  )
+  const ambiguous = run(directory, 'css')
+  rmSync(directory, { force: true, recursive: true })
+  assert.equal(ambiguous.status, 1, ambiguous.stdout)
+  assert.match(
+    ambiguous.stdout,
+    /src\/global\.css:2.*@apply bg-cover .* is ambiguous: `bg-cover` is also a Tailwind utility .*rename the role/u,
+  )
 })

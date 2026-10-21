@@ -203,6 +203,75 @@ test('base @apply colour utilities must name a theme colour role', () => {
   )
 })
 
+test('declared roles that collide with other Tailwind utilities are ambiguous', () => {
+  const cases = {
+    'bg-cover': '--color-cover: var(--background);',
+    'border-x-brand': '--color-x-brand: var(--border);',
+    'decoration-wavy': '--color-wavy: var(--foreground);',
+    'text-lg': '--color-lg: var(--foreground);',
+    'text-shadow-lg': '--color-shadow-lg: var(--foreground);',
+    'text-shadow-soft': '--color-shadow-soft: var(--foreground);',
+  }
+  for (const [utility, declaration] of Object.entries(cases)) {
+    const findings = audit({
+      'src/styles.css': `@theme { ${declaration} }\n@layer base { * { @apply ${utility}; } }`,
+    })
+    assert.equal(findings.length, 1, utility)
+    assert.match(findings[0].message, /is ambiguous/u, utility)
+  }
+  /* A theme font size makes `text-<role>` a size as well as a colour. */
+  assert.match(
+    audit({
+      'src/styles.css':
+        '@theme { --color-brand: red; --text-brand: 2rem; }\n@layer base { * { @apply text-brand; } }',
+    })[0]?.message ?? '',
+    /is ambiguous/u,
+  )
+  assert.deepEqual(
+    audit({
+      'src/styles.css':
+        '@theme { --color-brand: var(--foreground); --color-cover-art: var(--background); }\n@layer base { * { @apply text-brand bg-cover-art bg-brand/50 border-border ring-offset-background font-sans antialiased; } }',
+    }),
+    [],
+  )
+})
+
+test('the collision table matches what Tailwind compiles', async () => {
+  const repo = fileURLToPath(new URL('../../..', import.meta.url))
+  const { collisions, colourOnly, loadTailwind } =
+    await import('../scripts/tailwind-color-collisions.mjs')
+  /* Regenerate after a Tailwind upgrade: node packages/lint/scripts/tailwind-color-collisions.mjs */
+  assert.deepEqual(
+    await collisions(repo),
+    JSON.parse(
+      readFileSync(
+        new URL(
+          '../lib/strict/tailwind-color-collisions.json',
+          import.meta.url,
+        ),
+        'utf8',
+      ),
+    ),
+  )
+  const { designSystem } = await loadTailwind(
+    repo,
+    '@import "tailwindcss"; @theme { --color-brand: var(--foreground); --color-cover: var(--background); --color-shadow-lg: var(--foreground); --color-cover-art: var(--background); }',
+  )
+  const utilities = ['text-brand', 'bg-cover-art', 'bg-cover', 'text-shadow-lg']
+  const compiled = designSystem.candidatesToCss(utilities)
+  utilities.forEach((utility, index) => {
+    const accepted =
+      audit({
+        'src/styles.css': `@theme { --color-brand: x; --color-cover: x; --color-shadow-lg: x; --color-cover-art: x; }\n@layer base { * { @apply ${utility}; } }`,
+      }).length === 0
+    assert.equal(
+      accepted,
+      colourOnly(compiled[index]),
+      `${utility}\n${compiled[index]}`,
+    )
+  })
+})
+
 test('stylesheets imported from outside src are audited', () => {
   const findings = audit({
     'src/entry.ts': "import '../styles/product.css'\n",

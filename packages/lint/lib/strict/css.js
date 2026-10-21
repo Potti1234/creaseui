@@ -133,7 +133,27 @@ const BASE_APPLY_FIXED = new Set([
   'subpixel-antialiased',
 ])
 const COLOR_UTILITY =
-  /^(?:bg|text|border|outline|ring-offset|ring|fill|stroke|accent|caret|decoration|placeholder|divide)-([a-z][a-z0-9-]*?)(?:\/\d+)?$/u
+  /^(bg|text|border|outline|ring-offset|ring|fill|stroke|accent|caret|decoration|placeholder|divide)-([a-z][a-z0-9-]*?)(?:\/\d+)?$/u
+/* Tailwind utilities spelled like a colour utility that style something
+   else (`bg-cover`, `text-lg`, the `text-shadow-*` family). Declaring
+   `--color-cover` doesn't make `bg-cover` a colour: Tailwind emits both
+   rules. Generated from Tailwind's design system by
+   scripts/tailwind-color-collisions.mjs. */
+const COLLISIONS = JSON.parse(
+  readFileSync(
+    new URL('./tailwind-color-collisions.json', import.meta.url),
+    'utf8',
+  ),
+).utilities
+const collides = (prefix, role, textSizes) => {
+  const entry = COLLISIONS[prefix]
+  return (
+    entry.static.includes(role) ||
+    entry.roots.some(root => role === root || role.startsWith(`${root}-`)) ||
+    /* `--text-<role>` makes `text-<role>` a font size as well. */
+    (prefix === 'text' && textSizes.has(role))
+  )
+}
 /* The roles every Crease theme defines; a project's own `@theme` adds its
    custom roles through `--color-<role>`. */
 const DEFAULT_COLOR_ROLES = [
@@ -172,14 +192,18 @@ const DEFAULT_COLOR_ROLES = [
 ]
 const THEME_COLOR = /--color-([a-z][a-z0-9-]*)\s*:/gu
 /** `--color-<role>` names declared in a stylesheet's `@theme` blocks. */
-const themeColorRoles = root => {
-  const roles = []
+const themeColorRoles = root => themeNames(root, '--color-')
+/** Names declared under a theme namespace (`--color-`, `--text-`) in a
+    stylesheet's `@theme` blocks, without `--name--modifier` companions. */
+const themeNames = (root, namespace) => {
+  const names = []
   root.walkAtRules(/^theme$/iu, rule =>
-    rule.walkDecls(/^--color-/u, decl =>
-      roles.push(decl.prop.slice('--color-'.length)),
-    ),
+    rule.walkDecls(decl => {
+      if (decl.prop.startsWith(namespace) && !decl.prop.slice(2).includes('--'))
+        names.push(decl.prop.slice(namespace.length))
+    }),
   )
-  return roles
+  return names
 }
 const RESET_PROPERTIES =
   /^(?:font(?:-[a-z-]+)?|letter-spacing|line-height|color|margin(?:-[a-z]+)?|padding(?:-[a-z]+)?|border|background(?:-color)?|appearance|-webkit-appearance|text-transform)$/u
@@ -342,29 +366,39 @@ export const createCssAudit = ({
   /* Roles come from the defaults, every project stylesheet's @theme and
      the theme text audited so far (imports, registry items). */
   let projectRoles
+  const projectTextSizes = new Set()
   const auditedRoles = new Set()
+  const auditedTextSizes = new Set()
   const colorRoles = () => {
     if (projectRoles === undefined) {
       projectRoles = new Set(DEFAULT_COLOR_ROLES)
       for (const file of rootDir === undefined ? [] : findStylesheets(rootDir))
         try {
-          for (const role of themeColorRoles(
-            postcss.parse(readFileSync(file, 'utf8'), { from: file }),
-          ))
-            projectRoles.add(role)
+          const root = postcss.parse(readFileSync(file, 'utf8'), { from: file })
+          for (const role of themeColorRoles(root)) projectRoles.add(role)
+          for (const size of themeNames(root, '--text-'))
+            projectTextSizes.add(size)
         } catch {
           /* unparsable files are reported when they are audited */
         }
     }
     return projectRoles
   }
-  const baseApplyAllowed = token => {
+  /* A colour utility is accepted only when its role is a theme colour and
+     no other Tailwind utility shares its spelling. */
+  const baseApplyVerdict = token => {
     const utility = token.split(':').at(-1)
-    if (BASE_APPLY_FIXED.has(utility)) return true
-    const role = COLOR_UTILITY.exec(utility)?.[1]
-    return (
-      role !== undefined && (colorRoles().has(role) || auditedRoles.has(role))
+    if (BASE_APPLY_FIXED.has(utility)) return 'allowed'
+    const [, prefix, role] = COLOR_UTILITY.exec(utility) ?? []
+    if (role === undefined) return 'forbidden'
+    if (!colorRoles().has(role) && !auditedRoles.has(role)) return 'forbidden'
+    return collides(
+      prefix,
+      role,
+      new Set([...projectTextSizes, ...auditedTextSizes]),
     )
+      ? 'collision'
+      : 'allowed'
   }
 
   const checkDeclaration = (file, declaration, kind, owned) => {
@@ -530,10 +564,27 @@ export const createCssAudit = ({
               `@apply on \`${node.selector}\` styles a native element globally`,
             )
           else if (!owned) {
-            const forbidden = child.params
+            const tokens = child.params
               .split(/\s+/u)
               .map(token => token.replace(/^!|!$/gu, ''))
-              .filter(token => token !== '' && !baseApplyAllowed(token))
+              .filter(token => token !== '')
+            const forbidden = tokens.filter(
+              token => baseApplyVerdict(token) === 'forbidden',
+            )
+            const colliding = tokens.filter(
+              token => baseApplyVerdict(token) === 'collision',
+            )
+            for (const token of colliding) {
+              const [, prefix, role] = COLOR_UTILITY.exec(
+                token.split(':').at(-1),
+              )
+              add(
+                file,
+                child,
+                'violation',
+                `@apply ${token} on \`${node.selector}\` is ambiguous: \`${prefix}-${role}\` is also a Tailwind utility that styles more than colour, so the theme role --color-${role} doesn't make it semantic colour; rename the role (for example --color-${role}-color or a semantic name)`,
+              )
+            }
             if (forbidden.length > 0)
               add(
                 file,
@@ -608,6 +659,7 @@ export const createCssAudit = ({
         auditFile(resolved)
       }
     for (const role of themeColorRoles(root)) auditedRoles.add(role)
+    for (const size of themeNames(root, '--text-')) auditedTextSizes.add(size)
     visit(file, root, [], isOwned(file))
   }
 
