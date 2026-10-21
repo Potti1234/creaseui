@@ -22,7 +22,7 @@ const documentOverflow = (page: Page) =>
 
 const openCreate = async (page: Page) => {
   await page.goto('/create')
-  await expect(page.locator('[data-seg="Style"]')).toBeVisible()
+  await expect(page.locator('[data-token]').first()).toBeVisible()
 }
 
 for (const width of [1440, 390])
