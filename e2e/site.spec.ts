@@ -1,4 +1,5 @@
 import { COMPONENT_COUNT } from '../src/lib/project-facts'
+import { openThemesPane } from './sites/create-helpers'
 import { visitRenderer } from './site-navigation'
 import AxeBuilder from '@axe-core/playwright'
 import { withoutAcceptedContrast } from './accepted-contrast'
@@ -1249,6 +1250,7 @@ test('create icon selection changes the live preview shapes', async ({
     firstPreviewIcon.locator('.crease-preview-icon-tabler'),
   ).toBeHidden()
 
+  await openThemesPane(page)
   await page
     .getByRole('button', { name: 'Tabler', exact: true })
     .click({ force: true })
