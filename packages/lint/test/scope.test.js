@@ -223,3 +223,104 @@ test('scope tracks lint dependency specs, lockfiles and local artifacts', async 
   ])
   rmSync(root, { force: true, recursive: true })
 })
+
+test('scope compares complete text lockfile records, not only named lines', async () => {
+  const { enforcementChanges } = await import('../lib/strict/scope.js')
+  const root = mkdtempSync(path.join(tmpdir(), 'creaseui-scope-text-lock-'))
+  const git = (...args) =>
+    execFileSync(
+      'git',
+      ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args],
+      { cwd: root },
+    )
+  git('init', '-q')
+  const pnpm = ({
+    integrity = 'sha512-AAAA',
+    leftPad = '1.0.0',
+    override = '0.1.0',
+    patch = 'aaaa',
+  } = {}) =>
+    [
+      "lockfileVersion: '9.0'",
+      '',
+      'overrides:',
+      `  '@creaseui/lint': ${override}`,
+      '',
+      'patchedDependencies:',
+      '  eslint-plugin-x@1.0.0:',
+      `    hash: ${patch}`,
+      '    path: patches/eslint-plugin-x.patch',
+      '',
+      'importers:',
+      '  .:',
+      '    devDependencies:',
+      "      '@creaseui/lint':",
+      '        specifier: 0.1.0',
+      '        version: 0.1.0',
+      '      left-pad:',
+      `        specifier: ${leftPad}`,
+      `        version: ${leftPad}`,
+      '',
+      'packages:',
+      "  '@creaseui/lint@0.1.0':",
+      `    resolution: {integrity: ${integrity}}`,
+      '',
+      `  left-pad@${leftPad}:`,
+      `    resolution: {integrity: sha512-${leftPad}}`,
+      '',
+    ].join('\n')
+  const yarn = (resolved = 'lint-a.tgz') =>
+    [
+      '"@creaseui/lint@0.1.0":',
+      '  version "0.1.0"',
+      `  resolved "https://registry.example/${resolved}#abc"`,
+      '  integrity sha512-BBBB',
+      '',
+    ].join('\n')
+  const bun = (integrity = 'sha512-CCCC') =>
+    [
+      '{',
+      '  "packages": {',
+      '    "@creaseui/lint": [',
+      '      "@creaseui/lint@0.1.0",',
+      '      "",',
+      '      {},',
+      `      "${integrity}"`,
+      '    ],',
+      '  }',
+      '}',
+      '',
+    ].join('\n')
+  write(root, 'package.json', { name: 'app' })
+  writeFileSync(path.join(root, 'pnpm-lock.yaml'), pnpm())
+  writeFileSync(path.join(root, 'yarn.lock'), yarn())
+  writeFileSync(path.join(root, 'bun.lock'), bun())
+  git('add', '.')
+  git('commit', '-qm', 'baseline')
+  const changes = () => enforcementChanges({ baseline: 'HEAD', rootDir: root })
+  assert.deepEqual(changes(), [])
+
+  /* Unrelated packages stay out of scope. */
+  writeFileSync(path.join(root, 'pnpm-lock.yaml'), pnpm({ leftPad: '1.3.0' }))
+  assert.deepEqual(changes(), [])
+  git('checkout', '-q', '--', '.')
+
+  for (const [file, text] of [
+    /* Review F4: the archive integrity changes on a line that doesn't name
+       the package. */
+    ['pnpm-lock.yaml', pnpm({ integrity: 'sha512-ZZZZ' })],
+    ['pnpm-lock.yaml', pnpm({ override: '0.2.0' })],
+    ['pnpm-lock.yaml', pnpm({ patch: 'bbbb' })],
+    ['yarn.lock', yarn('lint-b.tgz')],
+    ['bun.lock', bun('sha512-DDDD')],
+  ]) {
+    writeFileSync(path.join(root, file), text)
+    assert.deepEqual(
+      changes(),
+      [`${file} changes the resolved lint/policy packages`],
+      text,
+    )
+    git('checkout', '-q', '--', '.')
+  }
+  rmSync(root, { force: true, recursive: true })
+})

@@ -202,7 +202,7 @@ const LOCKFILES = [
 ]
 
 /** Lockfile entries for enforcement packages: exact JSON entries for npm,
-    the lines naming those packages for text lockfiles. */
+    complete indented records for text lockfiles. */
 const lockEntries = (file, text) => {
   if (text === null) return null
   if (file.endsWith('.json')) {
@@ -221,10 +221,42 @@ const lockEntries = (file, text) => {
         if (isEnforcementPackage(name)) entries[`root/${field}/${name}`] = value
     return JSON.stringify(entries)
   }
-  return text
-    .split(/\r?\n/u)
-    .filter(line => /@creaseui\/lint|eslint|typescript/u.test(line))
-    .join('\n')
+  return textLockEntries(text)
+}
+
+const indentOf = line => /^\s*/u.exec(line)[0].length
+const ENFORCEMENT_NAME = /@creaseui\/lint|eslint|typescript/u
+/* Lockfile-wide inputs that change how any package resolves. */
+const RESOLUTION_SECTION =
+  /^\s*"?(?:overrides|resolutions|patchedDependencies|pnpmfileChecksum|packageExtensionsChecksum|catalogs?|settings|patches)"?\s*:/u
+
+/** pnpm, yarn and bun lockfiles nest each record under its header line, so
+    a record is its header plus every more-indented line after it: the
+    version, integrity, resolution, dependencies and patch hash all belong
+    to the entry even when they don't repeat the package name. */
+const textLockEntries = text => {
+  const lines = text.split(/\r?\n/u)
+  const kept = []
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index]
+    if (line.trim() === '') continue
+    if (!ENFORCEMENT_NAME.test(line) && !RESOLUTION_SECTION.test(line)) continue
+    const indent = indentOf(line)
+    let end = index + 1
+    while (
+      end < lines.length &&
+      (lines[end].trim() === '' || indentOf(lines[end]) > indent)
+    )
+      end += 1
+    kept.push(
+      lines
+        .slice(index, end)
+        .filter(entry => entry.trim() !== '')
+        .join('\n'),
+    )
+    index = end - 1
+  }
+  return kept.join('\n')
 }
 
 /** Local paths (`file:vendor/lint.tgz`, `link:../lint`) the enforcement
