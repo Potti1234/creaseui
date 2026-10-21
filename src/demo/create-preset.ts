@@ -1508,3 +1508,67 @@ export const validTokenValue = (value: string): boolean =>
      valid-but-transparent '#0000' and wash out the preview. */
   /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/iu.test(value) ||
   /^[a-z][a-z-]*\((?:[^()]|\([^()]*\))*\)$/iu.test(value)
+
+/** 'oklch(l c h)' literal → [l, c, h]; none for anything else. */
+export const tokenOklch = parseOklch
+
+/* The derived colors the create page's color pickers display and write back:
+   accent, light/dark page surface, and the chart seed color. */
+export const accentToken = (config: Config): string =>
+  oklch(config.lightness, config.chroma, config.hue)
+
+export const surfaceToken = (
+  config: Config,
+  scheme: 'light' | 'dark',
+): string =>
+  oklch(
+    scheme === 'light' ? config.surfaceLightness : config.surfaceLightnessDark,
+    config.surfaceSaturation,
+    baseHue(config),
+  )
+
+export const chartToken = (config: Config): string =>
+  (ACCENTS[config.chartColor] ?? ACCENTS.neutral!)[0]
+
+const hueDistance = (a: number, b: number): number => {
+  const delta = Math.abs(a - b) % 360
+  return Math.min(delta, 360 - delta)
+}
+
+/** Nearest neutral base for a picked surface hue. Near-achromatic picks map to
+    'neutral' (their hue is noise); 'accent' is never chosen — a picked hue
+    means that hue, not "follow the accent". */
+export const snapBase = (hue: number, chroma: number): string => {
+  if (chroma < 0.008) return 'neutral'
+  let best = 'stone'
+  let distance = 360
+  for (const [name, entry] of Object.entries(bases)) {
+    if (name === 'neutral') continue
+    const each = hueDistance(hue, entry.h)
+    if (each < distance) {
+      distance = each
+      best = name
+    }
+  }
+  return best
+}
+
+/** Nearest chart color family for a picked hue; near-achromatic picks →
+    'neutral' (hue is meaningless there). */
+export const snapChartColor = (hue: number, chroma: number): string => {
+  if (chroma < 0.03) return 'neutral'
+  let best = 'neutral'
+  let distance = 360
+  for (const name of Object.keys(ACCENTS)) {
+    const hueOf = Option.getOrElse(
+      Option.map(parseOklch(ACCENTS[name]![0]), ([, , h]) => h),
+      () => 0,
+    )
+    const each = hueDistance(hue, hueOf)
+    if (each < distance) {
+      distance = each
+      best = name
+    }
+  }
+  return best
+}
