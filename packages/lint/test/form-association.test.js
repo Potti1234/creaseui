@@ -35,6 +35,13 @@ tester.run('crease/form-association', formAssociation, {
     `${imports}export const view = (h, body) => h.div([], [${form('local')}, body(h), ${submit("'external'")}])`,
     // A local helper renders it.
     `${imports}const settings = h => ${form('external')}\nexport const view = h => h.div([], [${form('local')}, settings(h), ${submit("'external'")}])`,
+    // Review F7 (Oct 21): a local object's method renders the target Form.
+    `${imports}const sections = { external: h => ${form('external')} }\nexport const view = h => h.div([], [${form('local')}, sections.external(h), ${submit("'external'")}])`,
+    // A method on a parameter object, a nested member, or a collection
+    // callback may render it too.
+    `${imports}export const view = (h, parts) => h.div([], [${form('local')}, parts.body(h), ${submit("'external'")}])`,
+    `${imports}import * as Sections from './sections'\nexport const view = h => h.div([], [${form('local')}, Sections.all.external(h), ${submit("'external'")}])`,
+    `${imports}const renderers = [h => ${form('external')}]\nexport const view = h => h.div([], [${form('local')}, ...renderers.map(render => render(h)), ${submit("'external'")}])`,
     // Several Forms; the footer names one of them, inside a Dialog.
     `${imports}export const view = h => Dialog.dialog({ children: [${form('a')}, ${form('b')}], footer: [${submit("'b'")}] }, h)`,
     // An unrelated function's literal Form does not close another view.

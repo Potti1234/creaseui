@@ -4,7 +4,9 @@ import { docsUrl } from '../lib/strict/context.js'
    literal form: reference is an error only inside a closed composition. That
    is one module-level function whose Forms are all the imported Crease Form
    with literal ids, and which calls nothing that could render another Form
-   (imported helpers, callbacks, other local functions). Everything else —
+   (imported helpers, callbacks, other local functions, methods of local
+   objects or parameters) — only its element builder and the Form's own
+   component family. Everything else —
    cross-module, computed ids, forms owned elsewhere — is left to the
    form-association runtime audit. */
 
@@ -127,6 +129,16 @@ export const formAssociation = {
       'Program:exit'() {
         const sameFamily = source =>
           formModules.has(source.replace(/\/[^/]*$/u, ''))
+        /* The element builder: whatever a Crease component call receives
+           as its builder argument. */
+        const builders = new Set()
+        for (const { component, node } of calls) {
+          const builder = node.arguments[1]
+          if (component !== null && builder?.type === 'Identifier') {
+            const variable = variableOf(builder)
+            if (variable !== null) builders.add(variable)
+          }
+        }
         for (const { component, node } of calls) {
           const composition = at(compositionOf(node))
           const props = node.arguments[0]
@@ -147,17 +159,25 @@ export const formAssociation = {
             continue
           }
           if (component !== null) continue
-          /* Calls that could render a Form this function cannot see. */
+          /* Calls that could render a Form this function cannot see: any
+             call except the element builder the Crease components receive
+             (`h.div(...)`) and other members of the Form's own component
+             family. Local objects, parameters and nested members
+             (`sections.external(h)`, `parts.body(h)`) may render one. */
           const callee = node.callee
-          if (callee.type === 'Identifier') composition.closed = false
-          else if (
-            callee.type === 'MemberExpression' &&
-            callee.object.type === 'Identifier'
+          if (
+            callee.type !== 'MemberExpression' ||
+            callee.object.type !== 'Identifier'
           ) {
-            const binding = importOf(callee.object)
-            if (binding !== null && !sameFamily(binding.source))
-              composition.closed = false
-          } else if (callee.type !== 'MemberExpression')
+            composition.closed = false
+            continue
+          }
+          const binding = importOf(callee.object)
+          if (
+            binding === null
+              ? !builders.has(variableOf(callee.object))
+              : !sameFamily(binding.source)
+          )
             composition.closed = false
         }
         for (const composition of compositions.values()) {
