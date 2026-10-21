@@ -6,6 +6,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { modifyFields } from 'foldkit/struct'
 
+import { interactiveAreaOption } from '@/demo/charts/interactive-area'
 import type { ChartSection } from '@/route'
 import { CHART_SECTIONS, chartsPath } from '@/route'
 import { chartTab } from '@/pleat/composition/chart-tab'
@@ -209,6 +210,9 @@ const cartesianOption = (
   theme: Chart.ChartTheme,
   variant: string,
 ): EChartsOption => {
+  if (spec.id === 'area-interactive') {
+    return interactiveAreaOption(theme, variant)
+  }
   const isBar = spec.id.startsWith('bar-')
   const isArea = spec.id.startsWith('area-')
   const horizontal = spec.id.endsWith('-horizontal')
