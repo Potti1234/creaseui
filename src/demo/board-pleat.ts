@@ -8,6 +8,8 @@ import { defineMessageUnion } from 'foldkit/message'
 import { defineView } from 'foldkit/submodel'
 import { modifyFields } from 'foldkit/struct'
 
+import * as BlocksBlocks from '@/demo/blocks-pleat/creaseui-blocks'
+import * as BlocksDashboards from '@/demo/blocks-pleat/creaseui-dashboards'
 import * as AccountAccess from '@/demo/pleat-cards/account-access'
 import * as CardOverview from '@/demo/pleat-cards/card-overview'
 import * as ClaimableBalance from '@/demo/pleat-cards/claimable-balance'
@@ -234,6 +236,17 @@ const styles = {
     height: '1rem',
     left: '5.2rem',
     width: '1rem',
+  }),
+  customizerDrawer: Style.make({
+    backgroundColor: boardTokens.panel,
+    color: boardTokens.text,
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+    minHeight: 0,
+    overflow: 'hidden',
+    position: 'relative',
+    width: '100%',
   }),
   customizer: Style.make({
     borderRadius: boardTokens.panelRadius,
@@ -743,10 +756,40 @@ const styles = {
     marginInline: '0.125rem',
     width: 1,
   }),
-  boardComponents: Style.make({
-    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-    width: '120rem',
-  }).pipe(Style.when(When.minWidth('768px'), { width: '140rem' })),
+  blocksCanvas: Style.make({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    padding: '1rem',
+    backgroundColor: boardTokens.boardMuted,
+    width: '70rem',
+  }).pipe(
+    Style.when(When.minWidth('1920px'), { gap: '3rem', padding: '3rem' }),
+    Style.when(When.minWidth('768px'), { gap: '2.5rem', padding: '2.5rem' }),
+  ),
+  blockFrame: Style.make({
+    backgroundColor: tokens.background,
+    borderColor: tokens.border,
+    borderRadius: foundationTokens.radiusMd,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    overflow: 'hidden',
+  }),
+  blockFrameBar: Style.make({
+    alignItems: 'center',
+    borderBottomColor: tokens.border,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+    display: 'flex',
+    gap: '0.5rem',
+    paddingBlock: '0.5rem',
+    paddingInline: '1rem',
+  }),
+  blockFrameLabel: Style.make({
+    color: tokens.mutedForeground,
+    fontSize: '0.625rem',
+    textTransform: 'uppercase',
+  }),
   typeCanvas: Style.make({
     backgroundColor: tokens.background,
     color: tokens.foreground,
@@ -886,7 +929,7 @@ export const Model = S.Struct({
   openToken: S.NullOr(S.String),
   tokenDrafts: S.Record(S.String, S.String),
   tokenPicker: ColorPicker.Model,
-  canvas: S.Literals(['board', 'components', 'type', 'palette']),
+  canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   primitiveInspector: S.Struct({
     boxPadding: S.Literals(['responsive', 'none', 'sm', 'md', 'xl']),
     boxSurface: S.Literals(['card', 'muted', 'section']),
@@ -1000,7 +1043,7 @@ export const Message = defineMessageUnion({
   ClickedResetCreateTokens: {},
   ChoseCreateScheme: { scheme: S.Literals(['system', 'light', 'dark']) },
   ChoseCreateCanvas: {
-    canvas: S.Literals(['board', 'components', 'type', 'palette']),
+    canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   },
   ClickedResetCreatePreset: {},
   ClickedCopyCreatePreset: {},
@@ -1680,6 +1723,7 @@ export const presetCustomizer = (
   model: Model,
   h: HtmlBuilder<Message>,
   inspector: Html | null = null,
+  placement: 'page' | 'drawer' = 'page',
 ): Html => {
   const picker = (
     label: string,
@@ -2186,7 +2230,18 @@ export const presetCustomizer = (
   }
 
   return h.aside(
-    [h.Class(darkThemeClass + ' ' + className(styles.customizer))],
+    [
+      h.Class(
+        darkThemeClass +
+          ' ' +
+          className(
+            placement === 'drawer'
+              ? styles.customizerDrawer
+              : styles.customizer,
+          ),
+      ),
+      h.DataAttribute('theme-lab-customizer', placement),
+    ],
     [
       h.div(
         [h.Class(className(styles.customizerHeader, styles.group))],
@@ -2546,6 +2601,26 @@ export const presetThemeStyle = (model: Model, h: HtmlBuilder<Message>): Html =>
     ],
   )
 
+/* The theme lab drawer embeds this panel on every page; /create keeps using
+   the 'page' placement inside its own layout. */
+export const createCustomizer = (
+  model: Model,
+  placement: 'page' | 'drawer',
+  h: HtmlBuilder<Message>,
+): Html => presetCustomizer(model, h, null, placement)
+
+/* Site-wide variant of the preset CSS: emitted on :root/.dark so docs, blocks
+   and every other page pick the theme up, plus the Pleat token aliases the
+   components resolve against. Only rendered when the theme lab's apply switch
+   is on. */
+export const globalThemeStyle = <M>(model: Model, h: HtmlBuilder<M>): Html =>
+  h.style(
+    [],
+    [
+      `${Preset.presetInstallCss(model.preset)}${scopedPleatThemeCss().replaceAll('[data-crease-board-theme]', ':root')}`,
+    ],
+  )
+
 export const boardSpriteDefinitions = (h: HtmlBuilder<Message>): Html =>
   PreviewIcon.spriteDefinitions(h)
 
@@ -2717,9 +2792,40 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     ],
   )
 
+  const blockFrame = (title: string, block: Html): Html =>
+    h.div(
+      [h.Class(className(styles.blockFrame))],
+      [
+        h.div(
+          [h.Class(className(styles.blockFrameBar))],
+          [
+            h.span(
+              [h.Class(className(reset.text, styles.blockFrameLabel))],
+              [title],
+            ),
+          ],
+        ),
+        block,
+      ],
+    )
+
+  /* Real blocks from the /blocks catalog, each framed so the canvas reads as
+     distinct pieces rather than a squashed card grid. */
+  const blocksCanvas = h.div(
+    [...themeAttrs(className(styles.blocksCanvas))],
+    [
+      blockFrame('Kanban board', BlocksBlocks.kanbanBoard<Message>(h)),
+      blockFrame(
+        'Incident console',
+        BlocksDashboards.incidentConsoleDashboard<Message>(h),
+      ),
+      blockFrame('Order detail', BlocksBlocks.orderDetail<Message>(h)),
+    ],
+  )
+
   const canvases: Record<Model['canvas'], Html> = {
     board: boardGrid(),
-    components: boardGrid(styles.boardComponents),
+    blocks: blocksCanvas,
     type: typeCanvas,
     palette: paletteCanvas,
   }
@@ -2755,7 +2861,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       toolbarSeg(
         [
           ['board', 'Board'],
-          ['components', 'Components'],
+          ['blocks', 'Blocks'],
           ['type', 'Type'],
           ['palette', 'Palette'],
         ] as const,

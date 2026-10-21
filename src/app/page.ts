@@ -9,9 +9,6 @@ import * as BlocksStyleXFeature from '@/demo/blocks-stylex/featured-page'
 import * as BlocksPleatFeature from '@/demo/blocks-pleat/featured-page'
 import * as TanStackTableFeature from '@/demo/blocks-stylex/tanstack-table-page'
 import * as TanStackTablePleatFeature from '@/demo/blocks-pleat/tanstack-table-page'
-import * as BoardFeature from '@/demo/board'
-import * as BoardStyleX from '@/demo/board-stylex'
-import * as BoardPleat from '@/demo/board-pleat'
 import * as LandingFeature from '@/demo/landing'
 import * as ChartsArea from '@/demo/charts/area'
 import * as ChartsBar from '@/demo/charts/bar'
@@ -35,9 +32,6 @@ export const Renderer = S.Literals(['tailwind', 'stylex', 'pleat'])
 export type Renderer = typeof Renderer.Type
 export const Create = taggedStruct('CreatePage', {
   renderer: Renderer,
-  tailwindBoard: BoardFeature.Model,
-  styleXBoard: BoardStyleX.Model,
-  pleatBoard: BoardPleat.Model,
 })
 export const BlockCategory = S.Literals([
   'all',
@@ -120,9 +114,6 @@ export const init = (route: AppRoute): Page =>
       Create: () =>
         Create({
           renderer,
-          tailwindBoard: BoardFeature.init(),
-          styleXBoard: BoardStyleX.init(),
-          pleatBoard: BoardPleat.init(),
         }),
       Charts: () =>
         Charts({

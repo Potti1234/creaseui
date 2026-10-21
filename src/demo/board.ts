@@ -6,6 +6,8 @@ import { defineMessageUnion } from 'foldkit/message'
 import { defineView } from 'foldkit/submodel'
 import { modifyFields } from 'foldkit/struct'
 
+import * as BlocksBlocks from '@/demo/blocks/creaseui-blocks'
+import * as BlocksDashboards from '@/demo/blocks/creaseui-dashboards'
 import * as AccountAccess from '@/demo/cards/account-access'
 import * as CardOverview from '@/demo/cards/card-overview'
 import * as ClaimableBalance from '@/demo/cards/claimable-balance'
@@ -75,7 +77,7 @@ export const Model = S.Struct({
   openToken: S.NullOr(S.String),
   tokenDrafts: S.Record(S.String, S.String),
   tokenPicker: ColorPicker.Model,
-  canvas: S.Literals(['board', 'components', 'type', 'palette']),
+  canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   pickerPopovers: S.Struct({
     style: Popover.Model,
     base: Popover.Model,
@@ -180,7 +182,7 @@ export const Message = defineMessageUnion({
   ClickedResetCreateTokens: {},
   ChoseCreateScheme: { scheme: S.Literals(['system', 'light', 'dark']) },
   ChoseCreateCanvas: {
-    canvas: S.Literals(['board', 'components', 'type', 'palette']),
+    canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   },
   ClickedResetCreatePreset: {},
   ClickedCopyCreatePreset: {},
@@ -808,7 +810,13 @@ const CHROME_BUTTON =
   'w-full border-white/10 bg-transparent text-white hover:bg-white/[0.06] dark:bg-transparent'
 const TINY_LABEL = 'font-mono text-[10px]'
 
-const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
+export type CustomizerPlacement = 'page' | 'drawer'
+
+const customizer = (
+  model: Model,
+  h: HtmlBuilder<Message>,
+  placement: CustomizerPlacement = 'page',
+): Html => {
   const chromeButton = (label: string, onClick: Message): Html =>
     Button.button(
       {
@@ -1345,8 +1353,11 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
   return h.aside(
     [
       h.Class(
-        `${DARK_CHROME} fixed top-19 bottom-5 left-5 z-30 flex w-70.5 flex-col overflow-hidden rounded-2xl max-lg:right-3 max-lg:left-3 max-lg:w-auto`,
+        placement === 'drawer'
+          ? `${DARK_CHROME} relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-none shadow-none ring-0`
+          : `${DARK_CHROME} fixed top-19 bottom-5 left-5 z-30 flex w-70.5 flex-col overflow-hidden rounded-2xl max-lg:right-3 max-lg:left-3 max-lg:w-auto`,
       ),
+      h.DataAttribute('theme-lab-customizer', placement),
     ],
     [
       h.div(
@@ -1480,6 +1491,20 @@ const customizer = (model: Model, h: HtmlBuilder<Message>): Html => {
     ],
   )
 }
+
+/* The theme lab drawer embeds this panel on every page; /create keeps using
+   the 'page' placement inside its own layout. */
+export const createCustomizer = (
+  model: Model,
+  placement: CustomizerPlacement,
+  h: HtmlBuilder<Message>,
+): Html => customizer(model, h, placement)
+
+/* Site-wide variant of the preset CSS: emitted on :root/.dark so docs, blocks
+   and every other page pick the theme up. Only rendered when the theme lab's
+   apply switch is on. */
+export const globalThemeStyle = <M>(model: Model, h: HtmlBuilder<M>): Html =>
+  h.style([], [Preset.presetInstallCss(model.preset)])
 
 export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
   const schemeSuffix = model.scheme === 'system' ? '' : ` ${model.scheme}`
@@ -1833,9 +1858,51 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     ],
   )
 
+  const blockFrame = (title: string, block: Html): Html =>
+    h.div(
+      [
+        h.Class(
+          'overflow-hidden rounded-xl bg-background shadow-sm ring-1 ring-border',
+        ),
+      ],
+      [
+        h.div(
+          [h.Class('flex items-center gap-2 border-b border-border px-4 py-2')],
+          [
+            h.span(
+              [h.Class(`${TINY_LABEL} uppercase text-muted-foreground`)],
+              [title],
+            ),
+          ],
+        ),
+        block,
+      ],
+    )
+
+  /* Real blocks from the /blocks catalog, each framed so the canvas reads as
+     distinct pieces rather than a squashed card grid. */
+  const blocksCanvas = h.div(
+    [
+      h.Class(
+        `${themeClass} flex w-280 flex-col gap-(--gap) bg-muted p-(--gap) dark:bg-background`,
+      ),
+      h.DataAttribute('crease-style', model.preset.style),
+      h.DataAttribute('icon-library', model.preset.iconLibrary),
+      h.DataAttribute('slot', 'capture-target'),
+    ],
+    [
+      blockFrame('Kanban board', BlocksBlocks.kanbanBoard<Message>(h)),
+      blockFrame(
+        'Incident console',
+        BlocksDashboards.incidentConsoleDashboard<Message>(h),
+      ),
+      blockFrame('Order detail', BlocksBlocks.orderDetail<Message>(h)),
+    ],
+  )
+
   const canvases: Record<Model['canvas'], Html> = {
     board: themedGrid('w-600 grid-cols-7 md:w-750'),
-    components: themedGrid('w-480 grid-cols-3 md:w-560'),
+    blocks: blocksCanvas,
     type: typeCanvas,
     palette: paletteCanvas,
   }
@@ -1871,7 +1938,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       toolbarSeg(
         [
           ['board', 'Board'],
-          ['components', 'Components'],
+          ['blocks', 'Blocks'],
           ['type', 'Type'],
           ['palette', 'Palette'],
         ],
