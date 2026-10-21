@@ -62,10 +62,6 @@ import { cardDemoTokens } from './stylex-cards/foundations-card-tokens.stylex'
 import { interactionCardTokens } from './stylex-cards/interaction-card-tokens.stylex'
 import { interactionTokens } from '../stylex/interaction-tokens.stylex.const'
 
-/* The customizer panel always renders dark chrome; the global .dark class
-   supplies the dark token values its descendants' var() references resolve. */
-const darkThemeClass = 'dark'
-
 const stylexVariableName = (variable: string): string =>
   variable.replace(/^var\((--[^,)]+).*/, '$1')
 
@@ -347,7 +343,6 @@ const styles = stylex.create({
   },
   iconRight: { color: boardTokens.textSubtle, height: '1rem', width: '1rem' },
   marker: { borderRadius: '50%', height: '0.875rem', width: '0.875rem' },
-  markerChart: { backgroundColor: boardTokens.markerChart },
   markerZinc: { backgroundColor: boardTokens.markerZinc },
   nestedGrid: {
     gap: {
@@ -657,18 +652,21 @@ const styles = stylex.create({
     color: boardTokens.textInverse,
   },
   knobRow: { gap: '0.375rem', display: 'flex', flexDirection: 'column' },
-  knobLabelRow: {
-    alignItems: 'baseline',
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  knobValue: {
-    color: boardTokens.textSubtle,
+  mono: {
     fontFamily:
       'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
-    fontSize: '0.625rem',
   },
-  range: { accentColor: boardTokens.text, width: '100%' },
+  colorFieldSwatch: {
+    borderColor: boardTokens.border,
+    borderRadius: foundationTokens.radiusSm,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    flexShrink: 0,
+    height: '1.25rem',
+    marginBottom: '0.125rem',
+    marginLeft: '0.75rem',
+    width: '1.25rem',
+  },
   tileGrid: {
     gap: '0.5rem',
     display: 'grid',
@@ -900,12 +898,21 @@ export const Model = S.Struct({
   presetInput: S.String,
   presetError: S.NullOr(S.String),
   isPresetCopied: S.Boolean,
-  section: S.Literals(['theme', 'color', 'shape', 'type', 'motion', 'tokens']),
+  section: S.Literals(['tokens', 'theme', 'color', 'shape', 'type', 'motion']),
   scheme: S.Literals(['system', 'light', 'dark']),
   tokenScheme: S.Literals(['light', 'dark']),
   openToken: S.NullOr(S.String),
   tokenDrafts: S.Record(S.String, S.String),
   tokenPicker: ColorPicker.Model,
+  /* The Color pane's real color pickers — they write decomposed oklch back
+     into the parametric fields (hue/chroma/lightness, surface lightness +
+     saturation + base, nearest chart family). */
+  colorPickers: S.Struct({
+    accent: ColorPicker.Model,
+    surfaceLight: ColorPicker.Model,
+    surfaceDark: ColorPicker.Model,
+    chart: ColorPicker.Model,
+  }),
   canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   primitiveInspector: S.Struct({
     boxPadding: S.Literals(['responsive', 'none', 'sm', 'md', 'xl']),
@@ -987,10 +994,6 @@ export const Message = defineMessageUnion({
     field: Preset.Field,
     value: S.String,
   },
-  ChangedCreateKnob: {
-    knob: Preset.Knob,
-    value: S.Number,
-  },
   ChangedCreatePresetOption: {
     field: Preset.OptionField,
     value: S.String,
@@ -998,12 +1001,12 @@ export const Message = defineMessageUnion({
   ChoseCreateTheme: { name: S.String },
   ChoseCreateSection: {
     section: S.Literals([
+      'tokens',
       'theme',
       'color',
       'shape',
       'type',
       'motion',
-      'tokens',
     ]),
   },
   ChoseCreateTokenScheme: {
@@ -1015,6 +1018,10 @@ export const Message = defineMessageUnion({
     value: S.String,
   },
   GotCreateTokenPickerMessage: {
+    message: ColorPicker.Message,
+  },
+  GotCreateColorPickerMessage: {
+    target: S.Literals(['accent', 'surfaceLight', 'surfaceDark', 'chart']),
     message: ColorPicker.Message,
   },
   ClickedResetCreateTokens: {},
@@ -1054,6 +1061,90 @@ export type Message = typeof Message.Type
 
 type UpdateReturn = Update.Return<Model, Message>
 
+const COLOR_PICKER_TARGETS = [
+  'accent',
+  'surfaceLight',
+  'surfaceDark',
+  'chart',
+] as const
+type ColorPickerTarget = (typeof COLOR_PICKER_TARGETS)[number]
+
+/* The derived color a pane picker edits, as the oklch literal it reflects. */
+const pickerToken = (
+  preset: Preset.Config,
+  target: ColorPickerTarget,
+): string =>
+  target === 'accent'
+    ? Preset.accentToken(preset)
+    : target === 'surfaceLight'
+      ? Preset.surfaceToken(preset, 'light')
+      : target === 'surfaceDark'
+        ? Preset.surfaceToken(preset, 'dark')
+        : Preset.chartToken(preset)
+
+const reflectColorPickers = (
+  preset: Preset.Config,
+  pickers: Model['colorPickers'],
+  except?: ColorPickerTarget,
+): Model['colorPickers'] => {
+  const next = { ...pickers }
+  for (const target of COLOR_PICKER_TARGETS) {
+    if (target === except) continue
+    const hex = Preset.tokenToHex(pickerToken(preset, target))
+    if (Option.isSome(hex)) {
+      next[target] = ColorPicker.reflectValue(next[target], hex.value)
+    }
+  }
+  return next
+}
+
+const initColorPicker = (id: string, token: string): ColorPicker.Model =>
+  Option.getOrElse(
+    Option.map(Preset.tokenToHex(token), hex =>
+      ColorPicker.reflectValue(ColorPicker.init({ id }), hex),
+    ),
+    () => ColorPicker.init({ id }),
+  )
+
+/* A picked color decomposes back into the parametric fields that derive it:
+   accent → hue/chroma/lightness, a surface → its lightness + shared tint +
+   nearest base hue, chart → nearest named family. */
+const applyPickedColor = (
+  preset: Preset.Config,
+  target: ColorPickerTarget,
+  l: number,
+  c: number,
+  h: number,
+): Preset.Config => {
+  const fitAt = (knob: Preset.Knob, value: number): number =>
+    Preset.fit(Preset.rangeOf(knob), value)
+  switch (target) {
+    case 'accent':
+      return {
+        ...preset,
+        hue: fitAt('hue', h),
+        chroma: fitAt('chroma', c),
+        lightness: fitAt('lightness', l * 100),
+      }
+    case 'surfaceLight':
+      return {
+        ...preset,
+        surfaceLightness: fitAt('surfaceLightness', l * 100),
+        surfaceSaturation: fitAt('surfaceSaturation', c),
+        base: Preset.snapBase(h, c),
+      }
+    case 'surfaceDark':
+      return {
+        ...preset,
+        surfaceLightnessDark: fitAt('surfaceLightnessDark', l * 100),
+        surfaceSaturation: fitAt('surfaceSaturation', c),
+        base: Preset.snapBase(h, c),
+      }
+    case 'chart':
+      return { ...preset, chartColor: Preset.snapChartColor(h, c) }
+  }
+}
+
 export const init = (): Model => ({
   accountAccess: AccountAccess.init(),
   faq: Faq.init(),
@@ -1076,12 +1167,30 @@ export const init = (): Model => ({
   presetInput: Preset.encodePreset(Preset.DEFAULT_CONFIG),
   presetError: null,
   isPresetCopied: false,
-  section: 'theme',
+  section: 'tokens',
   scheme: 'system',
   tokenScheme: 'light',
   openToken: null,
   tokenDrafts: {},
   tokenPicker: ColorPicker.init({ id: 'create-token-picker' }),
+  colorPickers: {
+    accent: initColorPicker(
+      'create-accent-picker',
+      Preset.accentToken(Preset.DEFAULT_CONFIG),
+    ),
+    surfaceLight: initColorPicker(
+      'create-surface-light-picker',
+      Preset.surfaceToken(Preset.DEFAULT_CONFIG, 'light'),
+    ),
+    surfaceDark: initColorPicker(
+      'create-surface-dark-picker',
+      Preset.surfaceToken(Preset.DEFAULT_CONFIG, 'dark'),
+    ),
+    chart: initColorPicker(
+      'create-chart-picker',
+      Preset.chartToken(Preset.DEFAULT_CONFIG),
+    ),
+  },
   canvas: 'board',
   primitiveInspector: {
     boxPadding: 'responsive',
@@ -1193,6 +1302,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
               preset: () => decoded,
               presetInput: () => Preset.encodePreset(decoded),
               presetError: () => null,
+              colorPickers: pickers => reflectColorPickers(decoded, pickers),
             }),
           }),
         })
@@ -1209,6 +1319,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
             pickerPopovers: current => ({ ...current, [field]: picker }),
+            colorPickers: pickers => reflectColorPickers(preset, pickers),
           }),
           commands: Command.mapMessages(commands, next =>
             Message['GotCreatePresetPickerMessage']({ field, message: next }),
@@ -1222,19 +1333,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             preset: () => preset,
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
-          }),
-        }
-      },
-      ChangedCreateKnob: ({ knob, value }) => {
-        const preset = {
-          ...model.preset,
-          [knob]: Preset.fit(Preset.rangeOf(knob), value),
-        }
-        return {
-          model: modifyFields(model, {
-            preset: () => preset,
-            presetInput: () => Preset.encodePreset(preset),
-            presetError: () => null,
+            colorPickers: pickers => reflectColorPickers(preset, pickers),
           }),
         }
       },
@@ -1247,6 +1346,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             presetInput: () => Preset.encodePreset(preset.config),
             presetError: () => null,
             scheme: () => preset.scheme ?? 'system',
+            colorPickers: pickers =>
+              reflectColorPickers(preset.config, pickers),
           }),
         }
       },
@@ -1354,6 +1455,46 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           ),
         }
       },
+      GotCreateColorPickerMessage: ({ target, message: pickerMessage }) => {
+        /* The pane's pickers decompose a picked color back into the
+           parametric fields that derive it (hue/chroma/lightness for accent,
+           lightness + tint + base for surfaces, nearest family for chart).
+           The dragged picker keeps its own color so mid-drag feedback is
+           smooth; the rest reflect the resulting preset. */
+        const next = ColorPicker.update(
+          model.colorPickers[target],
+          pickerMessage,
+        )
+        const picked = Option.flatMap(
+          Option.fromNullishOr(next.outMessage),
+          change =>
+            Option.flatMap(ColorPicker.parseColorString(change.value), rgb =>
+              Preset.hexToToken(ColorPicker.rgbToHex(rgb)),
+            ),
+        )
+        const preset = Option.getOrElse(
+          Option.map(Option.flatMap(picked, Preset.tokenOklch), ([l, c, h]) =>
+            applyPickedColor(model.preset, target, l, c, h),
+          ),
+          () => model.preset,
+        )
+        const pickers = reflectColorPickers(
+          preset,
+          { ...model.colorPickers, [target]: next.model },
+          target,
+        )
+        return {
+          model: modifyFields(model, {
+            colorPickers: () => pickers,
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+          }),
+          commands: Command.mapMessages(next.commands ?? [], child =>
+            Message.GotCreateColorPickerMessage({ target, message: child }),
+          ),
+        }
+      },
       ClickedResetCreateTokens: () => {
         const preset = { ...model.preset, overrides: {} }
         return {
@@ -1376,6 +1517,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           preset: () => Preset.DEFAULT_CONFIG,
           presetInput: () => Preset.encodePreset(Preset.DEFAULT_CONFIG),
           presetError: () => null,
+          colorPickers: pickers =>
+            reflectColorPickers(Preset.DEFAULT_CONFIG, pickers),
         }),
       }),
       ClickedCopyCreatePreset: () => ({
@@ -1391,6 +1534,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             preset: () => preset,
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
+            colorPickers: pickers => reflectColorPickers(preset, pickers),
           }),
         }
       },
@@ -1848,37 +1992,42 @@ export const presetCustomizer = (
       Message['ChangedCreatePresetOption']({ field, value }),
     )
 
-  const knob = (key: Preset.Knob): Html => {
-    const range = Preset.rangeOf(key)
-    const value = model.preset[key]
-    return h.div(
-      [h.Class(className(styles.knobRow))],
-      [
-        h.div(
-          [h.Class(className(styles.knobLabelRow))],
+  /* A color choice in the Color pane: field-styled trigger (label + hex +
+     swatch) opening the color-picker popover, mirroring the enum pickers. */
+  const colorField = (
+    label: string,
+    target: ColorPickerTarget,
+    token: string,
+  ): Html =>
+    ColorPicker.colorPicker<Message>(
+      {
+        model: model.colorPickers[target],
+        toParentMessage: message =>
+          Message.GotCreateColorPickerMessage({ target, message }),
+        side: 'right',
+        align: 'start',
+        triggerLayoutStyle: styles.pickerTriggerLayout,
+        trigger: h.div(
+          [h.Class(className(styles.pickerTrigger))],
           [
-            h.span([h.Class(className(styles.segLabel))], [range.label]),
+            h.span([h.Class(className(styles.pickerLabel))], [label]),
             h.span(
-              [h.Class(className(styles.knobValue))],
-              [`${value}${range.unit}`],
+              [h.Class(className(styles.pickerValue, styles.mono))],
+              [Option.getOrElse(Preset.tokenToHex(token), () => token)],
+            ),
+            h.span(
+              [
+                h.AriaHidden(true),
+                h.Class(className(styles.colorFieldSwatch)),
+                h.Style({ background: token }),
+              ],
+              [],
             ),
           ],
         ),
-        h.input([
-          h.Type('range'),
-          h.Min(String(range.min)),
-          h.Max(String(range.max)),
-          h.Step(String(range.step)),
-          h.Value(String(value)),
-          h.AriaLabel(range.label),
-          h.OnInput(next =>
-            Message['ChangedCreateKnob']({ knob: key, value: Number(next) }),
-          ),
-          h.Class(className(reset.input, styles.range)),
-        ]),
-      ],
+      },
+      h,
     )
-  }
 
   const tile = (preset: Preset.Preset): Html => {
     const config = preset.config
@@ -2137,41 +2286,34 @@ export const presetCustomizer = (
       fieldSeg('Icons', 'iconLibrary', Preset.ICON_LIBRARIES),
     ]),
     color: pane([
-      knob('hue'),
-      knob('chroma'),
-      knob('lightness'),
+      colorField('Accent', 'accent', Preset.accentToken(model.preset)),
+      colorField(
+        'Surface — light',
+        'surfaceLight',
+        Preset.surfaceToken(model.preset, 'light'),
+      ),
+      colorField(
+        'Surface — dark',
+        'surfaceDark',
+        Preset.surfaceToken(model.preset, 'dark'),
+      ),
       picker('Base', 'base', Preset.BASES, styles.markerZinc),
-      knob('surfaceSaturation'),
-      knob('surfaceLightness'),
-      knob('surfaceLightnessDark'),
-      knob('surfaceContrast'),
       optionSeg('Hover', 'hover', Preset.HOVERS),
-      picker('Chart', 'chartColor', Preset.THEMES, styles.markerChart),
+      colorField('Chart', 'chart', Preset.chartToken(model.preset)),
       fieldSeg('Menu accent', 'menuAccent', Preset.MENU_ACCENTS),
       fieldSeg('Menu color', 'menuColor', Preset.MENU_COLORS),
     ]),
     shape: pane([
-      knob('radius'),
       optionSeg('Controls', 'controlShape', Preset.CONTROL_SHAPES),
-      knob('border'),
       optionSeg('Outlines', 'outlines', Preset.OUTLINES),
-      knob('shadow'),
       optionSeg('Shadow style', 'shadowStyle', Preset.SHADOW_STYLES),
       optionSeg('Relief', 'relief', Preset.RELIEFS),
     ]),
     type: pane([
       picker('Font', 'font', Preset.FONTS),
       picker('Heading font', 'fontHeading', Preset.FONT_HEADINGS),
-      knob('textScale'),
-      knob('headingScale'),
-      knob('leading'),
-      knob('headingWeight'),
-      knob('tracking'),
     ]),
-    motion: pane([
-      knob('motion'),
-      optionSeg('Easing', 'easing', Preset.EASINGS),
-    ]),
+    motion: pane([optionSeg('Easing', 'easing', Preset.EASINGS)]),
     tokens: pane([
       h.div(
         [h.Class(className(styles.tokenHeader))],
@@ -2209,13 +2351,9 @@ export const presetCustomizer = (
   return h.aside(
     [
       h.Class(
-        darkThemeClass +
-          ' ' +
-          className(
-            placement === 'drawer'
-              ? styles.customizerDrawer
-              : styles.customizer,
-          ),
+        className(
+          placement === 'drawer' ? styles.customizerDrawer : styles.customizer,
+        ),
       ),
       h.DataAttribute('theme-lab-customizer', placement),
     ],
@@ -2233,12 +2371,12 @@ export const presetCustomizer = (
           h.div(
             [h.Class(className(styles.sectionTabsGrid))],
             [
+              sectionTab('tokens', 'Tokens'),
               sectionTab('theme', 'Themes'),
               sectionTab('color', 'Color'),
               sectionTab('shape', 'Shape'),
               sectionTab('type', 'Type'),
               sectionTab('motion', 'Motion'),
-              sectionTab('tokens', 'Tokens'),
             ],
           ),
         ],
@@ -2833,7 +2971,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     )
 
   const toolbar = h.div(
-    [h.Class(darkThemeClass + ' ' + className(styles.toolbar))],
+    [h.Class(className(styles.toolbar))],
     [
       toolbarSeg(
         [
@@ -2895,4 +3033,12 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     toParentMessage: message =>
       Message.GotCreateTokenPickerMessage({ message }),
   }),
+  ...COLOR_PICKER_TARGETS.map(target =>
+    ColorPicker.subscriptions<Model, Message>({
+      id: `create-${target === 'surfaceLight' ? 'surface-light' : target === 'surfaceDark' ? 'surface-dark' : target}-picker`,
+      toChildModel: model => model.colorPickers[target],
+      toParentMessage: message =>
+        Message.GotCreateColorPickerMessage({ target, message }),
+    }),
+  ),
 )

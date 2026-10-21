@@ -1,32 +1,32 @@
 import * as stylex from '@stylexjs/stylex'
 
+/* The customizer chrome follows the site theme, so these resolve the app's
+   --* tokens rather than fixed literals. Inside the board scope the scoped
+   theme re-aliases the board-* roles back to the preset palette. */
 export const boardTokens = stylex.defineVars({
   boardBackground: 'var(--background)',
   boardMuted: 'var(--muted)',
-  /* Outside the board scope (customizer panel, always dark chrome) this
-     resolves the .dark --muted-foreground literal; inside the board the
-     scoped theme aliases it back to var(--muted-foreground). */
-  boardMutedForeground: 'oklch(0.708 0 0)',
-  border: 'rgb(255 255 255 / 0.1)',
-  error: 'oklch(0.704 0.191 22.216)',
-  focus: 'rgb(255 255 255 / 0.3)',
-  hover: 'rgb(255 255 255 / 0.06)',
-  markerChart: 'oklch(0.488 0.243 264.376)',
-  markerPrimary: 'oklch(0.922 0 0)',
+  boardMutedForeground: 'var(--muted-foreground)',
+  border: 'var(--border)',
+  error: 'var(--destructive)',
+  focus: 'var(--ring)',
+  hover: 'var(--accent)',
+  markerChart: 'var(--chart-1)',
+  markerPrimary: 'var(--primary)',
   markerZinc: 'oklch(0.705 0.015 286.067)',
-  panel: 'rgb(40 40 40)',
+  panel: 'var(--card)',
   panelShadow:
-    '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1), 0 0 0 1px rgb(255 255 255 / 0.1)',
-  panelField: 'rgb(255 255 255 / 0.035)',
-  panelInput: 'rgb(0 0 0 / 0.2)',
-  panelPopover: 'rgb(58 58 58)',
+    '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1), 0 0 0 1px var(--border)',
+  panelField: 'var(--muted)',
+  panelInput: 'var(--background)',
+  panelPopover: 'var(--popover)',
   panelRadius: '1rem',
   panelInnerRadius: '0.75rem',
-  selected: 'rgb(255 255 255 / 0.15)',
-  success: 'oklch(0.627 0.194 149.214)',
-  text: 'white',
-  textInverse: 'rgb(0 0 0)',
-  textMuted: 'rgb(255 255 255 / 0.8)',
-  textSubtle: 'rgb(255 255 255 / 0.35)',
+  selected: 'var(--accent)',
+  success: 'var(--success)',
+  text: 'var(--card-foreground)',
+  textInverse: 'var(--background)',
+  textMuted: 'var(--muted-foreground)',
+  textSubtle: 'var(--muted-foreground)',
   transparent: 'transparent',
 })
