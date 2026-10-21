@@ -49,6 +49,18 @@ tester.run('crease/form-association', formAssociation, {
     // Callee spelling alone is not a Crease component.
     `export const view = h => [Form.form({ id: 'a', children: [] }, h), Button.button({ type: 'submit', form: 'b', children: [] }, h)]`,
     `import { form, button } from './local-helpers'\nexport const view = h => [form({ id: 'a', children: [] }, h), button({ type: 'submit', form: 'b', children: [] }, h)]`,
+    // Review of 9f14670b, F7: a helper named after its file is not a
+    // Crease component, whichever way the file is spelled or imported.
+    ...['./externalForm', './external-form', './forms/externalForm'].flatMap(
+      source => [
+        `import * as Form from '../../../src/ui/form'\nimport * as Button from '../../../src/ui/button'\nimport { externalForm } from '${source}'\nexport const view = h => Stack.stack({ children: [Form.form({ id: 'local', children: [] }, h), externalForm(h), Button.button({ type: 'submit', form: 'external', children: ['Send'] }, h)] }, h)`,
+        `${imports}import * as External from '${source}'\n${view([form('local'), 'External.externalForm(h)', submit("'external'")]).replace(imports, '')}`,
+      ],
+    ),
+    // A consumer wrapper around Form, or a `form` export outside a Crease
+    // component module, may render the target Form.
+    `${imports}import { form as wrapped } from './design/form'\n${view([form('local'), "wrapped({ id: 'external' }, h)", submit("'external'")]).replace(imports, '')}`,
+    `${imports}import * as Shell from './shell/form'\n${view([form('local'), "Shell.form({ id: 'external' }, h)", submit("'external'")]).replace(imports, '')}`,
     // Standalone search input without a form.
     `Input.input({ type: 'search', value: query, onInput: changed }, h)`,
   ],
@@ -66,6 +78,18 @@ tester.run('crease/form-association', formAssociation, {
       code: `import { button } from '@/ui/button'\nimport { form } from '@/ui/form'\nexport const view = h => [form({ id: 'a', children: [] }, h), button({ type: 'submit', form: \`b\`, children: ['Send'] }, h)]`,
       errors: [{ messageId: 'unknownForm' }],
     },
+    // Crease Forms and Buttons under every renderer's install path, through
+    // relative, aliased, renamed and file-extension imports.
+    ...[
+      ["'../../../src/ui/form'", "'../../../src/ui/button'"],
+      ["'@ui/stylex/form'", "'@ui/stylex/button'"],
+      ["'src/pleat/form.ts'", "'src/pleat/button.ts'"],
+    ].map(([formSource, buttonSource]) => ({
+      code: `import { form as creaseForm } from ${formSource}\nimport * as Action from ${buttonSource}\nexport const view = h => h.div([], [creaseForm({ id: 'invite', children: [] }, h), Action.button({ type: 'submit', form: 'invte', children: [] }, h)])`,
+      errors: [
+        { messageId: 'unknownForm', data: { id: 'invte', ids: "'invite'" } },
+      ],
+    })),
     {
       code: `${imports}export const view = h => Dialog.dialog({ children: [${form('a')}, ${form('b')}], footer: [${submit("'c'")}] }, h)`,
       errors: [

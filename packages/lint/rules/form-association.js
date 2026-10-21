@@ -10,11 +10,14 @@ import { docsUrl } from '../lib/strict/context.js'
    cross-module, computed ids, forms owned elsewhere — is left to the
    form-association runtime audit. */
 
-const lastSegment = source =>
-  source
-    .replace(/\.[cm]?[jt]s$/u, '')
-    .split('/')
-    .pop()
+/* Crease's installed Form and Button: the `form`/`button` export of a
+   renderer's component module (`@/ui/form`, `@ui/stylex/form`,
+   `src/pleat/button`). Any other module, whatever its file or export is
+   called (`./externalForm`), is an ordinary helper that may render a Form. */
+const CREASE_MODULE =
+  /(?:^|\/)@?(?:ui|stylex|pleat)\/(form|button)(?:\.[cm]?[jt]s)?$/u
+const creaseComponent = (source, name) =>
+  CREASE_MODULE.exec(source)?.[1] === name ? { name, source } : null
 
 const propertyValue = (object, name) =>
   object.properties.find(
@@ -93,15 +96,14 @@ export const formAssociation = {
         source: definition.parent.source.value,
       }
     }
-    /* Component identity comes from the import, not the callee's spelling:
-       `form`/`button` exported by the installed form/button modules. */
+    /* Component identity comes from the import, not the callee's spelling
+       or a helper named after its file. */
     const componentOf = callee => {
       if (callee.type === 'Identifier') {
         const binding = importOf(callee)
-        return binding !== null &&
-          binding.imported === lastSegment(binding.source)
-          ? { name: binding.imported, source: binding.source }
-          : null
+        return binding === null
+          ? null
+          : creaseComponent(binding.source, binding.imported)
       }
       if (
         callee.type === 'MemberExpression' &&
@@ -110,9 +112,8 @@ export const formAssociation = {
         callee.property.type === 'Identifier'
       ) {
         const binding = importOf(callee.object)
-        return binding?.imported === '*' &&
-          callee.property.name === lastSegment(binding.source)
-          ? { name: callee.property.name, source: binding.source }
+        return binding?.imported === '*'
+          ? creaseComponent(binding.source, callee.property.name)
           : null
       }
       return null
