@@ -225,10 +225,14 @@ const tooltipRowHtml = (row: TooltipRow, preferName: boolean): string => {
 
 /** shadcn ChartTooltipContent look: rounded border bg-background text-xs with
  *  a rounded color chip, muted label, tabular-nums value. The tooltip is DOM,
- *  so CSS variables apply directly. */
+ *  so CSS variables apply directly. `formatHeading` rewrites the axis heading —
+ *  needed when the axis uses slot ids (see `slotIds`) instead of real labels. */
 export const shadcnTooltip = (
   theme: ChartTheme,
-  config: Readonly<{ trigger?: 'axis' | 'item' }> = {},
+  config: Readonly<{
+    trigger?: 'axis' | 'item'
+    formatHeading?: (name: string, dataIndex: number) => string
+  }> = {},
 ): NonNullable<EChartsOption['tooltip']> => ({
   trigger: config.trigger ?? 'axis',
   confine: true,
@@ -248,9 +252,14 @@ export const shadcnTooltip = (
     const rows: ReadonlyArray<TooltipRow> = Array.isArray(params)
       ? (params as ReadonlyArray<TooltipRow>)
       : [params as TooltipRow]
-    const heading = Array.isArray(params)
-      ? ((params[0] as { name?: string }).name ?? '')
-      : ''
+    const first = Array.isArray(params)
+      ? (params[0] as { name?: string; dataIndex?: number })
+      : undefined
+    const rawHeading = first?.name ?? ''
+    const heading =
+      config.formatHeading && first
+        ? config.formatHeading(rawHeading, first.dataIndex ?? 0)
+        : rawHeading
     const headingHtml = heading
       ? `<div style="font-weight:500;margin-bottom:4px;color:var(--foreground)">${heading}</div>`
       : ''
@@ -280,15 +289,45 @@ export const shadcnLegend = (
 export const tooltipOptions = shadcnTooltip
 export const legendOptions = shadcnLegend
 
-/** Spread into the option of any chart that switches variants — a 500ms
- *  cubicInOut morph, close to recharts' default data tween. */
+/** Spread into the option of any chart that switches variants — a 1500ms
+ *  cubicInOut morph, matching recharts' default data tween (duration 1500,
+ *  easing 'ease'). */
 export const updateAnimation = (): Pick<
   EChartsOption,
   'animationDurationUpdate' | 'animationEasingUpdate'
 > => ({
-  animationDurationUpdate: 500,
+  animationDurationUpdate: 1500,
   animationEasingUpdate: 'cubicInOut',
 })
+
+/** Stable category names for a fixed slot count. ECharts diffs category-axis
+ *  data by name: when a range switch emits differently-named categories only
+ *  the overlapping names morph and the rest re-enter (the chart "flows in").
+ *  Feeding the same slot names across variants pairs every point 1:1, so the
+ *  whole shape morphs in place — the recharts look. Pair with `resample` when
+ *  the variant's point count differs from the slot count. */
+export const slotIds = (count: number): ReadonlyArray<string> =>
+  Array.from({ length: count }, (_, index) => `s${index}`)
+
+/** Evenly resample a numeric series onto a fixed slot count so merge-mode
+ *  morphs keep a point for every slot — endpoints stay exact. */
+export const resample = (
+  values: ReadonlyArray<number>,
+  slots: number,
+): Array<number> => {
+  if (values.length === slots) return [...values]
+  if (values.length === 0) return Array.from({ length: slots }, () => 0)
+  const last = values.length - 1
+  return Array.from({ length: slots }, (_, index) => {
+    const position = (index * last) / (slots - 1)
+    const lo = Math.floor(position)
+    const hi = Math.min(lo + 1, last)
+    return (
+      (values[lo] ?? 0) +
+      ((values[hi] ?? 0) - (values[lo] ?? 0)) * (position - lo)
+    )
+  })
+}
 
 /** Vertical fade used by shadcn's gradient area charts. */
 export const areaGradient = (
