@@ -148,6 +148,7 @@ Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
   const color = activeChart === 'desktop' ? theme.chart1 : theme.chart2
 
   return {
+    ...Chart.updateAnimation(),
     grid: Chart.compactGrid(),
     xAxis: {
       type: 'category',

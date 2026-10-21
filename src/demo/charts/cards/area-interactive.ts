@@ -139,6 +139,7 @@ Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
   const filtered = DATA.filter(([date]) => date >= firstDate[timeRange])
 
   return {
+    ...Chart.updateAnimation(),
     grid: Chart.compactGrid({ bottom: 44 }),
     xAxis: {
       ...Chart.categoryAxis(

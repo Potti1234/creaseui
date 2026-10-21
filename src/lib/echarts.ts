@@ -280,6 +280,16 @@ export const shadcnLegend = (
 export const tooltipOptions = shadcnTooltip
 export const legendOptions = shadcnLegend
 
+/** Spread into the option of any chart that switches variants — a 500ms
+ *  cubicInOut morph, close to recharts' default data tween. */
+export const updateAnimation = (): Pick<
+  EChartsOption,
+  'animationDurationUpdate' | 'animationEasingUpdate'
+> => ({
+  animationDurationUpdate: 500,
+  animationEasingUpdate: 'cubicInOut',
+})
+
 /** Vertical fade used by shadcn's gradient area charts. */
 export const areaGradient = (
   color: string,
@@ -340,7 +350,14 @@ const applyOption = (
   const builder = buildersByHostId.get(hostId)
   if (builder) {
     const element = chart.getDom()
-    chart.setOption(builder(resolveTheme(element), variant), true)
+    /* Merge mode (notMerge omitted): ECharts diffs the option and runs its
+       update animation — points/bars morph to the new data the way recharts
+       tweens on a data prop swap. notMerge:true rebuilt every component and
+       replayed the entrance animation on each SyncChart, which read as the
+       chart "dropping in" on every timeframe change. Builders must emit a
+       stable component shape across variants (hide a series with data:[],
+       don't remove its entry). */
+    chart.setOption(builder(resolveTheme(element), variant))
   }
 }
 
@@ -425,7 +442,7 @@ export const MountChart = Mount.define('MountChart', {
                 if (nextTheme !== lastTheme) {
                   lastTheme = nextTheme
                   const builder = buildersByHostId.get(hostId)
-                  if (builder) chart.setOption(builder(theme, variant), true)
+                  if (builder) chart.setOption(builder(theme, variant))
                 }
               })
             })

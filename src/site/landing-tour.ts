@@ -1443,40 +1443,37 @@ const CHART_DATA = {
 Chart.registerChart(CHART_ID, (theme, variant) => {
   const [period, series] = variant.split(':')
   const data = CHART_DATA[period as keyof typeof CHART_DATA] ?? CHART_DATA.month
+  /* Both series keep a stable slot so merge-mode updates morph — a removed
+     entry would leave its line rendered forever; data:[] animates it out. */
   return {
+    ...Chart.updateAnimation(),
     grid: { left: 8, right: 8, top: 18, bottom: 34, containLabel: true },
     xAxis: Chart.categoryAxis(theme, data.labels),
     yAxis: Chart.valueAxis(theme, { showLabels: true }),
     tooltip: Chart.shadcnTooltip(theme),
     series: [
-      ...(series === 'signups'
-        ? []
-        : [
-            {
-              name: 'Visitors',
-              type: 'line' as const,
-              smooth: 0.35,
-              showSymbol: false,
-              lineStyle: { width: 2, color: theme.chart1 },
-              itemStyle: { color: theme.chart1 },
-              areaStyle: { color: Chart.areaGradient(theme.chart1) },
-              data: [...data.visitors],
-            },
-          ]),
-      ...(series === 'visitors'
-        ? []
-        : [
-            {
-              name: 'Signups',
-              type: 'line' as const,
-              smooth: 0.35,
-              showSymbol: false,
-              lineStyle: { width: 2, color: theme.chart2 },
-              itemStyle: { color: theme.chart2 },
-              areaStyle: { color: Chart.areaGradient(theme.chart2) },
-              data: [...data.signups],
-            },
-          ]),
+      {
+        id: 'visitors',
+        name: 'Visitors',
+        type: 'line' as const,
+        smooth: 0.35,
+        showSymbol: false,
+        lineStyle: { width: 2, color: theme.chart1 },
+        itemStyle: { color: theme.chart1 },
+        areaStyle: { color: Chart.areaGradient(theme.chart1) },
+        data: series === 'signups' ? [] : [...data.visitors],
+      },
+      {
+        id: 'signups',
+        name: 'Signups',
+        type: 'line' as const,
+        smooth: 0.35,
+        showSymbol: false,
+        lineStyle: { width: 2, color: theme.chart2 },
+        itemStyle: { color: theme.chart2 },
+        areaStyle: { color: Chart.areaGradient(theme.chart2) },
+        data: series === 'visitors' ? [] : [...data.signups],
+      },
     ],
   }
 })
