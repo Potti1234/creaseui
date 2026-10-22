@@ -274,13 +274,17 @@ test.describe('Pleat without preflight', () => {
       await page.getByRole('combobox').press('Escape')
       await expect(page.getByRole('option', { name: 'Profile' })).toBeHidden()
       // Like shadcn's CommandDialog, Escape in the command closes the dialog.
-      await expect(page.locator('dialog')).toBeHidden()
+      await expect(
+        page.locator('dialog:not([data-slot="sidebar-mobile-modal"])'),
+      ).toBeHidden()
       await page.getByRole('button', { name: 'Open command dialog' }).click()
       await expect(page.getByRole('dialog')).toBeVisible()
       await page
         .getByRole('button', { name: 'Close', exact: true })
         .press('Enter')
-      await expect(page.locator('dialog')).toBeHidden()
+      await expect(
+        page.locator('dialog:not([data-slot="sidebar-mobile-modal"])'),
+      ).toBeHidden()
 
       await page.setViewportSize({ width: 390, height: 844 })
       await expect(

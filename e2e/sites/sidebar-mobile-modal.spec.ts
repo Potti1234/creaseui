@@ -63,3 +63,36 @@ test('mobile Sidebar traps focus, isolates the page and returns focus', async ({
   await closedWithFocusOn(page, trigger)
   expect(errors).toEqual([])
 })
+
+const pageIsInert = (page: Page) =>
+  page.evaluate(() => document.querySelector('[inert]') !== null)
+
+test('an open mobile Sidebar is modal only while the viewport shows it', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  await page.goto('/docs/components/sidebar')
+
+  await open(page)
+  await expect.poll(() => pageIsInert(page)).toBe(true)
+
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await expect.poll(() => pageIsInert(page)).toBe(false)
+  await expect(
+    page
+      .getByRole('navigation', { name: 'Site navigation' })
+      .getByRole('link', {
+        name: 'Docs',
+      }),
+  ).toBeVisible()
+
+  await page.setViewportSize({ width: 390, height: 844 })
+  await expect(page.locator('[data-slot="sidebar-mobile"]')).toBeVisible()
+  await expect.poll(() => pageIsInert(page)).toBe(true)
+  await page.keyboard.press('Escape')
+  await expect(modal(page)).toHaveCount(0)
+  await expect.poll(() => pageIsInert(page)).toBe(false)
+  expect(errors).toEqual([])
+})
