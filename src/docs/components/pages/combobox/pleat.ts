@@ -75,7 +75,7 @@ const styles = {
     height: '1.75rem',
     minWidth: '4rem',
   }),
-  chevron: Style.make({ display: 'inline-flex', opacity: 0.5 }),
+  chevron: Style.make({ display: 'block', opacity: 0.5 }),
   toggleButton: Style.make({
     borderRadius: '0.375rem',
     alignSelf: 'center',

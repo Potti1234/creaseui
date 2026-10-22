@@ -74,7 +74,7 @@ const styles = stylex.create({
     height: '1.75rem',
     minWidth: '4rem',
   },
-  chevron: { display: 'inline-flex', opacity: 0.5 },
+  chevron: { display: 'block', opacity: 0.5 },
   toggleButton: {
     borderRadius: '0.375rem',
     alignSelf: 'center',
