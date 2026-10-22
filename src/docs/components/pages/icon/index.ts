@@ -15,7 +15,7 @@ export const iconPage = authoredPage({
       'Icon is a stateless render helper. The icon data lives in the shared icon source; the component only picks the size and accessible name, so app code never imports implementation helpers.',
     apiHref: 'https://github.com/Potti1234/creaseui/blob/main/src/ui/icon.ts',
     styling:
-      'Pick sm, md or lg. The icon draws with currentColor, so it follows the color of the text around it.',
+      'Pick a size from 3xs (8px) through 2xs, xs, sm, md and lg to xl (32px). Without a tone the icon draws with currentColor, so it follows the color of the text around it; tone: muted or primary sets the theme color.',
     accessibility:
       'Without ariaLabel the icon is decorative and aria-hidden; pair it with visible text. A standalone icon that carries meaning needs ariaLabel, which renders role="img" with that name.',
     examples: iconExamples('tailwind'),
