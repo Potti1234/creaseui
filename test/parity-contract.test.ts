@@ -87,6 +87,7 @@ describe('multidimensional component parity', () => {
       'file-input',
       'grid',
       'heading',
+      'icon',
       'indicator',
       'info-tip',
       'lightbox',
