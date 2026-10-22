@@ -49,6 +49,7 @@ const ITEMS = [
   'switch',
   'table',
   'text',
+  'toggle-group',
 ]
 const CONSUMERS = [
   { renderer: 'tailwind', prefix: '', components: 'src/ui', alias: '@/ui' },
@@ -200,6 +201,35 @@ export const settingsView = <M>(
   )
 `
 }
+
+/* Consumer finding: the public `init` must build the whole model, so an
+   app never fills in internals such as `maybeFocusedIndex`. */
+const rangeApp = alias => `import type { Html, HtmlBuilder } from 'foldkit/html'
+
+import * as ToggleGroup from '${alias}/toggle-group'
+
+export const initialRange: ToggleGroup.Model = ToggleGroup.init({ id: 'range' })
+
+export const rangeView = <M>(
+  model: ToggleGroup.Model,
+  toParentMessage: (message: ToggleGroup.Message) => M,
+  range: '7d' | '30d',
+  h: HtmlBuilder<M>,
+): Html =>
+  ToggleGroup.toggleGroup(
+    {
+      model,
+      toParentMessage,
+      ariaLabel: 'Range',
+      value: range,
+      items: [
+        { value: '7d', children: ['7 days'] },
+        { value: '30d', children: ['30 days'] },
+      ],
+    },
+    h,
+  )
+`
 
 const dashboardApp =
   alias => `import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -588,6 +618,7 @@ ${Object.entries(pleatAliases)
       settingsApp(consumer.alias, consumer.renderer),
     )
     write(path.join(root, 'src/app/dashboard.ts'), dashboardApp(consumer.alias))
+    write(path.join(root, 'src/app/range.ts'), rangeApp(consumer.alias))
     write(
       path.join(root, 'src/app/main.ts'),
       mainApp.replace('ALIAS', consumer.alias),

@@ -272,3 +272,41 @@ every text run against its clipping ancestors rather than the root
 scroll regions, `[data-clip-intended]`) and screen-reader-only text.
 `e2e/sites/content-fit.spec.ts` runs it on the metric cards at 390, 768 and
 1440px on every renderer.
+
+### Toggle Group state
+
+Toggle Group is stateful: the parent owns its Model and routes its Messages.
+Start the Model with the public `init`; it fills in the internal focus and
+activation fields, so feature code never constructs them:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as ToggleGroup from '@/ui/toggle-group'
+
+export const initialRange: ToggleGroup.Model = ToggleGroup.init({ id: 'range' })
+
+export const rangeView = <M>(
+  model: ToggleGroup.Model,
+  toParentMessage: (message: ToggleGroup.Message) => M,
+  range: '7d' | '30d',
+  h: HtmlBuilder<M>,
+): Html =>
+  ToggleGroup.toggleGroup(
+    {
+      model,
+      toParentMessage,
+      ariaLabel: 'Range',
+      value: range,
+      items: [
+        { value: '7d', children: ['7 days'] },
+        { value: '30d', children: ['30 days'] },
+      ],
+    },
+    h,
+  )
+```
+
+Route `ToggleGroup.Message` through `ToggleGroup.update` and keep the selected
+value in your own Model. `npm run test:strict-consumers` installs this file
+into fresh Tailwind, StyleX and Pleat projects and runs strict lint, the
+typecheck and a production build on it.

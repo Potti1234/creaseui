@@ -50,8 +50,26 @@ const reexportedSources = source =>
 
 export const programParts = source => {
   const sources = [source, ...reexportedSources(source)]
+  /* Names listed in `export { Model, init }` / `export { x as init }`. */
+  const listed = new Set(
+    sources.flatMap(text =>
+      [...text.matchAll(/^export (?:type )?\{([^}]*)\}/gmu)].flatMap(match =>
+        match[1]
+          .split(',')
+          .map(part =>
+            part
+              .trim()
+              .split(/\s+as\s+/u)
+              .at(-1)
+              ?.replace(/^type\s+/u, ''),
+          )
+          .filter(Boolean),
+      ),
+    ),
+  )
   return ['Model', 'Message', 'init', 'update', 'subscriptions', 'view'].filter(
     name =>
+      listed.has(name) ||
       sources.some(text =>
         new RegExp(
           `^export (?:type|interface|const|function|class) ${name}\\b`,

@@ -131,10 +131,14 @@ const VARIANTS = /(?:Variants?|variants)$/u
 const renderingExports = (renderExports, file) => {
   const typed = renderExports.of(file) ?? []
   const names = new Set(typed.map(entry => entry.name))
+  const nonRendering = renderExports.nonRendering(file)
   return [
     ...typed,
     ...exportedFunctions(file)
-      .filter(name => !VARIANTS.test(name) && !names.has(name))
+      .filter(
+        name =>
+          !VARIANTS.test(name) && !names.has(name) && !nonRendering.has(name),
+      )
       .map(name => ({ name, origin: path.resolve(file), originName: name })),
   ]
 }

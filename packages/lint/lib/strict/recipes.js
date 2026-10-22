@@ -19,6 +19,14 @@ export const RECIPES = [
     summary:
       "Lay out Stat cards with Grid columns { minWidth: 240, max: 3, repeat: 'fit' } in a product-owned metricGrid wrapper instead of columns: 3, which clips values on phones.",
   },
+  {
+    id: 'toggle-group-state',
+    title: 'Toggle Group — parent-owned selection',
+    docs: `${DOCS}/toggle-group`,
+    components: ['toggle-group'],
+    summary:
+      'Start the Model with ToggleGroup.init({ id }) (never build maybeFocusedIndex or activationMode yourself), route ToggleGroup.Message through ToggleGroup.update and pass the selected value from your own Model to toggleGroup({ model, toParentMessage, ariaLabel, value, items }).',
+  },
 ]
 
 export const recipesFor = component =>

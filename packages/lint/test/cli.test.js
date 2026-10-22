@@ -765,6 +765,45 @@ test('info --catalog lists installable components before anything is installed',
   rmSync(directory, { force: true, recursive: true })
 })
 
+test('init does not record init/update of a stateful library as render exports', () => {
+  const directory = scratch()
+  const file = (name, text) => {
+    mkdirSync(path.dirname(path.join(directory, name)), { recursive: true })
+    writeFileSync(path.join(directory, name), text)
+  }
+  file(
+    'components.json',
+    JSON.stringify({
+      aliases: { lib: '@/lib', ui: '@/ui' },
+      tailwind: { css: 'src/styles.css' },
+    }),
+  )
+  file('src/styles.css', '')
+  file('src/entry.ts', "import './styles.css'\n")
+  file(
+    'src/lib/toggle-group.ts',
+    [
+      "import type { Html, HtmlBuilder } from 'foldkit/html'",
+      'export type Model = Readonly<{ id: string; maybeFocusedIndex: number | undefined }>',
+      "export type Message = Readonly<{ _tag: 'Pressed' }>",
+      'export const init = (config: Readonly<{ id: string }>): Model => ({ id: config.id, maybeFocusedIndex: undefined })',
+      'export const update = (model: Model, _message: Message): Model => model',
+      'export const view = <M>(model: Model, h: HtmlBuilder<M>): Html => h.div([], [model.id])',
+      '',
+    ].join('\n'),
+  )
+  const result = run(directory, 'init', '--renderer', 'tailwind')
+  assert.equal(result.status, 0, result.stderr)
+  const receipt = JSON.parse(
+    readFileSync(path.join(directory, 'crease.lock.json'), 'utf8'),
+  )
+  const library = receipt.artifacts.find(artifact =>
+    artifact.files.some(entry => entry.path === 'src/lib/toggle-group.ts'),
+  )
+  assert.deepEqual(library.exports.map(entry => entry.name).sort(), ['view'])
+  rmSync(directory, { force: true, recursive: true })
+})
+
 test('doctor reports foundations that only reach attributes, unselected elements or overwritten keys', () => {
   const directory = scratch()
   mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
