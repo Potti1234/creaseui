@@ -6,6 +6,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { modifyFields } from 'foldkit/struct'
 
+import { interactiveAreaOption } from '@/demo/charts/interactive-area'
 import type { ChartSection } from '@/route'
 import { CHART_SECTIONS, chartsPath } from '@/route'
 import { chartTab } from '@/pleat/composition/chart-tab'
@@ -209,6 +210,9 @@ const cartesianOption = (
   theme: Chart.ChartTheme,
   variant: string,
 ): EChartsOption => {
+  if (spec.id === 'area-interactive') {
+    return interactiveAreaOption(theme, variant)
+  }
   const isBar = spec.id.startsWith('bar-')
   const isArea = spec.id.startsWith('area-')
   const horizontal = spec.id.endsWith('-horizontal')
@@ -492,13 +496,18 @@ for (const [sectionName, sectionSpecs] of Object.entries(
   for (const spec of sectionSpecs) {
     Chart.registerChart(
       `stylex-chart-${spec.id}`,
-      (theme, variant): EChartsOption => {
-        if (sectionName === 'pie') return pieOption(spec, theme, variant)
-        if (sectionName === 'radar') return radarOption(spec, theme)
-        if (sectionName === 'radial') return radialOption(spec, theme)
-        if (sectionName === 'tooltip') return tooltipOption(spec, theme)
-        return cartesianOption(spec, theme, variant)
-      },
+      (theme, variant): EChartsOption => ({
+        ...Chart.updateAnimation(),
+        ...(sectionName === 'pie'
+          ? pieOption(spec, theme, variant)
+          : sectionName === 'radar'
+            ? radarOption(spec, theme)
+            : sectionName === 'radial'
+              ? radialOption(spec, theme)
+              : sectionName === 'tooltip'
+                ? tooltipOption(spec, theme)
+                : cartesianOption(spec, theme, variant)),
+      }),
     )
   }
 }

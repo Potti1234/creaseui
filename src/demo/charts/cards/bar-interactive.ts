@@ -46,6 +46,7 @@ const shortDate = (value: string): string =>
 Chart.registerChart(HOST_ID, (theme, variant): EChartsOption => {
   const active: Series = variant === 'mobile' ? 'mobile' : 'desktop'
   return {
+    ...Chart.updateAnimation(),
     grid: Chart.compactGrid({ left: 12, right: 12 }),
     xAxis: {
       type: 'category',
