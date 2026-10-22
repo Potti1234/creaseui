@@ -27,6 +27,14 @@ export const RECIPES = [
     summary:
       'Start the Model with ToggleGroup.init({ id }) (never build maybeFocusedIndex or activationMode yourself), route ToggleGroup.Message through ToggleGroup.update and pass the selected value from your own Model to toggleGroup({ model, toParentMessage, ariaLabel, value, items }).',
   },
+  {
+    id: 'icon',
+    title: 'Icon — ordinary icons in app UI',
+    docs: `${DOCS}/icon`,
+    components: ['icon'],
+    summary:
+      'Install the icon item and render Icon.icon({ name, size?, ariaLabel? }, h) from your renderer folder (never import @/lib/icon). name is a typed Lucide name; leave ariaLabel off next to visible text, set it on a standalone icon that carries meaning.',
+  },
 ]
 
 export const recipesFor = component =>

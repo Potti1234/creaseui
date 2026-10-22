@@ -4,7 +4,7 @@
     "src/ui/registry.json",
     "src/ui/*.ts"
   ],
-  "componentCount": 124,
+  "componentCount": 125,
   "components": [
     {
       "slug": "accordion",
@@ -3978,6 +3978,46 @@
       ]
     },
     {
+      "slug": "icon",
+      "title": "Icon",
+      "description": "A CreaseUI Icon component for Foldkit.",
+      "docs": "/docs/components/icon",
+      "source": "src/ui/icon.ts",
+      "install": "npx creaseui add icon",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons"
+      ],
+      "examples": [
+        "Icon",
+        "Sizes",
+        "With text",
+        "Accessible label"
+      ],
+      "api": [
+        {
+          "name": "IconName",
+          "kind": "type",
+          "signature": "IconName = IconSource.IconName"
+        },
+        {
+          "name": "iconNames",
+          "kind": "value",
+          "signature": "iconNames: ReadonlyArray<IconName>"
+        },
+        {
+          "name": "IconProps",
+          "kind": "type",
+          "signature": "IconProps = Readonly<{ name: IconName; size?: 'sm' | 'md' | 'lg'; ariaLabel?: string; }>"
+        },
+        {
+          "name": "icon",
+          "kind": "function",
+          "signature": "icon<Msg>(props: IconProps, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
       "slug": "indicator",
       "title": "Indicator",
       "description": "A CreaseUI Indicator component for Foldkit.",
@@ -7214,6 +7254,7 @@
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/sidebar-modal-behavior",
         "Potti1234/creaseui/sidebar-state",
         "Potti1234/creaseui/utils"
       ],
@@ -7266,7 +7307,7 @@
         {
           "name": "SidebarProps",
           "kind": "type",
-          "signature": "SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>"
+          "signature": "SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; mobileId?: string; onMobileDismiss?: Msg; }>"
         },
         {
           "name": "sidebar",

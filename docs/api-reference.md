@@ -891,6 +891,17 @@ Source: [`src/ui/hover-card.ts`](../src/ui/hover-card.ts)
 | `HoverCardProps` | type | `HoverCardProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; content: Html \| string; triggerButtonVariant?: Button.ButtonVariants['variant']; triggerButtonSize?: Button.ButtonVariants['size']; align?: Hove…` |
 | `hoverCard` | function | `hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
+## Icon
+
+Source: [`src/ui/icon.ts`](../src/ui/icon.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `IconName` | type | `IconName = IconSource.IconName` |
+| `iconNames` | value | `iconNames: ReadonlyArray<IconName>` |
+| `IconProps` | type | `IconProps = Readonly<{ name: IconName; size?: 'sm' \| 'md' \| 'lg'; ariaLabel?: string; }>` |
+| `icon` | function | `icon<Msg>(props: IconProps, h: HtmlBuilder<Msg>): Html` |
+
 ## Indicator
 
 Source: [`src/ui/indicator.ts`](../src/ui/indicator.ts)
@@ -1664,7 +1675,7 @@ Source: [`src/ui/sidebar.ts`](../src/ui/sidebar.ts)
 | `SidebarCollapsible` | type | `SidebarCollapsible = 'offcanvas' \| 'icon' \| 'none'` |
 | `SidebarProviderProps` | type | `SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; width?: string; mobileWidth?: string; iconWidth?: string; }>` |
 | `sidebarProvider` | function | `sidebarProvider<Msg>(props: SidebarProviderProps, h: HtmlBuilder<Msg>): Html` |
-| `SidebarProps` | type | `SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' \| 'contained'; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>` |
+| `SidebarProps` | type | `SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' \| 'contained'; isMobileOpen?: boolean; mobileId?: string; onMobileDismiss?: Msg; }>` |
 | `sidebar` | function | `sidebar<Msg>(props: SidebarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `SidebarTriggerProps` | type | `SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; onMobileClick?: Msg; class?: string; }>` |
 | `sidebarTrigger` | function | `sidebarTrigger<Msg>(props: SidebarTriggerProps<Msg>, h: HtmlBuilder<Msg>): Html` |

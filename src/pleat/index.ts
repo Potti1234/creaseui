@@ -51,6 +51,7 @@ export * as Form from './form.js'
 export * as Grid from './grid.js'
 export * as Heading from './heading.js'
 export * as HoverCard from './hover-card.js'
+export * as Icon from './icon.js'
 export * as Indicator from './indicator.js'
 export * as InfoTip from './info-tip.js'
 export * as InputGroup from './input-group.js'
@@ -176,6 +177,7 @@ export const STYLEX_COMPONENT_NAMES = [
   'grid',
   'heading',
   'hover-card',
+  'icon',
   'indicator',
   'info-tip',
   'input-group',

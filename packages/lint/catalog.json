@@ -874,6 +874,18 @@
       "title": "Hover Card"
     },
     {
+      "category": "data display",
+      "component": "icon",
+      "description": "A CreaseUI Icon component for Foldkit.",
+      "exports": ["icon", "iconNames"],
+      "install": "npx shadcn@latest add Potti1234/creaseui/icon",
+      "item": "icon",
+      "recipes": ["icon"],
+      "renderer": "tailwind",
+      "state": "stateless",
+      "title": "Icon"
+    },
+    {
       "category": "other",
       "component": "indicator",
       "description": "A CreaseUI Indicator component for Foldkit.",
@@ -2981,6 +2993,18 @@
       "title": "Hover Card"
     },
     {
+      "category": "data display",
+      "component": "icon",
+      "description": "The StyleX Icon component for Foldkit.",
+      "exports": ["icon", "iconNames"],
+      "install": "npx shadcn@latest add Potti1234/creaseui/stylex-icon",
+      "item": "stylex-icon",
+      "recipes": ["icon"],
+      "renderer": "stylex",
+      "state": "stateless",
+      "title": "Icon"
+    },
+    {
       "category": "other",
       "component": "indicator",
       "description": "The StyleX Indicator component for Foldkit.",
@@ -5053,6 +5077,18 @@
       "renderer": "pleat",
       "state": "parent-model",
       "title": "Hover Card"
+    },
+    {
+      "category": "data display",
+      "component": "icon",
+      "description": "The Pleat Icon component for Foldkit.",
+      "exports": ["icon", "iconNames"],
+      "install": "npx shadcn@latest add Potti1234/creaseui/pleat-icon",
+      "item": "pleat-icon",
+      "recipes": ["icon"],
+      "renderer": "pleat",
+      "state": "stateless",
+      "title": "Icon"
     },
     {
       "category": "other",

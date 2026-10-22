@@ -2862,6 +2862,28 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "icon": [
+    {
+      "name": "IconName",
+      "kind": "type",
+      "signature": "IconName = IconSource.IconName"
+    },
+    {
+      "name": "iconNames",
+      "kind": "value",
+      "signature": "iconNames: ReadonlyArray<IconName>"
+    },
+    {
+      "name": "IconProps",
+      "kind": "type",
+      "signature": "IconProps = Readonly<{ name: IconName; size?: 'sm' | 'md' | 'lg'; ariaLabel?: string; }>"
+    },
+    {
+      "name": "icon",
+      "kind": "function",
+      "signature": "icon<Msg>(props: IconProps, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
   "indicator": [
     {
       "name": "IndicatorState",
@@ -5150,7 +5172,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SidebarProps",
       "kind": "type",
-      "signature": "SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>"
+      "signature": "SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; mobileId?: string; onMobileDismiss?: Msg; }>"
     },
     {
       "name": "sidebar",

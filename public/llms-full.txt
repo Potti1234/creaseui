@@ -61,6 +61,7 @@
 - Grid: /docs/components/grid — install with `npx creaseui add grid`
 - Heading: /docs/components/heading — install with `npx creaseui add heading`
 - Hover Card: /docs/components/hover-card — install with `npx creaseui add hover-card`
+- Icon: /docs/components/icon — install with `npx creaseui add icon`
 - Indicator: /docs/components/indicator — install with `npx creaseui add indicator`
 - Info Tip: /docs/components/info-tip — install with `npx creaseui add info-tip`
 - Input Group: /docs/components/input-group — install with `npx creaseui add input-group`
@@ -2484,6 +2485,19 @@ Examples: Basic, Sides, RTL
 - `HoverCardProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html | string; content: Html | string; triggerButtonVariant?: Button.ButtonVariants['variant']; triggerButtonSize?: Button.ButtonVariants['size']; align?: Hove…` (type)
 - `hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
+### Icon
+
+A CreaseUI Icon component for Foldkit.
+
+Source: `src/ui/icon.ts`
+
+Examples: Icon, Sizes, With text, Accessible label
+
+- `IconName = IconSource.IconName` (type)
+- `iconNames: ReadonlyArray<IconName>` (value)
+- `IconProps = Readonly<{ name: IconName; size?: 'sm' | 'md' | 'lg'; ariaLabel?: string; }>` (type)
+- `icon<Msg>(props: IconProps, h: HtmlBuilder<Msg>): Html` (function)
+
 ### Indicator
 
 A CreaseUI Indicator component for Foldkit.
@@ -3353,7 +3367,7 @@ Examples: Application shell, Floating sidebar, Inset sidebar, Off-canvas collaps
 - `SidebarCollapsible = 'offcanvas' | 'icon' | 'none'` (type)
 - `SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; width?: string; mobileWidth?: string; iconWidth?: string; }>` (type)
 - `sidebarProvider<Msg>(props: SidebarProviderProps, h: HtmlBuilder<Msg>): Html` (function)
-- `SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>` (type)
+- `SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; mobileId?: string; onMobileDismiss?: Msg; }>` (type)
 - `sidebar<Msg>(props: SidebarProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; onMobileClick?: Msg; class?: string; }>` (type)
 - `sidebarTrigger<Msg>(props: SidebarTriggerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)

@@ -310,3 +310,20 @@ Route `ToggleGroup.Message` through `ToggleGroup.update` and keep the selected
 value in your own Model. `npm run test:strict-consumers` installs this file
 into fresh Tailwind, StyleX and Pleat projects and runs strict lint, the
 typecheck and a production build on it.
+
+## Icon
+
+Ordinary icons (next to text, in cards, lists and headers) come from the public Icon component; app code never imports `@/lib/icon`.
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Icon from '@/ui/icon' // '@/stylex/icon' or '@/pleat/icon'
+
+export const verifiedIcon = <M>(h: HtmlBuilder<M>): Html =>
+  Icon.icon({ name: 'badge-check', size: 'md', ariaLabel: 'Verified account' }, h)
+
+export const nextIcon = <M>(h: HtmlBuilder<M>): Html =>
+  Icon.icon({ name: 'arrow-right' }, h)
+```
+
+`name` is a typed Lucide name (`Icon.iconNames` lists them). Without `ariaLabel` the icon is decorative and `aria-hidden`; with it the icon renders `role="img"` with that name.

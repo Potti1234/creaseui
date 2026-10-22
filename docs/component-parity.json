@@ -23,7 +23,7 @@
   ],
   "summary": {
     "upstreamItems": 62,
-    "registryItems": 124,
+    "registryItems": 125,
     "creaseOnlyRecipes": [
       "action-bar",
       "avatar-group",
@@ -45,6 +45,7 @@
       "file-input",
       "grid",
       "heading",
+      "icon",
       "indicator",
       "info-tip",
       "lightbox",
@@ -956,6 +957,24 @@
         "src/ui/hover-card.ts",
         "src/ui/registry.json#hover-card",
         "/docs/components/hover-card"
+      ]
+    },
+    {
+      "component": "icon",
+      "upstream": false,
+      "classification": "full",
+      "dimensions": {
+        "visual": "unverified",
+        "behavior": "partial",
+        "accessibility": "partial",
+        "composition": "partial",
+        "documentation": "verified",
+        "registry": "verified"
+      },
+      "evidence": [
+        "src/ui/icon.ts",
+        "src/ui/registry.json#icon",
+        "/docs/components/icon"
       ]
     },
     {

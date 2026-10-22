@@ -39,6 +39,7 @@ const ITEMS = [
   'chart',
   'form',
   'heading',
+  'icon',
   'input',
   'label',
   'list',
@@ -229,6 +230,19 @@ export const rangeView = <M>(
     },
     h,
   )
+`
+
+/* Consumer finding: ordinary icons come from the public Icon component, so
+   app code never imports `@/lib/icon` implementation helpers. */
+const iconsApp = alias => `import type { Html, HtmlBuilder } from 'foldkit/html'
+
+import * as Icon from '${alias}/icon'
+
+export const verifiedIcon = <M>(h: HtmlBuilder<M>): Html =>
+  Icon.icon({ name: 'badge-check', size: 'md', ariaLabel: 'Verified account' }, h)
+
+export const nextIcon = <M>(h: HtmlBuilder<M>): Html =>
+  Icon.icon({ name: 'arrow-right' }, h)
 `
 
 const dashboardApp =
@@ -619,6 +633,7 @@ ${Object.entries(pleatAliases)
     )
     write(path.join(root, 'src/app/dashboard.ts'), dashboardApp(consumer.alias))
     write(path.join(root, 'src/app/range.ts'), rangeApp(consumer.alias))
+    write(path.join(root, 'src/app/icons.ts'), iconsApp(consumer.alias))
     write(
       path.join(root, 'src/app/main.ts'),
       mainApp.replace('ALIAS', consumer.alias),

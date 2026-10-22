@@ -2407,6 +2407,53 @@
       ]
     },
     {
+      "name": "icon",
+      "type": "registry:ui",
+      "title": "Icon",
+      "description": "A CreaseUI Icon component for Foldkit.",
+      "categories": [
+        "data display"
+      ],
+      "docs": "Stateless Foldkit view: call it from your view with props and the HtmlBuilder; customize the installed source, not global CSS. See https://github.com/Potti1234/creaseui/blob/main/docs/registry.md.",
+      "meta": {
+        "crease": {
+          "component": "icon",
+          "contract": "component.icon",
+          "framework": "foldkit",
+          "frameworkVersion": "0.164.0",
+          "program": [],
+          "publicExports": [
+            "icon",
+            "iconNames"
+          ],
+          "recipes": [
+            {
+              "id": "icon",
+              "title": "Icon — ordinary icons in app UI",
+              "docs": "https://creaseui.com/docs/components/icon",
+              "summary": "Install the icon item and render Icon.icon({ name, size?, ariaLabel? }, h) from your renderer folder (never import @/lib/icon). name is a typed Lucide name; leave ariaLabel off next to visible text, set it on a standalone icon that carries meaning."
+            }
+          ],
+          "renderer": "tailwind",
+          "replaces": [],
+          "schemaVersion": 1,
+          "stateOwnership": "stateless",
+          "stylingOwner": "component-classes"
+        }
+      },
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons"
+      ],
+      "files": [
+        {
+          "path": "icon.ts",
+          "type": "registry:ui",
+          "target": "@ui/icon.ts"
+        }
+      ]
+    },
+    {
       "name": "indicator",
       "type": "registry:ui",
       "title": "Indicator",
