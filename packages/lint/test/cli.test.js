@@ -764,7 +764,25 @@ test('doctor reports foundations that only reach attributes, unselected elements
     path.join(directory, 'src/design/sidebar.ts'),
     "import type { Html, HtmlBuilder } from 'foldkit/html'\nexport const sidebar = (h: HtmlBuilder<unknown>): Html => h.aside([], ['Base sidebar'])\n",
   )
-  /* Review of 9f14670b, F6: the supplied cases, verbatim. */
+  writeFileSync(
+    path.join(directory, 'src/design/button.ts'),
+    `import type { Html, HtmlBuilder } from 'foldkit/html'
+export type ButtonProps = Readonly<{
+  onClick?: unknown
+  leadingIcon?: Html
+  children: ReadonlyArray<Html | string>
+}>
+export const button = (props: ButtonProps, h: HtmlBuilder<unknown>): Html =>
+  h.button(
+    props.onClick === undefined ? [] : [h.OnClick(props.onClick)],
+    [
+      ...(props.leadingIcon === undefined ? [] : [props.leadingIcon]),
+      ...props.children,
+    ],
+  )
+`,
+  )
+  /* Reviews of 9f14670b (F6) and cc41c7fe (F6a): the supplied cases. */
   const cases = {
     atOther: "h.main([], [[sidebar(h), h.div([], ['Other'])].at(1)!])",
     dynamicAt: 'h.main([], [[sidebar(h)].at(Number(h.div.length))!])',
@@ -778,11 +796,16 @@ test('doctor reports foundations that only reach attributes, unselected elements
     slicedAway: "h.main([], [sidebar(h), h.div([], ['Other'])].slice(1))",
     validDirect: 'h.main([], [sidebar(h)])',
     validMap: 'h.main([], [sidebar(h)].map(child => child))',
+    clickMetadata:
+      "button({ onClick: sidebar(h), children: ['Rebuilt shell'] }, h)",
+    renderedIcon:
+      "button({ leadingIcon: sidebar(h), children: ['Rebuilt shell'] }, h)",
   }
   writeFileSync(
     path.join(directory, 'src/design/shell.ts'),
     [
       "import type { Html, HtmlBuilder } from 'foldkit/html'",
+      "import { button } from './button'",
       "import { sidebar } from './sidebar'",
       'const pick = ({ body }: { body: Html }): Html => body',
       ...Object.entries(cases).map(
@@ -824,7 +847,14 @@ test('doctor reports foundations that only reach attributes, unselected elements
       .sort()
   assert.deepEqual(
     reported(/never renders it: the call's result does not reach/u),
-    ['atOther', 'eventPayload', 'filteredAway', 'overwritten', 'slicedAway'],
+    [
+      'atOther',
+      'clickMetadata',
+      'eventPayload',
+      'filteredAway',
+      'overwritten',
+      'slicedAway',
+    ],
     doctor.stdout,
   )
   assert.deepEqual(

@@ -192,9 +192,18 @@ const ANY = '*'
    results (`String(...)`, `JSON.stringify(...)`) cannot hold a view; other
    calls the check can't follow are recorded as `uncertain`, so a missing
    foundation is reported as unverifiable rather than absent. */
-const renderedContracts = (checker, declaration, contractOf) => {
+const renderedContracts = (
+  checker,
+  declaration,
+  contractOf,
+  probes = new Map(),
+  probing = false,
+) => {
   const rendered = new Set()
   const uncertain = []
+  /* Probing a registered component: the first key of every path through
+     which each parameter reaches the returned view (`ANY` for all of it). */
+  const reached = new Map()
   const declarationOf = symbol =>
     symbol?.valueDeclaration ?? symbol?.declarations?.[0]
   const NO_BINDINGS = new Map()
@@ -389,12 +398,45 @@ const renderedContracts = (checker, declaration, contractOf) => {
     }
     flow(receiver, [], depth, bindings)
   }
+  /** Which parts of each parameter a registered component renders. */
+  const probe = fn => {
+    if (probes.has(fn)) return probes.get(fn)
+    probes.set(fn, undefined)
+    const result = renderedContracts(checker, fn, contractOf, probes, true)
+    probes.set(fn, result)
+    return result
+  }
+  /* A registered component's arguments count only through the props its
+     own implementation renders (`leadingIcon`, `children`), not through
+     event payloads or other metadata. */
+  const componentCall = (node, fn, depth, bindings) => {
+    const result = fn === undefined ? undefined : probe(fn)
+    if (result === undefined) {
+      if (node.arguments.some(argument => !isPrimitive(argument)))
+        uncertain.push(node)
+      return
+    }
+    for (const contract of result.rendered) rendered.add(contract)
+    node.arguments.forEach((argument, index) => {
+      const parameter = fn.parameters[index]
+      if (parameter === undefined || parameter.dotDotDotToken) {
+        if (!isPrimitive(argument)) uncertain.push(node)
+        return
+      }
+      const keys = result.reached.get(parameter) ?? new Set()
+      if (keys.has(ANY)) flow(argument, [], depth, bindings)
+      else {
+        for (const key of keys) flow(argument, [key], depth, bindings)
+        if (result.uncertain.length > 0) uncertain.push(node)
+      }
+    })
+  }
   const flowCall = (node, path, depth, bindings) => {
     const symbol = calleeSymbol(checker, node.expression)
     const contract = contractOf(symbol)
     if (contract !== undefined) {
       rendered.add(contract)
-      for (const argument of node.arguments) flow(argument, [], depth, bindings)
+      componentCall(node, functionOf(declarationOf(symbol)), depth, bindings)
       return
     }
     const fn = functionOf(declarationOf(symbol))
@@ -499,7 +541,12 @@ const renderedContracts = (checker, declaration, contractOf) => {
       const bound = target === undefined ? undefined : parameterOf(target)
       if (bound !== undefined) {
         const argument = bindings.get(bound.parameter)
-        if (argument !== undefined)
+        if (argument?.probe !== undefined) {
+          const [first] = [...bound.path, ...path]
+          if (!reached.has(argument.probe))
+            reached.set(argument.probe, new Set())
+          reached.get(argument.probe).add(first ?? ANY)
+        } else if (argument !== undefined)
           flow(
             argument.node,
             [...argument.path, ...bound.path, ...path],
@@ -520,10 +567,19 @@ const renderedContracts = (checker, declaration, contractOf) => {
       flow(returned, path, depth + 1, bindings)
   }
   const fn = functionOf(declaration)
-  if (fn !== undefined) helper(fn, [], 0, NO_BINDINGS)
+  if (fn !== undefined && probing)
+    helper(
+      fn,
+      [],
+      0,
+      new Map(
+        fn.parameters.map(parameter => [parameter, { probe: parameter }]),
+      ),
+    )
+  else if (fn !== undefined) helper(fn, [], 0, NO_BINDINGS)
   else if (ts.isVariableDeclaration(declaration))
     flow(declaration.initializer, [], 0, NO_BINDINGS)
-  return { rendered, uncertain }
+  return { reached, rendered, uncertain }
 }
 
 export const verifyFoundations = ({ ownership, rootDir }) => {

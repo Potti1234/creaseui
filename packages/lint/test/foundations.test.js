@@ -185,8 +185,27 @@ export const sidebar = (h: HtmlBuilder<unknown>): Html => h.aside([], [])
 `,
   )
   write(
+    'src/design/button.ts',
+    `import type { Html, HtmlBuilder } from 'foldkit/html'
+export type ButtonProps = Readonly<{
+  onClick?: unknown
+  leadingIcon?: Html
+  children: ReadonlyArray<Html | string>
+}>
+export const button = (props: ButtonProps, h: HtmlBuilder<unknown>): Html =>
+  h.button(
+    props.onClick === undefined ? [] : [h.OnClick(props.onClick)],
+    [
+      ...(props.leadingIcon === undefined ? [] : [props.leadingIcon]),
+      ...props.children,
+    ],
+  )
+`,
+  )
+  write(
     'src/design/shell.ts',
     `import type { Html, HtmlBuilder } from 'foldkit/html'
+import { button } from './button'
 import { sidebar } from './sidebar'
 declare const opaque: { wrap(child: Html): Html }
 const methods = {
@@ -256,6 +275,10 @@ export const dynamicAt = (h: HtmlBuilder<unknown>, index: number): Html =>
   h.main([], [[sidebar(h)].at(index)!])
 export const dynamicFilter = (h: HtmlBuilder<unknown>, keep: boolean): Html =>
   h.main([], [sidebar(h)].filter(() => keep))
+export const clickMetadata = (h: HtmlBuilder<unknown>): Html =>
+  button({ onClick: sidebar(h), children: ['Rebuilt shell'] }, h)
+export const renderedIcon = (h: HtmlBuilder<unknown>): Html =>
+  button({ leadingIcon: sidebar(h), children: ['Rebuilt shell'] }, h)
 `,
   )
   const negatives = [
@@ -268,6 +291,7 @@ export const dynamicFilter = (h: HtmlBuilder<unknown>, keep: boolean): Html =>
     'slicedAway',
     'filteredAway',
     'overwritten',
+    'clickMetadata',
   ]
   /* Calls and selections the check can't follow: reported, but as
      unverifiable rather than as a proven absence. */
@@ -286,6 +310,7 @@ export const dynamicFilter = (h: HtmlBuilder<unknown>, keep: boolean): Html =>
     'spreadKept',
     'mapDestructured',
     'mapProperty',
+    'renderedIcon',
   ]
   const strict = createStrictContext({
     manifest: {
@@ -306,6 +331,23 @@ export const dynamicFilter = (h: HtmlBuilder<unknown>, keep: boolean): Html =>
             },
           ],
           id: 'crease/sidebar',
+        },
+        {
+          exports: [
+            {
+              contract: 'component.button',
+              file: 'src/design/button.ts',
+              name: 'button',
+            },
+          ],
+          files: [
+            {
+              path: 'src/design/button.ts',
+              rawRendering: true,
+              role: 'renderer',
+            },
+          ],
+          id: 'crease/button',
         },
         {
           exports: [...negatives, ...unverifiable, ...positives].map(name => ({
