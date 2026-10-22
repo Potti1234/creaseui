@@ -88,7 +88,9 @@ test('invalid setup exits 2', () => {
 test('init and doctor cover public aliases of rendering exports', () => {
   const directory = scratch()
   /* doctor loads the generated config, which imports @creaseui/lint. */
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
@@ -128,7 +130,9 @@ test('init and doctor cover public aliases of rendering exports', () => {
 
 test('alias-only renderers and renamed re-exports are covered and enforced', async () => {
   const directory = scratch()
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
@@ -192,7 +196,9 @@ test('alias-only renderers and renamed re-exports are covered and enforced', asy
 
 test('owned renderers without a raw grant keep every application rule', async () => {
   const directory = scratch()
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
@@ -284,7 +290,9 @@ test('owned renderers without a raw grant keep every application rule', async ()
 
 test('doctor reconciles every required rule through imported policy modules', () => {
   const directory = scratch()
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
@@ -318,7 +326,9 @@ test('doctor reconciles every required rule through imported policy modules', ()
 
 test('doctor reports installed components missing from the receipt', () => {
   const directory = scratch()
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
@@ -350,7 +360,9 @@ test('doctor reports the archived tutorial as feature-only coverage', () => {
     directory,
     { recursive: true },
   )
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
@@ -597,7 +609,9 @@ test('init before any install says nothing is installed yet', () => {
 
 test('re-running init registers new installs without rewriting the receipt or config', () => {
   const directory = scratch()
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
@@ -637,7 +651,9 @@ test('re-running init registers new installs without rewriting the receipt or co
 
 test('doctor tells runtime component properties apart from missing theme roles', () => {
   const directory = scratch()
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
@@ -675,7 +691,9 @@ test('doctor tells runtime component properties apart from missing theme roles',
 
 test('doctor reports theme roles that installed components read but no stylesheet defines', () => {
   const directory = scratch()
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
@@ -749,7 +767,9 @@ test('info --catalog lists installable components before anything is installed',
 
 test('doctor reports foundations that only reach attributes, unselected elements or overwritten keys', () => {
   const directory = scratch()
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
@@ -782,7 +802,7 @@ export const button = (props: ButtonProps, h: HtmlBuilder<unknown>): Html =>
   )
 `,
   )
-  /* Reviews of 9f14670b (F6) and cc41c7fe (F6a): the supplied cases. */
+  /* Reviews of 9f14670b (F6) and cc41c7fe (F6a, F6b): the supplied cases. */
   const cases = {
     atOther: "h.main([], [[sidebar(h), h.div([], ['Other'])].at(1)!])",
     dynamicAt: 'h.main([], [[sidebar(h)].at(Number(h.div.length))!])',
@@ -800,6 +820,8 @@ export const button = (props: ButtonProps, h: HtmlBuilder<unknown>): Html =>
       "button({ onClick: sidebar(h), children: ['Rebuilt shell'] }, h)",
     renderedIcon:
       "button({ leadingIcon: sidebar(h), children: ['Rebuilt shell'] }, h)",
+    overriddenThroughArgument: "compose(h, { body: h.main([], ['Other']) })",
+    keptThroughArgument: 'compose(h, {})',
   }
   writeFileSync(
     path.join(directory, 'src/design/shell.ts'),
@@ -808,6 +830,7 @@ export const button = (props: ButtonProps, h: HtmlBuilder<unknown>): Html =>
       "import { button } from './button'",
       "import { sidebar } from './sidebar'",
       'const pick = ({ body }: { body: Html }): Html => body',
+      'const compose = (h: HtmlBuilder<unknown>, overrides: Readonly<{ body?: Html }>): Html => pick({ body: sidebar(h), ...overrides })',
       ...Object.entries(cases).map(
         ([name, body]) =>
           `export const ${name} = (h: HtmlBuilder<unknown>): Html => ${body}`,
@@ -852,6 +875,7 @@ export const button = (props: ButtonProps, h: HtmlBuilder<unknown>): Html =>
       'clickMetadata',
       'eventPayload',
       'filteredAway',
+      'overriddenThroughArgument',
       'overwritten',
       'slicedAway',
     ],
@@ -867,7 +891,9 @@ export const button = (props: ButtonProps, h: HtmlBuilder<unknown>): Html =>
 
 test('css accepts a custom semantic role and names the collision for an ambiguous one', () => {
   const directory = scratch()
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),

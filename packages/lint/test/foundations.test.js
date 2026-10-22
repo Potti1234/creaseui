@@ -279,6 +279,23 @@ export const clickMetadata = (h: HtmlBuilder<unknown>): Html =>
   button({ onClick: sidebar(h), children: ['Rebuilt shell'] }, h)
 export const renderedIcon = (h: HtmlBuilder<unknown>): Html =>
   button({ leadingIcon: sidebar(h), children: ['Rebuilt shell'] }, h)
+const pickOnly = ({ body }: { body: Html }): Html => body
+const compose = (
+  h: HtmlBuilder<unknown>,
+  overrides: Readonly<{ body?: Html }>,
+): Html => pickOnly({ body: sidebar(h), ...overrides })
+const composeLoose = (
+  h: HtmlBuilder<unknown>,
+  overrides: Readonly<{ body?: Html }>,
+): Html => pickOnly({ body: sidebar(h), ...overrides })
+export const overriddenThroughArgument = (h: HtmlBuilder<unknown>): Html =>
+  compose(h, { body: h.main([], ['Other']) })
+export const keptThroughArgument = (h: HtmlBuilder<unknown>): Html =>
+  compose(h, {})
+export const unknownOverrides = (
+  h: HtmlBuilder<unknown>,
+  overrides: Readonly<{ body?: Html }>,
+): Html => composeLoose(h, overrides)
 `,
   )
   const negatives = [
@@ -292,10 +309,16 @@ export const renderedIcon = (h: HtmlBuilder<unknown>): Html =>
     'filteredAway',
     'overwritten',
     'clickMetadata',
+    'overriddenThroughArgument',
   ]
   /* Calls and selections the check can't follow: reported, but as
      unverifiable rather than as a proven absence. */
-  const unverifiable = ['opaqueMethod', 'dynamicAt', 'dynamicFilter']
+  const unverifiable = [
+    'opaqueMethod',
+    'dynamicAt',
+    'dynamicFilter',
+    'unknownOverrides',
+  ]
   const positives = [
     'validDirect',
     'passArray',
@@ -311,6 +334,7 @@ export const renderedIcon = (h: HtmlBuilder<unknown>): Html =>
     'mapDestructured',
     'mapProperty',
     'renderedIcon',
+    'keptThroughArgument',
   ]
   const strict = createStrictContext({
     manifest: {

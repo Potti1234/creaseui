@@ -204,6 +204,9 @@ const renderedContracts = (
   /* Probing a registered component: the first key of every path through
      which each parameter reaches the returned view (`ANY` for all of it). */
   const reached = new Map()
+  /* Every helper body the flow entered, for telling a discarded call
+     inside one apart from a missing one. */
+  const followed = new Set()
   const declarationOf = symbol =>
     symbol?.valueDeclaration ?? symbol?.declarations?.[0]
   const NO_BINDINGS = new Map()
@@ -258,6 +261,37 @@ const renderedContracts = (
       ? literalOf(variableInitializer(node, depth), test, depth + 1)
       : undefined
   }
+  /** The object literal a spread is, through local consts and the
+      arguments bound to helper parameters. */
+  const objectOf = (node, depth, bindings) => {
+    node = strip(node)
+    if (node === undefined || depth > 12) return undefined
+    if (ts.isObjectLiteralExpression(node)) return { bindings, object: node }
+    if (!ts.isIdentifier(node)) return undefined
+    const target = declarationOf(calleeSymbol(checker, node))
+    const bound = target === undefined ? undefined : parameterOf(target)
+    if (bound !== undefined) {
+      const argument = bindings.get(bound.parameter)
+      return argument?.node !== undefined &&
+        argument.path.length === 0 &&
+        bound.path.length === 0
+        ? objectOf(argument.node, depth + 1, argument.bindings)
+        : undefined
+    }
+    return target !== undefined && ts.isVariableDeclaration(target)
+      ? objectOf(target.initializer, depth + 1, bindings)
+      : undefined
+  }
+  /** Whether a spread value the check can't see always, never or maybe
+      provides `key`, from its type. */
+  const keyPresence = (node, key) => {
+    const type = checker.getTypeAtLocation(node)
+    if (type.flags & (ts.TypeFlags.Any | ts.TypeFlags.Unknown)) return 'maybe'
+    const property = checker.getPropertyOfType(type, key)
+    if (property === undefined)
+      return checker.getIndexInfosOfType(type).length > 0 ? 'maybe' : 'never'
+    return property.flags & ts.SymbolFlags.Optional ? 'maybe' : 'always'
+  }
   const elementsOf = (node, depth) => {
     const array = literalOf(node, ts.isArrayLiteralExpression, depth)
     return array === undefined || array.elements.some(ts.isSpreadElement)
@@ -278,15 +312,18 @@ const renderedContracts = (
   const flowKey = (object, key, rest, depth, bindings) => {
     for (const property of [...object.properties].reverse()) {
       if (ts.isSpreadAssignment(property)) {
-        const spread = literalOf(
-          property.expression,
-          ts.isObjectLiteralExpression,
-          depth,
-        )
-        if (spread === undefined)
-          flow(property.expression, [key, ...rest], depth, bindings)
-        else if (flowKey(spread, key, rest, depth + 1, bindings)) return true
-        continue
+        const spread = objectOf(property.expression, depth, bindings)
+        if (spread !== undefined) {
+          if (flowKey(spread.object, key, rest, depth + 1, spread.bindings))
+            return true
+          continue
+        }
+        flow(property.expression, [key, ...rest], depth, bindings)
+        const presence = keyPresence(property.expression, key)
+        if (presence === 'never') continue
+        /* An earlier write may be overwritten: it proves nothing. */
+        if (presence === 'maybe') uncertain.push(property.expression)
+        return true
       }
       if (propertyNameOf(property) !== key) continue
       if (ts.isPropertyAssignment(property))
@@ -301,13 +338,9 @@ const renderedContracts = (
   const flowValues = (object, seen, depth, bindings) => {
     for (const property of [...object.properties].reverse()) {
       if (ts.isSpreadAssignment(property)) {
-        const spread = literalOf(
-          property.expression,
-          ts.isObjectLiteralExpression,
-          depth,
-        )
+        const spread = objectOf(property.expression, depth, bindings)
         if (spread === undefined) flow(property.expression, [], depth, bindings)
-        else flowValues(spread, seen, depth + 1, bindings)
+        else flowValues(spread.object, seen, depth + 1, spread.bindings)
         continue
       }
       const name = propertyNameOf(property)
@@ -563,6 +596,7 @@ const renderedContracts = (
   }
   const helper = (fn, path, depth, bindings) => {
     if (fn === undefined) return
+    followed.add(fn)
     for (const returned of returnedOf(fn))
       flow(returned, path, depth + 1, bindings)
   }
@@ -579,7 +613,7 @@ const renderedContracts = (
   else if (fn !== undefined) helper(fn, [], 0, NO_BINDINGS)
   else if (ts.isVariableDeclaration(declaration))
     flow(declaration.initializer, [], 0, NO_BINDINGS)
-  return { reached, rendered, uncertain }
+  return { followed, reached, rendered, uncertain }
 }
 
 export const verifyFoundations = ({ ownership, rootDir }) => {
@@ -637,12 +671,13 @@ export const verifyFoundations = ({ ownership, rootDir }) => {
       }
       ts.forEachChild(node, visit)
     }
-    visit(declaration)
-    const { rendered, uncertain } = renderedContracts(
+    const { followed, rendered, uncertain } = renderedContracts(
       checker,
       declaration,
       contractOf,
     )
+    visit(declaration)
+    for (const fn of followed) visit(fn)
     for (const foundation of record.foundations) {
       if (foundation === record.contract || rendered.has(foundation)) continue
       const unfollowed = uncertain[0]
