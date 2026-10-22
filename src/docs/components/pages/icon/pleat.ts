@@ -24,6 +24,9 @@ const iconItem = <Msg>(item: IconItem, h: HtmlBuilder<Msg>) =>
     {
       name: item.name,
       ...(item.size === undefined ? {} : { size: item.size }),
+      ...(item.tone === undefined ? {} : { tone: item.tone }),
+      ...(item.filled === true ? { filled: true } : {}),
+      ...(item.rotation === undefined ? {} : { rotation: item.rotation }),
       ...(item.ariaLabel === undefined ? {} : { ariaLabel: item.ariaLabel }),
     },
     h,

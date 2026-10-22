@@ -16,7 +16,7 @@ test('Icon page renders named, sized and labelled icons', async ({ page }) => {
     const box = await stars.nth(index).boundingBox()
     if (box !== null && box.width > 0) widths.push(Math.round(box.width))
   }
-  for (const size of [16, 20, 24]) expect(widths).toContain(size)
+  for (const size of [8, 12, 14, 16, 20, 24, 32]) expect(widths).toContain(size)
   await expect(
     main.getByRole('img', { name: 'Verified account' }).first(),
   ).toBeVisible()

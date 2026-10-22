@@ -222,7 +222,7 @@ page itself still reports no horizontal overflow. Grid already adapts:
 ```ts
 type GridColumns =
   | number
-  | Readonly<{ minWidth: number; max?: number; repeat?: 'fill' | 'fit' }>
+  | Readonly<{ minWidth: number; max?: number; repeat?: "fill" | "fit" }>;
 ```
 
 The Grid docs example "Grid — Adaptive Metric Cards" (all three renderers)
@@ -232,8 +232,8 @@ children (import from `@/stylex/grid` or `@/pleat/grid` on the other
 renderers):
 
 ```ts
-import type { Html, HtmlBuilder } from 'foldkit/html'
-import { grid } from '@/ui/grid'
+import type { Html, HtmlBuilder } from "foldkit/html";
+import { grid } from "@/ui/grid";
 
 export const metricGrid = <Msg>(
   props: Readonly<{ children: ReadonlyArray<Html> }>,
@@ -241,12 +241,12 @@ export const metricGrid = <Msg>(
 ): Html =>
   grid(
     {
-      columns: { minWidth: 240, max: 3, repeat: 'fit' },
+      columns: { minWidth: 240, max: 3, repeat: "fit" },
       gap: 4,
       children: props.children,
     },
     h,
-  )
+  );
 ```
 
 The track width and gap are product decisions; check them against your real
@@ -280,30 +280,32 @@ Start the Model with the public `init`; it fills in the internal focus and
 activation fields, so feature code never constructs them:
 
 ```ts
-import type { Html, HtmlBuilder } from 'foldkit/html'
-import * as ToggleGroup from '@/ui/toggle-group'
+import type { Html, HtmlBuilder } from "foldkit/html";
+import * as ToggleGroup from "@/ui/toggle-group";
 
-export const initialRange: ToggleGroup.Model = ToggleGroup.init({ id: 'range' })
+export const initialRange: ToggleGroup.Model = ToggleGroup.init({
+  id: "range",
+});
 
 export const rangeView = <M>(
   model: ToggleGroup.Model,
   toParentMessage: (message: ToggleGroup.Message) => M,
-  range: '7d' | '30d',
+  range: "7d" | "30d",
   h: HtmlBuilder<M>,
 ): Html =>
   ToggleGroup.toggleGroup(
     {
       model,
       toParentMessage,
-      ariaLabel: 'Range',
+      ariaLabel: "Range",
       value: range,
       items: [
-        { value: '7d', children: ['7 days'] },
-        { value: '30d', children: ['30 days'] },
+        { value: "7d", children: ["7 days"] },
+        { value: "30d", children: ["30 days"] },
       ],
     },
     h,
-  )
+  );
 ```
 
 Route `ToggleGroup.Message` through `ToggleGroup.update` and keep the selected
@@ -316,14 +318,17 @@ typecheck and a production build on it.
 Ordinary icons (next to text, in cards, lists and headers) come from the public Icon component; app code never imports `@/lib/icon`.
 
 ```ts
-import type { Html, HtmlBuilder } from 'foldkit/html'
-import * as Icon from '@/ui/icon' // '@/stylex/icon' or '@/pleat/icon'
+import type { Html, HtmlBuilder } from "foldkit/html";
+import * as Icon from "@/ui/icon"; // '@/stylex/icon' or '@/pleat/icon'
 
 export const verifiedIcon = <M>(h: HtmlBuilder<M>): Html =>
-  Icon.icon({ name: 'badge-check', size: 'md', ariaLabel: 'Verified account' }, h)
+  Icon.icon(
+    { name: "badge-check", size: "md", ariaLabel: "Verified account" },
+    h,
+  );
 
 export const nextIcon = <M>(h: HtmlBuilder<M>): Html =>
-  Icon.icon({ name: 'arrow-right' }, h)
+  Icon.icon({ name: "arrow-right" }, h);
 ```
 
-`name` is a typed Lucide name (`Icon.iconNames` lists them). Without `ariaLabel` the icon is decorative and `aria-hidden`; with it the icon renders `role="img"` with that name.
+`name` is a typed Lucide name (`Icon.iconNames` lists them). `size` is `3xs` (8px), `2xs` (12px), `xs` (14px), `sm` (16px), `md` (20px), `lg` (24px) or `xl` (32px); without it the icon follows the surrounding text or the slot it sits in. `tone: 'muted'` or `tone: 'primary'` uses the theme's muted foreground or primary colour; otherwise the icon inherits the text colour. `filled: true` fills the glyph with that colour (an active star or heart), and `rotation` (`0`, `90` or `180`) turns it, animated unless reduced motion is requested. Placement from the surrounding layout goes through `class` on Tailwind and `layoutStyle` on StyleX and Pleat. Crease components render their own icons through the same component. Without `ariaLabel` the icon is decorative and `aria-hidden`; with it the icon renders `role="img"` with that name.
