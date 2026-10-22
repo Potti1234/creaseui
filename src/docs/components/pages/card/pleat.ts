@@ -7,7 +7,7 @@ import { cardFixtures, cardRtlCopy } from '@/docs/components/pages/card/shared'
 import * as Badge from '@/pleat/badge'
 import * as Button from '@/pleat/button'
 import * as Card from '@/pleat/card'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Input from '@/pleat/input'
 import * as Label from '@/pleat/label'
 import * as ToggleGroup from '@/pleat/toggle-group'
@@ -60,11 +60,7 @@ const styles = {
     paddingInlineStart: 0,
   }),
   li: Style.make({ gap: '0.5rem', display: 'flex' }),
-  liIcon: Style.make({
-    color: 'var(--muted-foreground)',
-    flexShrink: 0,
-    marginTop: '0.125rem',
-  }),
+  liIcon: layoutStyle({ marginTop: '0.125rem' }),
   edgeCard: layoutStyle({
     marginInline: 'auto',
     maxWidth: '24rem',
@@ -316,9 +312,11 @@ export const cardPleatPreview: ExamplePreviewProvider = <Msg>(
                         [h.Class(className(styles.li))],
                         [
                           Icon.icon(
-                            'chevron-right',
                             {
-                              class: className(styles.liIcon, styles.liMarker),
+                              name: 'chevron-right',
+                              size: 'sm',
+                              tone: 'muted',
+                              layoutStyle: styles.liIcon,
                             },
                             h,
                           ),
@@ -329,9 +327,11 @@ export const cardPleatPreview: ExamplePreviewProvider = <Msg>(
                         [h.Class(className(styles.li))],
                         [
                           Icon.icon(
-                            'chevron-right',
                             {
-                              class: className(styles.liIcon, styles.liMarker),
+                              name: 'chevron-right',
+                              size: 'sm',
+                              tone: 'muted',
+                              layoutStyle: styles.liIcon,
                             },
                             h,
                           ),
@@ -345,9 +345,11 @@ export const cardPleatPreview: ExamplePreviewProvider = <Msg>(
                         [h.Class(className(styles.li))],
                         [
                           Icon.icon(
-                            'chevron-right',
                             {
-                              class: className(styles.liIcon, styles.liMarker),
+                              name: 'chevron-right',
+                              size: 'sm',
+                              tone: 'muted',
+                              layoutStyle: styles.liIcon,
                             },
                             h,
                           ),

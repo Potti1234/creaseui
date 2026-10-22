@@ -7,7 +7,7 @@ import { cardFixtures, cardRtlCopy } from '@/docs/components/pages/card/shared'
 import * as Badge from '@/stylex/badge'
 import * as Button from '@/stylex/button'
 import * as Card from '@/stylex/card'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Input from '@/stylex/input'
 import * as Label from '@/stylex/label'
 import * as ToggleGroup from '@/stylex/toggle-group'
@@ -55,11 +55,7 @@ const styles = stylex.create({
     paddingInlineStart: 0,
   },
   li: { gap: '0.5rem', display: 'flex' },
-  liIcon: {
-    color: 'var(--muted-foreground)',
-    flexShrink: 0,
-    marginTop: '0.125rem',
-  },
+  liIcon: { marginTop: '0.125rem' },
   edgeCard: { marginInline: 'auto', maxWidth: '24rem', width: '100%' },
   edgeContent: { marginBlockEnd: 'calc(var(--card-spacing, 1.5rem) * -1)' },
   edgeScroll: {
@@ -106,7 +102,6 @@ const styles = stylex.create({
     zIndex: 20,
     width: '100%',
   },
-  liMarker: { height: '1rem', width: '1rem' },
 })
 
 type PreviewModel = Readonly<{
@@ -305,9 +300,11 @@ export const cardStyleXPreview: ExamplePreviewProvider = <Msg>(
                         [h.Class(className(styles.li))],
                         [
                           Icon.icon(
-                            'chevron-right',
                             {
-                              class: className(styles.liIcon, styles.liMarker),
+                              name: 'chevron-right',
+                              size: 'sm',
+                              tone: 'muted',
+                              layoutStyle: styles.liIcon,
                             },
                             h,
                           ),
@@ -318,9 +315,11 @@ export const cardStyleXPreview: ExamplePreviewProvider = <Msg>(
                         [h.Class(className(styles.li))],
                         [
                           Icon.icon(
-                            'chevron-right',
                             {
-                              class: className(styles.liIcon, styles.liMarker),
+                              name: 'chevron-right',
+                              size: 'sm',
+                              tone: 'muted',
+                              layoutStyle: styles.liIcon,
                             },
                             h,
                           ),
@@ -334,9 +333,11 @@ export const cardStyleXPreview: ExamplePreviewProvider = <Msg>(
                         [h.Class(className(styles.li))],
                         [
                           Icon.icon(
-                            'chevron-right',
                             {
-                              class: className(styles.liIcon, styles.liMarker),
+                              name: 'chevron-right',
+                              size: 'sm',
+                              tone: 'muted',
+                              layoutStyle: styles.liIcon,
                             },
                             h,
                           ),

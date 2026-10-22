@@ -15,7 +15,7 @@ import * as Attachment from '@/ui/attachment'
 import * as Avatar from '@/ui/avatar'
 import * as Bubble from '@/ui/bubble'
 import * as Button from '@/ui/button'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Marker from '@/ui/marker'
 import * as Message from '@/ui/message'
 
@@ -88,7 +88,7 @@ const part = (part: MessagePart, h: H): Html => {
         {
           children: [
             Attachment.attachmentMedia(
-              { children: [Icon.icon('file-text', {}, h)] },
+              { children: [Icon.icon({ name: 'file-text' }, h)] },
               h,
             ),
             Attachment.attachmentContent(
@@ -113,7 +113,7 @@ const part = (part: MessagePart, h: H): Html => {
                     {
                       onClick: MessagePreviewMessage.ClickedAction(),
                       label: 'Download',
-                      children: [Icon.icon('download', {}, h)],
+                      children: [Icon.icon({ name: 'download' }, h)],
                     },
                     h,
                   ),
@@ -146,14 +146,14 @@ const footer = (spec: MessageSpec, h: H): Html | undefined => {
     return Message.messageFooter({ children: [spec.footer] }, h)
   }
   if (spec.footerActions === 'copyLikeDislike') {
-    const btn = (icon: string, label: string): Html =>
+    const btn = (icon: Icon.IconName, label: string): Html =>
       Button.button(
         {
           variant: 'ghost',
           size: 'icon',
           ariaLabel: label,
           onClick: MessagePreviewMessage.ClickedAction(),
-          children: [Icon.icon(icon, {}, h)],
+          children: [Icon.icon({ name: icon }, h)],
         },
         h,
       )
@@ -179,7 +179,7 @@ const footer = (spec: MessageSpec, h: H): Html | undefined => {
               size: 'icon-xs',
               ariaLabel: 'Retry',
               onClick: MessagePreviewMessage.ClickedAction(),
-              children: [Icon.icon('refresh-ccw', {}, h)],
+              children: [Icon.icon({ name: 'refresh-ccw' }, h)],
             },
             h,
           ),

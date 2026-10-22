@@ -7,7 +7,7 @@ import {
   fixtureOptions,
   moreMenuFixtures,
 } from '@/docs/components/pages/more-menu/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as MoreMenu from '@/pleat/more-menu'
 import { className } from '@/pleat/style'
 
@@ -45,7 +45,7 @@ export const moreMenuPleatPreview: ExamplePreviewProvider = <Msg>(
             onMessageJson(
               JSON.stringify({ _tag: 'GotMoreMenuMessage', message }),
             ),
-          items: fixtureOptions(fixture, name => Icon.icon(name, {}, h)),
+          items: fixtureOptions(fixture, name => Icon.icon({ name: name }, h)),
           ...(fixture.variant === undefined
             ? {}
             : { variant: fixture.variant }),

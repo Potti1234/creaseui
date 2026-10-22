@@ -6,7 +6,7 @@ import {
   tooltipFixtures,
   type TooltipTipSpec,
 } from '@/docs/components/pages/tooltip/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Kbd from '@/pleat/kbd'
 import { className } from '@/pleat/style'
 import * as Tooltip from '@/pleat/tooltip'
@@ -37,7 +37,8 @@ const tipView = <Msg>(
             message,
           }),
         ),
-      trigger: tip.iconTrigger === true ? Icon.icon('save', {}, h) : tip.label,
+      trigger:
+        tip.iconTrigger === true ? Icon.icon({ name: 'save' }, h) : tip.label,
       content:
         tip.kbd === undefined
           ? content

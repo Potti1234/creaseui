@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -10,7 +11,7 @@ type DialogSpec = Readonly<{
   actionLabel: string
   cancelLabel: string
   size?: 'sm'
-  mediaIcon?: string
+  mediaIcon?: IconName
   mediaVariant?: 'destructive'
   actionVariant?: 'destructive'
 }>
@@ -185,7 +186,7 @@ const dialogSource = (
       title: '${esc(spec.dialogTitle)}',
       description: '${esc(spec.dialogDescription)}',
       actionLabel: '${esc(spec.actionLabel)}',
-      cancelLabel: '${esc(spec.cancelLabel)}',${spec.size === 'sm' ? `\n      size: 'sm' as const,` : ''}${spec.mediaIcon === undefined ? '' : `\n      media: [Icon.icon('${spec.mediaIcon}', {}, h)],`}${spec.mediaVariant === undefined ? '' : `\n      mediaVariant: '${spec.mediaVariant}' as const,`}${spec.actionVariant === undefined ? '' : `\n      actionVariant: '${spec.actionVariant}' as const,`}${pending === undefined ? '' : `\n      pendingLabel: '${esc(pending.pendingLabel)}',\n      isPending: model.status === 'pending',`}
+      cancelLabel: '${esc(spec.cancelLabel)}',${spec.size === 'sm' ? `\n      size: 'sm' as const,` : ''}${spec.mediaIcon === undefined ? '' : `\n      media: [Icon.icon({ name: '${spec.mediaIcon}' }, h)],`}${spec.mediaVariant === undefined ? '' : `\n      mediaVariant: '${spec.mediaVariant}' as const,`}${spec.actionVariant === undefined ? '' : `\n      actionVariant: '${spec.actionVariant}' as const,`}${pending === undefined ? '' : `\n      pendingLabel: '${esc(pending.pendingLabel)}',\n      isPending: model.status === 'pending',`}
     }, h)`
 
 const triggerSource = (spec: DialogSpec, messageTag: string): string =>
@@ -282,7 +283,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 ${rtl && renderer !== 'tailwind' ? `import * as stylex from '@stylexjs/stylex'\n\n` : ''}
 import * as AlertDialog from '@/${ui}/alert-dialog'
-import * as Button from '@/${ui}/button'${needsIcon ? `\nimport * as Icon from '@/lib/icon'` : ''}`,
+import * as Button from '@/${ui}/button'${needsIcon ? `\nimport * as Icon from '@/${ui}/icon'` : ''}`,
     model,
     messages,
     init,

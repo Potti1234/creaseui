@@ -8,11 +8,10 @@ import {
   type TabsTabSpec,
 } from '@/docs/components/pages/tabs/shared'
 import * as Card from '@/stylex/card'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Tabs from '@/stylex/tabs'
 
 const styles = stylex.create({
-  iconSize: { flexShrink: 0, height: '1rem', width: '1rem' },
   demoWidth: { width: '25rem' },
 })
 
@@ -68,11 +67,7 @@ export const tabsStyleXPreview: ExamplePreviewProvider = <Msg>(
         ...(tab.icon === undefined
           ? {}
           : {
-              icon: Icon.icon(
-                tab.icon,
-                { class: stylex.props(styles.iconSize).className ?? '' },
-                h,
-              ),
+              icon: Icon.icon({ name: tab.icon, size: 'sm' }, h),
             }),
         ...(tab.isLabelHidden === true ? { isLabelHidden: true } : {}),
         content: tab.card === undefined ? tab.content : cardView(tab.card, h),

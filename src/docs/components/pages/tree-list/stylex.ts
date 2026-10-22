@@ -7,7 +7,7 @@ import {
   treeListFixtures,
   type TreeListFixtureItem,
 } from '@/docs/components/pages/tree-list/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Badge from '@/stylex/badge'
 import { className } from '@/stylex/style'
 import * as TreeList from '@/stylex/tree-list'
@@ -21,7 +21,6 @@ const styles = stylex.create({
     fontWeight: 600,
     lineHeight: '1rem',
   },
-  itemIcon: { height: '1rem', width: '1rem' },
 })
 
 const decorateItems = <Msg>(
@@ -42,19 +41,11 @@ const decorateItems = <Msg>(
     ...(item.startIcon === undefined
       ? {}
       : {
-          startContent: Icon.icon(
-            item.startIcon,
-            { class: className(styles.itemIcon) },
-            h,
-          ),
+          startContent: Icon.icon({ name: item.startIcon, size: 'sm' }, h),
         }),
     ...(item.endIcon !== undefined
       ? {
-          endContent: Icon.icon(
-            item.endIcon,
-            { class: className(styles.itemIcon) },
-            h,
-          ),
+          endContent: Icon.icon({ name: item.endIcon, size: 'sm' }, h),
         }
       : item.endBadge !== undefined
         ? { endContent: Badge.badge({ children: [item.endBadge] }, h) }

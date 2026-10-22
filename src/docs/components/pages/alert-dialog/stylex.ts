@@ -8,7 +8,7 @@ import {
   alertDialogFixtures,
   type AlertDialogFixture,
 } from '@/docs/components/pages/alert-dialog/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as AlertDialog from '@/stylex/alert-dialog'
 import * as Button from '@/stylex/button'
 import { className } from '@/stylex/style'
@@ -22,7 +22,6 @@ const styles = stylex.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
   },
-  mediaIcon: { height: '2rem', width: '2rem' },
   status: {
     color: 'var(--muted-foreground)',
     fontSize: '0.875rem',
@@ -67,13 +66,7 @@ const dialogView = <Msg>(
       ...(spec.mediaIcon === undefined
         ? {}
         : {
-            media: [
-              Icon.icon(
-                spec.mediaIcon,
-                { class: className(styles.mediaIcon) },
-                h,
-              ),
-            ],
+            media: [Icon.icon({ name: spec.mediaIcon, size: 'xl' }, h)],
           }),
       ...(spec.mediaVariant === undefined
         ? {}

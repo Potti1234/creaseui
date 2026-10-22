@@ -11,10 +11,10 @@ import {
   type SidebarFixtureKind,
 } from '@/docs/components/pages/sidebar/shared'
 import * as DropdownMenu from '@/pleat/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Sidebar from '@/pleat/sidebar'
 import { sidebarScope } from '../../../../pleat/sidebar.markers'
-import type { ComponentLayoutStyle } from '@/pleat/contracts'
+import { type ComponentLayoutStyle, layoutStyle } from '@/pleat/contracts'
 import { className } from '@/pleat/style'
 
 const styles = {
@@ -43,7 +43,11 @@ const styles = {
   ),
   actionIcon: Style.make({ height: '1rem', width: '1rem' }),
   itemIcon: Style.make({ flexShrink: 0, height: '1rem', width: '1rem' }),
-  accountIcon: Style.make({ height: '0.875rem', width: '0.875rem' }),
+  accountIcon: Style.make({ display: 'inline-flex' }).pipe(
+    Style.when(When.within(sidebarScope, When.data('collapsible', 'icon')), {
+      display: 'none',
+    }),
+  ),
   collapsedHidden: Style.empty.pipe(
     Style.when(When.within(sidebarScope, When.data('collapsible', 'icon')), {
       display: 'none',
@@ -262,14 +266,7 @@ const styles = {
       paddingRight: 0,
     }),
   ),
-  learnChevron: Style.make({
-    flexShrink: 0,
-    transitionDuration: '150ms',
-    transitionProperty: 'transform',
-    height: '1rem',
-    marginLeft: 'auto',
-    width: '1rem',
-  }),
+  learnChevron: layoutStyle({ marginLeft: 'auto' }),
   learnChevronOpen: Style.make({ transform: 'rotate(90deg)' }),
   noMatches: Style.make({
     paddingBlock: '0.375rem',
@@ -296,11 +293,11 @@ const isStaticStyle = (value: unknown): value is Style.Style =>
 const cx = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 const iconLabel = <Msg>(
-  name: string,
+  name: Icon.IconName,
   label: string,
   h: HtmlBuilder<Msg>,
 ): ReadonlyArray<Html | string> => [
-  Icon.icon(name, { class: cx(styles.itemIcon) }, h),
+  Icon.icon({ name: name, size: 'sm' }, h),
   Sidebar.sidebarMenuLabel({ children: [label] }, h),
 ]
 
@@ -334,7 +331,7 @@ const actionMenu = <Msg>(
           trigger: h.span(
             [h.Class(cx(styles.actionTrigger))],
             [
-              Icon.moreHorizontal({ class: cx(styles.actionIcon) }, h),
+              Icon.icon({ name: 'ellipsis', size: 'sm' }, h),
               h.span([h.Class(cx(styles.srOnly))], [label]),
             ],
           ),
@@ -359,7 +356,7 @@ const primaryNavigation = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const query = model.query.trim().toLowerCase()
-  const allEntries: ReadonlyArray<readonly [string, string]> = [
+  const allEntries: ReadonlyArray<readonly [string, Icon.IconName]> = [
     ['Dashboard', 'gauge'],
     ['Inbox', 'inbox'],
     ['Projects', 'book-open'],
@@ -489,8 +486,7 @@ const nestedNavigation = <Msg>(
                         model: model.learnMenu,
                         toParentMessage: menuMessage,
                         trigger: Icon.icon(
-                          'book-open',
-                          { class: cx(styles.itemIcon) },
+                          { name: 'book-open', size: 'sm' },
                           h,
                         ),
                         triggerStyle: styles.documentationButton,
@@ -528,12 +524,12 @@ const nestedNavigation = <Msg>(
                   ariaExpanded: model.learnOpen,
                   children: [
                     ...iconLabel('book-open', 'Documentation', h),
-                    Icon.chevronRight(
+                    Icon.icon(
                       {
-                        class: cx(
-                          styles.learnChevron,
-                          model.learnOpen && styles.learnChevronOpen,
-                        ),
+                        name: 'chevron-right',
+                        size: 'sm',
+                        rotation: model.learnOpen ? 90 : 0,
+                        layoutStyle: styles.learnChevron,
                       },
                       h,
                     ),
@@ -621,11 +617,14 @@ const account = <Msg>(
                           ),
                         ],
                       ),
-                      Icon.chevronsUpDown(
-                        {
-                          class: cx(styles.accountIcon, styles.collapsedHidden),
-                        },
-                        h,
+                      h.span(
+                        [h.Class(cx(styles.accountIcon))],
+                        [
+                          Icon.icon(
+                            { name: 'chevrons-up-down', size: 'xs' },
+                            h,
+                          ),
+                        ],
                       ),
                     ],
                   ),

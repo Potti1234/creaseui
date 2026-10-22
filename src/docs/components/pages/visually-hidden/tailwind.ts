@@ -10,7 +10,7 @@ import {
   visuallyHiddenFixtures,
   vhStats,
 } from '@/docs/components/pages/visually-hidden/shared'
-import { icon } from '@/lib/icon'
+import { icon } from '@/ui/icon'
 import * as Badge from '@/ui/badge'
 import * as Button from '@/ui/button'
 import * as Card from '@/ui/card'
@@ -81,7 +81,7 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                                   size: 'icon',
                                   ariaLabel: action.label,
                                   children: [
-                                    icon(action.icon, { class: 'size-4' }, h),
+                                    icon({ name: action.icon, size: 'sm' }, h),
                                   ],
                                 },
                                 h,
@@ -110,8 +110,7 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                             vAlign: 'center',
                             children: [
                               icon(
-                                'volume-2',
-                                { class: 'size-4 text-muted-foreground' },
+                                { name: 'volume-2', size: 'sm', tone: 'muted' },
                                 h,
                               ),
                               supporting('What a screen reader hears', h),
@@ -273,12 +272,15 @@ const supplementaryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                       vAlign: 'center',
                       children: [
                         icon(
-                          stat.direction === 'up' ? 'arrow-up' : 'arrow-down',
                           {
-                            class:
+                            name:
                               stat.direction === 'up'
-                                ? 'size-4 text-accent-foreground'
-                                : 'size-4 text-muted-foreground',
+                                ? 'arrow-up'
+                                : 'arrow-down',
+                            size: 'sm',
+                            ...(stat.direction === 'up'
+                              ? { class: 'text-accent-foreground' }
+                              : { tone: 'muted' }),
                           },
                           h,
                         ),

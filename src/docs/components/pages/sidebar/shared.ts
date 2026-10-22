@@ -70,11 +70,11 @@ const viewFor = (
   if (kind === 'menu')
     return `const menu = Sidebar.sidebarMenu({ children: [
   Sidebar.sidebarMenuItem({ children: [
-    Sidebar.sidebarMenuButton({ href: '#', isActive: true, children: [Icon.icon('gauge', {}, h), h.span([], ['Overview'])] }, h),
+    Sidebar.sidebarMenuButton({ href: '#', isActive: true, children: [Icon.icon({ name: 'gauge' }, h), h.span([], ['Overview'])] }, h),
     Sidebar.sidebarMenuBadge({ children: ['12'] }, h),
   ] }, h),
   Sidebar.sidebarMenuItem({ children: [
-    Sidebar.sidebarMenuButton({ variant: 'outline', children: [Icon.icon('inbox', {}, h), h.span([], ['Inbox'])] }, h),
+    Sidebar.sidebarMenuButton({ variant: 'outline', children: [Icon.icon({ name: 'inbox' }, h), h.span([], ['Inbox'])] }, h),
     actionMenu(model, h),
   ] }, h),
 ] }, h)
@@ -84,7 +84,7 @@ return { title: 'Sidebar menu primitives', body: Sidebar.sidebar({ collapsible: 
   if (kind === 'nested')
     return `const menu = Sidebar.sidebarMenu({ children: [
   Sidebar.sidebarMenuItem({ children: [
-    Sidebar.sidebarMenuButton({ children: [Icon.icon('book-open', {}, h), h.span([], ['Documentation'])] }, h),
+    Sidebar.sidebarMenuButton({ children: [Icon.icon({ name: 'book-open' }, h), h.span([], ['Documentation'])] }, h),
     Sidebar.sidebarMenuSub({ children: ['Introduction', 'Components', 'Changelog'].map((label, index) =>
       Sidebar.sidebarMenuSubItem({ children: [Sidebar.sidebarMenuSubButton({ href: '#', isActive: index === 1, children: [label] }, h)] }, h),
     ) }, h),
@@ -110,7 +110,7 @@ return {
     Sidebar.sidebar({ state, side: '${side}', variant: '${variant}', collapsible: '${collapsible}', isMobileOpen: model.sidebar.isMobileOpen, onMobileDismiss: Message.GotSidebarMessage({ message: Sidebar.Message.SetMobileOpen({ isOpen: false }) }), children: [
       Sidebar.sidebarHeader({ children: [Sidebar.sidebarInput({ value: model.query, onInput: value => Message.ChangedQuery({ value }), placeholder: 'Search navigation' }, h)] }, h),
       Sidebar.sidebarContent({ children: [Sidebar.sidebarGroup({ children: [Sidebar.sidebarGroupLabel({ children: ['Platform'] }, h), Sidebar.sidebarGroupContent({ children: [navigation(model, h)] }, h)] }, h)] }, h),
-      Sidebar.sidebarFooter({ children: [Sidebar.sidebarMenuButton({ size: 'lg', children: [Icon.icon('circle-user-round', {}, h), h.span([], ['Ada Lovelace'])] }, h)] }, h),
+      Sidebar.sidebarFooter({ children: [Sidebar.sidebarMenuButton({ size: 'lg', children: [Icon.icon({ name: 'circle-user' }, h), h.span([], ['Ada Lovelace'])] }, h)] }, h),
       Sidebar.sidebarRail({ onClick: desktopToggle }, h),
     ] }, h),
     Sidebar.sidebarInset({ variant: '${variant}', state, children: [
@@ -133,7 +133,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 ${sx ? "import * as stylex from '@stylexjs/stylex'\n\nconst styles = stylex.create({ header: { alignItems: 'center', borderBottomColor: 'var(--border)', borderBottomStyle: 'solid', borderBottomWidth: 1, display: 'flex', gap: '0.5rem', height: '3rem', paddingInline: '1rem' }, main: { padding: '1.5rem' } })\n" : ''}
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/${sx ? 'stylex' : 'ui'}/icon'
 import * as DropdownMenu from '@/${sx ? 'stylex' : 'ui'}/dropdown-menu'
 import * as Sidebar from '@/${sx ? 'stylex' : 'ui'}/sidebar'`,
     model: `export const Model = S.Struct({ sidebar: Sidebar.Model, actions: DropdownMenu.Model, query: S.String })
@@ -173,17 +173,17 @@ export type Message = typeof Message.Type`,
 const actionMenu = (model: Model, h: HtmlBuilder<Message>) => DropdownMenu.dropdownMenu({
   model: model.actions,
   toParentMessage: message => Message.GotActionsMessage({ message }),
-  trigger: Icon.moreHorizontal({}, h),
+  trigger: Icon.icon({ name: 'ellipsis' }, h),
   ariaLabel: 'Item actions',
   align: 'end',
   items: actionItems,
   itemToConfig: action => ({ label: action[0]?.toUpperCase() + action.slice(1), ...(action === 'delete' ? { variant: 'destructive' as const } : {}) }),
 }, h)
 
-const navigation = (model: Model, h: HtmlBuilder<Message>) => Sidebar.sidebarMenu({ children: [
-  ['Overview', 'gauge'], ['Inbox', 'inbox'], ['Projects', 'book-open']
-].map(([label, iconName], index) => Sidebar.sidebarMenuItem({ children: [
-  Sidebar.sidebarMenuButton({ href: '#', isActive: index === 0, tooltip: label ?? '', children: [Icon.icon(iconName ?? 'circle', {}, h), h.span([], [label ?? ''])] }, h),
+const navigation = (model: Model, h: HtmlBuilder<Message>) => Sidebar.sidebarMenu({ children: ([
+  ['Overview', 'gauge'], ['Inbox', 'inbox'], ['Projects', 'book-open'],
+] as const).map(([label, iconName], index) => Sidebar.sidebarMenuItem({ children: [
+  Sidebar.sidebarMenuButton({ href: '#', isActive: index === 0, tooltip: label, children: [Icon.icon({ name: iconName }, h), h.span([], [label])] }, h),
   ...(index === 1 ? [Sidebar.sidebarMenuBadge({ children: ['12'] }, h)] : []),
   ...(index === 2 ? [actionMenu(model, h)] : []),
 ] }, h)) }, h)

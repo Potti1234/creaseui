@@ -13,7 +13,7 @@ import {
   type TableFixture,
 } from '@/docs/components/pages/table/shared'
 import * as DropdownMenu from '@/pleat/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Table from '@/pleat/table'
 
 import { layoutStyle } from '@/pleat/contracts'
@@ -245,7 +245,7 @@ const actionsTable = <Msg>(
                                   trigger: h.span(
                                     [h.Class(className(styles.triggerContent))],
                                     [
-                                      Icon.icon('ellipsis', {}, h),
+                                      Icon.icon({ name: 'ellipsis' }, h),
                                       h.span(
                                         [h.Class(className(styles.srOnly))],
                                         ['Open menu'],

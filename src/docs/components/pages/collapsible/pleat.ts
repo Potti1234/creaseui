@@ -7,7 +7,7 @@ import {
   collapsibleFixtures,
   fileTree,
 } from '@/docs/components/pages/collapsible/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Button from '@/pleat/button'
 import * as Card from '@/pleat/card'
 import * as Collapsible from '@/pleat/collapsible'
@@ -217,11 +217,7 @@ export const collapsiblePleatPreview: ExamplePreviewProvider = <Msg>(
   const toggle = (isOpen: boolean): Msg =>
     onMessageJson(JSON.stringify({ _tag: 'ToggledCollapsiblePreview', isOpen }))
   const chevron = (open: boolean) =>
-    Icon.icon(
-      'chevron-down',
-      { class: className(open ? styles.iconSpin : styles.icon) },
-      h,
-    )
+    Icon.icon({ name: 'chevron-down', size: 'sm', rotation: open ? 180 : 0 }, h)
 
   if (fixture.kind === 'basic') {
     return Card.card(
@@ -359,8 +355,12 @@ export const collapsiblePleatPreview: ExamplePreviewProvider = <Msg>(
             [h.Class(className(styles.treeRow, styles.triggerTree))],
             [
               Icon.icon(
-                preview.open.includes(id) ? 'chevron-down' : 'chevron-right',
-                { class: className(styles.iconSm) },
+                {
+                  name: preview.open.includes(id)
+                    ? 'chevron-down'
+                    : 'chevron-right',
+                  size: 'xs',
+                },
                 h,
               ),
               name,
@@ -415,13 +415,7 @@ export const collapsiblePleatPreview: ExamplePreviewProvider = <Msg>(
                 ariaLabel: 'Toggle order details',
                 trigger: h.span(
                   [h.Class(className(styles.triggerRtl))],
-                  [
-                    Icon.icon(
-                      'chevrons-up-down',
-                      { class: className(styles.icon) },
-                      h,
-                    ),
-                  ],
+                  [Icon.icon({ name: 'chevrons-up-down', size: 'sm' }, h)],
                 ),
                 content: h.div(
                   [h.Class(className(styles.boxStack, styles.panelStack))],

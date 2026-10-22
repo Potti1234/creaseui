@@ -7,7 +7,7 @@ import {
   fixtureOptions,
   moreMenuFixtures,
 } from '@/docs/components/pages/more-menu/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as MoreMenu from '@/ui/more-menu'
 
 const GotMoreMenuMessage = defineMessageUnion({
@@ -65,7 +65,7 @@ export const moreMenuTailwindPreviewProgram = definePreviewProgram<
             toParentMessage: message =>
               GotMoreMenuMessage.GotMoreMenuMessage({ message }),
             items: fixtureOptions(fixture, name =>
-              Icon.icon(name, { class: 'size-4' }, h),
+              Icon.icon({ name: name, size: 'sm' }, h),
             ),
             ...(fixture.variant === undefined
               ? {}

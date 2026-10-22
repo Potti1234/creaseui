@@ -11,7 +11,7 @@ import {
   radioField,
   type MarkerSpecItem,
 } from '@/docs/components/pages/menubar/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import type * as DropdownMenu from '@/stylex/dropdown-menu'
 import * as Menubar from '@/stylex/menubar'
 import { className } from '@/stylex/style'
@@ -70,7 +70,9 @@ const configFor = <Msg>(
   h: HtmlBuilder<Msg>,
 ): DropdownMenu.DropdownMenuItemConfig<string> => ({
   label: item.label,
-  ...(item.icon === undefined ? {} : { icon: Icon.icon(item.icon, {}, h) }),
+  ...(item.icon === undefined
+    ? {}
+    : { icon: Icon.icon({ name: item.icon }, h) }),
   ...(item.shortcut === undefined ? {} : { shortcut: item.shortcut }),
   ...(item.kind === undefined ? {} : { kind: item.kind }),
   ...(item.kind === undefined ? {} : { isChecked: checkedValue(item, model) }),

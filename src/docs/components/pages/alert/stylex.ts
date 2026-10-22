@@ -5,14 +5,13 @@ import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'
 import { alertFixtures } from '@/docs/components/pages/alert/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Alert from '@/stylex/alert'
 import * as Button from '@/stylex/button'
 
 const styles = stylex.create({
   wrap: { gap: '1rem', display: 'grid', maxWidth: '28rem', width: '100%' },
   action: { gridColumnStart: '2', marginTop: '0.5rem' },
-  iconSvg: { height: '1rem', width: '1rem' },
   amber: {
     borderColor: 'var(--color-amber-200)',
     backgroundColor: 'var(--color-amber-50)',
@@ -43,9 +42,7 @@ export const alertStyleXPreview: ExamplePreviewProvider = <Msg>(
           children: [
             Alert.alertIcon(
               {
-                children: [
-                  Icon.icon(item.icon, { class: className(styles.iconSvg) }, h),
-                ],
+                children: [Icon.icon({ name: item.icon, size: 'sm' }, h)],
               },
               h,
             ),

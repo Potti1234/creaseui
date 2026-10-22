@@ -22,7 +22,7 @@ import * as Button from '@/ui/button'
 import * as Calendar from '@/ui/calendar'
 import * as Card from '@/ui/card'
 import * as Field from '@/ui/field'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as InputGroup from '@/ui/input-group'
 
 const JalaliDay = S.Struct({
@@ -160,8 +160,7 @@ const timeFieldView = (
                       {
                         children: [
                           Icon.icon(
-                            'clock',
-                            { class: 'size-4 text-muted-foreground' },
+                            { name: 'clock', size: 'sm', tone: 'muted' },
                             h,
                           ),
                         ],
@@ -230,7 +229,7 @@ const jalaliView = (model: Model, h: HtmlBuilder<Message>) => {
               size: 'icon',
               ariaLabel: 'Previous month',
               onClick: Message.PressedJalaliPreviousMonth(),
-              children: [Icon.chevronRight({ class: 'size-4' }, h)],
+              children: [Icon.icon({ name: 'chevron-right', size: 'sm' }, h)],
             },
             h,
           ),
@@ -246,7 +245,7 @@ const jalaliView = (model: Model, h: HtmlBuilder<Message>) => {
               size: 'icon',
               ariaLabel: 'Next month',
               onClick: Message.PressedJalaliNextMonth(),
-              children: [Icon.chevronLeft({ class: 'size-4' }, h)],
+              children: [Icon.icon({ name: 'chevron-left', size: 'sm' }, h)],
             },
             h,
           ),

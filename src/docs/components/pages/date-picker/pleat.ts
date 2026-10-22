@@ -11,7 +11,7 @@ import {
 import * as Calendar from '@/pleat/calendar'
 import * as DatePicker from '@/pleat/date-picker'
 import * as Field from '@/pleat/field'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as TimeInput from '@/pleat/time-input'
 import * as InputGroup from '@/pleat/input-group'
 import * as Popover from '@/pleat/popover'
@@ -27,12 +27,7 @@ const styles = {
     justifyContent: 'space-between',
     width: '100%',
   }),
-  chevron: Style.make({
-    flexShrink: 0,
-    opacity: 0.5,
-    height: '1rem',
-    width: '1rem',
-  }),
+  chevron: Style.make({ display: 'inline-flex', flexShrink: 0, opacity: 0.5 }),
   trigger: layoutStyle({ width: '11rem' }),
   demoTrigger: layoutStyle({ width: '11rem' }),
   rangeTrigger: Style.make({
@@ -181,7 +176,10 @@ const picker = <Msg>(
                   onNone: () => h.span([], [placeholder]),
                   onSome: date => h.span([], [format(date)]),
                 }),
-                Icon.chevronDown({ class: className(styles.chevron) }, h),
+                h.span(
+                  [h.Class(className(styles.chevron))],
+                  [Icon.icon({ name: 'chevron-down', size: 'sm' }, h)],
+                ),
               ],
             )
           : Option.match(maybeDate, {
@@ -240,10 +238,7 @@ export const datePickerPleatPreview: ExamplePreviewProvider = <Msg>(
               align: 'start',
               trigger: h.span(
                 [h.Class(className(styles.centerRow))],
-                [
-                  Icon.calendarIcon({ class: className(styles.icon) }, h),
-                  rangeText,
-                ],
+                [Icon.icon({ name: 'calendar', size: 'sm' }, h), rangeText],
               ),
               triggerLayoutStyle: styles.rangeTrigger as ComponentLayoutStyle,
               content: Calendar.calendar(
@@ -323,10 +318,7 @@ export const datePickerPleatPreview: ExamplePreviewProvider = <Msg>(
                             h.span(
                               [h.Class(className(styles.iconRow))],
                               [
-                                Icon.calendarIcon(
-                                  { class: className(styles.iconShrink) },
-                                  h,
-                                ),
+                                Icon.icon({ name: 'calendar', size: 'sm' }, h),
                                 h.span(
                                   [h.Class(className(styles.srOnly))],
                                   ['Select date'],

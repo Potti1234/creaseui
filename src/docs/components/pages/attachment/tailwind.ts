@@ -10,7 +10,7 @@ import {
   type AttachmentItemSpec,
   type AttachmentRowSpec,
 } from '@/docs/components/pages/attachment/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Attachment from '@/ui/attachment'
 import * as Dialog from '@/ui/dialog'
 import * as Spinner from '@/ui/spinner'
@@ -68,7 +68,7 @@ const itemView = (
                 ? Spinner.spinner({ size: 'md', isDecorative: true }, h)
                 : item.src !== undefined
                   ? h.img([h.Src(item.src), h.Alt(item.alt ?? item.name)])
-                  : Icon.icon(item.icon ?? 'file', {}, h),
+                  : Icon.icon({ name: item.icon ?? 'file' }, h),
             ],
           },
           h,
@@ -110,7 +110,7 @@ const itemView = (
                                   name: item.name,
                                 }),
                         label: action.label,
-                        children: [Icon.icon(action.icon, {}, h)],
+                        children: [Icon.icon({ name: action.icon }, h)],
                       },
                       h,
                     ),

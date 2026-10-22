@@ -12,7 +12,7 @@ import {
 } from '@/docs/components/pages/context-menu/shared'
 import { resolveItemConfig } from '@/docs/components/pages/dropdown-menu/shared'
 import * as ContextMenu from '@/ui/context-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 
 const GotContextMenuMessage = defineMessageUnion({
   GotContextMenuMessage: { message: ContextMenu.Message },
@@ -135,7 +135,7 @@ export const contextMenuTailwindPreviewProgram = definePreviewProgram<
               return spec === undefined
                 ? { label: item }
                 : resolveItemConfig(spec, state, name =>
-                    Icon.icon(name, { class: 'size-4' }, h),
+                    Icon.icon({ name: name, size: 'sm' }, h),
                   )
             },
             ...(fixture.keepOpenOnCheckableSelect === true

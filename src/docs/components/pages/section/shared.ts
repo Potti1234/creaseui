@@ -105,8 +105,8 @@ const emitWash = (
   const body = renderer === 'tailwind' ? bodyTw : bodySx
   const checkIcon =
     renderer === 'tailwind'
-      ? `icon('check', { class: 'size-4' }, h)`
-      : `icon('check', {}, h)`
+      ? `icon({ name: 'check', size: 'sm' }, h)`
+      : `icon({ name: 'check' }, h)`
   return `Stack.vStack({ gap: 2, children: [
         Section.section({ variant: 'section', padding: 4, children: [
           Stack.vStack({ gap: 3, hAlign: 'center', children: [
@@ -203,7 +203,7 @@ const source = (
     `import * as Stack from '@/${mod}/stack'`,
     fixture.kind === 'wash'
       ? `import * as Button from '@/${mod}/button'
-import { icon } from '@/lib/icon'
+import { icon } from '@/${mod}/icon'
 
 ${featuresSource}`
       : '',

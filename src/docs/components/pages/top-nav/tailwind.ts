@@ -15,7 +15,7 @@ import {
   type TopNavFixtureMenuItem,
   type TopNavFixtureNav,
 } from '@/docs/components/pages/top-nav/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Button from '@/ui/button'
 import * as TopNav from '@/ui/top-nav'
 
@@ -42,7 +42,7 @@ const decorateMenuItem = <Msg>(
   ...(item.description === undefined ? {} : { description: item.description }),
   ...(item.icon === undefined
     ? {}
-    : { icon: Icon.icon(item.icon, { class: 'size-5' }, h) }),
+    : { icon: Icon.icon({ name: item.icon, size: 'md' }, h) }),
   ...(item.href === undefined ? {} : { href: item.href }),
 })
 
@@ -98,14 +98,14 @@ const decorateHeading = <Msg>(
     : {
         logo:
           heading.logoPlain === true
-            ? Icon.icon(heading.logoIcon, { class: 'size-5' }, h)
+            ? Icon.icon({ name: heading.logoIcon, size: 'md' }, h)
             : h.span(
                 [
                   h.Class(
                     'flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground',
                   ),
                 ],
-                [Icon.icon(heading.logoIcon, { class: 'size-4' }, h)],
+                [Icon.icon({ name: heading.logoIcon, size: 'sm' }, h)],
               ),
       }),
   ...(heading.headingHref === undefined
@@ -135,7 +135,7 @@ const decorateEndItem = <Msg>(
           variant: 'ghost',
           size: 'icon-sm',
           ariaLabel: item.label,
-          children: [Icon.icon(item.icon, { class: 'size-4' }, h)],
+          children: [Icon.icon({ name: item.icon, size: 'sm' }, h)],
         },
         h,
       )
@@ -144,7 +144,7 @@ const decorateEndItem = <Msg>(
     case 'primary':
       return Button.button({ children: [item.label] }, h)
     case 'icon':
-      return Icon.icon(item.icon, { class: 'size-5' }, h)
+      return Icon.icon({ name: item.icon, size: 'md' }, h)
   }
 }
 
@@ -242,7 +242,7 @@ const megaItemView = <Msg>(
         : { description: item.description }),
       ...(item.icon === undefined
         ? {}
-        : { icon: Icon.icon(item.icon, { class: 'size-5' }, h) }),
+        : { icon: Icon.icon({ name: item.icon, size: 'md' }, h) }),
       ...(item.href === undefined ? {} : { href: item.href }),
     },
     undefined,

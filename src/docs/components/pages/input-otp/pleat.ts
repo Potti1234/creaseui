@@ -8,7 +8,7 @@ import {
   inputOtpFixtures,
   inputOtpRtlCopy,
 } from '@/docs/components/pages/input-otp/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Button from '@/pleat/button'
 import * as Card from '@/pleat/card'
 import * as Field from '@/pleat/field'
@@ -200,7 +200,7 @@ export const inputOtpPleatPreview: ExamplePreviewProvider = <Msg>(
                                 variant: 'outline',
                                 size: 'xs',
                                 children: [
-                                  Icon.icon('refresh-cw', {}, h),
+                                  Icon.icon({ name: 'refresh-cw' }, h),
                                   'Resend Code',
                                 ],
                               },

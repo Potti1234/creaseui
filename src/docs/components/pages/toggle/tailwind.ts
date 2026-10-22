@@ -8,7 +8,7 @@ import {
   type ToggleItem,
 } from '@/docs/components/pages/toggle/shared'
 import { taggedStruct } from 'foldkit/schema'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Toggle from '@/ui/toggle'
 
 const PreviewModel = S.Struct({
@@ -40,7 +40,7 @@ const itemToggle = (
       children:
         item.icon === undefined
           ? [item.label]
-          : [Icon.icon(item.icon, {}, h), item.label],
+          : [Icon.icon({ name: item.icon }, h), item.label],
     },
     h,
   )

@@ -106,7 +106,7 @@ Sidebar.sidebarFooter({ children: [accountMenu] }, h)`,
   Sidebar.sidebarGroupLabel({ children: ['Projects'] }, h),
   Sidebar.sidebarGroupAction({
     onClick: CreatedProject(),
-    children: [Icon.plus({}, h)],
+    children: [Icon.icon({ name: 'plus' }, h)],
   }, h),
   Sidebar.sidebarGroupContent({ children: [projectMenu] }, h),
 ] }, h)`,
@@ -122,7 +122,7 @@ Sidebar.sidebarFooter({ children: [accountMenu] }, h)`,
       href: '/dashboard',
       isActive: true,
       tooltip: 'Dashboard',
-      children: [Icon.icon('gauge', {}, h), h.span([], ['Dashboard'])],
+      children: [Icon.icon({ name: 'gauge' }, h), h.span([], ['Dashboard'])],
     }, h),
     Sidebar.sidebarMenuBadge({ children: ['12'] }, h),
   ] }, h),
@@ -136,7 +136,7 @@ Sidebar.sidebarFooter({ children: [accountMenu] }, h)`,
         code: `Sidebar.sidebarMenuButton({
   variant: 'primary',
   size: 'lg',
-  children: [Icon.plus({}, h), 'Quick create'],
+  children: [Icon.icon({ name: 'plus' }, h), 'Quick create'],
 }, h)
 
 Collapsible.collapsible({
@@ -153,7 +153,7 @@ Collapsible.collapsible({
         code: `Sidebar.sidebarMenuAction({
   onClick: OpenedProjectActions({ projectId }),
   showOnHover: true,
-  children: [Icon.moreHorizontal({}, h)],
+  children: [Icon.icon({ name: 'ellipsis' }, h)],
 }, h)
 
 Sidebar.sidebarMenuBadge({ children: ['24'] }, h)`,

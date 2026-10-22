@@ -11,7 +11,7 @@ import {
   comboboxTimezones,
   type ComboboxFixture,
 } from '@/docs/components/pages/combobox/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Button from '@/pleat/button'
 import * as Combobox from '@/pleat/combobox'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
@@ -75,7 +75,7 @@ const styles = {
     height: '1.75rem',
     minWidth: '4rem',
   }),
-  chevron: Style.make({ opacity: 0.5, height: '1rem', width: '1rem' }),
+  chevron: Style.make({ display: 'inline-flex', opacity: 0.5 }),
   toggleButton: Style.make({
     borderRadius: '0.375rem',
     alignSelf: 'center',
@@ -227,9 +227,9 @@ export const comboboxPleatPreview: ExamplePreviewProvider = <Msg>(
           ariaLabel: 'Country',
           formName: 'docs-combobox',
           trigger: {
-            content: Icon.chevronsUpDown(
-              { class: className(styles.chevron) },
-              h,
+            content: h.span(
+              [h.Class(className(styles.chevron))],
+              [Icon.icon({ name: 'chevrons-up-down', size: 'sm' }, h)],
             ),
             ariaLabel: 'Toggle options',
             layoutStyle: styles.toggleButton as ComponentLayoutStyle,
@@ -280,7 +280,7 @@ export const comboboxPleatPreview: ExamplePreviewProvider = <Msg>(
                     ),
                   ),
                 ],
-                [Icon.x({ class: className(styles.chipIcon) }, h)],
+                [Icon.icon({ name: 'x', size: '2xs' }, h)],
               ),
             ],
           ),
@@ -333,9 +333,7 @@ export const comboboxPleatPreview: ExamplePreviewProvider = <Msg>(
                   onClick: onMessageJson(
                     JSON.stringify({ _tag: 'ClickedClear' }),
                   ),
-                  children: [
-                    Icon.icon('x', { class: className(styles.icon) }, h),
-                  ],
+                  children: [Icon.icon({ name: 'x', size: 'sm' }, h)],
                 },
                 h,
               ),

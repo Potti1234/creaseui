@@ -7,7 +7,7 @@ import {
   collapsibleFixtures,
   fileTree,
 } from '@/docs/components/pages/collapsible/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Button from '@/ui/button'
 import * as Card from '@/ui/card'
 import * as Collapsible from '@/ui/collapsible'
@@ -57,9 +57,10 @@ const basicView = (
                     [
                       'Product details',
                       Icon.icon(
-                        'chevron-down',
                         {
-                          class: `size-4 transition-transform ${model.isOpen ? 'rotate-180' : ''}`,
+                          name: 'chevron-down',
+                          size: 'sm',
+                          rotation: model.isOpen ? 180 : 0,
                         },
                         h,
                       ),
@@ -141,9 +142,10 @@ const settingsView = (
                     [
                       'More radii',
                       Icon.icon(
-                        'chevron-down',
                         {
-                          class: `size-4 transition-transform ${model.isOpen ? 'rotate-180' : ''}`,
+                          name: 'chevron-down',
+                          size: 'sm',
+                          rotation: model.isOpen ? 180 : 0,
                         },
                         h,
                       ),
@@ -175,7 +177,7 @@ const treeView = (
   h: HtmlBuilder<PreviewMessage>,
 ) => {
   const chevron = (open: boolean) =>
-    Icon.icon(open ? 'chevron-down' : 'chevron-right', { class: 'size-3.5' }, h)
+    Icon.icon({ name: open ? 'chevron-down' : 'chevron-right', size: 'xs' }, h)
   const fileRow = (name: string) =>
     h.span([h.Class('text-muted-foreground')], [name])
   const folderCollapsible = (
@@ -238,7 +240,7 @@ const rtlView = (
               onToggle: isOpen =>
                 PreviewMessages.ToggledCollapsiblePreview({ isOpen }),
               ariaLabel: 'Toggle order details',
-              trigger: Icon.icon('chevrons-up-down', { class: 'size-4' }, h),
+              trigger: Icon.icon({ name: 'chevrons-up-down', size: 'sm' }, h),
               triggerClass:
                 'size-8 rounded-md hover:bg-muted inline-flex items-center justify-center',
               contentClass: 'flex flex-col gap-2',

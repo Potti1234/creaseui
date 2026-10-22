@@ -899,7 +899,8 @@ Source: [`src/ui/icon.ts`](../src/ui/icon.ts)
 | --- | --- | --- |
 | `IconName` | type | `IconName = IconSource.IconName` |
 | `iconNames` | value | `iconNames: ReadonlyArray<IconName>` |
-| `IconProps` | type | `IconProps = Readonly<{ name: IconName; size?: 'sm' \| 'md' \| 'lg'; ariaLabel?: string; }>` |
+| `IconSize` | type | `IconSize = '3xs' \| '2xs' \| 'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` |
+| `IconProps` | type | `IconProps = Readonly<{ name: IconName; size?: IconSize; tone?: 'muted' \| 'primary'; filled?: boolean; rotation?: 0 \| 90 \| 180; ariaLabel?: string; dataIcon?: 'inline-start' \| 'inline-end'; class?: string; }>` |
 | `icon` | function | `icon<Msg>(props: IconProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Indicator

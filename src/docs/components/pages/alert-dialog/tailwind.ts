@@ -9,7 +9,7 @@ import {
   alertDialogFixtures,
   type AlertDialogFixture,
 } from '@/docs/components/pages/alert-dialog/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as AlertDialog from '@/ui/alert-dialog'
 import * as Button from '@/ui/button'
 
@@ -110,7 +110,7 @@ const dialogView = (
       ...(spec.size === undefined ? {} : { size: spec.size }),
       ...(spec.mediaIcon === undefined
         ? {}
-        : { media: [Icon.icon(spec.mediaIcon, {}, h)] }),
+        : { media: [Icon.icon({ name: spec.mediaIcon }, h)] }),
       ...(spec.mediaVariant === undefined
         ? {}
         : { mediaVariant: spec.mediaVariant }),

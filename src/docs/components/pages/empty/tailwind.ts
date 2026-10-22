@@ -9,7 +9,7 @@ import {
 import * as Avatar from '@/ui/avatar'
 import * as Button from '@/ui/button'
 import * as Empty from '@/ui/empty'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as InputGroup from '@/ui/input-group'
 import * as Kbd from '@/ui/kbd'
 
@@ -62,7 +62,7 @@ const linkRow = <M>(label: string, h: HtmlBuilder<M>): Html =>
         'inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:underline',
       ),
     ],
-    [label, Icon.icon('arrow-up-right', {}, h)],
+    [label, Icon.icon({ name: 'arrow-up-right' }, h)],
   )
 
 const emptyView = <M>(
@@ -92,7 +92,7 @@ const emptyView = <M>(
         headerBlock(
           'No Projects Yet',
           "You haven't created any projects yet. Get started by creating your first project.",
-          emptyMedia('icon', [Icon.icon('folder-code', {}, h)], h),
+          emptyMedia('icon', [Icon.icon({ name: 'folder-code' }, h)], h),
           h,
         ),
         Empty.emptyContent(
@@ -119,7 +119,7 @@ const emptyView = <M>(
             headerBlock(
               'Cloud Storage Empty',
               'Upload files to your cloud storage to access them anywhere.',
-              emptyMedia('icon', [Icon.icon('cloud', {}, h)], h),
+              emptyMedia('icon', [Icon.icon({ name: 'cloud' }, h)], h),
               h,
             ),
             Empty.emptyContent(
@@ -137,13 +137,17 @@ const emptyView = <M>(
             headerBlock(
               'No Notifications',
               "You're all caught up. New notifications will appear here.",
-              emptyMedia('icon', [Icon.icon('bell', {}, h)], h),
+              emptyMedia('icon', [Icon.icon({ name: 'bell' }, h)], h),
               h,
             ),
             Empty.emptyContent(
               {
                 children: [
-                  action('outline', 'Refresh', Icon.icon('refresh-ccw', {}, h)),
+                  action(
+                    'outline',
+                    'Refresh',
+                    Icon.icon({ name: 'refresh-ccw' }, h),
+                  ),
                 ],
               },
               h,
@@ -212,7 +216,11 @@ const emptyView = <M>(
         Empty.emptyContent(
           {
             children: [
-              action('default', 'Invite Members', Icon.icon('plus', {}, h)),
+              action(
+                'default',
+                'Invite Members',
+                Icon.icon({ name: 'plus' }, h),
+              ),
             ],
           },
           h,
@@ -253,7 +261,7 @@ const emptyView = <M>(
                       h,
                     ),
                     InputGroup.inputGroupAddon(
-                      { children: [Icon.icon('search', {}, h)] },
+                      { children: [Icon.icon({ name: 'search' }, h)] },
                       h,
                     ),
                     InputGroup.inputGroupAddon(
@@ -297,7 +305,7 @@ const emptyView = <M>(
             headerBlock(
               emptyRtlCopy.title,
               emptyRtlCopy.description,
-              emptyMedia('icon', [Icon.icon('folder-code', {}, h)], h),
+              emptyMedia('icon', [Icon.icon({ name: 'folder-code' }, h)], h),
               h,
             ),
             Empty.emptyContent(

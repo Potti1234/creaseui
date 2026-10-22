@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -10,8 +11,8 @@ export type TreeListFixtureItem = Readonly<{
   id: string
   label: string
   description?: string
-  startIcon?: string
-  endIcon?: string
+  startIcon?: IconName
+  endIcon?: IconName
   endBadge?: string
   href?: string
   onSelect?: boolean
@@ -223,8 +224,8 @@ const iconCall = (
   renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string =>
   renderer !== 'tailwind'
-    ? `Icon.icon('${name}', { class: stylex.props(styles.itemIcon).className ?? '' }, h)`
-    : `Icon.icon('${name}', { class: 'size-4' }, h)`
+    ? `Icon.icon({ name: '${name}', size: 'sm' }, h)`
+    : `Icon.icon({ name: '${name}', size: 'sm' }, h)`
 
 const itemSource = (
   item: TreeListFixtureItem,
@@ -348,7 +349,7 @@ const styles = stylex.create({${needsIcon ? `\n  itemIcon: { height: '1rem', wid
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 ${stylexStyles === '' ? '' : `${stylexStyles}\n`}
-import * as TreeList from '@/${ui}/tree-list'${needsIcon ? `\nimport * as Icon from '@/lib/icon'` : ''}${needsBadge ? `\nimport * as Badge from '@/${ui}/badge'` : ''}`,
+import * as TreeList from '@/${ui}/tree-list'${needsIcon ? `\nimport * as Icon from '@/${ui}/icon'` : ''}${needsBadge ? `\nimport * as Badge from '@/${ui}/badge'` : ''}`,
     model: `export const Model = S.Struct({ ${modelFields}, maybeSelectedId: S.Option(S.String) })
 export type Model = typeof Model.Type`,
     messages: `import { defineMessageUnion } from 'foldkit/message'

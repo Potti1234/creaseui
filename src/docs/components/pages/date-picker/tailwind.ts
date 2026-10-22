@@ -14,7 +14,7 @@ import {
 import * as Calendar from '@/ui/calendar'
 import * as DatePicker from '@/ui/date-picker'
 import * as Field from '@/ui/field'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as TimeInput from '@/ui/time-input'
 import * as InputGroup from '@/ui/input-group'
 import * as Popover from '@/ui/popover'
@@ -368,7 +368,7 @@ const chevronTriggerContent =
           onNone: () => h.span([], [placeholder]),
           onSome: date => h.span([], [format(date)]),
         }),
-        Icon.chevronDown({ class: 'size-4 opacity-50' }, h),
+        Icon.icon({ name: 'chevron-down', size: 'sm', class: 'opacity-50' }, h),
       ],
     )
 
@@ -527,7 +527,7 @@ const rangeView = (model: Model, h: HtmlBuilder<Message>) => {
             align: 'start',
             trigger: h.span(
               [h.Class('flex items-center gap-2')],
-              [Icon.calendarIcon({ class: 'size-4' }, h), rangeText],
+              [Icon.icon({ name: 'calendar', size: 'sm' }, h), rangeText],
             ),
             triggerClass:
               'inline-flex h-8 w-60 items-center justify-start gap-2 whitespace-nowrap rounded-md border border-input bg-background px-2.5 text-sm font-normal shadow-xs',
@@ -600,7 +600,7 @@ const inputLikeView = (
                           h.span(
                             [h.Class('flex items-center')],
                             [
-                              Icon.calendarIcon({ class: 'size-4' }, h),
+                              Icon.icon({ name: 'calendar', size: 'sm' }, h),
                               h.span([h.Class('sr-only')], ['Select date']),
                             ],
                           ),

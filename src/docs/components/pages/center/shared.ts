@@ -63,8 +63,8 @@ const emitHorizontal = (
 ): string => {
   const icon = (name: string): string =>
     renderer === 'tailwind'
-      ? `icon('${name}', { class: 'size-4' }, h)`
-      : `icon('${name}', {}, h)`
+      ? `icon({ name: '${name}', size: 'sm' }, h)`
+      : `icon({ name: '${name}' }, h)`
   const iconButton = (name: string, label: string): string =>
     `Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: '${label}', children: [
                 ${icon(name)},
@@ -100,8 +100,8 @@ const emitInsideCard = (
 ): string => {
   const inboxIcon =
     renderer === 'tailwind'
-      ? `icon('inbox', { class: 'size-6 text-muted-foreground' }, h)`
-      : `icon('inbox', { class: stylex.props(styles.icon).className ?? '' }, h)`
+      ? `icon({ name: 'inbox', size: 'lg', tone: 'muted' }, h)`
+      : `icon({ name: 'inbox', size: 'lg', tone: 'muted' }, h)`
   const heading =
     renderer === 'tailwind'
       ? `h.p([h.Class('text-sm font-semibold')], ['No messages yet'])`
@@ -193,9 +193,9 @@ const source = (
     fixture.kind !== 'showcase' ? `import * as Card from '@/${mod}/card'` : '',
     fixture.kind === 'horizontal'
       ? `import * as Button from '@/${mod}/button'
-import { icon } from '@/lib/icon'`
+import { icon } from '@/${mod}/icon'`
       : '',
-    fixture.kind === 'insideCard' ? `import { icon } from '@/lib/icon'` : '',
+    fixture.kind === 'insideCard' ? `import { icon } from '@/${mod}/icon'` : '',
     renderer !== 'tailwind' ? stylexStylesFor(fixture.kind) : '',
   ]
     .filter(Boolean)

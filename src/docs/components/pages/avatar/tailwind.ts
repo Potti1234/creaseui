@@ -12,7 +12,7 @@ import {
 } from '@/docs/components/pages/avatar/shared'
 import * as Avatar from '@/ui/avatar'
 import * as DropdownMenu from '@/ui/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 
 const PreviewMessage = defineMessageUnion({
   GotAvatarMessage: { key: S.String, message: Avatar.Message },
@@ -37,7 +37,7 @@ const badgeView = (
   if (item.badge === 'green')
     return Avatar.avatarBadge({ class: 'bg-green-600 dark:bg-green-800' }, h)
   if (item.badge === 'icon')
-    return Avatar.avatarBadge({ children: [Icon.icon('plus', {}, h)] }, h)
+    return Avatar.avatarBadge({ children: [Icon.icon({ name: 'plus' }, h)] }, h)
   return undefined
 }
 
@@ -88,7 +88,10 @@ const clusterView = (
       cluster.count !== undefined
         ? Avatar.avatarGroupCount({ children: [cluster.count] }, h)
         : cluster.countIcon === true
-          ? Avatar.avatarGroupCount({ children: [Icon.icon('plus', {}, h)] }, h)
+          ? Avatar.avatarGroupCount(
+              { children: [Icon.icon({ name: 'plus' }, h)] },
+              h,
+            )
           : undefined
     return [
       Avatar.avatarGroup(

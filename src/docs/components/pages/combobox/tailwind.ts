@@ -12,7 +12,7 @@ import {
   comboboxTimezones,
   type ComboboxFixture,
 } from '@/docs/components/pages/combobox/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Button from '@/ui/button'
 import * as Combobox from '@/ui/combobox'
 
@@ -156,7 +156,10 @@ const popupView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
       placeholder: 'Select country',
       ariaLabel: 'Country',
       trigger: {
-        content: Icon.chevronsUpDown({ class: 'size-4 opacity-50' }, h),
+        content: Icon.icon(
+          { name: 'chevrons-up-down', size: 'sm', class: 'opacity-50' },
+          h,
+        ),
         ariaLabel: 'Toggle options',
         class: 'size-6 shrink-0 self-center rounded-sm opacity-70',
       },
@@ -190,7 +193,7 @@ const multipleView = (model: PreviewModel, h: HtmlBuilder<PreviewMessage>) =>
                 h.AriaLabel(`Remove ${value}`),
                 h.OnClick(PreviewMessages.RemovedChip({ value })),
               ],
-              [Icon.x({ class: 'size-3' }, h)],
+              [Icon.icon({ name: 'x', size: '2xs' }, h)],
             ),
           ],
         ),
@@ -380,7 +383,7 @@ export const comboboxTailwindPreviewProgram = definePreviewProgram<
                     size: 'icon',
                     ariaLabel: 'Clear selection',
                     onClick: PreviewMessages.ClickedClear(),
-                    children: [Icon.icon('x', { class: 'size-4' }, h)],
+                    children: [Icon.icon({ name: 'x', size: 'sm' }, h)],
                   },
                   h,
                 ),

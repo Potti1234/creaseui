@@ -10,7 +10,7 @@ import {
   visuallyHiddenFixtures,
   vhStats,
 } from '@/docs/components/pages/visually-hidden/shared'
-import { icon } from '@/lib/icon'
+import { icon } from '@/pleat/icon'
 import { className } from '@/pleat/style'
 import * as Badge from '@/pleat/badge'
 import * as Button from '@/pleat/button'
@@ -41,8 +41,11 @@ const styles = {
   }),
   upIcon: Style.make({
     color: 'var(--accent-foreground)',
-    height: '1rem',
-    width: '1rem',
+    display: 'inline-flex',
+  }),
+  downIcon: Style.make({
+    color: 'var(--muted-foreground)',
+    display: 'inline-flex',
   }),
   mutedCard: Style.make({
     borderColor: 'rgba(0, 0, 0, 0)',
@@ -120,11 +123,7 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                                   size: 'icon',
                                   ariaLabel: action.label,
                                   children: [
-                                    icon(
-                                      action.icon,
-                                      { class: className(styles.iconBtn4) },
-                                      h,
-                                    ),
+                                    icon({ name: action.icon, size: 'sm' }, h),
                                   ],
                                 },
                                 h,
@@ -153,8 +152,7 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                             vAlign: 'center',
                             children: [
                               icon(
-                                'volume-2',
-                                { class: className(styles.smallIcon) },
+                                { name: 'volume-2', size: 'sm', tone: 'muted' },
                                 h,
                               ),
                               supporting('What a screen reader hears', h),
@@ -319,16 +317,28 @@ const supplementaryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                       gap: 1,
                       vAlign: 'center',
                       children: [
-                        icon(
-                          stat.direction === 'up' ? 'arrow-up' : 'arrow-down',
-                          {
-                            class: className(
-                              stat.direction === 'up'
-                                ? styles.upIcon
-                                : styles.smallIcon,
+                        h.span(
+                          [
+                            h.Class(
+                              className(
+                                stat.direction === 'up'
+                                  ? styles.upIcon
+                                  : styles.downIcon,
+                              ),
                             ),
-                          },
-                          h,
+                          ],
+                          [
+                            icon(
+                              {
+                                name:
+                                  stat.direction === 'up'
+                                    ? 'arrow-up'
+                                    : 'arrow-down',
+                                size: 'sm',
+                              },
+                              h,
+                            ),
+                          ],
                         ),
                         body(stat.delta, h),
                         VisuallyHidden.visuallyHidden(

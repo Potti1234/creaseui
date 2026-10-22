@@ -8,7 +8,7 @@ import {
   markerFixtures,
   type MarkerKind,
 } from '@/docs/components/pages/marker/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Marker from '@/ui/marker'
 import * as Toast from '@/ui/toast'
 import * as Spinner from '@/ui/spinner'
@@ -32,8 +32,8 @@ const markerView = (
   model: MarkerPreviewModel,
   h: HtmlBuilder<MarkerPreviewMessage>,
 ): Html => {
-  const icon = (name: string): Html =>
-    Marker.markerIcon({ children: [Icon.icon(name, {}, h)] }, h)
+  const icon = (name: Icon.IconName): Html =>
+    Marker.markerIcon({ children: [Icon.icon({ name: name }, h)] }, h)
   const content = (text: string, shimmer = false): Html =>
     Marker.markerContent(
       { ...(shimmer ? { shimmer: true } : {}), children: [text] },

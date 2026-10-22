@@ -195,7 +195,7 @@ const emitImports = (fixture: ItemFixture, isStyleX: boolean): string => {
     parts.push("import { buttonVariants } from '@/ui/button'")
   }
   if (kindUsesIcon(fixture.kind)) {
-    parts.push("import * as Icon from '@/lib/icon'")
+    parts.push(`import * as Icon from '@/${base}/icon'`)
   }
   return parts.join('\n')
 }
@@ -364,8 +364,8 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
   const cls = (twClass: string, sxName: string): string =>
     isStyleX ? `stylex.props(styles.${sxName}).className ?? ''` : `'${twClass}'`
   const icon = (name: string, extras: string = ''): string =>
-    `Icon.icon('${name}', {${extras}}, h)`
-  const inbox = isStyleX ? icon('inbox') : icon('inbox', " class: 'size-4'")
+    `Icon.icon({ name: '${name}'${extras} }, h)`
+  const inbox = isStyleX ? icon('inbox') : icon('inbox', ", size: 'sm'")
   const personItem = (
     media: string,
     contentExtras: string,
@@ -466,7 +466,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
           href: '#',
           children: [
             Item.itemMedia({
-              children: [${icon('badge-check', isStyleX ? '' : " class: 'size-5'")}],
+              children: [${icon('badge-check', isStyleX ? '' : ", size: 'md'")}],
             }, h),
             Item.itemContent({
               children: [
@@ -474,7 +474,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
               ],
             }, h),
             Item.itemActions({
-              children: [${icon('chevron-right', isStyleX ? '' : " class: 'size-4'")}],
+              children: [${icon('chevron-right', isStyleX ? '' : ", size: 'sm'")}],
             }, h),
           ],
         }, h)`
@@ -741,7 +741,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
             ],
           }, h),
           Item.itemActions({
-            children: [${icon('chevron-right', isStyleX ? '' : " class: 'size-4'")}],
+            children: [${icon('chevron-right', isStyleX ? '' : ", size: 'sm'")}],
           }, h),
         ],
       }, h),
@@ -759,7 +759,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
             ],
           }, h),
           Item.itemActions({
-            children: [${icon('external-link', isStyleX ? '' : " class: 'size-4'")}],
+            children: [${icon('external-link', isStyleX ? '' : ", size: 'sm'")}],
           }, h),
         ],
       }, h),
@@ -794,7 +794,7 @@ const emitBody = (fixture: ItemFixture, isStyleX: boolean): string => {
       const trigger = isStyleX
         ? `trigger: h.span([], ['Select', ${icon('chevron-down')}]),
                   triggerButtonVariant: 'outline',`
-        : `trigger: h.span([h.Class('flex items-center gap-2')], ['Select', ${icon('chevron-down', " class: 'size-4'")}]),
+        : `trigger: h.span([h.Class('flex items-center gap-2')], ['Select', ${icon('chevron-down', ", size: 'sm'")}]),
                   triggerClass: buttonVariants({ variant: 'outline' }),`
       return `    DropdownMenu.dropdownMenu({
       model: model.dropdown,

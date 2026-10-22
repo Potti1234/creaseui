@@ -8,7 +8,7 @@ import {
   inputGroupFixtures,
   inputGroupRtlCopy,
 } from '@/docs/components/pages/input-group/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as DropdownMenu from '@/ui/dropdown-menu'
 import * as Field from '@/ui/field'
 import * as InputGroup from '@/ui/input-group'
@@ -133,7 +133,7 @@ const inputGroupView = (
               h,
             ),
             InputGroup.inputGroupAddon(
-              { children: [Icon.icon('search', {}, h)] },
+              { children: [Icon.icon({ name: 'search' }, h)] },
               h,
             ),
             InputGroup.inputGroupAddon(
@@ -165,7 +165,7 @@ const inputGroupView = (
                       InputGroup.inputGroupAddon(
                         {
                           align: 'inline-start',
-                          children: [Icon.icon('search', {}, h)],
+                          children: [Icon.icon({ name: 'search' }, h)],
                         },
                         h,
                       ),
@@ -209,8 +209,11 @@ const inputGroupView = (
                                   InputGroupPreviewMessage.ClickedShowPassword(),
                                 children: [
                                   Icon.icon(
-                                    model.isPasswordShown ? 'eye' : 'eye-off',
-                                    {},
+                                    {
+                                      name: model.isPasswordShown
+                                        ? 'eye'
+                                        : 'eye-off',
+                                    },
                                     h,
                                   ),
                                 ],
@@ -289,7 +292,7 @@ const inputGroupView = (
                               {
                                 align: 'block-start',
                                 children: [
-                                  Icon.icon('file-code', {}, h),
+                                  Icon.icon({ name: 'file-code' }, h),
                                   InputGroup.inputGroupText(
                                     {
                                       children: [
@@ -315,8 +318,8 @@ const inputGroupView = (
                                         }),
                                       children: [
                                         model.isCopied
-                                          ? Icon.icon('check', {}, h)
-                                          : Icon.icon('copy', {}, h),
+                                          ? Icon.icon({ name: 'check' }, h)
+                                          : Icon.icon({ name: 'copy' }, h),
                                       ],
                                     },
                                     h,
@@ -441,7 +444,7 @@ const inputGroupView = (
                   h,
                 ),
                 InputGroup.inputGroupAddon(
-                  { children: [Icon.icon('search', {}, h)] },
+                  { children: [Icon.icon({ name: 'search' }, h)] },
                   h,
                 ),
               ],
@@ -459,7 +462,7 @@ const inputGroupView = (
                   h,
                 ),
                 InputGroup.inputGroupAddon(
-                  { children: [Icon.icon('mail', {}, h)] },
+                  { children: [Icon.icon({ name: 'mail' }, h)] },
                   h,
                 ),
               ],
@@ -477,13 +480,13 @@ const inputGroupView = (
                   h,
                 ),
                 InputGroup.inputGroupAddon(
-                  { children: [Icon.icon('credit-card', {}, h)] },
+                  { children: [Icon.icon({ name: 'credit-card' }, h)] },
                   h,
                 ),
                 InputGroup.inputGroupAddon(
                   {
                     align: 'inline-end',
-                    children: [Icon.icon('check', {}, h)],
+                    children: [Icon.icon({ name: 'check' }, h)],
                   },
                   h,
                 ),
@@ -505,8 +508,8 @@ const inputGroupView = (
                   {
                     align: 'inline-end',
                     children: [
-                      Icon.icon('star', {}, h),
-                      Icon.icon('info', {}, h),
+                      Icon.icon({ name: 'star' }, h),
+                      Icon.icon({ name: 'info' }, h),
                     ],
                   },
                   h,
@@ -671,8 +674,8 @@ const inputGroupView = (
                           }),
                           children: [
                             model.isCopied
-                              ? Icon.icon('check', {}, h)
-                              : Icon.icon('copy', {}, h),
+                              ? Icon.icon({ name: 'check' }, h)
+                              : Icon.icon({ name: 'copy' }, h),
                           ],
                         },
                         h,
@@ -694,7 +697,7 @@ const inputGroupView = (
                     model: model.popover,
                     toParentMessage: message =>
                       InputGroupPreviewMessage.GotPopoverMessage({ message }),
-                    trigger: Icon.icon('info', {}, h),
+                    trigger: Icon.icon({ name: 'info' }, h),
                     triggerClass:
                       'flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground hover:bg-accent/50',
                     align: 'start',
@@ -728,11 +731,11 @@ const inputGroupView = (
                           onClick: InputGroupPreviewMessage.ClickedFavorite(),
                           children: [
                             Icon.icon(
-                              'star',
                               {
-                                class: model.isFavorite
-                                  ? 'fill-primary stroke-primary'
-                                  : '',
+                                name: 'star',
+                                ...(model.isFavorite
+                                  ? { tone: 'primary', filled: true }
+                                  : {}),
                               },
                               h,
                             ),
@@ -783,7 +786,7 @@ const inputGroupView = (
           children: [
             in_(model, 'kbd', 'kbd-search', { placeholder: 'Search...' }, h),
             InputGroup.inputGroupAddon(
-              { children: [Icon.icon('search', {}, h)] },
+              { children: [Icon.icon({ name: 'search' }, h)] },
               h,
             ),
             InputGroup.inputGroupAddon(
@@ -829,8 +832,7 @@ const inputGroupView = (
                               message,
                             }),
                           trigger: Icon.icon(
-                            'ellipsis',
-                            { ariaLabel: 'More' },
+                            { name: 'ellipsis', ariaLabel: 'More' },
                             h,
                           ),
                           triggerClass:
@@ -880,7 +882,10 @@ const inputGroupView = (
                             }),
                           trigger: h.span(
                             [],
-                            ['Search In...', Icon.icon('chevron-down', {}, h)],
+                            [
+                              'Search In...',
+                              Icon.icon({ name: 'chevron-down' }, h),
+                            ],
                           ),
                           triggerClass:
                             'flex h-6 items-center gap-1 rounded-[calc(var(--radius)-5px)] px-1.5 text-xs text-muted-foreground hover:bg-accent/50',
@@ -1032,7 +1037,7 @@ const inputGroupView = (
                           class: 'ml-auto',
                           children: [
                             'Run ',
-                            Icon.icon('corner-down-left', {}, h),
+                            Icon.icon({ name: 'corner-down-left' }, h),
                           ],
                         },
                         h,
@@ -1048,7 +1053,7 @@ const inputGroupView = (
                       InputGroup.inputGroupText(
                         {
                           children: [
-                            Icon.icon('file-code', {}, h),
+                            Icon.icon({ name: 'file-code' }, h),
                             'script.js',
                           ],
                         },
@@ -1058,14 +1063,14 @@ const inputGroupView = (
                         {
                           size: 'icon-xs',
                           class: 'ml-auto',
-                          children: [Icon.icon('refresh-cw', {}, h)],
+                          children: [Icon.icon({ name: 'refresh-cw' }, h)],
                         },
                         h,
                       ),
                       InputGroup.inputGroupButton(
                         {
                           size: 'icon-xs',
-                          children: [Icon.icon('copy', {}, h)],
+                          children: [Icon.icon({ name: 'copy' }, h)],
                         },
                         h,
                       ),
@@ -1139,7 +1144,7 @@ const inputGroupView = (
                   h,
                 ),
                 InputGroup.inputGroupAddon(
-                  { children: [Icon.icon('search', {}, h)] },
+                  { children: [Icon.icon({ name: 'search' }, h)] },
                   h,
                 ),
                 InputGroup.inputGroupAddon(

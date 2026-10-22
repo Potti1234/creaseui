@@ -6,7 +6,7 @@ import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import * as Button from '@/pleat/button'
 import * as ButtonGroup from '@/pleat/button-group'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as InputGroup from '@/pleat/input-group'
 import * as Kbd from '@/pleat/kbd'
 import * as Tooltip from '@/pleat/tooltip'
@@ -223,13 +223,7 @@ const kbdSxView = <Msg>(
                 ),
                 InputGroup.inputGroupAddon(
                   {
-                    children: [
-                      Icon.icon(
-                        'search',
-                        { class: className(styles.iconMd) },
-                        h,
-                      ),
-                    ],
+                    children: [Icon.icon({ name: 'search', size: 'sm' }, h)],
                   },
                   h,
                 ),

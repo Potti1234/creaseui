@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import {
@@ -26,7 +27,7 @@ export type ButtonItemSpec = Readonly<{
   variant?: ButtonVariant
   size?: ButtonSize
   /** Lucide icon rendered inside the button content. */
-  icon?: string
+  icon?: IconName
   iconPosition?: 'start' | 'end'
   /** Extra classes on the icon (e.g. `rtl:rotate-180`). */
   iconClass?: string
@@ -89,16 +90,18 @@ export const buttonGroupItemLabel = (
 
 export const buttonGroupItemIcon = (
   item: (typeof buttonGroupMenuItems)[number],
-): string =>
-  ({
-    'mark-read': 'mail-check',
-    archive: 'archive',
-    snooze: 'clock',
-    'add-calendar': 'calendar-plus',
-    'add-list': 'list-filter',
-    'label-as': 'tag',
-    trash: 'trash-2',
-  })[item]
+): IconName =>
+  (
+    ({
+      'mark-read': 'mail-check',
+      archive: 'archive',
+      snooze: 'clock',
+      'add-calendar': 'calendar-plus',
+      'add-list': 'list-filter',
+      'label-as': 'tag',
+      trash: 'trash-2',
+    }) as const
+  )[item]
 
 export const buttonFixtures: Readonly<
   [ButtonFixture, ...Array<ButtonFixture>]
@@ -269,8 +272,9 @@ const iconSource = (
   position: 'start' | 'end',
 ): string => {
   const opts: Array<string> = [`dataIcon: 'inline-${position}'`]
-  if (item.iconClass !== undefined) opts.push(`class: '${item.iconClass}'`)
-  return `Icon.icon('${item.icon ?? ''}', { ${opts.join(', ')} }, h)`
+  if (item.iconClass === 'rtl:rotate-180') opts.push('rotation: 180')
+  else if (item.iconClass !== undefined) opts.push(`class: '${item.iconClass}'`)
+  return `Icon.icon({ name: '${item.icon ?? ''}', ${opts.join(', ')} }, h)`
 }
 
 const spinnerSource = (position: 'start' | 'end'): string =>
@@ -380,13 +384,13 @@ ${tiers},
 const buttonGroupViewSource = (
   renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const iconBtn = (icon: string, label: string): string =>
-    `Button.button({ variant: 'outline', size: 'icon', ariaLabel: '${label}', children: [Icon.icon('${icon}', {}, h)] }, h)`
+  const iconBtn = (icon: IconName, label: string): string =>
+    `Button.button({ variant: 'outline', size: 'icon', ariaLabel: '${label}', children: [Icon.icon({ name: '${icon}' }, h)] }, h)`
   const menuConfig =
     renderer === 'tailwind'
-      ? `trigger: Icon.icon('ellipsis', {}, h),
+      ? `trigger: Icon.icon({ name: 'ellipsis' }, h),
       triggerClass: buttonVariants({ variant: 'outline', size: 'icon' }),`
-      : `trigger: Icon.icon('ellipsis', {}, h),
+      : `trigger: Icon.icon({ name: 'ellipsis' }, h),
       triggerButtonVariant: 'outline',
       triggerButtonSize: 'icon',`
   return `ButtonGroup.buttonGroup({ children: [
@@ -440,7 +444,7 @@ const buttonGroupImports = (
     `import * as Button from '${mod}/button'`,
     `import * as ButtonGroup from '${mod}/button-group'`,
     `import * as DropdownMenu from '${mod}/dropdown-menu'`,
-    `import * as Icon from '@/lib/icon'`,
+    `import * as Icon from '${mod}/icon'`,
     renderer === 'tailwind'
       ? `import { buttonVariants } from '${mod}/button'`
       : undefined,
@@ -500,18 +504,18 @@ export type Message = typeof GotMenuMessage.Type`,
   labelAs: Option.Option<string>,
   h: HtmlBuilder<Message>,
 ) => (item: MenuItem): DropdownMenu.DropdownMenuItemConfig<MenuItem> => ({
-  'mark-read': { label: 'Mark as Read', icon: Icon.icon('mail-check', {}, h) },
-  archive: { label: 'Archive', icon: Icon.icon('archive', {}, h) },
+  'mark-read': { label: 'Mark as Read', icon: Icon.icon({ name: 'mail-check' }, h) },
+  archive: { label: 'Archive', icon: Icon.icon({ name: 'archive' }, h) },
   snooze: {
     label: 'Snooze',
-    icon: Icon.icon('clock', {}, h),
+    icon: Icon.icon({ name: 'clock' }, h),
     separatorBefore: true,
   },
-  'add-calendar': { label: 'Add to Calendar', icon: Icon.icon('calendar-plus', {}, h) },
-  'add-list': { label: 'Add to List', icon: Icon.icon('list-filter', {}, h) },
+  'add-calendar': { label: 'Add to Calendar', icon: Icon.icon({ name: 'calendar-plus' }, h) },
+  'add-list': { label: 'Add to List', icon: Icon.icon({ name: 'list-filter' }, h) },
   'label-as': {
     label: 'Label As…',
-    icon: Icon.icon('tag', {}, h),
+    icon: Icon.icon({ name: 'tag' }, h),
     submenu: {
       items: [...labelItems],
       itemToConfig: (label: MenuItem): DropdownMenu.DropdownMenuItemConfig<MenuItem> => ({
@@ -523,7 +527,7 @@ export type Message = typeof GotMenuMessage.Type`,
   },
   trash: {
     label: 'Trash',
-    icon: Icon.icon('trash-2', {}, h),
+    icon: Icon.icon({ name: 'trash-2' }, h),
     variant: 'destructive' as const,
     separatorBefore: true,
   },
@@ -561,8 +565,8 @@ const exampleCode = (
     case 'sizes': {
       const imports =
         renderer !== 'tailwind'
-          ? `import * as stylex from '@stylexjs/stylex'\nimport * as Icon from '@/lib/icon'\n\nconst styles = stylex.create({\n  tiers: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2rem' },\n  group: { display: 'flex', alignItems: 'flex-start', gap: '0.5rem' },\n})`
-          : `import * as Icon from '@/lib/icon'`
+          ? `import * as stylex from '@stylexjs/stylex'\nimport * as Icon from '@/${renderer}/icon'\n\nconst styles = stylex.create({\n  tiers: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2rem' },\n  group: { display: 'flex', alignItems: 'flex-start', gap: '0.5rem' },\n})`
+          : `import * as Icon from '@/ui/icon'`
       return statelessComponentApplication({
         componentName: 'Button',
         componentSlug: 'button',
@@ -575,7 +579,9 @@ const exampleCode = (
     case 'items': {
       const imports = [
         ...(fixture.items.some(needsIconImport)
-          ? [`import * as Icon from '@/lib/icon'`]
+          ? [
+              `import * as Icon from '@/${renderer === 'tailwind' ? 'ui' : renderer}/icon'`,
+            ]
           : []),
         ...(fixture.items.some(needsSpinnerImport)
           ? [

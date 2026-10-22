@@ -3,7 +3,7 @@ import { defineMessageUnion } from 'foldkit/message'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import { alertFixtures } from '@/docs/components/pages/alert/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Alert from '@/ui/alert'
 import * as Button from '@/ui/button'
 
@@ -37,7 +37,7 @@ export const alertTailwindPreviewProgram = definePreviewProgram<
             ...(fixture.colors === undefined ? {} : { class: fixture.colors }),
             children: [
               Alert.alertIcon(
-                { children: [Icon.icon(item.icon, { class: 'size-4' }, h)] },
+                { children: [Icon.icon({ name: item.icon, size: 'sm' }, h)] },
                 h,
               ),
               Alert.alertTitle({ children: [item.title] }, h),

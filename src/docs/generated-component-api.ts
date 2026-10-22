@@ -2874,9 +2874,14 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "iconNames: ReadonlyArray<IconName>"
     },
     {
+      "name": "IconSize",
+      "kind": "type",
+      "signature": "IconSize = '3xs' | '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'"
+    },
+    {
       "name": "IconProps",
       "kind": "type",
-      "signature": "IconProps = Readonly<{ name: IconName; size?: 'sm' | 'md' | 'lg'; ariaLabel?: string; }>"
+      "signature": "IconProps = Readonly<{ name: IconName; size?: IconSize; tone?: 'muted' | 'primary'; filled?: boolean; rotation?: 0 | 90 | 180; ariaLabel?: string; dataIcon?: 'inline-start' | 'inline-end'; class?: string; }>"
     },
     {
       "name": "icon",

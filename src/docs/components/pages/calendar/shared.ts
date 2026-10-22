@@ -294,7 +294,7 @@ const timeFieldSource = (
                             }, h),
                             InputGroup.inputGroupAddon({
                               children: [
-                                Icon.icon('clock', ${renderer !== 'tailwind' ? '{ class: className(styles.icon) }' : `{ class: 'size-4 text-muted-foreground' }`}, h),
+                                Icon.icon({ name: 'clock', size: 'sm', tone: 'muted' }, h),
                               ],
                             }, h),
                           ],
@@ -395,7 +395,7 @@ const componentImports = (
   if (needs.time) {
     imports.push(`import * as Field from '@/${root}/field'`)
     imports.push(`import * as InputGroup from '@/${root}/input-group'`)
-    imports.push(`import * as Icon from '@/lib/icon'`)
+    imports.push(`import * as Icon from '@/${root}/icon'`)
   }
   if (renderer !== 'tailwind')
     imports.push(
@@ -511,7 +511,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as Button from '@/${isSx ? 'stylex' : 'ui'}/button'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/${isSx ? 'stylex' : 'ui'}/icon'
 import {
   FA_DAY_NAMES,
   FA_MONTH_NAMES,
@@ -666,7 +666,7 @@ const jalaliView = (model: Model, h: HtmlBuilder<Message>) => {
             size: 'icon',
             ariaLabel: 'Previous month',
             onClick: Message.PressedPreviousMonth(),
-            children: [Icon.chevronRight({ class: ${isSx ? 'cx(styles.icon)' : `'size-4'`} }, h)],
+            children: [Icon.icon({ name: 'chevron-right', size: 'sm' }, h)],
           },
           h,
         ),
@@ -682,7 +682,7 @@ const jalaliView = (model: Model, h: HtmlBuilder<Message>) => {
             size: 'icon',
             ariaLabel: 'Next month',
             onClick: Message.PressedNextMonth(),
-            children: [Icon.chevronLeft({ class: ${isSx ? 'cx(styles.icon)' : `'size-4'`} }, h)],
+            children: [Icon.icon({ name: 'chevron-left', size: 'sm' }, h)],
           },
           h,
         ),

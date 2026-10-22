@@ -15,7 +15,7 @@ import {
   type ButtonFixture,
   type ButtonItemSpec,
 } from '@/docs/components/pages/button/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Button from '@/ui/button'
 import { buttonVariants } from '@/ui/button'
 import * as ButtonGroup from '@/ui/button-group'
@@ -46,8 +46,8 @@ const itemChildren = (
   if (item.icon !== undefined && (item.iconPosition ?? 'start') === 'start')
     children.push(
       Icon.icon(
-        item.icon,
         {
+          name: item.icon,
           dataIcon: 'inline-start',
           ...(item.iconClass === undefined ? {} : { class: item.iconClass }),
         },
@@ -58,8 +58,8 @@ const itemChildren = (
   if (item.icon !== undefined && item.iconPosition === 'end')
     children.push(
       Icon.icon(
-        item.icon,
         {
+          name: item.icon,
           dataIcon: 'inline-end',
           ...(item.iconClass === undefined ? {} : { class: item.iconClass }),
         },
@@ -99,7 +99,7 @@ const menuItemConfig =
     const main = item as (typeof buttonGroupMenuItems)[number]
     return {
       label: buttonGroupItemLabel(main),
-      icon: Icon.icon(buttonGroupItemIcon(main), {}, h),
+      icon: Icon.icon({ name: buttonGroupItemIcon(main) }, h),
       ...(main === 'snooze' || main === 'trash'
         ? { separatorBefore: true }
         : {}),
@@ -138,7 +138,7 @@ const buttonGroupHtml = (
                   variant: 'outline',
                   size: 'icon',
                   ariaLabel: 'Go Back',
-                  children: [Icon.icon('arrow-left', {}, h)],
+                  children: [Icon.icon({ name: 'arrow-left' }, h)],
                 },
                 h,
               ),
@@ -164,7 +164,7 @@ const buttonGroupHtml = (
                   model: model.menu,
                   toParentMessage: message =>
                     GotMenuMessage.GotMenuMessage({ message }),
-                  trigger: Icon.icon('ellipsis', {}, h),
+                  trigger: Icon.icon({ name: 'ellipsis' }, h),
                   triggerClass: buttonVariants({
                     variant: 'outline',
                     size: 'icon',

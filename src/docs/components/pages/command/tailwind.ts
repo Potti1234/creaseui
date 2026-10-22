@@ -7,7 +7,7 @@ import {
   commandFixtures,
   itemsForFixture,
 } from '@/docs/components/pages/command/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Button from '@/ui/button'
 import * as CommandMenu from '@/ui/command'
 import * as Dialog from '@/ui/dialog'
@@ -103,7 +103,7 @@ export const commandTailwindPreviewProgram = definePreviewProgram<
               [
                 ...(item?.icon === undefined
                   ? []
-                  : [Icon.icon(item.icon, { class: 'size-4' }, h)]),
+                  : [Icon.icon({ name: item.icon, size: 'sm' }, h)]),
                 h.span([], [value]),
               ],
             ),

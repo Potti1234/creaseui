@@ -151,11 +151,11 @@ const menuCallSource = (
       : renderer !== 'tailwind'
         ? `h.span([h.Class(className(styles.dropdownTrigger))], [
               '${esc(item.kind === 'dropdown' ? item.label : '')}',
-              Icon.icon('chevron-down', { class: className(styles.chevron) }, h),
+              Icon.icon({ name: 'chevron-down', size: 'xs' }, h),
             ])`
         : `h.span(
               [h.Class('flex items-center gap-1')],
-              ['${esc(item.kind === 'dropdown' ? item.label : '')}', Icon.icon('chevron-down', { class: 'size-3.5' }, h)],
+              ['${esc(item.kind === 'dropdown' ? item.label : '')}', Icon.icon({ name: 'chevron-down', size: 'xs' }, h)],
             )`
   const triggerProps =
     item.kind === 'ellipsisMenu'
@@ -201,7 +201,9 @@ const separatorSource = (
   renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const children =
-    fixture.separator === 'dot' ? `children: [Icon.icon('dot', {}, h)], ` : ''
+    fixture.separator === 'dot'
+      ? `children: [Icon.icon({ name: 'dot' }, h)], `
+      : ''
   const direction = fixture.rtl === true ? `direction: 'rtl', ` : ''
   return `Breadcrumb.breadcrumbSeparator({ ${children}${direction}}, h)`
 }
@@ -255,7 +257,7 @@ const styles = stylex.create({
     : ''
 }`
       : ''
-  return `${stylexBits}${needsMenu(fixture) ? `import * as DropdownMenu from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/dropdown-menu'\n` : ''}${usesIcon(fixture) ? `import * as Icon from '@/lib/icon'` : ''}`
+  return `${stylexBits}${needsMenu(fixture) ? `import * as DropdownMenu from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/dropdown-menu'\n` : ''}${usesIcon(fixture) ? `import * as Icon from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/icon'` : ''}`
 }
 
 const source = (

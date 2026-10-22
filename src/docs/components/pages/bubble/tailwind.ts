@@ -14,7 +14,7 @@ import {
 } from '@/docs/components/pages/bubble/shared'
 import * as Bubble from '@/ui/bubble'
 import * as Button from '@/ui/button'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Popover from '@/ui/popover'
 import * as Tooltip from '@/ui/tooltip'
 
@@ -86,7 +86,7 @@ const reactionsView = (
                 model: model.tooltip,
                 toParentMessage: message =>
                   PreviewMessage.GotTooltipMessage({ message }),
-                trigger: Icon.icon(reactions.icon, {}, h),
+                trigger: Icon.icon({ name: reactions.icon }, h),
                 triggerClass:
                   'flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground',
                 content: reactions.content,
@@ -108,8 +108,11 @@ const reactionsView = (
                 toParentMessage: message =>
                   PreviewMessage.GotPopoverMessage({ message }),
                 trigger: Icon.icon(
-                  reactions.icon,
-                  { class: 'size-3.5', ariaLabel: 'Show error details' },
+                  {
+                    name: reactions.icon,
+                    size: 'xs',
+                    ariaLabel: 'Show error details',
+                  },
                   h,
                 ),
                 triggerClass:
@@ -181,7 +184,7 @@ const contentView = (
                 ],
                 [
                   model.open ? 'Show less' : 'Show more',
-                  Icon.icon('chevron-down', { class: 'size-4' }, h),
+                  Icon.icon({ name: 'chevron-down', size: 'sm' }, h),
                 ],
               ),
             ]

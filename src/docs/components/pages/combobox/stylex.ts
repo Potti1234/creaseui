@@ -12,7 +12,7 @@ import {
   comboboxTimezones,
   type ComboboxFixture,
 } from '@/docs/components/pages/combobox/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Button from '@/stylex/button'
 import * as Combobox from '@/stylex/combobox'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
@@ -22,7 +22,6 @@ const styles = stylex.create({
   row: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
   clearButton: { position: 'relative', zIndex: 50 },
   stack: { gap: '0.5rem', display: 'grid' },
-  icon: { height: '1rem', width: '1rem' },
   itemCol: { display: 'flex', flexDirection: 'column' },
   itemMeta: {
     color: 'var(--muted-foreground)',
@@ -66,7 +65,6 @@ const styles = stylex.create({
     justifyContent: 'center',
     opacity: { default: 0.6, ':hover': 1 },
   },
-  chipIcon: { height: '0.75rem', width: '0.75rem' },
   multiInput: {
     paddingInline: '0.25rem',
     flexBasis: '0%',
@@ -76,7 +74,7 @@ const styles = stylex.create({
     height: '1.75rem',
     minWidth: '4rem',
   },
-  chevron: { opacity: 0.5, height: '1rem', width: '1rem' },
+  chevron: { display: 'inline-flex', opacity: 0.5 },
   toggleButton: {
     borderRadius: '0.375rem',
     alignSelf: 'center',
@@ -228,9 +226,9 @@ export const comboboxStyleXPreview: ExamplePreviewProvider = <Msg>(
           ariaLabel: 'Country',
           formName: 'docs-combobox',
           trigger: {
-            content: Icon.chevronsUpDown(
-              { class: className(styles.chevron) },
-              h,
+            content: h.span(
+              [h.Class(className(styles.chevron))],
+              [Icon.icon({ name: 'chevrons-up-down', size: 'sm' }, h)],
             ),
             ariaLabel: 'Toggle options',
             layoutStyle: styles.toggleButton as ComponentLayoutStyle,
@@ -281,7 +279,7 @@ export const comboboxStyleXPreview: ExamplePreviewProvider = <Msg>(
                     ),
                   ),
                 ],
-                [Icon.x({ class: className(styles.chipIcon) }, h)],
+                [Icon.icon({ name: 'x', size: '2xs' }, h)],
               ),
             ],
           ),
@@ -334,9 +332,7 @@ export const comboboxStyleXPreview: ExamplePreviewProvider = <Msg>(
                   onClick: onMessageJson(
                     JSON.stringify({ _tag: 'ClickedClear' }),
                   ),
-                  children: [
-                    Icon.icon('x', { class: className(styles.icon) }, h),
-                  ],
+                  children: [Icon.icon({ name: 'x', size: 'sm' }, h)],
                 },
                 h,
               ),

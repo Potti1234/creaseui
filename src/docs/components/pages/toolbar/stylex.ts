@@ -11,7 +11,7 @@ import {
   type FilterField,
   type Job,
 } from '@/docs/components/pages/toolbar/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import { badge } from '@/stylex/badge'
 import { button } from '@/stylex/button'
 import { checkbox } from '@/stylex/checkbox'
@@ -128,7 +128,7 @@ const heading = <Msg>(text: string, h: HtmlBuilder<Msg>): Html =>
   h.h4([h.Class(className(reset.text, styles.heading))], [text])
 
 const ghostIconButton = <Msg>(
-  name: string,
+  name: Icon.IconName,
   ariaLabel: string,
   h: HtmlBuilder<Msg>,
   edgeComp = false,
@@ -139,7 +139,7 @@ const ghostIconButton = <Msg>(
         variant: 'ghost',
         size: 'icon-sm',
         ariaLabel,
-        leadingIcon: Icon.icon(name, { class: className(styles.iconMd) }, h),
+        leadingIcon: Icon.icon({ name: name, size: 'sm' }, h),
         children: [],
       },
       h,
@@ -292,11 +292,7 @@ const bodyFor = <Msg>(
                     variant: 'default',
                     size: 'icon-sm',
                     ariaLabel: 'Add user',
-                    leadingIcon: Icon.icon(
-                      'plus',
-                      { class: className(styles.iconMd) },
-                      h,
-                    ),
+                    leadingIcon: Icon.icon({ name: 'plus', size: 'sm' }, h),
                     children: [],
                   },
                   h,
@@ -333,11 +329,7 @@ const bodyFor = <Msg>(
                       {
                         variant: 'default',
                         size: size === 'sm' ? 'sm' : 'default',
-                        leadingIcon: Icon.icon(
-                          'plus',
-                          { class: className(styles.iconMd) },
-                          h,
-                        ),
+                        leadingIcon: Icon.icon({ name: 'plus', size: 'sm' }, h),
                         children: ['Add'],
                       },
                       h,
@@ -389,11 +381,7 @@ const bodyFor = <Msg>(
                     variant: 'default',
                     size: 'icon-sm',
                     ariaLabel: 'New item',
-                    leadingIcon: Icon.icon(
-                      'plus',
-                      { class: className(styles.iconMd) },
-                      h,
-                    ),
+                    leadingIcon: Icon.icon({ name: 'plus', size: 'sm' }, h),
                     children: [],
                   },
                   h,

@@ -7,7 +7,7 @@ import {
   treeListFixtures,
   type TreeListFixtureItem,
 } from '@/docs/components/pages/tree-list/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Badge from '@/pleat/badge'
 import { className } from '@/pleat/style'
 import * as TreeList from '@/pleat/tree-list'
@@ -50,19 +50,11 @@ const decorateItems = <Msg>(
     ...(item.startIcon === undefined
       ? {}
       : {
-          startContent: Icon.icon(
-            item.startIcon,
-            { class: className(styles.itemIcon) },
-            h,
-          ),
+          startContent: Icon.icon({ name: item.startIcon, size: 'sm' }, h),
         }),
     ...(item.endIcon !== undefined
       ? {
-          endContent: Icon.icon(
-            item.endIcon,
-            { class: className(styles.itemIcon) },
-            h,
-          ),
+          endContent: Icon.icon({ name: item.endIcon, size: 'sm' }, h),
         }
       : item.endBadge !== undefined
         ? { endContent: Badge.badge({ children: [item.endBadge] }, h) }
