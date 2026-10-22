@@ -184,7 +184,7 @@ export const attachmentFixtures: Readonly<
           {
             name: 'financial-model.xlsx',
             meta: 'Upload failed. Try again.',
-            icon: 'file-warning',
+            icon: 'file-exclamation-point',
             state: 'error',
             actions: [
               { icon: 'refresh-cw', label: 'Retry upload' },
