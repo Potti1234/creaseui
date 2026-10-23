@@ -2266,6 +2266,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "Message = typeof Message.Type"
     },
     {
+      "name": "FocusTrigger",
+      "kind": "value",
+      "signature": "FocusTrigger: value"
+    },
+    {
       "name": "OutMessage",
       "kind": "value",
       "signature": "OutMessage: value"

@@ -2297,6 +2297,7 @@ Examples: Basic, Submenu, Shortcuts, Icons, Checkboxes, Checkboxes Icons, Radio 
 - `Model = typeof Model.Type` (type)
 - `Message: value` (value)
 - `Message = typeof Message.Type` (type)
+- `FocusTrigger: value` (value)
 - `OutMessage: value` (value)
 - `OutMessage<Item extends string = string> = Readonly<{ _tag: 'Selected'; value: Item; index: number; }>` (type)
 - `init(config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean; }>): Model` (function)

@@ -1,9 +1,12 @@
+import * as Command from 'foldkit/command'
 import * as Scene from 'foldkit/scene'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { describe, it } from 'vitest'
 
 import * as StyleXContextMenu from '@/stylex/context-menu'
+import { FocusTrigger as StyleXFocusTrigger } from '@/stylex/dropdown-menu'
 import * as TailwindContextMenu from '@/ui/context-menu'
+import { FocusTrigger as TailwindFocusTrigger } from '@/ui/dropdown-menu'
 
 /**
  * Behavioral parity suite ported from Base UI's context-menu tests
@@ -106,7 +109,16 @@ const nestedItemConfigs: Record<string, ItemConfig<string>> = {
 }
 const submenuTrigger = Scene.role('menuitem', { name: 'More tools' })
 
-const verifyRenderer = (name: string, ContextMenu: ContextMenuModule) => {
+const verifyRenderer = (
+  name: string,
+  ContextMenu: ContextMenuModule,
+  FocusTrigger: typeof TailwindFocusTrigger,
+) => {
+  const triggerFocused = Scene.Command.resolve(
+    FocusTrigger,
+    TailwindContextMenu.Message.CompletedFocusDropdownMenuTrigger(),
+  )
+
   const initialModel = (
     menuModel = ContextMenu.init({ id: 'ctx' }),
     inner = ContextMenu.init({ id: 'inner-ctx' }),
@@ -120,15 +132,36 @@ const verifyRenderer = (name: string, ContextMenu: ContextMenuModule) => {
     switch (message._tag) {
       case 'Menu': {
         const result = ContextMenu.update(model.menu, message.message)
-        return { ...result, model: { ...model, menu: result.model } }
+        return {
+          ...result,
+          model: { ...model, menu: result.model },
+          commands: Command.mapMessages(
+            result.commands ?? [],
+            (message): Message => ({ _tag: 'Menu', message }),
+          ),
+        }
       }
       case 'InnerMenu': {
         const result = ContextMenu.update(model.inner, message.message)
-        return { ...result, model: { ...model, inner: result.model } }
+        return {
+          ...result,
+          model: { ...model, inner: result.model },
+          commands: Command.mapMessages(
+            result.commands ?? [],
+            (message): Message => ({ _tag: 'InnerMenu', message }),
+          ),
+        }
       }
       case 'OuterMenu': {
         const result = ContextMenu.update(model.outer, message.message)
-        return { ...result, model: { ...model, outer: result.model } }
+        return {
+          ...result,
+          model: { ...model, outer: result.model },
+          commands: Command.mapMessages(
+            result.commands ?? [],
+            (message): Message => ({ _tag: 'OuterMenu', message }),
+          ),
+        }
       }
     }
   }
@@ -364,6 +397,7 @@ const verifyRenderer = (name: string, ContextMenu: ContextMenuModule) => {
           Scene.expect(Scene.selector('#outer-ctx-content')).toBeAbsent(),
           Scene.click(backdrop),
           Scene.expectHandled(),
+          triggerFocused,
           Scene.expect(Scene.selector('#inner-ctx-content')).toBeAbsent(),
           Scene.contextMenu(Scene.selector('#outer-ctx-trigger')),
           Scene.expectHandled(),
@@ -402,6 +436,7 @@ const verifyRenderer = (name: string, ContextMenu: ContextMenuModule) => {
           Scene.expect(backdrop).toExist(),
           Scene.click(backdrop),
           Scene.expectHandled(),
+          triggerFocused,
           Scene.expect(menu).toBeAbsent(),
           Scene.expect(trigger).toHaveAttr('aria-expanded', 'false'),
         )
@@ -455,6 +490,7 @@ const verifyRenderer = (name: string, ContextMenu: ContextMenuModule) => {
           Scene.expect(trigger).toHaveAttr('aria-expanded', 'true'),
           Scene.keydown(content, 'Escape'),
           Scene.expectHandled(),
+          triggerFocused,
           Scene.expect(trigger).toHaveAttr('aria-expanded', 'false'),
           Scene.expect(menu).toBeAbsent(),
         )
@@ -510,5 +546,5 @@ const verifyRenderer = (name: string, ContextMenu: ContextMenuModule) => {
   })
 }
 
-verifyRenderer('Tailwind', TailwindContextMenu)
-verifyRenderer('StyleX', StyleXContextMenu)
+verifyRenderer('Tailwind', TailwindContextMenu, TailwindFocusTrigger)
+verifyRenderer('StyleX', StyleXContextMenu, StyleXFocusTrigger)
