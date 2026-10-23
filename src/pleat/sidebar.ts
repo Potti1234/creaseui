@@ -778,15 +778,6 @@ export const sidebar = <Msg>(
                 h.aside(
                   [
                     h.DataAttribute('slot', 'sidebar-mobile'),
-                    ...(props.onMobileDismiss === undefined
-                      ? []
-                      : [
-                          h.OnKeyDownPreventDefault(key =>
-                            key === 'Escape'
-                              ? Option.some(props.onMobileDismiss!)
-                              : Option.none(),
-                          ),
-                        ]),
                     h.Class(
                       className(
                         styles.mobile,

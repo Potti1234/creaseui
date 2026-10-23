@@ -146,15 +146,6 @@ export const sidebar = <Msg>(
                 h.aside(
                   [
                     h.DataAttribute('slot', 'sidebar-mobile'),
-                    ...(onMobileDismiss === undefined
-                      ? []
-                      : [
-                          h.OnKeyDownPreventDefault(key =>
-                            key === 'Escape'
-                              ? Option.some(onMobileDismiss)
-                              : Option.none(),
-                          ),
-                        ]),
                     h.Class(
                       cn(
                         'fixed inset-y-0 z-50 flex w-(--sidebar-width-mobile) max-w-[calc(100vw-2rem)] flex-col bg-sidebar text-sidebar-foreground shadow-xl md:hidden',

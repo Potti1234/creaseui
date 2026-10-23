@@ -96,3 +96,43 @@ test('an open mobile Sidebar is modal only while the viewport shows it', async (
   await expect.poll(() => pageIsInert(page)).toBe(false)
   expect(errors).toEqual([])
 })
+
+test('Escape in a menu inside the mobile Sidebar closes only the menu', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  await page.goto('/docs/components/sidebar')
+
+  const trigger = await open(page)
+  const menuTrigger = modal(page).getByRole('button', {
+    name: 'Account menu',
+    exact: true,
+  })
+  await menuTrigger.click()
+  const menu = page.locator('[role="menu"]:visible')
+  await expect(menu).toHaveCount(1)
+  await page.keyboard.press('ArrowDown')
+  await page.keyboard.press('Tab')
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => document.activeElement?.closest('[role="menu"]') !== null,
+      ),
+    )
+    .toBe(true)
+
+  await page.keyboard.press('Escape')
+  await expect(menu).toHaveCount(0)
+  await expect(modal(page)).toBeVisible()
+  await expect(menuTrigger).toBeFocused()
+  await expect.poll(() => focusIsInside(page)).toBe(true)
+  expect(
+    await trigger.evaluate(element => element.matches('[inert], [inert] *')),
+  ).toBe(true)
+
+  await page.keyboard.press('Escape')
+  await closedWithFocusOn(page, trigger)
+  expect(errors).toEqual([])
+})
