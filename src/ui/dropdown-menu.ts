@@ -45,7 +45,7 @@ export type Message = typeof Message.Type
 
 /* Closing the open menu returns focus to its trigger, so focus inside the
    removed content (after Tab or arrow keys) is not dropped to the body. */
-export const FocusTrigger = Command.define('FocusDropdownMenuTrigger', {
+const FocusTrigger = Command.define('FocusDropdownMenuTrigger', {
   args: { id: S.String },
   messages: [Message.CompletedFocusDropdownMenuTrigger],
   execute: ({ id }) =>
