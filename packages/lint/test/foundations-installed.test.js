@@ -21,7 +21,8 @@ const repo = fileURLToPath(new URL('../../../', import.meta.url))
 
 /* Review of 6d6756e1 (R1): the shipped Button renders through
    `@foldkit/ui`'s `Button.view({ toView })`. Its `children` and
-   `leadingIcon` reach the returned view; `onClick` does not. */
+   `leadingIcon` reach the returned view; `onClick` does not. Review of
+   9bf48f2e (R4): only the `toView` the options end up with renders. */
 test('foundations follow props through the installed Button to its render slot', () => {
   const root = mkdtempSync(path.join(tmpdir(), 'creaseui-foundations-real-'))
   const write = (name, text) => {
@@ -67,8 +68,18 @@ export const sidebar = (h: HtmlBuilder<unknown>): Html =>
 `,
   )
   write(
+    'src/overrides.ts',
+    `import type { Button } from '@foldkit/ui'
+export declare const externalOverrides: () => Partial<
+  Pick<Button.ViewConfig<unknown>, 'toView'>
+>
+`,
+  )
+  write(
     'src/shell.ts',
-    `import type { Html, HtmlBuilder } from 'foldkit/html'
+    `import { Button } from '@foldkit/ui'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { externalOverrides } from './overrides'
 import { button, buttonLink } from './ui/button'
 import { icon } from './ui/icon'
 import { sidebar } from './sidebar'
@@ -87,6 +98,16 @@ export const iconEvent = (h: HtmlBuilder<unknown>): Html =>
   button({ children: ['Create'], onClick: icon({ name: 'plus' }, h) }, h)
 export const linkIcon = (h: HtmlBuilder<unknown>): Html =>
   buttonLink({ href: '#', children: [icon({ name: 'plus' }, h), 'Create'] }, h)
+
+const primitive = (
+  h: HtmlBuilder<unknown>,
+  overrides: Readonly<Partial<Pick<Button.ViewConfig<unknown>, 'toView'>>>,
+): Html => Button.view({ toView: () => sidebar(h), ...overrides }, h)
+export const overwrittenSlot = (h: HtmlBuilder<unknown>): Html =>
+  primitive(h, { toView: () => h.main([], ['Other']) })
+export const keptSlot = (h: HtmlBuilder<unknown>): Html => primitive(h, {})
+export const unknownSlot = (h: HtmlBuilder<unknown>): Html =>
+  primitive(h, externalOverrides())
 `,
   )
   const claims = {
@@ -97,6 +118,9 @@ export const linkIcon = (h: HtmlBuilder<unknown>): Html =>
     iconLeading: 'component.icon',
     linkIcon: 'component.icon',
     renderedIcon: 'component.sidebar',
+    keptSlot: 'component.sidebar',
+    overwrittenSlot: 'component.sidebar',
+    unknownSlot: 'component.sidebar',
   }
   const renderer = (id, file, exports, extra = []) => ({
     exports: exports.map(([name, contract]) => ({ contract, file, name })),
@@ -173,8 +197,13 @@ export const linkIcon = (h: HtmlBuilder<unknown>): Html =>
       .sort()
   assert.deepEqual(
     named(/the call's result does not reach the returned view/u),
-    ['clickMetadata', 'iconEvent'],
+    ['clickMetadata', 'iconEvent', 'overwrittenSlot'],
     problems.join('\n'),
   )
-  assert.equal(problems.length, 2, problems.join('\n'))
+  assert.deepEqual(
+    named(/can't verify that the call's result reaches/u),
+    ['unknownSlot'],
+    problems.join('\n'),
+  )
+  assert.equal(problems.length, 4, problems.join('\n'))
 })

@@ -109,30 +109,12 @@ const FOLDKIT_UI = /[\\/]@foldkit[\\/]ui[\\/]/u
 /* `@foldkit/ui` primitives render what their `toView` callback returns:
    `Button.view({ onClick, toView: attributes => h.button(...) }, h)`.
    Their other options are behavior and attributes, never rendered output. */
-const renderSlotOf = (checker, call) => {
+const isRenderSlotCall = (checker, call) => {
   const declaration = checker.getResolvedSignature(call)?.getDeclaration()
-  if (
-    declaration === undefined ||
-    !FOLDKIT_UI.test(declaration.getSourceFile().fileName)
+  return (
+    declaration !== undefined &&
+    FOLDKIT_UI.test(declaration.getSourceFile().fileName)
   )
-    return undefined
-  const [options] = call.arguments
-  if (options === undefined || !ts.isObjectLiteralExpression(options))
-    return undefined
-  const slot = options.properties.find(
-    property =>
-      (ts.isPropertyAssignment(property) || ts.isMethodDeclaration(property)) &&
-      ts.isIdentifier(property.name) &&
-      property.name.text === 'toView',
-  )
-  if (slot === undefined) return undefined
-  const fn = ts.isMethodDeclaration(slot) ? slot : strip(slot.initializer)
-  return fn !== undefined &&
-    (ts.isArrowFunction(fn) ||
-      ts.isFunctionExpression(fn) ||
-      ts.isMethodDeclaration(fn))
-    ? fn
-    : undefined
 }
 const builderChildren = (checker, call) => {
   const declaration = checker.getResolvedSignature(call)?.getDeclaration()
@@ -211,6 +193,8 @@ const constantPredicate = callback => {
 }
 
 const ANY = '*'
+/* A path step for calling the value: follow what the function returns. */
+const CALLED = '\u0001()'
 /* Joins a rendered parameter path (`slot.body`) into one `reached` key. */
 const PATH_SEPARATOR = '\u0000'
 
@@ -361,6 +345,8 @@ const renderedContracts = (
         flow(property.initializer, rest, depth, bindings)
       else if (ts.isShorthandPropertyAssignment(property))
         flow(property.name, rest, depth, bindings)
+      else if (ts.isMethodDeclaration(property) && rest[0] === CALLED)
+        helper(property, rest.slice(1), depth, bindings)
       return true
     }
     return false
@@ -517,9 +503,12 @@ const renderedContracts = (
       helper(fn, path, depth, passed)
       return
     }
-    const slot = renderSlotOf(checker, node)
-    if (slot !== undefined) {
-      helper(slot, path, depth, bindings)
+    if (isRenderSlotCall(checker, node)) {
+      /* The `toView` the options end up with, after spreads and later
+         writes, is the one that renders. */
+      const [options] = node.arguments
+      if (options === undefined) uncertain.push(node)
+      else flow(options, ['toView', CALLED, ...path], depth, bindings)
       return
     }
     const children = builderChildren(checker, node)
@@ -598,6 +587,7 @@ const renderedContracts = (
     }
     if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
       if (key === undefined) helper(node, [], depth, NO_BINDINGS)
+      else if (key === CALLED) helper(node, rest, depth, bindings)
       return
     }
     if (ts.isIdentifier(node)) {
@@ -631,6 +621,11 @@ const renderedContracts = (
         flow(target.initializer, path, depth + 1, bindings)
       else if (key === undefined)
         helper(functionOf(target), [], depth, NO_BINDINGS)
+      else if (key === CALLED) {
+        const fn = functionOf(target)
+        if (fn === undefined) uncertain.push(node)
+        else helper(fn, rest, depth, NO_BINDINGS)
+      }
     }
   }
   const helper = (fn, path, depth, bindings) => {

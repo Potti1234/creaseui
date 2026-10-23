@@ -819,6 +819,14 @@ test('doctor reports foundations that only reach attributes, unselected elements
     path.join(directory, 'node_modules/foldkit'),
     'junction',
   )
+  mkdirSync(path.join(directory, 'node_modules/@foldkit'))
+  symlinkSync(
+    fileURLToPath(
+      new URL('../../../node_modules/@foldkit/ui', import.meta.url),
+    ),
+    path.join(directory, 'node_modules/@foldkit/ui'),
+    'junction',
+  )
   writeFileSync(
     path.join(directory, 'src/design/sidebar.ts'),
     "import type { Html, HtmlBuilder } from 'foldkit/html'\nexport const sidebar = (h: HtmlBuilder<unknown>): Html => h.aside([], ['Base sidebar'])\n",
@@ -854,8 +862,8 @@ export const nestedButton = (
   )
 `,
   )
-  /* Reviews of 9f14670b (F6), cc41c7fe (F6a, F6b) and 6d6756e1 (R2): the
-     supplied cases. */
+  /* Reviews of 9f14670b (F6), cc41c7fe (F6a, F6b), 6d6756e1 (R2) and
+     9bf48f2e (R4): the supplied cases. */
   const cases = {
     atOther: "h.main([], [[sidebar(h), h.div([], ['Other'])].at(1)!])",
     dynamicAt: 'h.main([], [[sidebar(h)].at(Number(h.div.length))!])',
@@ -879,16 +887,20 @@ export const nestedButton = (
       "nestedButton({ slot: { body: h.main([], ['Other']), onClick: sidebar(h) } }, h)",
     nestedRendered:
       "nestedButton({ slot: { body: sidebar(h), onClick: 'Clicked' } }, h)",
+    overwrittenSlot: "primitive(h, { toView: () => h.main([], ['Other']) })",
+    keptSlot: 'primitive(h, {})',
   }
   writeFileSync(
     path.join(directory, 'src/design/shell.ts'),
     [
+      "import { Button } from '@foldkit/ui'",
       "import type { Html, HtmlBuilder } from 'foldkit/html'",
       "import { button } from './button'",
       "import { nestedButton } from './nested-button'",
       "import { sidebar } from './sidebar'",
       'const pick = ({ body }: { body: Html }): Html => body',
       'const compose = (h: HtmlBuilder<unknown>, overrides: Readonly<{ body?: Html }>): Html => pick({ body: sidebar(h), ...overrides })',
+      "const primitive = (h: HtmlBuilder<unknown>, overrides: Readonly<Partial<Pick<Button.ViewConfig<unknown>, 'toView'>>>): Html => Button.view({ toView: () => sidebar(h), ...overrides }, h)",
       ...Object.entries(cases).map(
         ([name, body]) =>
           `export const ${name} = (h: HtmlBuilder<unknown>): Html => ${body}`,
@@ -936,6 +948,7 @@ export const nestedButton = (
       'nestedMetadata',
       'overriddenThroughArgument',
       'overwritten',
+      'overwrittenSlot',
       'slicedAway',
     ],
     doctor.stdout,
