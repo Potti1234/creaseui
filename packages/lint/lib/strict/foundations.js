@@ -105,6 +105,35 @@ const returnedOf = fn => {
    to a `children` parameter are rendered; attributes and the messages
    they carry are not. */
 const FOLDKIT_HTML = /[\\/]foldkit[\\/](?:dist|src)[\\/]html[\\/]/u
+const FOLDKIT_UI = /[\\/]@foldkit[\\/]ui[\\/]/u
+/* `@foldkit/ui` primitives render what their `toView` callback returns:
+   `Button.view({ onClick, toView: attributes => h.button(...) }, h)`.
+   Their other options are behavior and attributes, never rendered output. */
+const renderSlotOf = (checker, call) => {
+  const declaration = checker.getResolvedSignature(call)?.getDeclaration()
+  if (
+    declaration === undefined ||
+    !FOLDKIT_UI.test(declaration.getSourceFile().fileName)
+  )
+    return undefined
+  const [options] = call.arguments
+  if (options === undefined || !ts.isObjectLiteralExpression(options))
+    return undefined
+  const slot = options.properties.find(
+    property =>
+      (ts.isPropertyAssignment(property) || ts.isMethodDeclaration(property)) &&
+      ts.isIdentifier(property.name) &&
+      property.name.text === 'toView',
+  )
+  if (slot === undefined) return undefined
+  const fn = ts.isMethodDeclaration(slot) ? slot : strip(slot.initializer)
+  return fn !== undefined &&
+    (ts.isArrowFunction(fn) ||
+      ts.isFunctionExpression(fn) ||
+      ts.isMethodDeclaration(fn))
+    ? fn
+    : undefined
+}
 const builderChildren = (checker, call) => {
   const declaration = checker.getResolvedSignature(call)?.getDeclaration()
   if (
@@ -483,6 +512,11 @@ const renderedContracts = (
           passed.set(parameter, { bindings, node: argument, path: [] })
       })
       helper(fn, path, depth, passed)
+      return
+    }
+    const slot = renderSlotOf(checker, node)
+    if (slot !== undefined) {
+      helper(slot, path, depth, bindings)
       return
     }
     const children = builderChildren(checker, node)
