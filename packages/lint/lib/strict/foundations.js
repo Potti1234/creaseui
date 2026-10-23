@@ -211,6 +211,8 @@ const constantPredicate = callback => {
 }
 
 const ANY = '*'
+/* Joins a rendered parameter path (`slot.body`) into one `reached` key. */
+const PATH_SEPARATOR = '\u0000'
 
 /* Contracts whose calls flow into the returned view: through children,
    props, branches, local consts, callbacks and helpers. A value is followed
@@ -488,7 +490,8 @@ const renderedContracts = (
       const keys = result.reached.get(parameter) ?? new Set()
       if (keys.has(ANY)) flow(argument, [], depth, bindings)
       else {
-        for (const key of keys) flow(argument, [key], depth, bindings)
+        for (const key of keys)
+          flow(argument, key.split(PATH_SEPARATOR), depth, bindings)
         if (result.uncertain.length > 0) uncertain.push(node)
       }
     })
@@ -609,10 +612,12 @@ const renderedContracts = (
       if (bound !== undefined) {
         const argument = bindings.get(bound.parameter)
         if (argument?.probe !== undefined) {
-          const [first] = [...bound.path, ...path]
+          const full = [...bound.path, ...path]
           if (!reached.has(argument.probe))
             reached.set(argument.probe, new Set())
-          reached.get(argument.probe).add(first ?? ANY)
+          reached
+            .get(argument.probe)
+            .add(full.length === 0 ? ANY : full.join(PATH_SEPARATOR))
         } else if (argument !== undefined)
           flow(
             argument.node,

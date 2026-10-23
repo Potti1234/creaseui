@@ -203,8 +203,22 @@ export const button = (props: ButtonProps, h: HtmlBuilder<unknown>): Html =>
 `,
   )
   write(
+    'src/design/nested-button.ts',
+    `import type { Html, HtmlBuilder } from 'foldkit/html'
+export const nestedButton = (
+  props: Readonly<{ slot: Readonly<{ body: Html; onClick?: unknown }> }>,
+  h: HtmlBuilder<unknown>,
+): Html =>
+  h.button(
+    props.slot.onClick === undefined ? [] : [h.OnClick(props.slot.onClick)],
+    [props.slot.body],
+  )
+`,
+  )
+  write(
     'src/design/shell.ts',
     `import type { Html, HtmlBuilder } from 'foldkit/html'
+import { nestedButton } from './nested-button'
 import { button } from './button'
 import { sidebar } from './sidebar'
 declare const opaque: { wrap(child: Html): Html }
@@ -292,6 +306,13 @@ export const overriddenThroughArgument = (h: HtmlBuilder<unknown>): Html =>
   compose(h, { body: h.main([], ['Other']) })
 export const keptThroughArgument = (h: HtmlBuilder<unknown>): Html =>
   compose(h, {})
+export const nestedMetadata = (h: HtmlBuilder<unknown>): Html =>
+  nestedButton(
+    { slot: { body: h.main([], ['Other']), onClick: sidebar(h) } },
+    h,
+  )
+export const nestedRendered = (h: HtmlBuilder<unknown>): Html =>
+  nestedButton({ slot: { body: sidebar(h), onClick: 'Clicked' } }, h)
 export const unknownOverrides = (
   h: HtmlBuilder<unknown>,
   overrides: Readonly<{ body?: Html }>,
@@ -310,6 +331,7 @@ export const unknownOverrides = (
     'overwritten',
     'clickMetadata',
     'overriddenThroughArgument',
+    'nestedMetadata',
   ]
   /* Calls and selections the check can't follow: reported, but as
      unverifiable rather than as a proven absence. */
@@ -335,6 +357,7 @@ export const unknownOverrides = (
     'mapProperty',
     'renderedIcon',
     'keptThroughArgument',
+    'nestedRendered',
   ]
   const strict = createStrictContext({
     manifest: {
@@ -372,6 +395,23 @@ export const unknownOverrides = (
             },
           ],
           id: 'crease/button',
+        },
+        {
+          exports: [
+            {
+              contract: 'product.nested-button',
+              file: 'src/design/nested-button.ts',
+              name: 'nestedButton',
+            },
+          ],
+          files: [
+            {
+              path: 'src/design/nested-button.ts',
+              rawRendering: true,
+              role: 'renderer',
+            },
+          ],
+          id: 'product/nested-button',
         },
         {
           exports: [...negatives, ...unverifiable, ...positives].map(name => ({

@@ -841,7 +841,21 @@ export const button = (props: ButtonProps, h: HtmlBuilder<unknown>): Html =>
   )
 `,
   )
-  /* Reviews of 9f14670b (F6) and cc41c7fe (F6a, F6b): the supplied cases. */
+  writeFileSync(
+    path.join(directory, 'src/design/nested-button.ts'),
+    `import type { Html, HtmlBuilder } from 'foldkit/html'
+export const nestedButton = (
+  props: Readonly<{ slot: Readonly<{ body: Html; onClick?: unknown }> }>,
+  h: HtmlBuilder<unknown>,
+): Html =>
+  h.button(
+    props.slot.onClick === undefined ? [] : [h.OnClick(props.slot.onClick)],
+    [props.slot.body],
+  )
+`,
+  )
+  /* Reviews of 9f14670b (F6), cc41c7fe (F6a, F6b) and 6d6756e1 (R2): the
+     supplied cases. */
   const cases = {
     atOther: "h.main([], [[sidebar(h), h.div([], ['Other'])].at(1)!])",
     dynamicAt: 'h.main([], [[sidebar(h)].at(Number(h.div.length))!])',
@@ -861,12 +875,17 @@ export const button = (props: ButtonProps, h: HtmlBuilder<unknown>): Html =>
       "button({ leadingIcon: sidebar(h), children: ['Rebuilt shell'] }, h)",
     overriddenThroughArgument: "compose(h, { body: h.main([], ['Other']) })",
     keptThroughArgument: 'compose(h, {})',
+    nestedMetadata:
+      "nestedButton({ slot: { body: h.main([], ['Other']), onClick: sidebar(h) } }, h)",
+    nestedRendered:
+      "nestedButton({ slot: { body: sidebar(h), onClick: 'Clicked' } }, h)",
   }
   writeFileSync(
     path.join(directory, 'src/design/shell.ts'),
     [
       "import type { Html, HtmlBuilder } from 'foldkit/html'",
       "import { button } from './button'",
+      "import { nestedButton } from './nested-button'",
       "import { sidebar } from './sidebar'",
       'const pick = ({ body }: { body: Html }): Html => body',
       'const compose = (h: HtmlBuilder<unknown>, overrides: Readonly<{ body?: Html }>): Html => pick({ body: sidebar(h), ...overrides })',
@@ -914,6 +933,7 @@ export const button = (props: ButtonProps, h: HtmlBuilder<unknown>): Html =>
       'clickMetadata',
       'eventPayload',
       'filteredAway',
+      'nestedMetadata',
       'overriddenThroughArgument',
       'overwritten',
       'slicedAway',
