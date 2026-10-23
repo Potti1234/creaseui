@@ -74,8 +74,9 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
 import type { Update } from 'foldkit'
-import { Option, Schema as S } from 'effect'
-import type { Command } from 'foldkit'
+import { Effect, Option, Schema as S } from 'effect'
+import * as Command from 'foldkit/command'
+import * as Dom from 'foldkit/dom'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
@@ -114,6 +115,7 @@ export const Message = defineMessageUnion({
   OpenedFromContext: {},
   OpenedAt: { x: S.Number, y: S.Number },
   Closed: {},
+  CompletedFocusDropdownMenuTrigger: {},
   ActivatedItem: { index: S.Number },
   OpenedSubmenu: { index: S.Number },
   ActivatedSubmenuItem: {
@@ -127,6 +129,18 @@ export const Message = defineMessageUnion({
   },
 })
 export type Message = typeof Message.Type
+
+/* Closing the open menu returns focus to its trigger, so focus inside the
+   removed content (after Tab or arrow keys) is not dropped to the body. */
+export const FocusTrigger = Command.define('FocusDropdownMenuTrigger', {
+  args: { id: S.String },
+  messages: [Message.CompletedFocusDropdownMenuTrigger],
+  execute: ({ id }) =>
+    Dom.focus(`[id="${id}-trigger"]`).pipe(
+      Effect.ignore,
+      Effect.as(Message.CompletedFocusDropdownMenuTrigger()),
+    ),
+})
 
 export const OutMessage = defineMessageUnion({
   Selected: { value: S.String, index: S.Number },
@@ -160,9 +174,13 @@ const updateTyped = <Item extends string>(
   model: Model,
   message: Message,
 ): UpdateReturn<Item> => {
+  if (message._tag === 'CompletedFocusDropdownMenuTrigger') return { model }
   const result = Behavior.update(model, message)
   return {
     model: result.model,
+    ...(message._tag === 'Closed' && model.isOpen
+      ? { commands: [FocusTrigger({ id: model.id })] }
+      : {}),
     ...(Option.isNone(result.selection)
       ? {}
       : {
