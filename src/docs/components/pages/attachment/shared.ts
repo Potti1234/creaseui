@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -5,14 +6,14 @@ import { foldkitApplication } from '@/docs/components/pages/authored-page'
 export type AttachmentItemSpec = Readonly<{
   name: string
   meta?: string
-  icon?: string
+  icon?: IconName
   spinner?: boolean
   src?: string
   alt?: string
   state?: 'idle' | 'uploading' | 'processing' | 'error' | 'done'
   size?: 'default' | 'sm' | 'xs'
   orientation?: 'vertical'
-  actions: ReadonlyArray<Readonly<{ icon: string; label: string }>>
+  actions: ReadonlyArray<Readonly<{ icon: IconName; label: string }>>
   triggerLabel?: string
 }>
 
@@ -184,7 +185,7 @@ export const attachmentFixtures: Readonly<
           {
             name: 'financial-model.xlsx',
             meta: 'Upload failed. Try again.',
-            icon: 'file-warning',
+            icon: 'file-exclamation-point',
             state: 'error',
             actions: [
               { icon: 'refresh-cw', label: 'Retry upload' },
@@ -351,14 +352,14 @@ const itemsConstSource = (fixture: AttachmentFixture): string =>
   `type ItemSpec = Readonly<{
   name: string
   meta?: string
-  icon?: string
+  icon?: Icon.IconName
   spinner?: boolean
   src?: string
   alt?: string
   state?: 'idle' | 'uploading' | 'processing' | 'error' | 'done'
   size?: 'default' | 'sm' | 'xs'
   orientation?: 'vertical'
-  actions: ReadonlyArray<Readonly<{ icon: string; label: string }>>
+  actions: ReadonlyArray<Readonly<{ icon: Icon.IconName; label: string }>>
   triggerLabel?: string
 }>
 
@@ -387,8 +388,8 @@ const mediaChildrenSource = (
 ): string => {
   const iconFallback =
     renderer !== 'tailwind'
-      ? `Icon.icon(item.icon ?? 'file', { class: stylex.props(styles.mediaIcon).className ?? '' }, h)`
-      : `Icon.icon(item.icon ?? 'file', {}, h)`
+      ? `Icon.icon({ name: item.icon ?? 'file', size: 'sm' }, h)`
+      : `Icon.icon({ name: item.icon ?? 'file' }, h)`
   const imgSource =
     renderer !== 'tailwind'
       ? `h.img([h.Src(item.src), h.Alt(item.name), h.Class(stylex.props(styles.mediaImg).className ?? '')])`
@@ -431,7 +432,7 @@ const itemChildrenSource = (
         Attachment.attachmentAction({
           onClick: ${actionOnClickSource(fixture)},
           label: action.label,
-          children: [Icon.icon(action.icon, ${renderer !== 'tailwind' ? `{ class: stylex.props(styles.actionIcon).className ?? '' }` : '{}'}, h)],
+          children: [Icon.icon({ name: action.icon${renderer !== 'tailwind' ? ", size: '2xs'" : ''} }, h)],
         }, h),
       ) }, h)]),`
           : ''
@@ -559,7 +560,7 @@ import { layoutStyle } from '@/stylex/contracts'
 
 ${stylexStylesSource(fixture)}`
       : ''
-  return `${stylexBits}import * as Attachment from '@/${ui}/attachment'${needsIcon(fixture) ? `\nimport * as Icon from '@/lib/icon'` : ''}${needsSpinner(fixture) ? `\nimport * as Spinner from '@/${ui}/spinner'` : ''}${needsDialog(fixture) ? `\nimport * as Dialog from '@/${ui}/dialog'` : ''}`
+  return `${stylexBits}import * as Attachment from '@/${ui}/attachment'${needsIcon(fixture) ? `\nimport * as Icon from '@/${ui}/icon'` : ''}${needsSpinner(fixture) ? `\nimport * as Spinner from '@/${ui}/spinner'` : ''}${needsDialog(fixture) ? `\nimport * as Dialog from '@/${ui}/dialog'` : ''}`
 }
 
 const source = (

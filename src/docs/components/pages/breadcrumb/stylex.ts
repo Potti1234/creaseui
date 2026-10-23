@@ -8,12 +8,11 @@ import {
   type BreadcrumbFixture,
   type BreadcrumbItemSpec,
 } from '@/docs/components/pages/breadcrumb/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Breadcrumb from '@/stylex/breadcrumb'
 import * as DropdownMenu from '@/stylex/dropdown-menu'
 
 const styles = stylex.create({
-  chevron: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   dropdownTrigger: {
     gap: '0.25rem',
     alignItems: 'center',
@@ -44,11 +43,7 @@ const menuView = <Msg>(
               [h.Class(stylex.props(styles.dropdownTrigger).className ?? '')],
               [
                 item.kind === 'dropdown' ? item.label : '',
-                Icon.icon(
-                  'chevron-down',
-                  { class: stylex.props(styles.chevron).className ?? '' },
-                  h,
-                ),
+                Icon.icon({ name: 'chevron-down', size: 'xs' }, h),
               ],
             ),
       ...(item.kind === 'ellipsisMenu'
@@ -102,7 +97,7 @@ export const breadcrumbStyleXPreview: ExamplePreviewProvider = <Msg>(
         Breadcrumb.breadcrumbSeparator(
           {
             ...(fixture.separator === 'dot'
-              ? { children: [Icon.icon('dot', {}, h)] }
+              ? { children: [Icon.icon({ name: 'dot' }, h)] }
               : {}),
             ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
           },

@@ -122,7 +122,7 @@ const emitImports = (fixture: InputFixture, isStyleX: boolean): string => {
     parts.push(`import * as Select from '@/${base}/select'`)
   }
   if (fixture.kind === 'inputGroup') {
-    parts.push("import * as Icon from '@/lib/icon'")
+    parts.push(`import * as Icon from '@/${base}/icon'`)
   }
   return parts.join('\n')
 }
@@ -424,7 +424,7 @@ const emitBody = (fixture: InputFixture, isStyleX: boolean): string => {
               placeholder: 'example.com',
             }, h),
             InputGroup.inputGroupAddon({ children: [InputGroup.inputGroupText({ children: ['https://'] }, h)] }, h),
-            InputGroup.inputGroupAddon({ align: 'inline-end', children: [Icon.icon('info', {}, h)] }, h),
+            InputGroup.inputGroupAddon({ align: 'inline-end', children: [Icon.icon({ name: 'info' }, h)] }, h),
           ],
         }, h)`,
       ])}`

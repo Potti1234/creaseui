@@ -19,7 +19,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/accordion",
       "item": "accordion",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Accordion"
     },
     {
@@ -48,7 +48,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/alert-dialog",
       "item": "alert-dialog",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Alert Dialog"
     },
     {
@@ -153,7 +153,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/banner",
       "item": "banner",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Banner"
     },
     {
@@ -227,6 +227,7 @@
       "exports": ["button", "buttonLink", "buttonVariants"],
       "install": "npx shadcn@latest add Potti1234/creaseui/button",
       "item": "button",
+      "recipes": ["dialog-form"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Button"
@@ -272,6 +273,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/card",
       "item": "card",
+      "recipes": ["metric-grid"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Card"
@@ -284,7 +286,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/carousel",
       "item": "carousel",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Carousel"
     },
     {
@@ -387,7 +389,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/code-block",
       "item": "code-block",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Code Block"
     },
     {
@@ -434,7 +436,9 @@
         "formattedValue",
         "hex",
         "init",
+        "parseColorString",
         "reflectValue",
+        "rgbToHex",
         "subscriptions",
         "update"
       ],
@@ -531,7 +535,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/data-table",
       "item": "data-table",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Data Table"
     },
     {
@@ -554,7 +558,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/date-input",
       "item": "date-input",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Date Input"
     },
     {
@@ -607,7 +611,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/date-range-input",
       "item": "date-range-input",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Date Range Input"
     },
     {
@@ -632,7 +636,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/date-time-input",
       "item": "date-time-input",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Date Time Input"
     },
     {
@@ -656,6 +660,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/dialog",
       "item": "dialog",
+      "recipes": ["dialog-form"],
       "renderer": "tailwind",
       "state": "parent-model",
       "title": "Dialog"
@@ -772,6 +777,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/field",
       "item": "field",
+      "recipes": ["dialog-form"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Field"
@@ -793,7 +799,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/file-input",
       "item": "file-input",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "File Input"
     },
     {
@@ -811,6 +817,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/form",
       "item": "form",
+      "recipes": ["dialog-form"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Form"
@@ -822,6 +829,7 @@
       "exports": ["grid", "gridSpan"],
       "install": "npx shadcn@latest add Potti1234/creaseui/grid",
       "item": "grid",
+      "recipes": ["metric-grid"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Grid"
@@ -864,6 +872,18 @@
       "renderer": "tailwind",
       "state": "parent-model",
       "title": "Hover Card"
+    },
+    {
+      "category": "data display",
+      "component": "icon",
+      "description": "A CreaseUI Icon component for Foldkit.",
+      "exports": ["icon", "iconNames"],
+      "install": "npx shadcn@latest add Potti1234/creaseui/icon",
+      "item": "icon",
+      "recipes": ["icon"],
+      "renderer": "tailwind",
+      "state": "stateless",
+      "title": "Icon"
     },
     {
       "category": "other",
@@ -932,6 +952,7 @@
       "exports": ["input"],
       "install": "npx shadcn@latest add Potti1234/creaseui/input",
       "item": "input",
+      "recipes": ["dialog-form"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Input"
@@ -1032,7 +1053,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/list-input",
       "item": "list-input",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "List Input"
     },
     {
@@ -1197,7 +1218,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/markdown",
       "item": "markdown",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Markdown"
     },
     {
@@ -1292,7 +1313,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/metadata-list",
       "item": "metadata-list",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Metadata List"
     },
     {
@@ -1332,7 +1353,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/more-menu",
       "item": "more-menu",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "More Menu"
     },
     {
@@ -1353,7 +1374,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/multi-selector",
       "item": "multi-selector",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Multi Selector"
     },
     {
@@ -1399,7 +1420,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/number-input",
       "item": "number-input",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Number Input"
     },
     {
@@ -1420,7 +1441,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/overflow-list",
       "item": "overflow-list",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Overflow List"
     },
     {
@@ -1484,7 +1505,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/radio-group",
       "item": "radio-group",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Radio Group"
     },
     {
@@ -1641,7 +1662,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/sidebar",
       "item": "sidebar",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Sidebar"
     },
     {
@@ -1719,6 +1740,7 @@
       "exports": ["stat"],
       "install": "npx shadcn@latest add Potti1234/creaseui/stat",
       "item": "stat",
+      "recipes": ["metric-grid"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Stat"
@@ -1742,7 +1764,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stepper",
       "item": "stepper",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Stepper"
     },
     {
@@ -1845,7 +1867,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/time-input",
       "item": "time-input",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Time Input"
     },
     {
@@ -1896,7 +1918,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/toast",
       "item": "toast",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Toast"
     },
     {
@@ -1915,8 +1937,9 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/toggle-group",
       "item": "toggle-group",
+      "recipes": ["toggle-group-state"],
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Toggle Group"
     },
     {
@@ -1959,7 +1982,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/tokenizer",
       "item": "tokenizer",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Tokenizer"
     },
     {
@@ -2016,7 +2039,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/top-nav",
       "item": "top-nav",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Top Nav"
     },
     {
@@ -2060,7 +2083,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/tree-list",
       "item": "tree-list",
       "renderer": "tailwind",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Tree List"
     },
     {
@@ -2115,7 +2138,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-accordion",
       "item": "stylex-accordion",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Accordion"
     },
     {
@@ -2144,7 +2167,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-alert-dialog",
       "item": "stylex-alert-dialog",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Alert Dialog"
     },
     {
@@ -2249,7 +2272,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-banner",
       "item": "stylex-banner",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Banner"
     },
     {
@@ -2323,6 +2346,7 @@
       "exports": ["button", "buttonLink", "buttonVisualStyles"],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-button",
       "item": "stylex-button",
+      "recipes": ["dialog-form"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Button"
@@ -2368,6 +2392,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-card",
       "item": "stylex-card",
+      "recipes": ["metric-grid"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Card"
@@ -2380,7 +2405,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-carousel",
       "item": "stylex-carousel",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Carousel"
     },
     {
@@ -2483,7 +2508,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-code-block",
       "item": "stylex-code-block",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Code Block"
     },
     {
@@ -2530,7 +2555,9 @@
         "formattedValue",
         "hex",
         "init",
+        "parseColorString",
         "reflectValue",
+        "rgbToHex",
         "subscriptions",
         "update"
       ],
@@ -2627,7 +2654,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-data-table",
       "item": "stylex-data-table",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Data Table"
     },
     {
@@ -2650,7 +2677,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-date-input",
       "item": "stylex-date-input",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Date Input"
     },
     {
@@ -2703,7 +2730,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-date-range-input",
       "item": "stylex-date-range-input",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Date Range Input"
     },
     {
@@ -2728,7 +2755,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-date-time-input",
       "item": "stylex-date-time-input",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Date Time Input"
     },
     {
@@ -2752,6 +2779,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-dialog",
       "item": "stylex-dialog",
+      "recipes": ["dialog-form"],
       "renderer": "stylex",
       "state": "parent-model",
       "title": "Dialog"
@@ -2868,6 +2896,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-field",
       "item": "stylex-field",
+      "recipes": ["dialog-form"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Field"
@@ -2889,7 +2918,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-file-input",
       "item": "stylex-file-input",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "File Input"
     },
     {
@@ -2907,6 +2936,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-form",
       "item": "stylex-form",
+      "recipes": ["dialog-form"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Form"
@@ -2918,6 +2948,7 @@
       "exports": ["grid", "gridSpan"],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-grid",
       "item": "stylex-grid",
+      "recipes": ["metric-grid"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Grid"
@@ -2960,6 +2991,18 @@
       "renderer": "stylex",
       "state": "parent-model",
       "title": "Hover Card"
+    },
+    {
+      "category": "data display",
+      "component": "icon",
+      "description": "The StyleX Icon component for Foldkit.",
+      "exports": ["icon", "iconNames"],
+      "install": "npx shadcn@latest add Potti1234/creaseui/stylex-icon",
+      "item": "stylex-icon",
+      "recipes": ["icon"],
+      "renderer": "stylex",
+      "state": "stateless",
+      "title": "Icon"
     },
     {
       "category": "other",
@@ -3028,6 +3071,7 @@
       "exports": ["input"],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-input",
       "item": "stylex-input",
+      "recipes": ["dialog-form"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Input"
@@ -3128,7 +3172,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-list-input",
       "item": "stylex-list-input",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "List Input"
     },
     {
@@ -3293,7 +3337,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-markdown",
       "item": "stylex-markdown",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Markdown"
     },
     {
@@ -3388,7 +3432,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-metadata-list",
       "item": "stylex-metadata-list",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Metadata List"
     },
     {
@@ -3428,7 +3472,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-more-menu",
       "item": "stylex-more-menu",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "More Menu"
     },
     {
@@ -3449,7 +3493,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-multi-selector",
       "item": "stylex-multi-selector",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Multi Selector"
     },
     {
@@ -3495,7 +3539,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-number-input",
       "item": "stylex-number-input",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Number Input"
     },
     {
@@ -3516,7 +3560,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-overflow-list",
       "item": "stylex-overflow-list",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Overflow List"
     },
     {
@@ -3580,7 +3624,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-radio-group",
       "item": "stylex-radio-group",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Radio Group"
     },
     {
@@ -3738,7 +3782,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-sidebar",
       "item": "stylex-sidebar",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Sidebar"
     },
     {
@@ -3816,6 +3860,7 @@
       "exports": ["stat"],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-stat",
       "item": "stylex-stat",
+      "recipes": ["metric-grid"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Stat"
@@ -3839,7 +3884,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-stepper",
       "item": "stylex-stepper",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Stepper"
     },
     {
@@ -3942,7 +3987,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-time-input",
       "item": "stylex-time-input",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Time Input"
     },
     {
@@ -3993,7 +4038,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-toast",
       "item": "stylex-toast",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Toast"
     },
     {
@@ -4012,8 +4057,9 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-toggle-group",
       "item": "stylex-toggle-group",
+      "recipes": ["toggle-group-state"],
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Toggle Group"
     },
     {
@@ -4056,7 +4102,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-tokenizer",
       "item": "stylex-tokenizer",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Tokenizer"
     },
     {
@@ -4113,7 +4159,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-top-nav",
       "item": "stylex-top-nav",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Top Nav"
     },
     {
@@ -4157,7 +4203,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-tree-list",
       "item": "stylex-tree-list",
       "renderer": "stylex",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Tree List"
     },
     {
@@ -4212,7 +4258,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-accordion",
       "item": "pleat-accordion",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Accordion"
     },
     {
@@ -4241,7 +4287,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-alert-dialog",
       "item": "pleat-alert-dialog",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Alert Dialog"
     },
     {
@@ -4346,7 +4392,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-banner",
       "item": "pleat-banner",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Banner"
     },
     {
@@ -4420,6 +4466,7 @@
       "exports": ["button", "buttonLink", "buttonVisualStyles"],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-button",
       "item": "pleat-button",
+      "recipes": ["dialog-form"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Button"
@@ -4465,6 +4512,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-card",
       "item": "pleat-card",
+      "recipes": ["metric-grid"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Card"
@@ -4477,7 +4525,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-carousel",
       "item": "pleat-carousel",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Carousel"
     },
     {
@@ -4580,7 +4628,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-code-block",
       "item": "pleat-code-block",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Code Block"
     },
     {
@@ -4692,7 +4740,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-data-table",
       "item": "pleat-data-table",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Data Table"
     },
     {
@@ -4715,7 +4763,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-date-input",
       "item": "pleat-date-input",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Date Input"
     },
     {
@@ -4768,7 +4816,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-date-range-input",
       "item": "pleat-date-range-input",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Date Range Input"
     },
     {
@@ -4793,7 +4841,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-date-time-input",
       "item": "pleat-date-time-input",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Date Time Input"
     },
     {
@@ -4817,6 +4865,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-dialog",
       "item": "pleat-dialog",
+      "recipes": ["dialog-form"],
       "renderer": "pleat",
       "state": "parent-model",
       "title": "Dialog"
@@ -4933,6 +4982,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-field",
       "item": "pleat-field",
+      "recipes": ["dialog-form"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Field"
@@ -4954,7 +5004,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-file-input",
       "item": "pleat-file-input",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "File Input"
     },
     {
@@ -4972,6 +5022,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-form",
       "item": "pleat-form",
+      "recipes": ["dialog-form"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Form"
@@ -4983,6 +5034,7 @@
       "exports": ["grid", "gridSpan"],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-grid",
       "item": "pleat-grid",
+      "recipes": ["metric-grid"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Grid"
@@ -5025,6 +5077,18 @@
       "renderer": "pleat",
       "state": "parent-model",
       "title": "Hover Card"
+    },
+    {
+      "category": "data display",
+      "component": "icon",
+      "description": "The Pleat Icon component for Foldkit.",
+      "exports": ["icon", "iconNames"],
+      "install": "npx shadcn@latest add Potti1234/creaseui/pleat-icon",
+      "item": "pleat-icon",
+      "recipes": ["icon"],
+      "renderer": "pleat",
+      "state": "stateless",
+      "title": "Icon"
     },
     {
       "category": "other",
@@ -5093,6 +5157,7 @@
       "exports": ["input"],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-input",
       "item": "pleat-input",
+      "recipes": ["dialog-form"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Input"
@@ -5193,7 +5258,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-list-input",
       "item": "pleat-list-input",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "List Input"
     },
     {
@@ -5358,7 +5423,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-markdown",
       "item": "pleat-markdown",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Markdown"
     },
     {
@@ -5453,7 +5518,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-metadata-list",
       "item": "pleat-metadata-list",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Metadata List"
     },
     {
@@ -5493,7 +5558,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-more-menu",
       "item": "pleat-more-menu",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "More Menu"
     },
     {
@@ -5514,7 +5579,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-multi-selector",
       "item": "pleat-multi-selector",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Multi Selector"
     },
     {
@@ -5560,7 +5625,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-number-input",
       "item": "pleat-number-input",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Number Input"
     },
     {
@@ -5581,7 +5646,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-overflow-list",
       "item": "pleat-overflow-list",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Overflow List"
     },
     {
@@ -5645,7 +5710,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-radio-group",
       "item": "pleat-radio-group",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Radio Group"
     },
     {
@@ -5803,7 +5868,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-sidebar",
       "item": "pleat-sidebar",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Sidebar"
     },
     {
@@ -5881,6 +5946,7 @@
       "exports": ["stat"],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-stat",
       "item": "pleat-stat",
+      "recipes": ["metric-grid"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Stat"
@@ -5904,7 +5970,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-stepper",
       "item": "pleat-stepper",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Stepper"
     },
     {
@@ -6007,7 +6073,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-time-input",
       "item": "pleat-time-input",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Time Input"
     },
     {
@@ -6058,7 +6124,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-toast",
       "item": "pleat-toast",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Toast"
     },
     {
@@ -6077,8 +6143,9 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-toggle-group",
       "item": "pleat-toggle-group",
+      "recipes": ["toggle-group-state"],
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Toggle Group"
     },
     {
@@ -6121,7 +6188,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-tokenizer",
       "item": "pleat-tokenizer",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Tokenizer"
     },
     {
@@ -6178,7 +6245,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-top-nav",
       "item": "pleat-top-nav",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Top Nav"
     },
     {
@@ -6222,7 +6289,7 @@
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-tree-list",
       "item": "pleat-tree-list",
       "renderer": "pleat",
-      "state": "stateless",
+      "state": "parent-model",
       "title": "Tree List"
     },
     {
@@ -6259,5 +6326,58 @@
       "state": "stateless",
       "title": "Visually Hidden"
     }
+  ],
+  "runtimeProperties": [
+    "--_item-inset-inline",
+    "--_tree-indent",
+    "--avatar-group-overlap",
+    "--bleed",
+    "--card-spacing",
+    "--card-title-fs",
+    "--cell-size",
+    "--cell-width",
+    "--closed-transform",
+    "--codeblock-gutter-width",
+    "--drawer-content-height",
+    "--drawer-content-max-height",
+    "--drawer-frontmost-height",
+    "--drawer-height",
+    "--drawer-overlay-min-opacity",
+    "--drawer-snap-point-offset",
+    "--drawer-swipe-movement-x",
+    "--drawer-swipe-movement-y",
+    "--drawer-swipe-progress",
+    "--drawer-swipe-strength",
+    "--nested-drawers",
+    "--peek",
+    "--sheet-expanded-height",
+    "--sheet-layout-offset",
+    "--sheet-scrim-opacity",
+    "--sidebar-width",
+    "--sidebar-width-icon",
+    "--sidebar-width-mobile",
+    "--skeleton-width",
+    "--stack-height",
+    "--stack-peek-offset",
+    "--stack-progress",
+    "--stack-scale",
+    "--stack-scale-base",
+    "--stack-shrink",
+    "--stack-step",
+    "--step-connector-gap",
+    "--stepper-clip",
+    "--stepper-seg-delay",
+    "--stepper-seg-duration",
+    "--thumbnail-overlay",
+    "--thumbnail-overlay-hover",
+    "--toast-frontmost-height",
+    "--toast-height",
+    "--toast-index",
+    "--toast-offset-y",
+    "--toast-swipe-movement-x",
+    "--translate-x",
+    "--translate-y",
+    "--tree-list-indent",
+    "--tree-list-row-gap"
   ]
 }

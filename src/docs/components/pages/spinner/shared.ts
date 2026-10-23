@@ -164,7 +164,7 @@ const inputGroupBody = (
           ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })'
           : "class: 'ml-auto'"
       }, children: [
-        Icon.arrowUp({}, h),
+        Icon.icon({ name: 'arrow-up' }, h),
         h.span([h.Class('sr-only')], ['Send']),
       ] }, h),
     ] }, h),
@@ -196,7 +196,7 @@ const EXTRA_IMPORTS = {
   button: "import * as Button from '@/ui/button'",
   badge: "import * as Badge from '@/ui/badge'",
   inputGroup:
-    "import * as Icon from '@/lib/icon'\nimport * as InputGroup from '@/ui/input-group'",
+    "import * as Icon from '@/ui/icon'\nimport * as InputGroup from '@/ui/input-group'",
   empty:
     "import * as Button from '@/ui/button'\nimport * as Empty from '@/ui/empty'",
 } as const

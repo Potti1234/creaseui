@@ -7,7 +7,7 @@ import {
   inputOtpRtlCopy,
   type InputOtpFixture,
 } from '@/docs/components/pages/input-otp/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Button from '@/ui/button'
 import * as Card from '@/ui/card'
 import * as Field from '@/ui/field'
@@ -163,7 +163,7 @@ const inputOtpView = (
                                 variant: 'outline',
                                 size: 'xs',
                                 children: [
-                                  Icon.icon('refresh-cw', {}, h),
+                                  Icon.icon({ name: 'refresh-cw' }, h),
                                   'Resend Code',
                                 ],
                               },

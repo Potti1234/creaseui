@@ -10,7 +10,7 @@ import {
   type ButtonGroupFixture,
   type BgNode,
 } from '@/docs/components/pages/button-group/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Button from '@/stylex/button'
 import * as ButtonGroup from '@/stylex/button-group'
 import * as DropdownMenu from '@/stylex/dropdown-menu'
@@ -40,21 +40,6 @@ const styles = stylex.create({
     justifyContent: 'center',
     height: '1.5rem',
     width: '1.5rem',
-  },
-  iconSm: { fontSize: '0.875rem', lineHeight: '1.25rem' },
-  iconMd: {
-    flexShrink: 0,
-    pointerEvents: 'none',
-    height: '1rem',
-    width: '1rem',
-  },
-  iconMdPlain: { height: '1rem', width: '1rem' },
-  iconMdRtl: {
-    flexShrink: 0,
-    pointerEvents: 'none',
-    transform: 'rotate(180deg)',
-    height: '1rem',
-    width: '1rem',
   },
   joinedHFirst: {
     borderBottomLeftRadius: 'calc(var(--radius) - 2px)',
@@ -129,7 +114,6 @@ const styles = stylex.create({
     fontSize: '0.75rem',
     lineHeight: '1rem',
   },
-  menuIcon: { fontSize: '1rem', lineHeight: '1.5rem' },
 })
 
 type PreviewSnapshot = Readonly<{
@@ -198,7 +182,7 @@ const demoLabels = (isRtl: boolean): Record<string, string> =>
         other: 'Other',
       }
 
-const DEMO_ICONS: Record<string, string> = {
+const DEMO_ICONS: Record<string, Icon.IconName> = {
   'mark-read': 'mail-check',
   archive: 'archive',
   snooze: 'clock',
@@ -207,7 +191,7 @@ const DEMO_ICONS: Record<string, string> = {
   'label-as': 'tag',
   trash: 'trash-2',
 }
-const CONVERSATION_ICONS: Record<string, string> = {
+const CONVERSATION_ICONS: Record<string, Icon.IconName> = {
   mute: 'volume-off',
   'mark-read': 'check',
   report: 'triangle-alert',
@@ -231,7 +215,7 @@ const menuItemToConfig = <Msg>(
         ...(icon === undefined
           ? {}
           : {
-              icon: Icon.icon(icon, { class: className(styles.menuIcon) }, h),
+              icon: Icon.icon({ name: icon, size: 'sm' }, h),
             }),
         ...(item === 'snooze' || item === 'trash'
           ? { separatorBefore: true }
@@ -268,7 +252,7 @@ const menuItemToConfig = <Msg>(
         )[item] ?? item,
       ...(icon === undefined
         ? {}
-        : { icon: Icon.icon(icon, { class: className(styles.menuIcon) }, h) }),
+        : { icon: Icon.icon({ name: icon, size: 'sm' }, h) }),
       ...(item === 'delete'
         ? { variant: 'destructive' as const, separatorBefore: true }
         : {}),
@@ -351,13 +335,12 @@ const nodeView = <Msg>(
               ? []
               : [
                   Icon.icon(
-                    node.icon,
                     {
-                      class: className(
-                        fixture.direction === 'rtl' && node.rtlRotate === true
-                          ? styles.iconMdRtl
-                          : styles.iconMd,
-                      ),
+                      name: node.icon,
+                      size: 'sm',
+                      ...(fixture.direction === 'rtl' && node.rtlRotate === true
+                        ? { rotation: 180 }
+                        : {}),
                     },
                     h,
                   ),
@@ -437,13 +420,7 @@ const nodeView = <Msg>(
                           ),
                           h.Class(className(reset.button, styles.voiceButton)),
                         ],
-                        [
-                          Icon.icon(
-                            'audio-lines',
-                            { class: className(styles.iconSm) },
-                            h,
-                          ),
-                        ],
+                        [Icon.icon({ name: 'audio-lines', size: 'xs' }, h)],
                       ),
                     ],
                   },
@@ -464,11 +441,7 @@ const nodeView = <Msg>(
                         layoutStyle:
                           styles.inputGroupAddon as ComponentLayoutStyle,
                         children: [
-                          Icon.icon(
-                            'audio-lines',
-                            { class: className(styles.iconSm) },
-                            h,
-                          ),
+                          Icon.icon({ name: 'audio-lines', size: 'xs' }, h),
                         ],
                       },
                       h,
@@ -508,19 +481,15 @@ const nodeView = <Msg>(
           trigger:
             node.menu === 'demo'
               ? Icon.icon(
-                  'ellipsis',
                   {
+                    name: 'ellipsis',
+                    size: 'sm',
                     ariaLabel: isRtl ? 'مزيد من الخيارات' : 'More Options',
-                    class: className(styles.iconMdPlain),
                   },
                   h,
                 )
               : Icon.icon(
-                  'chevron-down',
-                  {
-                    ariaLabel: 'Options',
-                    class: className(styles.iconMdPlain),
-                  },
+                  { name: 'chevron-down', size: 'sm', ariaLabel: 'Options' },
                   h,
                 ),
           triggerButtonVariant: 'outline',
@@ -541,8 +510,7 @@ const nodeView = <Msg>(
               JSON.stringify({ _tag: 'GotPopoverMessage', message }),
             ),
           trigger: Icon.icon(
-            'chevron-down',
-            { ariaLabel: 'Open Popover', class: className(styles.iconMdPlain) },
+            { name: 'chevron-down', size: 'sm', ariaLabel: 'Open Popover' },
             h,
           ),
           triggerButtonVariant: 'outline',

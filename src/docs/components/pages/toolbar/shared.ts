@@ -149,7 +149,7 @@ const SIMPLE_BODY: Readonly<
           variant: 'ghost',
           size: 'icon-sm',
           ariaLabel: 'Back',
-          leadingIcon: Icon.icon('arrow-left', {}, h),
+          leadingIcon: Icon.icon({ name: 'arrow-left' }, h),
           children: [],
         }, h),
       ],
@@ -170,14 +170,14 @@ const SIMPLE_BODY: Readonly<
           variant: 'ghost',
           size: 'icon-sm',
           ariaLabel: 'Filter',
-          leadingIcon: Icon.icon('funnel', {}, h),
+          leadingIcon: Icon.icon({ name: 'funnel' }, h),
           children: [],
         }, h),
         Button.button({
           variant: 'default',
           size: 'icon-sm',
           ariaLabel: 'Add user',
-          leadingIcon: Icon.icon('plus', {}, h),
+          leadingIcon: Icon.icon({ name: 'plus' }, h),
           children: [],
         }, h),
       ],
@@ -194,13 +194,13 @@ const SIMPLE_BODY: Readonly<
               variant: 'ghost',
               size: 'icon-sm',
               ariaLabel: 'Filter',
-              leadingIcon: Icon.icon('funnel', {}, h),
+              leadingIcon: Icon.icon({ name: 'funnel' }, h),
               children: [],
             }, h),
             Button.button({
               variant: 'default',
               size: 'sm',
-              leadingIcon: Icon.icon('plus', {}, h),
+              leadingIcon: Icon.icon({ name: 'plus' }, h),
               children: ['Add'],
             }, h),
           ],
@@ -227,7 +227,7 @@ const SIMPLE_BODY: Readonly<
           variant: 'default',
           size: 'icon-sm',
           ariaLabel: 'New item',
-          leadingIcon: Icon.icon('plus', {}, h),
+          leadingIcon: Icon.icon({ name: 'plus' }, h),
           children: [],
         }, h),
       ],
@@ -240,8 +240,8 @@ const SIMPLE_BODY: Readonly<
       toParentMessage: m => GotToolbarMessage({ message: m }),
       startContent: [
         Badge.badge({ variant: 'secondary', children: [\`\${model.selectedRows.length} selected\`] }, h),
-        Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: 'Delete', leadingIcon: Icon.icon('trash-2', {}, h), children: [] }, h),
-        Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: 'Archive', leadingIcon: Icon.icon('archive', {}, h), children: [] }, h),
+        Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: 'Delete', leadingIcon: Icon.icon({ name: 'trash-2' }, h), children: [] }, h),
+        Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: 'Archive', leadingIcon: Icon.icon({ name: 'archive' }, h), children: [] }, h),
       ],
       endContent: [
         Button.button({ variant: 'ghost', size: 'sm', onClick: ClickedDeselectAll(), children: ['Deselect all'] }, h),
@@ -274,7 +274,7 @@ const filterBody = (isStyleX: boolean): string => `Toolbar.toolbar({
             ...(model.search !== '' || FILTER_FIELDS.some(field => model[field.key] !== '')
               ? [Button.button({ variant: 'link', size: 'sm', onClick: ClickedClearFilters(), children: ['Clear all'] }, h)]
               : []),
-            Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: 'View options', leadingIcon: Icon.icon('columns-3-cog', {}, h), children: [] }, h),
+            Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: 'View options', leadingIcon: Icon.icon({ name: 'columns-3-cog' }, h), children: [] }, h),
           ]),
         ]),
       ],
@@ -451,7 +451,7 @@ export const ClickedClearFilters = taggedStruct('ClickedClearFilters${tag}', {})
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/${lib}/icon'
 import * as Toolbar from '@/${lib}/toolbar'
 import * as Button from '@/${lib}/button'
 ${

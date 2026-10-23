@@ -11,7 +11,7 @@ import {
 } from '@/docs/components/pages/breadcrumb/shared'
 import * as Breadcrumb from '@/ui/breadcrumb'
 import * as DropdownMenu from '@/ui/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 
 const PreviewMessage = defineMessageUnion({
   GotMenuMessage: { message: DropdownMenu.Message },
@@ -41,7 +41,7 @@ const menuView = (
               [h.Class('flex items-center gap-1')],
               [
                 item.kind === 'dropdown' ? item.label : '',
-                Icon.icon('chevron-down', { class: 'size-3.5' }, h),
+                Icon.icon({ name: 'chevron-down', size: 'xs' }, h),
               ],
             ),
       ...(item.kind === 'ellipsisMenu'
@@ -91,7 +91,7 @@ const breadcrumbView = (
         Breadcrumb.breadcrumbSeparator(
           {
             ...(fixture.separator === 'dot'
-              ? { children: [Icon.icon('dot', {}, h)] }
+              ? { children: [Icon.icon({ name: 'dot' }, h)] }
               : {}),
             ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
           },

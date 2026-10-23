@@ -3,6 +3,7 @@ import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as Icon from '@/lib/icon'
+import * as SidebarModal from '@/lib/sidebar-modal'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/ui/button'
 
@@ -83,6 +84,8 @@ export type SidebarProps<Msg> = Slot &
     collapsible?: SidebarCollapsible
     presentation?: 'application' | 'contained'
     isMobileOpen?: boolean
+    /** Id of the mobile panel's `<dialog>`; set it when a page renders two Sidebars. */
+    mobileId?: string
     onMobileDismiss?: Msg
   }>
 
@@ -123,64 +126,73 @@ export const sidebar = <Msg>(
     [
       ...((props.isMobileOpen ?? false)
         ? [
-            h.button(
+            h.dialog(
               [
-                h.Type('button'),
-                h.AriaLabel('Close sidebar backdrop'),
-                ...(onMobileDismiss === undefined
-                  ? []
-                  : [
-                      h.OnClick(onMobileDismiss),
-                      h.OnKeyDownPreventDefault(key =>
-                        key === 'Escape'
-                          ? Option.some(onMobileDismiss)
-                          : Option.none(),
-                      ),
-                    ]),
-                h.Class('fixed inset-0 z-40 bg-black/50 md:hidden'),
-              ],
-              [],
-            ),
-            h.aside(
-              [
-                h.DataAttribute('slot', 'sidebar-mobile'),
-                h.Role('dialog'),
-                h.AriaModal(true),
+                h.Id(props.mobileId ?? SidebarModal.MOBILE_MODAL_ID),
+                h.DataAttribute('slot', 'sidebar-mobile-modal'),
                 h.AriaLabel('Sidebar'),
+                SidebarModal.mobileModalMount(
+                  props.mobileId ?? SidebarModal.MOBILE_MODAL_ID,
+                  h,
+                ),
                 ...(onMobileDismiss === undefined
                   ? []
-                  : [
-                      h.OnKeyDownPreventDefault(key =>
-                        key === 'Escape'
-                          ? Option.some(onMobileDismiss)
-                          : Option.none(),
-                      ),
-                    ]),
+                  : [h.OnCancelPreventDefault(onMobileDismiss)]),
                 h.Class(
-                  cn(
-                    'fixed inset-y-0 z-50 flex w-(--sidebar-width-mobile) max-w-[calc(100vw-2rem)] flex-col bg-sidebar text-sidebar-foreground shadow-xl md:hidden',
-                    side === 'left' ? 'left-0 border-r' : 'right-0 border-l',
-                    props.class,
-                  ),
+                  'fixed inset-0 z-50 m-0 block h-full max-h-none w-full max-w-none overflow-visible border-0 bg-transparent p-0 text-inherit md:hidden',
                 ),
               ],
               [
-                ...props.children,
-                ...(onMobileDismiss === undefined
-                  ? []
-                  : [
-                      h.button(
-                        [
-                          h.Type('button'),
-                          h.AriaLabel('Close sidebar'),
-                          h.OnClick(onMobileDismiss),
-                          h.Class(
-                            'absolute top-2 right-2 inline-flex size-8 items-center justify-center rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring md:hidden',
-                          ),
-                        ],
-                        [Icon.x({}, h)],
+                h.aside(
+                  [
+                    h.DataAttribute('slot', 'sidebar-mobile'),
+                    h.Class(
+                      cn(
+                        'fixed inset-y-0 z-50 flex w-(--sidebar-width-mobile) max-w-[calc(100vw-2rem)] flex-col bg-sidebar text-sidebar-foreground shadow-xl md:hidden',
+                        side === 'left'
+                          ? 'left-0 border-r'
+                          : 'right-0 border-l',
+                        props.class,
                       ),
-                    ]),
+                    ),
+                  ],
+                  [
+                    ...props.children,
+                    ...(onMobileDismiss === undefined
+                      ? []
+                      : [
+                          h.button(
+                            [
+                              h.Type('button'),
+                              h.AriaLabel('Close sidebar'),
+                              h.OnClick(onMobileDismiss),
+                              h.Class(
+                                'absolute top-2 right-2 inline-flex size-8 items-center justify-center rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring md:hidden',
+                              ),
+                            ],
+                            [Icon.x({}, h)],
+                          ),
+                        ]),
+                  ],
+                ),
+                h.button(
+                  [
+                    h.Type('button'),
+                    h.AriaLabel('Close sidebar backdrop'),
+                    ...(onMobileDismiss === undefined
+                      ? []
+                      : [
+                          h.OnClick(onMobileDismiss),
+                          h.OnKeyDownPreventDefault(key =>
+                            key === 'Escape'
+                              ? Option.some(onMobileDismiss)
+                              : Option.none(),
+                          ),
+                        ]),
+                    h.Class('fixed inset-0 z-40 bg-black/50 md:hidden'),
+                  ],
+                  [],
+                ),
               ],
             ),
           ]

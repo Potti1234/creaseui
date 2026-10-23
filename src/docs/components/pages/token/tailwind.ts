@@ -7,7 +7,7 @@ import {
   tokenFixtures,
   type TokenItem,
 } from '@/docs/components/pages/token/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Badge from '@/ui/badge'
 import * as Token from '@/ui/token'
 
@@ -25,10 +25,10 @@ const tokenIconMap: Record<
   NonNullable<TokenItem['icon']>,
   <M>(h: HtmlBuilder<M>) => Html
 > = {
-  user: h => Icon.icon('user', { class: 'size-3' }, h),
-  star: h => Icon.icon('star', { class: 'size-3' }, h),
-  tag: h => Icon.icon('tag', { class: 'size-3' }, h),
-  'shield-check': h => Icon.icon('shield-check', { class: 'size-3' }, h),
+  user: h => Icon.icon({ name: 'user', size: '2xs' }, h),
+  star: h => Icon.icon({ name: 'star', size: '2xs' }, h),
+  tag: h => Icon.icon({ name: 'tag', size: '2xs' }, h),
+  'shield-check': h => Icon.icon({ name: 'shield-check', size: '2xs' }, h),
 }
 const tokenIcon = (name: NonNullable<TokenItem['icon']>) => tokenIconMap[name]
 

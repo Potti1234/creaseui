@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -17,7 +18,7 @@ export interface MarkerSpecItem {
   readonly disabled?: boolean
   readonly inset?: boolean
   readonly kind?: 'checkbox' | 'radio'
-  readonly icon?: string
+  readonly icon?: IconName
   readonly destructive?: boolean
   readonly separatorBefore?: boolean
   readonly submenu?: ReadonlyArray<MarkerSpecItem>
@@ -457,7 +458,7 @@ const checkedExpr = (item: MarkerSpecItem): string | undefined => {
 const emitItemConfig = (item: MarkerSpecItem, indent: string): string => {
   const fields: Array<string> = [`label: '${sq(item.label)}'`]
   if (item.icon !== undefined)
-    fields.push(`icon: Icon.icon('${item.icon}', {}, h)`)
+    fields.push(`icon: Icon.icon({ name: '${item.icon}' }, h)`)
   if (item.shortcut !== undefined) fields.push(`shortcut: '${item.shortcut}'`)
   if (item.kind !== undefined) fields.push(`kind: '${item.kind}'`)
   const checked = checkedExpr(item)
@@ -537,7 +538,7 @@ const emitImports = (fixture: MenubarFixture, isStyleX: boolean): string => {
   }
   parts.push(`import * as DropdownMenu from '@/${base}/dropdown-menu'`)
   if (fixture.kind === 'icons') {
-    parts.push(`import * as Icon from '@/lib/icon'`)
+    parts.push(`import * as Icon from '@/${base}/icon'`)
   }
   parts.push(`import * as Menubar from '@/${base}/menubar'`)
   return parts.join('\n')

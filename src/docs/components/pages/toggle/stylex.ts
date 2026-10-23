@@ -6,7 +6,7 @@ import {
   toggleFixtures,
   type ToggleItem,
 } from '@/docs/components/pages/toggle/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import { className } from '@/stylex/style'
 import * as Toggle from '@/stylex/toggle'
 
@@ -16,12 +16,6 @@ const styles = stylex.create({
     alignItems: 'center',
     display: 'flex',
     flexWrap: 'wrap',
-  },
-  iconMd: {
-    flexShrink: 0,
-    pointerEvents: 'none',
-    height: '1rem',
-    width: '1rem',
   },
 })
 
@@ -49,10 +43,7 @@ const itemToggle = <Msg>(
       children:
         item.icon === undefined
           ? [item.label]
-          : [
-              Icon.icon(item.icon, { class: className(styles.iconMd) }, h),
-              item.label,
-            ],
+          : [Icon.icon({ name: item.icon, size: 'sm' }, h), item.label],
     },
     h,
   )

@@ -165,8 +165,8 @@ const iconSource = (
   isStyleX: boolean,
 ): string =>
   isStyleX
-    ? `(h) => Icon.icon('${name}', { class: className(styles.iconSm) }, h)`
-    : `(h) => Icon.icon('${name}', { class: 'size-3' }, h)`
+    ? `(h) => Icon.icon({ name: '${name}', size: '2xs' }, h)`
+    : `(h) => Icon.icon({ name: '${name}', size: '2xs' }, h)`
 
 const itemSource = (item: TokenItem, isStyleX: boolean): string => {
   const icon =
@@ -197,7 +197,7 @@ const source = (
   const fixture = tokenFixtures[index] ?? tokenFixtures[0]
   const isStyleX = renderer !== 'tailwind'
   const componentImports = [
-    `import * as Icon from '@/lib/icon'`,
+    `import * as Icon from '@/${isStyleX ? 'stylex' : 'ui'}/icon'`,
     isStyleX ? `import { className } from '@/stylex/style'` : '',
     `import * as Badge from '@/${isStyleX ? 'stylex' : 'ui'}/badge'`,
     isStyleX

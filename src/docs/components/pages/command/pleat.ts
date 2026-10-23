@@ -6,7 +6,7 @@ import {
   commandFixtures,
   itemsForFixture,
 } from '@/docs/components/pages/command/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Button from '@/pleat/button'
 import * as CommandMenu from '@/pleat/command'
 import * as Dialog from '@/pleat/dialog'
@@ -53,7 +53,7 @@ export const commandPleatPreview: ExamplePreviewProvider = <Msg>(
             [
               ...(item?.icon === undefined
                 ? []
-                : [Icon.icon(item.icon, { class: className(styles.icon) }, h)]),
+                : [Icon.icon({ name: item.icon, size: 'sm' }, h)]),
               h.span([], [value]),
             ],
           ),

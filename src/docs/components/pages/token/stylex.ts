@@ -6,7 +6,7 @@ import {
   tokenFixtures,
   type TokenItem,
 } from '@/docs/components/pages/token/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import { className } from '@/stylex/style'
 import { tokens } from '../../../../stylex/tokens.stylex'
 import * as Badge from '@/stylex/badge'
@@ -27,7 +27,6 @@ const styles = stylex.create({
     fontSize: '0.75rem',
     lineHeight: '1rem',
   },
-  iconSm: { height: '0.75rem', width: '0.75rem' },
 })
 
 /* Literal icon names keep `icons:generate` statically scannable. */
@@ -35,11 +34,10 @@ const tokenIconMap: Record<
   NonNullable<TokenItem['icon']>,
   <M>(h: HtmlBuilder<M>) => Html
 > = {
-  user: h => Icon.icon('user', { class: className(styles.iconSm) }, h),
-  star: h => Icon.icon('star', { class: className(styles.iconSm) }, h),
-  tag: h => Icon.icon('tag', { class: className(styles.iconSm) }, h),
-  'shield-check': h =>
-    Icon.icon('shield-check', { class: className(styles.iconSm) }, h),
+  user: h => Icon.icon({ name: 'user', size: '2xs' }, h),
+  star: h => Icon.icon({ name: 'star', size: '2xs' }, h),
+  tag: h => Icon.icon({ name: 'tag', size: '2xs' }, h),
+  'shield-check': h => Icon.icon({ name: 'shield-check', size: '2xs' }, h),
 }
 const tokenIcon = (name: NonNullable<TokenItem['icon']>) => tokenIconMap[name]
 

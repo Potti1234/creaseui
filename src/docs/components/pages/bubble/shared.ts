@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import {
@@ -23,10 +24,10 @@ export type BubbleReactionsSpec =
       ariaLabel?: string
     }>
   | Readonly<{ kind: 'action'; label: string; clickedLabel: string }>
-  | Readonly<{ kind: 'tooltip'; icon: string; content: string }>
+  | Readonly<{ kind: 'tooltip'; icon: IconName; content: string }>
   | Readonly<{
       kind: 'popover'
-      icon: string
+      icon: IconName
       title: string
       description: string
     }>
@@ -487,10 +488,10 @@ const textExprSource = (
 const collapsibleBodySource = (
   renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
-  const chevronClass =
+  const chevronProps =
     renderer !== 'tailwind'
-      ? `{ class: className(styles.chevron, model.open && styles.chevronExpanded) }`
-      : `{ class: 'size-4' }`
+      ? `size: 'sm', rotation: model.open ? 180 : 0`
+      : `size: 'sm'`
   const triggerClass =
     renderer !== 'tailwind'
       ? 'className(styles.triggerLink)'
@@ -505,7 +506,7 @@ const collapsibleBodySource = (
               ],
               [
                 model.open ? 'Show less' : 'Show more',
-                Icon.icon('chevron-down', ${chevronClass}, h),
+                Icon.icon({ name: 'chevron-down', ${chevronProps} }, h),
               ],
             ),`
 }
@@ -563,8 +564,8 @@ const reactionsSource = (
           ],
         }, h)`
     case 'tooltip': {
-      const iconClass =
-        renderer !== 'tailwind' ? `{ class: className(styles.icon) }` : '{}'
+      const iconProps =
+        renderer !== 'tailwind' ? `, size: 'xs', tone: 'muted'` : ''
       const triggerProps =
         renderer !== 'tailwind'
           ? `triggerLayoutStyle: styles.iconTrigger,`
@@ -575,7 +576,7 @@ const reactionsSource = (
               model: model.tooltip,
               toParentMessage: message =>
                 Message['GotTooltipMessage']({ message }),
-              trigger: Icon.icon('${reactions.icon}', ${iconClass}, h),
+              trigger: Icon.icon({ name: '${reactions.icon}'${iconProps} }, h),
               ${triggerProps}
               content: '${esc(reactions.content)}',
               ariaLabel: 'Read receipt',
@@ -584,10 +585,10 @@ const reactionsSource = (
         }, h)`
     }
     case 'popover': {
-      const iconClass =
+      const iconProps =
         renderer !== 'tailwind'
-          ? `{ class: className(styles.icon), ariaLabel: 'Show error details' }`
-          : `{ class: 'size-3.5', ariaLabel: 'Show error details' }`
+          ? `, size: 'xs', tone: 'muted', ariaLabel: 'Show error details'`
+          : `, size: 'xs', ariaLabel: 'Show error details'`
       const triggerProps =
         renderer !== 'tailwind'
           ? `triggerLayoutStyle: styles.iconTrigger,`
@@ -610,7 +611,7 @@ const reactionsSource = (
               model: model.popover,
               toParentMessage: message =>
                 Message['GotPopoverMessage']({ message }),
-              trigger: Icon.icon('${reactions.icon}', ${iconClass}, h),
+              trigger: Icon.icon({ name: '${reactions.icon}'${iconProps} }, h),
               ${triggerProps}
               content: h.div([h.Class(${contentClass})], [
                 h.p([h.Class(${titleClass})], ['${esc(reactions.title)}']),
@@ -729,7 +730,7 @@ ${stylexStylesSource(fixture)}`)
     )
   )
     lines.push(`import * as Button from '@/${ui}/button'`)
-  if (usesIcon(fixture)) lines.push(`import * as Icon from '@/lib/icon'`)
+  if (usesIcon(fixture)) lines.push(`import * as Icon from '@/${ui}/icon'`)
   if (needsPopover(fixture))
     lines.push(`import * as Popover from '@/${ui}/popover'`)
   if (needsTooltip(fixture))

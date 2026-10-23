@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -5,7 +6,7 @@ import { foldkitApplication } from '@/docs/components/pages/authored-page'
 export type TGItem = Readonly<{
   value: string
   label?: string
-  icon?: string
+  icon?: IconName
   ariaLabel: string
   isDisabled?: boolean
   weight?: 'light' | 'normal' | 'medium' | 'bold'
@@ -34,7 +35,7 @@ export type TGFixture = Readonly<{
 
 const iconItem = (
   value: string,
-  icon: string,
+  icon: IconName,
   label: string,
   isDisabled?: boolean,
 ): TGItem => ({
@@ -222,7 +223,7 @@ const cap = (value: string): string => value[0]!.toUpperCase() + value.slice(1)
 const itemEmit = (item: TGItem, isStyleX: boolean): string => {
   const children =
     item.icon !== undefined
-      ? `children: [Icon.icon('${item.icon}', ${isStyleX ? '{}' : "{ class: 'size-4' }"}, h)]`
+      ? `children: [Icon.icon({ name: '${item.icon}'${isStyleX ? '' : ", size: 'sm'"} }, h)]`
       : item.weight !== undefined
         ? isStyleX
           ? `children: [
@@ -342,7 +343,7 @@ import { className } from '@/stylex/style'
     : ''
 }${
       usesIcon
-        ? `import * as Icon from '@/lib/icon'
+        ? `import * as Icon from '@/${lib}/icon'
 `
         : ''
     }import * as ToggleGroup from '@/${lib}/toggle-group'${

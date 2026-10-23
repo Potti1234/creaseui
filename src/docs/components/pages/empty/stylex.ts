@@ -12,7 +12,7 @@ import {
 import * as Avatar from '@/stylex/avatar'
 import * as Button from '@/stylex/button'
 import * as Empty from '@/stylex/empty'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as InputGroup from '@/stylex/input-group'
 import * as Kbd from '@/stylex/kbd'
 import { className } from '@/stylex/style'
@@ -49,9 +49,6 @@ const styles = stylex.create({
     textDecorationLine: { default: 'none', ':hover': 'underline' },
     textUnderlineOffset: '4px',
   },
-  mediaIconSvg: { flexShrink: 0, height: '1.5rem', width: '1.5rem' },
-  buttonIcon: { flexShrink: 0, height: '1rem', width: '1rem' },
-  addonIcon: { height: '1rem', width: '1rem' },
   inputWidth: { width: '75%' },
   helpLink: { textDecoration: 'underline' },
 })
@@ -105,7 +102,7 @@ const avatarNode = <Msg>(
 const linkRow = <Msg>(label: string, h: HtmlBuilder<Msg>): Html =>
   h.a(
     [h.Href('#'), h.Class(className(reset.link, styles.linkRow))],
-    [label, Icon.icon('arrow-up-right', {}, h)],
+    [label, Icon.icon({ name: 'arrow-up-right' }, h)],
   )
 
 const emptyView = <Msg>(
@@ -138,13 +135,7 @@ const emptyView = <Msg>(
           Empty.emptyMedia(
             {
               variant: 'icon',
-              children: [
-                Icon.icon(
-                  'folder-code',
-                  { class: className(styles.mediaIconSvg) },
-                  h,
-                ),
-              ],
+              children: [Icon.icon({ name: 'folder-code', size: 'lg' }, h)],
             },
             h,
           ),
@@ -177,13 +168,7 @@ const emptyView = <Msg>(
               Empty.emptyMedia(
                 {
                   variant: 'icon',
-                  children: [
-                    Icon.icon(
-                      'cloud',
-                      { class: className(styles.mediaIconSvg) },
-                      h,
-                    ),
-                  ],
+                  children: [Icon.icon({ name: 'cloud', size: 'lg' }, h)],
                 },
                 h,
               ),
@@ -207,13 +192,7 @@ const emptyView = <Msg>(
               Empty.emptyMedia(
                 {
                   variant: 'icon',
-                  children: [
-                    Icon.icon(
-                      'bell',
-                      { class: className(styles.mediaIconSvg) },
-                      h,
-                    ),
-                  ],
+                  children: [Icon.icon({ name: 'bell', size: 'lg' }, h)],
                 },
                 h,
               ),
@@ -225,11 +204,7 @@ const emptyView = <Msg>(
                   action(
                     'outline',
                     'Refresh',
-                    Icon.icon(
-                      'refresh-ccw',
-                      { class: className(styles.buttonIcon) },
-                      h,
-                    ),
+                    Icon.icon({ name: 'refresh-ccw', size: 'sm' }, h),
                   ),
                 ],
               },
@@ -310,7 +285,7 @@ const emptyView = <Msg>(
               action(
                 'default',
                 'Invite Members',
-                Icon.icon('plus', { class: className(styles.buttonIcon) }, h),
+                Icon.icon({ name: 'plus', size: 'sm' }, h),
               ),
             ],
           },
@@ -354,11 +329,7 @@ const emptyView = <Msg>(
                     InputGroup.inputGroupAddon(
                       {
                         children: [
-                          Icon.icon(
-                            'search',
-                            { class: className(styles.addonIcon) },
-                            h,
-                          ),
+                          Icon.icon({ name: 'search', size: 'sm' }, h),
                         ],
                       },
                       h,
@@ -410,13 +381,7 @@ const emptyView = <Msg>(
               Empty.emptyMedia(
                 {
                   variant: 'icon',
-                  children: [
-                    Icon.icon(
-                      'folder-code',
-                      { class: className(styles.mediaIconSvg) },
-                      h,
-                    ),
-                  ],
+                  children: [Icon.icon({ name: 'folder-code', size: 'lg' }, h)],
                 },
                 h,
               ),

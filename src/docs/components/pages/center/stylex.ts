@@ -7,7 +7,7 @@ import {
   type CenterFixture,
   centerFixtures,
 } from '@/docs/components/pages/center/shared'
-import { icon } from '@/lib/icon'
+import { icon, type IconName } from '@/stylex/icon'
 import { className } from '@/stylex/style'
 import * as Button from '@/stylex/button'
 import * as Card from '@/stylex/card'
@@ -26,12 +26,6 @@ const styles = stylex.create({
     fontSize: '0.75rem',
     lineHeight: '1rem',
   },
-  icon: {
-    color: 'var(--muted-foreground)',
-    height: '1.5rem',
-    width: '1.5rem',
-  },
-  iconBtn4: { flexShrink: 0, height: '1rem', width: '1rem' },
   cardWide: { width: '32.5rem' },
   cardNarrow: { width: '25rem' },
 })
@@ -66,13 +60,13 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   )
 
 const horizontalView = <Msg>(h: HtmlBuilder<Msg>): Html => {
-  const iconButton = (name: string, label: string): Html =>
+  const iconButton = (name: IconName, label: string): Html =>
     Button.button(
       {
         variant: 'ghost',
         size: 'icon-sm',
         ariaLabel: label,
-        children: [icon(name, { class: className(styles.iconBtn4) }, h)],
+        children: [icon({ name: name, size: 'sm' }, h)],
       },
       h,
     )
@@ -136,7 +130,7 @@ const insideCardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                         gap: 2,
                         hAlign: 'center',
                         children: [
-                          icon('inbox', { class: className(styles.icon) }, h),
+                          icon({ name: 'inbox', size: 'lg', tone: 'muted' }, h),
                           h.p(
                             [h.Class(className(reset.text, styles.heading))],
                             ['No messages yet'],

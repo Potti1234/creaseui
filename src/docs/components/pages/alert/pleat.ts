@@ -5,7 +5,7 @@ import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import { className } from '@/pleat/style'
 import { alertFixtures } from '@/docs/components/pages/alert/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Alert from '@/pleat/alert'
 import * as Button from '@/pleat/button'
 
@@ -48,9 +48,7 @@ export const alertPleatPreview: ExamplePreviewProvider = <Msg>(
           children: [
             Alert.alertIcon(
               {
-                children: [
-                  Icon.icon(item.icon, { class: className(styles.iconSvg) }, h),
-                ],
+                children: [Icon.icon({ name: item.icon, size: 'sm' }, h)],
               },
               h,
             ),

@@ -283,6 +283,14 @@ export const sortedRows = <Row>(
   })
 }
 
+/* The rows in the order the grid shows them. Every row index in the model
+   (focus, editing, selection, context menu) points into this projection. */
+export const displayedRows = <Row>(
+  model: Model,
+  config: DataGridConfig<Row>,
+): ReadonlyArray<Row> =>
+  sortedRows(filteredRows(model, config), model.sorting, config)
+
 export const visibleColumnDefs = <Row>(
   model: Model,
   config: DataGridConfig<Row>,
@@ -299,8 +307,9 @@ const commitCell = <Row>(
   config: DataGridConfig<Row>,
 ): Model => {
   const column = columnById(config, columnId)
-  const target = filteredRows(model, config)[row]
+  const target = displayedRows(model, config)[row]
   if (column === undefined || target === undefined) return model
+  if (cellText(target, columnId, config) === value) return model
   const write = column.set ?? ((r: Row): Row => r)
   const snapshot = model.rows
   return {
@@ -321,7 +330,7 @@ const commitFiles = <Row>(
   config: DataGridConfig<Row>,
 ): Model => {
   const column = columnById(config, columnId)
-  const target = filteredRows(model, config)[row]
+  const target = displayedRows(model, config)[row]
   if (column?.setFiles === undefined || target === undefined) return model
   const writeFiles = column.setFiles
   const snapshot = model.rows
@@ -349,7 +358,7 @@ const moveFocus = <Row>(
   )
   const nextRow = Math.min(
     Math.max(model.focusedCell.row + dRow, 0),
-    filteredRows(model, config).length - 1,
+    displayedRows(model, config).length - 1,
   )
   return {
     ...model,
@@ -362,7 +371,63 @@ export const visibleColumns = (model: Model): Array<string> =>
 
 const emptyCell = { row: -1, column: '' }
 
+/* Any change to the displayed rows (sorting, filtering, an edit to a sort or
+   filter key, insertions, deletions, undo/redo) keeps focus, the open editor,
+   the selection and the context menu on the same records instead of the same
+   indexes. Indexes a message sets refer to the rows the user saw, so
+   post-commit navigation lands on the record that was below the edited one. */
+const reproject = <Row>(
+  before: Model,
+  after: Model,
+  config: DataGridConfig<Row>,
+): Model => {
+  const beforeKeys = displayedRows(before, config).map(config.rowKey)
+  const afterKeys = displayedRows(after, config).map(config.rowKey)
+  if (
+    beforeKeys.length === afterKeys.length &&
+    beforeKeys.every((key, index) => key === afterKeys[index])
+  )
+    return after
+  const afterIndexes = new Map(afterKeys.map((key, index) => [key, index]))
+  const move = (row: number): number => {
+    const key = beforeKeys[row]
+    return key === undefined ? -1 : (afterIndexes.get(key) ?? -1)
+  }
+  const cell = (current: { row: number; column: string }) => {
+    const row = move(current.row)
+    return row === -1 ? emptyCell : { row, column: current.column }
+  }
+  const editingCell = cell(after.editingCell)
+  const contextRow = move(after.contextMenu.row)
+  return {
+    ...after,
+    focusedCell: cell(after.focusedCell),
+    selectionAnchor: cell(after.selectionAnchor),
+    selectionEnd: cell(after.selectionEnd),
+    selectedRanges: [],
+    editingCell,
+    draftValue: editingCell.row === -1 ? '' : after.draftValue,
+    selectedRowIndexes: after.selectedRowIndexes
+      .map(move)
+      .filter(index => index !== -1),
+    lastSelectedRowIndex: move(after.lastSelectedRowIndex),
+    contextMenu:
+      contextRow === -1
+        ? { ...after.contextMenu, open: false, row: -1 }
+        : { ...after.contextMenu, row: contextRow },
+  }
+}
+
 export const update = <Row>(
+  model: Model,
+  message: Message,
+  config: DataGridConfig<Row>,
+): Model => {
+  const next = applyMessage(model, message, config)
+  return next === model ? next : reproject(model, next, config)
+}
+
+const applyMessage = <Row>(
   model: Model,
   message: Message,
   config: DataGridConfig<Row>,
@@ -376,7 +441,7 @@ export const update = <Row>(
         selectionEnd: { row: message.row, column: message.column },
       }
     case 'StartedEditing': {
-      const rows = filteredRows(model, config)
+      const rows = displayedRows(model, config)
       const column = columnById(config, message.column)
       /* boolean cells toggle immediately — tablecn's checkbox cell is the
          editor itself, there is no separate edit mode for it */
@@ -413,7 +478,12 @@ export const update = <Row>(
         ...model,
         cellCalendar,
         editingCell: { row: message.row, column: message.column },
-        draftValue: message.seed,
+        /* an empty seed (Enter, F2, double-click) edits the current value;
+           type-over passes the typed key and replaces it */
+        draftValue:
+          message.seed === '' && target !== undefined
+            ? cellText(target, message.column, config)
+            : message.seed,
       }
     }
     case 'ChangedDraft':
@@ -455,7 +525,7 @@ export const update = <Row>(
       )
     case 'ToggledCellBoolean': {
       const column = columnById(config, message.column)
-      const target = filteredRows(model, config)[message.row]
+      const target = displayedRows(model, config)[message.row]
       if (column === undefined || target === undefined) return model
       const checked = column.getBoolean?.(target) ?? false
       return commitCell(
@@ -478,7 +548,7 @@ export const update = <Row>(
     }
     case 'ToggledCellOption': {
       const column = columnById(config, message.column)
-      const target = filteredRows(model, config)[message.row]
+      const target = displayedRows(model, config)[message.row]
       if (column === undefined || target === undefined) return model
       const current = column.getOptions?.(target) ?? []
       const next = current.includes(message.option)
@@ -525,7 +595,7 @@ export const update = <Row>(
     case 'PickedCellFiles': {
       if (model.editingCell.row === -1) return model
       const column = columnById(config, model.editingCell.column)
-      const target = filteredRows(model, config)[model.editingCell.row]
+      const target = displayedRows(model, config)[model.editingCell.row]
       if (column === undefined || target === undefined) return model
       const next: Array<FileCellData> = message.files.map((file, index) => ({
         id: `${config.rowKey(target)}-upload-${String(Date.now())}-${String(index)}`,
@@ -544,7 +614,7 @@ export const update = <Row>(
     }
     case 'RemovedCellFile': {
       const column = columnById(config, message.column)
-      const target = filteredRows(model, config)[message.row]
+      const target = displayedRows(model, config)[message.row]
       if (column === undefined || target === undefined) return model
       return commitFiles(
         model,
@@ -610,7 +680,7 @@ export const update = <Row>(
       if (!message.checked) return { ...model, selectedRowIndexes: [] }
       return {
         ...model,
-        selectedRowIndexes: filteredRows(model, config).map((_, i) => i),
+        selectedRowIndexes: displayedRows(model, config).map((_, i) => i),
       }
     }
     case 'SetSorting':
@@ -708,11 +778,11 @@ export const update = <Row>(
       }
     }
     case 'AddedRow':
-      return insertRow(model, filteredRows(model, config).length, config)
+      return insertRow(model, displayedRows(model, config).length, config)
     case 'AddedRowAt':
       return insertRow(model, message.index, config)
     case 'DeletedRows': {
-      const rows = filteredRows(model, config)
+      const rows = displayedRows(model, config)
       const keys = new Set(
         message.indexes
           .map(index => rows[index])
@@ -798,16 +868,20 @@ const onGridKey = <Row>(
   if (ctrl) {
     switch (key.toLowerCase()) {
       case 'f':
-        return update(model, Message.ToggledSearch({}), config)
+        return applyMessage(model, Message.ToggledSearch({}), config)
       case 'z':
         return shift
-          ? update(model, Message.Redo({}), config)
-          : update(model, Message.Undo({}), config)
+          ? applyMessage(model, Message.Redo({}), config)
+          : applyMessage(model, Message.Undo({}), config)
       case 'y':
-        return update(model, Message.Redo({}), config)
+        return applyMessage(model, Message.Redo({}), config)
       case 'a': {
         if (isEditing) return model
-        return update(model, Message.ToggledAllRows({ checked: true }), config)
+        return applyMessage(
+          model,
+          Message.ToggledAllRows({ checked: true }),
+          config,
+        )
       }
       default:
         return model
@@ -816,11 +890,19 @@ const onGridKey = <Row>(
   if (isEditing) {
     switch (key) {
       case 'Escape':
-        return update(model, Message.CanceledEdit({}), config)
+        return applyMessage(model, Message.CanceledEdit({}), config)
       case 'Enter':
-        return update(model, Message.CommittedDraft({ move: 'down' }), config)
+        return applyMessage(
+          model,
+          Message.CommittedDraft({ move: 'down' }),
+          config,
+        )
       case 'Tab':
-        return update(model, Message.CommittedDraft({ move: 'right' }), config)
+        return applyMessage(
+          model,
+          Message.CommittedDraft({ move: 'right' }),
+          config,
+        )
       default:
         return model
     }
@@ -828,10 +910,10 @@ const onGridKey = <Row>(
   switch (key) {
     case 'Escape':
       if (model.searchOpen)
-        return update(model, Message.ToggledSearch({}), config)
+        return applyMessage(model, Message.ToggledSearch({}), config)
       if (model.contextMenu.open)
-        return update(model, Message.ClosedContextMenu({}), config)
-      return update(model, Message.ClearedSelection({}), config)
+        return applyMessage(model, Message.ClosedContextMenu({}), config)
+      return applyMessage(model, Message.ClearedSelection({}), config)
     case 'ArrowUp':
       return moveFocus(model, -1, 0, config)
     case 'ArrowDown':
@@ -845,7 +927,7 @@ const onGridKey = <Row>(
     case 'Enter':
     case 'F2':
       if (model.focusedCell.row === -1) return model
-      return update(
+      return applyMessage(
         model,
         Message.StartedEditing({
           row: model.focusedCell.row,
@@ -859,7 +941,11 @@ const onGridKey = <Row>(
       if (model.focusedCell.row === -1) return model
       const rows = [...model.selectedRowIndexes]
       if (rows.length > 1)
-        return update(model, Message.DeletedRows({ indexes: rows }), config)
+        return applyMessage(
+          model,
+          Message.DeletedRows({ indexes: rows }),
+          config,
+        )
       return commitCell(
         model,
         model.focusedCell.row,
@@ -871,7 +957,7 @@ const onGridKey = <Row>(
     default:
       /* type-over: printable char opens editor seeded with the key */
       if (key.length === 1 && model.focusedCell.row !== -1) {
-        return update(
+        return applyMessage(
           model,
           Message.StartedEditing({
             row: model.focusedCell.row,
@@ -1032,16 +1118,64 @@ export const gridKeysMount = <Msg>(
   toParentMessage: (message: MountMessage) => Msg,
 ) => Mount.mapMessage(GridKeys({}), toParentMessage)
 
-/* autofocus only applies on initial page load; a one-shot mount focuses the
-   editor element when the cell editor enters the DOM */
-export const FocusCellEditor = Mount.define('FocusCellEditor', {
+/* autofocus only applies on initial page load, so the mount focuses the
+   editor when it enters the DOM. Removing a focused editor drops focus to
+   <body>, where grid keys never arrive; on release the grid takes focus back
+   unless the user's last pointer press landed outside it. */
+export const FocusCellEditor = Mount.defineStream('FocusCellEditor', {
   args: {},
   messages: [EditorMountMessage.GridEditorFocused],
   execute: ({ element }) =>
-    Effect.sync(() => {
-      if (element instanceof HTMLElement) element.focus()
-      return EditorMountMessage.GridEditorFocused({})
-    }),
+    Stream.callback<typeof EditorMountMessage.Type>(queue =>
+      Effect.gen(function* () {
+        yield* Effect.acquireRelease(
+          Effect.sync(() => {
+            if (!(element instanceof HTMLElement)) return undefined
+            const grid = element.closest<HTMLElement>('[role="grid"]')
+            const state = { pointedOutside: false }
+            const onPointerDown = (event: PointerEvent): void => {
+              if (!(event.target instanceof Node) || grid === null) return
+              state.pointedOutside = !grid.contains(event.target)
+            }
+            document.addEventListener('pointerdown', onPointerDown, true)
+            /* a rebuilt editor (its row moved) must not take focus back from
+               a control outside the grid the user is typing into */
+            const active = document.activeElement
+            if (
+              grid === null ||
+              active === null ||
+              active === document.body ||
+              grid.contains(active)
+            )
+              element.focus()
+            Queue.offerUnsafe(queue, EditorMountMessage.GridEditorFocused({}))
+            return { grid, state, onPointerDown }
+          }),
+          resource =>
+            Effect.sync(() => {
+              if (resource === undefined) return
+              document.removeEventListener(
+                'pointerdown',
+                resource.onPointerDown,
+                true,
+              )
+              const { grid, state } = resource
+              /* release can run before the editor leaves the DOM */
+              requestAnimationFrame(() => {
+                const active = document.activeElement
+                if (
+                  grid !== null &&
+                  grid.isConnected &&
+                  !state.pointedOutside &&
+                  (active === null || active === document.body)
+                )
+                  grid.focus({ preventScroll: true })
+              })
+            }),
+        )
+        return yield* Effect.never
+      }),
+    ),
 })
 
 export const gridEditorFocusMount = <Msg>(toParentMessage: () => Msg) =>
@@ -1148,7 +1282,7 @@ const insertRow = <Row>(
   index: number,
   config: DataGridConfig<Row>,
 ): Model => {
-  const rows = filteredRows(model, config)
+  const rows = displayedRows(model, config)
   const key = `row_new_${String(Date.now())}`
   if (index >= rows.length || rows[index] === undefined) {
     /* append at end of the underlying array */
@@ -1182,7 +1316,7 @@ const deleteRow = <Row>(
   index: number,
   config: DataGridConfig<Row>,
 ): Model => {
-  const target = filteredRows(model, config)[index]
+  const target = displayedRows(model, config)[index]
   if (target === undefined) return model
   const targetKey = config.rowKey(target)
   return {
@@ -1206,7 +1340,7 @@ export const searchMatches = <Row>(
   if (query === '') return []
   const columns = visibleColumns(model)
   const matches: Array<GridMatch> = []
-  filteredRows(model, config).forEach((row, rowIndex) => {
+  displayedRows(model, config).forEach((row, rowIndex) => {
     for (const column of columns) {
       if (cellText(row, column, config).toLowerCase().includes(query)) {
         matches.push({ row: rowIndex, column })

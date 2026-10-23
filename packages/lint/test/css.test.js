@@ -26,11 +26,19 @@ const project = files => {
   return root
 }
 
+/* Receipt paths are POSIX on every platform. */
+const relative = (root, file) =>
+  path.relative(root, file).split(path.sep).join('/')
+
 const audit = (files, options = {}) => {
   const root = project(files)
   const run = createCssAudit({
-    isOwned: file => (options.owned ?? []).includes(path.relative(root, file)),
+    isOwned: file => (options.owned ?? []).includes(relative(root, file)),
     rootDir: root,
+    rootsOf: file =>
+      (options.owned ?? []).includes(relative(root, file))
+        ? options.roots
+        : undefined,
   })
   for (const file of findStylesheets(root)) run.auditFile(file)
   rmSync(root, { force: true, recursive: true })
@@ -115,6 +123,167 @@ test('base rules only accept base properties and native resets', () => {
   )
 })
 
+test('base rules check values, @apply and @scope, not only property names', () => {
+  for (const css of [
+    '@layer base { * { padding: 64px; width: 4px; background: hotpink; } }',
+    '@layer base { * { @apply p-16 w-1 bg-red-500 rounded-full; } }',
+    '@scope ([data-slot="button"]) { * { padding: 64px; background: hotpink; } }',
+    '@layer base { body { color: #ff0000; } }',
+  ])
+    assert.ok(
+      kinds(audit({ 'src/styles.css': css })).includes('violation'),
+      css,
+    )
+  assert.deepEqual(
+    audit({
+      'src/styles.css':
+        '@layer base { * { margin: 0; padding: 0; box-sizing: border-box; } html, body { height: 100%; background: var(--background); color: var(--foreground); line-height: 1.5; } }',
+    }),
+    [],
+  )
+})
+
+/* Review F3: raw colours mixed with a token, and utility families outside the
+   allowed base grammar. */
+export const GLOBAL_PAINT_CASES = [
+  '@layer base { * { background: color-mix(in srgb, var(--background) 10%, hotpink); } }',
+  '@layer base { * { color: var(--foreground, red); } }',
+  '@layer base { * { @apply opacity-50 rotate-45; } }',
+  '@layer base { body { @apply scale-150; } }',
+  '@layer base { body { @apply text-center; } }',
+  '@layer base { body { @apply border-2; } }',
+]
+
+test('base paint is token-only and @apply follows an allow-list', () => {
+  for (const css of GLOBAL_PAINT_CASES)
+    assert.ok(
+      kinds(audit({ 'src/styles.css': css })).includes('violation'),
+      css,
+    )
+  assert.deepEqual(
+    audit({
+      'src/styles.css': [
+        '@layer base {',
+        '  * { @apply border-border outline-ring/50; }',
+        '  body { @apply bg-background text-foreground font-sans antialiased; }',
+        '  html { background: color-mix(in oklab, var(--ring) 50%, transparent); color: var(--foreground); }',
+        '  ::selection { background-color: color-mix(in oklch, var(--primary) 20%, var(--background)); }',
+        '}',
+      ].join('\n'),
+    }),
+    [],
+  )
+})
+
+test('base @apply colour utilities must name a theme colour role', () => {
+  for (const utility of [
+    'text-shadow-lg',
+    'bg-cover',
+    'bg-fixed',
+    'border-collapse',
+    'text-ellipsis',
+    'decoration-wavy',
+    'bg-red-500',
+    'text-brand',
+  ])
+    assert.ok(
+      kinds(
+        audit({ 'src/styles.css': `@layer base { * { @apply ${utility}; } }` }),
+      ).includes('violation'),
+      utility,
+    )
+  /* A custom role the project's theme defines is a semantic colour. */
+  assert.deepEqual(
+    audit({
+      'src/theme.css': '@theme { --color-brand: var(--brand); }',
+      'src/styles.css':
+        '@layer base { body { @apply text-brand bg-background/90 ring-offset-background font-mono subpixel-antialiased; } }',
+    }),
+    [],
+  )
+})
+
+test('declared roles that collide with other Tailwind utilities are ambiguous', () => {
+  const cases = {
+    'bg-cover': '--color-cover: var(--background);',
+    'border-x-brand': '--color-x-brand: var(--border);',
+    'decoration-wavy': '--color-wavy: var(--foreground);',
+    'text-lg': '--color-lg: var(--foreground);',
+    'text-shadow-lg': '--color-shadow-lg: var(--foreground);',
+    'text-shadow-soft': '--color-shadow-soft: var(--foreground);',
+  }
+  for (const [utility, declaration] of Object.entries(cases)) {
+    const findings = audit({
+      'src/styles.css': `@theme { ${declaration} }\n@layer base { * { @apply ${utility}; } }`,
+    })
+    assert.equal(findings.length, 1, utility)
+    assert.match(findings[0].message, /is ambiguous/u, utility)
+  }
+  /* A theme font size makes `text-<role>` a size as well as a colour. */
+  assert.match(
+    audit({
+      'src/styles.css':
+        '@theme { --color-brand: red; --text-brand: 2rem; }\n@layer base { * { @apply text-brand; } }',
+    })[0]?.message ?? '',
+    /is ambiguous/u,
+  )
+  assert.deepEqual(
+    audit({
+      'src/styles.css':
+        '@theme { --color-brand: var(--foreground); --color-cover-art: var(--background); }\n@layer base { * { @apply text-brand bg-cover-art bg-brand/50 border-border ring-offset-background font-sans antialiased; } }',
+    }),
+    [],
+  )
+})
+
+test('the collision table matches what Tailwind compiles', async () => {
+  const repo = fileURLToPath(new URL('../../..', import.meta.url))
+  const { collisions, colourOnly, loadTailwind } =
+    await import('../scripts/tailwind-color-collisions.mjs')
+  /* Regenerate after a Tailwind upgrade: node packages/lint/scripts/tailwind-color-collisions.mjs */
+  assert.deepEqual(
+    await collisions(repo),
+    JSON.parse(
+      readFileSync(
+        new URL(
+          '../lib/strict/tailwind-color-collisions.json',
+          import.meta.url,
+        ),
+        'utf8',
+      ),
+    ),
+  )
+  const { designSystem } = await loadTailwind(
+    repo,
+    '@import "tailwindcss"; @theme { --color-brand: var(--foreground); --color-cover: var(--background); --color-shadow-lg: var(--foreground); --color-cover-art: var(--background); }',
+  )
+  const utilities = ['text-brand', 'bg-cover-art', 'bg-cover', 'text-shadow-lg']
+  const compiled = designSystem.candidatesToCss(utilities)
+  utilities.forEach((utility, index) => {
+    const accepted =
+      audit({
+        'src/styles.css': `@theme { --color-brand: x; --color-cover: x; --color-shadow-lg: x; --color-cover-art: x; }\n@layer base { * { @apply ${utility}; } }`,
+      }).length === 0
+    assert.equal(
+      accepted,
+      colourOnly(compiled[index]),
+      `${utility}\n${compiled[index]}`,
+    )
+  })
+})
+
+test('stylesheets imported from outside src are audited', () => {
+  const findings = audit({
+    'src/entry.ts': "import '../styles/product.css'\n",
+    'src/styles.css': "@import 'tailwindcss';\n",
+    'styles/product.css': '.product-icon { width: 12px; }\n',
+  })
+  assert.deepEqual(
+    findings.map(finding => [finding.file, finding.kind]),
+    [['styles/product.css', 'violation']],
+  )
+})
+
 test('imported stylesheets are followed and reported at their own path', () => {
   const findings = audit({
     'src/styles.css':
@@ -163,6 +332,33 @@ test('registered component CSS must stay inside its own scope', () => {
       ['violation'],
       css,
     )
+})
+
+test("registered component CSS may only style its owner's roots", () => {
+  const css =
+    '.chart-root { gap: 4px; } [data-slot="chart-legend"] .x { gap: 2px; }'
+  assert.deepEqual(
+    audit(
+      { 'src/chart.css': css },
+      {
+        owned: ['src/chart.css'],
+        roots: new Set(['chart-root', 'chart-legend']),
+      },
+    ),
+    [],
+  )
+  assert.deepEqual(
+    kinds(
+      audit(
+        { 'src/chart.css': `${css} .unrelated-button { padding: 64px; }` },
+        {
+          owned: ['src/chart.css'],
+          roots: new Set(['chart-root', 'chart-legend']),
+        },
+      ),
+    ),
+    ['violation'],
+  )
 })
 
 test('selector classification', () => {

@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import {
@@ -44,7 +45,7 @@ export const visuallyHiddenFixtures: Readonly<
   },
 ]
 
-export const vhActions: ReadonlyArray<{ label: string; icon: string }> = [
+export const vhActions: ReadonlyArray<{ label: string; icon: IconName }> = [
   { label: 'Download', icon: 'download' },
   { label: 'Share', icon: 'share' },
   { label: 'Delete', icon: 'trash-2' },
@@ -121,21 +122,21 @@ const emitShowcase = (
   const card = renderer === 'tailwind' ? mutedCardTw : mutedCardSx
   const speaker =
     renderer === 'tailwind'
-      ? `icon('volume-2', { class: 'size-4 text-muted-foreground' }, h)`
-      : `icon('volume-2', { class: stylex.props(styles.smallIcon).className ?? '' }, h)`
+      ? `icon({ name: 'volume-2', size: 'sm', tone: 'muted' }, h)`
+      : `icon({ name: 'volume-2', size: 'sm', tone: 'muted' }, h)`
   const iconButton =
     renderer === 'tailwind'
       ? `Stack.hStack({ gap: 2, children: [
                 ...ACTIONS.map(action =>
                   Button.button({ variant: 'ghost', size: 'icon', ariaLabel: action.label, children: [
-                    icon(action.icon, { class: 'size-4' }, h),
+                    icon({ name: action.icon, size: 'sm' }, h),
                   ] }, h),
                 ),
               ] }, h)`
       : `Stack.hStack({ gap: 2, children: [
                 ...ACTIONS.map(action =>
                   Button.button({ variant: 'ghost', size: 'icon', ariaLabel: action.label, children: [
-                    icon(action.icon, {}, h),
+                    icon({ name: action.icon }, h),
                   ] }, h),
                 ),
               ] }, h)`
@@ -284,8 +285,8 @@ const emitSupplementary = (
   const card = renderer === 'tailwind' ? mutedCardTw : mutedCardSx
   const arrowIcon =
     renderer === 'tailwind'
-      ? `icon(stat.direction === 'up' ? 'arrow-up' : 'arrow-down', { class: stat.direction === 'up' ? 'size-4 text-accent-foreground' : 'size-4 text-muted-foreground' }, h)`
-      : `icon(stat.direction === 'up' ? 'arrow-up' : 'arrow-down', { class: stat.direction === 'up' ? stylex.props(styles.upIcon).className ?? '' : stylex.props(styles.smallIcon).className ?? '' }, h)`
+      ? `icon({ name: stat.direction === 'up' ? 'arrow-up' : 'arrow-down', size: 'sm', ...(stat.direction === 'up' ? { class: 'text-accent-foreground' } : { tone: 'muted' as const }) }, h)`
+      : `stat.direction === 'up' ? h.span([h.Class(stylex.props(styles.upIcon).className ?? '')], [icon({ name: 'arrow-up', size: 'sm' }, h)]) : icon({ name: 'arrow-down', size: 'sm', tone: 'muted' }, h)`
   return `Stack.hStack({ gap: 4, wrap: 'wrap', children: [
         ...STATS.map(stat =>
           ${card(`Stack.vStack({ gap: 1, children: [
@@ -368,7 +369,7 @@ const source = (
       ? `import * as Button from '@/${mod}/button'`
       : '',
     fixture.kind === 'showcase' || fixture.kind === 'supplementary'
-      ? `import { icon } from '@/lib/icon'`
+      ? `import { icon } from '@/${mod}/icon'`
       : '',
     fixture.kind === 'showcase' ||
     fixture.kind === 'heading' ||

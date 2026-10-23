@@ -87,7 +87,7 @@ const tipCall = (
 ): string => {
   const trigger =
     tip.iconTrigger === true
-      ? "Icon.icon('save', {}, h)"
+      ? "Icon.icon({ name: 'save' }, h)"
       : `'${esc(tip.label)}'`
   const content =
     tip.kbd === undefined
@@ -145,7 +145,7 @@ const emitApplication = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
-${isStyleX && usesRow ? "import * as stylex from '@stylexjs/stylex'\n" : ''}${isStyleX && usesRow ? "import { className } from '@/stylex/style'\n" : ''}${usesIcon ? `import * as Icon from '@/lib/icon'\n` : ''}${usesKbd ? `import * as Kbd from '@/${base}/kbd'\n` : ''}import * as Tooltip from '@/${base}/tooltip'${stylesBlock}`,
+${isStyleX && usesRow ? "import * as stylex from '@stylexjs/stylex'\n" : ''}${isStyleX && usesRow ? "import { className } from '@/stylex/style'\n" : ''}${usesIcon ? `import * as Icon from '@/${base}/icon'\n` : ''}${usesKbd ? `import * as Kbd from '@/${base}/kbd'\n` : ''}import * as Tooltip from '@/${base}/tooltip'${stylesBlock}`,
     model: `export const Model = S.Struct({
   tooltips: S.Record(S.String, Tooltip.Model),
 })

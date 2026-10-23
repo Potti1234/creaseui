@@ -5,7 +5,7 @@ import { defineMessageUnion } from 'foldkit/message'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import { kbdFixtures, type KbdKind } from '@/docs/components/pages/kbd/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Button from '@/ui/button'
 import * as ButtonGroup from '@/ui/button-group'
 import * as InputGroup from '@/ui/input-group'
@@ -190,7 +190,7 @@ const kbdView = (
                   h,
                 ),
                 InputGroup.inputGroupAddon(
-                  { children: [Icon.icon('search', {}, h)] },
+                  { children: [Icon.icon({ name: 'search' }, h)] },
                   h,
                 ),
                 InputGroup.inputGroupAddon(

@@ -51,7 +51,7 @@ const barChildrenEmit = `ActionBar.actionBarSelection(
               {
                 onClose: ClosedActionBar({}),
                 ariaLabel: 'Clear selection',
-                children: [Icon.icon('x', { class: 'size-4' }, h)],
+                children: [Icon.icon({ name: 'x', size: 'sm' }, h)],
               },
               h,
             ),`
@@ -66,7 +66,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
 
 import * as ActionBar from '@/${sep}/action-bar'
-import * as Icon from '@/lib/icon'`,
+import * as Icon from '@/${sep}/icon'`,
     model: `export const Model = S.Struct({ selected: S.Number })
 export type Model = typeof Model.Type`,
     messages: `export const ToggledSelection = taggedStruct('ToggledSelection')
@@ -127,7 +127,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
 
 import * as ActionBar from '@/${sep}/action-bar'
-import * as Icon from '@/lib/icon'`,
+import * as Icon from '@/${sep}/icon'`,
     model: `const Side = S.Union([S.Literal('top'), S.Literal('bottom')])
 const Align = S.Union([S.Literal('start'), S.Literal('center'), S.Literal('end')])
 export const Model = S.Struct({

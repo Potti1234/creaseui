@@ -164,6 +164,9 @@ export const mobileNavFixtures: ReadonlyArray<MobileNavFixture> = [
   },
 ]
 
+const kebab = (name: string): string =>
+  name.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`)
+
 const emitStyles = `const styles = stylex.create({
   main: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
   headerRow: { alignItems: 'center', display: 'flex', gap: '0.75rem' },
@@ -174,9 +177,7 @@ const emitStyles = `const styles = stylex.create({
 
 const emitSections = (fixture: MobileNavFixture, isStyleX: boolean): string => {
   const iconOf = (icon: string): string =>
-    isStyleX
-      ? `Icon.${icon}({ class: className(styles.navIcon) }, h)`
-      : `Icon.${icon}({ class: 'size-4' }, h)`
+    `Icon.icon({ name: '${kebab(icon)}', size: 'sm' }, h)`
   const items = fixture.sections
     .map(
       section => `    Sidebar.sidebarGroup({ children: [
@@ -204,8 +205,8 @@ ${section.items
 
 const emitTrigger = (fixture: MobileNavFixture, isStyleX: boolean): string => {
   const icon = isStyleX
-    ? `Icon.menu({ class: className(styles.navIcon) }, h)`
-    : `Icon.menu({ class: 'size-5' }, h)`
+    ? `Icon.icon({ name: 'menu', size: 'sm' }, h)`
+    : `Icon.icon({ name: 'menu', size: 'md' }, h)`
   switch (fixture.trigger) {
     case 'icon':
       return `Button.button({ variant: 'ghost', size: 'icon', ariaLabel: 'Open Navigation', onClick: ClickedOpenNav(), children: [${icon}] }, h)`
@@ -243,7 +244,7 @@ import { taggedStruct } from 'foldkit/schema'
 ${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}import * as MobileNav from '@/${u}/mobile-nav'
 import * as Sidebar from '@/${u}/sidebar'
 ${fixture.trigger === 'icon' || fixture.trigger === 'labeled' ? `import * as Button from '@/${u}/button'` : ''}
-${usesIcons ? "import * as Icon from '@/lib/icon'" : ''}${isStyleX ? `\n\n${emitStyles}` : ''}`
+${usesIcons ? `import * as Icon from '@/${u}/icon'` : ''}${isStyleX ? `\n\n${emitStyles}` : ''}`
   const init =
     fixture.side === 'end'
       ? `export const init = (): Update.Return<Model, Message> => ({ model: { nav: MobileNav.init({ id: 'mobile-nav', side: 'end' }) } })`

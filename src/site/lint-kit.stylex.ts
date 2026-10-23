@@ -2,6 +2,9 @@ import * as stylex from '@stylexjs/stylex'
 
 import type { LintRendererKit } from '@/docs/lint/previews'
 import { button } from '@/stylex/button'
+import * as Field from '@/stylex/field'
+import * as Form from '@/stylex/form'
+import * as Input from '@/stylex/input'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { reset } from '@/stylex/reset'
 import { className } from '@/stylex/style'
@@ -125,6 +128,7 @@ const layout = stylex.create({
   fullWidth: { width: '100%' },
   start: { alignSelf: 'flex-start' },
   padded: { alignSelf: 'flex-start', padding: '24px' },
+  footer: { marginTop: '1rem' },
 })
 
 export const stylexLintKit: LintRendererKit = {
@@ -170,5 +174,48 @@ export const stylexLintKit: LintRendererKit = {
         children: [...props.children],
       },
       h,
+    ),
+  inviteForm: (props, h) =>
+    h.div(
+      [],
+      [
+        Form.form(
+          {
+            id: props.formId,
+            ariaLabel: 'Invite member',
+            onSubmit: props.submitted,
+            children: [
+              Field.controlField(
+                {
+                  id: `${props.formId}-email`,
+                  label: 'Email',
+                  toControl: (parts, controlH) =>
+                    Input.input(
+                      {
+                        id: parts.controlId,
+                        name: 'email',
+                        type: 'email',
+                        isRequired: true,
+                        value: '',
+                      },
+                      controlH,
+                    ),
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+        button(
+          {
+            type: 'submit',
+            form: props.submitsTo,
+            children: ['Send invite'],
+            layoutStyle: layout.footer,
+          },
+          h,
+        ),
+      ],
     ),
 }

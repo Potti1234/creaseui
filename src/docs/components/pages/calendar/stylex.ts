@@ -19,7 +19,7 @@ import * as Button from '@/stylex/button'
 import * as Calendar from '@/stylex/calendar'
 import * as Card from '@/stylex/card'
 import * as Field from '@/stylex/field'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as InputGroup from '@/stylex/input-group'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'
@@ -91,8 +91,6 @@ const styles = stylex.create({
     borderWidth: 1,
     width: 'fit-content',
   },
-  icon: { color: tokens.mutedForeground, height: '1rem', width: '1rem' },
-  navIcon: { flexShrink: 0, height: '1rem', width: '1rem' },
   jalaliContainer: {
     padding: '0.75rem',
     borderColor: tokens.border,
@@ -263,8 +261,7 @@ const timeFieldView = <Msg>(
                       {
                         children: [
                           Icon.icon(
-                            'clock',
-                            { class: className(styles.icon) },
+                            { name: 'clock', size: 'sm', tone: 'muted' },
                             h,
                           ),
                         ],
@@ -347,9 +344,7 @@ const jalaliView = <Msg>(
               onClick: onMessageJson(
                 JSON.stringify({ _tag: 'PressedJalaliPreviousMonth' }),
               ),
-              children: [
-                Icon.chevronRight({ class: className(styles.navIcon) }, h),
-              ],
+              children: [Icon.icon({ name: 'chevron-right', size: 'sm' }, h)],
             },
             h,
           ),
@@ -368,9 +363,7 @@ const jalaliView = <Msg>(
               onClick: onMessageJson(
                 JSON.stringify({ _tag: 'PressedJalaliNextMonth' }),
               ),
-              children: [
-                Icon.chevronLeft({ class: className(styles.navIcon) }, h),
-              ],
+              children: [Icon.icon({ name: 'chevron-left', size: 'sm' }, h)],
             },
             h,
           ),

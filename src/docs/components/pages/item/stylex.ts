@@ -11,7 +11,7 @@ import {
   itemPeople,
   itemRtlCopy,
 } from '@/docs/components/pages/item/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Avatar from '@/stylex/avatar'
 import * as Button from '@/stylex/button'
 import * as DropdownMenu from '@/stylex/dropdown-menu'
@@ -75,9 +75,6 @@ const styles = stylex.create({
   avatarStack: { display: 'flex' },
   avatarOverlap: { marginRight: '-0.5rem' },
   avatar65: { height: '1.625rem', width: '1.625rem' },
-  icon4: { height: '1rem', width: '1rem' },
-  icon5: { height: '1.25rem', width: '1.25rem' },
-  iconBtn4: { flexShrink: 0, height: '1rem', width: '1rem' },
   menuItem: { width: '100%' },
   triggerContent: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
 })
@@ -167,9 +164,7 @@ const demoStack = <Msg>(
           children: [
             Item.itemMedia(
               {
-                children: [
-                  Icon.icon('badge-check', { class: sx(styles.icon5) }, h),
-                ],
+                children: [Icon.icon({ name: 'badge-check', size: 'md' }, h)],
               },
               h,
             ),
@@ -179,9 +174,7 @@ const demoStack = <Msg>(
             ),
             Item.itemActions(
               {
-                children: [
-                  Icon.icon('chevron-right', { class: sx(styles.icon4) }, h),
-                ],
+                children: [Icon.icon({ name: 'chevron-right', size: 'sm' }, h)],
               },
               h,
             ),
@@ -259,9 +252,7 @@ export const itemStyleXPreview: ExamplePreviewProvider = <Msg>(
                 Item.itemMedia(
                   {
                     variant: 'icon',
-                    children: [
-                      Icon.icon('inbox', { class: sx(styles.icon4) }, h),
-                    ],
+                    children: [Icon.icon({ name: 'inbox', size: 'sm' }, h)],
                   },
                   h,
                 ),
@@ -293,7 +284,7 @@ export const itemStyleXPreview: ExamplePreviewProvider = <Msg>(
                   {
                     variant: 'icon',
                     children: [
-                      Icon.icon('shield-alert', { class: sx(styles.icon4) }, h),
+                      Icon.icon({ name: 'shield-alert', size: 'sm' }, h),
                     ],
                   },
                   h,
@@ -386,11 +377,7 @@ export const itemStyleXPreview: ExamplePreviewProvider = <Msg>(
                           rounded: true,
                           ariaLabel: 'Invite',
                           children: [
-                            Icon.icon(
-                              'plus',
-                              { class: sx(styles.iconBtn4) },
-                              h,
-                            ),
+                            Icon.icon({ name: 'plus', size: 'sm' }, h),
                           ],
                         },
                         h,
@@ -612,11 +599,7 @@ export const itemStyleXPreview: ExamplePreviewProvider = <Msg>(
                             rounded: true,
                             ariaLabel: `Invite ${person.username}`,
                             children: [
-                              Icon.icon(
-                                'plus',
-                                { class: sx(styles.iconBtn4) },
-                                h,
-                              ),
+                              Icon.icon({ name: 'plus', size: 'sm' }, h),
                             ],
                           },
                           h,
@@ -711,11 +694,7 @@ export const itemStyleXPreview: ExamplePreviewProvider = <Msg>(
                 Item.itemActions(
                   {
                     children: [
-                      Icon.icon(
-                        'chevron-right',
-                        { class: sx(styles.icon4) },
-                        h,
-                      ),
+                      Icon.icon({ name: 'chevron-right', size: 'sm' }, h),
                     ],
                   },
                   h,
@@ -751,11 +730,7 @@ export const itemStyleXPreview: ExamplePreviewProvider = <Msg>(
                 Item.itemActions(
                   {
                     children: [
-                      Icon.icon(
-                        'external-link',
-                        { class: sx(styles.icon4) },
-                        h,
-                      ),
+                      Icon.icon({ name: 'external-link', size: 'sm' }, h),
                     ],
                   },
                   h,
@@ -776,10 +751,7 @@ export const itemStyleXPreview: ExamplePreviewProvider = <Msg>(
             ),
           trigger: h.span(
             [h.Class(sx(styles.triggerContent))],
-            [
-              'Select',
-              Icon.icon('chevron-down', { class: sx(styles.iconBtn4) }, h),
-            ],
+            ['Select', Icon.icon({ name: 'chevron-down', size: 'sm' }, h)],
           ),
           triggerButtonVariant: 'outline',
           triggerLayoutStyle:

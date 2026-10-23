@@ -147,6 +147,36 @@ export const measurePage = ({ exceptions, minimumTarget }) => {
     }
   }
 
+  /* A submit control must belong to a form, nested or through form=, and a
+     form= reference must name a rendered form. Lint can't see DOM placement
+     such as a dialog footer outside the form subtree. */
+  for (const element of document.querySelectorAll(
+    'button[type="submit"],input[type="submit"],[form]',
+  )) {
+    if (!visible(element)) continue
+    count('form-association')
+    const reference = element.getAttribute('form')
+    if (reference !== null) {
+      if (!(document.getElementById(reference) instanceof HTMLFormElement))
+        report(
+          'form-association',
+          element,
+          'error',
+          `form -> ${reference}`,
+          'form= names a rendered <form>',
+          'Render the Form with that id or remove the form reference.',
+        )
+    } else if (element.form === null)
+      report(
+        'form-association',
+        element,
+        'error',
+        'submit control outside any form',
+        'submit control belongs to a form',
+        "Nest it in the Form or give it form: '<form id>' (and an onClick submit never runs the form's constraints).",
+      )
+  }
+
   const root = document.documentElement
   count('document-overflow')
   const overflow = root.scrollWidth - root.clientWidth

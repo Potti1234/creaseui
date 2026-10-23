@@ -8,7 +8,7 @@ import {
   type BreadcrumbFixture,
   type BreadcrumbItemSpec,
 } from '@/docs/components/pages/breadcrumb/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Breadcrumb from '@/pleat/breadcrumb'
 import * as DropdownMenu from '@/pleat/dropdown-menu'
 
@@ -44,11 +44,7 @@ const menuView = <Msg>(
               [h.Class(className(styles.dropdownTrigger))],
               [
                 item.kind === 'dropdown' ? item.label : '',
-                Icon.icon(
-                  'chevron-down',
-                  { class: className(styles.chevron) },
-                  h,
-                ),
+                Icon.icon({ name: 'chevron-down', size: 'xs' }, h),
               ],
             ),
       ...(item.kind === 'ellipsisMenu'
@@ -102,7 +98,7 @@ export const breadcrumbPleatPreview: ExamplePreviewProvider = <Msg>(
         Breadcrumb.breadcrumbSeparator(
           {
             ...(fixture.separator === 'dot'
-              ? { children: [Icon.icon('dot', {}, h)] }
+              ? { children: [Icon.icon({ name: 'dot' }, h)] }
               : {}),
             ...(fixture.rtl === true ? { direction: 'rtl' as const } : {}),
           },

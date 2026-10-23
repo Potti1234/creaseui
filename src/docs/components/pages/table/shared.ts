@@ -159,7 +159,7 @@ const actionsTable = (isStyleX: boolean): string => {
               model: model.menus[\`menu-\${index}\`] ?? DropdownMenu.init({ id: \`menu-\${index}\` }),
               toParentMessage: message => GotTableMenuMessage({ id: \`menu-\${index}\`, message }),
               trigger: h.span([h.Class(${isStyleX ? `stylex.props(styles.triggerContent).className ?? ''` : `'inline-flex items-center'`})], [
-                Icon.icon('ellipsis', ${isStyleX ? '{}' : "{ class: 'size-4' }"}, h),
+                Icon.icon({ name: 'ellipsis'${isStyleX ? '' : ", size: 'sm'"} }, h),
                 h.span([h.Class(${isStyleX ? `stylex.props(styles.srOnly).className ?? ''` : `'sr-only'`})], ['Open menu']),
               ]),
               ${isStyleX ? "triggerButtonVariant: 'ghost',\n              triggerButtonSize: 'icon-sm'," : "triggerClass: 'inline-flex size-8 items-center justify-center rounded-md hover:bg-accent',"}
@@ -319,7 +319,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { taggedStruct } from 'foldkit/schema'
 import * as DropdownMenu from '@/${base}/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/${base}/icon'
 import * as Table from '@/${base}/table'
 ${isStyleX ? sxStyles({ title: 'Actions', kind: 'actions' }) : ''}
 const actionRows: ReadonlyArray<readonly [string, string]> = [

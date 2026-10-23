@@ -10,7 +10,7 @@ import {
   fixtureLabel,
 } from '@/docs/components/pages/context-menu/shared'
 import { resolveItemConfig } from '@/docs/components/pages/dropdown-menu/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as ContextMenu from '@/stylex/context-menu'
 import { className } from '@/stylex/style'
 
@@ -34,7 +34,6 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   },
-  icon: { height: '1rem', width: '1rem' },
 })
 
 type Preview = Readonly<{
@@ -82,7 +81,7 @@ export const contextMenuStyleXPreview: ExamplePreviewProvider = <Msg>(
             return spec === undefined
               ? { label: item }
               : resolveItemConfig(spec, state, name =>
-                  Icon.icon(name, { class: className(styles.icon) }, h),
+                  Icon.icon({ name: name, size: 'sm' }, h),
                 )
           },
           ...(fixture.keepOpenOnCheckableSelect === true

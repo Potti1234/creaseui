@@ -247,7 +247,7 @@ const itemConfigSource = (spec: DropdownMenuItemSpec): string => {
     `label: '${spec.label.replaceAll("'", "\\'")}'`,
   ]
   if (spec.icon !== undefined)
-    fields.push(`icon: Icon.icon('${spec.icon}', { class: 'size-4' }, h)`)
+    fields.push(`icon: Icon.icon({ name: '${spec.icon}', size: 'sm' }, h)`)
   if (spec.shortcut !== undefined)
     fields.push(`shortcut: '${spec.shortcut.replaceAll("'", "\\'")}'`)
   if (spec.kind !== undefined) {
@@ -324,7 +324,7 @@ const source = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as ContextMenu from '@/${uiDir}/context-menu'${usesIcons ? `\nimport * as Icon from '@/lib/icon'` : ''}${
+import * as ContextMenu from '@/${uiDir}/context-menu'${usesIcons ? `\nimport * as Icon from '@/${uiDir}/icon'` : ''}${
       renderer !== 'tailwind'
         ? `
 import * as stylex from '@stylexjs/stylex'

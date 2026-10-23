@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { AlertAnnouncement, AlertSeverity } from '@/lib/alert'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
@@ -6,7 +7,7 @@ import { staticComponentApplication } from '@/docs/components/pages/authored-pag
 export type AlertPreviewAlert = Readonly<{
   severity: AlertSeverity
   announcement: AlertAnnouncement
-  icon: string
+  icon: IconName
   title: string
   description: string
   actionLabel?: string
@@ -134,7 +135,7 @@ const alertSource = (
     severity: '${item.severity}',
     announcement: '${item.announcement}',${classLine}
     children: [
-      Alert.alertIcon({ children: [Icon.icon('${item.icon}', { class: 'size-4' }, h)] }, h),
+      Alert.alertIcon({ children: [Icon.icon({ name: '${item.icon}', size: 'sm' }, h)] }, h),
       Alert.alertTitle({ children: ['${item.title}'] }, h),
       Alert.alertDescription({ children: ['${item.description}'] }, h),${action}
     ],
@@ -148,7 +149,7 @@ const source = (
   const fixture = alertFixtures[index] ?? alertFixtures[0]
   const usesAction = fixture.alerts.some(item => item.actionLabel !== undefined)
   const componentImports = [
-    `import * as Icon from '@/lib/icon'`,
+    `import * as Icon from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/icon'`,
     ...(usesAction
       ? [
           `import * as Button from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/button'`,

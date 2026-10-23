@@ -10,7 +10,7 @@ import {
   type TGItem,
 } from '@/docs/components/pages/toggle-group/shared'
 import * as Field from '@/stylex/field'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import * as ToggleGroup from '@/stylex/toggle-group'
 import { className } from '@/stylex/style'
@@ -34,12 +34,6 @@ const styles = stylex.create({
     justifyContent: 'center',
     height: '4rem',
     width: '4rem',
-  },
-  iconMd: {
-    flexShrink: 0,
-    pointerEvents: 'none',
-    height: '1rem',
-    width: '1rem',
   },
   weightLight: { fontSize: '1.5rem', fontWeight: 'inherit', lineHeight: 1 },
   weightNormal: { fontSize: '1.5rem', fontWeight: 400, lineHeight: 1 },
@@ -81,7 +75,7 @@ const itemChildren = <Msg>(
   h: HtmlBuilder<Msg>,
 ): ReadonlyArray<Html | string> => {
   if (item.icon !== undefined) {
-    return [Icon.icon(item.icon, { class: className(styles.iconMd) }, h)]
+    return [Icon.icon({ name: item.icon, size: 'sm' }, h)]
   }
   if (item.weight !== undefined) {
     return [

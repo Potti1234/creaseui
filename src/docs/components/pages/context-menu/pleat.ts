@@ -9,7 +9,7 @@ import {
   fixtureLabel,
 } from '@/docs/components/pages/context-menu/shared'
 import { resolveItemConfig } from '@/docs/components/pages/dropdown-menu/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as ContextMenu from '@/pleat/context-menu'
 import { className } from '@/pleat/style'
 
@@ -85,7 +85,7 @@ export const contextMenuPleatPreview: ExamplePreviewProvider = <Msg>(
             return spec === undefined
               ? { label: item }
               : resolveItemConfig(spec, state, name =>
-                  Icon.icon(name, { class: className(styles.icon) }, h),
+                  Icon.icon({ name: name, size: 'sm' }, h),
                 )
           },
           ...(fixture.keepOpenOnCheckableSelect === true

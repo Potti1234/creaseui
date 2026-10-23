@@ -19,7 +19,7 @@ import * as Button from '@/pleat/button'
 import * as Calendar from '@/pleat/calendar'
 import * as Card from '@/pleat/card'
 import * as Field from '@/pleat/field'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as InputGroup from '@/pleat/input-group'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import { className } from '@/pleat/style'
@@ -271,8 +271,7 @@ const timeFieldView = <Msg>(
                       {
                         children: [
                           Icon.icon(
-                            'clock',
-                            { class: className(styles.icon) },
+                            { name: 'clock', size: 'sm', tone: 'muted' },
                             h,
                           ),
                         ],
@@ -355,9 +354,7 @@ const jalaliView = <Msg>(
               onClick: onMessageJson(
                 JSON.stringify({ _tag: 'PressedJalaliPreviousMonth' }),
               ),
-              children: [
-                Icon.chevronRight({ class: className(styles.navIcon) }, h),
-              ],
+              children: [Icon.icon({ name: 'chevron-right', size: 'sm' }, h)],
             },
             h,
           ),
@@ -376,9 +373,7 @@ const jalaliView = <Msg>(
               onClick: onMessageJson(
                 JSON.stringify({ _tag: 'PressedJalaliNextMonth' }),
               ),
-              children: [
-                Icon.chevronLeft({ class: className(styles.navIcon) }, h),
-              ],
+              children: [Icon.icon({ name: 'chevron-left', size: 'sm' }, h)],
             },
             h,
           ),

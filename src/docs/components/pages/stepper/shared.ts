@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -8,7 +9,7 @@ export type StepperFixtureStep = Readonly<{
   status?: 'accent' | 'success' | 'warning' | 'error'
   isOptional?: boolean
   indicator?: 'number' | 'auto' | 'none' | 'icon'
-  icon?: string
+  icon?: IconName
   content?: 'form' | 'review' | 'deploy'
 }>
 
@@ -41,7 +42,7 @@ const checkoutSteps: ReadonlyArray<StepperFixtureStep> = [
 
 const indicatorModeSteps = (
   indicator: StepperFixtureStep['indicator'],
-  icons?: ReadonlyArray<string>,
+  icons?: ReadonlyArray<IconName>,
 ): ReadonlyArray<StepperFixtureStep> =>
   ['Account', 'Profile', 'Settings', 'Review'].map((label, index) => ({
     label,
@@ -280,7 +281,7 @@ const stepEmit = (step: StepperFixtureStep): string => `        {
           }${
             step.indicator === 'icon'
               ? `
-          indicator: Icon.icon('${step.icon ?? 'info'}', {}, h),`
+          indicator: Icon.icon({ name: '${step.icon ?? 'info'}' }, h),`
               : ''
           }
         }`
@@ -360,7 +361,7 @@ import { className } from '@/stylex/style'
     : ''
 }${
       usesIcon
-        ? `import * as Icon from '@/lib/icon'
+        ? `import * as Icon from '@/${lib}/icon'
 `
         : ''
     }import * as Stepper from '@/${lib}/stepper'

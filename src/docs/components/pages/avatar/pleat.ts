@@ -8,7 +8,7 @@ import {
   type AvatarFixture,
   type AvatarItemSpec,
 } from '@/docs/components/pages/avatar/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Avatar from '@/pleat/avatar'
 import * as DropdownMenu from '@/pleat/dropdown-menu'
 import { className } from '@/pleat/style'
@@ -55,9 +55,7 @@ const itemView = <Msg>(
       : item.badge === 'icon'
         ? Avatar.avatarBadge(
             {
-              children: [
-                Icon.icon('plus', { class: className(styles.badgeIcon) }, h),
-              ],
+              children: [Icon.icon({ name: 'plus', size: '3xs' }, h)],
             },
             h,
           )
@@ -114,9 +112,7 @@ const clusterView = <Msg>(
         : cluster.countIcon === true
           ? Avatar.avatarGroupCount(
               {
-                children: [
-                  Icon.icon('plus', { class: className(styles.countIcon) }, h),
-                ],
+                children: [Icon.icon({ name: 'plus', size: 'sm' }, h)],
               },
               h,
             )

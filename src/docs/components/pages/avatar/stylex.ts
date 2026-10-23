@@ -9,7 +9,7 @@ import {
   type AvatarFixture,
   type AvatarItemSpec,
 } from '@/docs/components/pages/avatar/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Avatar from '@/stylex/avatar'
 import * as DropdownMenu from '@/stylex/dropdown-menu'
 import { className } from '@/stylex/style'
@@ -32,8 +32,6 @@ const styles = stylex.create({
     filter: 'grayscale(100%)',
     flexWrap: 'wrap',
   },
-  badgeIcon: { height: '0.5rem', width: '0.5rem' },
-  countIcon: { height: '1rem', width: '1rem' },
 })
 
 type PreviewSnapshot = {
@@ -59,9 +57,7 @@ const itemView = <Msg>(
       : item.badge === 'icon'
         ? Avatar.avatarBadge(
             {
-              children: [
-                Icon.icon('plus', { class: className(styles.badgeIcon) }, h),
-              ],
+              children: [Icon.icon({ name: 'plus', size: '3xs' }, h)],
             },
             h,
           )
@@ -118,9 +114,7 @@ const clusterView = <Msg>(
         : cluster.countIcon === true
           ? Avatar.avatarGroupCount(
               {
-                children: [
-                  Icon.icon('plus', { class: className(styles.countIcon) }, h),
-                ],
+                children: [Icon.icon({ name: 'plus', size: 'sm' }, h)],
               },
               h,
             )

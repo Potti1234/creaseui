@@ -7,7 +7,7 @@ import {
   inputGroupFixtures,
   inputGroupRtlCopy,
 } from '@/docs/components/pages/input-group/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as DropdownMenu from '@/pleat/dropdown-menu'
 import * as Field from '@/pleat/field'
 import * as InputGroup from '@/pleat/input-group'
@@ -210,9 +210,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
             in_('demo', 'input-group-demo', { placeholder: 'Search...' }),
             InputGroup.inputGroupAddon(
               {
-                children: [
-                  Icon.icon('search', { class: className(styles.iconMd) }, h),
-                ],
+                children: [Icon.icon({ name: 'search', size: 'sm' }, h)],
               },
               h,
             ),
@@ -242,11 +240,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                         {
                           align: 'inline-start',
                           children: [
-                            Icon.icon(
-                              'search',
-                              { class: className(styles.iconMd) },
-                              h,
-                            ),
+                            Icon.icon({ name: 'search', size: 'sm' }, h),
                           ],
                         },
                         h,
@@ -288,8 +282,12 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                                 ),
                                 children: [
                                   Icon.icon(
-                                    m.isPasswordShown ? 'eye' : 'eye-off',
-                                    { class: className(styles.iconMd) },
+                                    {
+                                      name: m.isPasswordShown
+                                        ? 'eye'
+                                        : 'eye-off',
+                                      size: 'sm',
+                                    },
                                     h,
                                   ),
                                 ],
@@ -359,8 +357,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                                 align: 'block-start',
                                 children: [
                                   Icon.icon(
-                                    'file-code',
-                                    { class: className(styles.iconMd) },
+                                    { name: 'file-code', size: 'sm' },
                                     h,
                                   ),
                                   InputGroup.inputGroupText(
@@ -389,8 +386,10 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                                       ),
                                       children: [
                                         Icon.icon(
-                                          m.isCopied ? 'check' : 'copy',
-                                          { class: className(styles.iconMd) },
+                                          {
+                                            name: m.isCopied ? 'check' : 'copy',
+                                            size: 'sm',
+                                          },
                                           h,
                                         ),
                                       ],
@@ -506,13 +505,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                 in_('iconSearch', 'icon-search', { placeholder: 'Search...' }),
                 InputGroup.inputGroupAddon(
                   {
-                    children: [
-                      Icon.icon(
-                        'search',
-                        { class: className(styles.iconMd) },
-                        h,
-                      ),
-                    ],
+                    children: [Icon.icon({ name: 'search', size: 'sm' }, h)],
                   },
                   h,
                 ),
@@ -529,9 +522,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                 }),
                 InputGroup.inputGroupAddon(
                   {
-                    children: [
-                      Icon.icon('mail', { class: className(styles.iconMd) }, h),
-                    ],
+                    children: [Icon.icon({ name: 'mail', size: 'sm' }, h)],
                   },
                   h,
                 ),
@@ -546,11 +537,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                 InputGroup.inputGroupAddon(
                   {
                     children: [
-                      Icon.icon(
-                        'credit-card',
-                        { class: className(styles.iconMd) },
-                        h,
-                      ),
+                      Icon.icon({ name: 'credit-card', size: 'sm' }, h),
                     ],
                   },
                   h,
@@ -558,13 +545,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                 InputGroup.inputGroupAddon(
                   {
                     align: 'inline-end',
-                    children: [
-                      Icon.icon(
-                        'check',
-                        { class: className(styles.iconMd) },
-                        h,
-                      ),
-                    ],
+                    children: [Icon.icon({ name: 'check', size: 'sm' }, h)],
                   },
                   h,
                 ),
@@ -582,8 +563,8 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                   {
                     align: 'inline-end',
                     children: [
-                      Icon.icon('star', { class: className(styles.iconMd) }, h),
-                      Icon.icon('info', { class: className(styles.iconMd) }, h),
+                      Icon.icon({ name: 'star', size: 'sm' }, h),
+                      Icon.icon({ name: 'info', size: 'sm' }, h),
                     ],
                   },
                   h,
@@ -729,16 +710,8 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                           ),
                           children: [
                             m.isCopied
-                              ? Icon.icon(
-                                  'check',
-                                  { class: className(styles.iconMd) },
-                                  h,
-                                )
-                              : Icon.icon(
-                                  'copy',
-                                  { class: className(styles.iconMd) },
-                                  h,
-                                ),
+                              ? Icon.icon({ name: 'check', size: 'sm' }, h)
+                              : Icon.icon({ name: 'copy', size: 'sm' }, h),
                           ],
                         },
                         h,
@@ -762,11 +735,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                       onMessageJson(
                         JSON.stringify({ _tag: 'GotPopoverMessage', message }),
                       ),
-                    trigger: Icon.icon(
-                      'info',
-                      { class: className(styles.iconMd) },
-                      h,
-                    ),
+                    trigger: Icon.icon({ name: 'info', size: 'sm' }, h),
                     triggerLayoutStyle:
                       styles.iconButton as ComponentLayoutStyle,
                     align: 'start',
@@ -802,11 +771,12 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                           ),
                           children: [
                             Icon.icon(
-                              'star',
                               {
-                                class: m.isFavorite
-                                  ? className(styles.iconMd, styles.favorite)
-                                  : className(styles.iconMd),
+                                name: 'star',
+                                size: 'sm',
+                                ...(m.isFavorite
+                                  ? { tone: 'primary', filled: true }
+                                  : {}),
                               },
                               h,
                             ),
@@ -854,9 +824,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
             in_('kbd', 'kbd-search', { placeholder: 'Search...' }),
             InputGroup.inputGroupAddon(
               {
-                children: [
-                  Icon.icon('search', { class: className(styles.iconMd) }, h),
-                ],
+                children: [Icon.icon({ name: 'search', size: 'sm' }, h)],
               },
               h,
             ),
@@ -896,7 +864,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                       dropdownMenu(
                         0,
                         'More',
-                        Icon.icon('ellipsis', { ariaLabel: 'More' }, h),
+                        Icon.icon({ name: 'ellipsis', ariaLabel: 'More' }, h),
                         styles.iconButton as ComponentLayoutStyle,
                         FILE_MENU_ITEMS,
                       ),
@@ -926,11 +894,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                           [],
                           [
                             'Search In...',
-                            Icon.icon(
-                              'chevron-down',
-                              { class: className(styles.iconMd) },
-                              h,
-                            ),
+                            Icon.icon({ name: 'chevron-down', size: 'sm' }, h),
                           ],
                         ),
                         styles.menuTrigger as ComponentLayoutStyle,
@@ -1056,8 +1020,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                           children: [
                             'Run ',
                             Icon.icon(
-                              'corner-down-left',
-                              { class: className(styles.iconMd) },
+                              { name: 'corner-down-left', size: 'sm' },
                               h,
                             ),
                           ],
@@ -1075,11 +1038,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                       InputGroup.inputGroupText(
                         {
                           children: [
-                            Icon.icon(
-                              'file-code',
-                              { class: className(styles.iconMd) },
-                              h,
-                            ),
+                            Icon.icon({ name: 'file-code', size: 'sm' }, h),
                             'script.js',
                           ],
                         },
@@ -1090,11 +1049,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                           size: 'icon-xs',
                           layoutStyle: styles.push,
                           children: [
-                            Icon.icon(
-                              'refresh-cw',
-                              { class: className(styles.iconMd) },
-                              h,
-                            ),
+                            Icon.icon({ name: 'refresh-cw', size: 'sm' }, h),
                           ],
                         },
                         h,
@@ -1103,11 +1058,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                         {
                           size: 'icon-xs',
                           children: [
-                            Icon.icon(
-                              'copy',
-                              { class: className(styles.iconMd) },
-                              h,
-                            ),
+                            Icon.icon({ name: 'copy', size: 'sm' }, h),
                           ],
                         },
                         h,
@@ -1170,13 +1121,7 @@ export const inputGroupPleatPreview: ExamplePreviewProvider = <Msg>(
                 in_('rtlSearch', 'rtl-search', { placeholder: t.placeholder }),
                 InputGroup.inputGroupAddon(
                   {
-                    children: [
-                      Icon.icon(
-                        'search',
-                        { class: className(styles.iconMd) },
-                        h,
-                      ),
-                    ],
+                    children: [Icon.icon({ name: 'search', size: 'sm' }, h)],
                   },
                   h,
                 ),

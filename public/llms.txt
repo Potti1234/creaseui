@@ -69,6 +69,7 @@
 - Grid: /docs/components/grid — install with `npx creaseui add grid`
 - Heading: /docs/components/heading — install with `npx creaseui add heading`
 - Hover Card: /docs/components/hover-card — install with `npx creaseui add hover-card`
+- Icon: /docs/components/icon — install with `npx creaseui add icon`
 - Indicator: /docs/components/indicator — install with `npx creaseui add indicator`
 - Info Tip: /docs/components/info-tip — install with `npx creaseui add info-tip`
 - Input Group: /docs/components/input-group — install with `npx creaseui add input-group`

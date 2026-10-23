@@ -39,6 +39,7 @@ const categories = {
     'chart',
     'data-table',
     'item',
+    'icon',
     'kbd',
     'marker',
     'table',

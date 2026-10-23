@@ -11,7 +11,7 @@ import {
   inputFixtures,
   inputRtlCopy,
 } from '@/docs/components/pages/input/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Badge from '@/stylex/badge'
 import * as Button from '@/stylex/button'
 import * as ButtonGroup from '@/stylex/button-group'
@@ -37,7 +37,6 @@ const styles = stylex.create({
   },
   form: { maxWidth: '24rem', width: '100%' },
   push: { marginInlineStart: 'auto' },
-  iconMd: { height: '1rem', width: '1rem' },
   destructive: { color: 'var(--destructive)' },
 })
 
@@ -367,13 +366,7 @@ const inputView = <Msg>(
                   InputGroup.inputGroupAddon(
                     {
                       align: 'inline-end',
-                      children: [
-                        Icon.icon(
-                          'info',
-                          { class: className(styles.iconMd) },
-                          h,
-                        ),
-                      ],
+                      children: [Icon.icon({ name: 'info', size: 'sm' }, h)],
                     },
                     h,
                   ),

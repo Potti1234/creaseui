@@ -195,7 +195,7 @@ const badgeSource = (
   if (item.badge === 'green')
     return `\n        Avatar.avatarBadge({ ${renderer !== 'tailwind' ? `tone: 'success'` : `class: 'bg-green-600 dark:bg-green-800'`} }, h),`
   if (item.badge === 'icon')
-    return `\n        Avatar.avatarBadge({ children: [Icon.icon('plus', ${renderer !== 'tailwind' ? `{ class: stylex.props(styles.badgeIcon).className ?? '' }` : '{}'}, h)] }, h),`
+    return `\n        Avatar.avatarBadge({ children: [Icon.icon({ name: 'plus'${renderer !== 'tailwind' ? ", size: '3xs'" : ''} }, h)] }, h),`
   return ''
 }
 
@@ -247,7 +247,7 @@ const countSource = (
   if (cluster.count !== undefined)
     return `\n        Avatar.avatarGroupCount({ children: ['${cluster.count}'] }, h),`
   if (cluster.countIcon === true)
-    return `\n        Avatar.avatarGroupCount({ children: [Icon.icon('plus', ${renderer !== 'tailwind' ? `{ class: stylex.props(styles.countIcon).className ?? '' }` : '{}'}, h)] }, h),`
+    return `\n        Avatar.avatarGroupCount({ children: [Icon.icon({ name: 'plus'${renderer !== 'tailwind' ? ", size: 'sm'" : ''} }, h)] }, h),`
   return ''
 }
 
@@ -363,7 +363,7 @@ const componentImports = (
 
 ${stylexStylesSource(fixture)}`
       : ''
-  return `${stylexBits}import * as Avatar from '@/${ui}/avatar'${needsMenu(fixture) ? `\nimport * as DropdownMenu from '@/${ui}/dropdown-menu'` : ''}${needsIcon(fixture) ? `\nimport * as Icon from '@/lib/icon'` : ''}`
+  return `${stylexBits}import * as Avatar from '@/${ui}/avatar'${needsMenu(fixture) ? `\nimport * as DropdownMenu from '@/${ui}/dropdown-menu'` : ''}${needsIcon(fixture) ? `\nimport * as Icon from '@/${ui}/icon'` : ''}`
 }
 
 const source = (

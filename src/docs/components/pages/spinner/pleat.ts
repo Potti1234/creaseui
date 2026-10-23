@@ -7,7 +7,7 @@ import {
   spinnerFixtures,
   type SpinnerFixture,
 } from '@/docs/components/pages/spinner/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Badge from '@/pleat/badge'
 import * as Button from '@/pleat/button'
 import * as Empty from '@/pleat/empty'
@@ -293,10 +293,7 @@ const fixtureView = <Msg>(
                           size: 'icon-sm',
                           layoutStyle: styles.push,
                           children: [
-                            Icon.arrowUp(
-                              { class: className(styles.iconMd) },
-                              h,
-                            ),
+                            Icon.icon({ name: 'arrow-up', size: 'sm' }, h),
                             h.span(
                               [h.Class(className(styles.srOnly))],
                               ['Send'],

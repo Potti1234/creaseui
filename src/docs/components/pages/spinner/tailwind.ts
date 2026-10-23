@@ -7,7 +7,7 @@ import {
   spinnerFixtures,
   type SpinnerFixture,
 } from '@/docs/components/pages/spinner/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Badge from '@/ui/badge'
 import * as Button from '@/ui/button'
 import * as Empty from '@/ui/empty'
@@ -238,7 +238,7 @@ const fixtureView = (fixture: SpinnerFixture, h: HtmlBuilder<Got>): Html => {
                           size: 'icon-sm',
                           class: 'ml-auto',
                           children: [
-                            Icon.arrowUp({}, h),
+                            Icon.icon({ name: 'arrow-up' }, h),
                             h.span([h.Class('sr-only')], ['Send']),
                           ],
                         },

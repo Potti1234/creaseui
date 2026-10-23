@@ -16,7 +16,7 @@ const styles = {
   grid: Style.make({
     gap: '1rem',
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 12rem), 1fr))',
   }),
   row: Style.make({ gap: '2rem', alignItems: 'flex-end', display: 'flex' }),
   sparkline: Style.make({

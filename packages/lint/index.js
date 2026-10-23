@@ -1,6 +1,7 @@
 import { plugin as shadcn } from '@shadcn/lint'
 import stylexPlugin from '@stylexjs/eslint-plugin'
 
+import { formAssociation } from './rules/form-association.js'
 import { noComponentRestyle } from './rules/no-component-restyle.js'
 import { noFoldkitInlineStyle } from './rules/no-foldkit-inline-style.js'
 import { noStylexEscape } from './rules/no-stylex-escape.js'
@@ -15,6 +16,7 @@ export { CreaseConfigError } from './lib/strict/ownership.js'
 export { createStrictContext } from './lib/strict/context.js'
 
 export const rules = {
+  'form-association': formAssociation,
   'no-component-restyle': noComponentRestyle,
   'no-foldkit-inline-style': noFoldkitInlineStyle,
   'no-stylex-escape': noStylexEscape,
@@ -53,6 +55,7 @@ export const tailwind = (options = {}) => {
       },
     },
     rules: {
+      'crease/form-association': severity,
       'crease/no-component-restyle':
         options.restyle === false
           ? 'off'
@@ -94,6 +97,7 @@ export const stylex = (options = {}) => {
     ignores: options.ignores ?? [],
     plugins: { '@stylexjs': stylexPlugin, crease: plugin },
     rules: {
+      'crease/form-association': severity,
       '@stylexjs/enforce-extension': [
         severity,
         {
@@ -164,6 +168,7 @@ export const pleat = (options = {}) => {
     ignores: options.ignores ?? [],
     plugins: { crease: plugin },
     rules: {
+      'crease/form-association': severity,
       'crease/no-foldkit-inline-style':
         options.inlineStyles === 'forbid' ? severity : 'off',
       'crease/pleat-prop-limits': [

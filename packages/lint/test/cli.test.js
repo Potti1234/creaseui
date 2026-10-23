@@ -15,6 +15,10 @@ import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 
+import { ESLint } from 'eslint'
+
+import { creaseui } from '../creaseui.js'
+
 const bin = fileURLToPath(new URL('../bin/creaseui-lint.js', import.meta.url))
 const fixture = fileURLToPath(
   new URL('./fixtures/strict-app/', import.meta.url),
@@ -84,11 +88,13 @@ test('invalid setup exits 2', () => {
 test('init and doctor cover public aliases of rendering exports', () => {
   const directory = scratch()
   /* doctor loads the generated config, which imports @creaseui/lint. */
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
   )
   const button = path.join(directory, 'src/design/button.ts')
   const lock = () =>
@@ -122,13 +128,211 @@ test('init and doctor cover public aliases of rendering exports', () => {
   rmSync(directory, { force: true, recursive: true })
 })
 
-test('doctor reports installed components missing from the receipt', () => {
+test('alias-only renderers and renamed re-exports are covered and enforced', async () => {
   const directory = scratch()
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
+  )
+  /* No HtmlBuilder text: only the type checker sees that this renders. */
+  writeFileSync(
+    path.join(directory, 'src/design/actions.ts'),
+    "import { button } from './button'\nexport const aliasOnly = button\n",
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/stack.ts'),
+    `${readFileSync(path.join(directory, 'src/design/stack.ts'), 'utf8')}import { button as base } from './button'\nexport { base as stackAction }\n`,
+  )
+  const initArgs = ['init', '--renderer', 'pleat', '--components', 'src/design']
+  assert.equal(run(directory, ...initArgs).status, 0)
+  const receipt = JSON.parse(
+    readFileSync(path.join(directory, 'crease.lock.json'), 'utf8'),
+  )
+  const actions = receipt.artifacts.find(artifact =>
+    artifact.files.some(file => file.path === 'src/design/actions.ts'),
+  )
+  assert.deepEqual(actions.files, [
+    { path: 'src/design/actions.ts', rawRendering: false, role: 'renderer' },
+  ])
+  assert.deepEqual(
+    actions.exports.map(entry => [entry.name, entry.contract]),
+    [['aliasOnly', 'control.button']],
+  )
+  const doctor = run(directory, 'doctor')
+  assert.equal(doctor.status, 0, doctor.stdout)
+  assert.match(doctor.stdout, /coverage complete/u)
+
+  writeFileSync(
+    path.join(directory, 'src/consumer.ts'),
+    [
+      "import type { Html, HtmlBuilder } from 'foldkit/html'",
+      "import { aliasOnly } from './design/actions'",
+      "import { stackAction } from './design/stack'",
+      "export const a = (h: HtmlBuilder<unknown>): Html => aliasOnly({ children: ['A'], class: 'text-red-500' }, h)",
+      "export const b = (h: HtmlBuilder<unknown>): Html => stackAction({ children: ['B'], class: 'text-red-500' }, h)",
+      "export const c = (h: HtmlBuilder<unknown>): Html => stackAction({ children: ['C'], variant: 'outline' }, h)",
+      '',
+    ].join('\n'),
+  )
+  const [result] = await new ESLint({
+    cwd: directory,
+    overrideConfig: creaseui({
+      files: ['src/consumer.ts'],
+      renderer: 'pleat',
+      rootDir: directory,
+    }),
+    overrideConfigFile: true,
+  }).lintFiles(['src/consumer.ts'])
+  const lines = result.messages
+    .filter(message => message.ruleId === 'crease/component-contract')
+    .map(message => message.line)
+  assert.deepEqual(lines, [4, 5], JSON.stringify(result.messages, null, 2))
+  rmSync(directory, { force: true, recursive: true })
+})
+
+test('owned renderers without a raw grant keep every application rule', async () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'junction',
+  )
+  /* The builder type below is computed from the installed Foldkit types. */
+  symlinkSync(
+    fileURLToPath(new URL('../../../node_modules/foldkit', import.meta.url)),
+    path.join(directory, 'node_modules/foldkit'),
+    'junction',
+  )
+  /* Review F1: no HtmlBuilder text, so init registers them with no raw grant. */
+  writeFileSync(
+    path.join(directory, 'src/design/wrapper.ts'),
+    [
+      "import { button } from './button'",
+      "import { layoutStyle } from './contracts'",
+      'type Builder = Parameters<typeof button>[1]',
+      "export const wrapper = (h: Builder) => button({ children: ['Bad'], layoutStyle: layoutStyle({ height: '12px' }) }, h)",
+      '',
+    ].join('\n'),
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/raw-wrapper.ts'),
+    [
+      "import { button } from './button'",
+      'type Builder = Parameters<typeof button>[1]',
+      "export const rawWrapper = (h: Builder) => h.button([], ['Unapproved raw button'])",
+      '',
+    ].join('\n'),
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/approved.ts'),
+    [
+      "import { button } from './button'",
+      'type Builder = Parameters<typeof button>[1]',
+      "export const approved = (h: Builder) => button({ variant: 'outline', children: ['Fine'] }, h)",
+      '',
+    ].join('\n'),
+  )
+  const initArgs = ['init', '--renderer', 'pleat', '--components', 'src/design']
+  assert.equal(run(directory, ...initArgs).status, 0)
+  const receipt = JSON.parse(
+    readFileSync(path.join(directory, 'crease.lock.json'), 'utf8'),
+  )
+  const fileOf = name =>
+    receipt.artifacts
+      .flatMap(artifact => artifact.files)
+      .find(file => file.path === `src/design/${name}.ts`)
+  for (const name of ['wrapper', 'raw-wrapper', 'approved'])
+    assert.equal(fileOf(name).rawRendering, false, name)
+  const files = ['wrapper', 'raw-wrapper', 'approved'].map(
+    name => `src/design/${name}.ts`,
+  )
+  const results = await new ESLint({
+    cwd: directory,
+    overrideConfig: creaseui({
+      files: ['src/**/*.ts'],
+      renderer: 'pleat',
+      rootDir: directory,
+    }),
+    overrideConfigFile: true,
+  }).lintFiles(files)
+  const rules = Object.fromEntries(
+    results.map(result => [
+      path.basename(result.filePath, '.ts'),
+      [...new Set(result.messages.map(message => message.ruleId))].sort(),
+    ]),
+  )
+  assert.deepEqual(rules.wrapper, ['crease/component-contract'])
+  assert.ok(
+    rules['raw-wrapper'].includes('crease/no-raw-controls'),
+    JSON.stringify(results.map(result => result.messages)),
+  )
+  assert.deepEqual(rules.approved, [])
+  writeFileSync(
+    path.join(directory, 'src/design/raw-wrapper.ts'),
+    [
+      "import { button } from './button'",
+      'type Builder = Parameters<typeof button>[1]',
+      "export const rawWrapper = (h: Builder) => button({ children: ['Fixed'] }, h)",
+      '',
+    ].join('\n'),
+  )
+  const doctor = run(directory, 'doctor')
+  assert.doesNotMatch(doctor.stdout, /lost crease\//u, doctor.stdout)
+  rmSync(directory, { force: true, recursive: true })
+})
+
+test('doctor reconciles every required rule through imported policy modules', () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'junction',
+  )
+  const initArgs = ['init', '--renderer', 'pleat', '--components', 'src/design']
+  assert.equal(run(directory, ...initArgs).status, 0)
+  const config = path.join(directory, 'eslint.config.js')
+  writeFileSync(
+    path.join(directory, 'crease-base.mjs'),
+    readFileSync(config, 'utf8'),
+  )
+  writeFileSync(
+    config,
+    "import base from './crease-base.mjs'\nimport policy from './policy.mjs'\nexport default [...base, ...policy]\n",
+  )
+  writeFileSync(path.join(directory, 'policy.mjs'), 'export default []\n')
+  assert.equal(run(directory, 'doctor').status, 0)
+  writeFileSync(
+    path.join(directory, 'policy.mjs'),
+    "export default [{ files: ['src/design/button.ts'], rules: { 'crease/no-raw-controls': 'off' } }]\n",
+  )
+  const loosened = run(directory, 'doctor')
+  assert.notEqual(loosened.status, 0, loosened.stdout)
+  assert.match(
+    loosened.stdout,
+    /src\/design\/button\.ts \(registered renderer\) lost no-raw-controls/u,
+  )
+  rmSync(directory, { force: true, recursive: true })
+})
+
+test('doctor reports installed components missing from the receipt', () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'junction',
   )
   writeFileSync(
     path.join(directory, 'components.json'),
@@ -156,11 +360,13 @@ test('doctor reports the archived tutorial as feature-only coverage', () => {
     directory,
     { recursive: true },
   )
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
   )
   const result = run(directory, 'doctor')
   assert.equal(result.status, 2, result.stdout + result.stderr)
@@ -190,6 +396,48 @@ test('doctor reports the archived tutorial as feature-only coverage', () => {
     /css: 1 stylesheets, \d+ violations, 0 unverifiable/u,
   )
   rmSync(directory, { force: true, recursive: true })
+})
+
+test('css and doctor reject raw base paint and unlisted base utilities', () => {
+  for (const css of [
+    '@layer base { * { background: color-mix(in srgb, var(--background) 10%, hotpink); } }',
+    '@layer base { * { @apply opacity-50 rotate-45; } }',
+    '@layer base { * { @apply text-shadow-lg; } }',
+    '@layer base { * { @apply bg-cover; } }',
+    /* Review of 9f14670b, F3: a declared role doesn't make a utility with
+       another Tailwind meaning a colour. */
+    '@theme { --color-cover: var(--background); } @layer base { * { @apply bg-cover; } }',
+    '@theme { --color-shadow-lg: var(--foreground); } @layer base { * { @apply text-shadow-lg; } }',
+  ]) {
+    const directory = scratch()
+    mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+      recursive: true,
+    })
+    symlinkSync(
+      fileURLToPath(new URL('..', import.meta.url)),
+      path.join(directory, 'node_modules/@creaseui/lint'),
+      'junction',
+    )
+    assert.equal(
+      run(
+        directory,
+        'init',
+        '--renderer',
+        'pleat',
+        '--components',
+        'src/design',
+      ).status,
+      0,
+    )
+    writeFileSync(path.join(directory, 'src/global.css'), `${css}\n`)
+    const result = run(directory, 'css')
+    assert.equal(result.status, 1, css + result.stdout + result.stderr)
+    assert.match(result.stdout, /[1-9]\d* violations/u, css)
+    const doctor = run(directory, 'doctor')
+    assert.notEqual(doctor.status, 0, css + doctor.stdout)
+    assert.match(doctor.stdout, /src\/global\.css:1/u, css)
+    rmSync(directory, { force: true, recursive: true })
+  }
 })
 
 test('info and inspect report Foldkit facts and actionable gaps', () => {
@@ -283,6 +531,41 @@ test('--help prints usage and unknown options exit 2 with usage', () => {
   assert.doesNotMatch(unknown.stderr, /\n\s+at /u)
 })
 
+test('inspect follows re-exported program parts', () => {
+  const directory = scratch()
+  writeFileSync(
+    path.join(directory, 'src/design/sidebar-state.ts'),
+    [
+      'export type Model = { open: boolean }',
+      "export type Message = { _tag: 'Toggled' }",
+      'export const init = (): Model => ({ open: true })',
+      'export const update = (model: Model, _message: Message): Model => ({ open: !model.open })',
+      '',
+    ].join('\n'),
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/sidebar.ts'),
+    [
+      "import type { Html, HtmlBuilder } from 'foldkit/html'",
+      "export * from './sidebar-state'",
+      "export const sidebar = (h: HtmlBuilder<unknown>): Html => h.aside([], ['Nav'])",
+      '',
+    ].join('\n'),
+  )
+  assert.equal(
+    run(directory, 'init', '--renderer', 'pleat', '--components', 'src/design')
+      .status,
+    0,
+  )
+  const result = run(directory, 'inspect', '--component', 'sidebar', '--json')
+  assert.equal(result.status, 0, result.stdout + result.stderr)
+  const detail = JSON.parse(result.stdout)
+  assert.deepEqual(detail.program, ['Model', 'Message', 'init', 'update'])
+  assert.match(detail.stateOwnership, /^parent-model/u)
+  assert.match(detail.docs, /forward it to its update/u)
+  rmSync(directory, { force: true, recursive: true })
+})
+
 test('inspect finds renderer-directory installs by item, file or export name', () => {
   const directory = scratch()
   writeFileSync(
@@ -326,11 +609,13 @@ test('init before any install says nothing is installed yet', () => {
 
 test('re-running init registers new installs without rewriting the receipt or config', () => {
   const directory = scratch()
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
   )
   writeFileSync(
     path.join(directory, 'components.json'),
@@ -364,13 +649,55 @@ test('re-running init registers new installs without rewriting the receipt or co
   rmSync(directory, { force: true, recursive: true })
 })
 
-test('doctor reports theme roles that installed components read but no stylesheet defines', () => {
+test('doctor tells runtime component properties apart from missing theme roles', () => {
   const directory = scratch()
-  mkdirSync(path.join(directory, 'node_modules/@creaseui'), { recursive: true })
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
   symlinkSync(
     fileURLToPath(new URL('..', import.meta.url)),
     path.join(directory, 'node_modules/@creaseui/lint'),
-    'dir',
+    'junction',
+  )
+  writeFileSync(
+    path.join(directory, 'components.json'),
+    JSON.stringify({ aliases: { ui: '@/design' } }),
+  )
+  writeFileSync(
+    path.join(directory, 'src/styles.css'),
+    ':root {\n  --color-border: oklch(0.9 0 0);\n}\n',
+  )
+  writeFileSync(path.join(directory, 'src/entry.ts'), "import './styles.css'\n")
+  const tokens = path.join(directory, 'src/design/interaction-tokens.ts')
+  writeFileSync(
+    tokens,
+    "export const tokens = { border: 'var(--color-border)', release: 'calc(var(--drawer-swipe-strength) * 400ms)' }\n",
+  )
+  assert.equal(run(directory, 'init', '--renderer', 'pleat').status, 0)
+  const stale = run(directory, 'doctor')
+  assert.equal(stale.status, 1, stale.stdout)
+  assert.match(
+    stale.stdout,
+    /reads --drawer-swipe-strength without a fallback: runtime properties CreaseUI components set/u,
+  )
+  assert.doesNotMatch(stale.stdout, /no stylesheet defines/u)
+  writeFileSync(
+    tokens,
+    "export const tokens = { border: 'var(--color-border)', release: 'calc(var(--drawer-swipe-strength, 1) * 400ms)' }\n",
+  )
+  assert.doesNotMatch(run(directory, 'doctor').stdout, /drawer-swipe-strength/u)
+  rmSync(directory, { force: true, recursive: true })
+})
+
+test('doctor reports theme roles that installed components read but no stylesheet defines', () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'junction',
   )
   writeFileSync(
     path.join(directory, 'components.json'),
@@ -436,4 +763,232 @@ test('info --catalog lists installable components before anything is installed',
   assert.match(text.stdout, /\n {2}sidebar {16}/u)
   assert.match(run(directory, 'info').stdout, /creaseui-lint info --catalog/u)
   rmSync(directory, { force: true, recursive: true })
+})
+
+test('init does not record init/update of a stateful library as render exports', () => {
+  const directory = scratch()
+  const file = (name, text) => {
+    mkdirSync(path.dirname(path.join(directory, name)), { recursive: true })
+    writeFileSync(path.join(directory, name), text)
+  }
+  file(
+    'components.json',
+    JSON.stringify({
+      aliases: { lib: '@/lib', ui: '@/ui' },
+      tailwind: { css: 'src/styles.css' },
+    }),
+  )
+  file('src/styles.css', '')
+  file('src/entry.ts', "import './styles.css'\n")
+  file(
+    'src/lib/toggle-group.ts',
+    [
+      "import type { Html, HtmlBuilder } from 'foldkit/html'",
+      'export type Model = Readonly<{ id: string; maybeFocusedIndex: number | undefined }>',
+      "export type Message = Readonly<{ _tag: 'Pressed' }>",
+      'export const init = (config: Readonly<{ id: string }>): Model => ({ id: config.id, maybeFocusedIndex: undefined })',
+      'export const update = (model: Model, _message: Message): Model => model',
+      'export const view = <M>(model: Model, h: HtmlBuilder<M>): Html => h.div([], [model.id])',
+      '',
+    ].join('\n'),
+  )
+  const result = run(directory, 'init', '--renderer', 'tailwind')
+  assert.equal(result.status, 0, result.stderr)
+  const receipt = JSON.parse(
+    readFileSync(path.join(directory, 'crease.lock.json'), 'utf8'),
+  )
+  const library = receipt.artifacts.find(artifact =>
+    artifact.files.some(entry => entry.path === 'src/lib/toggle-group.ts'),
+  )
+  assert.deepEqual(library.exports.map(entry => entry.name).sort(), ['view'])
+  rmSync(directory, { force: true, recursive: true })
+})
+
+test('doctor reports foundations that only reach attributes, unselected elements or overwritten keys', () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'junction',
+  )
+  symlinkSync(
+    fileURLToPath(new URL('../../../node_modules/foldkit', import.meta.url)),
+    path.join(directory, 'node_modules/foldkit'),
+    'junction',
+  )
+  mkdirSync(path.join(directory, 'node_modules/@foldkit'))
+  symlinkSync(
+    fileURLToPath(
+      new URL('../../../node_modules/@foldkit/ui', import.meta.url),
+    ),
+    path.join(directory, 'node_modules/@foldkit/ui'),
+    'junction',
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/sidebar.ts'),
+    "import type { Html, HtmlBuilder } from 'foldkit/html'\nexport const sidebar = (h: HtmlBuilder<unknown>): Html => h.aside([], ['Base sidebar'])\n",
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/button.ts'),
+    `import type { Html, HtmlBuilder } from 'foldkit/html'
+export type ButtonProps = Readonly<{
+  onClick?: unknown
+  leadingIcon?: Html
+  children: ReadonlyArray<Html | string>
+}>
+export const button = (props: ButtonProps, h: HtmlBuilder<unknown>): Html =>
+  h.button(
+    props.onClick === undefined ? [] : [h.OnClick(props.onClick)],
+    [
+      ...(props.leadingIcon === undefined ? [] : [props.leadingIcon]),
+      ...props.children,
+    ],
+  )
+`,
+  )
+  writeFileSync(
+    path.join(directory, 'src/design/nested-button.ts'),
+    `import type { Html, HtmlBuilder } from 'foldkit/html'
+export const nestedButton = (
+  props: Readonly<{ slot: Readonly<{ body: Html; onClick?: unknown }> }>,
+  h: HtmlBuilder<unknown>,
+): Html =>
+  h.button(
+    props.slot.onClick === undefined ? [] : [h.OnClick(props.slot.onClick)],
+    [props.slot.body],
+  )
+`,
+  )
+  /* Reviews of 9f14670b (F6), cc41c7fe (F6a, F6b), 6d6756e1 (R2) and
+     9bf48f2e (R4): the supplied cases. */
+  const cases = {
+    atOther: "h.main([], [[sidebar(h), h.div([], ['Other'])].at(1)!])",
+    dynamicAt: 'h.main([], [[sidebar(h)].at(Number(h.div.length))!])',
+    eventPayload: "h.main([h.OnClick(sidebar(h))], ['Rebuilt shell'])",
+    filteredAway: 'h.main([], [sidebar(h)].filter(() => false))',
+    mapDestructured:
+      'h.main([], [{ body: sidebar(h) }].map(({ body }) => body))',
+    mapProperty: 'h.main([], [{ body: sidebar(h) }].map(part => part.body))',
+    overwritten:
+      "{ const parts = { body: sidebar(h) }; return pick({ ...parts, body: h.main([], ['Other']) }) }",
+    slicedAway: "h.main([], [sidebar(h), h.div([], ['Other'])].slice(1))",
+    validDirect: 'h.main([], [sidebar(h)])',
+    validMap: 'h.main([], [sidebar(h)].map(child => child))',
+    clickMetadata:
+      "button({ onClick: sidebar(h), children: ['Rebuilt shell'] }, h)",
+    renderedIcon:
+      "button({ leadingIcon: sidebar(h), children: ['Rebuilt shell'] }, h)",
+    overriddenThroughArgument: "compose(h, { body: h.main([], ['Other']) })",
+    keptThroughArgument: 'compose(h, {})',
+    nestedMetadata:
+      "nestedButton({ slot: { body: h.main([], ['Other']), onClick: sidebar(h) } }, h)",
+    nestedRendered:
+      "nestedButton({ slot: { body: sidebar(h), onClick: 'Clicked' } }, h)",
+    overwrittenSlot: "primitive(h, { toView: () => h.main([], ['Other']) })",
+    keptSlot: 'primitive(h, {})',
+  }
+  writeFileSync(
+    path.join(directory, 'src/design/shell.ts'),
+    [
+      "import { Button } from '@foldkit/ui'",
+      "import type { Html, HtmlBuilder } from 'foldkit/html'",
+      "import { button } from './button'",
+      "import { nestedButton } from './nested-button'",
+      "import { sidebar } from './sidebar'",
+      'const pick = ({ body }: { body: Html }): Html => body',
+      'const compose = (h: HtmlBuilder<unknown>, overrides: Readonly<{ body?: Html }>): Html => pick({ body: sidebar(h), ...overrides })',
+      "const primitive = (h: HtmlBuilder<unknown>, overrides: Readonly<Partial<Pick<Button.ViewConfig<unknown>, 'toView'>>>): Html => Button.view({ toView: () => sidebar(h), ...overrides }, h)",
+      ...Object.entries(cases).map(
+        ([name, body]) =>
+          `export const ${name} = (h: HtmlBuilder<unknown>): Html => ${body}`,
+      ),
+      '',
+    ].join('\n'),
+  )
+  const initArgs = ['init', '--renderer', 'pleat', '--components', 'src/design']
+  assert.equal(run(directory, ...initArgs).status, 0)
+  const lock = path.join(directory, 'crease.lock.json')
+  const receipt = JSON.parse(readFileSync(lock, 'utf8'))
+  for (const artifact of receipt.artifacts) {
+    if (artifact.files.some(file => file.path === 'src/design/sidebar.ts'))
+      artifact.exports = [
+        {
+          contract: 'navigation.sidebar',
+          file: 'src/design/sidebar.ts',
+          name: 'sidebar',
+        },
+      ]
+    if (artifact.files.some(file => file.path === 'src/design/shell.ts'))
+      artifact.exports = Object.keys(cases).map(name => ({
+        contract: 'tasks.shell',
+        file: 'src/design/shell.ts',
+        foundations: ['navigation.sidebar'],
+        name,
+      }))
+  }
+  writeFileSync(lock, JSON.stringify(receipt, null, 2))
+  const doctor = run(directory, 'doctor')
+  rmSync(directory, { force: true, recursive: true })
+  const reported = pattern =>
+    doctor.stdout
+      .split('\n')
+      .filter(line => pattern.test(line))
+      .map(line => /`(\w+)` declares/u.exec(line)[1])
+      .sort()
+  assert.deepEqual(
+    reported(/never renders it: the call's result does not reach/u),
+    [
+      'atOther',
+      'clickMetadata',
+      'eventPayload',
+      'filteredAway',
+      'nestedMetadata',
+      'overriddenThroughArgument',
+      'overwritten',
+      'overwrittenSlot',
+      'slicedAway',
+    ],
+    doctor.stdout,
+  )
+  assert.deepEqual(
+    reported(/can't verify that the call's result reaches/u),
+    ['dynamicAt'],
+    doctor.stdout,
+  )
+  assert.notEqual(doctor.status, 0)
+})
+
+test('css accepts a custom semantic role and names the collision for an ambiguous one', () => {
+  const directory = scratch()
+  mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+    recursive: true,
+  })
+  symlinkSync(
+    fileURLToPath(new URL('..', import.meta.url)),
+    path.join(directory, 'node_modules/@creaseui/lint'),
+    'junction',
+  )
+  const initArgs = ['init', '--renderer', 'pleat', '--components', 'src/design']
+  assert.equal(run(directory, ...initArgs).status, 0)
+  const global = path.join(directory, 'src/global.css')
+  writeFileSync(
+    global,
+    '@theme { --color-brand: var(--foreground); }\n@layer base { * { @apply text-brand; } }\n',
+  )
+  const clean = run(directory, 'css')
+  assert.doesNotMatch(clean.stdout, /global\.css/u, clean.stdout)
+  writeFileSync(
+    global,
+    '@theme { --color-cover: var(--background); }\n@layer base { * { @apply bg-cover; } }\n',
+  )
+  const ambiguous = run(directory, 'css')
+  rmSync(directory, { force: true, recursive: true })
+  assert.equal(ambiguous.status, 1, ambiguous.stdout)
+  assert.match(
+    ambiguous.stdout,
+    /src\/global\.css:2.*@apply bg-cover .* is ambiguous: `bg-cover` is also a Tailwind utility .*rename the role/u,
+  )
 })

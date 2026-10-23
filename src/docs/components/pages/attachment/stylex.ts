@@ -10,7 +10,7 @@ import {
   type AttachmentItemSpec,
   type AttachmentRowSpec,
 } from '@/docs/components/pages/attachment/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Attachment from '@/stylex/attachment'
 import * as Dialog from '@/stylex/dialog'
 import * as Spinner from '@/stylex/spinner'
@@ -44,8 +44,6 @@ const styles = stylex.create({
   fullWidth: { width: '100%' },
   itemWidth: { width: '16rem' },
   mediaImg: { aspectRatio: '1', objectFit: 'cover', width: '100%' },
-  mediaIcon: { height: '1rem', width: '1rem' },
-  actionIcon: { flexShrink: 0, height: '0.75rem', width: '0.75rem' },
 })
 
 type PreviewSnapshot = {
@@ -85,11 +83,7 @@ const itemView = <Msg>(
                       h.Alt(item.alt ?? item.name),
                       h.Class(className(reset.media, styles.mediaImg)),
                     ])
-                  : Icon.icon(
-                      item.icon ?? 'file',
-                      { class: className(styles.mediaIcon) },
-                      h,
-                    ),
+                  : Icon.icon({ name: item.icon ?? 'file', size: 'sm' }, h),
             ],
           },
           h,
@@ -131,11 +125,7 @@ const itemView = <Msg>(
                         ),
                         label: action.label,
                         children: [
-                          Icon.icon(
-                            action.icon,
-                            { class: className(styles.actionIcon) },
-                            h,
-                          ),
+                          Icon.icon({ name: action.icon, size: '2xs' }, h),
                         ],
                       },
                       h,

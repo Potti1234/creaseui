@@ -11,7 +11,7 @@ import {
   itemPeople,
   itemRtlCopy,
 } from '@/docs/components/pages/item/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Avatar from '@/pleat/avatar'
 import * as Button from '@/pleat/button'
 import * as DropdownMenu from '@/pleat/dropdown-menu'
@@ -172,9 +172,7 @@ const demoStack = <Msg>(
           children: [
             Item.itemMedia(
               {
-                children: [
-                  Icon.icon('badge-check', { class: sx(styles.icon5) }, h),
-                ],
+                children: [Icon.icon({ name: 'badge-check', size: 'md' }, h)],
               },
               h,
             ),
@@ -184,9 +182,7 @@ const demoStack = <Msg>(
             ),
             Item.itemActions(
               {
-                children: [
-                  Icon.icon('chevron-right', { class: sx(styles.icon4) }, h),
-                ],
+                children: [Icon.icon({ name: 'chevron-right', size: 'sm' }, h)],
               },
               h,
             ),
@@ -264,9 +260,7 @@ export const itemPleatPreview: ExamplePreviewProvider = <Msg>(
                 Item.itemMedia(
                   {
                     variant: 'icon',
-                    children: [
-                      Icon.icon('inbox', { class: sx(styles.icon4) }, h),
-                    ],
+                    children: [Icon.icon({ name: 'inbox', size: 'sm' }, h)],
                   },
                   h,
                 ),
@@ -298,7 +292,7 @@ export const itemPleatPreview: ExamplePreviewProvider = <Msg>(
                   {
                     variant: 'icon',
                     children: [
-                      Icon.icon('shield-alert', { class: sx(styles.icon4) }, h),
+                      Icon.icon({ name: 'shield-alert', size: 'sm' }, h),
                     ],
                   },
                   h,
@@ -391,11 +385,7 @@ export const itemPleatPreview: ExamplePreviewProvider = <Msg>(
                           rounded: true,
                           ariaLabel: 'Invite',
                           children: [
-                            Icon.icon(
-                              'plus',
-                              { class: sx(styles.iconBtn4) },
-                              h,
-                            ),
+                            Icon.icon({ name: 'plus', size: 'sm' }, h),
                           ],
                         },
                         h,
@@ -617,11 +607,7 @@ export const itemPleatPreview: ExamplePreviewProvider = <Msg>(
                             rounded: true,
                             ariaLabel: `Invite ${person.username}`,
                             children: [
-                              Icon.icon(
-                                'plus',
-                                { class: sx(styles.iconBtn4) },
-                                h,
-                              ),
+                              Icon.icon({ name: 'plus', size: 'sm' }, h),
                             ],
                           },
                           h,
@@ -716,11 +702,7 @@ export const itemPleatPreview: ExamplePreviewProvider = <Msg>(
                 Item.itemActions(
                   {
                     children: [
-                      Icon.icon(
-                        'chevron-right',
-                        { class: sx(styles.icon4) },
-                        h,
-                      ),
+                      Icon.icon({ name: 'chevron-right', size: 'sm' }, h),
                     ],
                   },
                   h,
@@ -756,11 +738,7 @@ export const itemPleatPreview: ExamplePreviewProvider = <Msg>(
                 Item.itemActions(
                   {
                     children: [
-                      Icon.icon(
-                        'external-link',
-                        { class: sx(styles.icon4) },
-                        h,
-                      ),
+                      Icon.icon({ name: 'external-link', size: 'sm' }, h),
                     ],
                   },
                   h,
@@ -781,10 +759,7 @@ export const itemPleatPreview: ExamplePreviewProvider = <Msg>(
             ),
           trigger: h.span(
             [h.Class(sx(styles.triggerContent))],
-            [
-              'Select',
-              Icon.icon('chevron-down', { class: sx(styles.iconBtn4) }, h),
-            ],
+            ['Select', Icon.icon({ name: 'chevron-down', size: 'sm' }, h)],
           ),
           triggerButtonVariant: 'outline',
           triggerLayoutStyle:

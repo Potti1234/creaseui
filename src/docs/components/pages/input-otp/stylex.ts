@@ -8,7 +8,7 @@ import {
   inputOtpFixtures,
   inputOtpRtlCopy,
 } from '@/docs/components/pages/input-otp/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Button from '@/stylex/button'
 import * as Card from '@/stylex/card'
 import * as Field from '@/stylex/field'
@@ -188,7 +188,7 @@ export const inputOtpStyleXPreview: ExamplePreviewProvider = <Msg>(
                                 variant: 'outline',
                                 size: 'xs',
                                 children: [
-                                  Icon.icon('refresh-cw', {}, h),
+                                  Icon.icon({ name: 'refresh-cw' }, h),
                                   'Resend Code',
                                 ],
                               },

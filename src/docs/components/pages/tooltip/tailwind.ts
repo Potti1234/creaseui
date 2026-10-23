@@ -8,7 +8,7 @@ import {
   tooltipFixtures,
   type TooltipTipSpec,
 } from '@/docs/components/pages/tooltip/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Kbd from '@/ui/kbd'
 import * as Tooltip from '@/ui/tooltip'
 
@@ -35,7 +35,8 @@ const tipView = (
     {
       model: model.tooltips[tip.id] ?? Tooltip.init({ id: tip.id }),
       toParentMessage: message => GotTooltipMessage({ id: tip.id, message }),
-      trigger: tip.iconTrigger === true ? Icon.icon('save', {}, h) : tip.label,
+      trigger:
+        tip.iconTrigger === true ? Icon.icon({ name: 'save' }, h) : tip.label,
       content:
         tip.kbd === undefined
           ? content

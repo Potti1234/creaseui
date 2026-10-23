@@ -8,7 +8,7 @@ import {
   type StepperFixturePanel,
   type StepperFixtureStep,
 } from '@/docs/components/pages/stepper/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Stepper from '@/pleat/stepper'
 import { alert, alertDescription, alertTitle } from '@/pleat/alert'
 import { badge } from '@/pleat/badge'
@@ -256,7 +256,7 @@ const stepConfig = <Msg>(
   ...(step.status !== undefined ? { status: step.status } : {}),
   ...(step.isOptional === true ? { isOptional: true } : {}),
   ...(step.indicator === 'icon'
-    ? { indicator: Icon.icon(step.icon ?? 'info', {}, h) }
+    ? { indicator: Icon.icon({ name: step.icon ?? 'info' }, h) }
     : step.indicator !== undefined && step.indicator !== 'auto'
       ? { indicator: step.indicator }
       : {}),

@@ -7,7 +7,7 @@ import {
   type CenterFixture,
   centerFixtures,
 } from '@/docs/components/pages/center/shared'
-import { icon } from '@/lib/icon'
+import { icon, type IconName } from '@/pleat/icon'
 import { className } from '@/pleat/style'
 import * as Button from '@/pleat/button'
 import * as Card from '@/pleat/card'
@@ -71,13 +71,13 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
   )
 
 const horizontalView = <Msg>(h: HtmlBuilder<Msg>): Html => {
-  const iconButton = (name: string, label: string): Html =>
+  const iconButton = (name: IconName, label: string): Html =>
     Button.button(
       {
         variant: 'ghost',
         size: 'icon-sm',
         ariaLabel: label,
-        children: [icon(name, { class: className(styles.iconBtn4) }, h)],
+        children: [icon({ name: name, size: 'sm' }, h)],
       },
       h,
     )
@@ -141,7 +141,7 @@ const insideCardView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                         gap: 2,
                         hAlign: 'center',
                         children: [
-                          icon('inbox', { class: className(styles.icon) }, h),
+                          icon({ name: 'inbox', size: 'lg', tone: 'muted' }, h),
                           h.p(
                             [h.Class(className(reset.text, styles.heading))],
                             ['No messages yet'],

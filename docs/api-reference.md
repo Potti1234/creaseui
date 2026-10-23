@@ -718,6 +718,7 @@ Source: [`src/ui/dropdown-menu.ts`](../src/ui/dropdown-menu.ts)
 | `Model` | type | `Model = typeof Model.Type` |
 | `Message` | value | `Message: value` |
 | `Message` | type | `Message = typeof Message.Type` |
+| `FocusTrigger` | value | `FocusTrigger: value` |
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage<Item extends string = string> = Readonly<{ _tag: 'Selected'; value: Item; index: number; }>` |
 | `init` | function | `init(config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean; }>): Model` |
@@ -890,6 +891,18 @@ Source: [`src/ui/hover-card.ts`](../src/ui/hover-card.ts)
 | `HoverCardAlign` | type | `HoverCardAlign = 'start' \| 'center' \| 'end'` |
 | `HoverCardProps` | type | `HoverCardProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; content: Html \| string; triggerButtonVariant?: Button.ButtonVariants['variant']; triggerButtonSize?: Button.ButtonVariants['size']; align?: Hove…` |
 | `hoverCard` | function | `hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+
+## Icon
+
+Source: [`src/ui/icon.ts`](../src/ui/icon.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `IconName` | type | `IconName = IconSource.IconName` |
+| `iconNames` | value | `iconNames: ReadonlyArray<IconName>` |
+| `IconSize` | type | `IconSize = '3xs' \| '2xs' \| 'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` |
+| `IconProps` | type | `IconProps = Readonly<{ name: IconName; size?: IconSize; tone?: 'muted' \| 'primary'; filled?: boolean; rotation?: 0 \| 90 \| 180; ariaLabel?: string; dataIcon?: 'inline-start' \| 'inline-end'; class?: string; }>` |
+| `icon` | function | `icon<Msg>(props: IconProps, h: HtmlBuilder<Msg>): Html` |
 
 ## Indicator
 
@@ -1664,7 +1677,7 @@ Source: [`src/ui/sidebar.ts`](../src/ui/sidebar.ts)
 | `SidebarCollapsible` | type | `SidebarCollapsible = 'offcanvas' \| 'icon' \| 'none'` |
 | `SidebarProviderProps` | type | `SidebarProviderProps = Slot & Readonly<{ state?: SidebarState; width?: string; mobileWidth?: string; iconWidth?: string; }>` |
 | `sidebarProvider` | function | `sidebarProvider<Msg>(props: SidebarProviderProps, h: HtmlBuilder<Msg>): Html` |
-| `SidebarProps` | type | `SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' \| 'contained'; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>` |
+| `SidebarProps` | type | `SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' \| 'contained'; isMobileOpen?: boolean; mobileId?: string; onMobileDismiss?: Msg; }>` |
 | `sidebar` | function | `sidebar<Msg>(props: SidebarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `SidebarTriggerProps` | type | `SidebarTriggerProps<Msg> = Readonly<{ onClick: Msg; onMobileClick?: Msg; class?: string; }>` |
 | `sidebarTrigger` | function | `sidebarTrigger<Msg>(props: SidebarTriggerProps<Msg>, h: HtmlBuilder<Msg>): Html` |

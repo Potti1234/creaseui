@@ -8,7 +8,7 @@ import {
   badgeStyleXPalette,
 } from '@/docs/components/pages/badge/shared'
 import { className } from '@/pleat/style'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Badge from '@/pleat/badge'
 import * as Spinner from '@/pleat/spinner'
 
@@ -43,10 +43,10 @@ const iconFor = <Msg>(item: BadgeItem, h: HtmlBuilder<Msg>): Array<Html> => {
     item.icon.position === 'start' ? 'inline-start' : 'inline-end'
   const icon =
     item.icon.name === 'badge-check'
-      ? Icon.badgeCheck({ dataIcon }, h)
+      ? Icon.icon({ name: 'badge-check', dataIcon }, h)
       : item.icon.name === 'bookmark'
-        ? Icon.bookmark({ dataIcon }, h)
-        : Icon.arrowUpRight({ dataIcon }, h)
+        ? Icon.icon({ name: 'bookmark', dataIcon }, h)
+        : Icon.icon({ name: 'arrow-up-right', dataIcon }, h)
   return [icon]
 }
 

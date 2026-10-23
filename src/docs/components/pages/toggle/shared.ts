@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -6,7 +7,7 @@ export interface ToggleItem {
   readonly key: string
   readonly label: string
   readonly ariaLabel: string
-  readonly icon?: string
+  readonly icon?: IconName
   readonly variant?: 'default' | 'outline'
   readonly size?: 'sm' | 'default' | 'lg'
   readonly isDisabled?: boolean
@@ -163,7 +164,7 @@ const emitToggle = (
   const children =
     item.icon === undefined
       ? `['${sq(item.label)}']`
-      : `[Icon.icon('${item.icon}', {}, h), '${sq(item.label)}']`
+      : `[Icon.icon({ name: '${item.icon}' }, h), '${sq(item.label)}']`
   return `Toggle.toggle({ ${props.join(', ')}, children: ${children} }, h)`
 }
 
@@ -202,7 +203,7 @@ const emitImports = (fixture: ToggleFixture, isStyleX: boolean): string => {
   }
   parts.push(`import * as Toggle from '@/${isStyleX ? 'stylex' : 'ui'}/toggle'`)
   if (fixture.items.some(item => item.icon !== undefined)) {
-    parts.push(`import * as Icon from '@/lib/icon'`)
+    parts.push(`import * as Icon from '@/${isStyleX ? 'stylex' : 'ui'}/icon'`)
   }
   if (isStyleX && fixture.kind === 'row') {
     parts.push(`import { className } from '@/stylex/style'`)

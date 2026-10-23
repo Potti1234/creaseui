@@ -75,6 +75,7 @@ import { mobileNavStyleXPreview } from '@/docs/components/pages/mobile-nav/style
 import { sheetStyleXPreview } from '@/docs/components/pages/sheet/stylex'
 import { popoverStyleXPreview } from '@/docs/components/pages/popover/stylex'
 import { hoverCardStyleXPreview } from '@/docs/components/pages/hover-card/stylex'
+import { iconStyleXPreview } from '@/docs/components/pages/icon/stylex'
 import { indicatorStyleXPreview } from '@/docs/components/pages/indicator/stylex'
 import { tokenizerStyleXPreview } from '@/docs/components/pages/tokenizer/stylex'
 import { tooltipStyleXPreview } from '@/docs/components/pages/tooltip/stylex'
@@ -182,6 +183,7 @@ installExamplePreviewProvider('drawer', drawerStyleXPreview)
 installExamplePreviewProvider('sheet', sheetStyleXPreview)
 installExamplePreviewProvider('popover', popoverStyleXPreview)
 installExamplePreviewProvider('hover-card', hoverCardStyleXPreview)
+installExamplePreviewProvider('icon', iconStyleXPreview)
 installExamplePreviewProvider('indicator', indicatorStyleXPreview)
 installExamplePreviewProvider('tokenizer', tokenizerStyleXPreview)
 installExamplePreviewProvider('tooltip', tooltipStyleXPreview)

@@ -9,7 +9,7 @@ import {
   type TreeListFixture,
   type TreeListFixtureItem,
 } from '@/docs/components/pages/tree-list/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Badge from '@/ui/badge'
 import * as TreeList from '@/ui/tree-list'
 
@@ -46,10 +46,10 @@ const decorateItems = <Msg>(
     ...(item.startIcon === undefined
       ? {}
       : {
-          startContent: Icon.icon(item.startIcon, { class: 'size-4' }, h),
+          startContent: Icon.icon({ name: item.startIcon, size: 'sm' }, h),
         }),
     ...(item.endIcon !== undefined
-      ? { endContent: Icon.icon(item.endIcon, { class: 'size-4' }, h) }
+      ? { endContent: Icon.icon({ name: item.endIcon, size: 'sm' }, h) }
       : item.endBadge !== undefined
         ? { endContent: Badge.badge({ children: [item.endBadge] }, h) }
         : {}),

@@ -8,10 +8,13 @@ import {
   dialogLorem,
   dialogRtlFields,
   dialogShareUrl,
+  dialogInviteFormId,
+  invitedSummaryText,
 } from '@/docs/components/pages/dialog/shared'
 import * as Button from '@/pleat/button'
 import * as Dialog from '@/pleat/dialog'
 import * as Field from '@/pleat/field'
+import * as Form from '@/pleat/form'
 import * as Input from '@/pleat/input'
 import { className } from '@/pleat/style'
 
@@ -50,10 +53,21 @@ const styles = {
     height: '1px',
     width: '1px',
   }),
+  invited: Style.make({
+    margin: 0,
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+  }),
   copy: Style.make({ fontSize: '0.875rem', lineHeight: '1.25rem' }),
 }
 
-type PreviewModel = { name: string; username: string }
+type PreviewModel = {
+  name: string
+  username: string
+  inviteEmail: string
+  inviteError: string | null
+  invited: ReadonlyArray<string>
+}
 
 const scrollableContent = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div(
@@ -285,6 +299,77 @@ export const dialogPleatPreview: ExamplePreviewProvider = <Msg>(
         h,
       )
       break
+    case 'invite': {
+      const send = (tag: string, extra: object = {}): Msg =>
+        onMessageJson(JSON.stringify({ _tag: tag, ...extra }))
+      dialog = Dialog.dialog(
+        {
+          ...shared,
+          layoutStyle: styles.shareWidth,
+          content: () => [
+            Form.form(
+              {
+                id: dialogInviteFormId,
+                ariaLabel: 'Invite member',
+                onSubmit: send('SubmittedInvite'),
+                children: [
+                  Field.controlField(
+                    {
+                      id: 'docs-dialog-invite-email',
+                      label: 'Email',
+                      ...(preview.inviteError === null
+                        ? {}
+                        : { error: preview.inviteError }),
+                      toControl: (parts, controlH) =>
+                        Input.input(
+                          {
+                            id: parts.controlId,
+                            name: 'email',
+                            type: 'email',
+                            autocomplete: 'email',
+                            isRequired: true,
+                            value: preview.inviteEmail,
+                            onInput: value =>
+                              send('ChangedInviteEmail', { value }),
+                            ...(parts.describedBy === undefined
+                              ? {}
+                              : { describedBy: parts.describedBy }),
+                            isInvalid: parts.isInvalid,
+                          },
+                          controlH,
+                        ),
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+          ],
+          footer: () => [
+            Button.button(
+              {
+                type: 'button',
+                variant: 'outline',
+                onClick: send('CancelledInvite'),
+                children: ['Cancel'],
+              },
+              h,
+            ),
+            Button.button(
+              {
+                type: 'submit',
+                form: dialogInviteFormId,
+                children: ['Send invite'],
+              },
+              h,
+            ),
+          ],
+        },
+        h,
+      )
+      break
+    }
     case 'rtl':
       dialog = Dialog.dialog(
         {
@@ -344,5 +429,19 @@ export const dialogPleatPreview: ExamplePreviewProvider = <Msg>(
       )
       break
   }
-  return h.div([], [trigger, dialog])
+  return h.div(
+    [],
+    [
+      trigger,
+      dialog,
+      ...(fixture.kind === 'invite'
+        ? [
+            h.p(
+              [h.Class(className(styles.invited))],
+              [invitedSummaryText(preview.invited)],
+            ),
+          ]
+        : []),
+    ],
+  )
 }

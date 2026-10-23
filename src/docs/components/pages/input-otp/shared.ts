@@ -87,7 +87,7 @@ const emitImports = (fixture: InputOtpFixture, isStyleX: boolean): string => {
   }
   parts.push(`import * as InputOtp from '@/${base}/input-otp'`)
   if (kindUsesIcon(fixture.kind)) {
-    parts.push("import * as Icon from '@/lib/icon'")
+    parts.push(`import * as Icon from '@/${base}/icon'`)
   }
   return parts.join('\n')
 }
@@ -230,7 +230,7 @@ const emitBody = (fixture: InputOtpFixture, isStyleX: boolean): string => {
               Button.button({
                 variant: 'outline',
                 size: 'xs',
-                children: [Icon.icon('refresh-cw', {}, h), 'Resend Code'],
+                children: [Icon.icon({ name: 'refresh-cw' }, h), 'Resend Code'],
               }, h),
             ]),
             ${otpSlots},

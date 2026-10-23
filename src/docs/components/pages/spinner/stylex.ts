@@ -7,7 +7,7 @@ import {
   spinnerFixtures,
   type SpinnerFixture,
 } from '@/docs/components/pages/spinner/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Badge from '@/stylex/badge'
 import * as Button from '@/stylex/button'
 import * as Empty from '@/stylex/empty'
@@ -42,7 +42,6 @@ const styles = stylex.create({
   },
   push: { marginInlineStart: 'auto' },
   spinnerIcon: { flexShrink: 0 },
-  iconMd: { height: '1rem', width: '1rem' },
   srOnly: {
     margin: '-1px',
     overflow: 'hidden',
@@ -292,10 +291,7 @@ const fixtureView = <Msg>(
                           size: 'icon-sm',
                           layoutStyle: styles.push,
                           children: [
-                            Icon.arrowUp(
-                              { class: className(styles.iconMd) },
-                              h,
-                            ),
+                            Icon.icon({ name: 'arrow-up', size: 'sm' }, h),
                             h.span(
                               [h.Class(className(styles.srOnly))],
                               ['Send'],

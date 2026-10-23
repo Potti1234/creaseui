@@ -12,7 +12,7 @@ import {
   type BubbleReactionsSpec,
   type BubbleSpec,
 } from '@/docs/components/pages/bubble/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Bubble from '@/stylex/bubble'
 import * as Button from '@/stylex/button'
 import * as Popover from '@/stylex/popover'
@@ -48,29 +48,12 @@ const styles = stylex.create({
     width: '100%',
   },
   preLine: { whiteSpace: 'pre-line' },
-  chevron: {
-    transform: 'rotate(0deg)',
-    transitionDuration: {
-      default: interactionTokens.motionFast,
-      '@media (prefers-reduced-motion: reduce)': interactionTokens.motionNone,
-    },
-    transitionProperty: 'transform',
-    transitionTimingFunction: interactionTokens.easingStandard,
-    height: '1rem',
-    width: '1rem',
-  },
-  chevronExpanded: { transform: 'rotate(180deg)' },
   triggerLink: {
     padding: 0,
     gap: '0.25rem',
     alignItems: 'center',
     color: 'var(--muted-foreground)',
     display: 'inline-flex',
-  },
-  icon: {
-    color: 'var(--muted-foreground)',
-    fontSize: '0.875rem',
-    lineHeight: '1.25rem',
   },
   iconTrigger: {
     borderRadius: foundationTokens.radiusMd,
@@ -180,7 +163,7 @@ const reactionsView = <Msg>(
                   onMessageJson(
                     JSON.stringify({ _tag: 'GotTooltipMessage', message }),
                   ),
-                trigger: Icon.icon(reactions.icon, {}, h),
+                trigger: Icon.icon({ name: reactions.icon }, h),
                 triggerLayoutStyle: styles.iconTrigger as ComponentLayoutStyle,
                 content: reactions.content,
                 ariaLabel: 'Read receipt',
@@ -203,9 +186,10 @@ const reactionsView = <Msg>(
                     JSON.stringify({ _tag: 'GotPopoverMessage', message }),
                   ),
                 trigger: Icon.icon(
-                  reactions.icon,
                   {
-                    class: className(styles.icon),
+                    name: reactions.icon,
+                    size: 'xs',
+                    tone: 'muted',
                     ariaLabel: 'Show error details',
                   },
                   h,
@@ -289,12 +273,10 @@ const contentView = <Msg>(
                 [
                   model.open ? 'Show less' : 'Show more',
                   Icon.icon(
-                    'chevron-down',
                     {
-                      class: className(
-                        styles.chevron,
-                        model.open && styles.chevronExpanded,
-                      ),
+                      name: 'chevron-down',
+                      size: 'sm',
+                      rotation: model.open ? 180 : 0,
                     },
                     h,
                   ),

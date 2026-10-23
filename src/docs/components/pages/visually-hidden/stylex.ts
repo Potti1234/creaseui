@@ -10,7 +10,7 @@ import {
   visuallyHiddenFixtures,
   vhStats,
 } from '@/docs/components/pages/visually-hidden/shared'
-import { icon } from '@/lib/icon'
+import { icon } from '@/stylex/icon'
 import { className } from '@/stylex/style'
 import * as Badge from '@/stylex/badge'
 import * as Button from '@/stylex/button'
@@ -26,16 +26,8 @@ const styles = stylex.create({
   body: { fontSize: '0.875rem', lineHeight: '1.25rem' },
   bodyBold: { fontSize: '0.875rem', fontWeight: 700, lineHeight: '1.25rem' },
   display: { fontSize: '1.8125rem', fontWeight: 400, lineHeight: '1.2414' },
-  smallIcon: {
-    color: 'var(--muted-foreground)',
-    height: '1rem',
-    width: '1rem',
-  },
-  upIcon: {
-    color: 'var(--accent-foreground)',
-    height: '1rem',
-    width: '1rem',
-  },
+  upIcon: { color: 'var(--accent-foreground)', display: 'inline-flex' },
+  downIcon: { color: 'var(--muted-foreground)', display: 'inline-flex' },
   mutedCard: {
     borderColor: 'rgba(0, 0, 0, 0)',
     borderRadius: '0.875rem',
@@ -56,7 +48,6 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
   },
-  iconBtn4: { flexShrink: 0, height: '1rem', width: '1rem' },
 })
 
 const COLUMNS = ['Backlog', 'In progress', 'Done'] as const
@@ -112,11 +103,7 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                                   size: 'icon',
                                   ariaLabel: action.label,
                                   children: [
-                                    icon(
-                                      action.icon,
-                                      { class: className(styles.iconBtn4) },
-                                      h,
-                                    ),
+                                    icon({ name: action.icon, size: 'sm' }, h),
                                   ],
                                 },
                                 h,
@@ -145,8 +132,7 @@ const showcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                             vAlign: 'center',
                             children: [
                               icon(
-                                'volume-2',
-                                { class: className(styles.smallIcon) },
+                                { name: 'volume-2', size: 'sm', tone: 'muted' },
                                 h,
                               ),
                               supporting('What a screen reader hears', h),
@@ -311,16 +297,28 @@ const supplementaryView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                       gap: 1,
                       vAlign: 'center',
                       children: [
-                        icon(
-                          stat.direction === 'up' ? 'arrow-up' : 'arrow-down',
-                          {
-                            class: className(
-                              stat.direction === 'up'
-                                ? styles.upIcon
-                                : styles.smallIcon,
+                        h.span(
+                          [
+                            h.Class(
+                              className(
+                                stat.direction === 'up'
+                                  ? styles.upIcon
+                                  : styles.downIcon,
+                              ),
                             ),
-                          },
-                          h,
+                          ],
+                          [
+                            icon(
+                              {
+                                name:
+                                  stat.direction === 'up'
+                                    ? 'arrow-up'
+                                    : 'arrow-down',
+                                size: 'sm',
+                              },
+                              h,
+                            ),
+                          ],
                         ),
                         body(stat.delta, h),
                         VisuallyHidden.visuallyHidden(

@@ -13,7 +13,7 @@ import {
 } from '@/docs/components/pages/dropdown-menu/shared'
 import * as Avatar from '@/stylex/avatar'
 import * as DropdownMenu from '@/stylex/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 
 const styles = stylex.create({
   frame: { gap: '0.75rem', display: 'grid', justifyItems: 'center' },
@@ -81,7 +81,9 @@ export const dropdownMenuStyleXPreview: ExamplePreviewProvider = <Msg>(
             )
             return spec === undefined
               ? { label: item }
-              : resolveItemConfig(spec, state, name => Icon.icon(name, {}, h))
+              : resolveItemConfig(spec, state, name =>
+                  Icon.icon({ name: name }, h),
+                )
           },
           ...(fixture.keepOpenOnCheckableSelect === true
             ? { keepOpenOnCheckableSelect: true }

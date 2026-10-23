@@ -8,7 +8,7 @@ import {
   sectionFeatures,
   sectionFixtures,
 } from '@/docs/components/pages/section/shared'
-import { icon } from '@/lib/icon'
+import { icon } from '@/stylex/icon'
 import { className } from '@/stylex/style'
 import * as Button from '@/stylex/button'
 import * as Section from '@/stylex/section'
@@ -121,7 +121,7 @@ const washView = <Msg>(h: HtmlBuilder<Msg>): Html =>
                               gap: 2,
                               vAlign: 'center',
                               children: [
-                                icon('check', {}, h),
+                                icon({ name: 'check' }, h),
                                 body(feature, h),
                               ],
                             },

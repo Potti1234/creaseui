@@ -14,7 +14,7 @@ import {
   type SidebarFixtureKind,
 } from '@/docs/components/pages/sidebar/shared'
 import * as DropdownMenu from '@/ui/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Sidebar from '@/ui/sidebar'
 
 const Message = defineMessageUnion({
@@ -104,10 +104,13 @@ const subscriptions =
       }))
 
 const iconLabel = (
-  name: string,
+  name: Icon.IconName,
   label: string,
   h: HtmlBuilder<Message>,
-): ReadonlyArray<Html | string> => [Icon.icon(name, {}, h), h.span([], [label])]
+): ReadonlyArray<Html | string> => [
+  Icon.icon({ name: name }, h),
+  h.span([], [label]),
+]
 
 const actionMenu = (
   model: DropdownMenu.Model,
@@ -129,7 +132,10 @@ const actionMenu = (
             Message['GotSidebarPreviewActionMenuMessage']({ message }),
           trigger: h.span(
             [h.Class('flex items-center')],
-            [Icon.moreHorizontal({}, h), h.span([h.Class('sr-only')], [label])],
+            [
+              Icon.icon({ name: 'ellipsis' }, h),
+              h.span([h.Class('sr-only')], [label]),
+            ],
           ),
           triggerClass:
             'flex size-5 items-center justify-center rounded-md text-sidebar-foreground outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring [&_svg]:size-4',
@@ -148,7 +154,7 @@ const actionMenu = (
 
 const primaryNavigation = (model: Model, h: HtmlBuilder<Message>): Html => {
   const query = model.query.trim().toLowerCase()
-  const allEntries: ReadonlyArray<readonly [string, string]> = [
+  const allEntries: ReadonlyArray<readonly [string, Icon.IconName]> = [
     ['Dashboard', 'gauge'],
     ['Inbox', 'inbox'],
     ['Projects', 'book-open'],
@@ -244,8 +250,11 @@ const account = (model: Model, h: HtmlBuilder<Message>): Html =>
                           ),
                         ],
                       ),
-                      Icon.chevronsUpDown(
-                        { class: 'md:group-data-[collapsible=icon]:hidden' },
+                      Icon.icon(
+                        {
+                          name: 'chevrons-up-down',
+                          class: 'md:group-data-[collapsible=icon]:hidden',
+                        },
                         h,
                       ),
                     ],
@@ -312,7 +321,10 @@ const nestedNavigation = (
                       {
                         model: model.learnMenu,
                         toParentMessage: menuMessage,
-                        trigger: Icon.icon('book-open', { class: 'size-4' }, h),
+                        trigger: Icon.icon(
+                          { name: 'book-open', size: 'sm' },
+                          h,
+                        ),
                         triggerClass: Sidebar.sidebarMenuButtonVariants(),
                         triggerAriaLabel: 'Documentation',
                         ariaLabel: 'Documentation sections',
@@ -346,11 +358,12 @@ const nestedNavigation = (
                   ariaExpanded: model.learnOpen,
                   children: [
                     ...iconLabel('book-open', 'Documentation', h),
-                    Icon.chevronRight(
+                    Icon.icon(
                       {
-                        class: model.learnOpen
-                          ? 'ml-auto size-4 rotate-90 transition-transform'
-                          : 'ml-auto size-4 transition-transform',
+                        name: 'chevron-right',
+                        size: 'sm',
+                        rotation: model.learnOpen ? 90 : 0,
+                        class: 'ml-auto',
                       },
                       h,
                     ),

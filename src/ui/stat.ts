@@ -120,7 +120,7 @@ export const stat = <Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html => {
         [props.label],
       ),
       h.span(
-        [h.Class('flex min-w-0 items-baseline gap-2')],
+        [h.Class('flex min-w-0 flex-wrap items-baseline gap-2')],
         [
           h.span(
             [

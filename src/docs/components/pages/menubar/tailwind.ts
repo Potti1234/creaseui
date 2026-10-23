@@ -13,7 +13,7 @@ import {
   type MarkerSpecItem,
 } from '@/docs/components/pages/menubar/shared'
 import * as DropdownMenu from '@/ui/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Menubar from '@/ui/menubar'
 
 const MenuTarget = S.Literals(menubarTargets)
@@ -71,7 +71,9 @@ const configFor = (
   h: HtmlBuilder<MenubarPreviewMessage>,
 ): DropdownMenu.DropdownMenuItemConfig<string> => ({
   label: item.label,
-  ...(item.icon === undefined ? {} : { icon: Icon.icon(item.icon, {}, h) }),
+  ...(item.icon === undefined
+    ? {}
+    : { icon: Icon.icon({ name: item.icon }, h) }),
   ...(item.shortcut === undefined ? {} : { shortcut: item.shortcut }),
   ...(item.kind === undefined ? {} : { kind: item.kind }),
   ...(item.kind === undefined ? {} : { isChecked: checkedValue(item, model) }),

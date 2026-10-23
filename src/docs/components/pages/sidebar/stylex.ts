@@ -12,7 +12,7 @@ import {
   type SidebarFixtureKind,
 } from '@/docs/components/pages/sidebar/shared'
 import * as DropdownMenu from '@/stylex/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Sidebar from '@/stylex/sidebar'
 import { sidebarScope } from '../../../../stylex/sidebar.markers.stylex'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
@@ -43,9 +43,12 @@ const styles = stylex.create({
     height: '1.25rem',
     width: '1.25rem',
   },
-  actionIcon: { height: '1rem', width: '1rem' },
-  itemIcon: { flexShrink: 0, height: '1rem', width: '1rem' },
-  accountIcon: { height: '0.875rem', width: '0.875rem' },
+  accountIcon: {
+    display: {
+      default: 'inline-flex',
+      [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 'none',
+    },
+  },
   collapsedHidden: {
     display: {
       default: null,
@@ -263,15 +266,7 @@ const styles = stylex.create({
       [stylex.when.ancestor('[data-collapsible="icon"]', sidebarScope)]: 0,
     },
   },
-  learnChevron: {
-    flexShrink: 0,
-    transitionDuration: '150ms',
-    transitionProperty: 'transform',
-    height: '1rem',
-    marginLeft: 'auto',
-    width: '1rem',
-  },
-  learnChevronOpen: { transform: 'rotate(90deg)' },
+  learnChevron: { marginLeft: 'auto' },
   noMatches: {
     paddingBlock: '0.375rem',
     paddingInline: '0.5rem',
@@ -297,11 +292,11 @@ const isStaticStyle = (value: unknown): value is StaticStyles =>
 const cx = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 const iconLabel = <Msg>(
-  name: string,
+  name: Icon.IconName,
   label: string,
   h: HtmlBuilder<Msg>,
 ): ReadonlyArray<Html | string> => [
-  Icon.icon(name, { class: cx(styles.itemIcon) }, h),
+  Icon.icon({ name: name, size: 'sm' }, h),
   Sidebar.sidebarMenuLabel({ children: [label] }, h),
 ]
 
@@ -335,7 +330,7 @@ const actionMenu = <Msg>(
           trigger: h.span(
             [h.Class(cx(styles.actionTrigger))],
             [
-              Icon.moreHorizontal({ class: cx(styles.actionIcon) }, h),
+              Icon.icon({ name: 'ellipsis', size: 'sm' }, h),
               h.span([h.Class(cx(styles.srOnly))], [label]),
             ],
           ),
@@ -360,7 +355,7 @@ const primaryNavigation = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const query = model.query.trim().toLowerCase()
-  const allEntries: ReadonlyArray<readonly [string, string]> = [
+  const allEntries: ReadonlyArray<readonly [string, Icon.IconName]> = [
     ['Dashboard', 'gauge'],
     ['Inbox', 'inbox'],
     ['Projects', 'book-open'],
@@ -490,8 +485,7 @@ const nestedNavigation = <Msg>(
                         model: model.learnMenu,
                         toParentMessage: menuMessage,
                         trigger: Icon.icon(
-                          'book-open',
-                          { class: cx(styles.itemIcon) },
+                          { name: 'book-open', size: 'sm' },
                           h,
                         ),
                         triggerStyle: styles.documentationButton,
@@ -529,12 +523,12 @@ const nestedNavigation = <Msg>(
                   ariaExpanded: model.learnOpen,
                   children: [
                     ...iconLabel('book-open', 'Documentation', h),
-                    Icon.chevronRight(
+                    Icon.icon(
                       {
-                        class: cx(
-                          styles.learnChevron,
-                          model.learnOpen && styles.learnChevronOpen,
-                        ),
+                        name: 'chevron-right',
+                        size: 'sm',
+                        rotation: model.learnOpen ? 90 : 0,
+                        layoutStyle: styles.learnChevron,
                       },
                       h,
                     ),
@@ -622,11 +616,14 @@ const account = <Msg>(
                           ),
                         ],
                       ),
-                      Icon.chevronsUpDown(
-                        {
-                          class: cx(styles.accountIcon, styles.collapsedHidden),
-                        },
-                        h,
+                      h.span(
+                        [h.Class(cx(styles.accountIcon))],
+                        [
+                          Icon.icon(
+                            { name: 'chevrons-up-down', size: 'xs' },
+                            h,
+                          ),
+                        ],
                       ),
                     ],
                   ),

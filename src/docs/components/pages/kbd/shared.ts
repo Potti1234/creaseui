@@ -71,7 +71,7 @@ const emitImports = (fixture: KbdFixture, isStyleX: boolean): string => {
     parts.push(`import * as ButtonGroup from '@/${base}/button-group'`)
   }
   if (kindUsesIcon(fixture.kind)) {
-    parts.push(`import * as Icon from '@/lib/icon'`)
+    parts.push(`import * as Icon from '@/${base}/icon'`)
   }
   if (kindUsesInputGroup(fixture.kind)) {
     parts.push(`import * as InputGroup from '@/${base}/input-group'`)
@@ -317,7 +317,7 @@ const emitBody = (fixture: KbdFixture, isStyleX: boolean): string => {
             ariaLabel: 'Search',
           }, h),
           InputGroup.inputGroupAddon({
-            children: [Icon.icon('search', {}, h)],
+            children: [Icon.icon({ name: 'search' }, h)],
           }, h),
           InputGroup.inputGroupAddon({
             align: 'inline-end',

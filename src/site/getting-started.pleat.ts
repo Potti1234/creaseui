@@ -2,7 +2,7 @@ import { Style, When } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { view as docsGuideView } from '@/docs/getting-started-content'
-import { view as lintDocsView } from '@/docs/lint-content'
+import { type LintDocsProps, view as lintDocsView } from '@/docs/lint-content'
 import { pleatLintKit } from '@/site/lint-kit.pleat'
 import type * as CodeBlock from '@/ui/code-block'
 import { reset } from '@/pleat/reset'
@@ -244,7 +244,7 @@ export const themingView = <Msg>(
 ): Html => docsGuideView('theming', h, classes, codeBlock)
 
 export const lintView = <Msg>(
-  codeBlock: DocsGuideCodeProps<Msg>,
+  codeBlock: LintDocsProps<Msg>,
   rule: string,
   h: HtmlBuilder<Msg>,
 ): Html => lintDocsView(rule, h, classes, codeBlock, pleatLintKit)

@@ -10,7 +10,7 @@ import {
   inputFixtures,
   inputRtlCopy,
 } from '@/docs/components/pages/input/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Badge from '@/ui/badge'
 import * as Button from '@/ui/button'
 import * as ButtonGroup from '@/ui/button-group'
@@ -338,7 +338,7 @@ const inputView = (
                   InputGroup.inputGroupAddon(
                     {
                       align: 'inline-end',
-                      children: [Icon.icon('info', {}, h)],
+                      children: [Icon.icon({ name: 'info' }, h)],
                     },
                     h,
                   ),

@@ -87,6 +87,16 @@ export const createFileAnalysis = context => {
         )
       )
         return true
+      /* Computed aliases (`Parameters<typeof button>[1]`) resolve to the
+         builder type itself. */
+      if (ts.isTypeAliasDeclaration(declaration)) {
+        const resolved = checker.getTypeFromTypeNode(declaration.type)
+        if (
+          symbolIsBuilder(resolved.aliasSymbol, seen) ||
+          symbolIsBuilder(resolved.symbol, seen)
+        )
+          return true
+      }
     }
     return false
   }

@@ -4,7 +4,7 @@
     "src/ui/registry.json",
     "src/ui/*.ts"
   ],
-  "componentCount": 124,
+  "componentCount": 125,
   "components": [
     {
       "slug": "accordion",
@@ -2896,7 +2896,8 @@
         "No Close Button",
         "Sticky Footer",
         "Scrollable Content",
-        "RTL"
+        "RTL",
+        "Invite member form"
       ],
       "api": [
         {
@@ -3209,6 +3210,11 @@
           "name": "Message",
           "kind": "type",
           "signature": "Message = typeof Message.Type"
+        },
+        {
+          "name": "FocusTrigger",
+          "kind": "value",
+          "signature": "FocusTrigger: value"
         },
         {
           "name": "OutMessage",
@@ -3742,7 +3748,8 @@
         "Grid — Dashboard Layout",
         "Grid — Card Gallery",
         "GridSpan — Columns",
-        "Grid Span"
+        "Grid Span",
+        "Grid — Adaptive Metric Cards"
       ],
       "api": [
         {
@@ -3972,6 +3979,53 @@
           "name": "hoverCard",
           "kind": "function",
           "signature": "hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "icon",
+      "title": "Icon",
+      "description": "A CreaseUI Icon component for Foldkit.",
+      "docs": "/docs/components/icon",
+      "source": "src/ui/icon.ts",
+      "install": "npx creaseui add icon",
+      "dependencies": [
+        "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons"
+      ],
+      "examples": [
+        "Icon",
+        "Sizes",
+        "Tone",
+        "With text",
+        "Accessible label",
+        "Filled and rotated"
+      ],
+      "api": [
+        {
+          "name": "IconName",
+          "kind": "type",
+          "signature": "IconName = IconSource.IconName"
+        },
+        {
+          "name": "iconNames",
+          "kind": "value",
+          "signature": "iconNames: ReadonlyArray<IconName>"
+        },
+        {
+          "name": "IconSize",
+          "kind": "type",
+          "signature": "IconSize = '3xs' | '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'"
+        },
+        {
+          "name": "IconProps",
+          "kind": "type",
+          "signature": "IconProps = Readonly<{ name: IconName; size?: IconSize; tone?: 'muted' | 'primary'; filled?: boolean; rotation?: 0 | 90 | 180; ariaLabel?: string; dataIcon?: 'inline-start' | 'inline-end'; class?: string; }>"
+        },
+        {
+          "name": "icon",
+          "kind": "function",
+          "signature": "icon<Msg>(props: IconProps, h: HtmlBuilder<Msg>): Html"
         }
       ]
     },
@@ -7212,6 +7266,7 @@
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/sidebar-modal-behavior",
         "Potti1234/creaseui/sidebar-state",
         "Potti1234/creaseui/utils"
       ],
@@ -7264,7 +7319,7 @@
         {
           "name": "SidebarProps",
           "kind": "type",
-          "signature": "SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>"
+          "signature": "SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; mobileId?: string; onMobileDismiss?: Msg; }>"
         },
         {
           "name": "sidebar",
