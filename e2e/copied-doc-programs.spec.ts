@@ -72,12 +72,26 @@ test.describe('Copied documentation programs', () => {
     test.setTimeout(900_000)
     const failures: Array<string> = []
     const queue = [...entries]
+    // A tab's renderer keeps shared memory from every program it has loaded
+    // until the tab closes. Playwright puts that memory in /tmp, which is a
+    // RAM tmpfs on Ubuntu 26.04 runners, so a tab reused for the whole queue
+    // fills it and loads fail with net::ERR_INSUFFICIENT_RESOURCES. Replace
+    // each tab after a few programs.
+    const programsPerTab = 5
     const visit = async () => {
-      const page = await context.newPage()
+      let page = await context.newPage()
+      let loaded = 0
       for (let name = queue.shift(); name; name = queue.shift()) {
+        if (loaded === programsPerTab) {
+          await page.close()
+          page = await context.newPage()
+          loaded = 0
+        }
+        loaded += 1
         const errors: Array<string> = []
         const onError = (error: Error) => errors.push(error.message)
         page.on('pageerror', onError)
+        page.on('pageerror', error => errors.push(error.message))
         await page.goto(`${url}${name}.html`)
         // Foldkit patches the container element itself, so look for any
         // rendered (non-script) body content rather than #root children.
