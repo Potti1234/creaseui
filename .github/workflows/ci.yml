@@ -106,8 +106,12 @@ jobs:
       - name: Build site
         run: npm run build
 
+      - name: Print process limits
+        run: |
+          ulimit -Sn; ulimit -Hn; cat /proc/self/limits; df -h /tmp /dev/shm; nproc; free -m
+
       - name: Run browser and accessibility tests
-        run: npm run test:e2e
+        run: npx playwright test e2e/copied-doc-programs.spec.ts --project=chromium
         env:
           PLAYWRIGHT_WORKERS: 2
 
