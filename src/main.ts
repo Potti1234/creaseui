@@ -226,24 +226,14 @@ export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
       Preset.decodePreset,
     ),
   )
-  const seedPreset = <M extends { preset: Preset.Config; presetInput: string }>(
-    board: M,
-  ): M =>
-    storedPreset === null
-      ? board
-      : {
-          ...board,
-          preset: storedPreset,
-          presetInput: Preset.encodePreset(storedPreset),
-        }
   return {
     model: {
       route,
       currentUrl: urlToString(url),
       isDark: flags.isDark,
-      tailwindBoard: seedPreset(Board.init()),
-      styleXBoard: seedPreset(BoardStyleX.init()),
-      pleatBoard: seedPreset(BoardPleat.init()),
+      tailwindBoard: Board.init(storedPreset ?? Preset.DEFAULT_CONFIG),
+      styleXBoard: BoardStyleX.init(storedPreset ?? Preset.DEFAULT_CONFIG),
+      pleatBoard: BoardPleat.init(storedPreset ?? Preset.DEFAULT_CONFIG),
       themeLab: {
         open: false,
         applied: flags.themeLab?.applied === true && storedPreset !== null,
@@ -1009,37 +999,30 @@ const inactiveStyleXFeatured = BlocksStyleXPage.init()
 const inactivePleatFeatured = BlocksPleatPage.init()
 const inactiveTanStackTablePleatPage = TanStackTablePleatPage.init()
 
-// Both boards compose the same slider subscription names. Prefix the StyleX
-// record here so Foldkit can host both without weakening duplicate-key checks.
-const boardStyleXSubscriptions = {
-  styleXBrightnessPointer: BoardStyleX.subscriptions.brightnessPointer!,
-  styleXBrightnessEscape: BoardStyleX.subscriptions.brightnessEscape!,
-  styleXColorTempPointer: BoardStyleX.subscriptions.colorTempPointer!,
-  styleXColorTempEscape: BoardStyleX.subscriptions.colorTempEscape!,
-  styleXVolumePointer: BoardStyleX.subscriptions.volumePointer!,
-  styleXVolumeEscape: BoardStyleX.subscriptions.volumeEscape!,
-  styleXFadePointer: BoardStyleX.subscriptions.fadePointer!,
-  styleXFadeEscape: BoardStyleX.subscriptions.fadeEscape!,
-  styleXPayoutAmountPointer: BoardStyleX.subscriptions.payoutAmountPointer!,
-  styleXPayoutAmountEscape: BoardStyleX.subscriptions.payoutAmountEscape!,
-  styleXShadePositionPointer: BoardStyleX.subscriptions.shadePositionPointer!,
-  styleXShadePositionEscape: BoardStyleX.subscriptions.shadePositionEscape!,
-}
+// All three boards compose the same subscription record shape (card sliders,
+// color-picker drag channels, …). Prefix the StyleX and Pleat keys so Foldkit
+// can host all three without tripping its duplicate-key checks. Mapping every
+// key (instead of hand-listing) keeps new board subscriptions — like the
+// per-token picker drags — wired on all renderers automatically.
+const prefixedSubscriptions = <Subs extends object>(
+  prefix: string,
+  subscriptions: Subs,
+): Subs =>
+  Object.fromEntries(
+    Object.entries(subscriptions).map(([key, value]) => [
+      `${prefix}${key.charAt(0).toUpperCase()}${key.slice(1)}`,
+      value,
+    ]),
+  ) as Subs
 
-const boardPleatSubscriptions = {
-  pleatBrightnessPointer: BoardPleat.subscriptions.brightnessPointer!,
-  pleatBrightnessEscape: BoardPleat.subscriptions.brightnessEscape!,
-  pleatColorTempPointer: BoardPleat.subscriptions.colorTempPointer!,
-  pleatColorTempEscape: BoardPleat.subscriptions.colorTempEscape!,
-  pleatVolumePointer: BoardPleat.subscriptions.volumePointer!,
-  pleatVolumeEscape: BoardPleat.subscriptions.volumeEscape!,
-  pleatFadePointer: BoardPleat.subscriptions.fadePointer!,
-  pleatFadeEscape: BoardPleat.subscriptions.fadeEscape!,
-  pleatPayoutAmountPointer: BoardPleat.subscriptions.payoutAmountPointer!,
-  pleatPayoutAmountEscape: BoardPleat.subscriptions.payoutAmountEscape!,
-  pleatShadePositionPointer: BoardPleat.subscriptions.shadePositionPointer!,
-  pleatShadePositionEscape: BoardPleat.subscriptions.shadePositionEscape!,
-}
+const boardStyleXSubscriptions = prefixedSubscriptions(
+  'styleX',
+  BoardStyleX.subscriptions,
+)
+const boardPleatSubscriptions = prefixedSubscriptions(
+  'pleat',
+  BoardPleat.subscriptions,
+)
 
 export const subscriptions = Subscription.aggregate<Model, Message>()(
   Subscription.lift(DocsSearch.subscriptions)<Model, Message>({

@@ -131,11 +131,18 @@ const styles = stylex.create({
     borderRadius: foundationTokens.radiusSm,
     borderStyle: 'solid',
     borderWidth: 1,
+    boxShadow: foundationTokens.shadowSm,
     display: 'inline-block',
     flexShrink: 0,
     pointerEvents: 'none',
     height: '1rem',
     width: '1rem',
+  },
+  /* The standalone trigger: the swatch itself is the color square (diceui's
+     swatch-as-trigger), wrapped in a transparent reset button. */
+  swatchTrigger: {
+    height: '2rem',
+    width: '2rem',
   },
   eyeDropper: {
     borderColor: tokens.border,
@@ -389,7 +396,10 @@ export const colorPickerAlphaSlider = <Msg>(
 ): Html => {
   const { r, g, b } = Picker.rgb(props.model)
   return sliderTrack(props, 'alpha', props.model.color.a, h, {
-    backgroundImage: `linear-gradient(to right, transparent, rgb(${String(r)}, ${String(g)}, ${String(b)})), ${CHECKERBOARD}`,
+    /* The fade rides as a gradient image layer over the checkerboard —
+       `background-image` would reject the checkerboard's `0 0 / 8px 8px`
+       position/size syntax. */
+    background: `linear-gradient(to right, transparent, rgb(${String(r)}, ${String(g)}, ${String(b)})), ${CHECKERBOARD}`,
   })
 }
 
@@ -406,7 +416,12 @@ export const colorPickerSwatch = <Msg>(
     [
       h.DataAttribute('slot', 'color-picker-swatch'),
       h.Class(className(styles.swatch, props.layoutStyle)),
-      h.Style({ background: `${props.color}, ${CHECKERBOARD}` }),
+      h.Style({
+        /* The color rides as a gradient image layer: a plain color in a
+           non-final `background` layer is invalid CSS and drops the whole
+           declaration, leaving the swatch transparent. */
+        background: `linear-gradient(${props.color}, ${props.color}), ${CHECKERBOARD}`,
+      }),
     ],
     [],
   )
@@ -567,7 +582,10 @@ export const colorPicker = <Msg>(
         props.toParentMessage(Message.GotPopoverMessage({ message })),
       trigger:
         props.trigger ??
-        colorPickerSwatch({ color: Picker.hex(props.model) }, h),
+        colorPickerSwatch(
+          { color: Picker.hex(props.model), layoutStyle: styles.swatchTrigger },
+          h,
+        ),
       content: panel,
       side: props.side ?? 'bottom',
       align: props.align ?? 'start',

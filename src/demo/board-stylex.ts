@@ -517,15 +517,7 @@ const styles = stylex.create({
     borderColor: boardTokens.focus,
     backgroundColor: boardTokens.hover,
   },
-  tokenSwatch: {
-    borderColor: boardTokens.border,
-    borderRadius: foundationTokens.radiusSm,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    flexShrink: 0,
-    height: '1.5rem',
-    width: '1.5rem',
-  },
+
   tokenName: {
     overflow: 'hidden',
     color: boardTokens.text,
@@ -564,53 +556,7 @@ const styles = stylex.create({
     fontSize: '0.5625rem',
     fontWeight: 600,
   },
-  tokenEditor: {
-    padding: '0.625rem',
-    borderColor: boardTokens.border,
-    borderRadius: foundationTokens.radiusMd,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    gap: '0.5rem',
-    backgroundColor: boardTokens.panelInput,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  tokenEditorRow: {
-    gap: '0.5rem',
-    alignItems: 'center',
-    display: 'flex',
-  },
-  tokenTextInput: {
-    borderColor: boardTokens.border,
-    borderRadius: foundationTokens.radiusSm,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    paddingInline: '0.5rem',
-    backgroundColor: boardTokens.panelInput,
-    color: boardTokens.text,
-    flexGrow: 1,
-    fontFamily:
-      'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
-    fontSize: '0.75rem',
-    height: '2rem',
-    minWidth: 0,
-  },
-  tokenResetButton: {
-    borderColor: boardTokens.border,
-    borderRadius: foundationTokens.radiusSm,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    paddingInline: '0.5rem',
-    backgroundColor: {
-      default: boardTokens.transparent,
-      ':hover': boardTokens.hover,
-    },
-    color: boardTokens.textMuted,
-    flexShrink: 0,
-    fontSize: '0.625rem',
-    fontWeight: 600,
-    height: '2rem',
-  },
+
   tokenClearAll: {
     borderColor: boardTokens.border,
     borderRadius: foundationTokens.radiusSm,
@@ -901,9 +847,8 @@ export const Model = S.Struct({
   section: S.Literals(['tokens', 'theme', 'color', 'shape', 'type', 'motion']),
   scheme: S.Literals(['system', 'light', 'dark']),
   tokenScheme: S.Literals(['light', 'dark']),
-  openToken: S.NullOr(S.String),
-  tokenDrafts: S.Record(S.String, S.String),
-  tokenPicker: ColorPicker.Model,
+  /* One popover picker per token row — the row swatch is its trigger. */
+  tokenPickers: S.Record(S.String, ColorPicker.Model),
   /* The Color pane's real color pickers — they write decomposed oklch back
      into the parametric fields (hue/chroma/lightness, surface lightness +
      saturation + base, nearest chart family). */
@@ -1012,14 +957,11 @@ export const Message = defineMessageUnion({
   ChoseCreateTokenScheme: {
     scheme: S.Literals(['light', 'dark']),
   },
-  ToggledCreateToken: { token: S.String },
-  ChangedCreateToken: {
-    token: S.String,
-    value: S.String,
-  },
   GotCreateTokenPickerMessage: {
+    token: S.String,
     message: ColorPicker.Message,
   },
+  ClearedCreateToken: { token: S.String },
   GotCreateColorPickerMessage: {
     target: S.Literals(['accent', 'surfaceLight', 'surfaceDark', 'chart']),
     message: ColorPicker.Message,
@@ -1106,6 +1048,46 @@ const initColorPicker = (id: string, token: string): ColorPicker.Model =>
     () => ColorPicker.init({ id }),
   )
 
+/* `??` fallback for record lookups the schema guarantees — keeps
+   noUncheckedIndexedAccess happy without re-validating per render. */
+const FALLBACK_PICKER = ColorPicker.init({ id: 'create-token-fallback' })
+
+const initTokenPickers = (
+  preset: Preset.Config,
+  scheme: 'light' | 'dark',
+): Readonly<Record<string, ColorPicker.Model>> => {
+  const tokens = Preset.presetTokens(preset, scheme)
+  return Object.fromEntries(
+    Preset.OVERRIDABLE_TOKENS.map(token => [
+      token,
+      initColorPicker(`create-token-${token}-picker`, tokens[token] ?? ''),
+    ]),
+  )
+}
+
+/* Re-derive each row's reflected color from the preset — applied whenever the
+   preset or edited scheme changes so swatches show the current token value. */
+const reflectTokenPickers = (
+  preset: Preset.Config,
+  scheme: 'light' | 'dark',
+  pickers: Readonly<Record<string, ColorPicker.Model>>,
+): Readonly<Record<string, ColorPicker.Model>> => {
+  const tokens = Preset.presetTokens(preset, scheme)
+  const next = { ...pickers }
+  for (const token of Preset.OVERRIDABLE_TOKENS) {
+    const picker = next[token]
+    if (picker === undefined) continue
+    const hex = Option.flatMap(
+      Option.fromNullishOr(tokens[token]),
+      Preset.tokenToHex,
+    )
+    if (Option.isSome(hex)) {
+      next[token] = ColorPicker.reflectValue(picker, hex.value)
+    }
+  }
+  return next
+}
+
 /* A picked color decomposes back into the parametric fields that derive it:
    accent → hue/chroma/lightness, a surface → its lightness + shared tint +
    nearest base hue, chart → nearest named family. */
@@ -1145,7 +1127,7 @@ const applyPickedColor = (
   }
 }
 
-export const init = (): Model => ({
+export const init = (preset: Preset.Config = Preset.DEFAULT_CONFIG): Model => ({
   accountAccess: AccountAccess.init(),
   faq: Faq.init(),
   kitchenIsland: KitchenIsland.init(),
@@ -1163,33 +1145,25 @@ export const init = (): Model => ({
   stockPerformance: StockPerformance.init(),
   transferFunds: TransferFunds.init(),
   upcomingPayments: UpcomingPayments.init(),
-  preset: Preset.DEFAULT_CONFIG,
-  presetInput: Preset.encodePreset(Preset.DEFAULT_CONFIG),
+  preset,
+  presetInput: Preset.encodePreset(preset),
   presetError: null,
   isPresetCopied: false,
   section: 'tokens',
   scheme: 'system',
   tokenScheme: 'light',
-  openToken: null,
-  tokenDrafts: {},
-  tokenPicker: ColorPicker.init({ id: 'create-token-picker' }),
+  tokenPickers: initTokenPickers(preset, 'light'),
   colorPickers: {
-    accent: initColorPicker(
-      'create-accent-picker',
-      Preset.accentToken(Preset.DEFAULT_CONFIG),
-    ),
+    accent: initColorPicker('create-accent-picker', Preset.accentToken(preset)),
     surfaceLight: initColorPicker(
       'create-surface-light-picker',
-      Preset.surfaceToken(Preset.DEFAULT_CONFIG, 'light'),
+      Preset.surfaceToken(preset, 'light'),
     ),
     surfaceDark: initColorPicker(
       'create-surface-dark-picker',
-      Preset.surfaceToken(Preset.DEFAULT_CONFIG, 'dark'),
+      Preset.surfaceToken(preset, 'dark'),
     ),
-    chart: initColorPicker(
-      'create-chart-picker',
-      Preset.chartToken(Preset.DEFAULT_CONFIG),
-    ),
+    chart: initColorPicker('create-chart-picker', Preset.chartToken(preset)),
   },
   canvas: 'board',
   primitiveInspector: {
@@ -1303,6 +1277,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
               presetInput: () => Preset.encodePreset(decoded),
               presetError: () => null,
               colorPickers: pickers => reflectColorPickers(decoded, pickers),
+              tokenPickers: pickers =>
+                reflectTokenPickers(decoded, model.tokenScheme, pickers),
             }),
           }),
         })
@@ -1320,6 +1296,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             presetError: () => null,
             pickerPopovers: current => ({ ...current, [field]: picker }),
             colorPickers: pickers => reflectColorPickers(preset, pickers),
+            tokenPickers: pickers =>
+              reflectTokenPickers(preset, model.tokenScheme, pickers),
           }),
           commands: Command.mapMessages(commands, next =>
             Message['GotCreatePresetPickerMessage']({ field, message: next }),
@@ -1334,6 +1312,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
             colorPickers: pickers => reflectColorPickers(preset, pickers),
+            tokenPickers: pickers =>
+              reflectTokenPickers(preset, model.tokenScheme, pickers),
           }),
         }
       },
@@ -1348,6 +1328,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             scheme: () => preset.scheme ?? 'system',
             colorPickers: pickers =>
               reflectColorPickers(preset.config, pickers),
+            tokenPickers: pickers =>
+              reflectTokenPickers(preset.config, model.tokenScheme, pickers),
           }),
         }
       },
@@ -1364,95 +1346,63 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ChoseCreateTokenScheme: ({ scheme }) => ({
         model: modifyFields(model, {
           tokenScheme: () => scheme,
-          openToken: () => null,
+          tokenPickers: pickers =>
+            reflectTokenPickers(model.preset, scheme, pickers),
         }),
       }),
-      ToggledCreateToken: ({ token }) => {
-        const opening = model.openToken !== token
-        const name = token.startsWith('dark:') ? token.slice(5) : token
-        const hex = opening
-          ? Option.flatMap(
-              Option.fromNullishOr(
-                Preset.presetTokens(model.preset, model.tokenScheme)[name],
-              ),
-              Preset.tokenToHex,
-            )
-          : Option.none<string>()
-        return {
-          model: modifyFields(model, {
-            openToken: () => (opening ? token : null),
-            tokenDrafts: drafts => {
-              const { [token]: _dropped, ...rest } = drafts
-              return rest
-            },
-            tokenPicker: picker =>
-              Option.isSome(hex)
-                ? ColorPicker.reflectValue(picker, hex.value)
-                : picker,
-          }),
-        }
-      },
-      ChangedCreateToken: ({ token, value }) => {
-        /* Drafts hold the raw text so the input never reverts mid-typing;
-           overrides only take complete normalized values — a fragment like
-           '#f0' would otherwise land in the emitted CSS as invalid. */
-        const overrides = { ...model.preset.overrides }
-        const normalized = Option.getOrElse(
-          Preset.hexToToken(value.trim()),
-          () => value.trim(),
-        )
-        if (Preset.validTokenValue(normalized)) overrides[token] = normalized
-        else delete overrides[token]
-        const preset = { ...model.preset, overrides }
-        return {
-          model: modifyFields(model, {
-            preset: () => preset,
-            tokenDrafts: drafts => ({ ...drafts, [token]: value }),
-            presetInput: () => Preset.encodePreset(preset),
-            presetError: () => null,
-          }),
-        }
-      },
-      GotCreateTokenPickerMessage: ({ message: pickerMessage }) => {
+      GotCreateTokenPickerMessage: ({ token, message: pickerMessage }) => {
         /* Picker emits the selected color in its display format; normalize any
            parseable color through oklch so overrides stay on the preset's
-           canonical token shape regardless of the format select. The target
-           token is the currently open row — the picker only renders there. */
-        const next = ColorPicker.update(model.tokenPicker, pickerMessage)
-        const normalized =
-          model.openToken === null
-            ? undefined
-            : Option.getOrElse(
-                Option.flatMap(Option.fromNullishOr(next.outMessage), change =>
-                  Option.flatMap(
-                    ColorPicker.parseColorString(change.value),
-                    rgb => Preset.hexToToken(ColorPicker.rgbToHex(rgb)),
-                  ),
-                ),
-                () => undefined,
-              )
+           canonical token shape regardless of the format select. The override
+           key carries the prefix of the scheme being edited. */
+        const key = model.tokenScheme === 'dark' ? `dark:${token}` : token
+        const next = ColorPicker.update(
+          model.tokenPickers[token] ?? FALLBACK_PICKER,
+          pickerMessage,
+        )
+        const normalized = Option.getOrElse(
+          Option.flatMap(Option.fromNullishOr(next.outMessage), change =>
+            Option.flatMap(ColorPicker.parseColorString(change.value), rgb =>
+              Preset.hexToToken(ColorPicker.rgbToHex(rgb)),
+            ),
+          ),
+          () => undefined,
+        )
         const preset =
-          model.openToken !== null &&
-          normalized !== undefined &&
-          Preset.validTokenValue(normalized)
+          normalized !== undefined && Preset.validTokenValue(normalized)
             ? {
                 ...model.preset,
                 overrides: {
                   ...model.preset.overrides,
-                  [model.openToken]: normalized,
+                  [key]: normalized,
                 },
               }
             : model.preset
         return {
           model: modifyFields(model, {
-            tokenPicker: () => next.model,
+            tokenPickers: pickers => ({ ...pickers, [token]: next.model }),
             preset: () => preset,
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
           }),
           commands: Command.mapMessages(next.commands ?? [], child =>
-            Message.GotCreateTokenPickerMessage({ message: child }),
+            Message.GotCreateTokenPickerMessage({ token, message: child }),
           ),
+        }
+      },
+      ClearedCreateToken: ({ token }) => {
+        const key = model.tokenScheme === 'dark' ? `dark:${token}` : token
+        const overrides = { ...model.preset.overrides }
+        delete overrides[key]
+        const preset = { ...model.preset, overrides }
+        return {
+          model: modifyFields(model, {
+            preset: () => preset,
+            presetInput: () => Preset.encodePreset(preset),
+            presetError: () => null,
+            tokenPickers: pickers =>
+              reflectTokenPickers(preset, model.tokenScheme, pickers),
+          }),
         }
       },
       GotCreateColorPickerMessage: ({ target, message: pickerMessage }) => {
@@ -1489,6 +1439,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             preset: () => preset,
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
+            tokenPickers: p =>
+              reflectTokenPickers(preset, model.tokenScheme, p),
           }),
           commands: Command.mapMessages(next.commands ?? [], child =>
             Message.GotCreateColorPickerMessage({ target, message: child }),
@@ -1500,10 +1452,10 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         return {
           model: modifyFields(model, {
             preset: () => preset,
-            tokenDrafts: () => ({}),
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
-            openToken: () => null,
+            tokenPickers: pickers =>
+              reflectTokenPickers(preset, model.tokenScheme, pickers),
           }),
         }
       },
@@ -1519,6 +1471,12 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           presetError: () => null,
           colorPickers: pickers =>
             reflectColorPickers(Preset.DEFAULT_CONFIG, pickers),
+          tokenPickers: pickers =>
+            reflectTokenPickers(
+              Preset.DEFAULT_CONFIG,
+              model.tokenScheme,
+              pickers,
+            ),
         }),
       }),
       ClickedCopyCreatePreset: () => ({
@@ -1535,6 +1493,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             presetInput: () => Preset.encodePreset(preset),
             presetError: () => null,
             colorPickers: pickers => reflectColorPickers(preset, pickers),
+            tokenPickers: pickers =>
+              reflectTokenPickers(preset, model.tokenScheme, pickers),
           }),
         }
       },
@@ -2126,63 +2086,10 @@ export const presetCustomizer = (
   const effectiveTokens = Preset.presetTokens(model.preset, model.tokenScheme)
   const customCount = Object.keys(model.preset.overrides).length
 
-  const tokenEditor = (
-    token: string,
-    key: string,
-    value: string,
-    hex: Option.Option<string>,
-  ): Html => {
-    const setValue = (value: string): Message =>
-      Message['ChangedCreateToken']({ token: key, value })
-    const shown = model.tokenDrafts[key] ?? Option.getOrElse(hex, () => value)
-    return h.div(
-      [h.Class(className(styles.tokenEditor))],
-      [
-        h.div(
-          [h.Class(className(styles.tokenEditorRow))],
-          [
-            h.input([
-              h.Type('text'),
-              h.Value(shown),
-              h.AriaLabel(`${token} value`),
-              h.Placeholder('#rrggbb or oklch(…)'),
-              h.OnInput(setValue),
-              h.Class(className(reset.input, styles.tokenTextInput)),
-            ]),
-            h.button(
-              [
-                h.Type('button'),
-                h.AriaLabel(`Reset ${token}`),
-                h.OnClick(setValue('')),
-                h.Class(className(reset.button, styles.tokenResetButton)),
-              ],
-              ['Reset'],
-            ),
-          ],
-        ),
-        ...(Option.isSome(hex)
-          ? [
-              ColorPicker.colorPicker(
-                {
-                  model: model.tokenPicker,
-                  toParentMessage: message =>
-                    Message.GotCreateTokenPickerMessage({ message }),
-                  inline: true,
-                },
-                h,
-              ),
-            ]
-          : []),
-        h.p([h.Class(className(reset.text, styles.tokenValue))], [value]),
-      ],
-    )
-  }
-
   const tokenRow = (token: Preset.OverridableToken): Html => {
     const key = model.tokenScheme === 'dark' ? `dark:${token}` : token
     const value = effectiveTokens[token] ?? ''
     const overridden = key in model.preset.overrides
-    const open = model.openToken === key
     const pair = token.endsWith('-foreground')
       ? token.slice(0, -'-foreground'.length)
       : null
@@ -2191,74 +2098,76 @@ export const presetCustomizer = (
         ? Option.none<number>()
         : Preset.contrastRatio(value, effectiveTokens[pair] ?? '')
     return h.div(
-      [h.DataAttribute('token', key)],
       [
-        h.button(
+        h.DataAttribute('token', key),
+        h.Class(
+          className(styles.tokenRow, overridden && styles.tokenRowOverridden),
+        ),
+      ],
+      [
+        /* The swatch is the picker's popover trigger — opens beside the
+           row over the preview canvas. */
+        h.div(
+          [h.Id(`create-token-${key.replaceAll(':', '-')}`)],
           [
-            h.Type('button'),
-            h.Id(`create-token-${key.replaceAll(':', '-')}`),
-            h.AriaExpanded(open),
-            h.OnClick(Message['ToggledCreateToken']({ token: key })),
-            h.Class(
-              className(
-                reset.button,
-                styles.tokenRow,
-                overridden && styles.tokenRowOverridden,
-              ),
+            ColorPicker.colorPicker(
+              {
+                model: model.tokenPickers[token] ?? FALLBACK_PICKER,
+                toParentMessage: message =>
+                  Message.GotCreateTokenPickerMessage({ token, message }),
+                side: 'right',
+                align: 'start',
+                portal: 'themed',
+              },
+              h,
             ),
-          ],
-          [
-            h.span(
-              [
-                h.Class(className(styles.tokenSwatch)),
-                h.Style({ background: value }),
-              ],
-              [],
-            ),
-            h.span(
-              [h.Class(className(styles.section))],
-              [
-                h.span([h.Class(className(styles.tokenName))], [token]),
-                h.span([h.Class(className(styles.tokenValue))], [value]),
-              ],
-            ),
-            ...Option.match(ratio, {
-              onNone: () => [],
-              onSome: each => [
-                h.span(
-                  [
-                    h.Class(className(styles.tokenContrastBadge)),
-                    h.Style({
-                      backgroundColor:
-                        each >= 4.5
-                          ? 'rgb(52 199 89 / 0.2)'
-                          : each >= 3
-                            ? 'rgb(255 204 0 / 0.2)'
-                            : 'rgb(255 69 58 / 0.2)',
-                      color:
-                        each >= 4.5
-                          ? boardTokens.success
-                          : each >= 3
-                            ? 'rgb(255 214 10)'
-                            : boardTokens.error,
-                    }),
-                  ],
-                  [each.toFixed(1)],
-                ),
-              ],
-            }),
-            ...(overridden
-              ? [
-                  h.span(
-                    [h.Class(className(styles.tokenCustomBadge))],
-                    ['custom'],
-                  ),
-                ]
-              : []),
           ],
         ),
-        ...(open
-          ? [tokenEditor(token, key, value, Preset.tokenToHex(value))]
+        h.span(
+          [h.Class(className(styles.section))],
+          [
+            h.span([h.Class(className(styles.tokenName))], [token]),
+            h.span([h.Class(className(styles.tokenValue))], [value]),
+          ],
+        ),
+        ...Option.match(ratio, {
+          onNone: () => [],
+          onSome: each => [
+            h.span(
+              [
+                h.Class(className(styles.tokenContrastBadge)),
+                h.Style({
+                  backgroundColor:
+                    each >= 4.5
+                      ? 'rgb(52 199 89 / 0.2)'
+                      : each >= 3
+                        ? 'rgb(255 204 0 / 0.2)'
+                        : 'rgb(255 69 58 / 0.2)',
+                  color:
+                    each >= 4.5
+                      ? boardTokens.success
+                      : each >= 3
+                        ? 'rgb(255 214 10)'
+                        : boardTokens.error,
+                }),
+              ],
+              [each.toFixed(1)],
+            ),
+          ],
+        }),
+        ...(overridden
+          ? [
+              h.button(
+                [
+                  h.Type('button'),
+                  h.Title(`Reset ${token}`),
+                  h.AriaLabel(`Reset ${token}`),
+                  h.OnClick(Message['ClearedCreateToken']({ token })),
+                  h.Class(className(reset.button, styles.tokenCustomBadge)),
+                ],
+                ['custom'],
+              ),
+            ]
           : []),
       ],
     )
@@ -3028,12 +2937,14 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     toChildModel: model => model.rollerShades,
     toParentMessage: message => Message.GotRollerShadesMessage({ message }),
   }),
-  ColorPicker.subscriptions<Model, Message>({
-    id: 'create-token-picker',
-    toChildModel: model => model.tokenPicker,
-    toParentMessage: message =>
-      Message.GotCreateTokenPickerMessage({ message }),
-  }),
+  ...Preset.OVERRIDABLE_TOKENS.map(token =>
+    ColorPicker.subscriptions<Model, Message>({
+      id: `create-token-${token}-picker`,
+      toChildModel: model => model.tokenPickers[token] ?? FALLBACK_PICKER,
+      toParentMessage: message =>
+        Message.GotCreateTokenPickerMessage({ token, message }),
+    }),
+  ),
   ...COLOR_PICKER_TARGETS.map(target =>
     ColorPicker.subscriptions<Model, Message>({
       id: `create-${target === 'surfaceLight' ? 'surface-light' : target === 'surfaceDark' ? 'surface-dark' : target}-picker`,

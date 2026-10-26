@@ -477,7 +477,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         model.drag === 'idle' || model.disabled
           ? { model }
           : changedValue(model, applyFraction(model, model.drag, x, y)),
-      ReleasedDragPointer: () => ({ model: { ...model, drag: 'idle' } }),
+      /* Emits the settled value too: drag moves are throttled to ~30fps, so
+           the last accepted position can lag the release point. The release
+           out-message guarantees parents apply the final color. */
+      ReleasedDragPointer: () => ({
+        model: { ...model, drag: 'idle' },
+        outMessage: OutMessage.ChangedValue({
+          value: colorToString(hsvToRgb(model.color), model.format),
+          format: model.format,
+        }),
+      }),
       NudgedChannel: ({ channel, x, y }) =>
         model.disabled
           ? { model }
@@ -565,20 +574,30 @@ const dragPointer = (key: string) =>
             drag === 'idle'
               ? Stream.empty
               : Stream.merge(
-                  Subscription.fromEventFilterMap({
-                    target: window,
-                    type: 'pointermove',
-                    filterMapEvent: event => {
-                      const element = findChannelElement(id, drag)
-                      return element === null
-                        ? Option.none()
-                        : Option.some(
-                            Message.MovedDragPointer(
-                              pointerFractions(element, event),
-                            ),
-                          )
+                  /* Raw pointermove can fire well above frame rate and every
+                     position triggers a full model update + re-render in the
+                     host — throttle to ~30fps so drags stay smooth. */
+                  Stream.throttle(
+                    Subscription.fromEventFilterMap({
+                      target: window,
+                      type: 'pointermove',
+                      filterMapEvent: event => {
+                        const element = findChannelElement(id, drag)
+                        return element === null
+                          ? Option.none()
+                          : Option.some(
+                              Message.MovedDragPointer(
+                                pointerFractions(element, event),
+                              ),
+                            )
+                      },
+                    }),
+                    {
+                      cost: () => 1,
+                      units: 1,
+                      duration: '33 millis',
                     },
-                  }),
+                  ),
                   Subscription.fromEvent({
                     target: window,
                     type: 'pointerup',

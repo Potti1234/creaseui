@@ -15,6 +15,7 @@ import type {
   ButtonVariant,
   ComponentLayoutStyle,
 } from './contracts'
+import { layoutStyle } from './contracts'
 import { reset } from './reset'
 import { className } from './style'
 import { foundationTokens } from './foundations-tokens'
@@ -48,6 +49,9 @@ const CHECKERBOARD =
 
 const HUE_GRADIENT =
   'linear-gradient(to right, hsl(0,100%,50%), hsl(60,100%,50%), hsl(120,100%,50%), hsl(180,100%,50%), hsl(240,100%,50%), hsl(300,100%,50%), hsl(360,100%,50%))'
+
+/* The standalone trigger swatch fills its reset-button wrapper. */
+const TRIGGER_SWATCH = layoutStyle({ height: '2rem', width: '2rem' })
 
 const styles = {
   root: Style.make({
@@ -145,6 +149,7 @@ const styles = {
     height: '1rem',
     pointerEvents: 'none',
     width: '1rem',
+    boxShadow: foundationTokens.shadowSm,
   }),
   eyeDropper: Style.make({
     alignItems: 'center',
@@ -393,7 +398,10 @@ export const colorPickerAlphaSlider = <Msg>(
 ): Html => {
   const { r, g, b } = Picker.rgb(props.model)
   return sliderTrack(props, 'alpha', props.model.color.a, h, {
-    backgroundImage: `linear-gradient(to right, transparent, rgb(${String(r)}, ${String(g)}, ${String(b)})), ${CHECKERBOARD}`,
+    /* The fade rides as a gradient image layer over the checkerboard —
+       `background-image` would reject the checkerboard's `0 0 / 8px 8px`
+       position/size syntax. */
+    background: `linear-gradient(to right, transparent, rgb(${String(r)}, ${String(g)}, ${String(b)})), ${CHECKERBOARD}`,
   })
 }
 
@@ -410,7 +418,12 @@ export const colorPickerSwatch = <Msg>(
     [
       h.DataAttribute('slot', 'color-picker-swatch'),
       h.Class(className(styles.swatch, props.layoutStyle)),
-      h.Style({ background: `${props.color}, ${CHECKERBOARD}` }),
+      h.Style({
+        /* The color rides as a gradient image layer: a plain color in a
+           non-final `background` layer is invalid CSS and drops the whole
+           declaration, leaving the swatch transparent. */
+        background: `linear-gradient(${props.color}, ${props.color}), ${CHECKERBOARD}`,
+      }),
     ],
     [],
   )
@@ -564,9 +577,14 @@ export const colorPicker = <Msg>(
       model: props.model.popover,
       toParentMessage: message =>
         props.toParentMessage(Message.GotPopoverMessage({ message })),
+      /* The standalone trigger is just the color square (diceui's
+         swatch-as-trigger) inside a transparent reset button. */
       trigger:
         props.trigger ??
-        colorPickerSwatch({ color: Picker.hex(props.model) }, h),
+        colorPickerSwatch(
+          { color: Picker.hex(props.model), layoutStyle: TRIGGER_SWATCH },
+          h,
+        ),
       content: panel,
       side: props.side ?? 'bottom',
       align: props.align ?? 'start',
