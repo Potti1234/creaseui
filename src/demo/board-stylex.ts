@@ -2123,6 +2123,7 @@ export const presetCustomizer = (
                   Message.GotCreateTokenPickerMessage({ token, message }),
                 side: 'right',
                 align: 'start',
+                portal: 'themed',
               },
               h,
             ),
