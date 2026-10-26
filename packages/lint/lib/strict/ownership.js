@@ -398,6 +398,27 @@ export const createModuleResolver = ({ rootDir, tsconfig }) => {
     return parsed.get(file)
   }
 
+  /** `{ target, name }` of the value import bound to `local`, if any. */
+  const importedBinding = (sourceFile, local) => {
+    for (const statement of sourceFile.statements) {
+      if (
+        !ts.isImportDeclaration(statement) ||
+        !ts.isStringLiteral(statement.moduleSpecifier) ||
+        statement.importClause?.isTypeOnly
+      )
+        continue
+      const bindings = statement.importClause?.namedBindings
+      if (bindings === undefined || !ts.isNamedImports(bindings)) continue
+      for (const element of bindings.elements)
+        if (element.name.text === local && !element.isTypeOnly)
+          return {
+            target: statement.moduleSpecifier.text,
+            name: element.propertyName?.text ?? element.name.text,
+          }
+    }
+    return undefined
+  }
+
   /** Follow `export { a as b } from` / `export * from` to the declaring file. */
   const exportOrigin = (file, name, seen = new Set()) => {
     const key = `${file}#${name}`
@@ -421,7 +442,15 @@ export const createModuleResolver = ({ rootDir, tsconfig }) => {
       for (const element of statement.exportClause.elements) {
         if (element.name.text !== name) continue
         const local = element.propertyName?.text ?? element.name.text
-        if (target === undefined) return { file, name: local }
+        if (target === undefined) {
+          /* `import { button as base }; export { base as action }` */
+          const imported = importedBinding(sourceFile, local)
+          if (imported === undefined) return { file, name: local }
+          const next = resolve(imported.target, file)
+          return next === null
+            ? { file, name: local }
+            : exportOrigin(next, imported.name, seen)
+        }
         const next = resolve(target, file)
         return next === null ? null : exportOrigin(next, local, seen)
       }

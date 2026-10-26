@@ -282,7 +282,7 @@ const comboboxCall = (fixture: ComboboxFixture, isStyleX: boolean): string => {
     extra.push(
       isStyleX
         ? `trigger: {
-          content: Icon.chevronsUpDown({ class: className(styles.chevron) }, h),
+          content: h.span([h.Class(className(styles.chevron))], [Icon.icon({ name: 'chevrons-up-down', size: 'sm' }, h)]),
           ariaLabel: 'Toggle options',
           layoutStyle: layoutStyle({
     height: "1.5rem",
@@ -293,7 +293,7 @@ const comboboxCall = (fixture: ComboboxFixture, isStyleX: boolean): string => {
   }),
         },`
         : `trigger: {
-          content: Icon.chevronsUpDown({ class: 'size-4 opacity-50' }, h),
+          content: Icon.icon({ name: 'chevrons-up-down', size: 'sm', class: 'opacity-50' }, h),
           ariaLabel: 'Toggle options',
           class: 'size-6 shrink-0 self-center rounded-sm opacity-70',
         },`,
@@ -391,7 +391,7 @@ export type Message = typeof Message.Type`
           size: 'icon',
           ariaLabel: 'Clear selection',
           onClick: ClickedClear(),
-          children: [Icon.icon('x', { class: 'size-4' }, h)],
+          children: [Icon.icon({ name: 'x', size: 'sm' }, h)],
         }, h),
       ]),`
           : ''
@@ -420,7 +420,7 @@ import * as Button from '@/${dir}/button'`
     }${
       usesIcon
         ? `
-import * as Icon from '@/lib/icon'`
+import * as Icon from '@/${dir}/icon'`
         : ''
     }${
       isPopup && isStyleX
@@ -484,7 +484,7 @@ import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/style
 `
     : ''
 }import * as Combobox from '@/${dir}/combobox'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/${dir}/icon'
 
 const frameworks = [
   { value: 'foldkit', label: 'Foldkit' },
@@ -587,7 +587,7 @@ export type Message = typeof Message.Type`,
             ${isStyleX ? `h.Class(className(styles.chipButton)),` : `h.Class('inline-flex items-center justify-center rounded-sm opacity-60 hover:opacity-100'),`}
             h.AriaLabel(\`Remove \${value}\`),
             h.OnClick(RemovedChip({ value })),
-          ], [Icon.x({ class: ${isStyleX ? `className(styles.chipIcon)` : `'size-3'`} }, h)]),
+          ], [Icon.icon({ name: 'x', size: '2xs' }, h)]),
         ])),
       ExampleMulti.comboboxMulti({
         model: model.multi,

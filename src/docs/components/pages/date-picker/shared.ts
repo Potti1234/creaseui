@@ -168,7 +168,7 @@ const pickerSource = (
           onNone: () => h.span([], ['${placeholder}']),
           onSome: date => h.span([], [${formatFn}(date)]),
         }),
-        Icon.chevronDown({ class: ${isStyleX ? 'className(styles.chevron)' : `'size-4 opacity-50'`} }, h),
+        ${isStyleX ? "h.span([h.Class(className(styles.chevron))], [Icon.icon({ name: 'chevron-down', size: 'sm' }, h)])" : "Icon.icon({ name: 'chevron-down', size: 'sm', class: 'opacity-50' }, h)"},
       ]),`
 
   const datePickerCall = `DatePicker.datePicker({
@@ -246,7 +246,7 @@ import * as TimeInput from '@/${dir}/time-input'`
     }${
       withChevron
         ? `
-import * as Icon from '@/lib/icon'`
+import * as Icon from '@/${dir}/icon'`
         : ''
     }${
       isRtl
@@ -360,7 +360,7 @@ import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/style
     : ''
 }import * as Calendar from '@/${dir}/calendar'
 import * as Field from '@/${dir}/field'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/${dir}/icon'
 import * as Popover from '@/${dir}/popover'
 
 // @/${dir}/date-picker is single-date only — range selection composes
@@ -455,7 +455,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
         toParentMessage: message => GotPopoverMessage({ message }),
         align: 'start',
         trigger: h.span([h.Class(${isStyleX ? `className(styles.triggerRow)` : `'flex items-center gap-2'`})], [
-          Icon.calendarIcon({ class: ${isStyleX ? `className(styles.icon)` : `'size-4'`} }, h),
+          Icon.icon({ name: 'calendar', size: 'sm' }, h),
           rangeText(model),
         ]),
         ${isStyleX ? `triggerLayoutStyle: styles.rangeTrigger` : `triggerClass: 'inline-flex h-8 w-60 items-center justify-start gap-2 whitespace-nowrap rounded-md border border-input bg-background px-2.5 text-sm font-normal shadow-xs'`},
@@ -517,7 +517,7 @@ import { className } from '@/stylex/style'\nimport { layoutStyle } from '@/style
     : ''
 }import * as DatePicker from '@/${dir}/date-picker'
 import * as Field from '@/${dir}/field'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/${dir}/icon'
 import * as InputGroup from '@/${dir}/input-group'${
       isNatural
         ? `
@@ -622,7 +622,7 @@ export const init = (): Update.Return<Model, Message> => ({
             toParentMessage: message => GotDatePickerMessage({ message }),
             ariaLabel: 'Select date',
             triggerContent: () => h.span([h.Class(${isStyleX ? `className(styles.triggerRow)` : `'flex items-center'`})], [
-              Icon.calendarIcon({ class: ${isStyleX ? `className(styles.icon)` : `'size-4'`} }, h),
+              Icon.icon({ name: 'calendar', size: 'sm' }, h),
               h.span([h.Class(${isStyleX ? 'className(styles.srOnly)' : "'sr-only'"})], ['Select date']),
             ]),
             ${isStyleX ? `triggerLayoutStyle: styles.trigger` : `triggerClass: 'inline-flex h-5 w-5 items-center justify-center rounded-sm'`},

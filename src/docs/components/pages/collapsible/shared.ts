@@ -95,7 +95,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import * as Button from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/button'
 import * as Card from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/card'
 import * as Collapsible from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/collapsible'
-import * as Icon from '@/lib/icon'`,
+import * as Icon from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/icon'`,
     model: `export const Model = S.Struct({ isOpen: S.Boolean })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
@@ -117,7 +117,7 @@ export type Message = typeof Message.Type`,
           id: 'product-details',
           isOpen: model.isOpen,
           onToggle: isOpen => ToggledDetails({ isOpen }),
-          trigger: h.span([h.Class('flex w-full items-center justify-between gap-2')], ['Product details', Icon.icon('chevron-down', { class: 'size-4' }, h)]),
+          trigger: h.span([h.Class('flex w-full items-center justify-between gap-2')], ['Product details', Icon.icon({ name: 'chevron-down', size: 'sm' }, h)]),
           content: h.div([h.Class('flex flex-col items-start gap-2')], [
             'This panel can be expanded or collapsed to reveal additional content.',
             Button.button({ children: ['Learn More'], size: 'xs' }, h),
@@ -140,7 +140,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 
 import * as Card from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/card'
 import * as Collapsible from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/collapsible'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/icon'
 import * as Input from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/input'`,
     model: `export const Model = S.Struct({
   isOpen: S.Boolean,
@@ -179,7 +179,7 @@ export type Message = typeof Message.Type`,
           id: 'radius-panel',
           isOpen: model.isOpen,
           onToggle: isOpen => ToggledPanel({ isOpen }),
-          trigger: h.span([h.Class('flex w-full items-center justify-between')], ['More radii', Icon.icon('chevron-down', { class: 'size-4' }, h)]),
+          trigger: h.span([h.Class('flex w-full items-center justify-between')], ['More radii', Icon.icon({ name: 'chevron-down', size: 'sm' }, h)]),
           content: h.div([h.Class('grid grid-cols-2 gap-2')], [
             Input.input({ id: 'radius-bottom', label: h.span([h.Class('sr-only')], ['Bottom radius']), value: model.bottom, onInput: value => ChangedRadius({ side: 'bottom', value }), placeholder: '0' }, h),
             Input.input({ id: 'radius-left', label: h.span([h.Class('sr-only')], ['Left radius']), value: model.left, onInput: value => ChangedRadius({ side: 'left', value }), placeholder: '0' }, h),
@@ -201,7 +201,7 @@ import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
 import * as Collapsible from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/collapsible'
-import * as Icon from '@/lib/icon'`,
+import * as Icon from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/icon'`,
     model: `export const Model = S.Struct({ open: S.Array(S.String) })
 export type Model = typeof Model.Type
 
@@ -231,13 +231,13 @@ export type Message = typeof Message.Type`,
         id: \`tree-\${folder.name}\`,
         isOpen: model.open.includes(folder.name),
         onToggle: isOpen => ToggledNode({ id: folder.name, isOpen }),
-        trigger: h.span([h.Class('flex items-center gap-1')], [Icon.icon(model.open.includes(folder.name) ? 'chevron-down' : 'chevron-right', { class: 'size-3.5' }, h), folder.name]),
+        trigger: h.span([h.Class('flex items-center gap-1')], [Icon.icon({ name: model.open.includes(folder.name) ? 'chevron-down' : 'chevron-right', size: 'xs' }, h), folder.name]),
         content: h.div([h.Class('grid gap-1 ps-4')], folder.items.map(item => item === 'ui'
           ? Collapsible.collapsible({
               id: 'tree-components-ui',
               isOpen: model.open.includes('components/ui'),
               onToggle: isOpen => ToggledNode({ id: 'components/ui', isOpen }),
-              trigger: h.span([h.Class('flex items-center gap-1')], [Icon.icon(model.open.includes('components/ui') ? 'chevron-down' : 'chevron-right', { class: 'size-3.5' }, h), 'ui']),
+              trigger: h.span([h.Class('flex items-center gap-1')], [Icon.icon({ name: model.open.includes('components/ui') ? 'chevron-down' : 'chevron-right', size: 'xs' }, h), 'ui']),
               content: h.div([h.Class('grid gap-1 ps-4')], uiFiles.map(file => h.span([h.Class('text-muted-foreground')], [file]))),
             }, h)
           : h.span([h.Class('text-muted-foreground')], [item]))),
@@ -257,7 +257,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 
 import * as Button from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/button'
 import * as Collapsible from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/collapsible'
-import * as Icon from '@/lib/icon'`,
+import * as Icon from '@/${renderer !== 'tailwind' ? 'stylex' : 'ui'}/icon'`,
     model: `export const Model = S.Struct({ isOpen: S.Boolean })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
@@ -276,7 +276,7 @@ export type Message = typeof Message.Type`,
     h.div([h.Dir('rtl'), h.Class('flex w-80 flex-col gap-2')], [
       h.div([h.Class('flex items-center justify-between gap-4 px-4')], [
         h.h4([h.Class('text-sm font-semibold')], ['الطلب #4189']),
-        Button.button({ variant: 'ghost', size: 'icon', ariaLabel: 'Toggle details', children: [Icon.icon('chevrons-up-down', { class: 'size-4' }, h)] }, h),
+        Button.button({ variant: 'ghost', size: 'icon', ariaLabel: 'Toggle details', children: [Icon.icon({ name: 'chevrons-up-down', size: 'sm' }, h)] }, h),
       ]),
       h.div([h.Class('flex items-center justify-between rounded-md border px-4 py-2 text-sm')], [
         h.span([h.Class('text-muted-foreground')], ['الحالة']),

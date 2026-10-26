@@ -6,7 +6,7 @@ import {
   toggleFixtures,
   type ToggleItem,
 } from '@/docs/components/pages/toggle/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import { className } from '@/pleat/style'
 import * as Toggle from '@/pleat/toggle'
 
@@ -49,10 +49,7 @@ const itemToggle = <Msg>(
       children:
         item.icon === undefined
           ? [item.label]
-          : [
-              Icon.icon(item.icon, { class: className(styles.iconMd) }, h),
-              item.label,
-            ],
+          : [Icon.icon({ name: item.icon, size: 'sm' }, h), item.label],
     },
     h,
   )

@@ -3,6 +3,7 @@ export declare const AUDIT_ENGINE: Readonly<{ name: string; version: string }>
 export type AuditRule =
   | 'accessible-name'
   | 'label-reference'
+  | 'form-association'
   | 'document-overflow'
   | 'overlay-bounds'
   | 'target-size'

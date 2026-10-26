@@ -9,7 +9,7 @@ import {
   type TabsTabSpec,
 } from '@/docs/components/pages/tabs/shared'
 import * as Card from '@/pleat/card'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Tabs from '@/pleat/tabs'
 
 import { layoutStyle } from '@/pleat/contracts'
@@ -70,11 +70,7 @@ export const tabsPleatPreview: ExamplePreviewProvider = <Msg>(
         ...(tab.icon === undefined
           ? {}
           : {
-              icon: Icon.icon(
-                tab.icon,
-                { class: className(styles.iconSize) },
-                h,
-              ),
+              icon: Icon.icon({ name: tab.icon, size: 'sm' }, h),
             }),
         ...(tab.isLabelHidden === true ? { isLabelHidden: true } : {}),
         content: tab.card === undefined ? tab.content : cardView(tab.card, h),

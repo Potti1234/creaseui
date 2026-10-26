@@ -11,7 +11,7 @@ import {
   type TabsTabSpec,
 } from '@/docs/components/pages/tabs/shared'
 import * as Card from '@/ui/card'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Tabs from '@/ui/tabs'
 
 const TabValue = S.String
@@ -67,7 +67,7 @@ const tabConfig = (
 } => ({
   value: tab.value,
   label: tab.label,
-  ...(tab.icon === undefined ? {} : { icon: Icon.icon(tab.icon, {}, h) }),
+  ...(tab.icon === undefined ? {} : { icon: Icon.icon({ name: tab.icon }, h) }),
   ...(tab.isLabelHidden === true ? { isLabelHidden: true } : {}),
   content: tab.card === undefined ? tab.content : cardView(tab.card, h),
   ...(tab.isDisabled === true ? { isDisabled: true } : {}),

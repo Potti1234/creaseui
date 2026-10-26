@@ -8,7 +8,7 @@ import { cardFixtures, cardRtlCopy } from '@/docs/components/pages/card/shared'
 import * as Badge from '@/ui/badge'
 import * as Button from '@/ui/button'
 import * as Card from '@/ui/card'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Input from '@/ui/input'
 import * as Label from '@/ui/label'
 import * as ToggleGroup from '@/ui/toggle-group'
@@ -182,8 +182,7 @@ const bullet = (text: string, h: HtmlBuilder<CardPreviewMessage>): Html =>
     [h.Class('flex gap-2')],
     [
       Icon.icon(
-        'chevron-right',
-        { class: 'mt-0.5 size-4 shrink-0 text-muted-foreground' },
+        { name: 'chevron-right', size: 'sm', tone: 'muted', class: 'mt-0.5' },
         h,
       ),
       h.span([], [text]),

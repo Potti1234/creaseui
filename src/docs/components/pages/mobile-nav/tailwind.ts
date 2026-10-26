@@ -10,7 +10,7 @@ import {
   type NavSectionSpec,
   mobileNavFixtures,
 } from '@/docs/components/pages/mobile-nav/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Button from '@/ui/button'
 import * as MobileNav from '@/ui/mobile-nav'
 import * as Sidebar from '@/ui/sidebar'
@@ -31,11 +31,11 @@ const fixtureFor = (index: number): MobileNavFixture =>
   mobileNavFixtures[index] ?? mobileNavFixtures[0]!
 
 const navIcons = {
-  house: Icon.house,
-  folder: Icon.folder,
-  chartBarStacked: Icon.chartBarStacked,
-  settings: Icon.settings,
-  users: Icon.users,
+  house: 'house',
+  folder: 'folder',
+  chartBarStacked: 'chart-bar-stacked',
+  settings: 'settings',
+  users: 'users',
 } as const
 
 const navSection = <Msg>(h: HtmlBuilder<Msg>, section: NavSectionSpec): Html =>
@@ -62,9 +62,15 @@ const navSection = <Msg>(h: HtmlBuilder<Msg>, section: NavSectionSpec): Html =>
                                 ...(item.icon === undefined
                                   ? []
                                   : [
-                                      navIcons[
-                                        item.icon as keyof typeof navIcons
-                                      ]({ class: 'size-4' }, h),
+                                      Icon.icon(
+                                        {
+                                          name: navIcons[
+                                            item.icon as keyof typeof navIcons
+                                          ],
+                                          size: 'sm',
+                                        },
+                                        h,
+                                      ),
                                     ]),
                                 item.label,
                               ],
@@ -110,7 +116,7 @@ const trigger = (
           size: 'icon',
           ariaLabel: 'Open Navigation',
           onClick: PreviewMessage.ClickedOpenNavPreview(),
-          children: [Icon.menu({ class: 'size-5' }, h)],
+          children: [Icon.icon({ name: 'menu', size: 'md' }, h)],
         },
         h,
       )

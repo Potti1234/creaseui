@@ -1056,6 +1056,19 @@
           "target": "@lib/color-picker.ts"
         }
       ]
+    },
+    {
+      "name": "sidebar-modal-behavior",
+      "type": "registry:lib",
+      "title": "Sidebar Modal Behavior",
+      "description": "Shared Foldkit behavior and helpers for Sidebar Modal.",
+      "files": [
+        {
+          "path": "sidebar-modal.ts",
+          "type": "registry:lib",
+          "target": "@lib/sidebar-modal.ts"
+        }
+      ]
     }
   ]
 }

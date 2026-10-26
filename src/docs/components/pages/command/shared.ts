@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -45,7 +46,7 @@ export const commandFixtures: ReadonlyArray<CommandFixture> = [
 
 export type CommandItem = Readonly<{
   value: string
-  icon?: string
+  icon?: IconName
   shortcut?: string
   group: string
 }>
@@ -112,7 +113,7 @@ const itemsLiteral = (items: ReadonlyArray<CommandItem>): string => {
     item =>
       `  { value: '${item.value}'${item.icon === undefined ? '' : `, icon: '${item.icon}'`}${item.shortcut === undefined ? '' : `, shortcut: '${item.shortcut}'`}, group: '${item.group}' },`,
   )
-  return `type CommandItem = Readonly<{ value: string; icon?: string; shortcut?: string; group: string }>
+  return `type CommandItem = Readonly<{ value: string; icon?: Icon.IconName; shortcut?: string; group: string }>
 const commandItems: ReadonlyArray<CommandItem> = [\n${lines.join('\n')}\n]`
 }
 
@@ -136,7 +137,7 @@ import { type Document, type HtmlBuilder } from 'foldkit/html'
 import * as Button from '@/${dir}/button'
 import * as CommandMenu from '@/${dir}/command'
 import * as Dialog from '@/${dir}/dialog'
-import * as Icon from '@/lib/icon'`,
+import * as Icon from '@/${dir}/icon'`,
     model: `export const Model = S.Struct({
   dialog: Dialog.Model,
   command: CommandMenu.Model,
@@ -208,7 +209,7 @@ export type Message = typeof Message.Type`,
               const item = commandItems.find(entry => entry.value === value)
               return {
                 content: h.span([h.Class('flex items-center gap-2')], [
-                  ...(item?.icon === undefined ? [] : [Icon.icon(item.icon, { class: 'size-4' }, h)]),
+                  ...(item?.icon === undefined ? [] : [Icon.icon({ name: item.icon, size: 'sm' }, h)]),
                   h.span([], [value]),
                 ]),
                 ...(item?.shortcut === undefined ? {} : { shortcut: item.shortcut }),

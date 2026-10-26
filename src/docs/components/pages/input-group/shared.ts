@@ -117,7 +117,7 @@ const emitImports = (fixture: InputGroupFixture, isStyleX: boolean): string => {
     parts.push(`import * as Spinner from '@/${base}/spinner'`)
   }
   if (kindUsesIcon(fixture.kind)) {
-    parts.push("import * as Icon from '@/lib/icon'")
+    parts.push(`import * as Icon from '@/${base}/icon'`)
   }
   return parts.join('\n')
 }
@@ -426,7 +426,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
       children: [
         ${emitInput('demo', 'input-group-demo', "\n        placeholder: 'Search...',")},
         InputGroup.inputGroupAddon({
-          children: [Icon.icon('search', {}, h)],
+          children: [Icon.icon({ name: 'search' }, h)],
         }, h),
         InputGroup.inputGroupAddon({ align: 'inline-end', children: ['12 results'] }, h),
       ],
@@ -440,7 +440,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                 ${emitInput('alignStart', 'inline-start-input', "\n              placeholder: 'Search...',")},
                 InputGroup.inputGroupAddon({
                   align: 'inline-start',
-                  children: [Icon.icon('search', {}, h)],
+                  children: [Icon.icon({ name: 'search' }, h)],
                 }, h),
               ],
             }, h),
@@ -466,7 +466,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                       size: 'icon-xs',
                       ariaLabel: model.isPasswordShown ? 'Hide password' : 'Show password',
                       onClick: Message.ClickedShowPassword(),
-                      children: [Icon.icon(model.isPasswordShown ? 'eye' : 'eye-off', {}, h)],
+                      children: [Icon.icon({ name: model.isPasswordShown ? 'eye' : 'eye-off' }, h)],
                     }, h),
                   ],
                 }, h),
@@ -501,14 +501,14 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                     InputGroup.inputGroupAddon({
                       align: 'block-start',
                       children: [
-                        Icon.icon('file-code', {}, h),
+                        Icon.icon({ name: 'file-code' }, h),
                         InputGroup.inputGroupText({ children: [${isStyleX ? "h.span([h.Class(stylex.props(styles.monoText).className ?? '')], ['script.js'])" : "h.span([h.Class('font-mono')], ['script.js'])"}] }, h),
                         InputGroup.inputGroupButton({
                           size: 'icon-xs',
                           ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"},
                           ariaLabel: 'Copy',
                           onClick: Message.ClickedCopy({ text: model.values['alignBlockTextarea'] ?? '' }),
-                          children: [Icon.icon(model.isCopied ? 'check' : 'copy', {}, h)],
+                          children: [Icon.icon({ name: model.isCopied ? 'check' : 'copy' }, h)],
                         }, h),
                       ],
                     }, h),
@@ -562,20 +562,20 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
       const search = `InputGroup.inputGroup({
           children: [
             ${emitInput('iconSearch', 'icon-search', "\n            placeholder: 'Search...',")},
-            InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
+            InputGroup.inputGroupAddon({ children: [Icon.icon({ name: 'search' }, h)] }, h),
           ],
         }, h)`
       const mail = `InputGroup.inputGroup({
           children: [
             ${emitInput('iconEmail', 'icon-email', "\n            type: 'email',\n            placeholder: 'Enter your email',")},
-            InputGroup.inputGroupAddon({ children: [Icon.icon('mail', {}, h)] }, h),
+            InputGroup.inputGroupAddon({ children: [Icon.icon({ name: 'mail' }, h)] }, h),
           ],
         }, h)`
       const card = `InputGroup.inputGroup({
           children: [
             ${emitInput('iconCard', 'icon-card', "\n            placeholder: 'Card number',")},
-            InputGroup.inputGroupAddon({ children: [Icon.icon('credit-card', {}, h)] }, h),
-            InputGroup.inputGroupAddon({ align: 'inline-end', children: [Icon.icon('check', {}, h)] }, h),
+            InputGroup.inputGroupAddon({ children: [Icon.icon({ name: 'credit-card' }, h)] }, h),
+            InputGroup.inputGroupAddon({ align: 'inline-end', children: [Icon.icon({ name: 'check' }, h)] }, h),
           ],
         }, h)`
       const cardEnd = `InputGroup.inputGroup({
@@ -583,7 +583,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
             ${emitInput('iconCardStar', 'icon-card-star', "\n            placeholder: 'Card number',")},
             InputGroup.inputGroupAddon({
               align: 'inline-end',
-              children: [Icon.icon('star', {}, h), Icon.icon('info', {}, h)],
+              children: [Icon.icon({ name: 'star' }, h), Icon.icon({ name: 'info' }, h)],
             }, h),
           ],
         }, h)`
@@ -632,7 +632,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                   size: 'icon-xs',
                   ariaLabel: 'Copy',
                   onClick: Message.ClickedCopy(),
-                  children: [model.isCopied ? Icon.icon('check', {}, h) : Icon.icon('copy', {}, h)],
+                  children: [model.isCopied ? Icon.icon({ name: 'check' }, h) : Icon.icon({ name: 'copy' }, h)],
                 }, h),
               ],
             }, h),
@@ -646,8 +646,8 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               toParentMessage: message => Message.GotPopoverMessage({ message }),
               ${
                 isStyleX
-                  ? "trigger: h.span([h.Class(stylex.props(styles.iconButton).className ?? '')], [Icon.icon('info', {}, h)]),"
-                  : "trigger: Icon.icon('info', {}, h),\n              triggerClass: 'flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground hover:bg-accent/50',"
+                  ? "trigger: h.span([h.Class(stylex.props(styles.iconButton).className ?? '')], [Icon.icon({ name: 'info' }, h)]),"
+                  : "trigger: Icon.icon({ name: 'info' }, h),\n              triggerClass: 'flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground hover:bg-accent/50',"
               }
               align: 'start',
               content: h.div([h.Class(${isStyleX ? "stylex.props(styles.popoverContent).className ?? ''" : "'flex flex-col gap-1 text-sm'"})], [
@@ -663,7 +663,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                 InputGroup.inputGroupButton({
                   size: 'icon-xs',
                   onClick: Message.ClickedFavorite(),
-                  children: [Icon.icon('star', { ${isStyleX ? "class: model.isFavorite ? stylex.props(styles.favorite).className ?? '' : ''" : "class: model.isFavorite ? 'fill-primary stroke-primary' : ''"} }, h)],
+                  children: [Icon.icon({ name: 'star', ...(model.isFavorite ? { tone: 'primary', filled: true } : {}) }, h)],
                 }, h),
               ],
             }, h),
@@ -685,7 +685,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
       ${isStyleX ? 'layoutStyle: layoutStyle({ maxWidth: "20rem" })' : "class: 'max-w-sm'"},
       children: [
         ${emitInput('kbd', 'kbd-search', "\n        placeholder: 'Search...',")},
-        InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
+        InputGroup.inputGroupAddon({ children: [Icon.icon({ name: 'search' }, h)] }, h),
         InputGroup.inputGroupAddon({ align: 'inline-end', children: [Kbd.kbd({ children: ['⌘K'] }, h)] }, h),
       ],
     }, h)`
@@ -705,7 +705,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                 DropdownMenu.dropdownMenu({
                   model: model.dropdowns[0]!,
                   toParentMessage: message => Message.GotDropdownMessage({ index: 0, message }),
-                  trigger: Icon.icon('ellipsis', { ariaLabel: 'More' }, h),
+                  trigger: Icon.icon({ name: 'ellipsis', ariaLabel: 'More' }, h),
                   ${iconTriggerProps}
                   triggerAriaLabel: 'More',
                   align: 'end',
@@ -726,7 +726,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
                 DropdownMenu.dropdownMenu({
                   model: model.dropdowns[1]!,
                   toParentMessage: message => Message.GotDropdownMessage({ index: 1, message }),
-                  trigger: h.span([], ['Search In...', Icon.icon('chevron-down', {}, h)]),
+                  trigger: h.span([], ['Search In...', Icon.icon({ name: 'chevron-down' }, h)]),
                   ${textTriggerProps}
                   triggerAriaLabel: 'Search in',
                   align: 'end',
@@ -782,15 +782,15 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
               align: 'block-end',
               children: [
                 InputGroup.inputGroupText({ children: ['Line 1, Column 1'] }, h),
-                InputGroup.inputGroupButton({ size: 'sm', variant: 'default', ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"}, children: ['Run ', Icon.icon('corner-down-left', {}, h)] }, h),
+                InputGroup.inputGroupButton({ size: 'sm', variant: 'default', ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"}, children: ['Run ', Icon.icon({ name: 'corner-down-left' }, h)] }, h),
               ],
             }, h),
             InputGroup.inputGroupAddon({
               align: 'block-start',
               children: [
-                InputGroup.inputGroupText({ children: [Icon.icon('file-code', {}, h), 'script.js'] }, h),
-                InputGroup.inputGroupButton({ size: 'icon-xs', ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"}, children: [Icon.icon('refresh-cw', {}, h)] }, h),
-                InputGroup.inputGroupButton({ size: 'icon-xs', children: [Icon.icon('copy', {}, h)] }, h),
+                InputGroup.inputGroupText({ children: [Icon.icon({ name: 'file-code' }, h), 'script.js'] }, h),
+                InputGroup.inputGroupButton({ size: 'icon-xs', ${isStyleX ? 'layoutStyle: layoutStyle({ marginInlineStart: "auto" })' : "class: 'ml-auto'"}, children: [Icon.icon({ name: 'refresh-cw' }, h)] }, h),
+                InputGroup.inputGroupButton({ size: 'icon-xs', children: [Icon.icon({ name: 'copy' }, h)] }, h),
               ],
             }, h),
           ],
@@ -819,7 +819,7 @@ const emitBody = (fixture: InputGroupFixture, isStyleX: boolean): string => {
       const search = `InputGroup.inputGroup({
             children: [
               ${emitInput('rtlSearch', 'rtl-search', `\n              placeholder: '${t.placeholder}',`)},
-              InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
+              InputGroup.inputGroupAddon({ children: [Icon.icon({ name: 'search' }, h)] }, h),
               InputGroup.inputGroupAddon({ align: 'inline-end', children: ['${t.results}'] }, h),
             ],
           }, h)`

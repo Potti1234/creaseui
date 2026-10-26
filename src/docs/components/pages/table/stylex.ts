@@ -12,7 +12,7 @@ import {
   type TableFixture,
 } from '@/docs/components/pages/table/shared'
 import * as DropdownMenu from '@/stylex/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Table from '@/stylex/table'
 
 const styles = stylex.create({
@@ -245,7 +245,7 @@ const actionsTable = <Msg>(
                                       ),
                                     ],
                                     [
-                                      Icon.icon('ellipsis', {}, h),
+                                      Icon.icon({ name: 'ellipsis' }, h),
                                       h.span(
                                         [
                                           h.Class(

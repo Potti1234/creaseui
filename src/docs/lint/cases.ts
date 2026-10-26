@@ -206,6 +206,37 @@ export const view = <Msg>(h: HtmlBuilder<Msg>, isPrimary: boolean): Html =>
 `,
     '',
   ),
+  ...ALL_RENDERERS.map(renderer => {
+    const mod = renderer === 'tailwind' ? 'ui' : renderer
+    return authoring(
+      'form-association',
+      `unknown-form-${renderer}`,
+      renderer,
+      renderer,
+      'src/app/invite.ts',
+      'A footer submit that names the wrong form',
+      "The dialog footer renders outside the form, so Send invite names it with form:. A typo there leaves the button submitting nothing: Enter still works, the button silently doesn't, and the input's required/type=email checks never run for it.",
+      `import * as Button from '@/${mod}/button'
+import * as Form from '@/${mod}/form'
+
+export const invite = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  h.div([], [
+    Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h),
+    Button.button({ type: 'submit', form: 'invite-form', children: ['Send invite'] }, h),
+  ])
+`,
+      `import * as Button from '@/${mod}/button'
+import * as Form from '@/${mod}/form'
+
+export const invite = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): Html =>
+  h.div([], [
+    Form.form({ id: 'invite-member-form', onSubmit: submitted, children: [email] }, h),
+    Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h),
+  ])
+`,
+      "submits form 'invite-form'",
+    )
+  }),
   authoring(
     'no-component-restyle',
     'color-class',

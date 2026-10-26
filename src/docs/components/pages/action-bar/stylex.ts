@@ -6,7 +6,7 @@ import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import type { ActionBarFixture } from '@/docs/components/pages/action-bar/shared'
 import { actionBarFixtures } from '@/docs/components/pages/action-bar/shared'
 import * as ActionBar from '@/stylex/action-bar'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Button from '@/stylex/button'
 
 const Side = S.Union([S.Literal('top'), S.Literal('bottom')])
@@ -82,7 +82,7 @@ const barChildren = (
     {
       onClose: ActionBarPreviewMessage.ClosedActionBar({}),
       ariaLabel: 'Clear selection',
-      children: [Icon.icon('x', { class: 'size-4' }, h)],
+      children: [Icon.icon({ name: 'x', size: 'sm' }, h)],
     },
     h,
   ),

@@ -31,10 +31,22 @@ export type LintDocsStyles = Readonly<{
   terminal: string
 }>
 
+export type LintInviteFormProps<Msg> = Readonly<{
+  formId: string
+  submitsTo: string
+  submitted: Msg
+}>
+
 export type LintRendererKit = Readonly<{
   styles: LintDocsStyles
   primaryVars: ReadonlyArray<string>
   button: <Msg>(props: LintButtonProps, h: HtmlBuilder<Msg>) => Html
+  /** Form with a required email field and a footer submit outside it,
+      linked through `form: submitsTo`. */
+  inviteForm: <Msg>(
+    props: LintInviteFormProps<Msg>,
+    h: HtmlBuilder<Msg>,
+  ) => Html
 }>
 
 const DESTRUCTIVE = 'var(--destructive)'
@@ -60,6 +72,7 @@ export const lintPreview = <Msg>(
   key: string,
   kind: LintPreviewKind,
   h: HtmlBuilder<Msg>,
+  submitted: Msg,
 ): Html => {
   const bad = kind === 'bad'
   const one = (child: Html): Html => stack(kit, [child], h)
@@ -135,6 +148,24 @@ export const lintPreview = <Msg>(
             : { variant: 'destructive', children: ['Cancel plan'] },
           h,
         ),
+      )
+    case 'form-association/unknown-form-tailwind':
+    case 'form-association/unknown-form-stylex':
+    case 'form-association/unknown-form-pleat':
+      return h.div(
+        [h.Class(kit.styles.previewWide)],
+        [
+          kit.inviteForm(
+            {
+              formId: `lint-invite-member-form-${kind}`,
+              submitsTo: bad
+                ? `lint-invite-form-${kind}`
+                : `lint-invite-member-form-${kind}`,
+              submitted,
+            },
+            h,
+          ),
+        ],
       )
     case 'no-foldkit-inline-style/inline-style-tailwind':
     case 'no-foldkit-inline-style/inline-style-stylex':

@@ -12,7 +12,7 @@ import {
 } from '@/docs/components/pages/dropdown-menu/shared'
 import * as Avatar from '@/pleat/avatar'
 import * as DropdownMenu from '@/pleat/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 
 const styles = {
   frame: Style.make({
@@ -84,7 +84,9 @@ export const dropdownMenuPleatPreview: ExamplePreviewProvider = <Msg>(
             )
             return spec === undefined
               ? { label: item }
-              : resolveItemConfig(spec, state, name => Icon.icon(name, {}, h))
+              : resolveItemConfig(spec, state, name =>
+                  Icon.icon({ name: name }, h),
+                )
           },
           ...(fixture.keepOpenOnCheckableSelect === true
             ? { keepOpenOnCheckableSelect: true }

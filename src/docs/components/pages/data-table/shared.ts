@@ -256,12 +256,12 @@ const facetedSource = (
         h.span([h.Class('font-medium tabular-nums')], [String(visible.length)]),
         h.span([h.Class('text-muted-foreground')], ['selected']),
         actionBarSeparator({}, h),
-        actionBarClose({ onClose: wrap(DataTable.Message.ClosedActionBar({})), ariaLabel: 'Clear selection', children: [icon('x', { class: 'size-4' }, h)] }, h),
+        actionBarClose({ onClose: wrap(DataTable.Message.ClosedActionBar({})), ariaLabel: 'Clear selection', children: [icon({ name: 'x', size: 'sm' }, h)] }, h),
       ]}, h),
       actionBarGroup({ children: [
-        actionBarItem({ onSelect: wrap(DataTable.Message.AppliedBulkValue({ columnId: 'status', value: 'success' })), ${stylex ? 'extraStyle: styles.gap' : "class: 'gap-1.5'"}, children: [icon('circle-check', { class: 'size-4' }, h), 'Mark success'] }, h),
-        actionBarItem({ onSelect: wrap(DataTable.Message.RequestedExport({})), ${stylex ? 'extraStyle: styles.gap' : "class: 'gap-1.5'"}, children: [icon('download', { class: 'size-4' }, h), 'Export'] }, h),
-        actionBarItem({ variant: 'destructive', onSelect: wrap(DataTable.Message.OpenedDeleteDialog({ ids: [...selected] })), ${stylex ? 'extraStyle: styles.gap' : "class: 'gap-1.5'"}, children: [icon('trash-2', { class: 'size-4' }, h), 'Delete'] }, h),
+        actionBarItem({ onSelect: wrap(DataTable.Message.AppliedBulkValue({ columnId: 'status', value: 'success' })), ${stylex ? 'extraStyle: styles.gap' : "class: 'gap-1.5'"}, children: [icon({ name: 'circle-check', size: 'sm' }, h), 'Mark success'] }, h),
+        actionBarItem({ onSelect: wrap(DataTable.Message.RequestedExport({})), ${stylex ? 'extraStyle: styles.gap' : "class: 'gap-1.5'"}, children: [icon({ name: 'download', size: 'sm' }, h), 'Export'] }, h),
+        actionBarItem({ variant: 'destructive', onSelect: wrap(DataTable.Message.OpenedDeleteDialog({ ids: [...selected] })), ${stylex ? 'extraStyle: styles.gap' : "class: 'gap-1.5'"}, children: [icon({ name: 'trash-2', size: 'sm' }, h), 'Delete'] }, h),
       ]}, h),
     ],
   }, h)
@@ -322,7 +322,7 @@ import * as DataTable from '${mod}/data-table'${
       needsBar
         ? `
 import { actionBar, actionBarSelection, actionBarGroup, actionBarItem, actionBarSeparator, actionBarClose } from '${mod}/action-bar'
-import { icon } from '@/lib/icon'`
+import { icon } from '@/stylex/icon'`
         : ''
     }`,
     model: `type Payment = Readonly<{ id: string; status: string; email: string; amount: number }>

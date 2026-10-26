@@ -3,6 +3,7 @@ import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as Icon from '@/lib/icon'
+import * as SidebarModal from '@/lib/sidebar-modal'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { reset } from './reset'
@@ -355,6 +356,25 @@ const styles = {
     }),
   ),
   menuItem: Style.make({ position: 'relative' }),
+  mobileModal: Style.make({
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    color: 'inherit',
+    display: 'block',
+    height: '100%',
+    margin: 0,
+    maxHeight: 'none',
+    maxWidth: 'none',
+    overflow: 'visible',
+    padding: 0,
+    position: 'fixed',
+    zIndex: 50,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    top: 0,
+    width: '100%',
+  }).pipe(Style.when(When.minWidth('768px'), { display: 'none' })),
   mobile: Style.make({
     backgroundColor: complexTokens.sidebar,
     color: complexTokens.sidebarForeground,
@@ -698,6 +718,8 @@ export type SidebarProps<Msg> = Slot &
     presentation?: 'application' | 'contained'
     belowHeader?: boolean
     isMobileOpen?: boolean
+    /** Id of the mobile panel's `<dialog>`; set it when a page renders two Sidebars. */
+    mobileId?: string
     onMobileDismiss?: Msg
   }>
 export const sidebar = <Msg>(
@@ -738,58 +760,68 @@ export const sidebar = <Msg>(
     [
       ...((props.isMobileOpen ?? false)
         ? [
-            h.button(
+            h.dialog(
               [
-                h.Type('button'),
-                h.AriaLabel('Close sidebar backdrop'),
-                ...(props.onMobileDismiss === undefined
-                  ? []
-                  : [
-                      h.OnClick(props.onMobileDismiss),
-                      h.OnKeyDownPreventDefault(key =>
-                        key === 'Escape'
-                          ? Option.some(props.onMobileDismiss!)
-                          : Option.none(),
-                      ),
-                    ]),
-                h.Class(className(reset.button, styles.backdrop)),
-              ],
-              [],
-            ),
-            h.aside(
-              [
-                h.DataAttribute('slot', 'sidebar-mobile'),
-                h.Role('dialog'),
-                h.AriaModal(true),
+                h.Id(props.mobileId ?? SidebarModal.MOBILE_MODAL_ID),
+                h.DataAttribute('slot', 'sidebar-mobile-modal'),
                 h.AriaLabel('Sidebar'),
+                SidebarModal.mobileModalMount(
+                  props.mobileId ?? SidebarModal.MOBILE_MODAL_ID,
+                  h,
+                ),
                 ...(props.onMobileDismiss === undefined
                   ? []
-                  : [
-                      h.OnKeyDownPreventDefault(key =>
-                        key === 'Escape'
-                          ? Option.some(props.onMobileDismiss!)
-                          : Option.none(),
-                      ),
-                    ]),
-                h.Class(
-                  className(styles.mobile, side === 'right' && styles.right),
-                ),
+                  : [h.OnCancelPreventDefault(props.onMobileDismiss)]),
+                h.Class(className(styles.mobileModal)),
               ],
               [
-                ...props.children,
-                ...(props.onMobileDismiss === undefined
-                  ? []
-                  : [
-                      h.button(
-                        [
-                          h.Type('button'),
-                          h.AriaLabel('Close sidebar'),
-                          h.OnClick(props.onMobileDismiss),
-                          h.Class(className(reset.button, styles.mobileClose)),
-                        ],
-                        [Icon.x({}, h)],
+                h.aside(
+                  [
+                    h.DataAttribute('slot', 'sidebar-mobile'),
+                    h.Class(
+                      className(
+                        styles.mobile,
+                        side === 'right' && styles.right,
                       ),
-                    ]),
+                    ),
+                  ],
+                  [
+                    ...props.children,
+                    ...(props.onMobileDismiss === undefined
+                      ? []
+                      : [
+                          h.button(
+                            [
+                              h.Type('button'),
+                              h.AriaLabel('Close sidebar'),
+                              h.OnClick(props.onMobileDismiss),
+                              h.Class(
+                                className(reset.button, styles.mobileClose),
+                              ),
+                            ],
+                            [Icon.x({}, h)],
+                          ),
+                        ]),
+                  ],
+                ),
+                h.button(
+                  [
+                    h.Type('button'),
+                    h.AriaLabel('Close sidebar backdrop'),
+                    ...(props.onMobileDismiss === undefined
+                      ? []
+                      : [
+                          h.OnClick(props.onMobileDismiss),
+                          h.OnKeyDownPreventDefault(key =>
+                            key === 'Escape'
+                              ? Option.some(props.onMobileDismiss!)
+                              : Option.none(),
+                          ),
+                        ]),
+                    h.Class(className(reset.button, styles.backdrop)),
+                  ],
+                  [],
+                ),
               ],
             ),
           ]

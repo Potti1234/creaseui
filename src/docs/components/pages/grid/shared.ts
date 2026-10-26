@@ -23,6 +23,7 @@ export type GridFixture = Readonly<{
     | 'gallery'
     | 'spanColumns'
     | 'spanShowcase'
+    | 'metrics'
 }>
 
 export const gridFixtures: Readonly<[GridFixture, ...Array<GridFixture>]> = [
@@ -64,6 +65,12 @@ export const gridFixtures: Readonly<[GridFixture, ...Array<GridFixture>]> = [
       'GridSpan lets a grid item span multiple columns or rows within an Grid, enabling masonry-style and asymmetric layouts.',
     kind: 'spanShowcase',
   },
+  {
+    title: 'Grid — Adaptive Metric Cards',
+    description:
+      "The recommended dashboard pattern. columns: { minWidth: 240, max: 3, repeat: 'fit' } fits as many 240px tracks as the container allows, up to three, so long labels, values and deltas stay readable on a phone. A product-owned metricGrid wrapper fixes those choices, so feature code passes only children; restrict feature imports to it with your ESLint policy.",
+    kind: 'metrics',
+  },
 ]
 
 export const gridStats: ReadonlyArray<{ label: string; value: string }> = [
@@ -90,6 +97,40 @@ export const gridMetrics: ReadonlyArray<{ label: string; value: string }> = [
   { label: 'Active Users', value: '12,841' },
   { label: 'Conversion', value: '3.2%' },
   { label: 'Avg Response', value: '245ms' },
+]
+
+export type GridMetricCard = Readonly<{
+  label: string
+  value: string
+  delta: Readonly<{
+    value: string
+    direction: 'up' | 'down' | 'flat'
+    sentiment?: 'positive' | 'negative' | 'neutral'
+  }>
+  description: string
+}>
+
+/* Realistic long labels, values and deltas: the content-fit audit renders
+   these at phone, tablet and desktop widths on every renderer. */
+export const gridMetricCards: ReadonlyArray<GridMetricCard> = [
+  {
+    label: 'Monthly recurring revenue',
+    value: '$1,284,930',
+    delta: { value: '+12.4%', direction: 'up' },
+    description: 'vs. previous 30 days, net of refunds',
+  },
+  {
+    label: 'Checkout error rate',
+    value: '0.42%',
+    delta: { value: '-0.08%', direction: 'down', sentiment: 'positive' },
+    description: 'vs. previous 30 days',
+  },
+  {
+    label: 'Weekly active workspaces',
+    value: '18,204',
+    delta: { value: '0.0%', direction: 'flat' },
+    description: 'unchanged since last week',
+  },
 ]
 
 export const gridGalleryCards: ReadonlyArray<{
@@ -183,6 +224,25 @@ const metricsSource = `const METRICS = [
   { label: 'Avg Response', value: '245ms' },
 ]`
 
+const metricCardsSource = `import type { Html } from 'foldkit/html'
+
+const METRIC_CARDS = [
+  { label: 'Monthly recurring revenue', value: '$1,284,930', delta: { value: '+12.4%', direction: 'up' }, description: 'vs. previous 30 days, net of refunds' },
+  { label: 'Checkout error rate', value: '0.42%', delta: { value: '-0.08%', direction: 'down', sentiment: 'positive' }, description: 'vs. previous 30 days' },
+  { label: 'Weekly active workspaces', value: '18,204', delta: { value: '0.0%', direction: 'flat' }, description: 'unchanged since last week' },
+] as const
+
+/* Product-owned wrapper: the minimum track width, column cap and gap are this
+   product's decisions. Feature code passes only children, never columns. */
+const metricGrid = <Msg>(
+  props: Readonly<{ children: ReadonlyArray<Html> }>,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  Grid.grid(
+    { columns: { minWidth: 240, max: 3, repeat: 'fit' }, gap: 4, width: '100%', children: props.children },
+    h,
+  )`
+
 const gallerySource = `const CARDS = [
   { title: 'Getting Started', description: 'Learn the basics of the platform.' },
   { title: 'Components', description: 'Browse the full component library.' },
@@ -271,6 +331,15 @@ const emitDashboard = (
       h,
     )`
 }
+
+const emitMetrics = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => `metricGrid(
+      { children: METRIC_CARDS.map(metric =>
+        ${cardTw('Stat.stat(metric, h)')},
+      ) },
+      h,
+    )`
 
 const emitGallery = (
   renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
@@ -482,6 +551,8 @@ const emitBody = (
       return emitSpanColumns(renderer)
     case 'spanShowcase':
       return emitSpanShowcase(renderer)
+    case 'metrics':
+      return emitMetrics(renderer)
     case 'autoFit':
       return '' // handled by emitAutoFit
   }
@@ -500,6 +571,8 @@ const extraSourceFor = (kind: GridFixture['kind']): string => {
       return metricsSource
     case 'gallery':
       return gallerySource
+    case 'metrics':
+      return metricCardsSource
     default:
       return ''
   }
@@ -549,6 +622,7 @@ const source = (
   const componentImports = [
     `import * as Card from '@/${mod}/card'`,
     usesStack(fixture.kind) ? `import * as Stack from '@/${mod}/stack'` : '',
+    fixture.kind === 'metrics' ? `import * as Stat from '@/${mod}/stat'` : '',
     extraSourceFor(fixture.kind),
     renderer !== 'tailwind' ? stylexStylesFor(fixture.kind) : '',
   ]

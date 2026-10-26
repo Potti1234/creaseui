@@ -8,7 +8,7 @@ import {
   collapsibleFixtures,
   fileTree,
 } from '@/docs/components/pages/collapsible/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Button from '@/stylex/button'
 import * as Card from '@/stylex/card'
 import * as Collapsible from '@/stylex/collapsible'
@@ -92,9 +92,6 @@ const styles = stylex.create({
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
   },
-  icon: { height: '1rem', width: '1rem' },
-  iconSm: { height: '0.875rem', width: '0.875rem' },
-  iconSpin: { transform: 'rotate(180deg)', height: '1rem', width: '1rem' },
   grid2: {
     gap: '0.5rem',
     display: 'grid',
@@ -193,11 +190,7 @@ export const collapsibleStyleXPreview: ExamplePreviewProvider = <Msg>(
   const toggle = (isOpen: boolean): Msg =>
     onMessageJson(JSON.stringify({ _tag: 'ToggledCollapsiblePreview', isOpen }))
   const chevron = (open: boolean) =>
-    Icon.icon(
-      'chevron-down',
-      { class: className(open ? styles.iconSpin : styles.icon) },
-      h,
-    )
+    Icon.icon({ name: 'chevron-down', size: 'sm', rotation: open ? 180 : 0 }, h)
 
   if (fixture.kind === 'basic') {
     return Card.card(
@@ -335,8 +328,12 @@ export const collapsibleStyleXPreview: ExamplePreviewProvider = <Msg>(
             [h.Class(className(styles.treeRow, styles.triggerTree))],
             [
               Icon.icon(
-                preview.open.includes(id) ? 'chevron-down' : 'chevron-right',
-                { class: className(styles.iconSm) },
+                {
+                  name: preview.open.includes(id)
+                    ? 'chevron-down'
+                    : 'chevron-right',
+                  size: 'xs',
+                },
                 h,
               ),
               name,
@@ -391,13 +388,7 @@ export const collapsibleStyleXPreview: ExamplePreviewProvider = <Msg>(
                 ariaLabel: 'Toggle order details',
                 trigger: h.span(
                   [h.Class(className(styles.triggerRtl))],
-                  [
-                    Icon.icon(
-                      'chevrons-up-down',
-                      { class: className(styles.icon) },
-                      h,
-                    ),
-                  ],
+                  [Icon.icon({ name: 'chevrons-up-down', size: 'sm' }, h)],
                 ),
                 content: h.div(
                   [h.Class(className(styles.boxStack, styles.panelStack))],

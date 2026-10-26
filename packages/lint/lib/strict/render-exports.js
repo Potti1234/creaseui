@@ -157,6 +157,30 @@ export const createRenderExports = ({ rootDir, files }) => {
     })
   }
 
+  /* Exports whose resolved signatures take and return no view (`init`,
+     `update`): never rendering, whatever their syntax looks like. */
+  const typedNonRendering = (symbol, location) => {
+    const type = checker.getTypeOfSymbolAtLocation(unalias(symbol), location)
+    const signatures = type.getCallSignatures()
+    return (
+      signatures.length > 0 &&
+      signatures.every(signature => {
+        const text = [
+          checker.typeToString(signature.getReturnType()),
+          ...signature
+            .getParameters()
+            .map(parameter =>
+              checker.typeToString(
+                checker.getTypeOfSymbolAtLocation(parameter, location),
+              ),
+            ),
+        ].join(' ')
+        return !RENDER_TYPE.test(text) && !/\bany\b/u.test(text)
+      })
+    )
+  }
+  const silent = new Map()
+
   /** Rendering exports declared (or locally re-bound) in `file`. */
   const of = file => {
     const sourceFile = program.getSourceFile(file)
@@ -164,6 +188,8 @@ export const createRenderExports = ({ rootDir, files }) => {
     const moduleSymbol = checker.getSymbolAtLocation(sourceFile)
     if (moduleSymbol === undefined) return []
     const found = []
+    const quiet = new Set()
+    silent.set(path.resolve(file), quiet)
     for (const symbol of checker.getExportsOfModule(moduleSymbol)) {
       const own = (symbol.declarations ?? []).find(
         declaration => declaration.getSourceFile() === sourceFile,
@@ -177,7 +203,10 @@ export const createRenderExports = ({ rootDir, files }) => {
         continue
       if (!(unalias(symbol).flags & ts.SymbolFlags.Value)) continue
       const declaration = valueDeclaration(symbol)
-      if (!typedRenders(symbol, own) && !writtenRenders(declaration)) continue
+      if (!typedRenders(symbol, own) && !writtenRenders(declaration)) {
+        if (typedNonRendering(symbol, own)) quiet.add(symbol.name)
+        continue
+      }
       const origin = declaration?.getSourceFile().fileName
       found.push({
         name: symbol.name,
@@ -192,5 +221,11 @@ export const createRenderExports = ({ rootDir, files }) => {
     return found
   }
 
-  return { of }
+  /** Exports of `file` the type checker proves don't render. */
+  const nonRendering = file => {
+    if (!silent.has(path.resolve(file))) of(file)
+    return silent.get(path.resolve(file)) ?? new Set()
+  }
+
+  return { nonRendering, of }
 }

@@ -14,7 +14,7 @@ import * as Attachment from '@/stylex/attachment'
 import * as Avatar from '@/stylex/avatar'
 import * as Bubble from '@/stylex/bubble'
 import * as Button from '@/stylex/button'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Marker from '@/stylex/marker'
 import * as Message from '@/stylex/message'
 import { className } from '@/stylex/style'
@@ -43,7 +43,6 @@ const styles = stylex.create({
   destructive: { color: 'var(--destructive)', fontWeight: 400 },
   fontMedium: { fontWeight: 500 },
   mediaImage: { aspectRatio: '1', objectFit: 'cover', width: '100%' },
-  iconMd: { height: '1rem', width: '1rem' },
 })
 
 const sx = (style: stylex.StaticStyles): string => className(style)
@@ -125,13 +124,7 @@ const part = <Msg>(
           children: [
             Attachment.attachmentMedia(
               {
-                children: [
-                  Icon.icon(
-                    'file-text',
-                    { class: className(styles.iconMd) },
-                    h,
-                  ),
-                ],
+                children: [Icon.icon({ name: 'file-text', size: 'sm' }, h)],
               },
               h,
             ),
@@ -157,7 +150,7 @@ const part = <Msg>(
                     {
                       onClick: send(onMessageJson, 'ClickedAction'),
                       label: 'Download',
-                      children: [Icon.icon('download', {}, h)],
+                      children: [Icon.icon({ name: 'download' }, h)],
                     },
                     h,
                   ),
@@ -194,14 +187,14 @@ const footer = <Msg>(
     return Message.messageFooter({ children: [spec.footer] }, h)
   }
   if (spec.footerActions === 'copyLikeDislike') {
-    const btn = (icon: string, label: string): Html =>
+    const btn = (icon: Icon.IconName, label: string): Html =>
       Button.button(
         {
           variant: 'ghost',
           size: 'icon',
           ariaLabel: label,
           onClick: send(onMessageJson, 'ClickedAction'),
-          children: [Icon.icon(icon, { class: className(styles.iconMd) }, h)],
+          children: [Icon.icon({ name: icon, size: 'sm' }, h)],
         },
         h,
       )
@@ -233,7 +226,7 @@ const footer = <Msg>(
               size: 'icon-xs',
               ariaLabel: 'Retry',
               onClick: send(onMessageJson, 'ClickedAction'),
-              children: [Icon.icon('refresh-ccw', {}, h)],
+              children: [Icon.icon({ name: 'refresh-ccw' }, h)],
             },
             h,
           ),

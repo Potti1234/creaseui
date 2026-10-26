@@ -13,7 +13,7 @@ import {
 } from '@/docs/components/pages/dropdown-menu/shared'
 import * as Avatar from '@/ui/avatar'
 import * as DropdownMenu from '@/ui/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 
 const GotDropdownPreviewMessage = defineMessageUnion({
   GotDropdownPreviewMessage: { message: DropdownMenu.Message },
@@ -134,7 +134,7 @@ export const dropdownMenuTailwindPreviewProgram = definePreviewProgram<
               return spec === undefined
                 ? { label: item }
                 : resolveItemConfig(spec, state, name =>
-                    Icon.icon(name, { class: 'size-4' }, h),
+                    Icon.icon({ name: name, size: 'sm' }, h),
                   )
             },
             ...(fixture.keepOpenOnCheckableSelect === true

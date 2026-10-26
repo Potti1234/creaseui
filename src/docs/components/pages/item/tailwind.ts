@@ -12,7 +12,7 @@ import {
   itemRtlCopy,
   type ItemFixture,
 } from '@/docs/components/pages/item/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Avatar from '@/ui/avatar'
 import * as Button from '@/ui/button'
 import { buttonVariants } from '@/ui/button'
@@ -128,7 +128,7 @@ const itemView = (
                 Item.itemMedia(
                   {
                     children: [
-                      Icon.icon('badge-check', { class: 'size-5' }, h),
+                      Icon.icon({ name: 'badge-check', size: 'md' }, h),
                     ],
                   },
                   h,
@@ -153,7 +153,7 @@ const itemView = (
                 Item.itemActions(
                   {
                     children: [
-                      Icon.icon('chevron-right', { class: 'size-4' }, h),
+                      Icon.icon({ name: 'chevron-right', size: 'sm' }, h),
                     ],
                   },
                   h,
@@ -214,7 +214,10 @@ const itemView = (
               ...props,
               children: [
                 Item.itemMedia(
-                  { variant: 'icon', children: [Icon.icon('inbox', {}, h)] },
+                  {
+                    variant: 'icon',
+                    children: [Icon.icon({ name: 'inbox' }, h)],
+                  },
                   h,
                 ),
                 Item.itemContent(
@@ -244,7 +247,7 @@ const itemView = (
                 Item.itemMedia(
                   {
                     variant: 'icon',
-                    children: [Icon.icon('shield-alert', {}, h)],
+                    children: [Icon.icon({ name: 'shield-alert' }, h)],
                   },
                   h,
                 ),
@@ -335,7 +338,7 @@ const itemView = (
                           size: 'icon-sm',
                           class: 'rounded-full',
                           ariaLabel: 'Invite',
-                          children: [Icon.icon('plus', {}, h)],
+                          children: [Icon.icon({ name: 'plus' }, h)],
                         },
                         h,
                       ),
@@ -552,7 +555,7 @@ const itemView = (
                             size: 'icon',
                             class: 'rounded-full',
                             ariaLabel: `Invite ${person.username}`,
-                            children: [Icon.icon('plus', {}, h)],
+                            children: [Icon.icon({ name: 'plus' }, h)],
                           },
                           h,
                         ),
@@ -647,7 +650,7 @@ const itemView = (
                 Item.itemActions(
                   {
                     children: [
-                      Icon.icon('chevron-right', { class: 'size-4' }, h),
+                      Icon.icon({ name: 'chevron-right', size: 'sm' }, h),
                     ],
                   },
                   h,
@@ -683,7 +686,7 @@ const itemView = (
                 Item.itemActions(
                   {
                     children: [
-                      Icon.icon('external-link', { class: 'size-4' }, h),
+                      Icon.icon({ name: 'external-link', size: 'sm' }, h),
                     ],
                   },
                   h,
@@ -702,7 +705,7 @@ const itemView = (
             ItemPreviewMessage.GotDropdownMessage({ message }),
           trigger: h.span(
             [h.Class('flex items-center gap-2')],
-            ['Select', Icon.icon('chevron-down', { class: 'size-4' }, h)],
+            ['Select', Icon.icon({ name: 'chevron-down', size: 'sm' }, h)],
           ),
           triggerClass: buttonVariants({ variant: 'outline' }),
           ariaLabel: 'Select a person',

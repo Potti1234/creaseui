@@ -232,6 +232,20 @@ export const isStylexCreate = (analysis, callee) => {
   )
 }
 
+/* The wrapper's own function: an exported module-level function, whatever its
+   syntax. Callbacks, nested helpers and private helpers do not own props. */
+const isWrapperFunction = fn => {
+  const parent = fn.parent
+  if (parent?.type === 'ExportDefaultDeclaration') return true
+  if (fn.type === 'FunctionDeclaration')
+    return parent?.type === 'ExportNamedDeclaration'
+  return (
+    parent?.type === 'VariableDeclarator' &&
+    parent.init === fn &&
+    parent.parent?.parent?.type === 'ExportNamedDeclaration'
+  )
+}
+
 export const analyzeCall = ({
   analysis,
   call,
@@ -241,6 +255,29 @@ export const analyzeCall = ({
   strict,
 }) => {
   const findings = []
+  /* The forwarding exemption covers only values read from the wrapper's own
+     parameters (`props`, `props.class`, `const { class: c } = props`);
+     factories, constants and other locals are still checked. */
+  const ownProps = (node, seen = new Set()) => {
+    if (!forwarding) return false
+    node = unwrap(node)
+    if (node?.type === 'MemberExpression' && !node.computed)
+      return ownProps(node.object, seen)
+    if (node?.type !== 'Identifier') return false
+    const variable = analysis.variableOf(node)
+    if (variable === null || seen.has(variable) || variable.defs.length !== 1)
+      return false
+    seen.add(variable)
+    const definition = variable.defs[0]
+    if (definition.type === 'Parameter')
+      return isWrapperFunction(definition.node)
+    return (
+      definition.type === 'Variable' &&
+      definition.parent.kind === 'const' &&
+      definition.node.init !== null &&
+      ownProps(definition.node.init, seen)
+    )
+  }
   const violation = (node, message) =>
     findings.push({ kind: 'violation', message, node })
   const unverifiable = (node, message) =>
@@ -266,7 +303,7 @@ export const analyzeCall = ({
   const opaque = (node, entries) => {
     /* An owned source passing its own props on is the owner's contract;
        literal UI props in it are still checked. */
-    if (forwarding) return
+    if (ownProps(node)) return
     const fields = typedFields(node)
     const name = context.sourceCode.getText(node)
     if (fields === null) {
@@ -315,9 +352,19 @@ export const analyzeCall = ({
       return entries
     }
     if (node?.type === 'ConditionalExpression') {
-      for (const branch of [node.consequent, node.alternate])
-        for (const [key, values] of read(branch, seen))
+      /* A key missing from one branch may be absent, so a spread of the
+         conditional keeps the earlier value reachable. */
+      const branches = [node.consequent, node.alternate].map(branch =>
+        read(branch, seen),
+      )
+      entries.optional = new Set()
+      for (const branch of branches)
+        for (const [key, values] of branch) {
           entries.set(key, [...(entries.get(key) ?? []), ...values])
+          if (branch.optional?.has(key)) entries.optional.add(key)
+        }
+      for (const key of entries.keys())
+        if (branches.some(branch => !branch.has(key))) entries.optional.add(key)
       return entries
     }
     if (node?.type !== 'ObjectExpression') {
@@ -326,8 +373,19 @@ export const analyzeCall = ({
     }
     for (const property of node.properties) {
       if (property.type === 'SpreadElement') {
-        for (const [key, values] of read(property.argument, seen))
-          entries.set(key, values)
+        const spread = read(property.argument, seen)
+        for (const [key, values] of spread) {
+          if (!spread.optional?.has(key)) {
+            entries.optional?.delete(key)
+            entries.set(key, values)
+            continue
+          }
+          if (!entries.has(key)) {
+            entries.optional ??= new Set()
+            entries.optional.add(key)
+          }
+          entries.set(key, [...(entries.get(key) ?? []), ...values])
+        }
         continue
       }
       const key = property.computed
@@ -342,6 +400,7 @@ export const analyzeCall = ({
         )
         continue
       }
+      entries.optional?.delete(key)
       entries.set(key, [property.value])
     }
     return entries
@@ -491,7 +550,7 @@ export const analyzeCall = ({
       }
     }
     /* An owned source passing its own `layoutStyle` prop on. */
-    if (forwarding && node.type === 'MemberExpression') return
+    if (ownProps(node)) return
     violation(
       node,
       `\`${slot}\` on ${label(record)} accepts only layoutStyle()/layoutWhen() placement values, not arbitrary style objects or factories.`,
@@ -578,7 +637,7 @@ export const analyzeCall = ({
         }
         const tokens = classValues(analysis, value)
         if (tokens === null) {
-          if (forwarding) continue
+          if (ownProps(value)) continue
           unverifiable(
             value,
             `The \`class\` value for ${label(record)} cannot be resolved to static placement utilities.`,

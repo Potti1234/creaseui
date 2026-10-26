@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Marker from '@/pleat/marker'
 import * as Toast from '@/pleat/toast'
 import * as Spinner from '@/pleat/spinner'
@@ -42,9 +42,9 @@ const markerSxView = <Msg>(
   onMessageJson: (messageJson: string) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const icon = (name: string): Html =>
+  const icon = (name: Icon.IconName): Html =>
     Marker.markerIcon(
-      { children: [Icon.icon(name, { class: sx(styles.icon4) }, h)] },
+      { children: [Icon.icon({ name: name, size: 'sm' }, h)] },
       h,
     )
   const content = (text: string, shimmer = false): Html =>

@@ -11,7 +11,7 @@ import {
   type TGItem,
 } from '@/docs/components/pages/toggle-group/shared'
 import * as Field from '@/ui/field'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as ToggleGroup from '@/ui/toggle-group'
 
 const ExampleGroup = ToggleGroup.create<string>()
@@ -36,7 +36,7 @@ const itemChildren = (
   h: HtmlBuilder<PreviewMessage>,
 ): ReadonlyArray<Html | string> => {
   if (item.icon !== undefined) {
-    return [Icon.icon(item.icon, { class: 'size-4' }, h)]
+    return [Icon.icon({ name: item.icon, size: 'sm' }, h)]
   }
   if (item.weight !== undefined) {
     return [

@@ -7,6 +7,7 @@ import {
   type GridFixture,
   gridFixtures,
   gridGalleryCards,
+  gridMetricCards,
   gridMetrics,
   gridStats,
   gridTeams,
@@ -15,6 +16,7 @@ import * as Card from '@/ui/card'
 import * as Grid from '@/ui/grid'
 import * as Resizable from '@/ui/resizable'
 import * as Stack from '@/ui/stack'
+import * as Stat from '@/ui/stat'
 
 const GridPreviewMessageUnion = defineMessageUnion({
   GotResizablePreviewMessage: { message: Resizable.Message },
@@ -358,6 +360,30 @@ const spanShowcaseView = <Msg>(h: HtmlBuilder<Msg>): Html =>
     h,
   )
 
+/* The product-owned wrapper the example teaches: feature code passes only
+   children; track width, column cap and gap are fixed here. */
+const metricGrid = <Msg>(
+  props: Readonly<{ children: ReadonlyArray<Html> }>,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  Grid.grid(
+    {
+      columns: { minWidth: 240, max: 3, repeat: 'fit' },
+      gap: 4,
+      width: '100%',
+      children: props.children,
+    },
+    h,
+  )
+
+const metricsView = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  metricGrid(
+    {
+      children: gridMetricCards.map(metric => card([Stat.stat(metric, h)], h)),
+    },
+    h,
+  )
+
 const viewFor = (
   fixture: GridFixture,
   model: GridPreviewModel,
@@ -378,6 +404,8 @@ const viewFor = (
       return spanColumnsView(h)
     case 'spanShowcase':
       return spanShowcaseView(h)
+    case 'metrics':
+      return metricsView(h)
   }
 }
 

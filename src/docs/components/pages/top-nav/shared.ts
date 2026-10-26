@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import {
@@ -12,7 +13,7 @@ import {
 export type TopNavFixtureMenuItem = Readonly<{
   title: string
   description?: string
-  icon?: string
+  icon?: IconName
   href?: string
 }>
 
@@ -30,7 +31,7 @@ export type TopNavFixtureEntry =
       kind: 'item'
       label: string
       href?: string
-      icon?: string
+      icon?: IconName
       isSelected?: boolean
       isDisabled?: boolean
       onSelect?: boolean
@@ -50,7 +51,7 @@ export type TopNavFixtureEntry =
 export type TopNavFixtureHeading = Readonly<{
   heading?: string
   /** Lucide name; wrapped in the NavIcon circle unless `logoPlain`. */
-  logoIcon?: string
+  logoIcon?: IconName
   logoPlain?: boolean
   headingHref?: string
   superheading?: string
@@ -59,10 +60,10 @@ export type TopNavFixtureHeading = Readonly<{
 }>
 
 export type TopNavFixtureEndItem =
-  | Readonly<{ kind: 'ghostIcon'; label: string; icon: string }>
+  | Readonly<{ kind: 'ghostIcon'; label: string; icon: IconName }>
   | Readonly<{ kind: 'ghost'; label: string }>
   | Readonly<{ kind: 'primary'; label: string }>
-  | Readonly<{ kind: 'icon'; icon: string }>
+  | Readonly<{ kind: 'icon'; icon: IconName }>
 
 export type TopNavFixtureNav = Readonly<{
   label?: string
@@ -77,7 +78,7 @@ export type TopNavFixtureNav = Readonly<{
 export type TopNavFixtureMegaItem = Readonly<{
   title: string
   description?: string
-  icon?: string
+  icon?: IconName
   href?: string
 }>
 
@@ -718,7 +719,7 @@ const menuItemSource = (item: TopNavFixtureMenuItem): string => {
     fields.push(`description: ${quote(item.description)}`)
   }
   if (item.icon !== undefined) {
-    fields.push(`icon: Icon.icon(${quote(item.icon)}, { class: 'size-5' }, h)`)
+    fields.push(`icon: Icon.icon({ name: ${quote(item.icon)}, size: 'md' }, h)`)
   }
   if (item.href !== undefined) {
     fields.push(`href: ${quote(item.href)}`)
@@ -783,13 +784,13 @@ const entrySource = (entry: TopNavFixtureEntry): string => {
 const endItemSource = (item: TopNavFixtureEndItem): string => {
   switch (item.kind) {
     case 'ghostIcon':
-      return `Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: ${quote(item.label)}, children: [Icon.icon('${item.icon}', { class: 'size-4' }, h)] }, h)`
+      return `Button.button({ variant: 'ghost', size: 'icon-sm', ariaLabel: ${quote(item.label)}, children: [Icon.icon({ name: '${item.icon}', size: 'sm' }, h)] }, h)`
     case 'ghost':
       return `Button.button({ variant: 'ghost', children: [${quote(item.label)}] }, h)`
     case 'primary':
       return `Button.button({ children: [${quote(item.label)}] }, h)`
     case 'icon':
-      return `Icon.icon('${item.icon}', { class: 'size-5' }, h)`
+      return `Icon.icon({ name: '${item.icon}', size: 'md' }, h)`
   }
 }
 
@@ -799,10 +800,10 @@ const headingSource = (heading: TopNavFixtureHeading): string => {
     fields.push(`heading: ${quote(heading.heading)}`)
   }
   if (heading.logoIcon !== undefined) {
-    const glyph = `Icon.icon('${heading.logoIcon}', { class: 'size-4' }, h)`
+    const glyph = `Icon.icon({ name: '${heading.logoIcon}', size: 'sm' }, h)`
     const logo =
       heading.logoPlain === true
-        ? `Icon.icon('${heading.logoIcon}', { class: 'size-5' }, h)`
+        ? `Icon.icon({ name: '${heading.logoIcon}', size: 'md' }, h)`
         : `h.span([h.Class('flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground')], [${glyph}])`
     fields.push(`logo: ${logo}`)
   }
@@ -940,7 +941,7 @@ const styles = stylex.create({
     imports: `import { Option, Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${stylexStyles === '' ? '' : `${stylexStyles}\n`}import * as TopNav from '@/${ui}/top-nav'${needsIcon ? `\nimport * as Icon from '@/lib/icon'` : ''}${needsButton ? `\nimport * as Button from '@/${ui}/button'` : ''}`,
+${stylexStyles === '' ? '' : `${stylexStyles}\n`}import * as TopNav from '@/${ui}/top-nav'${needsIcon ? `\nimport * as Icon from '@/${ui}/icon'` : ''}${needsButton ? `\nimport * as Button from '@/${ui}/button'` : ''}`,
     model: `export const Model = S.Struct({ ${modelFields}, maybeSelectedId: S.Option(S.String) })
 export type Model = typeof Model.Type`,
     messages: `import { defineMessageUnion } from 'foldkit/message'
@@ -979,7 +980,7 @@ const megaItemCallSource = (item: TopNavFixtureMegaItem): string => {
     fields.push(`description: ${quote(item.description)}`)
   }
   if (item.icon !== undefined) {
-    fields.push(`icon: Icon.icon(${quote(item.icon)}, { class: 'size-5' }, h)`)
+    fields.push(`icon: Icon.icon({ name: ${quote(item.icon)}, size: 'md' }, h)`)
   }
   if (item.href !== undefined) {
     fields.push(`href: ${quote(item.href)}`)
@@ -1014,7 +1015,9 @@ const standaloneSource = (
       .replaceAll('Top Nav ', 'TopNav')
       .replaceAll(' ', ''),
     ...(needsIcon
-      ? { componentImports: `import * as Icon from '@/lib/icon'` }
+      ? {
+          componentImports: `import * as Icon from '@/${renderer === 'tailwind' ? 'ui' : renderer}/icon'`,
+        }
       : {}),
     viewBody,
   })

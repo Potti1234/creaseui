@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -311,7 +312,7 @@ const emitImports = (fixture: MessageFixture, isStyleX: boolean): string => {
     imports.push(`import * as Button from '@/${dir}/button'`)
   }
   if (usesActions || usesAttachment) {
-    imports.push(`import * as Icon from '@/lib/icon'`)
+    imports.push(`import * as Icon from '@/${dir}/icon'`)
   }
   if (fixture.kind === 'demo') {
     imports.push(`import * as Marker from '@/${dir}/marker'`)
@@ -349,13 +350,13 @@ ${indent}    ] }, h),
 ${indent}  ] }, h)`
     case 'attachment-file':
       return `Attachment.attachment({ children: [
-${indent}    Attachment.attachmentMedia({ children: [Icon.icon('file-text', {}, h)] }, h),
+${indent}    Attachment.attachmentMedia({ children: [Icon.icon({ name: 'file-text' }, h)] }, h),
 ${indent}    Attachment.attachmentContent({ children: [
 ${indent}      Attachment.attachmentTitle({ children: ['sales-dashboard.pdf'] }, h),
 ${indent}      Attachment.attachmentDescription({ children: ['PDF · 2.4 MB'] }, h),
 ${indent}    ] }, h),
 ${indent}    Attachment.attachmentActions({ children: [
-${indent}      Attachment.attachmentAction({ onClick: NoOp(), label: 'Download', children: [Icon.icon('download', {}, h)] }, h),
+${indent}      Attachment.attachmentAction({ onClick: NoOp(), label: 'Download', children: [Icon.icon({ name: 'download' }, h)] }, h),
 ${indent}    ] }, h),
 ${indent}  ] }, h)`
   }
@@ -374,8 +375,8 @@ ${indent}  ] }, h)`
     return `MessageUi.messageFooter({ children: ['${sq(spec.footer)}'] }, h)`
   }
   if (spec.footerActions === 'copyLikeDislike') {
-    const btn = (icon: string, label: string): string =>
-      `Button.button({ variant: 'ghost', size: 'icon', ariaLabel: '${label}', children: [Icon.icon('${icon}', {}, h)] }, h)`
+    const btn = (icon: IconName, label: string): string =>
+      `Button.button({ variant: 'ghost', size: 'icon', ariaLabel: '${label}', children: [Icon.icon({ name: '${icon}' }, h)] }, h)`
     return `MessageUi.messageFooter({ children: [
 ${indent}    ${btn('copy', 'Copy')},
 ${indent}    ${btn('thumbs-up', 'Like')},
@@ -385,7 +386,7 @@ ${indent}  ] }, h)`
   if (spec.footerActions === 'failedRetry') {
     return `MessageUi.messageFooter({ children: [
 ${indent}    h.span([h.Class('font-normal text-destructive')], ['Failed to send']),
-${indent}    Button.button({ variant: 'ghost', size: 'icon-xs', ariaLabel: 'Retry', children: [Icon.icon('refresh-ccw', {}, h)] }, h),
+${indent}    Button.button({ variant: 'ghost', size: 'icon-xs', ariaLabel: 'Retry', children: [Icon.icon({ name: 'refresh-ccw' }, h)] }, h),
 ${indent}  ] }, h)`
   }
   return ''

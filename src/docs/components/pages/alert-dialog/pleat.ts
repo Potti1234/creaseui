@@ -7,7 +7,7 @@ import {
   alertDialogFixtures,
   type AlertDialogFixture,
 } from '@/docs/components/pages/alert-dialog/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as AlertDialog from '@/pleat/alert-dialog'
 import * as Button from '@/pleat/button'
 import { className } from '@/pleat/style'
@@ -70,13 +70,7 @@ const dialogView = <Msg>(
       ...(spec.mediaIcon === undefined
         ? {}
         : {
-            media: [
-              Icon.icon(
-                spec.mediaIcon,
-                { class: className(styles.mediaIcon) },
-                h,
-              ),
-            ],
+            media: [Icon.icon({ name: spec.mediaIcon, size: 'xl' }, h)],
           }),
       ...(spec.mediaVariant === undefined
         ? {}

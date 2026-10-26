@@ -128,7 +128,7 @@ const source = (
     isStyleX
       ? `import * as stylex from '@stylexjs/stylex'
 
-const styles = stylex.create({ grid: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '1rem' }, row: { display: 'flex', gap: '2rem', alignItems: 'flex-end' }, card: { padding: '1rem' }, sparkline: { display: 'block', height: '2.25rem', width: '100%', color: 'var(--primary)' } })`
+const styles = stylex.create({ grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 12rem), 1fr))', gap: '1rem' }, row: { display: 'flex', gap: '2rem', alignItems: 'flex-end' }, card: { padding: '1rem' }, sparkline: { display: 'block', height: '2.25rem', width: '100%', color: 'var(--primary)' } })`
       : '',
     sparklineSource(isStyleX),
   ]
@@ -141,7 +141,7 @@ const styles = stylex.create({ grid: { display: 'grid', gridTemplateColumns: 're
   const viewBody =
     fixture.layout === 'cards'
       ? `h.div(
-      [h.Class(${isStyleX ? "stylex.props(styles.grid).className ?? ''" : "'grid grid-cols-3 gap-4'"})],
+      [h.Class(${isStyleX ? "stylex.props(styles.grid).className ?? ''" : "'grid gap-4 sm:grid-cols-3'"})],
       [
         ${fixture.items.map(item => cardWrap(statSource(item))).join(',\n        ')},
       ],

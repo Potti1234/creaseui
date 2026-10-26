@@ -9,7 +9,7 @@ import {
   type AttachmentItemSpec,
   type AttachmentRowSpec,
 } from '@/docs/components/pages/attachment/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Attachment from '@/pleat/attachment'
 import * as Dialog from '@/pleat/dialog'
 import * as Spinner from '@/pleat/spinner'
@@ -89,11 +89,7 @@ const itemView = <Msg>(
                       h.Alt(item.alt ?? item.name),
                       h.Class(className(reset.media, styles.mediaImg)),
                     ])
-                  : Icon.icon(
-                      item.icon ?? 'file',
-                      { class: className(styles.mediaIcon) },
-                      h,
-                    ),
+                  : Icon.icon({ name: item.icon ?? 'file', size: 'sm' }, h),
             ],
           },
           h,
@@ -135,11 +131,7 @@ const itemView = <Msg>(
                         ),
                         label: action.label,
                         children: [
-                          Icon.icon(
-                            action.icon,
-                            { class: className(styles.actionIcon) },
-                            h,
-                          ),
+                          Icon.icon({ name: action.icon, size: '2xs' }, h),
                         ],
                       },
                       h,

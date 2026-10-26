@@ -12,7 +12,7 @@ import {
   type TopNavFixtureMenuItem,
   type TopNavFixtureNav,
 } from '@/docs/components/pages/top-nav/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Button from '@/stylex/button'
 import { className } from '@/stylex/style'
 import * as TopNav from '@/stylex/top-nav'
@@ -50,11 +50,6 @@ const styles = stylex.create({
     height: '2rem',
     width: '2rem',
   },
-  logoGlyph: { height: '1rem', width: '1rem' },
-  plainGlyph: { height: '1.25rem', width: '1.25rem' },
-  menuItemIcon: { height: '1.25rem', width: '1.25rem' },
-  itemIcon: { flexShrink: 0, height: '1rem', width: '1rem' },
-  endIcon: { height: '1.25rem', width: '1.25rem' },
   navWidth600: { maxWidth: '100%', width: '600px' },
 })
 
@@ -67,11 +62,7 @@ const decorateMenuItem = <Msg>(
   ...(item.icon === undefined
     ? {}
     : {
-        icon: Icon.icon(
-          item.icon,
-          { class: className(styles.menuItemIcon) },
-          h,
-        ),
+        icon: Icon.icon({ name: item.icon, size: 'md' }, h),
       }),
   ...(item.href === undefined ? {} : { href: item.href }),
 })
@@ -128,20 +119,10 @@ const decorateHeading = <Msg>(
     : {
         logo:
           heading.logoPlain === true
-            ? Icon.icon(
-                heading.logoIcon,
-                { class: className(styles.plainGlyph) },
-                h,
-              )
+            ? Icon.icon({ name: heading.logoIcon, size: 'md' }, h)
             : h.span(
                 [h.Class(className(styles.logoTile))],
-                [
-                  Icon.icon(
-                    heading.logoIcon,
-                    { class: className(styles.logoGlyph) },
-                    h,
-                  ),
-                ],
+                [Icon.icon({ name: heading.logoIcon, size: 'sm' }, h)],
               ),
       }),
   ...(heading.headingHref === undefined
@@ -171,9 +152,7 @@ const decorateEndItem = <Msg>(
           variant: 'ghost',
           size: 'icon-sm',
           ariaLabel: item.label,
-          children: [
-            Icon.icon(item.icon, { class: className(styles.itemIcon) }, h),
-          ],
+          children: [Icon.icon({ name: item.icon, size: 'sm' }, h)],
         },
         h,
       )
@@ -182,7 +161,7 @@ const decorateEndItem = <Msg>(
     case 'primary':
       return Button.button({ children: [item.label] }, h)
     case 'icon':
-      return Icon.icon(item.icon, { class: className(styles.endIcon) }, h)
+      return Icon.icon({ name: item.icon, size: 'md' }, h)
   }
 }
 
@@ -209,11 +188,7 @@ export const topNavStyleXPreview: ExamplePreviewProvider = <Msg>(
                 ...(item.icon === undefined
                   ? {}
                   : {
-                      icon: Icon.icon(
-                        item.icon,
-                        { class: className(styles.menuItemIcon) },
-                        h,
-                      ),
+                      icon: Icon.icon({ name: item.icon, size: 'md' }, h),
                     }),
                 ...(item.href === undefined ? {} : { href: item.href }),
               },

@@ -54,6 +54,157 @@ const BASE_PROPERTIES = new Set([
   'text-size-adjust',
   'width',
 ])
+/* Base rules may set these only to tokens, resets and full-size keywords:
+   `* { padding: 64px; background: hotpink }` is component styling. */
+const BASE_PAINT =
+  /^(?:accent-color|background(?:-color)?|border-color|caret-color|color|outline-color)$/u
+const BASE_LENGTH =
+  /^(?:font-size|height|letter-spacing|line-height|margin|min-height|min-width|padding|width)$/u
+const BASE_LENGTH_VALUES = new Set([
+  'auto',
+  'normal',
+  '100%',
+  '100vh',
+  '100dvh',
+  '100svh',
+  '100lvh',
+  'fit-content',
+  'min-content',
+  'max-content',
+])
+const tokenValue = value =>
+  /^(?:var\(--[\w-]+(?:\s*,[^)]*)?\)\s*)+$/u.test(value)
+const baseValueAllowed = (property, raw) => {
+  const value = raw.trim().toLowerCase()
+  if (RESET_VALUES.has(value)) return true
+  if (!BASE_PAINT.test(property) && tokenValue(value)) return true
+  /* color-mix(in oklab, var(--ring) 50%, transparent): every word must be a
+     token, a mix keyword or a percentage, so named colours fail. */
+  if (BASE_PAINT.test(property))
+    return (
+      value.includes('var(--') &&
+      value
+        .split(/[\s,()]+/u)
+        .filter(word => word !== '')
+        .every(
+          word => PAINT_WORDS.has(word) || /^--[\w-]+$|^[\d.]+%$/u.test(word),
+        )
+    )
+  if (BASE_LENGTH.test(property))
+    return BASE_LENGTH_VALUES.has(value) || /^[\d.]+$/u.test(value)
+      ? property === 'line-height' || BASE_LENGTH_VALUES.has(value)
+      : false
+  return true
+}
+const PAINT_WORDS = new Set([
+  'var',
+  'color-mix',
+  'in',
+  'srgb',
+  'srgb-linear',
+  'display-p3',
+  'oklab',
+  'oklch',
+  'lab',
+  'lch',
+  'hsl',
+  'hwb',
+  'xyz',
+  'xyz-d50',
+  'xyz-d65',
+  'shorter',
+  'longer',
+  'increasing',
+  'decreasing',
+  'hue',
+  'transparent',
+  'currentcolor',
+])
+/* Utilities a base/theme rule may @apply: a colour utility naming a theme
+   colour role (`bg-background`, `outline-ring/50`), the theme font families
+   and font smoothing. The role must be one the theme defines; a colour
+   prefix followed by any other word (`text-shadow-lg`, `bg-cover`) is a
+   different styling family and fails. */
+const BASE_APPLY_FIXED = new Set([
+  'font-sans',
+  'font-serif',
+  'font-mono',
+  'antialiased',
+  'subpixel-antialiased',
+])
+const COLOR_UTILITY =
+  /^(bg|text|border|outline|ring-offset|ring|fill|stroke|accent|caret|decoration|placeholder|divide)-([a-z][a-z0-9-]*?)(?:\/\d+)?$/u
+/* Tailwind utilities spelled like a colour utility that style something
+   else (`bg-cover`, `text-lg`, the `text-shadow-*` family). Declaring
+   `--color-cover` doesn't make `bg-cover` a colour: Tailwind emits both
+   rules. Generated from Tailwind's design system by
+   scripts/tailwind-color-collisions.mjs. */
+const COLLISIONS = JSON.parse(
+  readFileSync(
+    new URL('./tailwind-color-collisions.json', import.meta.url),
+    'utf8',
+  ),
+).utilities
+const collides = (prefix, role, textSizes) => {
+  const entry = COLLISIONS[prefix]
+  return (
+    entry.static.includes(role) ||
+    entry.roots.some(root => role === root || role.startsWith(`${root}-`)) ||
+    /* `--text-<role>` makes `text-<role>` a font size as well. */
+    (prefix === 'text' && textSizes.has(role))
+  )
+}
+/* The roles every Crease theme defines; a project's own `@theme` adds its
+   custom roles through `--color-<role>`. */
+const DEFAULT_COLOR_ROLES = [
+  'background',
+  'foreground',
+  'card',
+  'card-foreground',
+  'popover',
+  'popover-foreground',
+  'primary',
+  'primary-foreground',
+  'secondary',
+  'secondary-foreground',
+  'muted',
+  'muted-foreground',
+  'accent',
+  'accent-foreground',
+  'destructive',
+  'destructive-foreground',
+  'border',
+  'input',
+  'ring',
+  'chart-1',
+  'chart-2',
+  'chart-3',
+  'chart-4',
+  'chart-5',
+  'sidebar',
+  'sidebar-foreground',
+  'sidebar-primary',
+  'sidebar-primary-foreground',
+  'sidebar-accent',
+  'sidebar-accent-foreground',
+  'sidebar-border',
+  'sidebar-ring',
+]
+const THEME_COLOR = /--color-([a-z][a-z0-9-]*)\s*:/gu
+/** `--color-<role>` names declared in a stylesheet's `@theme` blocks. */
+const themeColorRoles = root => themeNames(root, '--color-')
+/** Names declared under a theme namespace (`--color-`, `--text-`) in a
+    stylesheet's `@theme` blocks, without `--name--modifier` companions. */
+const themeNames = (root, namespace) => {
+  const names = []
+  root.walkAtRules(/^theme$/iu, rule =>
+    rule.walkDecls(decl => {
+      if (decl.prop.startsWith(namespace) && !decl.prop.slice(2).includes('--'))
+        names.push(decl.prop.slice(namespace.length))
+    }),
+  )
+  return names
+}
 const RESET_PROPERTIES =
   /^(?:font(?:-[a-z-]+)?|letter-spacing|line-height|color|margin(?:-[a-z]+)?|padding(?:-[a-z]+)?|border|background(?:-color)?|appearance|-webkit-appearance|text-transform)$/u
 const RESET_VALUES = new Set([
@@ -178,7 +329,25 @@ const importTarget = params => {
 
 const isLocalImport = target => target.startsWith('.') || target.startsWith('/')
 
-export const createCssAudit = ({ isOwned = () => false, rootDir }) => {
+const ROOT_CLASS = /\.([\w-]+)/gu
+const ROOT_SLOT = /\[data-slot[~|^$*]?=\s*['"]?([\w-]+)/gu
+
+/** Classes and data-slot values in a selector's first compound. */
+const rootTokens = selector => {
+  const first = selector.trim().split(/\s*[\s>+~]\s*/u)[0]
+  return [
+    ...[...first.matchAll(ROOT_CLASS)].map(match => match[1]),
+    ...[...first.matchAll(ROOT_SLOT)].map(match => match[1]),
+  ]
+}
+
+/* `rootsOf(file)` returns the class and slot names the owning component
+   renders (or undefined when unknown); owned CSS must start from one. */
+export const createCssAudit = ({
+  isOwned = () => false,
+  rootDir,
+  rootsOf = () => undefined,
+}) => {
   const findings = []
   const keys = new Set()
   const seen = new Set()
@@ -194,11 +363,54 @@ export const createCssAudit = ({ isOwned = () => false, rootDir }) => {
     findings.push({ file: display(file), kind, line, message })
   }
 
+  /* Roles come from the defaults, every project stylesheet's @theme and
+     the theme text audited so far (imports, registry items). */
+  let projectRoles
+  const projectTextSizes = new Set()
+  const auditedRoles = new Set()
+  const auditedTextSizes = new Set()
+  const colorRoles = () => {
+    if (projectRoles === undefined) {
+      projectRoles = new Set(DEFAULT_COLOR_ROLES)
+      for (const file of rootDir === undefined ? [] : findStylesheets(rootDir))
+        try {
+          const root = postcss.parse(readFileSync(file, 'utf8'), { from: file })
+          for (const role of themeColorRoles(root)) projectRoles.add(role)
+          for (const size of themeNames(root, '--text-'))
+            projectTextSizes.add(size)
+        } catch {
+          /* unparsable files are reported when they are audited */
+        }
+    }
+    return projectRoles
+  }
+  /* A colour utility is accepted only when its role is a theme colour and
+     no other Tailwind utility shares its spelling. */
+  const baseApplyVerdict = token => {
+    const utility = token.split(':').at(-1)
+    if (BASE_APPLY_FIXED.has(utility)) return 'allowed'
+    const [, prefix, role] = COLOR_UTILITY.exec(utility) ?? []
+    if (role === undefined) return 'forbidden'
+    if (!colorRoles().has(role) && !auditedRoles.has(role)) return 'forbidden'
+    return collides(
+      prefix,
+      role,
+      new Set([...projectTextSizes, ...auditedTextSizes]),
+    )
+      ? 'collision'
+      : 'allowed'
+  }
+
   const checkDeclaration = (file, declaration, kind, owned) => {
     const property = declaration.prop.toLowerCase()
     if (owned || property.startsWith('--')) return
     if (kind === 'theme' && THEME_PROPERTIES.has(property)) return
-    if (kind === 'base' && BASE_PROPERTIES.has(property)) return
+    if (
+      kind === 'base' &&
+      BASE_PROPERTIES.has(property) &&
+      baseValueAllowed(property, declaration.value)
+    )
+      return
     if (
       kind === 'element' &&
       RESET_PROPERTIES.test(property) &&
@@ -268,6 +480,17 @@ export const createCssAudit = ({ isOwned = () => false, rootDir }) => {
             )
           return
         }
+        if (name === 'scope') {
+          /* `@scope (start) to (end)`: rules inside apply below `start`. */
+          const start = /^\s*\(([^)]*)\)/u.exec(node.params)?.[1]
+          const roots =
+            start === undefined || start.trim() === ''
+              ? parents
+              : resolveSelectors(start, parents)
+          if (node.nodes !== undefined)
+            visit(file, node, roots.length === 0 ? [':scope'] : roots, owned)
+          return
+        }
         if (CONTAINER_AT_RULES.has(name)) {
           if (node.nodes !== undefined) visit(file, node, parents, owned)
           return
@@ -304,6 +527,23 @@ export const createCssAudit = ({ isOwned = () => false, rootDir }) => {
             'violation',
             `\`${unscoped}\` escapes the component's scope; registered component CSS must start from its own class or data-slot`,
           )
+        else {
+          const roots = rootsOf(file)
+          const foreign =
+            roots === undefined || parents.length > 0
+              ? undefined
+              : selectors.find(
+                  selector =>
+                    !rootTokens(selector).some(token => roots.has(token)),
+                )
+          if (foreign !== undefined)
+            add(
+              file,
+              node,
+              'violation',
+              `\`${foreign}\` does not start from a class or data-slot the owning component renders; registered component CSS may only style its own roots`,
+            )
+        }
       } else if (kind === 'component') {
         add(
           file,
@@ -323,6 +563,36 @@ export const createCssAudit = ({ isOwned = () => false, rootDir }) => {
               'violation',
               `@apply on \`${node.selector}\` styles a native element globally`,
             )
+          else if (!owned) {
+            const tokens = child.params
+              .split(/\s+/u)
+              .map(token => token.replace(/^!|!$/gu, ''))
+              .filter(token => token !== '')
+            const forbidden = tokens.filter(
+              token => baseApplyVerdict(token) === 'forbidden',
+            )
+            const colliding = tokens.filter(
+              token => baseApplyVerdict(token) === 'collision',
+            )
+            for (const token of colliding) {
+              const [, prefix, role] = COLOR_UTILITY.exec(
+                token.split(':').at(-1),
+              )
+              add(
+                file,
+                child,
+                'violation',
+                `@apply ${token} on \`${node.selector}\` is ambiguous: \`${prefix}-${role}\` is also a Tailwind utility that styles more than colour, so the theme role --color-${role} doesn't make it semantic colour; rename the role (for example --color-${role}-color or a semantic name)`,
+              )
+            }
+            if (forbidden.length > 0)
+              add(
+                file,
+                child,
+                'violation',
+                `@apply ${forbidden.join(' ')} on \`${node.selector}\` is outside what base rules may apply (semantic colour roles, font family, font smoothing); it would restyle every component globally`,
+              )
+          }
         }
       })
       visit(
@@ -388,6 +658,8 @@ export const createCssAudit = ({ isOwned = () => false, rootDir }) => {
         }
         auditFile(resolved)
       }
+    for (const role of themeColorRoles(root)) auditedRoles.add(role)
+    for (const size of themeNames(root, '--text-')) auditedTextSizes.add(size)
     visit(file, root, [], isOwned(file))
   }
 
@@ -450,5 +722,31 @@ export const findStylesheets = rootDir => {
     }
   }
   walk(path.join(rootDir, 'src'))
+  /* Stylesheets the sources import from outside src (`import
+     '../styles/product.css'`) are part of the app's CSS too. */
+  const sources = []
+  const walkSources = directory => {
+    if (!existsSync(directory)) return
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      if (entry.name === 'node_modules' || entry.name.startsWith('.')) continue
+      const absolute = path.join(directory, entry.name)
+      if (entry.isDirectory()) walkSources(absolute)
+      else if (/\.[cm]?[jt]sx?$/u.test(entry.name)) sources.push(absolute)
+    }
+  }
+  walkSources(path.join(rootDir, 'src'))
+  const root = path.resolve(rootDir)
+  for (const source of sources)
+    for (const match of readFileSync(source, 'utf8').matchAll(
+      /(?:\bimport\s*|\bfrom\s*|\bimport\s*\(\s*)['"](\.{1,2}\/[^'"?]+\.css)['"]/gu,
+    )) {
+      const target = path.resolve(path.dirname(source), match[1])
+      if (
+        existsSync(target) &&
+        !path.relative(root, target).startsWith('..') &&
+        !found.includes(target)
+      )
+        found.push(target)
+    }
   return found.sort()
 }

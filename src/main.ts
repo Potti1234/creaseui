@@ -203,6 +203,7 @@ export const Message = defineMessageUnion({
   },
   GotDocsGuideCodeBlockMessage: { message: CodeBlock.Message },
   ObservedDocsSidebarScroll: {},
+  SubmittedLintPreview: {},
   GotDocsSearchMessage: { message: DocsSearch.Message },
   ToggledThemeLab: {},
   ToggledThemeApply: {},
@@ -952,6 +953,8 @@ export const update = (model: Model, message: Message): UpdateReturn =>
 
       ObservedDocsSidebarScroll: () => ({ model: model }),
 
+      SubmittedLintPreview: () => ({ model: model }),
+
       GotDocsGuideCodeBlockMessage: ({ message: childMessage }) => {
         const currentPage = model.page
         if (
@@ -1528,6 +1531,7 @@ const lintDocsView = (model: Model, h: HtmlBuilder<Message>): Html =>
               toParentMessage: message =>
                 Message.GotDocsGuideCodeBlockMessage({ message }),
               sidebarScrolled: Message.ObservedDocsSidebarScroll(),
+              previewSubmitted: Message.SubmittedLintPreview(),
             },
             model.page.rule,
             h,

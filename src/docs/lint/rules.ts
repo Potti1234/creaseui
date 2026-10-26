@@ -56,6 +56,12 @@ export const LINT_RULE_GROUPS: ReadonlyArray<LintRuleGroup> = [
         summary:
           'UI the type checker cannot verify: computed builders, casts, untyped linting.',
       },
+      {
+        id: 'form-association',
+        title: 'Form association',
+        summary:
+          "A Button's form: reference names a Form id its own view never renders.",
+      },
     ],
   },
   {

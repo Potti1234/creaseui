@@ -6,7 +6,7 @@ import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import * as Button from '@/stylex/button'
 import * as ButtonGroup from '@/stylex/button-group'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as InputGroup from '@/stylex/input-group'
 import * as Kbd from '@/stylex/kbd'
 import * as Tooltip from '@/stylex/tooltip'
@@ -33,7 +33,6 @@ const styles = stylex.create({
     alignItems: 'center',
     display: 'inline-flex',
   },
-  iconMd: { height: '1rem', width: '1rem' },
   inputStack: {
     gap: '1.5rem',
     display: 'flex',
@@ -223,13 +222,7 @@ const kbdSxView = <Msg>(
                 ),
                 InputGroup.inputGroupAddon(
                   {
-                    children: [
-                      Icon.icon(
-                        'search',
-                        { class: className(styles.iconMd) },
-                        h,
-                      ),
-                    ],
+                    children: [Icon.icon({ name: 'search', size: 'sm' }, h)],
                   },
                   h,
                 ),

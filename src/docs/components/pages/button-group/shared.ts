@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import {
@@ -10,7 +11,7 @@ import {
 type BgButton = Readonly<{
   t: 'button'
   label?: string
-  icon?: string
+  icon?: IconName
   size?: 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg'
   variant?: 'outline' | 'secondary'
   ariaLabel?: string
@@ -502,7 +503,7 @@ const itemToConfigBody = (
     if (item === 'label-as')
       return {
         label: '${esc(labelAs ?? 'Label As...')}',
-        icon: Icon.icon('tag', { class: 'size-4' }, h),
+        icon: Icon.icon({ name: 'tag', size: 'sm' }, h),
         submenu: {
           items: ['personal', 'work', 'other'],
           itemToConfig: sub => ({
@@ -524,12 +525,12 @@ const itemToConfigBody = (
       'add-calendar': 'calendar-plus',
       'add-list': 'list-filter',
       trash: 'trash-2',
-    } as Record<string, string>)[item];
+    } as Record<string, Icon.IconName>)[item];
     return {
       label: label ?? item,
       ...(icons === undefined
         ? {}
-        : { icon: Icon.icon(icons, { class: 'size-4' }, h) }),
+        : { icon: Icon.icon({ name: icons, size: 'sm' }, h) }),
       ...(item === 'snooze' || item === 'trash'
         ? { separatorBefore: true }
         : {}),
@@ -551,12 +552,12 @@ const itemToConfigBody = (
       block: 'user-round-x',
       share: 'share',
       delete: 'trash',
-    } as Record<string, string>)[item];
+    } as Record<string, Icon.IconName>)[item];
     return {
       label: label ?? item,
       ...(icons === undefined
         ? {}
-        : { icon: Icon.icon(icons, { class: 'size-4' }, h) }),
+        : { icon: Icon.icon({ name: icons, size: 'sm' }, h) }),
       ...(item === 'delete'
         ? { variant: 'destructive' as const, separatorBefore: true }
         : {}),
@@ -577,11 +578,10 @@ const itemsSource = (menu: 'demo' | 'conversation'): string =>
     : `['mute', 'mark-read', 'report', 'block', 'share', 'delete']`
 
 const buttonSource = (node: BgButton, isRtl: boolean): string => {
-  const iconClass =
-    node.rtlRotate === true ? `{ class: 'rtl:rotate-180' }` : '{}'
+  const iconProps = node.rtlRotate === true && isRtl ? ', rotation: 180' : ''
   const children: Array<string> = []
   if (node.icon !== undefined)
-    children.push(`Icon.icon('${node.icon}', ${iconClass}, h)`)
+    children.push(`Icon.icon({ name: '${node.icon}'${iconProps} }, h)`)
   if (node.label !== undefined) children.push(`'${esc(node.label)}'`)
   return `Button.button({
           ${node.variant === undefined ? '' : `variant: '${node.variant}', `}${node.size === undefined ? '' : `size: '${node.size}', `}${node.ariaLabel === undefined ? '' : `ariaLabel: '${esc(node.ariaLabel)}', `}children: [${children.join(', ')}],
@@ -622,7 +622,7 @@ const inputGroupSource = (
                   h.OnClick(Message.ToggledVoice()),
                   h.Class(${isSx ? 'className(styles.voiceButton)' : "'inline-flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground data-[active=true]:bg-orange-100 data-[active=true]:text-orange-700 dark:data-[active=true]:bg-orange-800 dark:data-[active=true]:text-orange-100'"}),
                 ],
-                [Icon.icon('audio-lines', ${isSx ? '{ class: className(styles.captionIcon) }' : "{ class: 'size-3.5' }"}, h)],
+                [Icon.icon({ name: 'audio-lines', size: 'xs' }, h)],
               ),
             ],
           }, h)`
@@ -632,7 +632,7 @@ const inputGroupSource = (
               Message['GotTooltipMessage']({ message }),
             trigger: InputGroup.inputGroupAddon({
               align: 'inline-end',
-              children: [Icon.icon('audio-lines', ${isSx ? '{ class: className(styles.captionIcon) }' : "{ class: 'size-3.5' }"}, h)],
+              children: [Icon.icon({ name: 'audio-lines', size: 'xs' }, h)],
             }, h),
             ${isSx ? '' : "triggerClass: 'text-muted-foreground',"}
             content: 'Voice Mode',
@@ -681,8 +681,8 @@ const dropdownSource = (
   const isRtl = fixture.direction === 'rtl'
   const trigger =
     node.menu === 'demo'
-      ? `Icon.icon('ellipsis', { ariaLabel: ${isRtl ? "'مزيد من الخيارات'" : "'More Options'"} }, h)`
-      : `Icon.icon('chevron-down', { ariaLabel: 'Options' }, h)`
+      ? `Icon.icon({ name: 'ellipsis', ariaLabel: ${isRtl ? "'مزيد من الخيارات'" : "'More Options'"} }, h)`
+      : `Icon.icon({ name: 'chevron-down', ariaLabel: 'Options' }, h)`
   const triggerStyling =
     renderer !== 'tailwind'
       ? `triggerButtonVariant: 'outline',
@@ -711,7 +711,7 @@ const popoverSource = (
           model: model.popover,
           toParentMessage: message =>
             Message['GotPopoverMessage']({ message }),
-          trigger: Icon.icon('chevron-down', { ariaLabel: 'Open Popover' }, h),
+          trigger: Icon.icon({ name: 'chevron-down', ariaLabel: 'Open Popover' }, h),
           ${renderer !== 'tailwind' ? '' : `triggerClass: 'inline-flex size-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground',`}
           align: 'end',
           content: h.div([h.Class(${renderer !== 'tailwind' ? 'className(styles.popoverBody)' : `'grid gap-3 text-sm'`})], [
@@ -851,7 +851,7 @@ const componentImports = (
   const sxStyles = renderer !== 'tailwind' ? stylexStylesSource(fixture) : ''
   if (sxStyles !== '') lines.push(sxStyles.trimEnd())
   lines.push(`import * as Button from '@/${ui}/button'`)
-  if (needs.icons) lines.push(`import * as Icon from '@/lib/icon'`)
+  if (needs.icons) lines.push(`import * as Icon from '@/${ui}/icon'`)
   if (needs.inputs.length > 0)
     lines.push(`import * as Input from '@/${ui}/input'`)
   if (

@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -7,7 +8,7 @@ const emitShellStyles =
 export type DropdownMenuItemSpec = Readonly<{
   value: string
   label: string
-  icon?: string
+  icon?: IconName
   shortcut?: string
   kind?: 'checkbox' | 'radio'
   variant?: 'destructive'
@@ -355,7 +356,7 @@ export type ResolvedItemConfig<IconHtml> = Readonly<{
 export const resolveItemConfig = <IconHtml>(
   spec: DropdownMenuItemSpec,
   state: CheckableState,
-  makeIcon: (name: string) => IconHtml,
+  makeIcon: (name: IconName) => IconHtml,
 ): ResolvedItemConfig<IconHtml> => ({
   label: spec.label,
   ...(spec.icon === undefined ? {} : { icon: makeIcon(spec.icon) }),
@@ -399,7 +400,7 @@ const itemConfigSource = (spec: DropdownMenuItemSpec): string => {
     `label: '${spec.label.replaceAll("'", "\\'")}'`,
   ]
   if (spec.icon !== undefined)
-    fields.push(`icon: Icon.icon('${spec.icon}', { class: 'size-4' }, h)`)
+    fields.push(`icon: Icon.icon({ name: '${spec.icon}', size: 'sm' }, h)`)
   if (spec.shortcut !== undefined)
     fields.push(`shortcut: '${spec.shortcut.replaceAll("'", "\\'")}'`)
   if (spec.kind !== undefined) {
@@ -447,7 +448,7 @@ const source = (
     ``,
     ...(usesAvatar ? [`import * as Avatar from '@/${uiDir}/avatar'`] : []),
     `import * as DropdownMenu from '@/${uiDir}/dropdown-menu'`,
-    ...(usesIcons ? [`import * as Icon from '@/lib/icon'`] : []),
+    ...(usesIcons ? [`import * as Icon from '@/${uiDir}/icon'`] : []),
   ].join('\n')
   const modelExtra = [
     usesCheckbox ? `  checkedValues: S.Array(Item),` : '',

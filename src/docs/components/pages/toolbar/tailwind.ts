@@ -10,7 +10,7 @@ import {
   toolbarFixtures,
   type Job,
 } from '@/docs/components/pages/toolbar/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import { badge } from '@/ui/badge'
 import { button } from '@/ui/button'
 import { checkbox } from '@/ui/checkbox'
@@ -69,7 +69,7 @@ const heading = (text: string, h: HtmlBuilder<PreviewMessage>): Html =>
   h.h4([h.Class('text-base font-medium')], [text])
 
 const ghostIconButton = (
-  name: string,
+  name: Icon.IconName,
   ariaLabel: string,
   h: HtmlBuilder<PreviewMessage>,
   edgeComp = false,
@@ -80,7 +80,7 @@ const ghostIconButton = (
         variant: 'ghost',
         size: 'icon-sm',
         ariaLabel,
-        leadingIcon: Icon.icon(name, {}, h),
+        leadingIcon: Icon.icon({ name: name }, h),
         children: [],
       },
       h,
@@ -232,7 +232,7 @@ const bodyFor = (
                     variant: 'default',
                     size: 'icon-sm',
                     ariaLabel: 'Add user',
-                    leadingIcon: Icon.icon('plus', {}, h),
+                    leadingIcon: Icon.icon({ name: 'plus' }, h),
                     children: [],
                   },
                   h,
@@ -269,7 +269,7 @@ const bodyFor = (
                       {
                         variant: 'default',
                         size: size === 'sm' ? 'sm' : 'default',
-                        leadingIcon: Icon.icon('plus', {}, h),
+                        leadingIcon: Icon.icon({ name: 'plus' }, h),
                         children: ['Add'],
                       },
                       h,
@@ -323,7 +323,7 @@ const bodyFor = (
                     variant: 'default',
                     size: 'icon-sm',
                     ariaLabel: 'New item',
-                    leadingIcon: Icon.icon('plus', {}, h),
+                    leadingIcon: Icon.icon({ name: 'plus' }, h),
                     children: [],
                   },
                   h,

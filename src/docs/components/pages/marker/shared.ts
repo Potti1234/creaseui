@@ -88,7 +88,7 @@ const emitImports = (fixture: MarkerFixture, isStyleX: boolean): string => {
     parts.push('', "import * as stylex from '@stylexjs/stylex'")
   }
   if (kindUsesIcon(fixture.kind)) {
-    parts.push(`import * as Icon from '@/lib/icon'`)
+    parts.push(`import * as Icon from '@/${base}/icon'`)
   }
   parts.push(`import * as Marker from '@/${base}/marker'`)
   if (kindUsesToast(fixture.kind)) {
@@ -211,7 +211,7 @@ const emitBody = (fixture: MarkerFixture, isStyleX: boolean): string => {
     isStyleX ? `stylex.props(styles.${sxName}).className ?? ''` : `'${twClass}'`
   const stack = cls('flex w-full max-w-sm flex-col gap-8 py-12', 'stack')
   const icon = (name: string): string =>
-    `Marker.markerIcon({ children: [Icon.icon('${name}', {}, h)] }, h)`
+    `Marker.markerIcon({ children: [Icon.icon({ name: '${name}' }, h)] }, h)`
   const content = (text: string, shimmer = false): string =>
     `Marker.markerContent({ ${shimmer ? 'shimmer: true, ' : ''}children: ['${text}'] }, h)`
   const spinner = `Spinner.spinner({ size: 'sm', isDecorative: true }, h)`

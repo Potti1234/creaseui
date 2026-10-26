@@ -8,7 +8,7 @@ import {
   badgeFixtures,
   badgeTailwindPaletteClass,
 } from '@/docs/components/pages/badge/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Badge from '@/ui/badge'
 import * as Spinner from '@/ui/spinner'
 
@@ -33,10 +33,16 @@ const badgeItem = <Msg>(item: BadgeItem, h: HtmlBuilder<Msg>) =>
         ...(item.icon?.position === 'start'
           ? [
               item.icon.name === 'badge-check'
-                ? Icon.badgeCheck({ dataIcon: 'inline-start' }, h)
+                ? Icon.icon(
+                    { name: 'badge-check', dataIcon: 'inline-start' },
+                    h,
+                  )
                 : item.icon.name === 'bookmark'
-                  ? Icon.bookmark({ dataIcon: 'inline-start' }, h)
-                  : Icon.arrowUpRight({ dataIcon: 'inline-start' }, h),
+                  ? Icon.icon({ name: 'bookmark', dataIcon: 'inline-start' }, h)
+                  : Icon.icon(
+                      { name: 'arrow-up-right', dataIcon: 'inline-start' },
+                      h,
+                    ),
             ]
           : []),
         ...(item.spinner === 'start'
@@ -59,10 +65,13 @@ const badgeItem = <Msg>(item: BadgeItem, h: HtmlBuilder<Msg>) =>
         ...(item.icon?.position === 'end'
           ? [
               item.icon.name === 'badge-check'
-                ? Icon.badgeCheck({ dataIcon: 'inline-end' }, h)
+                ? Icon.icon({ name: 'badge-check', dataIcon: 'inline-end' }, h)
                 : item.icon.name === 'bookmark'
-                  ? Icon.bookmark({ dataIcon: 'inline-end' }, h)
-                  : Icon.arrowUpRight({ dataIcon: 'inline-end' }, h),
+                  ? Icon.icon({ name: 'bookmark', dataIcon: 'inline-end' }, h)
+                  : Icon.icon(
+                      { name: 'arrow-up-right', dataIcon: 'inline-end' },
+                      h,
+                    ),
             ]
           : []),
       ],

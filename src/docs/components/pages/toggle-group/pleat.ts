@@ -10,7 +10,7 @@ import {
   type TGItem,
 } from '@/docs/components/pages/toggle-group/shared'
 import * as Field from '@/pleat/field'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import * as ToggleGroup from '@/pleat/toggle-group'
 import { className } from '@/pleat/style'
@@ -97,7 +97,7 @@ const itemChildren = <Msg>(
   h: HtmlBuilder<Msg>,
 ): ReadonlyArray<Html | string> => {
   if (item.icon !== undefined) {
-    return [Icon.icon(item.icon, { class: className(styles.iconMd) }, h)]
+    return [Icon.icon({ name: item.icon, size: 'sm' }, h)]
   }
   if (item.weight !== undefined) {
     return [

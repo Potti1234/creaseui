@@ -13,7 +13,7 @@ import {
   type TableFixture,
 } from '@/docs/components/pages/table/shared'
 import * as DropdownMenu from '@/ui/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Table from '@/ui/table'
 
 const GotTableMenuMessage = taggedStruct('GotDocsTableMenuMessage', {
@@ -46,7 +46,7 @@ const menuCell = (
           trigger: h.span(
             [h.Class('inline-flex items-center')],
             [
-              Icon.icon('ellipsis', { class: 'size-4' }, h),
+              Icon.icon({ name: 'ellipsis', size: 'sm' }, h),
               h.span([h.Class('sr-only')], ['Open menu']),
             ],
           ),

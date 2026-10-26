@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -85,7 +86,7 @@ export const moreMenuFixtures: Readonly<
 /** Builds the MoreMenuOption list for a fixture; makeIcon is renderer-owned. */
 export const fixtureOptions = <IconHtml>(
   fixture: MoreMenuFixture,
-  makeIcon: (name: string) => IconHtml,
+  makeIcon: (name: IconName) => IconHtml,
 ): ReadonlyArray<
   | Readonly<{ label: string; icon?: IconHtml; variant?: 'destructive' }>
   | Readonly<{ type: 'divider' }>
@@ -144,7 +145,7 @@ const optionSource = (option: MoreMenuOptionSpec): string => {
 const itemSource = (item: MoreMenuItemSpec): string => {
   const fields: Array<string> = [`label: '${item.label}'`]
   if (item.icon !== undefined) {
-    fields.push(`icon: Icon.icon('${item.icon}', { class: 'size-4' }, h)`)
+    fields.push(`icon: Icon.icon({ name: '${item.icon}', size: 'sm' }, h)`)
   }
   if (item.variant === 'destructive') {
     fields.push(`variant: 'destructive'`)
@@ -173,7 +174,7 @@ const source = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
-import * as MoreMenu from '@/${uiDir}/more-menu'${usesIcons ? `\nimport * as Icon from '@/lib/icon'` : ''}`,
+import * as MoreMenu from '@/${uiDir}/more-menu'${usesIcons ? `\nimport * as Icon from '@/${uiDir}/icon'` : ''}`,
     model: `export const Model = S.Struct({
   menu: MoreMenu.Model,
   maybeLastAction: S.Option(S.String),

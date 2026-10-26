@@ -83,6 +83,7 @@ import { mobileNavPleatPreview } from '@/docs/components/pages/mobile-nav/pleat'
 import { sheetPleatPreview } from '@/docs/components/pages/sheet/pleat'
 import { popoverPleatPreview } from '@/docs/components/pages/popover/pleat'
 import { hoverCardPleatPreview } from '@/docs/components/pages/hover-card/pleat'
+import { iconPleatPreview } from '@/docs/components/pages/icon/pleat'
 import { indicatorPleatPreview } from '@/docs/components/pages/indicator/pleat'
 import { tokenizerPleatPreview } from '@/docs/components/pages/tokenizer/pleat'
 import { tooltipPleatPreview } from '@/docs/components/pages/tooltip/pleat'
@@ -193,6 +194,7 @@ installPleatExamplePreviewProvider('drawer', drawerPleatPreview)
 installPleatExamplePreviewProvider('sheet', sheetPleatPreview)
 installPleatExamplePreviewProvider('popover', popoverPleatPreview)
 installPleatExamplePreviewProvider('hover-card', hoverCardPleatPreview)
+installPleatExamplePreviewProvider('icon', iconPleatPreview)
 installPleatExamplePreviewProvider('indicator', indicatorPleatPreview)
 installPleatExamplePreviewProvider('tokenizer', tokenizerPleatPreview)
 installPleatExamplePreviewProvider('tooltip', tooltipPleatPreview)

@@ -11,6 +11,7 @@ import {
   POLICY_VERSION,
   RENDERERS,
 } from '../lib/strict/contracts.js'
+import { RULES_BY_GRANT, grantOf } from '../creaseui.js'
 import { createCssAudit, findStylesheets } from '../lib/strict/css.js'
 import { verifyFoundations } from '../lib/strict/foundations.js'
 import { inspectComponent, projectInfo } from '../lib/strict/info.js'
@@ -103,6 +104,25 @@ const exportedFunctions = file => {
   return names
 }
 
+/** Class and slot names the sources of a stylesheet's owner mention. */
+const ownerRoots = (strict, rootDir) => file => {
+  const owner = strict.ownership.fileFor(file)?.owner
+  if (owner === undefined) return undefined
+  const roots = new Set()
+  for (const record of strict.ownership.files.values()) {
+    if (record.owner !== owner || !/\.[cm]?[jt]sx?$/u.test(record.path))
+      continue
+    const source = path.resolve(rootDir, record.path)
+    if (!existsSync(source)) continue
+    for (const literal of readFileSync(source, 'utf8').matchAll(
+      /(['"`])((?:(?!\1)[^\\]|\\.)*)\1/gu,
+    ))
+      for (const token of literal[2].matchAll(/[\w-]+/gu)) roots.add(token[0])
+  }
+  /* An owner without sources (CSS-only artifact) cannot be checked. */
+  return roots.size === 0 ? undefined : roots
+}
+
 const rendersHtml = file => /\bHtmlBuilder\b/u.test(readFileSync(file, 'utf8'))
 
 const VARIANTS = /(?:Variants?|variants)$/u
@@ -111,10 +131,14 @@ const VARIANTS = /(?:Variants?|variants)$/u
 const renderingExports = (renderExports, file) => {
   const typed = renderExports.of(file) ?? []
   const names = new Set(typed.map(entry => entry.name))
+  const nonRendering = renderExports.nonRendering(file)
   return [
     ...typed,
     ...exportedFunctions(file)
-      .filter(name => !VARIANTS.test(name) && !names.has(name))
+      .filter(
+        name =>
+          !VARIANTS.test(name) && !names.has(name) && !nonRendering.has(name),
+      )
       .map(name => ({ name, origin: path.resolve(file), originName: name })),
   ]
 }
@@ -159,12 +183,15 @@ export const buildReceipt = ({ rootDir, components, renderer, setup = [] }) => {
     const relative = toPosix(path.relative(rootDir, file))
     const { behavior, contract, local } = describe(file)
     const raw = rendersHtml(file)
+    /* Alias-only modules (`export const action = button`) render without
+       naming HtmlBuilder; they are renderers but get no raw-element grant. */
+    const renders = raw || (renderExports.of(file) ?? []).length > 0
     const role =
-      raw && supportOf(file) !== undefined
+      renders && supportOf(file) !== undefined
         ? 'renderer'
         : behavior
           ? 'behavior'
-          : raw
+          : renders
             ? 'renderer'
             : 'theme'
     /* An alias of another installed component keeps that component's
@@ -175,7 +202,7 @@ export const buildReceipt = ({ rootDir, components, renderer, setup = [] }) => {
       !describe(origin).behavior
         ? describe(origin).contract
         : contract
-    const exports = raw
+    const exports = renders
       ? renderingExports(renderExports, file).map(({ name, origin }) => ({
           contract: contractOf(origin),
           file: relative,
@@ -443,7 +470,10 @@ const doctor = async values => {
         )
       }
       const missing = ruleIds.filter(ruleId => !active(ruleId))
-      if (missing.length > 0 && rendersHtml(file)) {
+      if (
+        missing.length > 0 &&
+        (rendersHtml(file) || (renderExports.of(file) ?? []).length > 0)
+      ) {
         uncovered += 1
         incomplete += 1
         fail(
@@ -451,11 +481,17 @@ const doctor = async values => {
         )
       }
     } else {
-      if (owned.rawRendering && !active('component-contract')) {
+      /* The rules the strict preset applies to this role and grant must
+         still be active after every imported policy module. */
+      const required = RULES_BY_GRANT[grantOf(owned)]
+      for (const ruleId of required.filter(ruleId => !active(ruleId))) {
         incomplete += 1
-        fail(`${relative} (registered ${owned.role}) lost component-contract`)
+        fail(`${relative} (registered ${owned.role}) lost ${ruleId}`)
       }
-      if (owned.role === 'renderer' && rendersHtml(file)) {
+      if (
+        owned.role === 'renderer' &&
+        (rendersHtml(file) || (renderExports.of(file) ?? []).length > 0)
+      ) {
         const registered = strict.ownership.exportsOf(file)
         for (const { name, origin, originName } of renderingExports(
           renderExports,
@@ -509,6 +545,7 @@ const doctor = async values => {
   const stylesheets = createCssAudit({
     isOwned: file => strict.ownership.fileFor(file) !== undefined,
     rootDir,
+    rootsOf: ownerRoots(strict, rootDir),
   })
   for (const file of findStylesheets(rootDir)) stylesheets.auditFile(file)
   for (const finding of stylesheets.findings) {
@@ -557,9 +594,18 @@ const doctor = async values => {
         [...text.matchAll(/var\((--[\w-]*\w)\s*\)/gu)].map(match => match[1]),
       ),
     ].filter(role => !declared.has(role) && !assigned.has(role))
-    if (undefinedRoles.length > 0)
+    const runtime = undefinedRoles.filter(role => RUNTIME_PROPERTIES.has(role))
+    const roles = undefinedRoles.filter(role => !RUNTIME_PROPERTIES.has(role))
+    const relative = toPosix(path.relative(rootDir, file))
+    if (roles.length > 0)
       fail(
-        `${toPosix(path.relative(rootDir, file))} reads ${undefinedRoles.join(', ')}, which no stylesheet defines; install the theme (crease-theme for Tailwind, crease-theme-css for StyleX and Pleat) and import it`,
+        `${relative} reads ${roles.join(', ')}, which no stylesheet defines; install the theme (crease-theme for Tailwind, crease-theme-css for StyleX and Pleat) and import it`,
+      )
+    /* Older snapshots read component runtime properties without a fallback;
+       no theme defines those, so pointing at the theme would mislead. */
+    if (runtime.length > 0)
+      fail(
+        `${relative} reads ${runtime.join(', ')} without a fallback: runtime properties CreaseUI components set on their own elements while they render, not theme roles, so installing a theme won't define them. This source predates the fallback; re-install it from the current registry or read it as var(${runtime[0]}, <default>)`,
       )
   }
   for (const problem of verifyFoundations({
@@ -626,6 +672,7 @@ const css = async values => {
   const run = createCssAudit({
     isOwned: file => strict.ownership.fileFor(file) !== undefined,
     rootDir,
+    rootsOf: ownerRoots(strict, rootDir),
   })
   for (const file of findStylesheets(rootDir)) run.auditFile(file)
   for (const finding of run.findings)
@@ -680,6 +727,12 @@ const receiptPath = values => {
     rootDir,
   }
 }
+
+/* Custom properties CreaseUI components assign at runtime (catalog.json). */
+const RUNTIME_PROPERTIES = new Set(
+  JSON.parse(readFileSync(new URL('../catalog.json', import.meta.url), 'utf8'))
+    .runtimeProperties ?? [],
+)
 
 const catalog = values => {
   const { components } = JSON.parse(

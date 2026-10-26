@@ -58,6 +58,7 @@ import { formPage } from '@/docs/components/pages/form'
 import { gridPage } from '@/docs/components/pages/grid'
 import { headingPage } from '@/docs/components/pages/heading'
 import { hoverCardPage } from '@/docs/components/pages/hover-card'
+import { iconPage } from '@/docs/components/pages/icon'
 import { indicatorPage } from '@/docs/components/pages/indicator'
 import { infoTipPage } from '@/docs/components/pages/info-tip'
 import { itemPage } from '@/docs/components/pages/item'
@@ -186,6 +187,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       gridPage,
       headingPage,
       hoverCardPage,
+      iconPage,
       indicatorPage,
       itemPage,
       infoTipPage,

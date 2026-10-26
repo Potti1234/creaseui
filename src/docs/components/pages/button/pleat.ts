@@ -14,7 +14,7 @@ import {
   type ButtonFixture,
   type ButtonItemSpec,
 } from '@/docs/components/pages/button/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Button from '@/pleat/button'
 import * as ButtonGroup from '@/pleat/button-group'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
@@ -83,10 +83,10 @@ const itemChildren = <Msg>(
 ): Array<Html | string> => {
   const children: Array<Html | string> = []
   const size = item.size ?? 'default'
-  const iconClass = className(
-    size === 'xs' || size === 'icon-xs' ? styles.iconXs : styles.iconMd,
-    ...(item.iconClass === undefined ? [] : [styles.iconRtl]),
-  )
+  const iconProps = {
+    size: size === 'xs' || size === 'icon-xs' ? '2xs' : 'sm',
+    ...(item.iconClass === undefined ? {} : { rotation: 180 as const }),
+  } as const
   if (item.spinner === 'start')
     children.push(
       Spinner.spinner(
@@ -100,12 +100,12 @@ const itemChildren = <Msg>(
     )
   if (item.icon !== undefined && (item.iconPosition ?? 'start') === 'start')
     children.push(
-      Icon.icon(item.icon, { dataIcon: 'inline-start', class: iconClass }, h),
+      Icon.icon({ name: item.icon, dataIcon: 'inline-start', ...iconProps }, h),
     )
   if (item.label !== undefined) children.push(item.label)
   if (item.icon !== undefined && item.iconPosition === 'end')
     children.push(
-      Icon.icon(item.icon, { dataIcon: 'inline-end', class: iconClass }, h),
+      Icon.icon({ name: item.icon, dataIcon: 'inline-end', ...iconProps }, h),
     )
   if (item.spinner === 'end')
     children.push(
@@ -157,7 +157,7 @@ const menuItemConfig =
     const main = item as (typeof buttonGroupMenuItems)[number]
     return {
       label: buttonGroupItemLabel(main),
-      icon: Icon.icon(buttonGroupItemIcon(main), {}, h),
+      icon: Icon.icon({ name: buttonGroupItemIcon(main) }, h),
       ...(main === 'snooze' || main === 'trash'
         ? { separatorBefore: true }
         : {}),
@@ -194,13 +194,7 @@ const buttonGroupHtml = <Msg>(
                   variant: 'outline',
                   size: 'icon',
                   ariaLabel: 'Go Back',
-                  children: [
-                    Icon.icon(
-                      'arrow-left',
-                      { class: className(styles.iconMd) },
-                      h,
-                    ),
-                  ],
+                  children: [Icon.icon({ name: 'arrow-left', size: 'sm' }, h)],
                 },
                 h,
               ),
@@ -249,11 +243,7 @@ const buttonGroupHtml = <Msg>(
                     onMessageJson(
                       JSON.stringify({ _tag: 'GotMenuMessage', message }),
                     ),
-                  trigger: Icon.icon(
-                    'ellipsis',
-                    { class: className(styles.iconMd) },
-                    h,
-                  ),
+                  trigger: Icon.icon({ name: 'ellipsis', size: 'sm' }, h),
                   triggerLayoutStyle:
                     styles.triggerBorderTransparent as ComponentLayoutStyle,
                   triggerButtonVariant: 'outline',

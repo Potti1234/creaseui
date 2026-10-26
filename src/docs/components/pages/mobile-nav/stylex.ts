@@ -9,7 +9,7 @@ import {
   type NavSectionSpec,
   mobileNavFixtures,
 } from '@/docs/components/pages/mobile-nav/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Button from '@/stylex/button'
 import * as MobileNav from '@/stylex/mobile-nav'
 import * as Sidebar from '@/stylex/sidebar'
@@ -31,8 +31,6 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
   },
-  navIcon: { height: '1rem', width: '1rem' },
-  toggleIcon: { height: '1.25rem', width: '1.25rem' },
 })
 
 type PreviewModel = Readonly<{
@@ -49,11 +47,11 @@ const fixtureFor = (index: number): MobileNavFixture =>
   mobileNavFixtures[index] ?? mobileNavFixtures[0]!
 
 const navIcons = {
-  house: Icon.house,
-  folder: Icon.folder,
-  chartBarStacked: Icon.chartBarStacked,
-  settings: Icon.settings,
-  users: Icon.users,
+  house: 'house',
+  folder: 'folder',
+  chartBarStacked: 'chart-bar-stacked',
+  settings: 'settings',
+  users: 'users',
 } as const
 
 const navSection = <Msg>(h: HtmlBuilder<Msg>, section: NavSectionSpec): Html =>
@@ -80,10 +78,13 @@ const navSection = <Msg>(h: HtmlBuilder<Msg>, section: NavSectionSpec): Html =>
                                 ...(item.icon === undefined
                                   ? []
                                   : [
-                                      navIcons[
-                                        item.icon as keyof typeof navIcons
-                                      ](
-                                        { class: className(styles.navIcon) },
+                                      Icon.icon(
+                                        {
+                                          name: navIcons[
+                                            item.icon as keyof typeof navIcons
+                                          ],
+                                          size: 'sm',
+                                        },
                                         h,
                                       ),
                                     ]),
@@ -132,7 +133,7 @@ const trigger = <Msg>(
           size: 'icon',
           ariaLabel: 'Open Navigation',
           onClick: msg(onMessageJson, 'ClickedOpenNavPreview'),
-          children: [Icon.menu({ class: className(styles.toggleIcon) }, h)],
+          children: [Icon.icon({ name: 'menu', size: 'md' }, h)],
         },
         h,
       )

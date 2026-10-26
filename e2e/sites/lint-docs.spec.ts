@@ -106,3 +106,48 @@ for (const group of LINT_RULE_GROUPS)
       }
       expect(errors).toEqual([])
     })
+
+test('form-association previews render the invite form they describe', async ({
+  page,
+}) => {
+  await page.goto('/docs/lint/form-association')
+  const example = (kind: 'bad' | 'good') =>
+    page.locator(
+      `[data-lint-example^="unknown-form-"][data-lint-example$="-${kind}"]`,
+    )
+  const url = page.url()
+
+  /* the fixed footer button submits the form, so required/email run */
+  const good = example('good')
+  const email = good.getByRole('textbox', { name: 'Email' })
+  await good.getByRole('button', { name: 'Send invite' }).click()
+  expect(
+    await email.evaluate(
+      input => (input as HTMLInputElement).validity.valueMissing,
+    ),
+  ).toBe(true)
+  await email.fill('not-an-email')
+  await good.getByRole('button', { name: 'Send invite' }).click()
+  expect(
+    await email.evaluate(
+      input => (input as HTMLInputElement).validity.typeMismatch,
+    ),
+  ).toBe(true)
+  await email.fill('ada@acme.io')
+  await good.getByRole('button', { name: 'Send invite' }).click()
+  expect(page.url()).toBe(url)
+  expect(
+    await good
+      .getByRole('button', { name: 'Send invite' })
+      .evaluate(button => (button as HTMLButtonElement).form?.id ?? null),
+  ).toMatch(/^lint-invite-member-form-good$/)
+
+  /* the typo'd reference belongs to no form: nothing is validated */
+  const bad = example('bad')
+  await expect(bad.locator('form')).toHaveCount(1)
+  expect(
+    await bad
+      .getByRole('button', { name: 'Send invite' })
+      .evaluate(button => (button as HTMLButtonElement).form),
+  ).toBeNull()
+})

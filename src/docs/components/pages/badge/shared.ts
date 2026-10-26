@@ -170,17 +170,11 @@ export const badgeFixtures: Readonly<[BadgeFixture, ...Array<BadgeFixture>]> = [
   },
 ]
 
-const iconExports: Record<BadgeIcon['name'], string> = {
-  'badge-check': 'Icon.badgeCheck',
-  bookmark: 'Icon.bookmark',
-  'arrow-up-right': 'Icon.arrowUpRight',
-}
-
 const tailwindItemSource = (item: BadgeItem): string => {
   const children: Array<string> = []
   if (item.icon?.position === 'start') {
     children.push(
-      `${iconExports[item.icon.name]}({ dataIcon: 'inline-start' }, h)`,
+      `Icon.icon({ name: '${item.icon.name}', dataIcon: 'inline-start' }, h)`,
     )
   }
   if (item.spinner === 'start') {
@@ -196,7 +190,7 @@ const tailwindItemSource = (item: BadgeItem): string => {
   }
   if (item.icon?.position === 'end') {
     children.push(
-      `${iconExports[item.icon.name]}({ dataIcon: 'inline-end' }, h)`,
+      `Icon.icon({ name: '${item.icon.name}', dataIcon: 'inline-end' }, h)`,
     )
   }
   const props: Array<string> = []
@@ -229,7 +223,7 @@ const stylexItemSource = (item: BadgeItem): string => {
         : undefined
   if (item.icon?.position === 'start') {
     children.push(
-      `${iconExports[item.icon.name]}({ dataIcon: 'inline-start' }, h)`,
+      `Icon.icon({ name: '${item.icon.name}', dataIcon: 'inline-start' }, h)`,
     )
   }
   if (item.spinner === 'start') {
@@ -245,7 +239,7 @@ const stylexItemSource = (item: BadgeItem): string => {
   }
   if (item.icon?.position === 'end') {
     children.push(
-      `${iconExports[item.icon.name]}({ dataIcon: 'inline-end' }, h)`,
+      `Icon.icon({ name: '${item.icon.name}', dataIcon: 'inline-end' }, h)`,
     )
   }
   const props: Array<string> = []
@@ -302,7 +296,7 @@ const source = (
     ? 'flex w-full flex-wrap justify-center gap-2'
     : 'flex flex-wrap gap-2'
   const componentImports = [
-    `import * as Icon from '@/lib/icon'`,
+    `import * as Icon from '@/${isStyleX ? 'stylex' : 'ui'}/icon'`,
     fixture.items.some(item => item.spinner !== undefined)
       ? `import * as Spinner from '@/${isStyleX ? 'stylex' : 'ui'}/spinner'`
       : '',

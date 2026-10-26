@@ -10,6 +10,7 @@ export type DialogFixtureKind =
   | 'sticky'
   | 'scroll'
   | 'rtl'
+  | 'invite'
 
 export type DialogFixture = Readonly<{
   title: string
@@ -96,7 +97,37 @@ export const dialogFixtures: ReadonlyArray<DialogFixture> = [
     dialogDescription:
       'قم بإجراء تغييرات على ملفك الشخصي هنا. انقر على حفظ عند الانتهاء.',
   },
+  {
+    title: 'Invite member form',
+    description:
+      "A complete dialog form recipe. The email input sits in a Form with an id; the footer's Send invite is type: 'submit' with form: that id, so Enter and the button both run the browser's required/type=email checks before onSubmit. Cancel is type: 'button'. Constraints never run for an onClick message, and domain rules (here: no duplicate invites) stay in the parent update, which shows its error on the field.",
+    kind: 'invite',
+    triggerLabel: 'Invite member',
+    triggerVariant: 'default',
+    dialogTitle: 'Invite a team member',
+    dialogDescription: 'They get an email with a link to join.',
+  },
 ]
+
+export const dialogInviteFormId = 'docs-invite-member-form'
+
+/* Parent-owned validation for the invite recipe. Native constraints cover an
+   empty or malformed address before submit; this also guards programmatic
+   submits and owns the domain rule. */
+export const inviteErrorFor = (
+  email: string,
+  invited: ReadonlyArray<string>,
+): string | null => {
+  const address = email.trim()
+  if (address === '') return 'Enter an email address.'
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(address))
+    return 'Enter a valid email address.'
+  if (invited.includes(address)) return `${address} is already invited.`
+  return null
+}
+
+export const invitedSummaryText = (invited: ReadonlyArray<string>): string =>
+  invited.length === 0 ? 'No invites yet.' : `Invited: ${invited.join(', ')}`
 
 export const dialogShareUrl = 'https://creaseui.com/docs/components/button'
 
@@ -168,6 +199,7 @@ const emitContent = (fixture: DialogFixture, isStyleX: boolean): string => {
         ),
       ],`
     case 'rtl':
+    case 'invite':
       return ''
   }
 }
@@ -234,6 +266,7 @@ const emitFooter = (fixture: DialogFixture, isStyleX: boolean): string => {
     case 'noClose':
     case 'scroll':
     case 'rtl':
+    case 'invite':
       return ''
   }
 }
@@ -380,6 +413,127 @@ ${emitMaxWidth(fixture, isStyleX)}${fixture.kind === 'noClose' ? '      showClos
   })
 }
 
+const inviteSource = (
+  renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
+): string => {
+  const isStyleX = renderer !== 'tailwind'
+  const mod = isStyleX ? 'stylex' : 'ui'
+  return foldkitApplication({
+    title: 'Dialog — Invite member form',
+    imports: `import { Schema as S } from 'effect'
+import { Command, Runtime, Subscription, Update } from 'foldkit'
+import { type Document, type HtmlBuilder } from 'foldkit/html'
+${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}
+import * as Button from '@/${mod}/button'
+import * as Dialog from '@/${mod}/dialog'
+import * as Field from '@/${mod}/field'
+import * as Form from '@/${mod}/form'
+import * as Input from '@/${mod}/input'${isStyleX ? `\n\n${emitStyles}` : ''}`,
+    model: `export const Model = S.Struct({
+  dialog: Dialog.Model,
+  email: S.String,
+  error: S.NullOr(S.String),
+  invited: S.Array(S.String),
+})
+export type Model = typeof Model.Type`,
+    messages: `import { taggedStruct } from 'foldkit/schema'
+export const ClickedInvite = taggedStruct('ClickedInvite');
+export const GotDialogMessage = taggedStruct('GotInviteDialogMessage', { message: Dialog.Message });
+export const ChangedEmail = taggedStruct('ChangedInviteEmail', { value: S.String });
+export const SubmittedInvite = taggedStruct('SubmittedInvite');
+export const CancelledInvite = taggedStruct('CancelledInvite');
+export const Message = S.Union([ClickedInvite, GotDialogMessage, ChangedEmail, SubmittedInvite, CancelledInvite])
+export type Message = typeof Message.Type`,
+    init: `export const init = (): Update.Return<Model, Message> => ({
+  model: { dialog: Dialog.init({ id: 'invite-member-dialog', isAnimated: true }), email: '', error: null, invited: [] },
+})`,
+    update: `const mapDialog = (
+  model: Model,
+  result: ReturnType<typeof Dialog.update>,
+): Update.Return<Model, Message> => {
+  return { model: { ...model, dialog: result.model }, commands: Command.mapMessages(result.commands, next => GotDialogMessage({ message: next })) }
+}
+
+/* Domain validation belongs to this update. The input's required and
+   type=email constraints run only because the footer button submits the
+   form; an onClick message would bypass them. */
+const validate = (model: Model): string | null => {
+  const email = model.email.trim()
+  if (email === '') return 'Enter an email address.'
+  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/u.test(email)) return 'Enter a valid email address.'
+  if (model.invited.includes(email)) return email + ' is already invited.'
+  return null
+}
+
+export const update = (
+  model: Model,
+  message: Message,
+): Update.Return<Model, Message> => {
+  switch (message._tag) {
+    case 'ClickedInvite':
+      return mapDialog({ ...model, error: null }, Dialog.open(model.dialog))
+    case 'GotInviteDialogMessage':
+      return mapDialog(model, Dialog.update(model.dialog, message.message))
+    case 'ChangedInviteEmail':
+      return { model: { ...model, email: message.value, error: null } }
+    case 'SubmittedInvite': {
+      const error = validate(model)
+      if (error !== null) return { model: { ...model, error } }
+      return mapDialog(
+        { ...model, email: '', error: null, invited: [...model.invited, model.email.trim()] },
+        Dialog.close(model.dialog),
+      )
+    }
+    case 'CancelledInvite':
+      return mapDialog({ ...model, email: '', error: null }, Dialog.close(model.dialog))
+  }
+}`,
+    view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Dialog — Invite member form',
+  body: h.main([h.Class(${isStyleX ? 'className(styles.shell)' : "'flex min-h-screen flex-col items-center justify-center gap-4 p-8'"})], [
+    Button.button({ onClick: ClickedInvite(), children: ['Invite member'] }, h),
+    h.p([], [model.invited.length === 0 ? 'No invites yet.' : 'Invited: ' + model.invited.join(', ')]),
+    Dialog.dialog({
+      model: model.dialog,
+      toParentMessage: message => GotDialogMessage({ message }),
+      title: 'Invite a team member',
+      description: 'They get an email with a link to join.',
+      content: () => [
+        Form.form({
+          id: 'invite-member-form',
+          ariaLabel: 'Invite member',
+          onSubmit: SubmittedInvite(),
+          children: [
+            Field.controlField({
+              id: 'invite-email',
+              label: 'Email',
+              ...(model.error === null ? {} : { error: model.error }),
+              toControl: (parts, controlH) => Input.input({
+                id: parts.controlId,
+                name: 'email',
+                type: 'email',
+                autocomplete: 'email',
+                isRequired: true,
+                value: model.email,
+                onInput: value => ChangedEmail({ value }),
+                ...(parts.describedBy === undefined ? {} : { describedBy: parts.describedBy }),
+                isInvalid: parts.isInvalid,
+              }, controlH),
+            }, h),
+          ],
+        }, h),
+      ],
+      // The footer renders outside the form, so Send invite names it with form.
+      footer: () => [
+        Button.button({ type: 'button', variant: 'outline', onClick: CancelledInvite(), children: ['Cancel'] }, h),
+        Button.button({ type: 'submit', form: 'invite-member-form', children: ['Send invite'] }, h),
+      ],
+    }, h),
+  ]),
+})`,
+  })
+}
+
 const dialogExamplesFor = (
   renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): ReadonlyArray<DocsExample> =>
@@ -389,7 +543,10 @@ const dialogExamplesFor = (
       ? {}
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
-    code: dialogSource(fixture, index, renderer),
+    code:
+      fixture.kind === 'invite'
+        ? inviteSource(renderer)
+        : dialogSource(fixture, index, renderer),
   }))
 
 export const dialogExamples = (

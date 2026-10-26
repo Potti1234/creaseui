@@ -129,7 +129,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
       ${header(
         'No Projects Yet',
         "You haven't created any projects yet. Get started by creating your first project.",
-        media('icon', "Icon.icon('folder-code', {}, h)"),
+        media('icon', "Icon.icon({ name: 'folder-code' }, h)"),
       )},
       ${content(`h.div([h.Class(${cls('flex-row justify-center gap-2', 'styles.actionRow')})], [
           ${button('default', 'Create Project')},
@@ -138,7 +138,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
       h.a([
         h.Href('#'),
         h.Class(${cls('inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:underline', 'styles.linkRow')}),
-      ], ['Learn More', Icon.icon('arrow-up-right', {}, h)]),
+      ], ['Learn More', Icon.icon({ name: 'arrow-up-right' }, h)]),
     ],
   }, h)`
       return inner
@@ -150,7 +150,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
       ${header(
         'Cloud Storage Empty',
         'Upload files to your cloud storage to access them anywhere.',
-        media('icon', "Icon.icon('cloud', {}, h)"),
+        media('icon', "Icon.icon({ name: 'cloud' }, h)"),
       )},
       ${content(button('outline', 'Upload Files'))},
     ],
@@ -162,9 +162,9 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
       ${header(
         'No Notifications',
         "You're all caught up. New notifications will appear here.",
-        media('icon', "Icon.icon('bell', {}, h)"),
+        media('icon', "Icon.icon({ name: 'bell' }, h)"),
       )},
-      ${content(`Button.button({ variant: 'outline', size: 'sm', onClick: NoOp(), children: [Icon.icon('refresh-ccw', {}, h), 'Refresh'] }, h)`)},
+      ${content(`Button.button({ variant: 'outline', size: 'sm', onClick: NoOp(), children: [Icon.icon({ name: 'refresh-ccw' }, h), 'Refresh'] }, h)`)},
     ],
   }, h)${isStyleX ? '])' : ''}`
     case 'avatar':
@@ -211,7 +211,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
           ] }, h)`,
         ),
       )},
-      ${content(`Button.button({ variant: 'default', size: 'sm', onClick: NoOp(), children: [Icon.icon('plus', {}, h), 'Invite Members'] }, h)`)},
+      ${content(`Button.button({ variant: 'default', size: 'sm', onClick: NoOp(), children: [Icon.icon({ name: 'plus' }, h), 'Invite Members'] }, h)`)},
     ],
   }, h)`
     case 'inputGroup':
@@ -225,7 +225,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
       Empty.emptyContent({ children: [
         InputGroup.inputGroup({${isStyleX ? ' layoutStyle: layoutStyle({ width: "75%" }),' : " class: 'sm:w-3/4',"} children: [
           InputGroup.inputGroupInput({ id: 'empty-search', placeholder: 'Try searching for pages...', value: model.search, onInput: value => ChangedEmptyInputGroup({ value }) }, h),
-          InputGroup.inputGroupAddon({ children: [Icon.icon('search', {}, h)] }, h),
+          InputGroup.inputGroupAddon({ children: [Icon.icon({ name: 'search' }, h)] }, h),
           InputGroup.inputGroupAddon({ align: 'inline-end', children: [Kbd.kbd({ children: ['/'] }, h)] }, h),
         ] }, h),
         Empty.emptyDescription({ children: [
@@ -242,7 +242,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
         ${header(
           emptyRtlCopy.title,
           emptyRtlCopy.description,
-          media('icon', "Icon.icon('folder-code', {}, h)"),
+          media('icon', "Icon.icon({ name: 'folder-code' }, h)"),
         )},
         ${content(`h.div([h.Class(${cls('flex-row justify-center gap-2', 'styles.actionRow')})], [
             ${button('default', emptyRtlCopy.create)},
@@ -251,7 +251,7 @@ const emitBody = (fixture: EmptyFixture, isStyleX: boolean): string => {
         h.a([
           h.Href('#'),
           h.Class(${cls('inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:underline', 'styles.linkRow')}),
-        ], ['${emptyRtlCopy.learnMore}', Icon.icon('arrow-up-right', {}, h)]),
+        ], ['${emptyRtlCopy.learnMore}', Icon.icon({ name: 'arrow-up-right' }, h)]),
       ],
     }, h),
   ])`
@@ -269,7 +269,7 @@ const emitImports = (fixture: EmptyFixture, isStyleX: boolean): string => {
       `import * as InputGroup from '@/${isStyleX ? 'stylex' : 'ui'}/input-group'\nimport * as Kbd from '@/${isStyleX ? 'stylex' : 'ui'}/kbd'`,
     )
   parts.push(`import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'`)
-  parts.push(`import * as Icon from '@/lib/icon'`)
+  parts.push(`import * as Icon from '@/${isStyleX ? 'stylex' : 'ui'}/icon'`)
   return `${isStyleX ? `import * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'\n\n${emitStyles}\n\n` : ''}${parts.join('\n')}`
 }
 

@@ -12,7 +12,7 @@ import {
 import * as Button from '@/ui/button'
 import * as ButtonGroup from '@/ui/button-group'
 import * as DropdownMenu from '@/ui/dropdown-menu'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/ui/icon'
 import * as Input from '@/ui/input'
 import * as InputGroup from '@/ui/input-group'
 import * as Popover from '@/ui/popover'
@@ -101,7 +101,7 @@ const demoLabels = (isRtl: boolean): Record<string, string> =>
         other: 'Other',
       }
 
-const DEMO_ICONS: Record<string, string> = {
+const DEMO_ICONS: Record<string, Icon.IconName> = {
   'mark-read': 'mail-check',
   archive: 'archive',
   snooze: 'clock',
@@ -110,7 +110,7 @@ const DEMO_ICONS: Record<string, string> = {
   'label-as': 'tag',
   trash: 'trash-2',
 }
-const CONVERSATION_ICONS: Record<string, string> = {
+const CONVERSATION_ICONS: Record<string, Icon.IconName> = {
   mute: 'volume-off',
   'mark-read': 'check',
   report: 'triangle-alert',
@@ -133,7 +133,7 @@ const menuItemToConfig = (
         label: labels[item] ?? item,
         ...(icon === undefined
           ? {}
-          : { icon: Icon.icon(icon, { class: 'size-4' }, h) }),
+          : { icon: Icon.icon({ name: icon, size: 'sm' }, h) }),
         ...(item === 'snooze' || item === 'trash'
           ? { separatorBefore: true }
           : {}),
@@ -169,7 +169,7 @@ const menuItemToConfig = (
         )[item] ?? item,
       ...(icon === undefined
         ? {}
-        : { icon: Icon.icon(icon, { class: 'size-4' }, h) }),
+        : { icon: Icon.icon({ name: icon, size: 'sm' }, h) }),
       ...(item === 'delete'
         ? { variant: 'destructive' as const, separatorBefore: true }
         : {}),
@@ -211,8 +211,12 @@ const nodeView = (
               ? []
               : [
                   Icon.icon(
-                    node.icon,
-                    node.rtlRotate === true ? { class: 'rtl:rotate-180' } : {},
+                    {
+                      name: node.icon,
+                      ...(node.rtlRotate === true
+                        ? { class: 'rtl:rotate-180' }
+                        : {}),
+                    },
                     h,
                   ),
                 ]),
@@ -272,7 +276,7 @@ const nodeView = (
                             'inline-flex size-6 items-center justify-center rounded-[calc(var(--radius)-5px)] text-muted-foreground data-[active=true]:bg-orange-100 data-[active=true]:text-orange-700 dark:data-[active=true]:bg-orange-800 dark:data-[active=true]:text-orange-100',
                           ),
                         ],
-                        [Icon.icon('audio-lines', { class: 'size-3.5' }, h)],
+                        [Icon.icon({ name: 'audio-lines', size: 'xs' }, h)],
                       ),
                     ],
                   },
@@ -287,7 +291,7 @@ const nodeView = (
                       {
                         align: 'inline-end',
                         children: [
-                          Icon.icon('audio-lines', { class: 'size-3.5' }, h),
+                          Icon.icon({ name: 'audio-lines', size: 'xs' }, h),
                         ],
                       },
                       h,
@@ -326,13 +330,13 @@ const nodeView = (
           trigger:
             node.menu === 'demo'
               ? Icon.icon(
-                  'ellipsis',
                   {
+                    name: 'ellipsis',
                     ariaLabel: isRtl ? 'مزيد من الخيارات' : 'More Options',
                   },
                   h,
                 )
-              : Icon.icon('chevron-down', { ariaLabel: 'Options' }, h),
+              : Icon.icon({ name: 'chevron-down', ariaLabel: 'Options' }, h),
           triggerClass:
             node.menu === 'demo'
               ? 'inline-flex size-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground'
@@ -351,7 +355,10 @@ const nodeView = (
           model: model.popover,
           toParentMessage: message =>
             PreviewMessage.GotPopoverMessage({ message }),
-          trigger: Icon.icon('chevron-down', { ariaLabel: 'Open Popover' }, h),
+          trigger: Icon.icon(
+            { name: 'chevron-down', ariaLabel: 'Open Popover' },
+            h,
+          ),
           triggerClass:
             'inline-flex size-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground',
           align: 'end',

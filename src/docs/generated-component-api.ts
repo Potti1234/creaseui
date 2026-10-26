@@ -2266,6 +2266,11 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "Message = typeof Message.Type"
     },
     {
+      "name": "FocusTrigger",
+      "kind": "value",
+      "signature": "FocusTrigger: value"
+    },
+    {
       "name": "OutMessage",
       "kind": "value",
       "signature": "OutMessage: value"
@@ -2860,6 +2865,33 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "hoverCard",
       "kind": "function",
       "signature": "hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    }
+  ],
+  "icon": [
+    {
+      "name": "IconName",
+      "kind": "type",
+      "signature": "IconName = IconSource.IconName"
+    },
+    {
+      "name": "iconNames",
+      "kind": "value",
+      "signature": "iconNames: ReadonlyArray<IconName>"
+    },
+    {
+      "name": "IconSize",
+      "kind": "type",
+      "signature": "IconSize = '3xs' | '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'"
+    },
+    {
+      "name": "IconProps",
+      "kind": "type",
+      "signature": "IconProps = Readonly<{ name: IconName; size?: IconSize; tone?: 'muted' | 'primary'; filled?: boolean; rotation?: 0 | 90 | 180; ariaLabel?: string; dataIcon?: 'inline-start' | 'inline-end'; class?: string; }>"
+    },
+    {
+      "name": "icon",
+      "kind": "function",
+      "signature": "icon<Msg>(props: IconProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
   "indicator": [
@@ -5150,7 +5182,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SidebarProps",
       "kind": "type",
-      "signature": "SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; onMobileDismiss?: Msg; }>"
+      "signature": "SidebarProps<Msg> = Slot & Readonly<{ state?: SidebarState; side?: SidebarSide; variant?: SidebarVariant; collapsible?: SidebarCollapsible; presentation?: 'application' | 'contained'; isMobileOpen?: boolean; mobileId?: string; onMobileDismiss?: Msg; }>"
     },
     {
       "name": "sidebar",

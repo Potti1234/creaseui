@@ -38,6 +38,10 @@ and each Crease dependency at the same ref.
   from your view with props and the `HtmlBuilder`.
 - Stateful components: the parent owns the Model, routes the component's
   Message through `update` and renders `view`.
+- Metric/stat card rows: use Grid's adaptive columns
+  (`{ minWidth: 240, max: 3, repeat: 'fit' }`) in a product-owned `metricGrid`
+  wrapper, not `columns: 3`; fixed columns clip values on phones (see the
+  "Adaptive metric cards" recipe in docs/registry.md).
 - New domain patterns (an issue row, a status glyph) are built from installed
   components. Put them in an owned design file only when they need raw
   elements, and grant only those elements (`rawElements`).

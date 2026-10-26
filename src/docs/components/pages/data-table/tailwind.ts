@@ -13,7 +13,7 @@ import {
   type FacetedDocId,
   type Payment,
 } from '@/docs/components/pages/data-table/shared'
-import { icon } from '@/lib/icon'
+import { icon } from '@/ui/icon'
 import {
   actionBar,
   actionBarClose,
@@ -131,7 +131,7 @@ const docsActionBar = (model: Model, h: HtmlBuilder<Got>): Html => {
                 {
                   onClose: wrapTable(DataTable.Message.ClosedActionBar({})),
                   ariaLabel: 'Clear selection',
-                  children: [icon('x', { class: 'size-4' }, h)],
+                  children: [icon({ name: 'x', size: 'sm' }, h)],
                 },
                 h,
               ),
@@ -152,7 +152,7 @@ const docsActionBar = (model: Model, h: HtmlBuilder<Got>): Html => {
                   ),
                   class: 'gap-1.5',
                   children: [
-                    icon('circle-check', { class: 'size-4' }, h),
+                    icon({ name: 'circle-check', size: 'sm' }, h),
                     'Mark success',
                   ],
                 },
@@ -163,7 +163,7 @@ const docsActionBar = (model: Model, h: HtmlBuilder<Got>): Html => {
                   onSelect: wrapTable(DataTable.Message.RequestedExport({})),
                   class: 'gap-1.5',
                   children: [
-                    icon('download', { class: 'size-4' }, h),
+                    icon({ name: 'download', size: 'sm' }, h),
                     'Export',
                   ],
                 },
@@ -178,7 +178,10 @@ const docsActionBar = (model: Model, h: HtmlBuilder<Got>): Html => {
                     }),
                   ),
                   class: 'gap-1.5',
-                  children: [icon('trash-2', { class: 'size-4' }, h), 'Delete'],
+                  children: [
+                    icon({ name: 'trash-2', size: 'sm' }, h),
+                    'Delete',
+                  ],
                 },
                 h,
               ),

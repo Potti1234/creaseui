@@ -286,6 +286,36 @@ export const LINT_DIAGNOSTICS: Readonly<
       "endColumn": 20
     }
   ],
+  "form-association/unknown-form-tailwind/tailwind": [
+    {
+      "ruleId": "crease/form-association",
+      "message": "button() submits form 'invite-form', but the Forms this view renders have ids 'invite-member-form'. Give the Form id 'invite-form' or fix the reference; if that Form renders elsewhere, check it with the form-association audit.",
+      "line": 8,
+      "column": 43,
+      "endLine": 8,
+      "endColumn": 56
+    }
+  ],
+  "form-association/unknown-form-stylex/stylex": [
+    {
+      "ruleId": "crease/form-association",
+      "message": "button() submits form 'invite-form', but the Forms this view renders have ids 'invite-member-form'. Give the Form id 'invite-form' or fix the reference; if that Form renders elsewhere, check it with the form-association audit.",
+      "line": 8,
+      "column": 43,
+      "endLine": 8,
+      "endColumn": 56
+    }
+  ],
+  "form-association/unknown-form-pleat/pleat": [
+    {
+      "ruleId": "crease/form-association",
+      "message": "button() submits form 'invite-form', but the Forms this view renders have ids 'invite-member-form'. Give the Form id 'invite-form' or fix the reference; if that Form renders elsewhere, check it with the form-association audit.",
+      "line": 8,
+      "column": 43,
+      "endLine": 8,
+      "endColumn": 56
+    }
+  ],
   "no-component-restyle/color-class/tailwind": [
     {
       "ruleId": "crease/no-component-restyle",

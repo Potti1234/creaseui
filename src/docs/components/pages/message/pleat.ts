@@ -14,7 +14,7 @@ import * as Attachment from '@/pleat/attachment'
 import * as Avatar from '@/pleat/avatar'
 import * as Bubble from '@/pleat/bubble'
 import * as Button from '@/pleat/button'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Marker from '@/pleat/marker'
 import * as Message from '@/pleat/message'
 import { className } from '@/pleat/style'
@@ -129,13 +129,7 @@ const part = <Msg>(
           children: [
             Attachment.attachmentMedia(
               {
-                children: [
-                  Icon.icon(
-                    'file-text',
-                    { class: className(styles.iconMd) },
-                    h,
-                  ),
-                ],
+                children: [Icon.icon({ name: 'file-text', size: 'sm' }, h)],
               },
               h,
             ),
@@ -161,7 +155,7 @@ const part = <Msg>(
                     {
                       onClick: send(onMessageJson, 'ClickedAction'),
                       label: 'Download',
-                      children: [Icon.icon('download', {}, h)],
+                      children: [Icon.icon({ name: 'download' }, h)],
                     },
                     h,
                   ),
@@ -198,14 +192,14 @@ const footer = <Msg>(
     return Message.messageFooter({ children: [spec.footer] }, h)
   }
   if (spec.footerActions === 'copyLikeDislike') {
-    const btn = (icon: string, label: string): Html =>
+    const btn = (icon: Icon.IconName, label: string): Html =>
       Button.button(
         {
           variant: 'ghost',
           size: 'icon',
           ariaLabel: label,
           onClick: send(onMessageJson, 'ClickedAction'),
-          children: [Icon.icon(icon, { class: className(styles.iconMd) }, h)],
+          children: [Icon.icon({ name: icon, size: 'sm' }, h)],
         },
         h,
       )
@@ -237,7 +231,7 @@ const footer = <Msg>(
               size: 'icon-xs',
               ariaLabel: 'Retry',
               onClick: send(onMessageJson, 'ClickedAction'),
-              children: [Icon.icon('refresh-ccw', {}, h)],
+              children: [Icon.icon({ name: 'refresh-ccw' }, h)],
             },
             h,
           ),

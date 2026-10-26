@@ -1,3 +1,4 @@
+import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -13,7 +14,7 @@ export interface TabsTabSpec {
   readonly label: string
   readonly content: string
   readonly isDisabled?: boolean
-  readonly icon?: string
+  readonly icon?: IconName
   readonly isLabelHidden?: boolean
   readonly card?: TabsCardSpec
 }
@@ -285,7 +286,7 @@ const tabEntry = (
     tab.card === undefined
       ? `'${esc(tab.content)}'`
       : cardContent(tab.card, isStyleX, `${indent}  `)
-  return `${indent}{ value: '${tab.value}', label: '${esc(tab.label)}', content: ${content}${tab.icon === undefined ? '' : `, icon: Icon.icon('${tab.icon}', {}, h)`}${tab.isLabelHidden === true ? ', isLabelHidden: true' : ''}${tab.isDisabled === true ? ', isDisabled: true' : ''} },`
+  return `${indent}{ value: '${tab.value}', label: '${esc(tab.label)}', content: ${content}${tab.icon === undefined ? '' : `, icon: Icon.icon({ name: '${tab.icon}' }, h)`}${tab.isLabelHidden === true ? ', isLabelHidden: true' : ''}${tab.isDisabled === true ? ', isDisabled: true' : ''} },`
 }
 
 const emitSource = (
@@ -308,7 +309,7 @@ const emitSource = (
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-${isStyleX ? "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'\n" : ''}${usesCard ? `import * as Card from '@/${base}/card'\n` : ''}${usesIcon ? `import * as Icon from '@/lib/icon'\n` : ''}import * as Tabs from '@/${base}/tabs'${sxBlock}`,
+${isStyleX ? "import * as stylex from '@stylexjs/stylex'\nimport { layoutStyle } from '@/stylex/contracts'\n" : ''}${usesCard ? `import * as Card from '@/${base}/card'\n` : ''}${usesIcon ? `import * as Icon from '@/${base}/icon'\n` : ''}import * as Tabs from '@/${base}/tabs'${sxBlock}`,
     model: `export const TabValue = S.Literals([${values}])
 export type TabValue = typeof TabValue.Type
 const ExampleTabs = Tabs.create<TabValue>()

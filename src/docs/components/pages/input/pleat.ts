@@ -11,7 +11,7 @@ import {
   inputFixtures,
   inputRtlCopy,
 } from '@/docs/components/pages/input/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Badge from '@/pleat/badge'
 import * as Button from '@/pleat/button'
 import * as ButtonGroup from '@/pleat/button-group'
@@ -368,13 +368,7 @@ const inputView = <Msg>(
                   InputGroup.inputGroupAddon(
                     {
                       align: 'inline-end',
-                      children: [
-                        Icon.icon(
-                          'info',
-                          { class: className(styles.iconMd) },
-                          h,
-                        ),
-                      ],
+                      children: [Icon.icon({ name: 'info', size: 'sm' }, h)],
                     },
                     h,
                   ),

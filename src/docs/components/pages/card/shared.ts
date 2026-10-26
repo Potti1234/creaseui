@@ -241,15 +241,15 @@ const smallCardSource = (
     Card.cardContent({ children: [
       h.ul([${cls(renderer, 'grid gap-2 py-2 text-sm', 'list')}], [
         h.li([${cls(renderer, 'flex gap-2', 'li')}], [
-          Icon.icon('chevron-right', { class: ${renderer === 'tailwind' ? `'mt-0.5 size-4 shrink-0 text-muted-foreground'` : `stylex.props(styles.liIcon, styles.liMarker).className ?? ''`} }, h),
+          Icon.icon({ name: 'chevron-right', size: 'sm', tone: 'muted', ${renderer === 'tailwind' ? "class: 'mt-0.5'" : "layoutStyle: layoutStyle({ marginTop: '0.125rem' })"} }, h),
           h.span([], ['Choose a schedule (daily, or weekly).']),
         ]),
         h.li([${cls(renderer, 'flex gap-2', 'li')}], [
-          Icon.icon('chevron-right', { class: ${renderer === 'tailwind' ? `'mt-0.5 size-4 shrink-0 text-muted-foreground'` : `stylex.props(styles.liIcon, styles.liMarker).className ?? ''`} }, h),
+          Icon.icon({ name: 'chevron-right', size: 'sm', tone: 'muted', ${renderer === 'tailwind' ? "class: 'mt-0.5'" : "layoutStyle: layoutStyle({ marginTop: '0.125rem' })"} }, h),
           h.span([], ['Send to channels or specific teammates.']),
         ]),
         h.li([${cls(renderer, 'flex gap-2', 'li')}], [
-          Icon.icon('chevron-right', { class: ${renderer === 'tailwind' ? `'mt-0.5 size-4 shrink-0 text-muted-foreground'` : `stylex.props(styles.liIcon, styles.liMarker).className ?? ''`} }, h),
+          Icon.icon({ name: 'chevron-right', size: 'sm', tone: 'muted', ${renderer === 'tailwind' ? "class: 'mt-0.5'" : "layoutStyle: layoutStyle({ marginTop: '0.125rem' })"} }, h),
           h.span([], ['Include charts, tables, and key metrics.']),
         ]),
       ]),
@@ -362,7 +362,7 @@ const fixtureImports = (
     case 'small':
       return (
         [
-          `import * as Icon from '@/lib/icon'`,
+          `import * as Icon from '@/${ui(renderer)}/icon'`,
           `import * as Button from '@/${ui(renderer)}/button'`,
         ].join('\n') + stylesImport
       )

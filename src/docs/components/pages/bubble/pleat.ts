@@ -11,7 +11,7 @@ import {
   type BubbleReactionsSpec,
   type BubbleSpec,
 } from '@/docs/components/pages/bubble/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/pleat/icon'
 import * as Bubble from '@/pleat/bubble'
 import * as Button from '@/pleat/button'
 import * as Popover from '@/pleat/popover'
@@ -184,7 +184,7 @@ const reactionsView = <Msg>(
                   onMessageJson(
                     JSON.stringify({ _tag: 'GotTooltipMessage', message }),
                   ),
-                trigger: Icon.icon(reactions.icon, {}, h),
+                trigger: Icon.icon({ name: reactions.icon }, h),
                 triggerLayoutStyle: styles.iconTrigger as ComponentLayoutStyle,
                 content: reactions.content,
                 ariaLabel: 'Read receipt',
@@ -207,9 +207,10 @@ const reactionsView = <Msg>(
                     JSON.stringify({ _tag: 'GotPopoverMessage', message }),
                   ),
                 trigger: Icon.icon(
-                  reactions.icon,
                   {
-                    class: className(styles.icon),
+                    name: reactions.icon,
+                    size: 'xs',
+                    tone: 'muted',
                     ariaLabel: 'Show error details',
                   },
                   h,
@@ -293,12 +294,10 @@ const contentView = <Msg>(
                 [
                   model.open ? 'Show less' : 'Show more',
                   Icon.icon(
-                    'chevron-down',
                     {
-                      class: className(
-                        styles.chevron,
-                        model.open && styles.chevronExpanded,
-                      ),
+                      name: 'chevron-down',
+                      size: 'sm',
+                      rotation: model.open ? 180 : 0,
                     },
                     h,
                   ),

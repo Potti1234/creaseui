@@ -7,7 +7,7 @@ import {
   commandFixtures,
   itemsForFixture,
 } from '@/docs/components/pages/command/shared'
-import * as Icon from '@/lib/icon'
+import * as Icon from '@/stylex/icon'
 import * as Button from '@/stylex/button'
 import * as CommandMenu from '@/stylex/command'
 import * as Dialog from '@/stylex/dialog'
@@ -16,7 +16,6 @@ import { className } from '@/stylex/style'
 const styles = stylex.create({
   stack: { gap: '1rem', display: 'flex', flexDirection: 'column' },
   fit: { width: 'fit-content' },
-  icon: { height: '1rem', width: '1rem' },
   itemRow: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
 })
 
@@ -53,7 +52,7 @@ export const commandStyleXPreview: ExamplePreviewProvider = <Msg>(
             [
               ...(item?.icon === undefined
                 ? []
-                : [Icon.icon(item.icon, { class: className(styles.icon) }, h)]),
+                : [Icon.icon({ name: item.icon, size: 'sm' }, h)]),
               h.span([], [value]),
             ],
           ),
