@@ -1152,7 +1152,7 @@ const applyPickedColor = (
   }
 }
 
-export const init = (): Model => ({
+export const init = (preset: Preset.Config = Preset.DEFAULT_CONFIG): Model => ({
   accountAccess: AccountAccess.init(),
   faq: Faq.init(),
   kitchenIsland: KitchenIsland.init(),
@@ -1170,31 +1170,25 @@ export const init = (): Model => ({
   stockPerformance: StockPerformance.init(),
   transferFunds: TransferFunds.init(),
   upcomingPayments: UpcomingPayments.init(),
-  preset: Preset.DEFAULT_CONFIG,
-  presetInput: Preset.encodePreset(Preset.DEFAULT_CONFIG),
+  preset,
+  presetInput: Preset.encodePreset(preset),
   presetError: null,
   isPresetCopied: false,
   section: 'tokens',
   scheme: 'system',
   tokenScheme: 'light',
-  tokenPickers: initTokenPickers(Preset.DEFAULT_CONFIG, 'light'),
+  tokenPickers: initTokenPickers(preset, 'light'),
   colorPickers: {
-    accent: initColorPicker(
-      'create-accent-picker',
-      Preset.accentToken(Preset.DEFAULT_CONFIG),
-    ),
+    accent: initColorPicker('create-accent-picker', Preset.accentToken(preset)),
     surfaceLight: initColorPicker(
       'create-surface-light-picker',
-      Preset.surfaceToken(Preset.DEFAULT_CONFIG, 'light'),
+      Preset.surfaceToken(preset, 'light'),
     ),
     surfaceDark: initColorPicker(
       'create-surface-dark-picker',
-      Preset.surfaceToken(Preset.DEFAULT_CONFIG, 'dark'),
+      Preset.surfaceToken(preset, 'dark'),
     ),
-    chart: initColorPicker(
-      'create-chart-picker',
-      Preset.chartToken(Preset.DEFAULT_CONFIG),
-    ),
+    chart: initColorPicker('create-chart-picker', Preset.chartToken(preset)),
   },
   canvas: 'board',
   primitiveInspector: {

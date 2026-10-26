@@ -226,24 +226,14 @@ export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
       Preset.decodePreset,
     ),
   )
-  const seedPreset = <M extends { preset: Preset.Config; presetInput: string }>(
-    board: M,
-  ): M =>
-    storedPreset === null
-      ? board
-      : {
-          ...board,
-          preset: storedPreset,
-          presetInput: Preset.encodePreset(storedPreset),
-        }
   return {
     model: {
       route,
       currentUrl: urlToString(url),
       isDark: flags.isDark,
-      tailwindBoard: seedPreset(Board.init()),
-      styleXBoard: seedPreset(BoardStyleX.init()),
-      pleatBoard: seedPreset(BoardPleat.init()),
+      tailwindBoard: Board.init(storedPreset ?? Preset.DEFAULT_CONFIG),
+      styleXBoard: BoardStyleX.init(storedPreset ?? Preset.DEFAULT_CONFIG),
+      pleatBoard: BoardPleat.init(storedPreset ?? Preset.DEFAULT_CONFIG),
       themeLab: {
         open: false,
         applied: flags.themeLab?.applied === true && storedPreset !== null,
