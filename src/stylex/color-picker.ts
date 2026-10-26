@@ -396,7 +396,10 @@ export const colorPickerAlphaSlider = <Msg>(
 ): Html => {
   const { r, g, b } = Picker.rgb(props.model)
   return sliderTrack(props, 'alpha', props.model.color.a, h, {
-    backgroundImage: `linear-gradient(to right, transparent, rgb(${String(r)}, ${String(g)}, ${String(b)})), ${CHECKERBOARD}`,
+    /* The fade rides as a gradient image layer over the checkerboard —
+       `background-image` would reject the checkerboard's `0 0 / 8px 8px`
+       position/size syntax. */
+    background: `linear-gradient(to right, transparent, rgb(${String(r)}, ${String(g)}, ${String(b)})), ${CHECKERBOARD}`,
   })
 }
 
