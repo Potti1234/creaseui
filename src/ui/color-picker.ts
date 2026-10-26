@@ -274,7 +274,10 @@ export const colorPickerSwatch = <Msg>(
         ),
       ),
       h.Style({
-        background: `${props.color}, ${CHECKERBOARD}`,
+        /* The color rides as a gradient image layer: a plain color in a
+           non-final `background` layer is invalid CSS and drops the whole
+           declaration, leaving the swatch transparent. */
+        background: `linear-gradient(${props.color}, ${props.color}), ${CHECKERBOARD}`,
       }),
     ],
     [],

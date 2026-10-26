@@ -410,7 +410,12 @@ export const colorPickerSwatch = <Msg>(
     [
       h.DataAttribute('slot', 'color-picker-swatch'),
       h.Class(className(styles.swatch, props.layoutStyle)),
-      h.Style({ background: `${props.color}, ${CHECKERBOARD}` }),
+      h.Style({
+        /* The color rides as a gradient image layer: a plain color in a
+           non-final `background` layer is invalid CSS and drops the whole
+           declaration, leaving the swatch transparent. */
+        background: `linear-gradient(${props.color}, ${props.color}), ${CHECKERBOARD}`,
+      }),
     ],
     [],
   )
