@@ -131,11 +131,18 @@ const styles = stylex.create({
     borderRadius: foundationTokens.radiusSm,
     borderStyle: 'solid',
     borderWidth: 1,
+    boxShadow: foundationTokens.shadowSm,
     display: 'inline-block',
     flexShrink: 0,
     pointerEvents: 'none',
     height: '1rem',
     width: '1rem',
+  },
+  /* The standalone trigger: the swatch itself is the color square (diceui's
+     swatch-as-trigger), wrapped in a transparent reset button. */
+  swatchTrigger: {
+    height: '2rem',
+    width: '2rem',
   },
   eyeDropper: {
     borderColor: tokens.border,
@@ -572,7 +579,10 @@ export const colorPicker = <Msg>(
         props.toParentMessage(Message.GotPopoverMessage({ message })),
       trigger:
         props.trigger ??
-        colorPickerSwatch({ color: Picker.hex(props.model) }, h),
+        colorPickerSwatch(
+          { color: Picker.hex(props.model), layoutStyle: styles.swatchTrigger },
+          h,
+        ),
       content: panel,
       side: props.side ?? 'bottom',
       align: props.align ?? 'start',

@@ -15,6 +15,7 @@ import type {
   ButtonVariant,
   ComponentLayoutStyle,
 } from './contracts'
+import { layoutStyle } from './contracts'
 import { reset } from './reset'
 import { className } from './style'
 import { foundationTokens } from './foundations-tokens'
@@ -48,6 +49,9 @@ const CHECKERBOARD =
 
 const HUE_GRADIENT =
   'linear-gradient(to right, hsl(0,100%,50%), hsl(60,100%,50%), hsl(120,100%,50%), hsl(180,100%,50%), hsl(240,100%,50%), hsl(300,100%,50%), hsl(360,100%,50%))'
+
+/* The standalone trigger swatch fills its reset-button wrapper. */
+const TRIGGER_SWATCH = layoutStyle({ height: '2rem', width: '2rem' })
 
 const styles = {
   root: Style.make({
@@ -145,6 +149,7 @@ const styles = {
     height: '1rem',
     pointerEvents: 'none',
     width: '1rem',
+    boxShadow: foundationTokens.shadowSm,
   }),
   eyeDropper: Style.make({
     alignItems: 'center',
@@ -569,9 +574,14 @@ export const colorPicker = <Msg>(
       model: props.model.popover,
       toParentMessage: message =>
         props.toParentMessage(Message.GotPopoverMessage({ message })),
+      /* The standalone trigger is just the color square (diceui's
+         swatch-as-trigger) inside a transparent reset button. */
       trigger:
         props.trigger ??
-        colorPickerSwatch({ color: Picker.hex(props.model) }, h),
+        colorPickerSwatch(
+          { color: Picker.hex(props.model), layoutStyle: TRIGGER_SWATCH },
+          h,
+        ),
       content: panel,
       side: props.side ?? 'bottom',
       align: props.align ?? 'start',

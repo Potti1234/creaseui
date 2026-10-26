@@ -269,7 +269,7 @@ export const colorPickerSwatch = <Msg>(
       h.DataAttribute('slot', 'color-picker-swatch'),
       h.Class(
         cn(
-          'pointer-events-none inline-block size-4 shrink-0 rounded-[4px] border border-black/10',
+          'pointer-events-none inline-block size-4 shrink-0 rounded-[4px] border border-black/10 shadow-sm',
           props.class,
         ),
       ),
@@ -438,9 +438,15 @@ export const colorPicker = <Msg>(
         props.toParentMessage(Message.GotPopoverMessage({ message })),
       trigger:
         props.trigger ??
-        colorPickerSwatch({ color: Picker.hex(props.model) }, h),
+        colorPickerSwatch(
+          { color: Picker.hex(props.model), class: 'size-full' },
+          h,
+        ),
+      /* The default trigger is just the color square (diceui's swatch-as-
+         trigger): a transparent button sized to let the swatch's own
+         border/radius/shadow render the chrome. */
       triggerClass: cn(
-        'inline-flex h-8 w-9 items-center justify-center rounded-md border bg-background p-0 shadow-xs transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50',
+        'inline-flex size-8 shrink-0 items-center justify-center rounded-[4px] p-0 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50',
         props.triggerClass,
       ),
       content: panel,
