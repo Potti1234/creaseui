@@ -18,7 +18,9 @@ The repository currently contains:
 
 ## Development
 
-Requirements: a current Node.js release and npm.
+Requirements: Node 26.12.1 (pinned in `.node-version`) and its bundled npm.
+Run `npm run audit` to check locked production and development dependencies.
+CI fails on any reported vulnerability.
 
 ```sh
 npm install
