@@ -91,7 +91,6 @@ test.describe('Copied documentation programs', () => {
         const errors: Array<string> = []
         const onError = (error: Error) => errors.push(error.message)
         page.on('pageerror', onError)
-        page.on('pageerror', error => errors.push(error.message))
         await page.goto(`${url}${name}.html`)
         // Foldkit patches the container element itself, so look for any
         // rendered (non-script) body content rather than #root children.
