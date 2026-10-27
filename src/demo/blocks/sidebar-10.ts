@@ -69,6 +69,7 @@ type Workspace = Readonly<{
   pages: ReadonlyArray<WorkspacePage>
 }>
 
+/* eslint-disable crease/no-native-glyphs -- reason: emoji pictograms are demo content data rendered as-is (matches the upstream shadcn sidebar demo) */
 export const data = {
   teams: [
     { name: 'Acme Inc', logo: 'command', plan: 'Enterprise' },
@@ -257,6 +258,7 @@ export const data = {
     },
   ] satisfies ReadonlyArray<Workspace>,
 }
+/* eslint-enable crease/no-native-glyphs */
 
 const actionGroups = [
   [

@@ -41,6 +41,7 @@ import {
   sidebarTrigger,
 } from '@/ui/sidebar'
 
+/* eslint-disable crease/no-native-glyphs -- reason: emoji pictograms are demo content data rendered as-is (matches the upstream shadcn sidebar demo) */
 const leftData = {
   teams: [
     { name: 'Acme Inc', logo: 'command', plan: 'Enterprise' },
@@ -176,6 +177,7 @@ const leftData = {
     },
   ],
 }
+/* eslint-enable crease/no-native-glyphs */
 
 const rightData = {
   user: {
