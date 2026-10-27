@@ -3,6 +3,7 @@ import stylexPlugin from '@stylexjs/eslint-plugin'
 
 import { formAssociation } from './rules/form-association.js'
 import { noComponentRestyle } from './rules/no-component-restyle.js'
+import { noNativeGlyphs } from './rules/no-native-glyphs.js'
 import { noFoldkitInlineStyle } from './rules/no-foldkit-inline-style.js'
 import { noStylexEscape } from './rules/no-stylex-escape.js'
 import { pleatPropLimits } from './rules/pleat-prop-limits.js'
@@ -19,6 +20,7 @@ export const rules = {
   'form-association': formAssociation,
   'no-component-restyle': noComponentRestyle,
   'no-foldkit-inline-style': noFoldkitInlineStyle,
+  'no-native-glyphs': noNativeGlyphs,
   'no-stylex-escape': noStylexEscape,
   'pleat-prop-limits': pleatPropLimits,
   'prefer-composition-primitives': preferCompositionPrimitives,
@@ -56,6 +58,8 @@ export const tailwind = (options = {}) => {
     },
     rules: {
       'crease/form-association': severity,
+      'crease/no-native-glyphs':
+        options.nativeGlyphs === false ? 'off' : severity,
       'crease/no-component-restyle':
         options.restyle === false
           ? 'off'
@@ -98,6 +102,8 @@ export const stylex = (options = {}) => {
     plugins: { '@stylexjs': stylexPlugin, crease: plugin },
     rules: {
       'crease/form-association': severity,
+      'crease/no-native-glyphs':
+        options.nativeGlyphs === false ? 'off' : severity,
       '@stylexjs/enforce-extension': [
         severity,
         {
@@ -169,6 +175,8 @@ export const pleat = (options = {}) => {
     plugins: { crease: plugin },
     rules: {
       'crease/form-association': severity,
+      'crease/no-native-glyphs':
+        options.nativeGlyphs === false ? 'off' : severity,
       'crease/no-foldkit-inline-style':
         options.inlineStyles === 'forbid' ? severity : 'off',
       'crease/pleat-prop-limits': [

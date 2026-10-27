@@ -707,6 +707,7 @@
       "component": "dropdown-menu",
       "description": "A CreaseUI Dropdown Menu component for Foldkit.",
       "exports": [
+        "FocusTrigger",
         "Message",
         "Model",
         "OutMessage",
@@ -2826,6 +2827,7 @@
       "component": "dropdown-menu",
       "description": "The StyleX Dropdown Menu component for Foldkit.",
       "exports": [
+        "FocusTrigger",
         "Message",
         "Model",
         "OutMessage",
@@ -4912,6 +4914,7 @@
       "component": "dropdown-menu",
       "description": "The Pleat Dropdown Menu component for Foldkit.",
       "exports": [
+        "FocusTrigger",
         "Message",
         "Model",
         "OutMessage",

@@ -110,6 +110,7 @@ export const creaseui = (options = {}) => {
       rules: {
         ...levels(STRICT_RULE_IDS, strictLevel),
         'crease/form-association': strictLevel,
+        'crease/no-native-glyphs': strictLevel,
       },
     },
   ]
@@ -156,6 +157,7 @@ export const creaseui = (options = {}) => {
       rules: {
         ...levels(RULES_BY_GRANT.composing, strictLevel),
         'crease/form-association': strictLevel,
+        'crease/no-native-glyphs': strictLevel,
       },
     })
   return entries

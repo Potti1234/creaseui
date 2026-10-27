@@ -316,6 +316,66 @@ export const LINT_DIAGNOSTICS: Readonly<
       "endColumn": 56
     }
   ],
+  "no-native-glyphs/arrow-glyph-tailwind/tailwind": [
+    {
+      "ruleId": "crease/no-native-glyphs",
+      "message": "Native glyph U+2192 ('→') bypasses the Icon component. Use Icon.* (e.g. Icon.arrowUpRight) so size, stroke and currentColor follow the icon system.",
+      "line": 3,
+      "column": 40,
+      "endLine": 3,
+      "endColumn": 68
+    }
+  ],
+  "no-native-glyphs/arrow-glyph-stylex/stylex": [
+    {
+      "ruleId": "crease/no-native-glyphs",
+      "message": "Native glyph U+2192 ('→') bypasses the Icon component. Use Icon.* (e.g. Icon.arrowUpRight) so size, stroke and currentColor follow the icon system.",
+      "line": 3,
+      "column": 40,
+      "endLine": 3,
+      "endColumn": 68
+    }
+  ],
+  "no-native-glyphs/arrow-glyph-pleat/pleat": [
+    {
+      "ruleId": "crease/no-native-glyphs",
+      "message": "Native glyph U+2192 ('→') bypasses the Icon component. Use Icon.* (e.g. Icon.arrowUpRight) so size, stroke and currentColor follow the icon system.",
+      "line": 3,
+      "column": 40,
+      "endLine": 3,
+      "endColumn": 68
+    }
+  ],
+  "no-native-glyphs/emoji-label-tailwind/tailwind": [
+    {
+      "ruleId": "crease/no-native-glyphs",
+      "message": "Native glyph U+1F680 ('🚀') bypasses the Icon component. Use Icon.* (e.g. Icon.arrowUpRight) so size, stroke and currentColor follow the icon system.",
+      "line": 3,
+      "column": 26,
+      "endLine": 3,
+      "endColumn": 41
+    }
+  ],
+  "no-native-glyphs/emoji-label-stylex/stylex": [
+    {
+      "ruleId": "crease/no-native-glyphs",
+      "message": "Native glyph U+1F680 ('🚀') bypasses the Icon component. Use Icon.* (e.g. Icon.arrowUpRight) so size, stroke and currentColor follow the icon system.",
+      "line": 3,
+      "column": 26,
+      "endLine": 3,
+      "endColumn": 41
+    }
+  ],
+  "no-native-glyphs/emoji-label-pleat/pleat": [
+    {
+      "ruleId": "crease/no-native-glyphs",
+      "message": "Native glyph U+1F680 ('🚀') bypasses the Icon component. Use Icon.* (e.g. Icon.arrowUpRight) so size, stroke and currentColor follow the icon system.",
+      "line": 3,
+      "column": 26,
+      "endLine": 3,
+      "endColumn": 41
+    }
+  ],
   "no-component-restyle/color-class/tailwind": [
     {
       "ruleId": "crease/no-component-restyle",
