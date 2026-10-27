@@ -8,7 +8,7 @@ import * as Tour from '@/site/landing-tour'
 import * as Chart from '@/lib/echarts'
 import { MapMessage, MountMap } from '@/lib/map-runtime'
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
-import { init, update, view } from '@/main'
+import { Message, init, update, view } from '@/main'
 
 const modelAt = (path: string) => {
   const url = Option.getOrThrow(fromString(`https://creaseui.com${path}`))
@@ -54,6 +54,10 @@ describe('application scenes', () => {
         MountMap,
         Tour.Message.GotMap({ message: MapMessage.MapLoaded() }),
       ),
+      Scene.Mount.resolve(
+        { name: 'site-header-nav' },
+        Message.CompletedScrollToTop(),
+      ),
     )
   })
 
@@ -70,6 +74,10 @@ describe('application scenes', () => {
       Scene.expect(
         Scene.role('link', { name: 'Open dashboard-01 in Tailwind' }),
       ).toExist(),
+      Scene.Mount.resolve(
+        { name: 'site-header-nav' },
+        Message.CompletedScrollToTop(),
+      ),
     )
   })
 })
