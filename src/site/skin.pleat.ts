@@ -67,6 +67,9 @@ const styles = {
     fontWeight: 500,
     color: tokens.mutedForeground,
   }).pipe(Style.when(When.hover, { color: tokens.foreground })),
+  otherLabel: Style.make({ display: 'none' }).pipe(
+    Style.when(When.minWidth('400px'), { display: 'inline' }),
+  ),
   actions: Style.make({
     marginLeft: 'auto',
     display: 'flex',
@@ -365,6 +368,7 @@ export const skin = {
   link: className(reset.link, styles.link),
   active: className(reset.link, styles.link, styles.active),
   other: className(reset.link, styles.other),
+  otherLabel: className(styles.otherLabel),
   actions: className(styles.actions),
   searchTrigger: className(reset.button, styles.searchTrigger),
   searchLabel: className(styles.searchLabel),

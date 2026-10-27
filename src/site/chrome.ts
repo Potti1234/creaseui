@@ -104,7 +104,7 @@ export const header = <Msg>(
                   h.AriaLabel(`View this page in ${otherRendererLabel}`),
                 ],
                 [
-                  otherRendererLabel,
+                  h.span([h.Class(skin.otherLabel)], [otherRendererLabel]),
                   Icon.arrowUpRight({ class: skin.icon }, h),
                 ],
               ),
