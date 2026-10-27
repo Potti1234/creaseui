@@ -25,7 +25,7 @@ const styles = stylex.create({
     height: { default: '2.25rem', ':is([data-size="sm"])': '2rem' },
     '::before': {
       color: tokens.mutedForeground,
-      // eslint-disable-next-line crease/no-native-glyphs -- primitive renders the wrapper; ::before content is the only slot for the search glyph
+      // eslint-disable-next-line crease/no-native-glyphs -- reason: primitive renders the wrapper; ::before content is the only slot for the search glyph
       content: '"⌕"',
       flexShrink: 0,
       fontSize: '0.875rem',
