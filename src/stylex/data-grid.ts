@@ -1586,7 +1586,17 @@ const gridToolbar = <Row>(
                   column.header,
                   h.span(
                     [h.Class(className(st.c127))],
-                    [entry === undefined ? '' : entry.desc ? '↓' : '↑'],
+                    [
+                      entry === undefined
+                        ? ''
+                        : icon(
+                            {
+                              name: entry.desc ? 'arrow-down' : 'arrow-up',
+                              size: 'sm',
+                            },
+                            h,
+                          ),
+                    ],
                   ),
                 ],
               )

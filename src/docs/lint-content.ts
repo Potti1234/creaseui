@@ -154,7 +154,10 @@ export const view = <Msg>(
         [
           h.summary(
             [h.Class(styles.summary)],
-            [Typography.typographySmall({ children: ['Browse docs'] }, h)],
+            [
+              Typography.typographySmall({ children: ['Browse docs'] }, h),
+              Icon.chevronDown({ class: styles.summaryChevron }, h),
+            ],
           ),
           h.nav(
             [

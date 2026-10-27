@@ -1079,10 +1079,13 @@ export const componentPage = <Msg>(
                         [
                           h.Href(componentDocsPath(toSlug(previous))),
                           h.Class(
-                            'rounded-lg border p-4 text-sm hover:bg-muted/50',
+                            'flex items-center gap-1 rounded-lg border p-4 text-sm hover:bg-muted/50',
                           ),
                         ],
-                        [`← ${previous}`],
+                        [
+                          Icon.arrowLeft({ class: 'size-4 shrink-0' }, h),
+                          previous,
+                        ],
                       ),
                   next === undefined
                     ? h.span([], [])
@@ -1090,10 +1093,13 @@ export const componentPage = <Msg>(
                         [
                           h.Href(componentDocsPath(toSlug(next))),
                           h.Class(
-                            'rounded-lg border p-4 text-right text-sm hover:bg-muted/50',
+                            'flex items-center justify-end gap-1 rounded-lg border p-4 text-sm hover:bg-muted/50',
                           ),
                         ],
-                        [`${next} →`],
+                        [
+                          next,
+                          Icon.arrowRight({ class: 'size-4 shrink-0' }, h),
+                        ],
                       ),
                 ],
               ),

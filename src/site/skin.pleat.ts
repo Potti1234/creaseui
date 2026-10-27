@@ -59,6 +59,9 @@ const styles = {
     transitionDuration: '.15s',
   }),
   other: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '.25rem',
     fontSize: '.75rem',
     lineHeight: '1rem',
     fontWeight: 500,

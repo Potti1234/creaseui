@@ -228,7 +228,7 @@ const pageHeader = <Message>(
   )
 
 const metric = <Message>(
-  label: string,
+  label: string | ReadonlyArray<Html | string>,
   value: string,
   delta: string,
   status: 'good' | 'watch',
@@ -245,7 +245,7 @@ const metric = <Message>(
                   children: [
                     text(
                       {
-                        children: [label],
+                        children: typeof label === 'string' ? [label] : label,
                         tone: 'secondary',
                         variant: 'caption',
                       },
@@ -532,9 +532,39 @@ export const cohortFunnelDashboard = <Message>(
         metricGrid(
           {
             children: [
-              metric('Visitor → signup', '14.8%', '+1.2 pts', 'good', h),
-              metric('Signup → active', '62.4%', '+4.8 pts', 'good', h),
-              metric('Active → paid', '18.1%', '-0.9 pts', 'watch', h),
+              metric(
+                [
+                  'Visitor',
+                  icon({ name: 'arrow-right', size: 'sm' }, h),
+                  'signup',
+                ],
+                '14.8%',
+                '+1.2 pts',
+                'good',
+                h,
+              ),
+              metric(
+                [
+                  'Signup',
+                  icon({ name: 'arrow-right', size: 'sm' }, h),
+                  'active',
+                ],
+                '62.4%',
+                '+4.8 pts',
+                'good',
+                h,
+              ),
+              metric(
+                [
+                  'Active',
+                  icon({ name: 'arrow-right', size: 'sm' }, h),
+                  'paid',
+                ],
+                '18.1%',
+                '-0.9 pts',
+                'watch',
+                h,
+              ),
               metric('Overall conversion', '1.67%', '+0.2 pts', 'good', h),
             ],
           },

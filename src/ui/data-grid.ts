@@ -824,7 +824,15 @@ const gridToolbar = <Row>(
                   column.header,
                   h.span(
                     [h.Class('ml-auto text-muted-foreground')],
-                    [entry === undefined ? '' : entry.desc ? '↓' : '↑'],
+                    [
+                      entry === undefined
+                        ? ''
+                        : icon(
+                            entry.desc ? 'arrow-down' : 'arrow-up',
+                            { class: 'size-4' },
+                            h,
+                          ),
+                    ],
                   ),
                 ],
               )

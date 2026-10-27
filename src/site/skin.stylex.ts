@@ -57,6 +57,9 @@ const styles = stylex.create({
     transitionDuration: '.15s',
   },
   other: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '.25rem',
     fontSize: '.75rem',
     lineHeight: '1rem',
     fontWeight: 500,

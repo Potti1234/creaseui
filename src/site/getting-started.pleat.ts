@@ -31,12 +31,30 @@ const styles = {
     backgroundColor: tokens.background,
   }).pipe(Style.when(When.minWidth('1024px'), { display: 'none' })),
   summary: Style.make({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     cursor: 'pointer',
+    listStyleType: 'none',
     padding: '.75rem 1rem',
     fontSize: '.875rem',
     lineHeight: '1.25rem',
     fontWeight: 600,
-  }),
+  }).pipe(
+    Style.when(When.pseudoElement('::-webkit-details-marker'), {
+      display: 'none',
+    }),
+  ),
+  summaryChevron: Style.make({
+    flexShrink: 0,
+    color: tokens.mutedForeground,
+    transitionProperty: 'transform',
+    transitionDuration: '.15s',
+  }).pipe(
+    Style.when(When.pseudo(':is(details[open] *)'), {
+      transform: 'rotate(180deg)',
+    }),
+  ),
   mobileNavOuter: Style.make({
     maxHeight: '55vh',
     overflowY: 'auto',
@@ -202,6 +220,7 @@ const classes = {
   layout: className(styles.layout),
   mobile: className(styles.mobile),
   summary: className(styles.summary),
+  summaryChevron: className(styles.summaryChevron),
   mobileNavOuter: className(styles.mobileNavOuter),
   mobileNav: className(reset.list, styles.mobileNav),
   sidebar: className(styles.sidebar),

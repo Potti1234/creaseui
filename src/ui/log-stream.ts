@@ -3,6 +3,7 @@ import { Option, Schema as S } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
+import * as Icon from '@/lib/icon'
 import * as MessageScrollerBehavior from '@/lib/message-scroller'
 import { cn } from '@/lib/utils'
 
@@ -390,7 +391,7 @@ export const logStream = <Msg>(
                 h.OnClick(props.toParentMessage(Message.ClickedJumpToLatest())),
                 h.Class(
                   cn(
-                    'absolute bottom-3 right-3 rounded-full border px-3 py-1 font-mono text-sm font-medium shadow-md cursor-pointer',
+                    'absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-full border px-3 py-1 font-mono text-sm font-medium shadow-md cursor-pointer',
                     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',
                     isTerminal
                       ? TERM.jump
@@ -398,7 +399,7 @@ export const logStream = <Msg>(
                   ),
                 ),
               ],
-              ['Jump to latest ↓'],
+              ['Jump to latest', Icon.arrowDown({ class: 'size-4' }, h)],
             ),
           ]
         : []),

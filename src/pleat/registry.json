@@ -2761,6 +2761,7 @@
             "update"
           ],
           "publicExports": [
+            "FocusTrigger",
             "Message",
             "Model",
             "OutMessage",
@@ -3324,8 +3325,11 @@
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
-        "Potti1234/creaseui/pleat-style"
+        "Potti1234/creaseui/pleat-interaction-tokens",
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -4062,6 +4066,7 @@
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/message-scroller-behavior",
         "Potti1234/creaseui/pleat-complex-tokens",
+        "Potti1234/creaseui/pleat-composition-icon",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-foundations-tokens",

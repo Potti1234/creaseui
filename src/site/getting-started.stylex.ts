@@ -30,11 +30,28 @@ const styles = stylex.create({
     backgroundColor: tokens.background,
   },
   summary: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     cursor: 'pointer',
+    listStyleType: 'none',
     padding: '.75rem 1rem',
     fontSize: '.875rem',
     lineHeight: '1.25rem',
     fontWeight: 600,
+    '::-webkit-details-marker': {
+      display: 'none',
+    },
+  },
+  summaryChevron: {
+    flexShrink: 0,
+    color: tokens.mutedForeground,
+    transitionProperty: 'transform',
+    transitionDuration: '.15s',
+    transform: {
+      default: null,
+      ':is(details[open] *)': 'rotate(180deg)',
+    },
   },
   mobileNavOuter: {
     maxHeight: '55vh',
@@ -202,6 +219,7 @@ const classes = {
   layout: className(styles.layout),
   mobile: className(styles.mobile),
   summary: className(styles.summary),
+  summaryChevron: className(styles.summaryChevron),
   mobileNavOuter: className(styles.mobileNavOuter),
   mobileNav: className(reset.list, styles.mobileNav),
   sidebar: className(styles.sidebar),

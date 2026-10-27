@@ -1314,7 +1314,7 @@ const playgroundView = (model: Model, h: HtmlBuilder<Message>): Html =>
                 [
                   Option.getOrElse(
                     model.selectedCommand,
-                    () => 'Search, then use ↑ ↓ and Enter.',
+                    () => 'Search, then use the arrow keys and Enter.',
                   ),
                 ],
               ),

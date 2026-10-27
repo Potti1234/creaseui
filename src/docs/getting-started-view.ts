@@ -8,8 +8,11 @@ import type * as CodeBlock from '@/ui/code-block'
 const styles = {
   layout:
     'mx-auto grid w-full max-w-[1500px] lg:grid-cols-[220px_minmax(0,1fr)_190px]',
-  mobile: 'mx-5 mt-5 rounded-lg border bg-background lg:hidden',
-  summary: 'cursor-pointer px-4 py-3 text-sm font-semibold',
+  mobile: 'group mx-5 mt-5 rounded-lg border bg-background lg:hidden',
+  summary:
+    'flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold [&::-webkit-details-marker]:hidden',
+  summaryChevron:
+    'size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180',
   mobileNavOuter: 'max-h-[55vh] overflow-y-auto border-t p-2',
   mobileNav: 'grid grid-cols-2 gap-0.5 sm:grid-cols-3',
   sidebar:

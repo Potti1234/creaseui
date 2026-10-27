@@ -1224,7 +1224,13 @@ export const view = <Msg>(
       h.details(
         [h.Class(styles.mobile), autoCloseDetails(h, 'docs-guide-nav')],
         [
-          h.summary([h.Class(styles.summary)], [smallText('Browse docs')]),
+          h.summary(
+            [h.Class(styles.summary)],
+            [
+              smallText('Browse docs'),
+              Icon.chevronDown({ class: styles.summaryChevron }, h),
+            ],
+          ),
           h.nav(
             [
               h.AriaLabel('Documentation navigation'),

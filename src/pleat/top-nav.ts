@@ -377,12 +377,16 @@ const styles = {
     lineHeight: '1rem',
   }),
   featuredLink: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '.25rem',
     textDecoration: 'none',
     color: tokens.primary,
     fontSize: '0.75rem',
     fontWeight: 600,
     lineHeight: '1rem',
   }),
+  featuredLinkIcon: Style.make({ width: '1em', height: '1em' }),
   headingRoot: Style.make({
     gap: '0.5rem',
     paddingBlock: 0,
@@ -867,7 +871,13 @@ export const topNavMegaMenuFeaturedCard = <Msg>(
                     h.Class(className(reset.link, styles.featuredLink)),
                     h.Href(card.linkHref),
                   ],
-                  [`${card.linkLabel} →`],
+                  [
+                    card.linkLabel,
+                    Icon.arrowRight(
+                      { class: className(styles.featuredLinkIcon) },
+                      h,
+                    ),
+                  ],
                 ),
               ]),
           ...(card.children === undefined ? [] : [card.children]),

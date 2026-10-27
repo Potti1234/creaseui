@@ -6,7 +6,8 @@ export const skin = {
   nav: 'hidden items-center gap-6 sm:flex',
   link: 'text-sm font-medium text-muted-foreground transition-colors hover:text-foreground',
   active: 'text-sm font-medium text-foreground transition-colors',
-  other: 'text-xs font-medium text-muted-foreground hover:text-foreground',
+  other:
+    'inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground',
   actions: 'ml-auto flex items-center gap-1 sm:gap-2',
   searchTrigger:
     'inline-flex size-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border bg-muted/30 text-sm text-muted-foreground outline-none transition-colors hover:bg-muted/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none lg:h-9 lg:w-60 lg:justify-start lg:px-3',

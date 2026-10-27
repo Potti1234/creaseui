@@ -386,12 +386,16 @@ const styles = stylex.create({
     lineHeight: '1rem',
   },
   featuredLink: {
+    gap: '.25rem',
     textDecoration: 'none',
+    alignItems: 'center',
     color: tokens.primary,
+    display: 'inline-flex',
     fontSize: '0.75rem',
     fontWeight: 600,
     lineHeight: '1rem',
   },
+  featuredLinkIcon: { height: '1em', width: '1em' },
   headingRoot: {
     gap: '0.5rem',
     paddingBlock: 0,
@@ -888,7 +892,13 @@ export const topNavMegaMenuFeaturedCard = <Msg>(
                     h.Class(className(reset.link, styles.featuredLink)),
                     h.Href(card.linkHref),
                   ],
-                  [`${card.linkLabel} →`],
+                  [
+                    card.linkLabel,
+                    Icon.arrowRight(
+                      { class: className(styles.featuredLinkIcon) },
+                      h,
+                    ),
+                  ],
                 ),
               ]),
           ...(card.children === undefined ? [] : [card.children]),

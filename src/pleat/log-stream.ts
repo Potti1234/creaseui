@@ -6,6 +6,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as MessageScrollerBehavior from '@/lib/message-scroller'
+import { icon } from '@/pleat/composition/icon'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens'
 import { interactionTokens } from './interaction-tokens'
@@ -253,6 +254,9 @@ const styles = {
     color: logStreamTerminalInk.text,
   }),
   jump: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '.25rem',
     borderColor: tokens.border,
     borderRadius: '50%',
     borderStyle: 'solid',
@@ -544,7 +548,7 @@ export const logStream = <Msg>(
                   ),
                 ),
               ],
-              ['Jump to latest ↓'],
+              ['Jump to latest', icon({ name: 'arrow-down', size: 'sm' }, h)],
             ),
           ]
         : []),

@@ -10,6 +10,7 @@ import * as VirtualDataTable from '@/pleat/virtual/data-table'
 import { badge } from '@/pleat/badge'
 import { button, buttonLink } from '@/pleat/button'
 import { box, grid, inline, stack, text } from '@/pleat/composition'
+import { icon } from '@/pleat/composition/icon'
 import { className } from '@/pleat/style'
 import {
   createTanStackTable,
@@ -587,7 +588,10 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                           buttonLink(
                             {
                               href: '/blocks-stylex',
-                              children: ['← Featured blocks'],
+                              children: [
+                                icon({ name: 'arrow-left', size: 'sm' }, h),
+                                ' Featured blocks',
+                              ],
                               variant: 'outline',
                             },
                             h,
