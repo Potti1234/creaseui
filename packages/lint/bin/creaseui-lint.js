@@ -873,8 +873,16 @@ const main = async () => {
   return 2
 }
 
+/* process.exit() truncates console.log writes still buffered to a piped
+   stdout — set exitCode and let the process drain and exit naturally, with a
+   short fallback in case an open handle keeps the loop alive. */
+const finish = code => {
+  process.exitCode = code
+  setTimeout(() => process.exit(code), 100).unref()
+}
+
 main().then(
-  code => process.exit(code),
+  code => finish(code),
   error => {
     console.error(
       error instanceof CreaseConfigError
@@ -883,6 +891,6 @@ main().then(
           ? `${error.message}\n\n${USAGE}`
           : (error?.stack ?? String(error)),
     )
-    process.exit(2)
+    finish(2)
   },
 )

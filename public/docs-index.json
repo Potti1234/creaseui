@@ -4852,6 +4852,7 @@
       "install": "npx creaseui add log-stream",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/icons",
         "Potti1234/creaseui/message-scroller-behavior",
         "Potti1234/creaseui/utils"
       ],

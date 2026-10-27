@@ -1,4 +1,6 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import { autoCloseDetails } from '@/docs/details-nav'
+import * as Icon from '@/lib/icon'
 import { sidebarScrollMemory } from '@/docs/sidebar-scroll'
 
 import type {
@@ -148,11 +150,14 @@ export const view = <Msg>(
     [h.Class(styles.layout)],
     [
       h.details(
-        [h.Class(styles.mobile)],
+        [h.Class(styles.mobile), autoCloseDetails(h, 'docs-lint-nav')],
         [
           h.summary(
             [h.Class(styles.summary)],
-            [Typography.typographySmall({ children: ['Browse docs'] }, h)],
+            [
+              Typography.typographySmall({ children: ['Browse docs'] }, h),
+              Icon.chevronDown({ class: styles.summaryChevron }, h),
+            ],
           ),
           h.nav(
             [

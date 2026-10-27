@@ -171,7 +171,7 @@ const FEATURED_BODY_CLASS = 'flex flex-col gap-2 p-4'
 const FEATURED_TITLE_CLASS = 'text-sm leading-5 font-semibold text-foreground'
 const FEATURED_DESC_CLASS = 'text-xs leading-4 text-muted-foreground'
 const FEATURED_LINK_CLASS =
-  'text-xs leading-4 font-semibold text-primary no-underline'
+  'inline-flex items-center gap-1 text-xs leading-4 font-semibold text-primary no-underline'
 
 const HEADING_ROOT_CLASS =
   'box-border flex min-h-8 items-center gap-2 px-2 py-0 text-foreground no-underline select-none'
@@ -501,7 +501,7 @@ export const topNavMegaMenuFeaturedCard = <Msg>(
             : [
                 h.a(
                   [h.Class(FEATURED_LINK_CLASS), h.Href(card.linkHref)],
-                  [`${card.linkLabel} →`],
+                  [card.linkLabel, Icon.arrowRight({ class: 'size-[1em]' }, h)],
                 ),
               ]),
           ...(card.children === undefined ? [] : [card.children]),

@@ -19,6 +19,7 @@ import {
   toSlug,
   apiPurpose,
 } from '@/docs/component-metadata'
+import { autoCloseDetails } from '@/docs/details-nav'
 import { heroFrame } from '@/docs/hero-frame'
 import type {
   ComponentPageConfig,
@@ -75,11 +76,28 @@ const styles = stylex.create({
   },
 
   summary: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     cursor: 'pointer',
+    listStyleType: 'none',
     padding: '.75rem 1rem',
     fontSize: '.875rem',
     lineHeight: '1.25rem',
     fontWeight: 600,
+    '::-webkit-details-marker': {
+      display: 'none',
+    },
+  },
+  summaryChevron: {
+    flexShrink: 0,
+    color: tokens.mutedForeground,
+    transitionProperty: 'transform',
+    transitionDuration: '.15s',
+    transform: {
+      default: null,
+      ':is(details[open] *)': 'rotate(180deg)',
+    },
   },
   mobile: {
     display: { default: 'block', '@media (min-width: 1024px)': 'none' },
@@ -614,6 +632,9 @@ const styles = stylex.create({
     paddingTop: '2rem',
   },
   pageLink: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '.25rem',
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: tokens.border,
@@ -627,7 +648,8 @@ const styles = stylex.create({
       ':hover': 'color-mix(in oklab, var(--muted) 50%, transparent)',
     },
   },
-  pageLinkNext: { textAlign: 'right' },
+  pageLinkNext: { justifyContent: 'flex-end' },
+  pageLinkIcon: { flexShrink: 0, width: '1rem', height: '1rem' },
   apiParagraph: {
     fontSize: '.875rem',
     lineHeight: '1.5rem',
@@ -1061,9 +1083,18 @@ export const componentPage = <Msg>(
     [h.Class(className(styles.layout))],
     [
       h.details(
-        [h.Class(className(styles.mobile))],
         [
-          h.summary([h.Class(className(styles.summary))], ['Browse docs']),
+          h.Class(className(styles.mobile)),
+          autoCloseDetails(h, 'docs-component-nav'),
+        ],
+        [
+          h.summary(
+            [h.Class(className(styles.summary))],
+            [
+              h.span([], ['Browse docs']),
+              Icon.chevronDown({ class: className(styles.summaryChevron) }, h),
+            ],
+          ),
           h.nav(
             [
               h.AriaLabel('Component navigation'),
@@ -1523,7 +1554,13 @@ export const componentPage = <Msg>(
                           h.Href(componentDocsPath(toSlug(previous))),
                           h.Class(className(reset.link, styles.pageLink)),
                         ],
-                        [`← ${previous}`],
+                        [
+                          Icon.arrowLeft(
+                            { class: className(styles.pageLinkIcon) },
+                            h,
+                          ),
+                          previous,
+                        ],
                       ),
                   next === undefined
                     ? h.span([], [])
@@ -1538,7 +1575,13 @@ export const componentPage = <Msg>(
                             ),
                           ),
                         ],
-                        [`${next} →`],
+                        [
+                          next,
+                          Icon.arrowRight(
+                            { class: className(styles.pageLinkIcon) },
+                            h,
+                          ),
+                        ],
                       ),
                 ],
               ),

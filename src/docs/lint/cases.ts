@@ -237,6 +237,49 @@ export const invite = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): H
       "submits form 'invite-form'",
     )
   }),
+  ...ALL_RENDERERS.map(renderer =>
+    authoring(
+      'no-native-glyphs',
+      `arrow-glyph-${renderer}`,
+      renderer,
+      renderer,
+      'src/app/next-page.ts',
+      'A native arrow instead of an icon',
+      "A '→' character renders from the platform emoji/symbol font — different weight, size and color than the icon system, inconsistent across platforms, and invisible to the component rules. The Icon component keeps arrows in the icon set.",
+      `export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.a([h.Href('/docs/installation')], ['Continue to installation →'])
+`,
+      `import * as Icon from '@/lib/icon'
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.a([h.Href('/docs/installation')], [
+    'Continue to installation',
+    Icon.arrowRight({ class: 'size-4' }, h),
+  ])
+`,
+      'U+2192',
+    ),
+  ),
+  ...ALL_RENDERERS.map(renderer =>
+    authoring(
+      'no-native-glyphs',
+      `emoji-label-${renderer}`,
+      renderer,
+      renderer,
+      'src/app/deploy.ts',
+      'An emoji inside a button label',
+      'Emoji in control labels vary by platform (color emoji vs monochrome), ignore currentColor, and drift from the icon set. Keyboard modifiers (⌘ ⌥ ⇧ ⌃ ⌫ ⎋) and box-drawing diagrams stay legal as text.',
+      `export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([], [h.span([], ['🚀 Deploy now'])])
+`,
+      `import * as Icon from '@/lib/icon'
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([], [h.span([], ['Deploy now']), Icon.rocket({ class: 'size-4' }, h)])
+`,
+      'U+1F680',
+    ),
+  ),
   authoring(
     'no-component-restyle',
     'color-class',

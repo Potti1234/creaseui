@@ -43,6 +43,7 @@ const ROOT_CLASS =
   'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground'
 
 const INPUT_WRAPPER_CLASS =
+  // eslint-disable-next-line crease/no-native-glyphs -- reason: primitive renders the wrapper; ::before content is the only slot for the search glyph
   "relative flex h-9 items-center gap-2 border-b px-3 before:shrink-0 before:text-sm before:text-muted-foreground before:content-['⌕'] data-[size=sm]:h-8"
 
 const INPUT_CLASS =

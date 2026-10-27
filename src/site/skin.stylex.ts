@@ -57,10 +57,16 @@ const styles = stylex.create({
     transitionDuration: '.15s',
   },
   other: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '.25rem',
     fontSize: '.75rem',
     lineHeight: '1rem',
     fontWeight: 500,
     color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+  },
+  otherLabel: {
+    display: { default: 'none', '@media (min-width: 400px)': 'inline' },
   },
   actions: {
     marginLeft: 'auto',
@@ -350,6 +356,7 @@ export const skin = {
   link: className(reset.link, styles.link),
   active: className(reset.link, styles.link, styles.active),
   other: className(reset.link, styles.other),
+  otherLabel: className(styles.otherLabel),
   actions: className(styles.actions),
   searchTrigger: className(reset.button, styles.searchTrigger),
   searchLabel: className(styles.searchLabel),

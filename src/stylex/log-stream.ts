@@ -6,6 +6,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as MessageScrollerBehavior from '@/lib/message-scroller'
+import { icon } from '@/stylex/composition/icon'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
@@ -273,12 +274,15 @@ const styles = stylex.create({
     borderRadius: '50%',
     borderStyle: 'solid',
     borderWidth: 1,
+    gap: '.25rem',
     paddingBlock: '0.25rem',
     paddingInline: '0.75rem',
+    alignItems: 'center',
     backgroundColor: { default: tokens.card, ':hover': tokens.muted },
     boxShadow: foundationTokens.shadowMd,
     color: tokens.foreground,
     cursor: interactionTokens.cursorAction,
+    display: 'inline-flex',
     fontFamily:
       'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     fontSize: '0.875rem',
@@ -577,7 +581,7 @@ export const logStream = <Msg>(
                   ),
                 ),
               ],
-              ['Jump to latest ↓'],
+              ['Jump to latest', icon({ name: 'arrow-down', size: 'sm' }, h)],
             ),
           ]
         : []),

@@ -10,6 +10,7 @@ import * as VirtualDataTable from '@/stylex/virtual/data-table'
 import { badge } from '@/stylex/badge'
 import { button, buttonLink } from '@/stylex/button'
 import { box, grid, inline, stack, text } from '@/stylex/composition'
+import { icon } from '@/stylex/composition/icon'
 import { className } from '@/stylex/style'
 import {
   createTanStackTable,
@@ -587,7 +588,10 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                           buttonLink(
                             {
                               href: '/blocks-stylex',
-                              children: ['← Featured blocks'],
+                              children: [
+                                icon({ name: 'arrow-left', size: 'sm' }, h),
+                                ' Featured blocks',
+                              ],
                               variant: 'outline',
                             },
                             h,

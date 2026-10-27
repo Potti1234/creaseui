@@ -62,6 +62,12 @@ export const LINT_RULE_GROUPS: ReadonlyArray<LintRuleGroup> = [
         summary:
           "A Button's form: reference names a Form id its own view never renders.",
       },
+      {
+        id: 'no-native-glyphs',
+        title: 'No native glyphs',
+        summary:
+          'Native arrow, symbol and emoji characters in UI text — use the Icon component instead.',
+      },
     ],
   },
   {

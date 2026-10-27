@@ -1,4 +1,6 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import { autoCloseDetails } from '@/docs/details-nav'
+import * as Icon from '@/lib/icon'
 import { sidebarScrollMemory } from '@/docs/sidebar-scroll'
 
 import { COMPONENT_GROUPS, toSlug } from '@/docs/component-metadata'
@@ -22,6 +24,7 @@ export type DocsGuideStyles = Readonly<{
   layout: string
   mobile: string
   summary: string
+  summaryChevron: string
   mobileNavOuter: string
   mobileNav: string
   sidebar: string
@@ -1219,9 +1222,15 @@ export const view = <Msg>(
     [h.Class(styles.layout)],
     [
       h.details(
-        [h.Class(styles.mobile)],
+        [h.Class(styles.mobile), autoCloseDetails(h, 'docs-guide-nav')],
         [
-          h.summary([h.Class(styles.summary)], [smallText('Browse docs')]),
+          h.summary(
+            [h.Class(styles.summary)],
+            [
+              smallText('Browse docs'),
+              Icon.chevronDown({ class: styles.summaryChevron }, h),
+            ],
+          ),
           h.nav(
             [
               h.AriaLabel('Documentation navigation'),

@@ -77,7 +77,7 @@ export const dateRangeInputPleatPreview: ExamplePreviewProvider = <Msg>(
           Option.match(preview.inputs[0]?.value ?? Option.none(), {
             onNone: () => 'No range selected',
             onSome: range =>
-              `${DateRangeInput.dateToISO(range.start)} → ${DateRangeInput.dateToISO(range.end)}`,
+              `${DateRangeInput.dateToISO(range.start)} – ${DateRangeInput.dateToISO(range.end)}`,
           }),
         ),
         inputAt(0, {

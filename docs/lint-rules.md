@@ -347,6 +347,175 @@ export const invite = <Msg>(h: HtmlBuilder<Msg>, submitted: Msg, email: Html): H
   ])
 ```
 
+### No native glyphs (`no-native-glyphs`)
+
+Native arrow, symbol and emoji characters in UI text — use the Icon component instead.
+
+#### A native arrow instead of an icon
+
+A '→' character renders from the platform emoji/symbol font — different weight, size and color than the icon system, inconsistent across platforms, and invisible to the component rules. The Icon component keeps arrows in the icon set.
+
+Renderers: tailwind
+
+Bad (`src/app/next-page.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.a([h.Href('/docs/installation')], ['Continue to installation →'])
+```
+
+- src/app/next-page.ts:3:40 `crease/no-native-glyphs`: Native glyph U+2192 ('→') bypasses the Icon component. Use Icon.* (e.g. Icon.arrowUpRight) so size, stroke and currentColor follow the icon system.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Icon from '@/lib/icon'
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.a([h.Href('/docs/installation')], [
+    'Continue to installation',
+    Icon.arrowRight({ class: 'size-4' }, h),
+  ])
+```
+
+#### A native arrow instead of an icon
+
+A '→' character renders from the platform emoji/symbol font — different weight, size and color than the icon system, inconsistent across platforms, and invisible to the component rules. The Icon component keeps arrows in the icon set.
+
+Renderers: stylex
+
+Bad (`src/app/next-page.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.a([h.Href('/docs/installation')], ['Continue to installation →'])
+```
+
+- src/app/next-page.ts:3:40 `crease/no-native-glyphs`: Native glyph U+2192 ('→') bypasses the Icon component. Use Icon.* (e.g. Icon.arrowUpRight) so size, stroke and currentColor follow the icon system.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Icon from '@/lib/icon'
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.a([h.Href('/docs/installation')], [
+    'Continue to installation',
+    Icon.arrowRight({ class: 'size-4' }, h),
+  ])
+```
+
+#### A native arrow instead of an icon
+
+A '→' character renders from the platform emoji/symbol font — different weight, size and color than the icon system, inconsistent across platforms, and invisible to the component rules. The Icon component keeps arrows in the icon set.
+
+Renderers: pleat
+
+Bad (`src/app/next-page.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.a([h.Href('/docs/installation')], ['Continue to installation →'])
+```
+
+- src/app/next-page.ts:3:40 `crease/no-native-glyphs`: Native glyph U+2192 ('→') bypasses the Icon component. Use Icon.* (e.g. Icon.arrowUpRight) so size, stroke and currentColor follow the icon system.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Icon from '@/lib/icon'
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.a([h.Href('/docs/installation')], [
+    'Continue to installation',
+    Icon.arrowRight({ class: 'size-4' }, h),
+  ])
+```
+
+#### An emoji inside a button label
+
+Emoji in control labels vary by platform (color emoji vs monochrome), ignore currentColor, and drift from the icon set. Keyboard modifiers (⌘ ⌥ ⇧ ⌃ ⌫ ⎋) and box-drawing diagrams stay legal as text.
+
+Renderers: tailwind
+
+Bad (`src/app/deploy.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([], [h.span([], ['🚀 Deploy now'])])
+```
+
+- src/app/deploy.ts:3:26 `crease/no-native-glyphs`: Native glyph U+1F680 ('🚀') bypasses the Icon component. Use Icon.* (e.g. Icon.arrowUpRight) so size, stroke and currentColor follow the icon system.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Icon from '@/lib/icon'
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([], [h.span([], ['Deploy now']), Icon.rocket({ class: 'size-4' }, h)])
+```
+
+#### An emoji inside a button label
+
+Emoji in control labels vary by platform (color emoji vs monochrome), ignore currentColor, and drift from the icon set. Keyboard modifiers (⌘ ⌥ ⇧ ⌃ ⌫ ⎋) and box-drawing diagrams stay legal as text.
+
+Renderers: stylex
+
+Bad (`src/app/deploy.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([], [h.span([], ['🚀 Deploy now'])])
+```
+
+- src/app/deploy.ts:3:26 `crease/no-native-glyphs`: Native glyph U+1F680 ('🚀') bypasses the Icon component. Use Icon.* (e.g. Icon.arrowUpRight) so size, stroke and currentColor follow the icon system.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Icon from '@/lib/icon'
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([], [h.span([], ['Deploy now']), Icon.rocket({ class: 'size-4' }, h)])
+```
+
+#### An emoji inside a button label
+
+Emoji in control labels vary by platform (color emoji vs monochrome), ignore currentColor, and drift from the icon set. Keyboard modifiers (⌘ ⌥ ⇧ ⌃ ⌫ ⎋) and box-drawing diagrams stay legal as text.
+
+Renderers: pleat
+
+Bad (`src/app/deploy.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([], [h.span([], ['🚀 Deploy now'])])
+```
+
+- src/app/deploy.ts:3:26 `crease/no-native-glyphs`: Native glyph U+1F680 ('🚀') bypasses the Icon component. Use Icon.* (e.g. Icon.arrowUpRight) so size, stroke and currentColor follow the icon system.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as Icon from '@/lib/icon'
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([], [h.span([], ['Deploy now']), Icon.rocket({ class: 'size-4' }, h)])
+```
+
 ## Component-author rules
 
 ### No component restyle (`no-component-restyle`)

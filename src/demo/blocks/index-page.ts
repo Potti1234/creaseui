@@ -116,9 +116,11 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
           h.a(
             [
               h.Href(blocksStyleXTablePath()),
-              h.Class('text-sm underline-offset-4 hover:underline'),
+              h.Class(
+                'inline-flex items-center gap-1 text-sm underline-offset-4 hover:underline',
+              ),
             ],
-            ['Table playground ↗'],
+            ['Table playground', Icon.arrowUpRight({ class: 'size-[1em]' }, h)],
           ),
         ],
       ),
@@ -195,10 +197,10 @@ export const view = <M>(props: Props<M>, h: HtmlBuilder<M>): Html =>
                           `Open ${block.name} in ${props.renderer === 'tailwind' ? 'Tailwind' : props.renderer === 'stylex' ? 'StyleX' : 'Pleat'}`,
                         ),
                         h.Class(
-                          'inline-flex h-9 shrink-0 items-center rounded-md border bg-background px-3 text-sm font-medium hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring',
+                          'inline-flex h-9 shrink-0 items-center gap-1 rounded-md border bg-background px-3 text-sm font-medium hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring',
                         ),
                       ],
-                      ['Open ↗'],
+                      ['Open', Icon.arrowUpRight({ class: 'size-4' }, h)],
                     ),
                   ],
                 ),

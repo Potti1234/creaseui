@@ -243,7 +243,7 @@ const metricCard = <Message>(
   label: string,
   value: string,
   change: string,
-  trend: string,
+  trend: string | ReadonlyArray<Html | string>,
   detail: string,
   h: HtmlBuilder<Message>,
 ): Html =>
@@ -273,7 +273,13 @@ const metricCard = <Message>(
                 h,
               ),
               text({ as: 'div', children: [value], variant: 'headingMd' }, h),
-              text({ children: [trend], variant: 'label' }, h),
+              text(
+                {
+                  children: typeof trend === 'string' ? [trend] : trend,
+                  variant: 'label',
+                },
+                h,
+              ),
               text(
                 { children: [detail], tone: 'secondary', variant: 'caption' },
                 h,
@@ -752,7 +758,10 @@ const dashboard = (model: Model, h: HtmlBuilder<Message>): Html =>
                 'Total Revenue',
                 '$1,250.00',
                 '+12.5%',
-                'Trending up this month ↗',
+                [
+                  'Trending up this month ',
+                  icon({ name: 'trending-up', size: 'sm' }, h),
+                ],
                 'Visitors for the last 6 months',
                 h,
               ),
@@ -760,7 +769,10 @@ const dashboard = (model: Model, h: HtmlBuilder<Message>): Html =>
                 'New Customers',
                 '1,234',
                 '-20%',
-                'Down 20% this period ↘',
+                [
+                  'Down 20% this period ',
+                  icon({ name: 'arrow-down', size: 'sm' }, h),
+                ],
                 'Acquisition needs attention',
                 h,
               ),
@@ -768,7 +780,10 @@ const dashboard = (model: Model, h: HtmlBuilder<Message>): Html =>
                 'Active Accounts',
                 '45,678',
                 '+12.5%',
-                'Strong user retention ↗',
+                [
+                  'Strong user retention ',
+                  icon({ name: 'trending-up', size: 'sm' }, h),
+                ],
                 'Engagement exceed targets',
                 h,
               ),
@@ -776,7 +791,10 @@ const dashboard = (model: Model, h: HtmlBuilder<Message>): Html =>
                 'Growth Rate',
                 '4.5%',
                 '+4.5%',
-                'Steady performance increase ↗',
+                [
+                  'Steady performance increase ',
+                  icon({ name: 'trending-up', size: 'sm' }, h),
+                ],
                 'Meets growth projections',
                 h,
               ),

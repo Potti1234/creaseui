@@ -4,6 +4,7 @@ import type { HtmlBuilder } from 'foldkit/html'
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import * as Button from '@/pleat/button'
 import * as Direction from '@/pleat/direction'
+import * as Icon from '@/pleat/icon'
 import type { ComponentLayoutStyle } from '@/pleat/contracts'
 import { tokens } from '../../../../pleat/tokens'
 const styles = {
@@ -36,7 +37,10 @@ export const directionPleatPreview: ExamplePreviewProvider = <Msg>(
                 onClick: onMessageJson(
                   JSON.stringify({ _tag: 'ClickedPreview' }),
                 ),
-                children: ['التالي', '←'],
+                children: [
+                  'التالي',
+                  Icon.icon({ name: 'arrow-left', size: 'sm' }, h),
+                ],
               },
               h,
             ),

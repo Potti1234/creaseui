@@ -201,7 +201,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
         h.div(
           [h.Class(skin.searchHelp)],
           [
-            h.span([], ['↑ ↓ to navigate']),
+            h.span([], ['Arrow keys to navigate']),
             h.span([], ['Enter to open']),
             h.span([], ['Esc to close']),
           ],

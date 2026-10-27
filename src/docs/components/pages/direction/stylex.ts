@@ -3,6 +3,7 @@ import type { HtmlBuilder } from 'foldkit/html'
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import * as Button from '@/stylex/button'
 import * as Direction from '@/stylex/direction'
+import * as Icon from '@/stylex/icon'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { tokens } from '../../../../stylex/tokens.stylex'
 const styles = stylex.create({
@@ -35,7 +36,10 @@ export const directionStyleXPreview: ExamplePreviewProvider = <Msg>(
                 onClick: onMessageJson(
                   JSON.stringify({ _tag: 'ClickedPreview' }),
                 ),
-                children: ['التالي', '←'],
+                children: [
+                  'التالي',
+                  Icon.icon({ name: 'arrow-left', size: 'sm' }, h),
+                ],
               },
               h,
             ),

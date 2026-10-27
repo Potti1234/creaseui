@@ -1,3 +1,4 @@
+import { autoCloseDetails } from '@/docs/details-nav'
 import { heroFrame } from '@/docs/hero-frame'
 import { Stream } from 'effect'
 import { Mount, Subscription } from 'foldkit'
@@ -509,11 +510,27 @@ export const componentPage = <Msg>(
     ],
     [
       h.details(
-        [h.Class('mx-5 mt-5 rounded-lg border bg-background lg:hidden')],
+        [
+          h.Class('group mx-5 mt-5 rounded-lg border bg-background lg:hidden'),
+          autoCloseDetails(h, 'docs-component-nav'),
+        ],
         [
           h.summary(
-            [h.Class('cursor-pointer px-4 py-3 text-sm font-semibold')],
-            ['Browse docs'],
+            [
+              h.Class(
+                'flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold [&::-webkit-details-marker]:hidden',
+              ),
+            ],
+            [
+              h.span([], ['Browse docs']),
+              Icon.chevronDown(
+                {
+                  class:
+                    'size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180',
+                },
+                h,
+              ),
+            ],
           ),
           h.nav(
             [
@@ -1062,10 +1079,13 @@ export const componentPage = <Msg>(
                         [
                           h.Href(componentDocsPath(toSlug(previous))),
                           h.Class(
-                            'rounded-lg border p-4 text-sm hover:bg-muted/50',
+                            'flex items-center gap-1 rounded-lg border p-4 text-sm hover:bg-muted/50',
                           ),
                         ],
-                        [`← ${previous}`],
+                        [
+                          Icon.arrowLeft({ class: 'size-4 shrink-0' }, h),
+                          previous,
+                        ],
                       ),
                   next === undefined
                     ? h.span([], [])
@@ -1073,10 +1093,13 @@ export const componentPage = <Msg>(
                         [
                           h.Href(componentDocsPath(toSlug(next))),
                           h.Class(
-                            'rounded-lg border p-4 text-right text-sm hover:bg-muted/50',
+                            'flex items-center justify-end gap-1 rounded-lg border p-4 text-sm hover:bg-muted/50',
                           ),
                         ],
-                        [`${next} →`],
+                        [
+                          next,
+                          Icon.arrowRight({ class: 'size-4 shrink-0' }, h),
+                        ],
                       ),
                 ],
               ),
