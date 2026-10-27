@@ -1,4 +1,5 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import { autoCloseDetails } from '@/docs/details-nav'
 import * as Icon from '@/lib/icon'
 import {
   type AppRoute,
@@ -136,7 +137,7 @@ export const header = <Msg>(
             ],
           ),
           h.details(
-            [h.Class(skin.mobile)],
+            [h.Class(skin.mobile), autoCloseDetails(h, 'site-header-nav')],
             [
               h.summary(
                 [h.AriaLabel('Open site navigation'), h.Class(skin.summary)],

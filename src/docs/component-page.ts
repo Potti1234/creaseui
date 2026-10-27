@@ -1,3 +1,4 @@
+import { autoCloseDetails } from '@/docs/details-nav'
 import { heroFrame } from '@/docs/hero-frame'
 import { Stream } from 'effect'
 import { Mount, Subscription } from 'foldkit'
@@ -509,7 +510,10 @@ export const componentPage = <Msg>(
     ],
     [
       h.details(
-        [h.Class('mx-5 mt-5 rounded-lg border bg-background lg:hidden')],
+        [
+          h.Class('mx-5 mt-5 rounded-lg border bg-background lg:hidden'),
+          autoCloseDetails(h, 'docs-component-nav'),
+        ],
         [
           h.summary(
             [h.Class('cursor-pointer px-4 py-3 text-sm font-semibold')],

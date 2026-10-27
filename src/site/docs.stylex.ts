@@ -19,6 +19,7 @@ import {
   toSlug,
   apiPurpose,
 } from '@/docs/component-metadata'
+import { autoCloseDetails } from '@/docs/details-nav'
 import { heroFrame } from '@/docs/hero-frame'
 import type {
   ComponentPageConfig,
@@ -1061,7 +1062,10 @@ export const componentPage = <Msg>(
     [h.Class(className(styles.layout))],
     [
       h.details(
-        [h.Class(className(styles.mobile))],
+        [
+          h.Class(className(styles.mobile)),
+          autoCloseDetails(h, 'docs-component-nav'),
+        ],
         [
           h.summary([h.Class(className(styles.summary))], ['Browse docs']),
           h.nav(

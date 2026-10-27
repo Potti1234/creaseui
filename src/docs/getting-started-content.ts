@@ -1,4 +1,5 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import { autoCloseDetails } from '@/docs/details-nav'
 import { sidebarScrollMemory } from '@/docs/sidebar-scroll'
 
 import { COMPONENT_GROUPS, toSlug } from '@/docs/component-metadata'
@@ -1219,7 +1220,7 @@ export const view = <Msg>(
     [h.Class(styles.layout)],
     [
       h.details(
-        [h.Class(styles.mobile)],
+        [h.Class(styles.mobile), autoCloseDetails(h, 'docs-guide-nav')],
         [
           h.summary([h.Class(styles.summary)], [smallText('Browse docs')]),
           h.nav(
