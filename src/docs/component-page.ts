@@ -511,13 +511,26 @@ export const componentPage = <Msg>(
     [
       h.details(
         [
-          h.Class('mx-5 mt-5 rounded-lg border bg-background lg:hidden'),
+          h.Class('group mx-5 mt-5 rounded-lg border bg-background lg:hidden'),
           autoCloseDetails(h, 'docs-component-nav'),
         ],
         [
           h.summary(
-            [h.Class('cursor-pointer px-4 py-3 text-sm font-semibold')],
-            ['Browse docs'],
+            [
+              h.Class(
+                'flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold [&::-webkit-details-marker]:hidden',
+              ),
+            ],
+            [
+              h.span([], ['Browse docs']),
+              Icon.chevronDown(
+                {
+                  class:
+                    'size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180',
+                },
+                h,
+              ),
+            ],
           ),
           h.nav(
             [

@@ -1,5 +1,6 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { autoCloseDetails } from '@/docs/details-nav'
+import * as Icon from '@/lib/icon'
 import { sidebarScrollMemory } from '@/docs/sidebar-scroll'
 
 import type {

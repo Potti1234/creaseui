@@ -628,7 +628,8 @@ const styles = stylex.create({
       ':hover': 'color-mix(in oklab, var(--muted) 50%, transparent)',
     },
   },
-  pageLinkNext: { textAlign: 'right' },
+  pageLinkNext: { justifyContent: 'flex-end' },
+  pageLinkIcon: { flexShrink: 0, width: '1rem', height: '1rem' },
   apiParagraph: {
     fontSize: '.875rem',
     lineHeight: '1.5rem',

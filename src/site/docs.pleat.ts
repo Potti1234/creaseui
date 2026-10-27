@@ -656,7 +656,12 @@ const styles = {
       backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)',
     }),
   ),
-  pageLinkNext: Style.make({ textAlign: 'right' }),
+  pageLinkNext: Style.make({ justifyContent: 'flex-end' }),
+  pageLinkIcon: Style.make({
+    flexShrink: 0,
+    width: '1rem',
+    height: '1rem',
+  }),
   apiParagraph: Style.make({
     fontSize: '.875rem',
     lineHeight: '1.5rem',

@@ -103,7 +103,10 @@ export const header = <Msg>(
                   h.Class(skin.other),
                   h.AriaLabel(`View this page in ${otherRendererLabel}`),
                 ],
-                [otherRendererLabel, ' ↗'],
+                [
+                  otherRendererLabel,
+                  Icon.arrowUpRight({ class: skin.icon }, h),
+                ],
               ),
               h.a(
                 [
