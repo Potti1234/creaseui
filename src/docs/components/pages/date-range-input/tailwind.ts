@@ -150,7 +150,7 @@ export const dateRangeInputTailwindPreviewProgram = definePreviewProgram<
             Option.match(model.inputs[0]?.value ?? Option.none(), {
               onNone: () => 'No range selected',
               onSome: range =>
-                `${DateRangeInput.dateToISO(range.start)} → ${DateRangeInput.dateToISO(range.end)}`,
+                `${DateRangeInput.dateToISO(range.start)} – ${DateRangeInput.dateToISO(range.end)}`,
             }),
             h,
           ),
