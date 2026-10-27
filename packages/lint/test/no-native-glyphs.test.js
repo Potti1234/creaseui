@@ -15,6 +15,8 @@ tester.run('crease/no-native-glyphs', noNativeGlyphs, {
     // Keyboard modifiers are kbd text, not icons.
     view(`'Press ⌘K to search'`),
     view(`'⌥⇧⌃⌫⎋'`),
+    view(`'Press ↵ to submit'`),
+    view(`'Enter ⏎'`),
     // Box-drawing diagrams in docs strings.
     view(`'Child\\n├── Grandchild\\n└── Last'`),
     // Icons via the component are the point of the rule.

@@ -10,7 +10,7 @@ import { docsUrl } from '../lib/strict/context.js'
    - Box-drawing characters (U+2500–257F): ASCII-art trees in docs like
      `├── Child` are diagrams, not icons.
    - Keyboard modifiers (⌘ U+2318, ⌥ U+2325, ⇧ U+21E7, ⌃ U+2303,
-     ⌫ U+232B, ⎋ U+238B, ↵ U+21B5): the standard kbd glyphs.
+     ⌫ U+232B, ⎋ U+238B, ↵ U+21B5, ⏎ U+23CE): the standard kbd glyphs.
    - Comments and non-string code are never scanned. */
 
 const isKeyboardModifier = codePoint =>
@@ -20,6 +20,7 @@ const isKeyboardModifier = codePoint =>
   codePoint === 0x232b ||
   codePoint === 0x238b ||
   codePoint === 0x21b5 ||
+  codePoint === 0x23ce ||
   codePoint === 0x21e7
 
 const isBoxDrawing = codePoint => codePoint >= 0x2500 && codePoint <= 0x257f
