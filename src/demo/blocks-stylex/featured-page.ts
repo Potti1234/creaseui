@@ -202,7 +202,11 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     const result = Dnd.update(model.kanbanDnd, message.message)
     const kanbanLanes =
       result.outMessage?._tag === 'Reordered'
-        ? moveKanbanCard(model.kanbanLanes, result.outMessage)
+        ? moveKanbanCard(
+            model.kanbanLanes,
+            result.outMessage,
+            model.kanbanDnd.dragState._tag === 'KeyboardDragging',
+          )
         : model.kanbanLanes
     return {
       commands: Command.mapMessages(result.commands ?? [], inner =>

@@ -1,6 +1,7 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { Option, Schema as S } from 'effect'
+import { Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import { DragAndDrop as Dnd } from '@foldkit/ui'
+import * as Mount from 'foldkit/mount'
 
 import { badge } from '@/pleat/badge'
 import { bubble, bubbleContent, bubbleGroup } from '@/pleat/bubble'
@@ -593,8 +594,48 @@ export type KanbanBoardState<Message> = Readonly<{
 
 export const kanbanSubscriptions = Dnd.subscriptions
 
-/* The primitive reports the drop index counting the dragged card itself —
-   foldkit's sortable convention — so a same-lane downward move subtracts one. */
+/* The primitive's document-level release listener lives in the subscription
+   aggregate, whose stream scope can be recycled while a drag is in flight on
+   pages hosting many subscriptions (the /create canvas), silently dropping
+   `ReleasedPointer` and leaving the drag stuck. This mount attaches the same
+   listeners directly to the board element so the release and Escape cancel
+   always reach `update`. Emitting while idle is a no-op in `update`. */
+const KanbanDropRelease = Mount.defineStream('KanbanDropRelease', {
+  args: {},
+  messages: [Dnd.Message.ReleasedPointer, Dnd.Message.CancelledDrag],
+  execute: ({ element }) =>
+    Stream.callback<
+      | typeof Dnd.Message.ReleasedPointer.Type
+      | typeof Dnd.Message.CancelledDrag.Type
+    >(queue =>
+      Effect.acquireRelease(
+        Effect.sync(() => {
+          const ownerDocument =
+            element instanceof HTMLElement ? element.ownerDocument : document
+          const onPointerUp = () =>
+            Queue.offerUnsafe(queue, Dnd.Message.ReleasedPointer({}))
+          const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && !event.defaultPrevented) {
+              Queue.offerUnsafe(queue, Dnd.Message.CancelledDrag({}))
+            }
+          }
+          ownerDocument.addEventListener('pointerup', onPointerUp)
+          ownerDocument.addEventListener('keydown', onKeyDown)
+          return { onKeyDown, onPointerUp, ownerDocument }
+        }),
+        ({ onKeyDown, onPointerUp, ownerDocument }) =>
+          Effect.sync(() => {
+            ownerDocument.removeEventListener('pointerup', onPointerUp)
+            ownerDocument.removeEventListener('keydown', onKeyDown)
+          }),
+      ),
+    ),
+})
+
+/* Pointer drops report the index counting the dragged card (full space) while
+   keyboard drops report it among the other cards (reduced space) — the caller
+   passes the dragState tag so a same-lane downward pointer move can subtract
+   the dragged card's own slot without breaking keyboard moves. */
 export const moveKanbanCard = (
   lanes: ReadonlyArray<KanbanLaneData>,
   out: {
@@ -604,6 +645,7 @@ export const moveKanbanCard = (
     toContainerId: string
     toIndex: number
   },
+  keyboard: boolean,
 ): ReadonlyArray<KanbanLaneData> => {
   const fromLane = lanes.findIndex(lane => lane.id === out.fromContainerId)
   const toLane = lanes.findIndex(lane => lane.id === out.toContainerId)
@@ -612,7 +654,9 @@ export const moveKanbanCard = (
   if (card === undefined || card.id !== out.itemId) return lanes
   const sameLane = fromLane === toLane
   const targetIndex =
-    sameLane && out.toIndex > out.fromIndex ? out.toIndex - 1 : out.toIndex
+    sameLane && !keyboard && out.toIndex > out.fromIndex
+      ? out.toIndex - 1
+      : out.toIndex
   const without = lanes[fromLane]!.cards.filter((_, i) => i !== out.fromIndex)
   const insertAt = (cards: ReadonlyArray<KanbanCardData>) => {
     const next = [...cards]
@@ -785,35 +829,68 @@ export const kanbanBoard = <Message>(
     {
       recipe: 'dashboard',
       content: [
-        pageHeader(
-          'Sprint board',
-          'Atlas release · sprint 14 · 11 open tasks',
-          [
-            button(
-              { children: ['All assignees'], size: 'sm', variant: 'outline' },
-              h,
-            ),
-            button(
-              { children: ['This sprint'], size: 'sm', variant: 'secondary' },
-              h,
-            ),
-            button(
-              {
-                leadingIcon: icon({ name: 'plus' }, h),
-                children: ['New task'],
-                size: 'sm',
-              },
-              h,
-            ),
-          ],
-          h,
-        ),
-        grid(
+        box(
           {
-            children: kanban.lanes.map(laneData => lane(laneData)),
-            columns: 'four',
-            gap: 'md',
-            grow: true,
+            attrs: [
+              h.OnMount(
+                Mount.mapMessage(KanbanDropRelease({}), kanban.toDndMessage),
+              ),
+            ],
+            children: [
+              stack(
+                {
+                  children: [
+                    pageHeader(
+                      'Sprint board',
+                      'Atlas release · sprint 14 · 11 open tasks',
+                      [
+                        button(
+                          {
+                            children: ['All assignees'],
+                            size: 'sm',
+                            variant: 'outline',
+                          },
+                          h,
+                        ),
+                        button(
+                          {
+                            children: ['This sprint'],
+                            size: 'sm',
+                            variant: 'secondary',
+                          },
+                          h,
+                        ),
+                        button(
+                          {
+                            leadingIcon: icon({ name: 'plus' }, h),
+                            children: ['New task'],
+                            size: 'sm',
+                          },
+                          h,
+                        ),
+                      ],
+                      h,
+                    ),
+                    grid(
+                      {
+                        children: kanban.lanes.map(
+                          laneData => laneData && lane(laneData),
+                        ),
+                        columns: 'four',
+                        gap: 'md',
+                        grow: true,
+                        width: 'full',
+                      },
+                      h,
+                    ),
+                  ],
+                  gap: 'lg',
+                  grow: true,
+                },
+                h,
+              ),
+            ],
+            minHeight: 'full',
             width: 'full',
           },
           h,

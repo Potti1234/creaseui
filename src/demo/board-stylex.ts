@@ -1484,6 +1484,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             ? BlocksBlocks.moveKanbanCard(
                 model.blocksKanbanLanes,
                 result.outMessage,
+                model.blocksKanbanDnd.dragState._tag === 'KeyboardDragging',
               )
             : model.blocksKanbanLanes
         return {
@@ -3005,7 +3006,6 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     kanbanEscape: BlocksBlocks.kanbanSubscriptions.documentEscape,
     kanbanKeyboard: BlocksBlocks.kanbanSubscriptions.documentKeyboard,
     kanbanPointer: BlocksBlocks.kanbanSubscriptions.documentPointer,
-    kanbanScroll: BlocksBlocks.kanbanSubscriptions.autoScroll,
   })<Model, Message>({
     toChildModel: model => model.blocksKanbanDnd,
     toParentMessage: message => Message.GotBlocksKanbanDndMessage({ message }),

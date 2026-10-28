@@ -652,6 +652,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             ? BlocksBlocks.moveKanbanCard(
                 model.blocksKanbanLanes,
                 result.outMessage,
+                model.blocksKanbanDnd.dragState._tag === 'KeyboardDragging',
               )
             : model.blocksKanbanLanes
         return {
@@ -2160,6 +2161,14 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
   Subscription.lift(RollerShades.subscriptions)<Model, Message>({
     toChildModel: model => model.rollerShades,
     toParentMessage: message => Message.GotRollerShadesMessage({ message }),
+  }),
+  Subscription.lift({
+    kanbanEscape: BlocksBlocks.kanbanSubscriptions.documentEscape,
+    kanbanKeyboard: BlocksBlocks.kanbanSubscriptions.documentKeyboard,
+    kanbanPointer: BlocksBlocks.kanbanSubscriptions.documentPointer,
+  })<Model, Message>({
+    toChildModel: model => model.blocksKanbanDnd,
+    toParentMessage: message => Message.GotBlocksKanbanDndMessage({ message }),
   }),
   ...Preset.OVERRIDABLE_TOKENS.map(token =>
     ColorPicker.subscriptions<Model, Message>({
