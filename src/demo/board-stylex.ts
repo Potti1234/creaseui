@@ -11,6 +11,7 @@ import { defineView } from 'foldkit/submodel'
 import { modifyFields } from 'foldkit/struct'
 
 import type { ChromeState } from '@/demo/blocks-stylex/app-chrome'
+import { DragAndDrop as Dnd } from '@foldkit/ui'
 import * as BlocksBlocks from '@/demo/blocks-stylex/creaseui-blocks'
 import * as BlocksDashboards from '@/demo/blocks-stylex/creaseui-dashboards'
 import * as AccountAccess from '@/demo/stylex-cards/account-access'
@@ -860,6 +861,8 @@ export const Model = S.Struct({
     chart: ColorPicker.Model,
   }),
   canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
+  blocksKanbanDnd: Dnd.Model,
+  blocksKanbanLanes: S.Array(BlocksBlocks.KanbanLaneData),
   blocksSidebarCollapsed: S.Boolean,
   blocksSidebarMobileOpen: S.Boolean,
   primitiveInspector: S.Struct({
@@ -974,6 +977,7 @@ export const Message = defineMessageUnion({
   ChoseCreateCanvas: {
     canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   },
+  GotBlocksKanbanDndMessage: { message: Dnd.Message },
   ToggledBlocksSidebar: {},
   ToggledBlocksMobileSidebar: {},
   ClickedResetCreatePreset: {},
@@ -1171,6 +1175,8 @@ export const init = (preset: Preset.Config = Preset.DEFAULT_CONFIG): Model => ({
     chart: initColorPicker('create-chart-picker', Preset.chartToken(preset)),
   },
   canvas: 'board',
+  blocksKanbanDnd: Dnd.init({ id: 'create-blocks-kanban' }),
+  blocksKanbanLanes: BlocksBlocks.initialKanbanLanes,
   blocksSidebarCollapsed: false,
   blocksSidebarMobileOpen: false,
   primitiveInspector: {
@@ -1471,6 +1477,25 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           canvas: () => canvas,
         }),
       }),
+      GotBlocksKanbanDndMessage: ({ message: childMessage }) => {
+        const result = Dnd.update(model.blocksKanbanDnd, childMessage)
+        const blocksKanbanLanes =
+          result.outMessage?._tag === 'Reordered'
+            ? BlocksBlocks.moveKanbanCard(
+                model.blocksKanbanLanes,
+                result.outMessage,
+              )
+            : model.blocksKanbanLanes
+        return {
+          commands: Command.mapMessages(result.commands ?? [], next =>
+            Message.GotBlocksKanbanDndMessage({ message: next }),
+          ),
+          model: modifyFields(model, {
+            blocksKanbanDnd: () => result.model,
+            blocksKanbanLanes: () => blocksKanbanLanes,
+          }),
+        }
+      },
       ToggledBlocksSidebar: () => ({
         model: modifyFields(model, {
           blocksSidebarCollapsed: value => !value,
@@ -2865,7 +2890,16 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
     [
       blockFrame(
         'Kanban board',
-        BlocksBlocks.kanbanBoard<Message>(blocksChrome, h),
+        BlocksBlocks.kanbanBoard<Message>(
+          blocksChrome,
+          {
+            dnd: model.blocksKanbanDnd,
+            lanes: model.blocksKanbanLanes,
+            toDndMessage: message =>
+              Message.GotBlocksKanbanDndMessage({ message }),
+          },
+          h,
+        ),
       ),
       blockFrame(
         'Incident console',
@@ -2966,6 +3000,15 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
   Subscription.lift(RollerShades.subscriptions)<Model, Message>({
     toChildModel: model => model.rollerShades,
     toParentMessage: message => Message.GotRollerShadesMessage({ message }),
+  }),
+  Subscription.lift({
+    kanbanEscape: BlocksBlocks.kanbanSubscriptions.documentEscape,
+    kanbanKeyboard: BlocksBlocks.kanbanSubscriptions.documentKeyboard,
+    kanbanPointer: BlocksBlocks.kanbanSubscriptions.documentPointer,
+    kanbanScroll: BlocksBlocks.kanbanSubscriptions.autoScroll,
+  })<Model, Message>({
+    toChildModel: model => model.blocksKanbanDnd,
+    toParentMessage: message => Message.GotBlocksKanbanDndMessage({ message }),
   }),
   ...Preset.OVERRIDABLE_TOKENS.map(token =>
     ColorPicker.subscriptions<Model, Message>({

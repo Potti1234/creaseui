@@ -1,5 +1,6 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { Option } from 'effect'
+import { Option, Schema as S } from 'effect'
+import { DragAndDrop as Dnd } from '@foldkit/ui'
 
 import { badge } from '@/ui/badge'
 import { bubble, bubbleContent, bubbleGroup } from '@/ui/bubble'
@@ -452,19 +453,211 @@ const mailNavigation = <Message>(
 ]
 
 /* CreaseUI "Kanban Board": horizontal lanes where the column itself is the status. */
+export const KanbanCardData = S.Struct({
+  comments: S.Int,
+  id: S.String,
+  owner: S.String,
+  tag: S.String,
+  tagVariant: S.Literals(['default', 'secondary', 'outline', 'destructive']),
+  title: S.String,
+})
+export type KanbanCardData = typeof KanbanCardData.Type
+
+export const KanbanLaneData = S.Struct({
+  cards: S.Array(KanbanCardData),
+  id: S.String,
+  name: S.String,
+})
+export type KanbanLaneData = typeof KanbanLaneData.Type
+
+export const initialKanbanLanes: ReadonlyArray<KanbanLaneData> = [
+  {
+    cards: [
+      {
+        comments: 4,
+        id: 'card-usage-analytics',
+        owner: 'MC',
+        tag: 'Reporting',
+        tagVariant: 'secondary',
+        title: 'Usage analytics for admin roles',
+      },
+      {
+        comments: 2,
+        id: 'card-bulk-import',
+        owner: 'IN',
+        tag: 'Feature',
+        tagVariant: 'outline',
+        title: 'Bulk import wizard for inventory',
+      },
+      {
+        comments: 1,
+        id: 'card-empty-state',
+        owner: 'JP',
+        tag: 'Design',
+        tagVariant: 'outline',
+        title: 'Empty state for archived projects',
+      },
+    ],
+    id: 'lane-backlog',
+    name: 'Backlog',
+  },
+  {
+    cards: [
+      {
+        comments: 6,
+        id: 'card-keyboard-shortcuts',
+        owner: 'AS',
+        tag: 'Feature',
+        tagVariant: 'secondary',
+        title: 'Keyboard shortcuts for the board',
+      },
+      {
+        comments: 3,
+        id: 'card-migration-retries',
+        owner: 'IN',
+        tag: 'Bug',
+        tagVariant: 'destructive',
+        title: 'Migration retries on large accounts',
+      },
+      {
+        comments: 5,
+        id: 'card-notification-prefs',
+        owner: 'MC',
+        tag: 'Feature',
+        tagVariant: 'secondary',
+        title: 'Granular notification preferences',
+      },
+    ],
+    id: 'lane-in-progress',
+    name: 'In progress',
+  },
+  {
+    cards: [
+      {
+        comments: 2,
+        id: 'card-session-timeline',
+        owner: 'AS',
+        tag: 'Reporting',
+        tagVariant: 'outline',
+        title: 'Session timeline for audit log',
+      },
+      {
+        comments: 1,
+        id: 'card-regression-test',
+        owner: 'JP',
+        tag: 'QA',
+        tagVariant: 'secondary',
+        title: 'Regression test for invite flow',
+      },
+    ],
+    id: 'lane-review',
+    name: 'Review',
+  },
+  {
+    cards: [
+      {
+        comments: 8,
+        id: 'card-compact-density',
+        owner: 'MC',
+        tag: 'Design',
+        tagVariant: 'secondary',
+        title: 'Compact density for list views',
+      },
+      {
+        comments: 2,
+        id: 'card-webhook-replay',
+        owner: 'IN',
+        tag: 'Ops',
+        tagVariant: 'outline',
+        title: 'Webhook replay tooling',
+      },
+      {
+        comments: 1,
+        id: 'card-staging-refresh',
+        owner: 'AS',
+        tag: 'Ops',
+        tagVariant: 'secondary',
+        title: 'Staging environment refresh',
+      },
+    ],
+    id: 'lane-done',
+    name: 'Done',
+  },
+]
+
+export type KanbanBoardState<Message> = Readonly<{
+  dnd: Dnd.Model
+  lanes: ReadonlyArray<KanbanLaneData>
+  toDndMessage: (message: Dnd.Message) => Message
+}>
+
+export const kanbanSubscriptions = Dnd.subscriptions
+
+/* The primitive reports the drop index counting the dragged card itself —
+   foldkit's sortable convention — so a same-lane downward move subtracts one. */
+export const moveKanbanCard = (
+  lanes: ReadonlyArray<KanbanLaneData>,
+  out: {
+    itemId: string
+    fromContainerId: string
+    fromIndex: number
+    toContainerId: string
+    toIndex: number
+  },
+): ReadonlyArray<KanbanLaneData> => {
+  const fromLane = lanes.findIndex(lane => lane.id === out.fromContainerId)
+  const toLane = lanes.findIndex(lane => lane.id === out.toContainerId)
+  if (fromLane === -1 || toLane === -1) return lanes
+  const card = lanes[fromLane]!.cards[out.fromIndex]
+  if (card === undefined || card.id !== out.itemId) return lanes
+  const sameLane = fromLane === toLane
+  const targetIndex =
+    sameLane && out.toIndex > out.fromIndex ? out.toIndex - 1 : out.toIndex
+  const without = lanes[fromLane]!.cards.filter((_, i) => i !== out.fromIndex)
+  const insertAt = (cards: ReadonlyArray<KanbanCardData>) => {
+    const next = [...cards]
+    next.splice(Math.max(0, Math.min(targetIndex, next.length)), 0, card)
+    return next
+  }
+  return lanes.map((lane, index) => {
+    if (sameLane && index === fromLane)
+      return { ...lane, cards: insertAt(without) }
+    if (index === fromLane) return { ...lane, cards: without }
+    if (index === toLane) return { ...lane, cards: insertAt(lane.cards) }
+    return lane
+  })
+}
+
 export const kanbanBoard = <Message>(
   chrome: ChromeState<Message>,
+  kanban: KanbanBoardState<Message>,
   h: HtmlBuilder<Message>,
 ): Html => {
+  const dropTarget = Option.getOrNull(Dnd.maybeDropTarget(kanban.dnd))
+  const draggedId = Option.getOrElse(
+    Dnd.maybeDraggedItemId(kanban.dnd),
+    () => '',
+  )
+
   const laneCard = (
-    cardTitle: string,
-    tag: string,
-    tagVariant: 'default' | 'secondary' | 'outline' | 'destructive',
-    comments: number,
-    owner: string,
+    card: KanbanCardData,
+    laneId: string,
+    index: number,
   ): Html =>
     box(
       {
+        attrs: [
+          ...Dnd.draggable(
+            {
+              containerId: laneId,
+              index,
+              itemId: card.id,
+              model: kanban.dnd,
+              toParentMessage: kanban.toDndMessage,
+            },
+            h,
+          ),
+        ],
         children: [
           stack(
             {
@@ -472,7 +665,10 @@ export const kanbanBoard = <Message>(
                 inline(
                   {
                     children: [
-                      badge({ children: [tag], variant: tagVariant }, h),
+                      badge(
+                        { children: [card.tag], variant: card.tagVariant },
+                        h,
+                      ),
                       icon({ name: 'grip-vertical' }, h),
                     ],
                     justify: 'between',
@@ -480,11 +676,11 @@ export const kanbanBoard = <Message>(
                   },
                   h,
                 ),
-                text({ children: [cardTitle], variant: 'label' }, h),
+                text({ children: [card.title], variant: 'label' }, h),
                 inline(
                   {
                     children: [
-                      initials(owner, h),
+                      initials(card.owner, h),
                       inline(
                         {
                           align: 'center',
@@ -492,7 +688,7 @@ export const kanbanBoard = <Message>(
                             icon({ name: 'message-circle' }, h),
                             text(
                               {
-                                children: [String(comments)],
+                                children: [String(card.comments)],
                                 tone: 'secondary',
                                 variant: 'caption',
                               },
@@ -518,17 +714,25 @@ export const kanbanBoard = <Message>(
         padding: 'sm',
         radius: 'md',
         surface: 'card',
+        ...(card.id === draggedId ? { data: { dragged: 'true' } } : {}),
       },
       h,
     )
 
-  const lane = (
-    name: string,
-    count: number,
-    cards: ReadonlyArray<Html>,
-  ): Html =>
-    box(
+  const lane = (laneData: KanbanLaneData): Html => {
+    const targetHere =
+      dropTarget !== null && dropTarget.containerId === laneData.id
+        ? dropTarget.index
+        : -1
+    const cells: ReadonlyArray<Html> = laneData.cards.flatMap((card, index) => [
+      ...(index === targetHere
+        ? [separator({ orientation: 'horizontal' }, h)]
+        : []),
+      laneCard(card, laneData.id, index),
+    ])
+    return box(
       {
+        attrs: [...Dnd.droppable(laneData.id, laneData.name)],
         children: [
           stack(
             {
@@ -537,9 +741,12 @@ export const kanbanBoard = <Message>(
                   {
                     align: 'center',
                     children: [
-                      text({ children: [name], variant: 'label' }, h),
+                      text({ children: [laneData.name], variant: 'label' }, h),
                       badge(
-                        { children: [String(count)], variant: 'secondary' },
+                        {
+                          children: [String(laneData.cards.length)],
+                          variant: 'secondary',
+                        },
                         h,
                       ),
                     ],
@@ -548,7 +755,18 @@ export const kanbanBoard = <Message>(
                   },
                   h,
                 ),
-                stack({ children: [...cards], gap: 'sm' }, h),
+                stack(
+                  {
+                    children: [
+                      ...cells,
+                      ...(targetHere === laneData.cards.length
+                        ? [separator({ orientation: 'horizontal' }, h)]
+                        : []),
+                    ],
+                    gap: 'sm',
+                  },
+                  h,
+                ),
               ],
               gap: 'sm',
             },
@@ -561,6 +779,7 @@ export const kanbanBoard = <Message>(
       },
       h,
     )
+  }
 
   return appChrome(
     {
@@ -591,87 +810,7 @@ export const kanbanBoard = <Message>(
         ),
         grid(
           {
-            children: [
-              lane('Backlog', 3, [
-                laneCard(
-                  'Usage analytics for admin roles',
-                  'Reporting',
-                  'secondary',
-                  4,
-                  'MC',
-                ),
-                laneCard(
-                  'Bulk import wizard for inventory',
-                  'Feature',
-                  'outline',
-                  2,
-                  'IN',
-                ),
-                laneCard(
-                  'Empty state for archived projects',
-                  'Design',
-                  'outline',
-                  1,
-                  'JP',
-                ),
-              ]),
-              lane('In progress', 3, [
-                laneCard(
-                  'Keyboard shortcuts for the board',
-                  'Feature',
-                  'secondary',
-                  6,
-                  'AS',
-                ),
-                laneCard(
-                  'Migration retries on large accounts',
-                  'Bug',
-                  'destructive',
-                  3,
-                  'IN',
-                ),
-                laneCard(
-                  'Granular notification preferences',
-                  'Feature',
-                  'secondary',
-                  5,
-                  'MC',
-                ),
-              ]),
-              lane('Review', 2, [
-                laneCard(
-                  'Session timeline for audit log',
-                  'Reporting',
-                  'outline',
-                  2,
-                  'AS',
-                ),
-                laneCard(
-                  'Regression test for invite flow',
-                  'QA',
-                  'secondary',
-                  1,
-                  'JP',
-                ),
-              ]),
-              lane('Done', 3, [
-                laneCard(
-                  'Compact density for list views',
-                  'Design',
-                  'secondary',
-                  8,
-                  'MC',
-                ),
-                laneCard('Webhook replay tooling', 'Ops', 'outline', 2, 'IN'),
-                laneCard(
-                  'Staging environment refresh',
-                  'Ops',
-                  'secondary',
-                  1,
-                  'AS',
-                ),
-              ]),
-            ],
+            children: kanban.lanes.map(laneData => lane(laneData)),
             columns: 'four',
             gap: 'md',
             grow: true,

@@ -5,6 +5,7 @@ import { Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import { Command, Subscription } from 'foldkit'
 
+import { DragAndDrop as Dnd } from '@foldkit/ui'
 import { loginArtwork } from '@/pleat/composition/login-artwork'
 import { badge } from '@/pleat/badge'
 import { button } from '@/pleat/button'
@@ -47,11 +48,15 @@ import {
   serviceMonitoringDashboard,
 } from './creaseui-dashboards'
 import {
+  KanbanLaneData,
   cardGrid,
   checkoutForm,
   dataDashboard,
   inboxTable,
+  initialKanbanLanes,
   kanbanBoard,
+  kanbanSubscriptions,
+  moveKanbanCard,
   orderDetail,
 } from './creaseui-blocks'
 import { appShell } from './app-shell'
@@ -75,6 +80,8 @@ export const Model = S.Struct({
   password: S.String,
   query: S.String,
   radioGroup: RadioGroup.Model,
+  kanbanDnd: Dnd.Model,
+  kanbanLanes: S.Array(KanbanLaneData),
   sidebarCollapsed: S.Boolean,
   sidebarMobileOpen: S.Boolean,
   table: TableState.Model,
@@ -120,6 +127,9 @@ export const GotTablecnGridMessage = taggedStruct(
     message: TablecnPage.Message,
   },
 )
+export const GotKanbanDndMessage = taggedStruct('GotKanbanDndMessage', {
+  message: Dnd.Message,
+})
 export const ToggledBlockSidebar = taggedStruct('ToggledBlockSidebar')
 export const ToggledBlockMobileSidebar = taggedStruct(
   'ToggledBlockMobileSidebar',
@@ -140,12 +150,15 @@ export const Message = S.Union([
   GotRadioGroupMessage,
   GotTablecnMessage,
   GotTablecnGridMessage,
+  GotKanbanDndMessage,
 ])
 export type Message = typeof Message.Type
 export const init = (): Model => ({
   checkout: {},
   delivery: 'standard',
   email: '',
+  kanbanDnd: Dnd.init({ id: 'featured-kanban' }),
+  kanbanLanes: initialKanbanLanes,
   kind: 'all',
   mail: 'nora',
   mailFilter: 'all',
@@ -174,10 +187,32 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     toChildModel: model => model.tablecnGrid.table,
     toParentMessage: message => GotTablecnGridMessage({ message }),
   }),
+  Subscription.lift({
+    featuredPlKanbanEscape: kanbanSubscriptions.documentEscape,
+    featuredPlKanbanKeyboard: kanbanSubscriptions.documentKeyboard,
+    featuredPlKanbanPointer: kanbanSubscriptions.documentPointer,
+    featuredPlKanbanScroll: kanbanSubscriptions.autoScroll,
+  })<Model, Message>({
+    toChildModel: model => model.kanbanDnd,
+    toParentMessage: message => GotKanbanDndMessage({ message }),
+  }),
 )
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   if (message._tag === 'GotBlocksStyleXEChartMessage') return { model: model }
+  if (message._tag === 'GotKanbanDndMessage') {
+    const result = Dnd.update(model.kanbanDnd, message.message)
+    const kanbanLanes =
+      result.outMessage?._tag === 'Reordered'
+        ? moveKanbanCard(model.kanbanLanes, result.outMessage)
+        : model.kanbanLanes
+    return {
+      commands: Command.mapMessages(result.commands ?? [], inner =>
+        GotKanbanDndMessage({ message: inner }),
+      ),
+      model: { ...model, kanbanDnd: result.model, kanbanLanes },
+    }
+  }
   if (message._tag === 'ToggledBlockSidebar')
     return {
       model: { ...model, sidebarCollapsed: !model.sidebarCollapsed },
@@ -1116,7 +1151,16 @@ const blocks: ReadonlyArray<Block> = [
     description:
       'Four status lanes of task cards under a shared sprint toolbar.',
     name: 'creaseui-kanban-board',
-    preview: (model, h) => kanbanBoard(chromeState(model), h),
+    preview: (model, h) =>
+      kanbanBoard(
+        chromeState(model),
+        {
+          dnd: model.kanbanDnd,
+          lanes: model.kanbanLanes,
+          toDndMessage: message => GotKanbanDndMessage({ message }),
+        },
+        h,
+      ),
   },
   {
     description:
