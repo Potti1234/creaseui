@@ -39,6 +39,7 @@ export type BlockChrome<Message> = Readonly<{
   mobileOpen: boolean
   navigation: ReadonlyArray<Html>
   onMobileToggle: Message
+  recipe?: string | undefined
   onToggle: Message
   theme?: SemanticThemeName | undefined
   trail: ReadonlyArray<BreadcrumbTrailItem>
@@ -111,6 +112,9 @@ export const appChrome = <Message>(
                     stack(
                       {
                         children: props.content,
+                        ...(props.recipe === undefined
+                          ? {}
+                          : { data: { recipe: props.recipe } }),
                         gap: 'lg',
                         grow: true,
                         padding: 'md',

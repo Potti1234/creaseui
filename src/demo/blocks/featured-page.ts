@@ -461,6 +461,7 @@ const dashboardTable = (model: Model, h: HtmlBuilder<Message>): Html =>
 const dashboard = (model: Model, h: HtmlBuilder<Message>): Html =>
   appChrome(
     {
+      recipe: 'dashboard',
       navigation: [
         sidebarHeader(
           {

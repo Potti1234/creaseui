@@ -564,6 +564,7 @@ export const kanbanBoard = <Message>(
 
   return appChrome(
     {
+      recipe: 'dashboard',
       content: [
         pageHeader(
           'Sprint board',
