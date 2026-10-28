@@ -33,6 +33,15 @@ export type GridProps = Readonly<{
     | 'createBoard'
   data?: PrimitiveData
   gap?: ResponsiveSpaceToken
+  grow?: boolean
+  minHeight?:
+    | 'viewport'
+    | 'none'
+    | 'full'
+    | 'createPage'
+    | 'blockPreview'
+    | 'blocksHero'
+    | 'skeleton'
   padding?: ResponsiveSpaceToken
   slot?: string
   surface?: 'none' | 'muted' | 'canvas'
@@ -119,6 +128,18 @@ const styles = {
     Style.when(When.minWidth('768px'), { width: '187.5rem' }),
   ),
   widthFull: Style.make({ width: '100%' }),
+  grow: Style.make({ flex: '1 1 0%' }),
+  minHeightBlockPreview: Style.make({ minHeight: '36rem' }).pipe(
+    Style.when(When.minWidth('768px'), { minHeight: '50rem' }),
+  ),
+  minHeightBlocksHero: Style.make({ minHeight: '22rem' }).pipe(
+    Style.when(When.minWidth('768px'), { minHeight: '25rem' }),
+  ),
+  minHeightCreatePage: Style.make({ minHeight: 'calc(100vh - 3.5rem)' }),
+  minHeightFull: Style.make({ minHeight: '100%' }),
+  minHeightNone: Style.make({ minHeight: 0 }),
+  minHeightSkeleton: Style.make({ minHeight: '28rem' }),
+  minHeightViewport: Style.make({ minHeight: '100svh' }),
 }
 
 export const grid = <Message>(
@@ -173,6 +194,21 @@ export const grid = <Message>(
             full: styles.widthFull,
           }[props.width],
         ]
+  const grow = props.grow === true ? [styles.grow] : []
+  const minHeight =
+    props.minHeight === undefined
+      ? []
+      : [
+          {
+            blockPreview: styles.minHeightBlockPreview,
+            blocksHero: styles.minHeightBlocksHero,
+            createPage: styles.minHeightCreatePage,
+            full: styles.minHeightFull,
+            none: styles.minHeightNone,
+            skeleton: styles.minHeightSkeleton,
+            viewport: styles.minHeightViewport,
+          }[props.minHeight],
+        ]
   return primitiveElement(
     props.as ?? 'div',
     primitiveAttributes(
@@ -182,6 +218,8 @@ export const grid = <Message>(
         ...columns,
         ...surface,
         ...width,
+        ...grow,
+        ...minHeight,
         ...gapStyles(props.gap),
         ...paddingStyles(props.padding),
       ),

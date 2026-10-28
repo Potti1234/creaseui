@@ -52,6 +52,7 @@ export const appShell = <Message>(
               children: primary,
               columns:
                 props.navigationWidth === 'wide' ? 'appShellWide' : 'appShell',
+              minHeight: 'viewport',
               width: 'full',
             },
             h,
@@ -79,6 +80,7 @@ export const appShell = <Message>(
                 ),
               ],
               columns: 'masterDetail',
+              minHeight: 'viewport',
               width: 'full',
             },
             h,

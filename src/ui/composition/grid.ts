@@ -2,6 +2,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { GridProps } from '@/stylex/composition/grid'
 import { cn } from '@/lib/utils'
 import { element, attributes, gap, padding, align } from './element'
+import { heights } from './box'
 const columns = {
   one: 'grid-cols-1',
   two: 'grid-cols-1 min-[700px]:grid-cols-2',
@@ -25,6 +26,8 @@ export const grid = <M>(p: GridProps, h: HtmlBuilder<M>): Html =>
         p.gap && gap[p.gap],
         p.padding && padding[p.padding],
         p.align && align[p.align],
+        p.grow && 'flex-1',
+        p.minHeight && heights[p.minHeight],
         p.width === 'full' && 'w-full',
         p.surface === 'muted' && 'bg-muted',
       ),

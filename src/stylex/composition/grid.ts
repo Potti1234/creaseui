@@ -33,6 +33,15 @@ export type GridProps = Readonly<{
     | 'createBoard'
   data?: PrimitiveData
   gap?: ResponsiveSpaceToken
+  grow?: boolean
+  minHeight?:
+    | 'viewport'
+    | 'none'
+    | 'full'
+    | 'createPage'
+    | 'blockPreview'
+    | 'blocksHero'
+    | 'skeleton'
   padding?: ResponsiveSpaceToken
   slot?: string
   surface?: 'none' | 'muted' | 'canvas'
@@ -118,6 +127,18 @@ const styles = stylex.create({
     width: { default: '150rem', '@media (min-width: 768px)': '187.5rem' },
   },
   widthFull: { width: '100%' },
+  grow: { flexBasis: '0%', flexGrow: 1, flexShrink: 1 },
+  minHeightBlockPreview: {
+    minHeight: { default: '36rem', '@media (min-width: 768px)': '50rem' },
+  },
+  minHeightBlocksHero: {
+    minHeight: { default: '22rem', '@media (min-width: 768px)': '25rem' },
+  },
+  minHeightCreatePage: { minHeight: 'calc(100vh - 3.5rem)' },
+  minHeightFull: { minHeight: '100%' },
+  minHeightNone: { minHeight: 0 },
+  minHeightSkeleton: { minHeight: '28rem' },
+  minHeightViewport: { minHeight: '100svh' },
 })
 
 export const grid = <Message>(
@@ -172,6 +193,21 @@ export const grid = <Message>(
             full: styles.widthFull,
           }[props.width],
         ]
+  const grow = props.grow === true ? [styles.grow] : []
+  const minHeight =
+    props.minHeight === undefined
+      ? []
+      : [
+          {
+            blockPreview: styles.minHeightBlockPreview,
+            blocksHero: styles.minHeightBlocksHero,
+            createPage: styles.minHeightCreatePage,
+            full: styles.minHeightFull,
+            none: styles.minHeightNone,
+            skeleton: styles.minHeightSkeleton,
+            viewport: styles.minHeightViewport,
+          }[props.minHeight],
+        ]
   return primitiveElement(
     props.as ?? 'div',
     primitiveAttributes(
@@ -181,6 +217,8 @@ export const grid = <Message>(
         ...columns,
         ...surface,
         ...width,
+        ...grow,
+        ...minHeight,
         ...gapStyles(props.gap),
         ...paddingStyles(props.padding),
       ),

@@ -20,7 +20,7 @@ const widths = {
   login: 'mx-auto w-full max-w-4xl',
   createBoard: 'w-[150rem] md:w-[187.5rem]',
 }
-const heights = {
+export const heights = {
   viewport: 'min-h-svh',
   none: 'min-h-0',
   full: 'min-h-full',
