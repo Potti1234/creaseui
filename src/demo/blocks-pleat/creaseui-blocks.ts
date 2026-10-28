@@ -42,9 +42,9 @@ import {
   text,
   toolbar,
 } from '@/pleat/composition'
+import { appChrome, type ChromeState } from './app-chrome'
 import { icon } from '@/pleat/composition/icon'
 import {
-  sidebar,
   sidebarContent,
   sidebarFooter,
   sidebarGroup,
@@ -185,21 +185,83 @@ const initials = <Message>(name: string, h: HtmlBuilder<Message>): Html =>
 const workspaceNavigation = <Message>(
   active: string,
   h: HtmlBuilder<Message>,
-): Html =>
-  sidebar(
+): ReadonlyArray<Html> => [
+  sidebarHeader(
     {
       children: [
-        sidebarHeader(
+        inline(
+          {
+            align: 'center',
+            children: [
+              badge({ children: ['NW'] }, h),
+              text({ children: ['Northwind'], variant: 'label' }, h),
+            ],
+            gap: 'sm',
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  ),
+  sidebarContent(
+    {
+      children: [
+        sidebarGroup(
           {
             children: [
-              inline(
+              sidebarGroupLabel({ children: ['Workspace'] }, h),
+              sidebarGroupContent(
                 {
-                  align: 'center',
                   children: [
-                    badge({ children: ['NW'] }, h),
-                    text({ children: ['Northwind'], variant: 'label' }, h),
+                    sidebarMenu(
+                      {
+                        children: [
+                          'Board',
+                          'Inbox',
+                          'Orders',
+                          'Catalog',
+                          'Checkout',
+                          'Metrics',
+                        ].map(label =>
+                          sidebarMenuItem(
+                            {
+                              children: [
+                                sidebarMenuButton(
+                                  {
+                                    children: [
+                                      icon(
+                                        {
+                                          name:
+                                            label === 'Board'
+                                              ? 'layout-dashboard'
+                                              : label === 'Inbox'
+                                                ? 'inbox'
+                                                : label === 'Orders'
+                                                  ? 'package'
+                                                  : label === 'Catalog'
+                                                    ? 'gallery-vertical-end'
+                                                    : label === 'Checkout'
+                                                      ? 'credit-card'
+                                                      : 'chart-no-axes-combined',
+                                        },
+                                        h,
+                                      ),
+                                      label,
+                                    ],
+                                    isActive: label === active,
+                                  },
+                                  h,
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
+                        ),
+                      },
+                      h,
+                    ),
                   ],
-                  gap: 'sm',
                 },
                 h,
               ),
@@ -207,64 +269,108 @@ const workspaceNavigation = <Message>(
           },
           h,
         ),
-        sidebarContent(
+      ],
+    },
+    h,
+  ),
+  sidebarFooter(
+    {
+      children: [
+        sidebarMenu(
           {
             children: [
-              sidebarGroup(
+              sidebarMenuItem(
                 {
                   children: [
-                    sidebarGroupLabel({ children: ['Workspace'] }, h),
-                    sidebarGroupContent(
+                    sidebarMenuButton(
+                      {
+                        children: [initials('JL', h), 'Jules Lane'],
+                        size: 'lg',
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  ),
+]
+
+const mailNavigation = <Message>(
+  h: HtmlBuilder<Message>,
+): ReadonlyArray<Html> => [
+  sidebarHeader(
+    {
+      children: [
+        inline(
+          {
+            align: 'center',
+            children: [
+              badge({ children: ['NW'] }, h),
+              text({ children: ['Northwind Mail'], variant: 'label' }, h),
+            ],
+            gap: 'sm',
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  ),
+  sidebarContent(
+    {
+      children: [
+        sidebarGroup(
+          {
+            children: [
+              sidebarGroupContent(
+                {
+                  children: [
+                    sidebarMenu(
                       {
                         children: [
-                          sidebarMenu(
+                          ['Inbox', 'inbox', '12'],
+                          ['Starred', 'star', ''],
+                          ['Sent', 'send', ''],
+                          ['Drafts', 'file', '3'],
+                          ['Archive', 'folder', ''],
+                        ].map(([label, iconName, count]) =>
+                          sidebarMenuItem(
                             {
                               children: [
-                                'Board',
-                                'Inbox',
-                                'Orders',
-                                'Catalog',
-                                'Checkout',
-                                'Metrics',
-                              ].map(label =>
-                                sidebarMenuItem(
+                                sidebarMenuButton(
                                   {
                                     children: [
-                                      sidebarMenuButton(
-                                        {
-                                          children: [
-                                            icon(
+                                      icon({ name: iconName ?? 'inbox' }, h),
+                                      label ?? '',
+                                      ...(count === ''
+                                        ? []
+                                        : [
+                                            badge(
                                               {
-                                                name:
-                                                  label === 'Board'
-                                                    ? 'layout-dashboard'
-                                                    : label === 'Inbox'
-                                                      ? 'inbox'
-                                                      : label === 'Orders'
-                                                        ? 'package'
-                                                        : label === 'Catalog'
-                                                          ? 'gallery-vertical-end'
-                                                          : label === 'Checkout'
-                                                            ? 'credit-card'
-                                                            : 'chart-no-axes-combined',
+                                                children: [count ?? ''],
+                                                variant: 'secondary',
                                               },
                                               h,
                                             ),
-                                            label,
-                                          ],
-                                          isActive: label === active,
-                                        },
-                                        h,
-                                      ),
+                                          ]),
                                     ],
+                                    isActive: label === 'Inbox',
                                   },
                                   h,
                                 ),
-                              ),
+                              ],
                             },
                             h,
                           ),
-                        ],
+                        ),
                       },
                       h,
                     ),
@@ -276,183 +382,30 @@ const workspaceNavigation = <Message>(
           },
           h,
         ),
-        sidebarFooter(
+        sidebarGroup(
           {
             children: [
-              sidebarMenu(
+              sidebarGroupLabel({ children: ['Labels'] }, h),
+              sidebarGroupContent(
                 {
                   children: [
-                    sidebarMenuItem(
+                    sidebarMenu(
                       {
-                        children: [
-                          sidebarMenuButton(
-                            {
-                              children: [initials('JL', h), 'Jules Lane'],
-                              size: 'lg',
-                            },
-                            h,
-                          ),
-                        ],
-                      },
-                      h,
-                    ),
-                  ],
-                },
-                h,
-              ),
-            ],
-          },
-          h,
-        ),
-      ],
-      collapsible: 'none',
-    },
-    h,
-  )
-
-const mailNavigation = <Message>(h: HtmlBuilder<Message>): Html =>
-  sidebar(
-    {
-      children: [
-        sidebarHeader(
-          {
-            children: [
-              inline(
-                {
-                  align: 'center',
-                  children: [
-                    badge({ children: ['NW'] }, h),
-                    text({ children: ['Northwind Mail'], variant: 'label' }, h),
-                  ],
-                  gap: 'sm',
-                },
-                h,
-              ),
-            ],
-          },
-          h,
-        ),
-        sidebarContent(
-          {
-            children: [
-              sidebarGroup(
-                {
-                  children: [
-                    sidebarGroupContent(
-                      {
-                        children: [
-                          sidebarMenu(
+                        children: ['Customers', 'Ops', 'Receipts'].map(label =>
+                          sidebarMenuItem(
                             {
                               children: [
-                                ['Inbox', 'inbox', '12'],
-                                ['Starred', 'star', ''],
-                                ['Sent', 'send', ''],
-                                ['Drafts', 'file', '3'],
-                                ['Archive', 'folder', ''],
-                              ].map(([label, iconName, count]) =>
-                                sidebarMenuItem(
+                                sidebarMenuButton(
                                   {
-                                    children: [
-                                      sidebarMenuButton(
-                                        {
-                                          children: [
-                                            icon(
-                                              { name: iconName ?? 'inbox' },
-                                              h,
-                                            ),
-                                            label ?? '',
-                                            ...(count === ''
-                                              ? []
-                                              : [
-                                                  badge(
-                                                    {
-                                                      children: [count ?? ''],
-                                                      variant: 'secondary',
-                                                    },
-                                                    h,
-                                                  ),
-                                                ]),
-                                          ],
-                                          isActive: label === 'Inbox',
-                                        },
-                                        h,
-                                      ),
-                                    ],
+                                    children: [icon({ name: 'tag' }, h), label],
                                   },
                                   h,
                                 ),
-                              ),
+                              ],
                             },
                             h,
                           ),
-                        ],
-                      },
-                      h,
-                    ),
-                  ],
-                },
-                h,
-              ),
-              sidebarGroup(
-                {
-                  children: [
-                    sidebarGroupLabel({ children: ['Labels'] }, h),
-                    sidebarGroupContent(
-                      {
-                        children: [
-                          sidebarMenu(
-                            {
-                              children: ['Customers', 'Ops', 'Receipts'].map(
-                                label =>
-                                  sidebarMenuItem(
-                                    {
-                                      children: [
-                                        sidebarMenuButton(
-                                          {
-                                            children: [
-                                              icon({ name: 'tag' }, h),
-                                              label,
-                                            ],
-                                          },
-                                          h,
-                                        ),
-                                      ],
-                                    },
-                                    h,
-                                  ),
-                              ),
-                            },
-                            h,
-                          ),
-                        ],
-                      },
-                      h,
-                    ),
-                  ],
-                },
-                h,
-              ),
-            ],
-          },
-          h,
-        ),
-        sidebarFooter(
-          {
-            children: [
-              sidebarMenu(
-                {
-                  children: [
-                    sidebarMenuItem(
-                      {
-                        children: [
-                          sidebarMenuButton(
-                            {
-                              children: [initials('JL', h), 'Jules Lane'],
-                              size: 'lg',
-                            },
-                            h,
-                          ),
-                        ],
+                        ),
                       },
                       h,
                     ),
@@ -465,13 +418,44 @@ const mailNavigation = <Message>(h: HtmlBuilder<Message>): Html =>
           h,
         ),
       ],
-      collapsible: 'none',
     },
     h,
-  )
+  ),
+  sidebarFooter(
+    {
+      children: [
+        sidebarMenu(
+          {
+            children: [
+              sidebarMenuItem(
+                {
+                  children: [
+                    sidebarMenuButton(
+                      {
+                        children: [initials('JL', h), 'Jules Lane'],
+                        size: 'lg',
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+    },
+    h,
+  ),
+]
 
 /* CreaseUI "Kanban Board": horizontal lanes where the column itself is the status. */
-export const kanbanBoard = <Message>(h: HtmlBuilder<Message>): Html => {
+export const kanbanBoard = <Message>(
+  chrome: ChromeState<Message>,
+  h: HtmlBuilder<Message>,
+): Html => {
   const laneCard = (
     cardTitle: string,
     tag: string,
@@ -578,100 +562,9 @@ export const kanbanBoard = <Message>(h: HtmlBuilder<Message>): Html => {
       h,
     )
 
-  return dashboardShell(
+  return appChrome(
     {
       content: [
-        grid(
-          {
-            children: [
-              lane('Backlog', 3, [
-                laneCard(
-                  'Usage analytics for admin roles',
-                  'Reporting',
-                  'secondary',
-                  4,
-                  'MC',
-                ),
-                laneCard(
-                  'Bulk import wizard for inventory',
-                  'Feature',
-                  'outline',
-                  2,
-                  'IN',
-                ),
-                laneCard(
-                  'Empty state for archived projects',
-                  'Design',
-                  'outline',
-                  1,
-                  'JP',
-                ),
-              ]),
-              lane('In progress', 3, [
-                laneCard(
-                  'Keyboard shortcuts for the board',
-                  'Feature',
-                  'secondary',
-                  6,
-                  'AS',
-                ),
-                laneCard(
-                  'Migration retries on large accounts',
-                  'Bug',
-                  'destructive',
-                  3,
-                  'IN',
-                ),
-                laneCard(
-                  'Granular notification preferences',
-                  'Feature',
-                  'secondary',
-                  5,
-                  'MC',
-                ),
-              ]),
-              lane('Review', 2, [
-                laneCard(
-                  'Session timeline for audit log',
-                  'Reporting',
-                  'outline',
-                  2,
-                  'AS',
-                ),
-                laneCard(
-                  'Regression test for invite flow',
-                  'QA',
-                  'secondary',
-                  1,
-                  'JP',
-                ),
-              ]),
-              lane('Done', 3, [
-                laneCard(
-                  'Compact density for list views',
-                  'Design',
-                  'secondary',
-                  8,
-                  'MC',
-                ),
-                laneCard('Webhook replay tooling', 'Ops', 'outline', 2, 'IN'),
-                laneCard(
-                  'Staging environment refresh',
-                  'Ops',
-                  'secondary',
-                  1,
-                  'AS',
-                ),
-              ]),
-            ],
-            columns: 'four',
-            gap: 'md',
-            width: 'full',
-          },
-          h,
-        ),
-      ],
-      header: [
         pageHeader(
           'Sprint board',
           'Atlas release · sprint 14 · 11 open tasks',
@@ -692,12 +585,116 @@ export const kanbanBoard = <Message>(h: HtmlBuilder<Message>): Html => {
               },
               h,
             ),
+            grid(
+              {
+                children: [
+                  lane('Backlog', 3, [
+                    laneCard(
+                      'Usage analytics for admin roles',
+                      'Reporting',
+                      'secondary',
+                      4,
+                      'MC',
+                    ),
+                    laneCard(
+                      'Bulk import wizard for inventory',
+                      'Feature',
+                      'outline',
+                      2,
+                      'IN',
+                    ),
+                    laneCard(
+                      'Empty state for archived projects',
+                      'Design',
+                      'outline',
+                      1,
+                      'JP',
+                    ),
+                  ]),
+                  lane('In progress', 3, [
+                    laneCard(
+                      'Keyboard shortcuts for the board',
+                      'Feature',
+                      'secondary',
+                      6,
+                      'AS',
+                    ),
+                    laneCard(
+                      'Migration retries on large accounts',
+                      'Bug',
+                      'destructive',
+                      3,
+                      'IN',
+                    ),
+                    laneCard(
+                      'Granular notification preferences',
+                      'Feature',
+                      'secondary',
+                      5,
+                      'MC',
+                    ),
+                  ]),
+                  lane('Review', 2, [
+                    laneCard(
+                      'Session timeline for audit log',
+                      'Reporting',
+                      'outline',
+                      2,
+                      'AS',
+                    ),
+                    laneCard(
+                      'Regression test for invite flow',
+                      'QA',
+                      'secondary',
+                      1,
+                      'JP',
+                    ),
+                  ]),
+                  lane('Done', 3, [
+                    laneCard(
+                      'Compact density for list views',
+                      'Design',
+                      'secondary',
+                      8,
+                      'MC',
+                    ),
+                    laneCard(
+                      'Webhook replay tooling',
+                      'Ops',
+                      'outline',
+                      2,
+                      'IN',
+                    ),
+                    laneCard(
+                      'Staging environment refresh',
+                      'Ops',
+                      'secondary',
+                      1,
+                      'AS',
+                    ),
+                  ]),
+                ],
+                columns: 'four',
+                gap: 'md',
+                grow: true,
+                width: 'full',
+              },
+              h,
+            ),
           ],
           h,
         ),
       ],
+      collapsed: chrome.collapsed,
+      mobileOpen: chrome.mobileOpen,
       navigation: workspaceNavigation('Board', h),
+      onMobileToggle: chrome.onMobileToggle,
+      onToggle: chrome.onToggle,
       theme: 'compact',
+      trail: [
+        { href: '#', kind: 'link', label: 'Northwind' },
+        { kind: 'page', label: 'Sprint board' },
+      ],
     },
     h,
   )
@@ -815,6 +812,7 @@ const monogram = (name: string): string =>
     .toUpperCase()
 
 export const inboxTable = <Message>(
+  chrome: ChromeState<Message>,
   props: Readonly<{
     filter: string
     onFilter: (value: string) => Message
@@ -833,158 +831,89 @@ export const inboxTable = <Message>(
         ? candidate.starred
         : true,
   )
-  return masterDetailPage(
+  return appChrome(
     {
-      detail: section(
-        {
-          children: [
-            stack(
+      collapsed: chrome.collapsed,
+      content: [
+        masterDetailPage(
+          {
+            detail: section(
               {
                 children: [
-                  inline(
+                  stack(
                     {
-                      align: 'center',
                       children: [
                         inline(
                           {
                             align: 'center',
                             children: [
-                              initials(monogram(thread.sender), h),
-                              stack(
+                              inline(
                                 {
+                                  align: 'center',
                                   children: [
-                                    text(
+                                    initials(monogram(thread.sender), h),
+                                    stack(
                                       {
-                                        children: [thread.sender],
-                                        variant: 'label',
-                                      },
-                                      h,
-                                    ),
-                                    text(
-                                      {
-                                        children: [thread.email],
-                                        tone: 'secondary',
-                                        variant: 'caption',
+                                        children: [
+                                          text(
+                                            {
+                                              children: [thread.sender],
+                                              variant: 'label',
+                                            },
+                                            h,
+                                          ),
+                                          text(
+                                            {
+                                              children: [thread.email],
+                                              tone: 'secondary',
+                                              variant: 'caption',
+                                            },
+                                            h,
+                                          ),
+                                        ],
+                                        gap: 'none',
                                       },
                                       h,
                                     ),
                                   ],
-                                  gap: 'none',
+                                  gap: 'sm',
                                 },
                                 h,
                               ),
-                            ],
-                            gap: 'sm',
-                          },
-                          h,
-                        ),
-                        inline(
-                          {
-                            children: [
-                              button(
+                              inline(
                                 {
-                                  ariaLabel: 'Reply',
                                   children: [
-                                    icon({ name: 'corner-up-left' }, h),
+                                    button(
+                                      {
+                                        ariaLabel: 'Reply',
+                                        children: [
+                                          icon({ name: 'corner-up-left' }, h),
+                                        ],
+                                        size: 'icon',
+                                        variant: 'ghost',
+                                      },
+                                      h,
+                                    ),
+                                    button(
+                                      {
+                                        ariaLabel: 'Star',
+                                        children: [icon({ name: 'star' }, h)],
+                                        size: 'icon',
+                                        variant: 'ghost',
+                                      },
+                                      h,
+                                    ),
+                                    button(
+                                      {
+                                        ariaLabel: 'Archive',
+                                        children: [icon({ name: 'folder' }, h)],
+                                        size: 'icon',
+                                        variant: 'ghost',
+                                      },
+                                      h,
+                                    ),
                                   ],
-                                  size: 'icon',
-                                  variant: 'ghost',
-                                },
-                                h,
-                              ),
-                              button(
-                                {
-                                  ariaLabel: 'Star',
-                                  children: [icon({ name: 'star' }, h)],
-                                  size: 'icon',
-                                  variant: 'ghost',
-                                },
-                                h,
-                              ),
-                              button(
-                                {
-                                  ariaLabel: 'Archive',
-                                  children: [icon({ name: 'folder' }, h)],
-                                  size: 'icon',
-                                  variant: 'ghost',
-                                },
-                                h,
-                              ),
-                            ],
-                            gap: 'xs',
-                          },
-                          h,
-                        ),
-                      ],
-                      justify: 'between',
-                      width: 'full',
-                    },
-                    h,
-                  ),
-                  stack(
-                    {
-                      children: [
-                        text(
-                          { children: [thread.subject], variant: 'headingSm' },
-                          h,
-                        ),
-                        text(
-                          {
-                            children: [thread.receivedDetail],
-                            tone: 'secondary',
-                            variant: 'caption',
-                          },
-                          h,
-                        ),
-                      ],
-                      gap: 'xs',
-                    },
-                    h,
-                  ),
-                  separator({}, h),
-                  bubbleGroup(
-                    {
-                      children: thread.messages.map(body =>
-                        bubble(
-                          {
-                            children: [bubbleContent({ children: [body] }, h)],
-                          },
-                          h,
-                        ),
-                      ),
-                    },
-                    h,
-                  ),
-                  separator({}, h),
-                  stack(
-                    {
-                      children: [
-                        textarea(
-                          {
-                            id: 'inbox-reply',
-                            placeholder: `Reply to ${thread.sender.split(' ')[0] ?? thread.sender}…`,
-                            rows: 3,
-                            value: '',
-                          },
-                          h,
-                        ),
-                        inline(
-                          {
-                            children: [
-                              button(
-                                {
-                                  ariaLabel: 'Attach file',
-                                  children: [icon({ name: 'link' }, h)],
-                                  size: 'icon',
-                                  variant: 'ghost',
-                                },
-                                h,
-                              ),
-                              button(
-                                {
-                                  leadingIcon: icon({ name: 'send' }, h),
-                                  children: ['Send'],
-                                  size: 'sm',
+                                  gap: 'xs',
                                 },
                                 h,
                               ),
@@ -994,541 +923,667 @@ export const inboxTable = <Message>(
                           },
                           h,
                         ),
+                        stack(
+                          {
+                            children: [
+                              text(
+                                {
+                                  children: [thread.subject],
+                                  variant: 'headingSm',
+                                },
+                                h,
+                              ),
+                              text(
+                                {
+                                  children: [thread.receivedDetail],
+                                  tone: 'secondary',
+                                  variant: 'caption',
+                                },
+                                h,
+                              ),
+                            ],
+                            gap: 'xs',
+                          },
+                          h,
+                        ),
+                        separator({}, h),
+                        bubbleGroup(
+                          {
+                            children: thread.messages.map(body =>
+                              bubble(
+                                {
+                                  children: [
+                                    bubbleContent({ children: [body] }, h),
+                                  ],
+                                },
+                                h,
+                              ),
+                            ),
+                          },
+                          h,
+                        ),
+                        separator({}, h),
+                        stack(
+                          {
+                            children: [
+                              textarea(
+                                {
+                                  id: 'inbox-reply',
+                                  placeholder: `Reply to ${thread.sender.split(' ')[0] ?? thread.sender}…`,
+                                  rows: 3,
+                                  value: '',
+                                },
+                                h,
+                              ),
+                              inline(
+                                {
+                                  children: [
+                                    button(
+                                      {
+                                        ariaLabel: 'Attach file',
+                                        children: [icon({ name: 'link' }, h)],
+                                        size: 'icon',
+                                        variant: 'ghost',
+                                      },
+                                      h,
+                                    ),
+                                    button(
+                                      {
+                                        leadingIcon: icon({ name: 'send' }, h),
+                                        children: ['Send'],
+                                        size: 'sm',
+                                      },
+                                      h,
+                                    ),
+                                  ],
+                                  justify: 'between',
+                                  width: 'full',
+                                },
+                                h,
+                              ),
+                            ],
+                            gap: 'sm',
+                          },
+                          h,
+                        ),
                       ],
-                      gap: 'sm',
+                      gap: 'md',
                     },
                     h,
                   ),
                 ],
-                gap: 'md',
+                heading: 'Message',
+                surface: 'plain',
               },
               h,
             ),
-          ],
-          heading: 'Message',
-          surface: 'plain',
-        },
-        h,
-      ),
-      detailBehavior: 'stack',
-      header: [
-        pageHeader(
-          'Inbox',
-          '12 unread · synced 1 minute ago',
-          [
-            button(
-              {
-                leadingIcon: icon({ name: 'search' }, h),
-                children: ['Search mail'],
-                size: 'sm',
-                variant: 'outline',
-              },
-              h,
-            ),
-            button(
-              {
-                leadingIcon: icon({ name: 'file-pen-line' }, h),
-                children: ['Compose'],
-                size: 'sm',
-              },
-              h,
-            ),
-          ],
-          h,
-        ),
-      ],
-      master: [
-        tableRegion(
-          {
-            children: [
-              dataTable(
-                ['Sender', 'Subject', 'Tags', 'Received'],
-                rows.map(candidate => [
-                  candidate.sender,
+            detailBehavior: 'stack',
+            header: [
+              pageHeader(
+                'Inbox',
+                '12 unread · synced 1 minute ago',
+                [
                   button(
                     {
-                      children: [candidate.subject],
-                      onClick: props.onSelect(candidate.id),
+                      leadingIcon: icon({ name: 'search' }, h),
+                      children: ['Search mail'],
                       size: 'sm',
-                      variant:
-                        candidate.id === thread.id ? 'secondary' : 'ghost',
+                      variant: 'outline',
                     },
                     h,
                   ),
-                  badge(
+                  button(
                     {
-                      children: [candidate.tag],
-                      variant: candidate.tagVariant,
+                      leadingIcon: icon({ name: 'file-pen-line' }, h),
+                      children: ['Compose'],
+                      size: 'sm',
                     },
                     h,
                   ),
-                  candidate.received,
-                ]),
+                ],
                 h,
               ),
             ],
-            description: 'Select a row to read the thread',
-            heading: 'Messages',
-            toolbar: [
-              toolbar(
+            master: [
+              tableRegion(
                 {
                   children: [
-                    inline(
+                    dataTable(
+                      ['Sender', 'Subject', 'Tags', 'Received'],
+                      rows.map(candidate => [
+                        candidate.sender,
+                        button(
+                          {
+                            children: [candidate.subject],
+                            onClick: props.onSelect(candidate.id),
+                            size: 'sm',
+                            variant:
+                              candidate.id === thread.id
+                                ? 'secondary'
+                                : 'ghost',
+                          },
+                          h,
+                        ),
+                        badge(
+                          {
+                            children: [candidate.tag],
+                            variant: candidate.tagVariant,
+                          },
+                          h,
+                        ),
+                        candidate.received,
+                      ]),
+                      h,
+                    ),
+                  ],
+                  description: 'Select a row to read the thread',
+                  heading: 'Messages',
+                  toolbar: [
+                    toolbar(
                       {
-                        children: INBOX_FILTERS.map(option =>
-                          button(
+                        children: [
+                          inline(
                             {
-                              children: [option.label],
-                              onClick: props.onFilter(option.id),
-                              size: 'sm',
-                              variant:
-                                props.filter === option.id
-                                  ? 'secondary'
-                                  : 'ghost',
+                              children: INBOX_FILTERS.map(option =>
+                                button(
+                                  {
+                                    children: [option.label],
+                                    onClick: props.onFilter(option.id),
+                                    size: 'sm',
+                                    variant:
+                                      props.filter === option.id
+                                        ? 'secondary'
+                                        : 'ghost',
+                                  },
+                                  h,
+                                ),
+                              ),
+                              gap: 'xs',
                             },
                             h,
                           ),
-                        ),
-                        gap: 'xs',
-                      },
-                      h,
-                    ),
-                    inline(
-                      {
-                        children: [
-                          button(
+                          inline(
                             {
-                              children: ['Newest first'],
-                              size: 'sm',
-                              variant: 'outline',
+                              children: [
+                                button(
+                                  {
+                                    children: ['Newest first'],
+                                    size: 'sm',
+                                    variant: 'outline',
+                                  },
+                                  h,
+                                ),
+                              ],
+                              gap: 'xs',
                             },
                             h,
                           ),
                         ],
-                        gap: 'xs',
+                        label: 'Inbox filters',
                       },
                       h,
                     ),
                   ],
-                  label: 'Inbox filters',
                 },
                 h,
               ),
             ],
+            theme: 'compact',
           },
           h,
         ),
       ],
+      mobileOpen: chrome.mobileOpen,
       navigation: mailNavigation(h),
-      theme: 'compact',
+      onMobileToggle: chrome.onMobileToggle,
+      onToggle: chrome.onToggle,
+      trail: [
+        { href: '#', kind: 'link', label: 'Northwind Mail' },
+        { kind: 'page', label: 'Inbox' },
+      ],
     },
     h,
   )
 }
 
 /* CreaseUI "Order Detail": a record holding children plus a chronological activity rail. */
-export const orderDetail = <Message>(h: HtmlBuilder<Message>): Html =>
-  masterDetailPage(
+export const orderDetail = <Message>(
+  chrome: ChromeState<Message>,
+  h: HtmlBuilder<Message>,
+): Html =>
+  appChrome(
     {
-      detail: section(
-        {
-          children: [
-            itemGroup(
+      collapsed: chrome.collapsed,
+      content: [
+        masterDetailPage(
+          {
+            detail: section(
               {
                 children: [
-                  narrative(
-                    'Label created',
-                    'UPS 1Z 999 AA1 0123 4567 84 · 4:12 PM',
-                    'package',
-                    h,
-                  ),
-                  narrative(
-                    'Payment captured',
-                    '$248.00 on Visa ·· 4242 · 2:44 PM',
-                    'credit-card',
-                    h,
-                  ),
-                  narrative(
-                    'Order placed',
-                    'Storefront checkout · 2:41 PM',
-                    'shopping-cart',
+                  itemGroup(
+                    {
+                      children: [
+                        narrative(
+                          'Label created',
+                          'UPS 1Z 999 AA1 0123 4567 84 · 4:12 PM',
+                          'package',
+                          h,
+                        ),
+                        narrative(
+                          'Payment captured',
+                          '$248.00 on Visa ·· 4242 · 2:44 PM',
+                          'credit-card',
+                          h,
+                        ),
+                        narrative(
+                          'Order placed',
+                          'Storefront checkout · 2:41 PM',
+                          'shopping-cart',
+                          h,
+                        ),
+                      ],
+                      spacing: 'md',
+                    },
                     h,
                   ),
                 ],
-                spacing: 'md',
+                description: 'Most recent first',
+                heading: 'Activity',
+                surface: 'plain',
               },
               h,
             ),
-          ],
-          description: 'Most recent first',
-          heading: 'Activity',
-          surface: 'plain',
-        },
-        h,
-      ),
-      detailBehavior: 'stack',
-      header: [
-        pageHeader(
-          'Order #1043',
-          'Placed Sep 18 · 2:41 PM · Storefront',
-          [
-            badge({ children: ['Paid'], variant: 'secondary' }, h),
-            badge({ children: ['Fulfilling'], variant: 'outline' }, h),
-            button({ children: ['Refund'], size: 'sm', variant: 'outline' }, h),
-            button(
-              {
-                leadingIcon: icon({ name: 'printer' }, h),
-                children: ['Print'],
-                size: 'sm',
-                variant: 'outline',
-              },
-              h,
-            ),
-            button({ children: ['Mark fulfilled'], size: 'sm' }, h),
-          ],
-          h,
-        ),
-      ],
-      master: [
-        grid(
-          {
-            children: [
-              box(
-                {
-                  children: [
-                    stack(
-                      {
-                        children: [
-                          text(
-                            {
-                              children: ['Customer'],
-                              tone: 'secondary',
-                              variant: 'caption',
-                            },
-                            h,
-                          ),
-                          text(
-                            { children: ['Robin Adler'], variant: 'label' },
-                            h,
-                          ),
-                          text(
-                            {
-                              children: ['robin@adlergoods.com'],
-                              tone: 'secondary',
-                              variant: 'caption',
-                            },
-                            h,
-                          ),
-                        ],
-                        gap: 'xs',
-                      },
-                      h,
-                    ),
-                  ],
-                  padding: 'md',
-                  radius: 'lg',
-                  surface: 'card',
-                },
-                h,
-              ),
-              box(
-                {
-                  children: [
-                    stack(
-                      {
-                        children: [
-                          text(
-                            {
-                              children: ['Channel'],
-                              tone: 'secondary',
-                              variant: 'caption',
-                            },
-                            h,
-                          ),
-                          text(
-                            { children: ['Storefront'], variant: 'label' },
-                            h,
-                          ),
-                          text(
-                            {
-                              children: ['Web checkout'],
-                              tone: 'secondary',
-                              variant: 'caption',
-                            },
-                            h,
-                          ),
-                        ],
-                        gap: 'xs',
-                      },
-                      h,
-                    ),
-                  ],
-                  padding: 'md',
-                  radius: 'lg',
-                  surface: 'card',
-                },
-                h,
-              ),
-              box(
-                {
-                  children: [
-                    stack(
-                      {
-                        children: [
-                          text(
-                            {
-                              children: ['Delivery'],
-                              tone: 'secondary',
-                              variant: 'caption',
-                            },
-                            h,
-                          ),
-                          text({ children: ['Express'], variant: 'label' }, h),
-                          text(
-                            {
-                              children: ['Arrives Sep 22'],
-                              tone: 'secondary',
-                              variant: 'caption',
-                            },
-                            h,
-                          ),
-                        ],
-                        gap: 'xs',
-                      },
-                      h,
-                    ),
-                  ],
-                  padding: 'md',
-                  radius: 'lg',
-                  surface: 'card',
-                },
-                h,
-              ),
-              box(
-                {
-                  children: [
-                    stack(
-                      {
-                        children: [
-                          text(
-                            {
-                              children: ['Total'],
-                              tone: 'secondary',
-                              variant: 'caption',
-                            },
-                            h,
-                          ),
-                          text(
-                            {
-                              children: ['$248.00'],
-                              numeric: 'tabular',
-                              variant: 'label',
-                            },
-                            h,
-                          ),
-                          text(
-                            {
-                              children: ['3 items'],
-                              tone: 'secondary',
-                              variant: 'caption',
-                            },
-                            h,
-                          ),
-                        ],
-                        gap: 'xs',
-                      },
-                      h,
-                    ),
-                  ],
-                  padding: 'md',
-                  radius: 'lg',
-                  surface: 'card',
-                },
-                h,
-              ),
-            ],
-            columns: 'four',
-            gap: 'md',
-            width: 'full',
-          },
-          h,
-        ),
-        tableRegion(
-          {
-            children: [
-              dataTable(
-                ['Item', 'SKU', 'Qty', 'Price', 'Total'],
+            detailBehavior: 'stack',
+            header: [
+              pageHeader(
+                'Order #1043',
+                'Placed Sep 18 · 2:41 PM · Storefront',
                 [
-                  [
-                    'Canvas Field Jacket',
-                    'JK-102 · Olive / M',
-                    '1',
-                    '$168.00',
-                    '$168.00',
-                  ],
-                  [
-                    'Merino Crew Sock · 3 pack',
-                    'SK-310 · Charcoal',
-                    '2',
-                    '$32.00',
-                    '$64.00',
-                  ],
-                  [
-                    'Enamel Camp Mug',
-                    'MG-205 · Cream',
-                    '1',
-                    '$16.00',
-                    '$16.00',
-                  ],
+                  badge({ children: ['Paid'], variant: 'secondary' }, h),
+                  badge({ children: ['Fulfilling'], variant: 'outline' }, h),
+                  button(
+                    { children: ['Refund'], size: 'sm', variant: 'outline' },
+                    h,
+                  ),
+                  button(
+                    {
+                      leadingIcon: icon({ name: 'printer' }, h),
+                      children: ['Print'],
+                      size: 'sm',
+                      variant: 'outline',
+                    },
+                    h,
+                  ),
+                  button({ children: ['Mark fulfilled'], size: 'sm' }, h),
                 ],
                 h,
               ),
             ],
-            footer: [
-              stack(
+            master: [
+              grid(
                 {
                   children: [
-                    inline(
+                    box(
                       {
                         children: [
-                          text(
+                          stack(
                             {
-                              children: ['Subtotal'],
-                              tone: 'secondary',
-                              variant: 'caption',
-                            },
-                            h,
-                          ),
-                          text(
-                            {
-                              children: ['$248.00'],
-                              numeric: 'tabular',
-                              variant: 'label',
+                              children: [
+                                text(
+                                  {
+                                    children: ['Customer'],
+                                    tone: 'secondary',
+                                    variant: 'caption',
+                                  },
+                                  h,
+                                ),
+                                text(
+                                  {
+                                    children: ['Robin Adler'],
+                                    variant: 'label',
+                                  },
+                                  h,
+                                ),
+                                text(
+                                  {
+                                    children: ['robin@adlergoods.com'],
+                                    tone: 'secondary',
+                                    variant: 'caption',
+                                  },
+                                  h,
+                                ),
+                              ],
+                              gap: 'xs',
                             },
                             h,
                           ),
                         ],
-                        justify: 'between',
-                        width: 'full',
+                        padding: 'md',
+                        radius: 'lg',
+                        surface: 'card',
                       },
                       h,
                     ),
-                    inline(
+                    box(
                       {
                         children: [
-                          text(
+                          stack(
                             {
-                              children: ['Shipping'],
-                              tone: 'secondary',
-                              variant: 'caption',
-                            },
-                            h,
-                          ),
-                          text(
-                            {
-                              children: ['$12.00'],
-                              numeric: 'tabular',
-                              variant: 'label',
+                              children: [
+                                text(
+                                  {
+                                    children: ['Channel'],
+                                    tone: 'secondary',
+                                    variant: 'caption',
+                                  },
+                                  h,
+                                ),
+                                text(
+                                  {
+                                    children: ['Storefront'],
+                                    variant: 'label',
+                                  },
+                                  h,
+                                ),
+                                text(
+                                  {
+                                    children: ['Web checkout'],
+                                    tone: 'secondary',
+                                    variant: 'caption',
+                                  },
+                                  h,
+                                ),
+                              ],
+                              gap: 'xs',
                             },
                             h,
                           ),
                         ],
-                        justify: 'between',
-                        width: 'full',
+                        padding: 'md',
+                        radius: 'lg',
+                        surface: 'card',
                       },
                       h,
                     ),
-                    inline(
+                    box(
                       {
                         children: [
-                          text(
+                          stack(
                             {
-                              children: ['Tax'],
-                              tone: 'secondary',
-                              variant: 'caption',
-                            },
-                            h,
-                          ),
-                          text(
-                            {
-                              children: ['$0.00'],
-                              numeric: 'tabular',
-                              variant: 'label',
+                              children: [
+                                text(
+                                  {
+                                    children: ['Delivery'],
+                                    tone: 'secondary',
+                                    variant: 'caption',
+                                  },
+                                  h,
+                                ),
+                                text(
+                                  { children: ['Express'], variant: 'label' },
+                                  h,
+                                ),
+                                text(
+                                  {
+                                    children: ['Arrives Sep 22'],
+                                    tone: 'secondary',
+                                    variant: 'caption',
+                                  },
+                                  h,
+                                ),
+                              ],
+                              gap: 'xs',
                             },
                             h,
                           ),
                         ],
-                        justify: 'between',
-                        width: 'full',
+                        padding: 'md',
+                        radius: 'lg',
+                        surface: 'card',
                       },
                       h,
                     ),
-                    separator({}, h),
-                    inline(
+                    box(
                       {
                         children: [
-                          text({ children: ['Total'], variant: 'label' }, h),
-                          text(
+                          stack(
                             {
-                              children: ['$272.00'],
-                              numeric: 'tabular',
-                              variant: 'headingSm',
+                              children: [
+                                text(
+                                  {
+                                    children: ['Total'],
+                                    tone: 'secondary',
+                                    variant: 'caption',
+                                  },
+                                  h,
+                                ),
+                                text(
+                                  {
+                                    children: ['$248.00'],
+                                    numeric: 'tabular',
+                                    variant: 'label',
+                                  },
+                                  h,
+                                ),
+                                text(
+                                  {
+                                    children: ['3 items'],
+                                    tone: 'secondary',
+                                    variant: 'caption',
+                                  },
+                                  h,
+                                ),
+                              ],
+                              gap: 'xs',
                             },
                             h,
                           ),
                         ],
-                        justify: 'between',
-                        width: 'full',
+                        padding: 'md',
+                        radius: 'lg',
+                        surface: 'card',
                       },
                       h,
                     ),
                   ],
-                  gap: 'sm',
+                  columns: 'four',
+                  gap: 'md',
+                  width: 'full',
                 },
                 h,
               ),
-            ],
-            heading: 'Line items',
-          },
-          h,
-        ),
-        section(
-          {
-            children: [
-              itemGroup(
+              tableRegion(
                 {
                   children: [
-                    narrative(
-                      'Ship to',
-                      'Robin Adler · 44 Beacon St, Boston MA 02108',
-                      'pin',
-                      h,
-                    ),
-                    narrative(
-                      'Method',
-                      'Express · delivered by carrier',
-                      'car',
+                    dataTable(
+                      ['Item', 'SKU', 'Qty', 'Price', 'Total'],
+                      [
+                        [
+                          'Canvas Field Jacket',
+                          'JK-102 · Olive / M',
+                          '1',
+                          '$168.00',
+                          '$168.00',
+                        ],
+                        [
+                          'Merino Crew Sock · 3 pack',
+                          'SK-310 · Charcoal',
+                          '2',
+                          '$32.00',
+                          '$64.00',
+                        ],
+                        [
+                          'Enamel Camp Mug',
+                          'MG-205 · Cream',
+                          '1',
+                          '$16.00',
+                          '$16.00',
+                        ],
+                      ],
                       h,
                     ),
                   ],
-                  spacing: 'md',
+                  footer: [
+                    stack(
+                      {
+                        children: [
+                          inline(
+                            {
+                              children: [
+                                text(
+                                  {
+                                    children: ['Subtotal'],
+                                    tone: 'secondary',
+                                    variant: 'caption',
+                                  },
+                                  h,
+                                ),
+                                text(
+                                  {
+                                    children: ['$248.00'],
+                                    numeric: 'tabular',
+                                    variant: 'label',
+                                  },
+                                  h,
+                                ),
+                              ],
+                              justify: 'between',
+                              width: 'full',
+                            },
+                            h,
+                          ),
+                          inline(
+                            {
+                              children: [
+                                text(
+                                  {
+                                    children: ['Shipping'],
+                                    tone: 'secondary',
+                                    variant: 'caption',
+                                  },
+                                  h,
+                                ),
+                                text(
+                                  {
+                                    children: ['$12.00'],
+                                    numeric: 'tabular',
+                                    variant: 'label',
+                                  },
+                                  h,
+                                ),
+                              ],
+                              justify: 'between',
+                              width: 'full',
+                            },
+                            h,
+                          ),
+                          inline(
+                            {
+                              children: [
+                                text(
+                                  {
+                                    children: ['Tax'],
+                                    tone: 'secondary',
+                                    variant: 'caption',
+                                  },
+                                  h,
+                                ),
+                                text(
+                                  {
+                                    children: ['$0.00'],
+                                    numeric: 'tabular',
+                                    variant: 'label',
+                                  },
+                                  h,
+                                ),
+                              ],
+                              justify: 'between',
+                              width: 'full',
+                            },
+                            h,
+                          ),
+                          separator({}, h),
+                          inline(
+                            {
+                              children: [
+                                text(
+                                  { children: ['Total'], variant: 'label' },
+                                  h,
+                                ),
+                                text(
+                                  {
+                                    children: ['$272.00'],
+                                    numeric: 'tabular',
+                                    variant: 'headingSm',
+                                  },
+                                  h,
+                                ),
+                              ],
+                              justify: 'between',
+                              width: 'full',
+                            },
+                            h,
+                          ),
+                        ],
+                        gap: 'sm',
+                      },
+                      h,
+                    ),
+                  ],
+                  heading: 'Line items',
+                },
+                h,
+              ),
+              section(
+                {
+                  children: [
+                    itemGroup(
+                      {
+                        children: [
+                          narrative(
+                            'Ship to',
+                            'Robin Adler · 44 Beacon St, Boston MA 02108',
+                            'pin',
+                            h,
+                          ),
+                          narrative(
+                            'Method',
+                            'Express · delivered by carrier',
+                            'car',
+                            h,
+                          ),
+                        ],
+                        spacing: 'md',
+                      },
+                      h,
+                    ),
+                  ],
+                  heading: 'Delivery',
+                  surface: 'card',
                 },
                 h,
               ),
             ],
-            heading: 'Delivery',
-            surface: 'card',
+            theme: 'comfortable',
           },
           h,
         ),
       ],
-      theme: 'comfortable',
+      mobileOpen: chrome.mobileOpen,
+      navigation: workspaceNavigation('Orders', h),
+      onMobileToggle: chrome.onMobileToggle,
+      onToggle: chrome.onToggle,
+      trail: [
+        { href: '#', kind: 'link', label: 'Northwind' },
+        { kind: 'page', label: 'Orders' },
+      ],
     },
     h,
   )
 
 /* CreaseUI "Data Dashboard": every tile carries a sparkline and period-over-period deltas. */
 export const dataDashboard = <Message>(
+  chrome: ChromeState<Message>,
   toMessage: (message: ChartMessage) => Message,
   h: HtmlBuilder<Message>,
 ): Html => {
@@ -1603,244 +1658,271 @@ export const dataDashboard = <Message>(
       h,
     )
 
-  return dashboardShell(
+  return appChrome(
     {
+      collapsed: chrome.collapsed,
       content: [
-        box(
+        dashboardShell(
           {
-            children: [
-              toolbar(
+            content: [
+              box(
                 {
                   children: [
-                    inline(
+                    toolbar(
                       {
                         children: [
-                          button(
+                          inline(
                             {
-                              children: ['Last 30 days'],
-                              size: 'sm',
-                              variant: 'secondary',
+                              children: [
+                                button(
+                                  {
+                                    children: ['Last 30 days'],
+                                    size: 'sm',
+                                    variant: 'secondary',
+                                  },
+                                  h,
+                                ),
+                                button(
+                                  {
+                                    children: ['All channels'],
+                                    size: 'sm',
+                                    variant: 'ghost',
+                                  },
+                                  h,
+                                ),
+                                button(
+                                  {
+                                    children: ['All regions'],
+                                    size: 'sm',
+                                    variant: 'ghost',
+                                  },
+                                  h,
+                                ),
+                                button(
+                                  {
+                                    children: ['Compare: prior period'],
+                                    size: 'sm',
+                                    variant: 'outline',
+                                  },
+                                  h,
+                                ),
+                              ],
+                              gap: 'xs',
+                              wrap: true,
                             },
                             h,
                           ),
-                          button(
+                          inline(
                             {
-                              children: ['All channels'],
-                              size: 'sm',
-                              variant: 'ghost',
-                            },
-                            h,
-                          ),
-                          button(
-                            {
-                              children: ['All regions'],
-                              size: 'sm',
-                              variant: 'ghost',
-                            },
-                            h,
-                          ),
-                          button(
-                            {
-                              children: ['Compare: prior period'],
-                              size: 'sm',
-                              variant: 'outline',
+                              children: [
+                                button(
+                                  {
+                                    leadingIcon: icon(
+                                      { name: 'arrow-down' },
+                                      h,
+                                    ),
+                                    children: ['Export'],
+                                    size: 'sm',
+                                    variant: 'outline',
+                                  },
+                                  h,
+                                ),
+                              ],
+                              gap: 'xs',
                             },
                             h,
                           ),
                         ],
-                        gap: 'xs',
-                        wrap: true,
+                        label: 'Global filters',
                       },
                       h,
                     ),
-                    inline(
+                  ],
+                  padding: 'sm',
+                  radius: 'lg',
+                  surface: 'card',
+                },
+                h,
+              ),
+              metricGrid(
+                {
+                  children: [
+                    sparkTile(
+                      'Revenue',
+                      '$182.4K',
+                      '+12.1%',
+                      ['vs 7d +4.2%', 'vs 30d +9.8%', 'plan −1.2%'],
+                      revenueSparkChart(toMessage, h),
+                    ),
+                    sparkTile(
+                      'Active sessions',
+                      '48.2K',
+                      '+6.4%',
+                      ['vs 7d +1.9%', 'vs 30d +6.4%', 'plan +2.0%'],
+                      sessionSparkChart(toMessage, h),
+                    ),
+                    sparkTile(
+                      'Conversion',
+                      '3.42%',
+                      '−0.3%',
+                      ['vs 7d −0.3%', 'vs 30d +0.4%', 'plan −0.2%'],
+                      conversionSparkChart(toMessage, h),
+                    ),
+                    sparkTile(
+                      'Activation',
+                      '41.8%',
+                      '+3.7%',
+                      ['vs 7d +0.9%', 'vs 30d +3.7%', 'plan +1.4%'],
+                      activationSparkChart(toMessage, h),
+                    ),
+                  ],
+                },
+                h,
+              ),
+              grid(
+                {
+                  children: [
+                    tableRegion(
                       {
                         children: [
-                          button(
-                            {
-                              leadingIcon: icon({ name: 'arrow-down' }, h),
-                              children: ['Export'],
-                              size: 'sm',
-                              variant: 'outline',
-                            },
+                          dataTable(
+                            ['Channel', 'This period', 'Prior', 'Delta'],
+                            [
+                              [
+                                'Organic search',
+                                '$74.2K',
+                                '$66.8K',
+                                badge(
+                                  {
+                                    children: ['+11.1%'],
+                                    variant: 'secondary',
+                                  },
+                                  h,
+                                ),
+                              ],
+                              [
+                                'Direct',
+                                '$41.9K',
+                                '$40.1K',
+                                badge(
+                                  { children: ['+4.5%'], variant: 'secondary' },
+                                  h,
+                                ),
+                              ],
+                              [
+                                'Referral',
+                                '$32.6K',
+                                '$35.4K',
+                                badge(
+                                  { children: ['−7.9%'], variant: 'outline' },
+                                  h,
+                                ),
+                              ],
+                              [
+                                'Paid social',
+                                '$33.7K',
+                                '$25.2K',
+                                badge(
+                                  {
+                                    children: ['+33.7%'],
+                                    variant: 'secondary',
+                                  },
+                                  h,
+                                ),
+                              ],
+                            ],
                             h,
                           ),
                         ],
-                        gap: 'xs',
+                        heading: 'Breakdown by channel',
+                      },
+                      h,
+                    ),
+                    tableRegion(
+                      {
+                        children: [
+                          dataTable(
+                            ['Region', 'This period', 'Prior', 'Delta'],
+                            [
+                              [
+                                'North America',
+                                '$96.4K',
+                                '$88.2K',
+                                badge(
+                                  { children: ['+9.3%'], variant: 'secondary' },
+                                  h,
+                                ),
+                              ],
+                              [
+                                'Europe',
+                                '$58.1K',
+                                '$55.6K',
+                                badge(
+                                  { children: ['+4.5%'], variant: 'secondary' },
+                                  h,
+                                ),
+                              ],
+                              [
+                                'Asia Pacific',
+                                '$21.3K',
+                                '$19.8K',
+                                badge(
+                                  { children: ['+7.6%'], variant: 'secondary' },
+                                  h,
+                                ),
+                              ],
+                              [
+                                'Other',
+                                '$6.6K',
+                                '$7.9K',
+                                badge(
+                                  { children: ['−16.5%'], variant: 'outline' },
+                                  h,
+                                ),
+                              ],
+                            ],
+                            h,
+                          ),
+                        ],
+                        heading: 'Breakdown by region',
                       },
                       h,
                     ),
                   ],
-                  label: 'Global filters',
+                  columns: 'two',
+                  gap: 'md',
+                  width: 'full',
                 },
                 h,
               ),
             ],
-            padding: 'sm',
-            radius: 'lg',
-            surface: 'card',
-          },
-          h,
-        ),
-        metricGrid(
-          {
-            children: [
-              sparkTile(
-                'Revenue',
-                '$182.4K',
-                '+12.1%',
-                ['vs 7d +4.2%', 'vs 30d +9.8%', 'plan −1.2%'],
-                revenueSparkChart(toMessage, h),
-              ),
-              sparkTile(
-                'Active sessions',
-                '48.2K',
-                '+6.4%',
-                ['vs 7d +1.9%', 'vs 30d +6.4%', 'plan +2.0%'],
-                sessionSparkChart(toMessage, h),
-              ),
-              sparkTile(
-                'Conversion',
-                '3.42%',
-                '−0.3%',
-                ['vs 7d −0.3%', 'vs 30d +0.4%', 'plan −0.2%'],
-                conversionSparkChart(toMessage, h),
-              ),
-              sparkTile(
-                'Activation',
-                '41.8%',
-                '+3.7%',
-                ['vs 7d +0.9%', 'vs 30d +3.7%', 'plan +1.4%'],
-                activationSparkChart(toMessage, h),
-              ),
-            ],
-          },
-          h,
-        ),
-        grid(
-          {
-            children: [
-              tableRegion(
-                {
-                  children: [
-                    dataTable(
-                      ['Channel', 'This period', 'Prior', 'Delta'],
-                      [
-                        [
-                          'Organic search',
-                          '$74.2K',
-                          '$66.8K',
-                          badge(
-                            { children: ['+11.1%'], variant: 'secondary' },
-                            h,
-                          ),
-                        ],
-                        [
-                          'Direct',
-                          '$41.9K',
-                          '$40.1K',
-                          badge(
-                            { children: ['+4.5%'], variant: 'secondary' },
-                            h,
-                          ),
-                        ],
-                        [
-                          'Referral',
-                          '$32.6K',
-                          '$35.4K',
-                          badge({ children: ['−7.9%'], variant: 'outline' }, h),
-                        ],
-                        [
-                          'Paid social',
-                          '$33.7K',
-                          '$25.2K',
-                          badge(
-                            { children: ['+33.7%'], variant: 'secondary' },
-                            h,
-                          ),
-                        ],
-                      ],
-                      h,
-                    ),
-                  ],
-                  heading: 'Breakdown by channel',
-                },
-                h,
-              ),
-              tableRegion(
-                {
-                  children: [
-                    dataTable(
-                      ['Region', 'This period', 'Prior', 'Delta'],
-                      [
-                        [
-                          'North America',
-                          '$96.4K',
-                          '$88.2K',
-                          badge(
-                            { children: ['+9.3%'], variant: 'secondary' },
-                            h,
-                          ),
-                        ],
-                        [
-                          'Europe',
-                          '$58.1K',
-                          '$55.6K',
-                          badge(
-                            { children: ['+4.5%'], variant: 'secondary' },
-                            h,
-                          ),
-                        ],
-                        [
-                          'Asia Pacific',
-                          '$21.3K',
-                          '$19.8K',
-                          badge(
-                            { children: ['+7.6%'], variant: 'secondary' },
-                            h,
-                          ),
-                        ],
-                        [
-                          'Other',
-                          '$6.6K',
-                          '$7.9K',
-                          badge(
-                            { children: ['−16.5%'], variant: 'outline' },
-                            h,
-                          ),
-                        ],
-                      ],
-                      h,
-                    ),
-                  ],
-                  heading: 'Breakdown by region',
-                },
+            header: [
+              pageHeader(
+                'Data dashboard',
+                'Comparison reporting · refreshed 8 minutes ago',
+                [
+                  button(
+                    { children: ['Save view'], size: 'sm', variant: 'outline' },
+                    h,
+                  ),
+                  button({ children: ['Share'], size: 'sm' }, h),
+                ],
                 h,
               ),
             ],
-            columns: 'two',
-            gap: 'md',
-            width: 'full',
+            theme: 'comfortable',
           },
           h,
         ),
       ],
-      header: [
-        pageHeader(
-          'Data dashboard',
-          'Comparison reporting · refreshed 8 minutes ago',
-          [
-            button(
-              { children: ['Save view'], size: 'sm', variant: 'outline' },
-              h,
-            ),
-            button({ children: ['Share'], size: 'sm' }, h),
-          ],
-          h,
-        ),
-      ],
+      mobileOpen: chrome.mobileOpen,
       navigation: workspaceNavigation('Metrics', h),
-      theme: 'comfortable',
+      onMobileToggle: chrome.onMobileToggle,
+      onToggle: chrome.onToggle,
+      trail: [
+        { href: '#', kind: 'link', label: 'Northwind' },
+        { kind: 'page', label: 'Metrics' },
+      ],
     },
     h,
   )
@@ -1977,6 +2059,7 @@ const CATALOG_KINDS: ReadonlyArray<Readonly<{ id: string; label: string }>> = [
 ]
 
 export const cardGrid = <Message>(
+  chrome: ChromeState<Message>,
   props: Readonly<{
     kind: string
     onClear: Message
@@ -1994,153 +2077,191 @@ export const cardGrid = <Message>(
         product.name.toLowerCase().includes(query) ||
         product.format.toLowerCase().includes(query)),
   )
-  return commercePage(
+  return appChrome(
     {
-      cart: section(
-        {
-          children: [
-            itemGroup(
+      collapsed: chrome.collapsed,
+      content: [
+        commercePage(
+          {
+            cart: section(
               {
-                children: CATALOG_PRODUCTS.filter(product => product.saved).map(
-                  product =>
-                    item(
+                children: [
+                  itemGroup(
+                    {
+                      children: CATALOG_PRODUCTS.filter(
+                        product => product.saved,
+                      ).map(product =>
+                        item(
+                          {
+                            children: [
+                              itemMedia(
+                                {
+                                  children: [icon({ name: 'image' }, h)],
+                                  variant: 'icon',
+                                },
+                                h,
+                              ),
+                              itemContent(
+                                {
+                                  children: [
+                                    itemTitle({ children: [product.name] }, h),
+                                    itemDescription(
+                                      { children: [product.format] },
+                                      h,
+                                    ),
+                                  ],
+                                },
+                                h,
+                              ),
+                              text(
+                                {
+                                  children: [product.price],
+                                  numeric: 'tabular',
+                                  variant: 'label',
+                                },
+                                h,
+                              ),
+                            ],
+                            size: 'sm',
+                          },
+                          h,
+                        ),
+                      ),
+                      spacing: 'md',
+                    },
+                    h,
+                  ),
+                  button(
+                    { children: ['Move all to cart'], variant: 'secondary' },
+                    h,
+                  ),
+                ],
+                description: 'Two products saved for later',
+                heading: 'Saved for later',
+                surface: 'plain',
+              },
+              h,
+            ),
+            header: [
+              pageHeader(
+                'Asset catalog',
+                'Curated templates, icon sets and fonts',
+                [
+                  button(
+                    {
+                      children: ['Newest first'],
+                      size: 'sm',
+                      variant: 'outline',
+                    },
+                    h,
+                  ),
+                  button(
+                    {
+                      leadingIcon: icon({ name: 'plus' }, h),
+                      children: ['Upload'],
+                      size: 'sm',
+                    },
+                    h,
+                  ),
+                ],
+                h,
+              ),
+            ],
+            products: [
+              box(
+                {
+                  children: [
+                    stack(
                       {
                         children: [
-                          itemMedia(
+                          input(
                             {
-                              children: [icon({ name: 'image' }, h)],
+                              id: 'catalog-search',
+                              label: 'Search assets',
+                              onInput: props.onQuery,
+                              placeholder: 'Search assets…',
+                              type: 'search',
+                              value: props.query,
+                            },
+                            h,
+                          ),
+                          inline(
+                            {
+                              children: CATALOG_KINDS.map(kind =>
+                                button(
+                                  {
+                                    children: [kind.label],
+                                    onClick: props.onKind(kind.id),
+                                    size: 'sm',
+                                    variant:
+                                      props.kind === kind.id
+                                        ? 'secondary'
+                                        : 'ghost',
+                                  },
+                                  h,
+                                ),
+                              ),
+                              gap: 'xs',
+                              wrap: true,
+                            },
+                            h,
+                          ),
+                        ],
+                        gap: 'sm',
+                      },
+                      h,
+                    ),
+                  ],
+                  padding: 'sm',
+                  radius: 'lg',
+                  surface: 'card',
+                },
+                h,
+              ),
+              ...(visible.length === 0
+                ? [
+                    empty(
+                      {
+                        children: [
+                          emptyMedia(
+                            {
+                              children: [
+                                icon({ name: 'search', size: 'md' }, h),
+                              ],
                               variant: 'icon',
                             },
                             h,
                           ),
-                          itemContent(
+                          emptyHeader(
                             {
                               children: [
-                                itemTitle({ children: [product.name] }, h),
-                                itemDescription(
-                                  { children: [product.format] },
+                                emptyTitle(
+                                  { children: ['No assets match'] },
+                                  h,
+                                ),
+                                emptyDescription(
+                                  {
+                                    children: [
+                                      `Nothing matches "${props.query}". Try a different search or clear the filter.`,
+                                    ],
+                                  },
                                   h,
                                 ),
                               ],
                             },
                             h,
                           ),
-                          text(
-                            {
-                              children: [product.price],
-                              numeric: 'tabular',
-                              variant: 'label',
-                            },
-                            h,
-                          ),
-                        ],
-                        size: 'sm',
-                      },
-                      h,
-                    ),
-                ),
-                spacing: 'md',
-              },
-              h,
-            ),
-            button({ children: ['Move all to cart'], variant: 'secondary' }, h),
-          ],
-          description: 'Two products saved for later',
-          heading: 'Saved for later',
-          surface: 'plain',
-        },
-        h,
-      ),
-      header: [
-        pageHeader(
-          'Asset catalog',
-          'Curated templates, icon sets and fonts',
-          [
-            button(
-              { children: ['Newest first'], size: 'sm', variant: 'outline' },
-              h,
-            ),
-            button(
-              {
-                leadingIcon: icon({ name: 'plus' }, h),
-                children: ['Upload'],
-                size: 'sm',
-              },
-              h,
-            ),
-          ],
-          h,
-        ),
-      ],
-      products: [
-        box(
-          {
-            children: [
-              stack(
-                {
-                  children: [
-                    input(
-                      {
-                        id: 'catalog-search',
-                        label: 'Search assets',
-                        onInput: props.onQuery,
-                        placeholder: 'Search assets…',
-                        type: 'search',
-                        value: props.query,
-                      },
-                      h,
-                    ),
-                    inline(
-                      {
-                        children: CATALOG_KINDS.map(kind =>
-                          button(
-                            {
-                              children: [kind.label],
-                              onClick: props.onKind(kind.id),
-                              size: 'sm',
-                              variant:
-                                props.kind === kind.id ? 'secondary' : 'ghost',
-                            },
-                            h,
-                          ),
-                        ),
-                        gap: 'xs',
-                        wrap: true,
-                      },
-                      h,
-                    ),
-                  ],
-                  gap: 'sm',
-                },
-                h,
-              ),
-            ],
-            padding: 'sm',
-            radius: 'lg',
-            surface: 'card',
-          },
-          h,
-        ),
-        ...(visible.length === 0
-          ? [
-              empty(
-                {
-                  children: [
-                    emptyMedia(
-                      {
-                        children: [icon({ name: 'search', size: 'md' }, h)],
-                        variant: 'icon',
-                      },
-                      h,
-                    ),
-                    emptyHeader(
-                      {
-                        children: [
-                          emptyTitle({ children: ['No assets match'] }, h),
-                          emptyDescription(
+                          emptyContent(
                             {
                               children: [
-                                `Nothing matches "${props.query}". Try a different search or clear the filter.`,
+                                button(
+                                  {
+                                    children: ['Clear search'],
+                                    onClick: props.onClear,
+                                    variant: 'outline',
+                                  },
+                                  h,
+                                ),
                               ],
                             },
                             h,
@@ -2149,39 +2270,34 @@ export const cardGrid = <Message>(
                       },
                       h,
                     ),
-                    emptyContent(
+                  ]
+                : [
+                    grid(
                       {
-                        children: [
-                          button(
-                            {
-                              children: ['Clear search'],
-                              onClick: props.onClear,
-                              variant: 'outline',
-                            },
-                            h,
-                          ),
-                        ],
+                        children: visible.map(product =>
+                          productCard(product, h),
+                        ),
+                        columns: 'gallery',
+                        gap: 'md',
+                        width: 'full',
                       },
                       h,
                     ),
-                  ],
-                },
-                h,
-              ),
-            ]
-          : [
-              grid(
-                {
-                  children: visible.map(product => productCard(product, h)),
-                  columns: 'gallery',
-                  gap: 'md',
-                  width: 'full',
-                },
-                h,
-              ),
-            ]),
+                  ]),
+            ],
+            theme: 'expressive',
+          },
+          h,
+        ),
       ],
-      theme: 'expressive',
+      mobileOpen: chrome.mobileOpen,
+      navigation: workspaceNavigation('Catalog', h),
+      onMobileToggle: chrome.onMobileToggle,
+      onToggle: chrome.onToggle,
+      trail: [
+        { href: '#', kind: 'link', label: 'Northwind' },
+        { kind: 'page', label: 'Catalog' },
+      ],
     },
     h,
   )
@@ -2189,6 +2305,7 @@ export const cardGrid = <Message>(
 
 /* CreaseUI "Checkout Form": a long sectioned form beside a sticky order summary. */
 export const checkoutForm = <Message>(
+  chrome: ChromeState<Message>,
   props: Readonly<{
     delivery: string
     fields: Readonly<Record<string, string>>
@@ -2223,284 +2340,306 @@ export const checkoutForm = <Message>(
       h,
     )
 
-  return masterDetailPage(
+  return appChrome(
     {
-      detail: section(
-        {
-          children: [
-            stack(
+      collapsed: chrome.collapsed,
+      content: [
+        masterDetailPage(
+          {
+            detail: section(
               {
                 children: [
-                  itemGroup(
+                  stack(
                     {
                       children: [
-                        ['Canvas Field Jacket', '1', '$168.00'],
-                        ['Merino Crew Sock · 3 pack', '2', '$64.00'],
-                        ['Enamel Camp Mug', '1', '$16.00'],
-                      ].map(([name, qty, price]) =>
-                        item(
+                        itemGroup(
                           {
                             children: [
-                              itemMedia(
-                                {
-                                  children: [icon({ name: 'image' }, h)],
-                                  variant: 'icon',
-                                },
-                                h,
-                              ),
-                              itemContent(
+                              ['Canvas Field Jacket', '1', '$168.00'],
+                              ['Merino Crew Sock · 3 pack', '2', '$64.00'],
+                              ['Enamel Camp Mug', '1', '$16.00'],
+                            ].map(([name, qty, price]) =>
+                              item(
                                 {
                                   children: [
-                                    itemTitle({ children: [name ?? ''] }, h),
-                                    itemDescription(
-                                      { children: [`Qty ${qty ?? ''}`] },
+                                    itemMedia(
+                                      {
+                                        children: [icon({ name: 'image' }, h)],
+                                        variant: 'icon',
+                                      },
+                                      h,
+                                    ),
+                                    itemContent(
+                                      {
+                                        children: [
+                                          itemTitle(
+                                            { children: [name ?? ''] },
+                                            h,
+                                          ),
+                                          itemDescription(
+                                            { children: [`Qty ${qty ?? ''}`] },
+                                            h,
+                                          ),
+                                        ],
+                                      },
+                                      h,
+                                    ),
+                                    text(
+                                      {
+                                        children: [price ?? ''],
+                                        numeric: 'tabular',
+                                        variant: 'label',
+                                      },
                                       h,
                                     ),
                                   ],
+                                  size: 'sm',
                                 },
+                                h,
+                              ),
+                            ),
+                            spacing: 'md',
+                          },
+                          h,
+                        ),
+                        separator({}, h),
+                        stack(
+                          {
+                            children: [
+                              summaryLine('Subtotal', '$248.00'),
+                              summaryLine(
+                                'Shipping',
+                                props.delivery === 'express'
+                                  ? '$12.00'
+                                  : props.delivery === 'pickup'
+                                    ? '$0.00'
+                                    : '$8.00',
+                              ),
+                              summaryLine('Tax', '$12.40'),
+                            ],
+                            gap: 'sm',
+                          },
+                          h,
+                        ),
+                        separator({}, h),
+                        inline(
+                          {
+                            children: [
+                              text(
+                                { children: ['Total'], variant: 'label' },
                                 h,
                               ),
                               text(
                                 {
-                                  children: [price ?? ''],
+                                  children: [
+                                    props.delivery === 'express'
+                                      ? '$272.40'
+                                      : props.delivery === 'pickup'
+                                        ? '$260.40'
+                                        : '$268.40',
+                                  ],
                                   numeric: 'tabular',
-                                  variant: 'label',
+                                  variant: 'headingSm',
                                 },
                                 h,
                               ),
                             ],
-                            size: 'sm',
+                            justify: 'between',
+                            width: 'full',
                           },
                           h,
                         ),
-                      ),
-                      spacing: 'md',
-                    },
-                    h,
-                  ),
-                  separator({}, h),
-                  stack(
-                    {
-                      children: [
-                        summaryLine('Subtotal', '$248.00'),
-                        summaryLine(
-                          'Shipping',
-                          props.delivery === 'express'
-                            ? '$12.00'
-                            : props.delivery === 'pickup'
-                              ? '$0.00'
-                              : '$8.00',
-                        ),
-                        summaryLine('Tax', '$12.40'),
-                      ],
-                      gap: 'sm',
-                    },
-                    h,
-                  ),
-                  separator({}, h),
-                  inline(
-                    {
-                      children: [
-                        text({ children: ['Total'], variant: 'label' }, h),
-                        text(
+                        button(
                           {
                             children: [
-                              props.delivery === 'express'
-                                ? '$272.40'
-                                : props.delivery === 'pickup'
-                                  ? '$260.40'
-                                  : '$268.40',
+                              `Pay ${props.delivery === 'express' ? '$272.40' : props.delivery === 'pickup' ? '$260.40' : '$268.40'}`,
                             ],
-                            numeric: 'tabular',
-                            variant: 'headingSm',
+                          },
+                          h,
+                        ),
+                        text(
+                          {
+                            align: 'center',
+                            children: ['Secure checkout · 30-day returns'],
+                            tone: 'secondary',
+                            variant: 'caption',
                           },
                           h,
                         ),
                       ],
-                      justify: 'between',
-                      width: 'full',
-                    },
-                    h,
-                  ),
-                  button(
-                    {
-                      children: [
-                        `Pay ${props.delivery === 'express' ? '$272.40' : props.delivery === 'pickup' ? '$260.40' : '$268.40'}`,
-                      ],
-                    },
-                    h,
-                  ),
-                  text(
-                    {
-                      align: 'center',
-                      children: ['Secure checkout · 30-day returns'],
-                      tone: 'secondary',
-                      variant: 'caption',
+                      gap: 'md',
                     },
                     h,
                   ),
                 ],
-                gap: 'md',
+                description: 'Updates as delivery changes',
+                heading: 'Order summary',
+                surface: 'card',
               },
               h,
             ),
-          ],
-          description: 'Updates as delivery changes',
-          heading: 'Order summary',
-          surface: 'card',
-        },
-        h,
-      ),
-      detailBehavior: 'stack',
-      header: [
-        pageHeader(
-          'Checkout',
-          'Order #1043 · 3 items',
-          [badge({ children: ['Secure'], variant: 'secondary' }, h)],
-          h,
-        ),
-      ],
-      master: [
-        section(
-          {
-            children: [
-              grid(
+            detailBehavior: 'stack',
+            header: [
+              pageHeader(
+                'Checkout',
+                'Order #1043 · 3 items',
+                [badge({ children: ['Secure'], variant: 'secondary' }, h)],
+                h,
+              ),
+            ],
+            master: [
+              section(
                 {
                   children: [
-                    field('email', 'Email', 'you@example.com'),
-                    field('phoneNumber', 'Phone', '+1 (555) 010-0100'),
+                    grid(
+                      {
+                        children: [
+                          field('email', 'Email', 'you@example.com'),
+                          field('phoneNumber', 'Phone', '+1 (555) 010-0100'),
+                        ],
+                        columns: 'two',
+                        gap: 'md',
+                        width: 'full',
+                      },
+                      h,
+                    ),
                   ],
-                  columns: 'two',
-                  gap: 'md',
-                  width: 'full',
+                  description: 'Receipt and tracking go here',
+                  heading: 'Contact',
+                  surface: 'card',
+                },
+                h,
+              ),
+              section(
+                {
+                  children: [
+                    grid(
+                      {
+                        children: [
+                          field('firstName', 'First name', 'Robin'),
+                          field('lastName', 'Last name', 'Adler'),
+                        ],
+                        columns: 'two',
+                        gap: 'md',
+                        width: 'full',
+                      },
+                      h,
+                    ),
+                    field('address', 'Address', '44 Beacon St'),
+                    grid(
+                      {
+                        children: [
+                          field('city', 'City', 'Boston'),
+                          field('postal', 'Postal code', '02108'),
+                        ],
+                        columns: 'two',
+                        gap: 'md',
+                        width: 'full',
+                      },
+                      h,
+                    ),
+                    nativeSelect(
+                      {
+                        id: 'checkout-country',
+                        label: 'Country',
+                        onChange: value => props.onField('country', value),
+                        options: [
+                          { label: 'United States', value: 'us' },
+                          { label: 'Canada', value: 'ca' },
+                          { label: 'United Kingdom', value: 'uk' },
+                          { label: 'Germany', value: 'de' },
+                        ],
+                        value: props.fields['country'] ?? 'us',
+                      },
+                      h,
+                    ),
+                  ],
+                  heading: 'Shipping',
+                  surface: 'card',
+                },
+                h,
+              ),
+              section(
+                {
+                  children: [
+                    RadioGroup.radioGroup(
+                      {
+                        ariaLabel: 'Delivery method',
+                        model: props.radioGroup,
+                        options: [
+                          {
+                            description: 'Free · arrives Sep 28',
+                            label: 'Standard',
+                            value: 'standard',
+                          },
+                          {
+                            description: '$12.00 · arrives Sep 22',
+                            label: 'Express',
+                            value: 'express',
+                          },
+                          {
+                            description: 'Free · South End depot',
+                            label: 'Store pickup',
+                            value: 'pickup',
+                          },
+                        ],
+                        selectedValue: Option.some(props.delivery),
+                        toParentMessage: props.toRadioGroupMessage,
+                      },
+                      h,
+                    ),
+                  ],
+                  description: 'Affects the order total',
+                  heading: 'Delivery method',
+                  surface: 'card',
+                },
+                h,
+              ),
+              section(
+                {
+                  children: [
+                    field('card', 'Card number', '4242 4242 4242 4242'),
+                    grid(
+                      {
+                        children: [
+                          field('expiry', 'Expiry', 'MM / YY'),
+                          field('cvc', 'CVC', '123'),
+                        ],
+                        columns: 'two',
+                        gap: 'md',
+                        width: 'full',
+                      },
+                      h,
+                    ),
+                    fieldSeparator({ children: ['Or pay with'] }, h),
+                    button(
+                      {
+                        leadingIcon: icon({ name: 'wallet' }, h),
+                        children: ['Wallet'],
+                        variant: 'outline',
+                      },
+                      h,
+                    ),
+                  ],
+                  heading: 'Payment',
+                  surface: 'card',
                 },
                 h,
               ),
             ],
-            description: 'Receipt and tracking go here',
-            heading: 'Contact',
-            surface: 'card',
-          },
-          h,
-        ),
-        section(
-          {
-            children: [
-              grid(
-                {
-                  children: [
-                    field('firstName', 'First name', 'Robin'),
-                    field('lastName', 'Last name', 'Adler'),
-                  ],
-                  columns: 'two',
-                  gap: 'md',
-                  width: 'full',
-                },
-                h,
-              ),
-              field('address', 'Address', '44 Beacon St'),
-              grid(
-                {
-                  children: [
-                    field('city', 'City', 'Boston'),
-                    field('postal', 'Postal code', '02108'),
-                  ],
-                  columns: 'two',
-                  gap: 'md',
-                  width: 'full',
-                },
-                h,
-              ),
-              nativeSelect(
-                {
-                  id: 'checkout-country',
-                  label: 'Country',
-                  onChange: value => props.onField('country', value),
-                  options: [
-                    { label: 'United States', value: 'us' },
-                    { label: 'Canada', value: 'ca' },
-                    { label: 'United Kingdom', value: 'uk' },
-                    { label: 'Germany', value: 'de' },
-                  ],
-                  value: props.fields['country'] ?? 'us',
-                },
-                h,
-              ),
-            ],
-            heading: 'Shipping',
-            surface: 'card',
-          },
-          h,
-        ),
-        section(
-          {
-            children: [
-              RadioGroup.radioGroup(
-                {
-                  ariaLabel: 'Delivery method',
-                  model: props.radioGroup,
-                  options: [
-                    {
-                      description: 'Free · arrives Sep 28',
-                      label: 'Standard',
-                      value: 'standard',
-                    },
-                    {
-                      description: '$12.00 · arrives Sep 22',
-                      label: 'Express',
-                      value: 'express',
-                    },
-                    {
-                      description: 'Free · South End depot',
-                      label: 'Store pickup',
-                      value: 'pickup',
-                    },
-                  ],
-                  selectedValue: Option.some(props.delivery),
-                  toParentMessage: props.toRadioGroupMessage,
-                },
-                h,
-              ),
-            ],
-            description: 'Affects the order total',
-            heading: 'Delivery method',
-            surface: 'card',
-          },
-          h,
-        ),
-        section(
-          {
-            children: [
-              field('card', 'Card number', '4242 4242 4242 4242'),
-              grid(
-                {
-                  children: [
-                    field('expiry', 'Expiry', 'MM / YY'),
-                    field('cvc', 'CVC', '123'),
-                  ],
-                  columns: 'two',
-                  gap: 'md',
-                  width: 'full',
-                },
-                h,
-              ),
-              fieldSeparator({ children: ['Or pay with'] }, h),
-              button(
-                {
-                  leadingIcon: icon({ name: 'wallet' }, h),
-                  children: ['Wallet'],
-                  variant: 'outline',
-                },
-                h,
-              ),
-            ],
-            heading: 'Payment',
-            surface: 'card',
+            theme: 'comfortable',
           },
           h,
         ),
       ],
-      theme: 'comfortable',
+      mobileOpen: chrome.mobileOpen,
+      navigation: workspaceNavigation('Checkout', h),
+      onMobileToggle: chrome.onMobileToggle,
+      onToggle: chrome.onToggle,
+      trail: [
+        { href: '#', kind: 'link', label: 'Northwind' },
+        { kind: 'page', label: 'Checkout' },
+      ],
     },
     h,
   )
