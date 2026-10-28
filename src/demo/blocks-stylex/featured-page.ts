@@ -18,7 +18,6 @@ import * as RadioGroup from '@/stylex/radio-group'
 import { dataTable, type DataTableColumn } from '@/stylex/data-table'
 import {
   box,
-  dashboardShell,
   grid,
   inline,
   metricGrid,
@@ -28,8 +27,8 @@ import {
   text,
   toolbar,
 } from '@/stylex/composition'
+import { appChrome, type ChromeState } from './app-chrome'
 import {
-  sidebar,
   sidebarContent,
   sidebarFooter,
   sidebarGroup,
@@ -76,6 +75,8 @@ export const Model = S.Struct({
   password: S.String,
   query: S.String,
   radioGroup: RadioGroup.Model,
+  sidebarCollapsed: S.Boolean,
+  sidebarMobileOpen: S.Boolean,
   table: TableState.Model,
   tablecn: TablecnPage.Model,
   tablecnGrid: TablecnPage.Model,
@@ -117,9 +118,15 @@ export const GotTablecnGridMessage = taggedStruct(
     message: TablecnPage.Message,
   },
 )
+export const ToggledBlockSidebar = taggedStruct('ToggledBlockSidebar')
+export const ToggledBlockMobileSidebar = taggedStruct(
+  'ToggledBlockMobileSidebar',
+)
 export const Message = S.Union([
   TableState.Message,
   GotEChartMessage,
+  ToggledBlockSidebar,
+  ToggledBlockMobileSidebar,
   ChangedEmail,
   ChangedPassword,
   ChangedQuery,
@@ -143,6 +150,8 @@ export const init = (): Model => ({
   password: '',
   query: '',
   radioGroup: RadioGroup.init({ id: 'checkout-delivery' }),
+  sidebarCollapsed: false,
+  sidebarMobileOpen: false,
   table: TableState.init(10),
   tablecn: TablecnPage.init(),
   tablecnGrid: TablecnPage.init('data-grid'),
@@ -167,6 +176,14 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   if (message._tag === 'GotBlocksStyleXEChartMessage') return { model: model }
+  if (message._tag === 'ToggledBlockSidebar')
+    return {
+      model: { ...model, sidebarCollapsed: !model.sidebarCollapsed },
+    }
+  if (message._tag === 'ToggledBlockMobileSidebar')
+    return {
+      model: { ...model, sidebarMobileOpen: !model.sidebarMobileOpen },
+    }
   if (message._tag === 'GotBlockTablecnMessage') {
     const { model: tablecn, commands: tablecnCommands__ } = TablecnPage.update(
       model.tablecn,
@@ -441,312 +458,275 @@ const dashboardTable = (model: Model, h: HtmlBuilder<Message>): Html =>
   )
 
 const dashboard = (model: Model, h: HtmlBuilder<Message>): Html =>
-  dashboardShell(
+  appChrome(
     {
-      navigation: sidebar(
-        {
-          children: [
-            sidebarHeader(
-              {
-                children: [
-                  inline(
-                    {
-                      align: 'center',
-                      children: [
-                        badge({ children: ['A'], variant: 'default' }, h),
-                        text({ children: ['Acme Inc.'], variant: 'label' }, h),
-                      ],
-                      gap: 'sm',
-                    },
-                    h,
-                  ),
-                ],
-              },
-              h,
-            ),
-            sidebarContent(
-              {
-                children: [
-                  sidebarGroup(
-                    {
-                      children: [
-                        sidebarGroupContent(
-                          {
-                            children: [
-                              sidebarMenu(
-                                {
-                                  children: [
-                                    sidebarMenuItem(
-                                      {
-                                        children: [
-                                          sidebarMenuButton(
-                                            {
-                                              children: [
-                                                icon(
-                                                  { name: 'circle-plus' },
-                                                  h,
-                                                ),
-                                                'Quick Create',
-                                              ],
-                                              variant: 'primary',
-                                            },
-                                            h,
-                                          ),
-                                        ],
-                                      },
-                                      h,
-                                    ),
-                                  ],
-                                },
-                                h,
-                              ),
-                            ],
-                          },
-                          h,
-                        ),
-                      ],
-                    },
-                    h,
-                  ),
-                  sidebarGroup(
-                    {
-                      children: [
-                        sidebarGroupLabel({ children: ['Platform'] }, h),
-                        sidebarGroupContent(
-                          {
-                            children: [
-                              sidebarMenu(
-                                {
-                                  children: [
-                                    ['Dashboard', 'gauge'],
-                                    ['Lifecycle', 'list'],
-                                    ['Analytics', 'radar'],
-                                    ['Projects', 'file'],
-                                    ['Team', 'group'],
-                                  ].map(([label, iconName], index) =>
-                                    sidebarMenuItem(
-                                      {
-                                        children: [
-                                          sidebarMenuButton(
-                                            {
-                                              children: [
-                                                icon(
-                                                  {
-                                                    name: iconName ?? 'circle',
-                                                  },
-                                                  h,
-                                                ),
-                                                label ?? '',
-                                              ],
-                                              isActive: index === 0,
-                                            },
-                                            h,
-                                          ),
-                                        ],
-                                      },
-                                      h,
-                                    ),
-                                  ),
-                                },
-                                h,
-                              ),
-                            ],
-                          },
-                          h,
-                        ),
-                      ],
-                    },
-                    h,
-                  ),
-                  sidebarGroup(
-                    {
-                      children: [
-                        sidebarGroupLabel({ children: ['Documents'] }, h),
-                        sidebarGroupContent(
-                          {
-                            children: [
-                              sidebarMenu(
-                                {
-                                  children: [
-                                    ['Data Library', 'database'],
-                                    ['Reports', 'file-chart-column'],
-                                    ['Word Assistant', 'file-pen-line'],
-                                  ].map(([label, iconName]) =>
-                                    sidebarMenuItem(
-                                      {
-                                        children: [
-                                          sidebarMenuButton(
-                                            {
-                                              children: [
-                                                icon(
-                                                  { name: iconName ?? 'file' },
-                                                  h,
-                                                ),
-                                                label ?? '',
-                                              ],
-                                            },
-                                            h,
-                                          ),
-                                        ],
-                                      },
-                                      h,
-                                    ),
-                                  ),
-                                },
-                                h,
-                              ),
-                            ],
-                          },
-                          h,
-                        ),
-                      ],
-                      spacing: 'later',
-                    },
-                    h,
-                  ),
-                  sidebarGroup(
-                    {
-                      children: [
-                        sidebarGroupContent(
-                          {
-                            children: [
-                              sidebarMenu(
-                                {
-                                  children: [
-                                    ['Settings', 'settings-2'],
-                                    ['Get Help', 'circle-question-mark'],
-                                    ['Search', 'search'],
-                                  ].map(([label, iconName]) =>
-                                    sidebarMenuItem(
-                                      {
-                                        children: [
-                                          sidebarMenuButton(
-                                            {
-                                              children: [
-                                                icon(
-                                                  {
-                                                    name: iconName ?? 'circle',
-                                                  },
-                                                  h,
-                                                ),
-                                                label ?? '',
-                                              ],
-                                            },
-                                            h,
-                                          ),
-                                        ],
-                                      },
-                                      h,
-                                    ),
-                                  ),
-                                },
-                                h,
-                              ),
-                            ],
-                          },
-                          h,
-                        ),
-                      ],
-                      spacing: 'later',
-                    },
-                    h,
-                  ),
-                ],
-              },
-              h,
-            ),
-            sidebarFooter(
-              {
-                children: [
-                  sidebarMenu(
-                    {
-                      children: [
-                        sidebarMenuItem(
-                          {
-                            children: [
-                              sidebarMenuButton(
-                                {
-                                  children: [
-                                    badge(
-                                      { children: ['SC'], variant: 'outline' },
-                                      h,
-                                    ),
-                                    stack(
-                                      {
-                                        children: [
-                                          text(
-                                            {
-                                              children: ['CreaseUI'],
-                                              variant: 'label',
-                                            },
-                                            h,
-                                          ),
-                                          text(
-                                            {
-                                              children: ['m@example.com'],
-                                              tone: 'secondary',
-                                              variant: 'caption',
-                                            },
-                                            h,
-                                          ),
-                                        ],
-                                        gap: 'none',
-                                      },
-                                      h,
-                                    ),
-                                    icon({ name: 'chevrons-up-down' }, h),
-                                  ],
-                                  size: 'lg',
-                                },
-                                h,
-                              ),
-                            ],
-                          },
-                          h,
-                        ),
-                      ],
-                    },
-                    h,
-                  ),
-                ],
-              },
-              h,
-            ),
-          ],
-          collapsible: 'none',
-        },
-        h,
-      ),
-      header: [
-        inline(
+      navigation: [
+        sidebarHeader(
           {
             children: [
               inline(
                 {
                   align: 'center',
                   children: [
-                    icon({ name: 'blocks' }, h),
-                    text(
-                      {
-                        as: 'h1',
-                        children: ['Documents'],
-                        variant: 'headingSm',
-                      },
-                      h,
-                    ),
+                    badge({ children: ['A'], variant: 'default' }, h),
+                    text({ children: ['Acme Inc.'], variant: 'label' }, h),
                   ],
                   gap: 'sm',
                 },
                 h,
               ),
-              button({ children: ['GitHub'], size: 'sm', variant: 'ghost' }, h),
             ],
-            align: 'center',
-            justify: 'between',
-            width: 'full',
           },
           h,
         ),
+        sidebarContent(
+          {
+            children: [
+              sidebarGroup(
+                {
+                  children: [
+                    sidebarGroupContent(
+                      {
+                        children: [
+                          sidebarMenu(
+                            {
+                              children: [
+                                sidebarMenuItem(
+                                  {
+                                    children: [
+                                      sidebarMenuButton(
+                                        {
+                                          children: [
+                                            icon({ name: 'circle-plus' }, h),
+                                            'Quick Create',
+                                          ],
+                                          variant: 'primary',
+                                        },
+                                        h,
+                                      ),
+                                    ],
+                                  },
+                                  h,
+                                ),
+                              ],
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+              sidebarGroup(
+                {
+                  children: [
+                    sidebarGroupLabel({ children: ['Platform'] }, h),
+                    sidebarGroupContent(
+                      {
+                        children: [
+                          sidebarMenu(
+                            {
+                              children: [
+                                ['Dashboard', 'gauge'],
+                                ['Lifecycle', 'list'],
+                                ['Analytics', 'radar'],
+                                ['Projects', 'file'],
+                                ['Team', 'group'],
+                              ].map(([label, iconName], index) =>
+                                sidebarMenuItem(
+                                  {
+                                    children: [
+                                      sidebarMenuButton(
+                                        {
+                                          children: [
+                                            icon(
+                                              {
+                                                name: iconName ?? 'circle',
+                                              },
+                                              h,
+                                            ),
+                                            label ?? '',
+                                          ],
+                                          isActive: index === 0,
+                                        },
+                                        h,
+                                      ),
+                                    ],
+                                  },
+                                  h,
+                                ),
+                              ),
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+              sidebarGroup(
+                {
+                  children: [
+                    sidebarGroupLabel({ children: ['Documents'] }, h),
+                    sidebarGroupContent(
+                      {
+                        children: [
+                          sidebarMenu(
+                            {
+                              children: [
+                                ['Data Library', 'database'],
+                                ['Reports', 'file-chart-column'],
+                                ['Word Assistant', 'file-pen-line'],
+                              ].map(([label, iconName]) =>
+                                sidebarMenuItem(
+                                  {
+                                    children: [
+                                      sidebarMenuButton(
+                                        {
+                                          children: [
+                                            icon(
+                                              { name: iconName ?? 'file' },
+                                              h,
+                                            ),
+                                            label ?? '',
+                                          ],
+                                        },
+                                        h,
+                                      ),
+                                    ],
+                                  },
+                                  h,
+                                ),
+                              ),
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                  spacing: 'later',
+                },
+                h,
+              ),
+              sidebarGroup(
+                {
+                  children: [
+                    sidebarGroupContent(
+                      {
+                        children: [
+                          sidebarMenu(
+                            {
+                              children: [
+                                ['Settings', 'settings-2'],
+                                ['Get Help', 'circle-question-mark'],
+                                ['Search', 'search'],
+                              ].map(([label, iconName]) =>
+                                sidebarMenuItem(
+                                  {
+                                    children: [
+                                      sidebarMenuButton(
+                                        {
+                                          children: [
+                                            icon(
+                                              {
+                                                name: iconName ?? 'circle',
+                                              },
+                                              h,
+                                            ),
+                                            label ?? '',
+                                          ],
+                                        },
+                                        h,
+                                      ),
+                                    ],
+                                  },
+                                  h,
+                                ),
+                              ),
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                  spacing: 'later',
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+        sidebarFooter(
+          {
+            children: [
+              sidebarMenu(
+                {
+                  children: [
+                    sidebarMenuItem(
+                      {
+                        children: [
+                          sidebarMenuButton(
+                            {
+                              children: [
+                                badge(
+                                  { children: ['SC'], variant: 'outline' },
+                                  h,
+                                ),
+                                stack(
+                                  {
+                                    children: [
+                                      text(
+                                        {
+                                          children: ['CreaseUI'],
+                                          variant: 'label',
+                                        },
+                                        h,
+                                      ),
+                                      text(
+                                        {
+                                          children: ['m@example.com'],
+                                          tone: 'secondary',
+                                          variant: 'caption',
+                                        },
+                                        h,
+                                      ),
+                                    ],
+                                    gap: 'none',
+                                  },
+                                  h,
+                                ),
+                                icon({ name: 'chevrons-up-down' }, h),
+                              ],
+                              size: 'lg',
+                            },
+                            h,
+                          ),
+                        ],
+                      },
+                      h,
+                    ),
+                  ],
+                },
+                h,
+              ),
+            ],
+          },
+          h,
+        ),
+      ],
+      actions: [
+        button({ children: ['GitHub'], size: 'sm', variant: 'ghost' }, h),
       ],
       content: [
         metricGrid(
@@ -879,7 +859,14 @@ const dashboard = (model: Model, h: HtmlBuilder<Message>): Html =>
           h,
         ),
       ],
-      navigationWidth: 'wide',
+      collapsed: model.sidebarCollapsed,
+      mobileOpen: model.sidebarMobileOpen,
+      onMobileToggle: ToggledBlockMobileSidebar(),
+      onToggle: ToggledBlockSidebar(),
+      trail: [
+        { href: '#', kind: 'link', label: 'Acme Inc.' },
+        { kind: 'page', label: 'Documents' },
+      ],
     },
     h,
   )
@@ -1050,6 +1037,13 @@ const loginImage = (model: Model, h: HtmlBuilder<Message>): Html =>
     h,
   )
 
+const chromeState = (model: Model): ChromeState<Message> => ({
+  collapsed: model.sidebarCollapsed,
+  mobileOpen: model.sidebarMobileOpen,
+  onMobileToggle: ToggledBlockMobileSidebar(),
+  onToggle: ToggledBlockSidebar(),
+})
+
 const blocks: ReadonlyArray<Block> = [
   {
     description: 'A dashboard with sidebar, charts and data table.',
@@ -1070,40 +1064,56 @@ const blocks: ReadonlyArray<Block> = [
     description:
       'Executive scorecard, objectives, trends and a narrative insight rail.',
     name: 'creaseui-executive-summary',
-    preview: (_model, h) =>
-      executiveSummaryDashboard(message => GotEChartMessage({ message }), h),
+    preview: (model, h) =>
+      executiveSummaryDashboard(
+        chromeState(model),
+        message => GotEChartMessage({ message }),
+        h,
+      ),
   },
   {
     description: 'Growth funnel, conversion trend and weekly cohort retention.',
     name: 'creaseui-cohort-funnel',
-    preview: (_model, h) =>
-      cohortFunnelDashboard(message => GotEChartMessage({ message }), h),
+    preview: (model, h) =>
+      cohortFunnelDashboard(
+        chromeState(model),
+        message => GotEChartMessage({ message }),
+        h,
+      ),
   },
   {
     description:
       'Launch milestones, weighted task progress, workstreams and risks.',
     name: 'creaseui-project-status',
-    preview: (_model, h) =>
-      projectStatusDashboard(message => GotEChartMessage({ message }), h),
+    preview: (model, h) =>
+      projectStatusDashboard(
+        chromeState(model),
+        message => GotEChartMessage({ message }),
+        h,
+      ),
   },
   {
     description:
       'Live service health, traffic metrics and an operational triage rail.',
     name: 'creaseui-service-monitoring',
-    preview: (_model, h) =>
-      serviceMonitoringDashboard(message => GotEChartMessage({ message }), h),
+    preview: (model, h) =>
+      serviceMonitoringDashboard(
+        chromeState(model),
+        message => GotEChartMessage({ message }),
+        h,
+      ),
   },
   {
     description:
       'Dense incident rows with filtering and a dedicated inspector panel.',
     name: 'creaseui-incident-console',
-    preview: (_model, h) => incidentConsoleDashboard(h),
+    preview: (model, h) => incidentConsoleDashboard(chromeState(model), h),
   },
   {
     description:
       'Four status lanes of task cards under a shared sprint toolbar.',
     name: 'creaseui-kanban-board',
-    preview: (_model, h) => kanbanBoard(h),
+    preview: (model, h) => kanbanBoard(chromeState(model), h),
   },
   {
     description:
@@ -1111,6 +1121,7 @@ const blocks: ReadonlyArray<Block> = [
     name: 'creaseui-inbox-table',
     preview: (model, h) =>
       inboxTable(
+        chromeState(model),
         {
           filter: model.mailFilter,
           onFilter: value => ChangedMailFilter({ value }),
@@ -1124,7 +1135,7 @@ const blocks: ReadonlyArray<Block> = [
     description:
       'A single record with line items, totals and an activity rail.',
     name: 'creaseui-order-detail',
-    preview: (_model, h) => orderDetail(h),
+    preview: (model, h) => orderDetail(chromeState(model), h),
   },
   {
     description:
@@ -1132,6 +1143,7 @@ const blocks: ReadonlyArray<Block> = [
     name: 'creaseui-checkout-form',
     preview: (model, h) =>
       checkoutForm(
+        chromeState(model),
         {
           delivery: model.delivery,
           fields: model.checkout,
@@ -1146,8 +1158,12 @@ const blocks: ReadonlyArray<Block> = [
     description:
       'Sparkline tiles with period-over-period deltas and segment breakdowns.',
     name: 'creaseui-data-dashboard',
-    preview: (_model, h) =>
-      dataDashboard(message => GotEChartMessage({ message }), h),
+    preview: (model, h) =>
+      dataDashboard(
+        chromeState(model),
+        message => GotEChartMessage({ message }),
+        h,
+      ),
   },
   {
     description:
@@ -1155,6 +1171,7 @@ const blocks: ReadonlyArray<Block> = [
     name: 'creaseui-card-grid',
     preview: (model, h) =>
       cardGrid(
+        chromeState(model),
         {
           kind: model.kind,
           onClear: ClearedCatalogSearch(),
@@ -1169,8 +1186,12 @@ const blocks: ReadonlyArray<Block> = [
     description:
       'Real Apache ECharts rendered inside constrained StyleX analytics recipes.',
     name: 'chart-analytics-dashboard',
-    preview: (_model, h) =>
-      chartAnalyticsDashboard(message => GotEChartMessage({ message }), h),
+    preview: (model, h) =>
+      chartAnalyticsDashboard(
+        chromeState(model),
+        message => GotEChartMessage({ message }),
+        h,
+      ),
   },
   {
     description:

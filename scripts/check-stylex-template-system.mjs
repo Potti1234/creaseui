@@ -85,7 +85,7 @@ assert.doesNotMatch(
 assert.doesNotMatch(source.layout, /\b\d+(?:px|rem)\b/u)
 assert.doesNotMatch(source.recipes, /\b\d+(?:px|rem)\b/u)
 for (const call of [
-  'dashboardShell',
+  'appChrome',
   'metricGrid',
   'section',
   'tableRegion',
