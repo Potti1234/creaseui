@@ -8,6 +8,7 @@ import { defineMessageUnion } from 'foldkit/message'
 import { defineView } from 'foldkit/submodel'
 import { modifyFields } from 'foldkit/struct'
 
+import type { ChromeState } from '@/demo/blocks-pleat/app-chrome'
 import * as BlocksBlocks from '@/demo/blocks-pleat/creaseui-blocks'
 import * as BlocksDashboards from '@/demo/blocks-pleat/creaseui-dashboards'
 import * as AccountAccess from '@/demo/pleat-cards/account-access'
@@ -884,6 +885,8 @@ export const Model = S.Struct({
     chart: ColorPicker.Model,
   }),
   canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
+  blocksSidebarCollapsed: S.Boolean,
+  blocksSidebarMobileOpen: S.Boolean,
   primitiveInspector: S.Struct({
     boxPadding: S.Literals(['responsive', 'none', 'sm', 'md', 'xl']),
     boxSurface: S.Literals(['card', 'muted', 'section']),
@@ -996,6 +999,8 @@ export const Message = defineMessageUnion({
   ChoseCreateCanvas: {
     canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   },
+  ToggledBlocksSidebar: {},
+  ToggledBlocksMobileSidebar: {},
   ClickedResetCreatePreset: {},
   ClickedCopyCreatePreset: {},
   ClickedShuffleCreatePreset: {},
@@ -1191,6 +1196,8 @@ export const init = (preset: Preset.Config = Preset.DEFAULT_CONFIG): Model => ({
     chart: initColorPicker('create-chart-picker', Preset.chartToken(preset)),
   },
   canvas: 'board',
+  blocksSidebarCollapsed: false,
+  blocksSidebarMobileOpen: false,
   primitiveInspector: {
     boxPadding: 'responsive',
     boxSurface: 'muted',
@@ -1493,6 +1500,16 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ChoseCreateCanvas: ({ canvas }) => ({
         model: modifyFields(model, {
           canvas: () => canvas,
+        }),
+      }),
+      ToggledBlocksSidebar: () => ({
+        model: modifyFields(model, {
+          blocksSidebarCollapsed: value => !value,
+        }),
+      }),
+      ToggledBlocksMobileSidebar: () => ({
+        model: modifyFields(model, {
+          blocksSidebarMobileOpen: value => !value,
         }),
       }),
       ClickedResetCreatePreset: () => ({
@@ -2861,15 +2878,28 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   /* Real blocks from the /blocks catalog, each framed so the canvas reads as
      distinct pieces rather than a squashed card grid. */
+  const blocksChrome: ChromeState<Message> = {
+    collapsed: model.blocksSidebarCollapsed,
+    mobileOpen: model.blocksSidebarMobileOpen,
+    onMobileToggle: Message['ToggledBlocksMobileSidebar'](),
+    onToggle: Message['ToggledBlocksSidebar'](),
+  }
+
   const blocksCanvas = h.div(
     [...themeAttrs(className(styles.blocksCanvas))],
     [
-      blockFrame('Kanban board', BlocksBlocks.kanbanBoard<Message>(h)),
+      blockFrame(
+        'Kanban board',
+        BlocksBlocks.kanbanBoard<Message>(blocksChrome, h),
+      ),
       blockFrame(
         'Incident console',
-        BlocksDashboards.incidentConsoleDashboard<Message>(h),
+        BlocksDashboards.incidentConsoleDashboard<Message>(blocksChrome, h),
       ),
-      blockFrame('Order detail', BlocksBlocks.orderDetail<Message>(h)),
+      blockFrame(
+        'Order detail',
+        BlocksBlocks.orderDetail<Message>(blocksChrome, h),
+      ),
     ],
   )
 
