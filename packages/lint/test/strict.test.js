@@ -1,5 +1,12 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
@@ -377,4 +384,47 @@ test('creaseui() returns scoped entries with exact implementation files', () => 
   assert.deepEqual(byName['@creaseui/lint/strict/theme'].files, [
     'src/design/contracts.ts',
   ])
+})
+
+/* A registered stylesheet is checked by `creaseui-lint css`, not parsed by
+   ESLint: no config block may name a `.css` path in `files`. */
+test('creaseui() keeps registered stylesheets out of ESLint file lists', () => {
+  const directory = mkdtempSync(path.join(tmpdir(), 'creaseui-css-ext-'))
+  mkdirSync(path.join(directory, 'src/theme'), { recursive: true })
+  writeFileSync(
+    path.join(directory, 'src/theme/geometry.css'),
+    ':root { --x: 1; }\n',
+  )
+  writeFileSync(
+    path.join(directory, 'src/theme/mode.ts'),
+    'export const mode = 1\n',
+  )
+  for (const renderer of ['tailwind', 'stylex']) {
+    const entries = creaseui({
+      extensions: [
+        {
+          id: 'theme-preset',
+          reason: 'Generated theme stylesheet',
+          role: 'theme',
+          files: ['src/theme/geometry.css', 'src/theme/mode.ts'],
+        },
+      ],
+      manifest: {
+        artifacts: [],
+        policyVersion: 'crease-default-v1',
+        renderer,
+        schemaVersion: 1,
+      },
+      renderer,
+      rootDir: directory,
+    })
+    for (const entry of entries)
+      for (const file of entry.files ?? [])
+        assert.doesNotMatch(file, /\.css$/u, `${renderer}: ${entry.name}`)
+    assert.ok(
+      entries.some(entry => (entry.files ?? []).includes('src/theme/mode.ts')),
+      `${renderer}: script extension keeps its role`,
+    )
+  }
+  rmSync(directory, { force: true, recursive: true })
 })
