@@ -125,6 +125,125 @@ const ownerRoots = (strict, rootDir) => file => {
 
 const rendersHtml = file => /\bHtmlBuilder\b/u.test(readFileSync(file, 'utf8'))
 
+/* Receipt variants are what the lint enforces; doctor reconciles them with
+   the renderer's source of truth so a value added on one side only cannot
+   contradict the other. Tailwind components keep the allowed values as the
+   keys of each prop object inside `export const <name>Variants = cva(...)`;
+   StyleX and Pleat keep them as `<EXPORT>_<PROP>S` `as const` arrays in a
+   contracts module (e.g. BUTTON_VARIANTS, BUTTON_SIZES). */
+const constantPart = name =>
+  name.replace(/([a-z0-9])([A-Z])/gu, '$1_$2').toUpperCase()
+
+const propKey = name =>
+  name !== undefined && (ts.isIdentifier(name) || ts.isStringLiteral(name))
+    ? name.text
+    : null
+
+const literalValue = node => {
+  while (
+    ts.isAsExpression(node) ||
+    ts.isSatisfiesExpression(node) ||
+    ts.isParenthesizedExpression(node)
+  )
+    node = node.expression
+  if (ts.isStringLiteral(node)) return node.text
+  if (ts.isNumericLiteral(node)) return Number(node.text)
+  if (node.kind === ts.SyntaxKind.TrueKeyword) return true
+  if (node.kind === ts.SyntaxKind.FalseKeyword) return false
+  if (
+    ts.isPrefixUnaryExpression(node) &&
+    ts.isNumericLiteral(node.operand) &&
+    (node.operator === ts.SyntaxKind.MinusToken ||
+      node.operator === ts.SyntaxKind.PlusToken)
+  )
+    return node.operator === ts.SyntaxKind.MinusToken
+      ? -Number(node.operand.text)
+      : Number(node.operand.text)
+  return undefined
+}
+
+/** `<name>Variants` cva config in a component file: prop -> allowed keys,
+    or null when the export has no such config to compare against. */
+const cvaVariants = (file, exportName) => {
+  if (!existsSync(file)) return null
+  const source = ts.createSourceFile(
+    file,
+    readFileSync(file, 'utf8'),
+    ts.ScriptTarget.Latest,
+    true,
+  )
+  for (const statement of source.statements) {
+    if (!ts.isVariableStatement(statement)) continue
+    for (const declaration of statement.declarationList.declarations) {
+      if (
+        !ts.isIdentifier(declaration.name) ||
+        declaration.name.text !== `${exportName}Variants`
+      )
+        continue
+      const init = declaration.initializer
+      if (init === undefined || !ts.isCallExpression(init)) return null
+      const config = init.arguments[1]
+      if (config === undefined || !ts.isObjectLiteralExpression(config))
+        return null
+      const variants = config.properties.find(
+        property =>
+          ts.isPropertyAssignment(property) &&
+          propKey(property.name) === 'variants',
+      )
+      if (
+        variants === undefined ||
+        !ts.isObjectLiteralExpression(variants.initializer)
+      )
+        return null
+      const found = new Map()
+      for (const prop of variants.initializer.properties) {
+        if (!ts.isPropertyAssignment(prop)) continue
+        const key = propKey(prop.name)
+        if (key === null || !ts.isObjectLiteralExpression(prop.initializer))
+          continue
+        found.set(
+          key,
+          prop.initializer.properties.map(entry => propKey(entry.name)),
+        )
+      }
+      return found
+    }
+  }
+  return null
+}
+
+/** Values of an exported `as const` array anywhere under src/, or null. */
+const constArrayValues = (sources, constName) => {
+  for (const file of sources) {
+    const text = readFileSync(file, 'utf8')
+    if (!text.includes(constName)) continue
+    const source = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true)
+    for (const statement of source.statements) {
+      if (!ts.isVariableStatement(statement)) continue
+      for (const declaration of statement.declarationList.declarations) {
+        if (
+          !ts.isIdentifier(declaration.name) ||
+          declaration.name.text !== constName
+        )
+          continue
+        let init = declaration.initializer
+        while (
+          init !== undefined &&
+          (ts.isAsExpression(init) ||
+            ts.isSatisfiesExpression(init) ||
+            ts.isParenthesizedExpression(init))
+        )
+          init = init.expression
+        if (init === undefined || !ts.isArrayLiteralExpression(init))
+          return null
+        const values = init.elements.map(literalValue)
+        return values.includes(undefined) ? null : values
+      }
+    }
+  }
+  return null
+}
+
 const VARIANTS = /(?:Variants?|variants)$/u
 
 /** Typed rendering exports plus the syntactic floor, deduplicated by name. */
@@ -613,6 +732,73 @@ const doctor = async values => {
     rootDir,
   }))
     fail(problem)
+  /* A variant value accepted on only one side contradicts the other:
+     the type accepts what the receipt's lint rule rejects (or vice
+     versa). Report it with the repair. */
+  const shown = value =>
+    typeof value === 'string' ? `'${value}'` : String(value)
+  const compare = (record, prop, sourceValues, where) => {
+    const label = `\`${record.name}\` (${record.contract}) variant \`${prop}\``
+    const receiptValues = record.variants[prop]
+    if (!Array.isArray(receiptValues)) {
+      fail(
+        `${record.file}: ${label} is defined by ${where} but missing from the receipt; add it to the receipt in a reviewed change, or remove it from the source`,
+      )
+      return
+    }
+    for (const value of sourceValues)
+      if (!receiptValues.includes(value))
+        fail(
+          `${record.file}: ${label} allows ${shown(value)} in ${where} but not in the receipt; add the value to the receipt in a reviewed change, or remove it from the source`,
+        )
+    for (const value of receiptValues)
+      if (!sourceValues.includes(value))
+        fail(
+          `${record.file}: ${label} allows ${shown(value)} in the receipt but not in ${where}; remove the value from the receipt, or add it to the source`,
+        )
+  }
+  for (const byName of strict.ownership.exports.values())
+    for (const record of byName.values()) {
+      const props = Object.keys(record.variants ?? {})
+      if (props.length === 0) continue
+      if (strict.renderer === 'tailwind') {
+        const variants = cvaVariants(
+          path.resolve(rootDir, record.file),
+          record.name,
+        )
+        if (variants === null) continue
+        for (const [prop, values] of variants)
+          compare(record, prop, values, `${record.name}Variants`)
+        for (const prop of props)
+          if (!variants.has(prop))
+            fail(
+              `${record.file}: \`${record.name}\` (${record.contract}) receipt variant \`${prop}\` has no entry in ${record.name}Variants; remove it from the receipt, or add it to the source`,
+            )
+      } else {
+        const base = constantPart(record.name)
+        const resolved = new Map()
+        for (const prop of props)
+          for (const constant of [
+            `${base}_${constantPart(prop)}S`,
+            `${base}_${constantPart(prop)}`,
+          ]) {
+            const values = constArrayValues(sources, constant)
+            if (values !== null) {
+              resolved.set(prop, { constant, values })
+              break
+            }
+          }
+        if (resolved.size === 0) continue
+        for (const prop of props) {
+          const entry = resolved.get(prop)
+          if (entry === undefined)
+            fail(
+              `${record.file}: \`${record.name}\` (${record.contract}) receipt variant \`${prop}\` has no ${base}_${constantPart(prop)} constant in the sources; remove it from the receipt, or add the constant`,
+            )
+          else compare(record, prop, entry.values, entry.constant)
+        }
+      }
+    }
   if (incomplete > 0) {
     console.log(
       `coverage feature-only: ${incomplete} implementation or UI files are ignored, lose Crease rules or have unregistered rendering exports; this is not complete design-system enforcement`,

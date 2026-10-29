@@ -992,3 +992,163 @@ test('css accepts a custom semantic role and names the collision for an ambiguou
     /src\/global\.css:2.*@apply bg-cover .* is ambiguous: `bg-cover` is also a Tailwind utility .*rename the role/u,
   )
 })
+
+/* Receipt variants drift from the renderer's source of truth: Tailwind keeps
+   them in the export's cva `variants` config; StyleX and Pleat keep them as
+   <EXPORT>_<PROP> `as const` arrays in a contracts module. */
+test('doctor reconciles receipt variants with the renderer sources', () => {
+  const project = (renderer, receipt, files) => {
+    const directory = mkdtempSync(
+      path.join(tmpdir(), 'creaseui-lint-variants-'),
+    )
+    mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+      recursive: true,
+    })
+    symlinkSync(
+      fileURLToPath(new URL('..', import.meta.url)),
+      path.join(directory, 'node_modules/@creaseui/lint'),
+      'junction',
+    )
+    for (const [name, text] of Object.entries(files)) {
+      const absolute = path.join(directory, name)
+      mkdirSync(path.dirname(absolute), { recursive: true })
+      writeFileSync(absolute, text)
+    }
+    writeFileSync(
+      path.join(directory, 'crease.lock.json'),
+      `${JSON.stringify(
+        {
+          artifacts: receipt,
+          policyVersion: 'crease-default-v1',
+          renderer,
+          schemaVersion: 1,
+        },
+        null,
+        2,
+      )}\n`,
+    )
+    writeFileSync(
+      path.join(directory, 'eslint.config.js'),
+      `import { fileURLToPath } from 'node:url'
+import { creaseui } from '@creaseui/lint'
+
+export default [
+  ...creaseui({
+    rootDir: fileURLToPath(new URL('.', import.meta.url)),
+    renderer: '${renderer}',
+    preset: 'strict',
+    files: ['src/**/*.{ts,tsx,js,jsx}'],
+    tsconfig: './tsconfig.json',
+  }),
+]
+`,
+    )
+    writeFileSync(
+      path.join(directory, 'tsconfig.json'),
+      '{"compilerOptions":{"strict":true,"noEmit":true,"skipLibCheck":true},"include":["src"]}\n',
+    )
+    return directory
+  }
+  const component = `import type { Html, HtmlBuilder } from 'foldkit/html'
+
+export const button = <Msg>(props: { children: string[] }, h: HtmlBuilder<Msg>): Html =>
+  h.button([], props.children)
+`
+  /* Tailwind: the cva `variants` keys are the allowed values. */
+  const tailwind = project(
+    'tailwind',
+    [
+      {
+        id: 'crease/button',
+        files: [
+          {
+            path: 'src/design/button.ts',
+            rawRendering: true,
+            role: 'renderer',
+          },
+        ],
+        exports: [
+          {
+            contract: 'control.button',
+            file: 'src/design/button.ts',
+            name: 'button',
+            variants: { intent: ['primary', 'secondary'] },
+          },
+        ],
+      },
+    ],
+    {
+      'src/design/button.ts': `import { cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+
+export const buttonVariants = cva('base', {
+  variants: {
+    intent: {
+      danger: 'x',
+      primary: 'y',
+      secondary: 'z',
+    },
+  },
+})
+
+export const button = <Msg>(props: { children: string[] }, h: HtmlBuilder<Msg>): Html =>
+  h.button([], props.children)
+`,
+    },
+  )
+  const stale = run(tailwind, 'doctor')
+  assert.equal(stale.status, 1, stale.stdout + stale.stderr)
+  assert.match(stale.stdout, /`button`.*`intent`.*'danger'/u)
+  rmSync(tailwind, { force: true, recursive: true })
+
+  /* StyleX and Pleat: the <EXPORT>_<PROP>S `as const` arrays are the source.
+     StyleX covers a mismatch in both directions; Pleat covers a receipt that
+     does not restrict a value the source adds. */
+  const contracts = (variant, size) => ({
+    'src/design/button.ts': component,
+    'src/design/contracts.ts': `export const BUTTON_VARIANTS = [${variant}] as const
+export const BUTTON_SIZES = [${size}] as const
+`,
+  })
+  const receipt = variants => [
+    {
+      id: 'crease/stylex-button',
+      files: [
+        {
+          path: 'src/design/button.ts',
+          rawRendering: true,
+          role: 'renderer',
+        },
+        { path: 'src/design/contracts.ts', role: 'theme' },
+      ],
+      exports: [
+        {
+          contract: 'control.button',
+          file: 'src/design/button.ts',
+          name: 'button',
+          variants,
+        },
+      ],
+    },
+  ]
+  const stylex = project(
+    'stylex',
+    receipt({ size: ['default', 'huge'], variant: ['default', 'outline'] }),
+    contracts(`'default', 'outline', 'ghost'`, `'default'`),
+  )
+  const both = run(stylex, 'doctor')
+  assert.equal(both.status, 1, both.stdout + both.stderr)
+  assert.match(both.stdout, /`variant`.*'ghost'.*source/u)
+  assert.match(both.stdout, /`size`.*'huge'.*receipt/u)
+  rmSync(stylex, { force: true, recursive: true })
+
+  const pleat = project(
+    'pleat',
+    receipt({ variant: ['default'] }),
+    contracts(`'default', 'outline'`, `'default'`),
+  )
+  const added = run(pleat, 'doctor')
+  assert.equal(added.status, 1, added.stdout + added.stderr)
+  assert.match(added.stdout, /`variant`.*'outline'/u)
+  rmSync(pleat, { force: true, recursive: true })
+})
