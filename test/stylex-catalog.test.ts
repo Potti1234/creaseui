@@ -24,6 +24,7 @@ const infrastructureNames = new Set([
   'astryx-text',
   'index',
   'interaction-tokens.stylex.const',
+  'kanban-dnd',
   'log-stream-terminal-ink.stylex',
   'log-stream-terminal.stylex',
   'message.markers.stylex',

@@ -1,6 +1,6 @@
 import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { box } from '@/stylex/composition'
+import { box } from '@/stylex/composition/box'
 
 /**
  * Kanban drag-and-drop view helpers for the constrained StyleX blocks.
