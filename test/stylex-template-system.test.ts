@@ -83,7 +83,7 @@ describe('Astryx-inspired constrained template system', () => {
         calls.add(node.expression.text)
     })
     for (const name of [
-      'dashboardShell',
+      'appChrome',
       'metricGrid',
       'section',
       'tableRegion',

@@ -24,7 +24,7 @@ export type DashboardShellProps = Readonly<{
   density?: RecipeDensity | undefined
   footer?: PrimitiveChildren | undefined
   header: PrimitiveChildren
-  navigation: Html
+  navigation?: Html | undefined
   navigationWidth?: 'standard' | 'wide' | undefined
   theme?: SemanticThemeName | undefined
 }>

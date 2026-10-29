@@ -1,5 +1,5 @@
 import { Style, When, Theme } from '@pleat/core'
-import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { foundationTokens } from '../foundations-tokens'
 import { className } from '../style'
@@ -24,8 +24,9 @@ export type BoxSurface =
   | 'canvas'
 export type BoxRadius = 'none' | 'sm' | 'md' | 'lg' | 'full'
 
-export type BoxProps = Readonly<{
+export type BoxProps<Message = never> = Readonly<{
   as?: LayoutElement
+  attrs?: ReadonlyArray<Attribute<Message>>
   children: PrimitiveChildren
   contain?: 'none' | 'paint'
   contentAlignment?: 'normal' | 'center'
@@ -164,7 +165,7 @@ const pick = <T extends PropertyKey>(
 ): ReadonlyArray<Style.Style> => (value === undefined ? [] : [map[value]])
 
 export const box = <Message>(
-  props: BoxProps,
+  props: BoxProps<Message>,
   h: HtmlBuilder<Message>,
 ): Html => {
   const style = className(
@@ -241,7 +242,10 @@ export const box = <Message>(
   )
   return primitiveElement(
     props.as ?? 'div',
-    primitiveAttributes(style, props.slot, props.data, h),
+    [
+      ...primitiveAttributes(style, props.slot, props.data, h),
+      ...(props.attrs ?? []),
+    ],
     props.children,
     h,
   )

@@ -18,6 +18,7 @@ export type StackProps = Readonly<{
   data?: PrimitiveData
   gap?: ResponsiveSpaceToken
   gridColumn?: 'auto' | 'span2'
+  grow?: boolean
   justify?: 'start' | 'center' | 'end' | 'between'
   padding?: ResponsiveSpaceToken
   preset?: 'default' | 'chartGallery'
@@ -45,6 +46,7 @@ const styles = stylex.create({
     width: '100%',
   },
   gridColumnAuto: { gridColumn: 'auto' },
+  grow: { flexBasis: '0%', flexGrow: 1, flexShrink: 1 },
   gridColumnSpan2: { gridColumnEnd: 'span 2', gridColumnStart: 'span 2' },
   justifyBetween: { justifyContent: 'space-between' },
   justifyCenter: { justifyContent: 'center' },
@@ -83,6 +85,7 @@ export const stack = <Message>(
             span2: styles.gridColumnSpan2,
           }[props.gridColumn],
         ]
+  const grow = props.grow === true ? [styles.grow] : []
   const justify =
     props.justify === undefined
       ? []
@@ -119,6 +122,7 @@ export const stack = <Message>(
         ...gapStyles(props.gap),
         ...paddingStyles(props.padding),
         ...gridColumn,
+        ...grow,
         ...rendering,
         ...width,
       ),

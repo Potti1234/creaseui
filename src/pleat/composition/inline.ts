@@ -21,7 +21,7 @@ export type InlineProps = Readonly<{
   justify?: 'start' | 'center' | 'end' | 'between'
   minWidth?: 'none' | 'maxContent'
   slot?: string
-  variant?: 'default' | 'sectionTabs'
+  variant?: 'default' | 'sectionTabs' | 'pageBar'
   width?: 'auto' | 'full'
   wrap?: boolean
 }>
@@ -45,6 +45,15 @@ const styles = {
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
     paddingBottom: '0.5rem',
+  }),
+  pageBar: Style.make({
+    alignItems: 'center',
+    borderBottomColor: tokens.border,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+    flexShrink: 0,
+    height: '4rem',
+    paddingInline: '1rem',
   }),
   widthAuto: Style.make({ width: 'auto' }),
   widthFull: Style.make({ width: '100%' }),
@@ -89,7 +98,14 @@ export const inline = <Message>(
     props.width === undefined
       ? []
       : [{ auto: styles.widthAuto, full: styles.widthFull }[props.width]]
-  const variant = props.variant === 'sectionTabs' ? [styles.sectionTabs] : []
+  const variant =
+    props.variant === undefined || props.variant === 'default'
+      ? []
+      : [
+          { sectionTabs: styles.sectionTabs, pageBar: styles.pageBar }[
+            props.variant
+          ],
+        ]
   return primitiveElement(
     props.as ?? 'div',
     primitiveAttributes(

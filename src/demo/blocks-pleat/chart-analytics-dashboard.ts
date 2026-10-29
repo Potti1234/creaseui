@@ -2,6 +2,7 @@ import type { EChartsOption } from 'echarts/types/dist/shared'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { badge } from '@/pleat/badge'
+import { appChrome, orbitNavigation, type ChromeState } from './app-chrome'
 import {
   box,
   grid,
@@ -271,239 +272,259 @@ const chartCard = <Message>(
   )
 
 export const chartAnalyticsDashboard = <Message>(
+  chrome: ChromeState<Message>,
   toMessage: (message: Chart.ChartMessage) => Message,
   h: HtmlBuilder<Message>,
 ): Html =>
-  masterDetailPage(
+  appChrome(
     {
-      detail: section(
-        {
-          children: [
-            itemGroup(
+      collapsed: chrome.collapsed,
+      content: [
+        masterDetailPage(
+          {
+            detail: section(
               {
                 children: [
-                  insight(
-                    'Revenue acceleration',
-                    'Expansion revenue led the September increase.',
-                    'trending-up',
-                    h,
-                  ),
-                  insight(
-                    'Latency watch',
-                    'API latency remains inside the SLO but is trending upward.',
-                    'timer',
-                    h,
-                  ),
-                  insight(
-                    'Organic growth',
-                    'Organic acquisition is now the largest channel.',
-                    'chart-pie',
+                  itemGroup(
+                    {
+                      children: [
+                        insight(
+                          'Revenue acceleration',
+                          'Expansion revenue led the September increase.',
+                          'trending-up',
+                          h,
+                        ),
+                        insight(
+                          'Latency watch',
+                          'API latency remains inside the SLO but is trending upward.',
+                          'timer',
+                          h,
+                        ),
+                        insight(
+                          'Organic growth',
+                          'Organic acquisition is now the largest channel.',
+                          'chart-pie',
+                          h,
+                        ),
+                      ],
+                      spacing: 'md',
+                    },
                     h,
                   ),
                 ],
-                spacing: 'md',
+                description: 'Generated from the current reporting window',
+                heading: 'Key insights',
               },
               h,
             ),
-          ],
-          description: 'Generated from the current reporting window',
-          heading: 'Key insights',
-        },
-        h,
-      ),
-      detailBehavior: 'stack',
-      header: [
-        stack(
-          {
-            children: [
-              text(
+            detailBehavior: 'stack',
+            header: [
+              stack(
                 {
-                  as: 'h1',
-                  children: ['Analytics overview'],
-                  variant: 'headingMd',
-                },
-                h,
-              ),
-              text(
-                {
-                  as: 'p',
                   children: [
-                    'Revenue, service performance and acquisition in one view.',
+                    text(
+                      {
+                        as: 'h1',
+                        children: ['Analytics overview'],
+                        variant: 'headingMd',
+                      },
+                      h,
+                    ),
+                    text(
+                      {
+                        as: 'p',
+                        children: [
+                          'Revenue, service performance and acquisition in one view.',
+                        ],
+                        tone: 'secondary',
+                        variant: 'caption',
+                      },
+                      h,
+                    ),
                   ],
-                  tone: 'secondary',
-                  variant: 'caption',
+                  gap: 'xs',
                 },
                 h,
               ),
             ],
-            gap: 'xs',
+            master: [
+              metricGrid(
+                {
+                  children: [
+                    metric('Revenue', '$354k', '+14.6%', h),
+                    metric('Conversion', '4.82%', '+0.7 pts', h),
+                    metric('P95 latency', '151ms', '-8.1%', h),
+                    metric('Budget used', '68%', '+3.2 pts', h),
+                  ],
+                },
+                h,
+              ),
+              grid(
+                {
+                  children: [
+                    chartCard(
+                      'Revenue trend',
+                      'Monthly recurring revenue',
+                      Chart.eChart(
+                        {
+                          size: 'dashboard',
+                          accessibleAlternative: text(
+                            {
+                              as: 'p',
+                              variant: 'inherit',
+                              children: ['Monthly recurring revenue trend.'],
+                            },
+                            h,
+                          ),
+                          ariaLabel: 'Area chart of monthly recurring revenue',
+                          hostId: AREA_HOST,
+                          toMessage,
+                        },
+                        h,
+                      ),
+                      h,
+                    ),
+                    chartCard(
+                      'Actual vs target',
+                      'Monthly revenue performance',
+                      Chart.eChart(
+                        {
+                          size: 'dashboard',
+                          accessibleAlternative: text(
+                            {
+                              as: 'p',
+                              variant: 'inherit',
+                              children: [
+                                'Monthly actual and target revenue comparison.',
+                              ],
+                            },
+                            h,
+                          ),
+                          ariaLabel:
+                            'Grouped bar chart comparing actual revenue with target',
+                          hostId: BAR_HOST,
+                          toMessage,
+                        },
+                        h,
+                      ),
+                      h,
+                    ),
+                    chartCard(
+                      'Service latency',
+                      'API and web response time',
+                      Chart.eChart(
+                        {
+                          size: 'dashboard',
+                          accessibleAlternative: text(
+                            {
+                              as: 'p',
+                              variant: 'inherit',
+                              children: [
+                                'API and web response-time comparison.',
+                              ],
+                            },
+                            h,
+                          ),
+                          ariaLabel: 'Line chart comparing API and web latency',
+                          hostId: LINE_HOST,
+                          toMessage,
+                        },
+                        h,
+                      ),
+                      h,
+                    ),
+                    chartCard(
+                      'Acquisition mix',
+                      'Share of new customers by channel',
+                      Chart.eChart(
+                        {
+                          accessibleAlternative: text(
+                            {
+                              as: 'p',
+                              variant: 'inherit',
+                              children: [
+                                'New-customer share by acquisition channel.',
+                              ],
+                            },
+                            h,
+                          ),
+                          ariaLabel: 'Donut chart of acquisition channels',
+                          hostId: PIE_HOST,
+                          size: 'square',
+                          toMessage,
+                        },
+                        h,
+                      ),
+                      h,
+                    ),
+                    chartCard(
+                      'Product readiness',
+                      'Weighted launch dimensions',
+                      Chart.eChart(
+                        {
+                          accessibleAlternative: text(
+                            {
+                              as: 'p',
+                              variant: 'inherit',
+                              children: [
+                                'Weighted product launch-readiness dimensions.',
+                              ],
+                            },
+                            h,
+                          ),
+                          ariaLabel:
+                            'Radar chart of product readiness dimensions',
+                          hostId: RADAR_HOST,
+                          size: 'square',
+                          toMessage,
+                        },
+                        h,
+                      ),
+                      h,
+                    ),
+                    chartCard(
+                      'Budget allocation',
+                      'Usage by operating category',
+                      Chart.eChart(
+                        {
+                          accessibleAlternative: text(
+                            {
+                              as: 'p',
+                              variant: 'inherit',
+                              children: ['Budget usage by operating category.'],
+                            },
+                            h,
+                          ),
+                          ariaLabel: 'Radial bar chart of budget usage',
+                          hostId: RADIAL_HOST,
+                          size: 'square',
+                          toMessage,
+                        },
+                        h,
+                      ),
+                      h,
+                    ),
+                  ],
+                  columns: 'two',
+                  gap: 'md',
+                  width: 'full',
+                },
+                h,
+              ),
+            ],
+            theme: 'comfortable',
           },
           h,
         ),
       ],
-      master: [
-        metricGrid(
-          {
-            children: [
-              metric('Revenue', '$354k', '+14.6%', h),
-              metric('Conversion', '4.82%', '+0.7 pts', h),
-              metric('P95 latency', '151ms', '-8.1%', h),
-              metric('Budget used', '68%', '+3.2 pts', h),
-            ],
-          },
-          h,
-        ),
-        grid(
-          {
-            children: [
-              chartCard(
-                'Revenue trend',
-                'Monthly recurring revenue',
-                Chart.eChart(
-                  {
-                    size: 'dashboard',
-                    accessibleAlternative: text(
-                      {
-                        as: 'p',
-                        variant: 'inherit',
-                        children: ['Monthly recurring revenue trend.'],
-                      },
-                      h,
-                    ),
-                    ariaLabel: 'Area chart of monthly recurring revenue',
-                    hostId: AREA_HOST,
-                    toMessage,
-                  },
-                  h,
-                ),
-                h,
-              ),
-              chartCard(
-                'Actual vs target',
-                'Monthly revenue performance',
-                Chart.eChart(
-                  {
-                    size: 'dashboard',
-                    accessibleAlternative: text(
-                      {
-                        as: 'p',
-                        variant: 'inherit',
-                        children: [
-                          'Monthly actual and target revenue comparison.',
-                        ],
-                      },
-                      h,
-                    ),
-                    ariaLabel:
-                      'Grouped bar chart comparing actual revenue with target',
-                    hostId: BAR_HOST,
-                    toMessage,
-                  },
-                  h,
-                ),
-                h,
-              ),
-              chartCard(
-                'Service latency',
-                'API and web response time',
-                Chart.eChart(
-                  {
-                    size: 'dashboard',
-                    accessibleAlternative: text(
-                      {
-                        as: 'p',
-                        variant: 'inherit',
-                        children: ['API and web response-time comparison.'],
-                      },
-                      h,
-                    ),
-                    ariaLabel: 'Line chart comparing API and web latency',
-                    hostId: LINE_HOST,
-                    toMessage,
-                  },
-                  h,
-                ),
-                h,
-              ),
-              chartCard(
-                'Acquisition mix',
-                'Share of new customers by channel',
-                Chart.eChart(
-                  {
-                    accessibleAlternative: text(
-                      {
-                        as: 'p',
-                        variant: 'inherit',
-                        children: [
-                          'New-customer share by acquisition channel.',
-                        ],
-                      },
-                      h,
-                    ),
-                    ariaLabel: 'Donut chart of acquisition channels',
-                    hostId: PIE_HOST,
-                    size: 'square',
-                    toMessage,
-                  },
-                  h,
-                ),
-                h,
-              ),
-              chartCard(
-                'Product readiness',
-                'Weighted launch dimensions',
-                Chart.eChart(
-                  {
-                    accessibleAlternative: text(
-                      {
-                        as: 'p',
-                        variant: 'inherit',
-                        children: [
-                          'Weighted product launch-readiness dimensions.',
-                        ],
-                      },
-                      h,
-                    ),
-                    ariaLabel: 'Radar chart of product readiness dimensions',
-                    hostId: RADAR_HOST,
-                    size: 'square',
-                    toMessage,
-                  },
-                  h,
-                ),
-                h,
-              ),
-              chartCard(
-                'Budget allocation',
-                'Usage by operating category',
-                Chart.eChart(
-                  {
-                    accessibleAlternative: text(
-                      {
-                        as: 'p',
-                        variant: 'inherit',
-                        children: ['Budget usage by operating category.'],
-                      },
-                      h,
-                    ),
-                    ariaLabel: 'Radial bar chart of budget usage',
-                    hostId: RADIAL_HOST,
-                    size: 'square',
-                    toMessage,
-                  },
-                  h,
-                ),
-                h,
-              ),
-            ],
-            columns: 'two',
-            gap: 'md',
-            width: 'full',
-          },
-          h,
-        ),
+      mobileOpen: chrome.mobileOpen,
+      navigation: orbitNavigation('Overview', h),
+      onMobileToggle: chrome.onMobileToggle,
+      onToggle: chrome.onToggle,
+      trail: [
+        { href: '#', kind: 'link', label: 'Orbit Studio' },
+        { kind: 'page', label: 'Analytics overview' },
       ],
-      theme: 'comfortable',
     },
     h,
   )

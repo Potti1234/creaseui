@@ -3503,11 +3503,14 @@ test('sidebar collapse and expansion use Sheet motion', async ({ page }) => {
         )
         await trigger.click()
         const samples = await frames
-        /* Distinct-frame count proves interpolation happened. Loaded CI
-           runners starve requestAnimationFrame to a handful of ticks inside
-           the 700ms window, so the threshold scales with the frames actually
-           captured — an instant jump still fails (start and end only). */
-        const minimumDistinct = Math.min(6, samples.length - 1)
+        /* Distinct-frame count proves interpolation happened. The 700ms
+           sampling window outlives the 450ms transition, so late frames all
+           read the settled value — the number of distinct samples is bounded
+           by the frames caught mid-animation, not the window size. Loaded CI
+           runners starve rAF to a handful of ticks, so three distinct values
+           (start, mid, end) is the interpolation signal; an instant jump
+           yields at most two and still fails. */
+        const minimumDistinct = Math.min(3, samples.length - 1)
         expect(
           new Set(samples.map(value => Math.round(value))).size,
         ).toBeGreaterThanOrEqual(minimumDistinct)

@@ -14,6 +14,7 @@ export const inline = <M>(p: InlineProps, h: HtmlBuilder<M>): Html =>
         p.width === 'full' && 'w-full',
         p.wrap && 'flex-wrap',
         p.variant === 'sectionTabs' && 'gap-1 border-b pb-2',
+        p.variant === 'pageBar' && 'h-16 shrink-0 items-center border-b px-4',
       ),
       p.data,
       p.slot,

@@ -6,6 +6,8 @@ import { defineMessageUnion } from 'foldkit/message'
 import { defineView } from 'foldkit/submodel'
 import { modifyFields } from 'foldkit/struct'
 
+import type { ChromeState } from '@/demo/blocks/app-chrome'
+import { DragAndDrop as Dnd } from '@foldkit/ui'
 import * as BlocksBlocks from '@/demo/blocks/creaseui-blocks'
 import * as BlocksDashboards from '@/demo/blocks/creaseui-dashboards'
 import * as AccountAccess from '@/demo/cards/account-access'
@@ -86,6 +88,10 @@ export const Model = S.Struct({
     chart: ColorPicker.Model,
   }),
   canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
+  blocksKanbanDnd: Dnd.Model,
+  blocksKanbanLanes: S.Array(BlocksBlocks.KanbanLaneData),
+  blocksSidebarCollapsed: S.Boolean,
+  blocksSidebarMobileOpen: S.Boolean,
   pickerPopovers: S.Struct({
     style: Popover.Model,
     base: Popover.Model,
@@ -189,6 +195,9 @@ export const Message = defineMessageUnion({
   ChoseCreateCanvas: {
     canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   },
+  GotBlocksKanbanDndMessage: { message: Dnd.Message },
+  ToggledBlocksSidebar: {},
+  ToggledBlocksMobileSidebar: {},
   ClickedResetCreatePreset: {},
   ClickedCopyCreatePreset: {},
   ClickedShuffleCreatePreset: {},
@@ -366,6 +375,10 @@ export const init = (preset: Preset.Config = Preset.DEFAULT_CONFIG): Model => ({
     chart: initColorPicker('create-chart-picker', Preset.chartToken(preset)),
   },
   canvas: 'board',
+  blocksKanbanDnd: Dnd.init({ id: 'create-blocks-kanban' }),
+  blocksKanbanLanes: BlocksBlocks.initialKanbanLanes,
+  blocksSidebarCollapsed: false,
+  blocksSidebarMobileOpen: false,
   pickerPopovers: {
     style: Popover.init({ id: 'create-style-picker', isAnimated: true }),
     base: Popover.init({
@@ -630,6 +643,36 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ChoseCreateCanvas: ({ canvas }) => ({
         model: modifyFields(model, {
           canvas: () => canvas,
+        }),
+      }),
+      GotBlocksKanbanDndMessage: ({ message: childMessage }) => {
+        const result = Dnd.update(model.blocksKanbanDnd, childMessage)
+        const blocksKanbanLanes =
+          result.outMessage?._tag === 'Reordered'
+            ? BlocksBlocks.moveKanbanCard(
+                model.blocksKanbanLanes,
+                result.outMessage,
+                model.blocksKanbanDnd.dragState._tag === 'KeyboardDragging',
+              )
+            : model.blocksKanbanLanes
+        return {
+          commands: Command.mapMessages(result.commands ?? [], next =>
+            Message.GotBlocksKanbanDndMessage({ message: next }),
+          ),
+          model: modifyFields(model, {
+            blocksKanbanDnd: () => result.model,
+            blocksKanbanLanes: () => blocksKanbanLanes,
+          }),
+        }
+      },
+      ToggledBlocksSidebar: () => ({
+        model: modifyFields(model, {
+          blocksSidebarCollapsed: value => !value,
+        }),
+      }),
+      ToggledBlocksMobileSidebar: () => ({
+        model: modifyFields(model, {
+          blocksSidebarMobileOpen: value => !value,
         }),
       }),
       ClickedResetCreatePreset: () => ({
@@ -1980,6 +2023,13 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
 
   /* Real blocks from the /blocks catalog, each framed so the canvas reads as
      distinct pieces rather than a squashed card grid. */
+  const blocksChrome: ChromeState<Message> = {
+    collapsed: model.blocksSidebarCollapsed,
+    mobileOpen: model.blocksSidebarMobileOpen,
+    onMobileToggle: Message['ToggledBlocksMobileSidebar'](),
+    onToggle: Message['ToggledBlocksSidebar'](),
+  }
+
   const blocksCanvas = h.div(
     [
       h.Class(
@@ -1990,12 +2040,27 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
       h.DataAttribute('slot', 'capture-target'),
     ],
     [
-      blockFrame('Kanban board', BlocksBlocks.kanbanBoard<Message>(h)),
+      blockFrame(
+        'Kanban board',
+        BlocksBlocks.kanbanBoard<Message>(
+          blocksChrome,
+          {
+            dnd: model.blocksKanbanDnd,
+            lanes: model.blocksKanbanLanes,
+            toDndMessage: message =>
+              Message.GotBlocksKanbanDndMessage({ message }),
+          },
+          h,
+        ),
+      ),
       blockFrame(
         'Incident console',
-        BlocksDashboards.incidentConsoleDashboard<Message>(h),
+        BlocksDashboards.incidentConsoleDashboard<Message>(blocksChrome, h),
       ),
-      blockFrame('Order detail', BlocksBlocks.orderDetail<Message>(h)),
+      blockFrame(
+        'Order detail',
+        BlocksBlocks.orderDetail<Message>(blocksChrome, h),
+      ),
     ],
   )
 
@@ -2096,6 +2161,14 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
   Subscription.lift(RollerShades.subscriptions)<Model, Message>({
     toChildModel: model => model.rollerShades,
     toParentMessage: message => Message.GotRollerShadesMessage({ message }),
+  }),
+  Subscription.lift({
+    kanbanEscape: BlocksBlocks.kanbanSubscriptions.documentEscape,
+    kanbanKeyboard: BlocksBlocks.kanbanSubscriptions.documentKeyboard,
+    kanbanPointer: BlocksBlocks.kanbanSubscriptions.documentPointer,
+  })<Model, Message>({
+    toChildModel: model => model.blocksKanbanDnd,
+    toParentMessage: message => Message.GotBlocksKanbanDndMessage({ message }),
   }),
   ...Preset.OVERRIDABLE_TOKENS.map(token =>
     ColorPicker.subscriptions<Model, Message>({

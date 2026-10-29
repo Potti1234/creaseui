@@ -12,6 +12,7 @@ export const stack = <M>(p: StackProps, h: HtmlBuilder<M>): Html =>
         p.padding && padding[p.padding],
         p.align && align[p.align],
         p.justify && justify[p.justify],
+        p.grow && 'flex-1',
         p.width === 'full' && 'w-full',
         p.gridColumn === 'span2' && 'col-span-2',
         p.preset === 'chartGallery' &&
