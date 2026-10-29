@@ -1,4 +1,4 @@
-﻿// Color Picker — Tailwind skin over lib/color-picker, modeled on the diceui
+// Color Picker — Tailwind skin over lib/color-picker, modeled on the diceui
 // (Base UI) color picker: a swatch trigger opening a popover with a 2D
 // saturation/value area, hue + alpha sliders, an eyedropper (Chrome/Edge
 // only — the part renders nothing when window.EyeDropper is missing), a

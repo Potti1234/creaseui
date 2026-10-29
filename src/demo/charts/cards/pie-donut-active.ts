@@ -1,4 +1,4 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Chart from '@/lib/echarts'
 import { pieCard, pieOption } from './pie-shared'
 const HOST_ID = 'chart-pie-donut-active'

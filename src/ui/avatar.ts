@@ -1,4 +1,4 @@
-﻿import { Schema as S } from 'effect'
+import { Schema as S } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 

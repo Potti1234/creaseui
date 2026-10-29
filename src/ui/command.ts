@@ -1,4 +1,4 @@
-﻿import type { Option } from 'effect'
+import type { Option } from 'effect'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
@@ -307,10 +307,10 @@ export const commandPalette = command
    // Init: command: init({ id: 'app-command', isAnimated: true })
    //
    // Update:
-   // const commandOp__ = //   AppCommand.update(model.command, message);
-    const command = commandOp__.model;
-    const commands = commandOp__.commands ?? [];
-    const maybeOutMessage = Option.fromNullishOr(commandOp__.outMessage);
+   // const result = AppCommand.update(model.command, message)
+   // const command = result.model
+   // const commands = result.commands ?? []
+   // const maybeOutMessage = Option.fromNullishOr(result.outMessage)
    //
    // View:
    // command<Action, AppMessage>({

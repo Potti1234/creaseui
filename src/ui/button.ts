@@ -1,4 +1,4 @@
-﻿import { type VariantProps, cva } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { cn } from '@/lib/utils'

@@ -1,4 +1,4 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { type TextareaBehaviorProps, renderTextarea } from '@/lib/textarea'
 import { cn } from '@/lib/utils'

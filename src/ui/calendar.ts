@@ -1,4 +1,4 @@
-﻿import type { Option } from 'effect'
+import type { Option } from 'effect'
 import { Match as M } from 'effect'
 import type * as FoldkitCalendar from 'foldkit/calendar'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
