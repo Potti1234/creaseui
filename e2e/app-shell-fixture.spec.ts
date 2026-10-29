@@ -104,6 +104,39 @@ test.describe('shared app-shell fixture', () => {
     })
 
   for (const renderer of RENDERERS)
+    test(`${renderer}: sub-menu entries are keyboard reachable`, async ({
+      page,
+    }) => {
+      const errors = await openFixture(
+        page,
+        servers.get(renderer)!.resolvedUrls!.local[0]!,
+      )
+      // The Message-navigating sub-item renders a real <button>; Tab reaches it.
+      await page.keyboard.press('Tab')
+      await expect(
+        page.locator('button[data-slot="sidebar-menu-sub-button"]'),
+      ).toBeFocused()
+      // Its badge is positioned inside the sub-item, right-aligned.
+      const subItem = page.locator('[data-slot="sidebar-menu-sub-item"]', {
+        has: page.locator('[data-slot="sidebar-menu-badge"]'),
+      })
+      const liBox = await subItem.boundingBox()
+      const badgeBox = await subItem
+        .locator('[data-slot="sidebar-menu-badge"]')
+        .boundingBox()
+      expect(badgeBox).not.toBeNull()
+      expect(badgeBox!.y).toBeGreaterThanOrEqual(liBox!.y)
+      expect(badgeBox!.y + badgeBox!.height).toBeLessThanOrEqual(
+        liBox!.y + liBox!.height,
+      )
+      expect(badgeBox!.x + badgeBox!.width).toBeLessThanOrEqual(
+        liBox!.x + liBox!.width,
+      )
+      expect(badgeBox!.x).toBeGreaterThan(liBox!.x + liBox!.width / 2)
+      expect(errors).toEqual([])
+    })
+
+  for (const renderer of RENDERERS)
     test(`${renderer}: sidebar inset shrinks below its content width`, async ({
       page,
     }) => {

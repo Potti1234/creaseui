@@ -650,7 +650,7 @@ export const sidebarMenuAction = <Msg>(
 export const sidebarMenuBadge = slotDiv(
   'sidebar-menu-badge',
   'menu-badge',
-  'pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium text-sidebar-foreground tabular-nums select-none peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active]/menu-button:text-sidebar-accent-foreground peer-data-[size=sm]/menu-button:top-1 peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 md:group-data-[collapsible=icon]:hidden',
+  'pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium text-sidebar-foreground tabular-nums select-none peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active]/menu-button:text-sidebar-accent-foreground peer-data-[size=sm]/menu-button:top-1 peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 peer-data-[size=md]/menu-button:top-1 md:group-data-[collapsible=icon]:hidden',
 )
 
 export type SidebarMenuSkeletonProps = Readonly<{
@@ -745,27 +745,27 @@ export const sidebarMenuSubButton = <Msg>(
 ): Html => {
   const size = props.size ?? 'md'
 
-  return h.a(
-    [
-      h.DataAttribute('slot', 'sidebar-menu-sub-button'),
-      h.DataAttribute('sidebar', 'menu-sub-button'),
-      h.DataAttribute('size', size),
-      ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []),
-      ...(props.href === undefined ? [] : [h.Href(props.href)]),
-      ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
-      h.Class(
-        cn(
-          'flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 text-sidebar-foreground ring-sidebar-ring outline-hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground',
-          'data-[active]:bg-sidebar-accent data-[active]:text-sidebar-accent-foreground',
-          size === 'sm' && 'text-xs',
-          size === 'md' && 'text-sm',
-          'md:group-data-[collapsible=icon]:hidden',
-          props.class,
-        ),
+  const attributes = [
+    h.DataAttribute('slot', 'sidebar-menu-sub-button'),
+    h.DataAttribute('sidebar', 'menu-sub-button'),
+    h.DataAttribute('size', size),
+    ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []),
+    ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
+    h.Class(
+      cn(
+        'peer/menu-button flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 text-sidebar-foreground ring-sidebar-ring outline-hidden hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground',
+        'data-[active]:bg-sidebar-accent data-[active]:text-sidebar-accent-foreground',
+        size === 'sm' && 'text-xs',
+        size === 'md' && 'text-sm',
+        'md:group-data-[collapsible=icon]:hidden',
+        props.class,
       ),
-    ],
-    [...props.children],
-  )
+    ),
+  ]
+
+  return props.href === undefined
+    ? h.button([...attributes, h.Type('button')], [...props.children])
+    : h.a([h.Href(props.href), ...attributes], [...props.children])
 }
 
 /* Minimal page-owned state wiring:

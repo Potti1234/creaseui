@@ -82,6 +82,9 @@ const styles = {
     Style.when(When.within(sidebarScope, When.data('collapsible', 'icon')), {
       display: 'none',
     }),
+    Style.when(When.within(When.data('sidebar', 'menu-sub-item')), {
+      top: '0.25rem',
+    }),
   ),
   actionHalo: Style.make({
     inset: '-0.5rem',
@@ -1362,29 +1365,29 @@ export const sidebarMenuSubButton = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const size = props.size ?? 'md'
-  return h.a(
-    [
-      h.DataAttribute('slot', 'sidebar-menu-sub-button'),
-      h.DataAttribute('sidebar', 'menu-sub-button'),
-      h.DataAttribute('size', size),
-      ...(props.isActive === true
-        ? [
-            h.DataAttribute('active', ''),
-            ...(props.href === undefined ? [] : [h.AriaCurrent('page')]),
-          ]
-        : []),
-      ...(props.href === undefined ? [] : [h.Href(props.href)]),
-      ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
-      h.Class(
-        className(
-          reset.link,
-          styles.subButton,
-          size === 'sm' ? styles.subSm : styles.subMd,
-          props.isActive === true && styles.subButtonActive,
-          props.layoutStyle,
-        ),
+  const renderAsButton = props.href === undefined
+  const attributes = [
+    h.DataAttribute('slot', 'sidebar-menu-sub-button'),
+    h.DataAttribute('sidebar', 'menu-sub-button'),
+    h.DataAttribute('size', size),
+    ...(props.isActive === true
+      ? [
+          h.DataAttribute('active', ''),
+          ...(renderAsButton ? [] : [h.AriaCurrent('page')]),
+        ]
+      : []),
+    ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
+    h.Class(
+      className(
+        renderAsButton ? reset.button : reset.link,
+        styles.subButton,
+        size === 'sm' ? styles.subSm : styles.subMd,
+        props.isActive === true && styles.subButtonActive,
+        props.layoutStyle,
       ),
-    ],
-    [...props.children],
-  )
+    ),
+  ]
+  return renderAsButton
+    ? h.button([...attributes, h.Type('button')], [...props.children])
+    : h.a([h.Href(props.href), ...attributes], [...props.children])
 }
