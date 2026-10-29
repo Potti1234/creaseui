@@ -1096,9 +1096,14 @@ export const button = <Msg>(props: { children: string[] }, h: HtmlBuilder<Msg>):
 `,
     },
   )
+  /* A source value the receipt drops is intended narrowing: a note,
+     not a failure. */
   const stale = run(tailwind, 'doctor')
-  assert.equal(stale.status, 1, stale.stdout + stale.stderr)
-  assert.match(stale.stdout, /`button`.*`intent`.*'danger'/u)
+  assert.equal(stale.status, 0, stale.stdout + stale.stderr)
+  assert.match(
+    stale.stdout,
+    /`button`.*`intent`.*'danger'.*narrowed by the receipt/u,
+  )
   rmSync(tailwind, { force: true, recursive: true })
 
   /* StyleX and Pleat: the <EXPORT>_<PROP>S `as const` arrays are the source.
@@ -1138,7 +1143,7 @@ export const BUTTON_SIZES = [${size}] as const
   )
   const both = run(stylex, 'doctor')
   assert.equal(both.status, 1, both.stdout + both.stderr)
-  assert.match(both.stdout, /`variant`.*'ghost'.*source/u)
+  assert.match(both.stdout, /`variant`.*'ghost'.*narrowed by the receipt/u)
   assert.match(both.stdout, /`size`.*'huge'.*receipt/u)
   rmSync(stylex, { force: true, recursive: true })
 
@@ -1148,7 +1153,96 @@ export const BUTTON_SIZES = [${size}] as const
     contracts(`'default', 'outline'`, `'default'`),
   )
   const added = run(pleat, 'doctor')
-  assert.equal(added.status, 1, added.stdout + added.stderr)
-  assert.match(added.stdout, /`variant`.*'outline'/u)
+  assert.equal(added.status, 0, added.stdout + added.stderr)
+  assert.match(added.stdout, /`variant`.*'outline'.*narrowed by the receipt/u)
   rmSync(pleat, { force: true, recursive: true })
+
+  /* Intentional narrowing across several components — including a
+     boolean cva prop recorded as a receipt boolean — exits 0. */
+  const pair = project(
+    'tailwind',
+    [
+      {
+        id: 'crease/text',
+        files: [
+          { path: 'src/design/text.ts', rawRendering: true, role: 'renderer' },
+        ],
+        exports: [
+          {
+            contract: 'display.text',
+            file: 'src/design/text.ts',
+            name: 'text',
+            variants: { size: ['default'] },
+          },
+        ],
+      },
+      {
+        id: 'crease/badge',
+        files: [
+          { path: 'src/design/badge.ts', rawRendering: true, role: 'renderer' },
+        ],
+        exports: [
+          {
+            contract: 'display.badge',
+            file: 'src/design/badge.ts',
+            name: 'badge',
+            variants: { variant: ['secondary'], icon: [true] },
+          },
+        ],
+      },
+    ],
+    {
+      'src/design/text.ts': `import { cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+
+export const textVariants = cva('base', {
+  variants: {
+    size: {
+      default: 'x',
+      sm: 'y',
+      lg: 'z',
+    },
+  },
+})
+
+export const text = <Msg>(props: { children: string[] }, h: HtmlBuilder<Msg>): Html =>
+  h.span([], props.children)
+`,
+      'src/design/badge.ts': `import { cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+
+export const badgeVariants = cva('base', {
+  variants: {
+    variant: {
+      primary: 'x',
+      secondary: 'y',
+      destructive: 'z',
+    },
+    icon: {
+      true: 'x',
+      false: 'y',
+    },
+  },
+})
+
+export const badge = <Msg>(props: { children: string[] }, h: HtmlBuilder<Msg>): Html =>
+  h.span([], props.children)
+`,
+    },
+  )
+  const narrowed = run(pair, 'doctor')
+  assert.equal(narrowed.status, 0, narrowed.stdout + narrowed.stderr)
+  assert.match(
+    narrowed.stdout,
+    /`text`.*`size`.*'sm'.*narrowed by the receipt/u,
+  )
+  assert.match(
+    narrowed.stdout,
+    /`badge`.*`variant`.*'primary'.*narrowed by the receipt/u,
+  )
+  assert.match(
+    narrowed.stdout,
+    /`badge`.*`icon`.*false.*narrowed by the receipt/u,
+  )
+  rmSync(pair, { force: true, recursive: true })
 })

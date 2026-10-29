@@ -732,30 +732,32 @@ const doctor = async values => {
     rootDir,
   }))
     fail(problem)
-  /* A variant value accepted on only one side contradicts the other:
-     the type accepts what the receipt's lint rule rejects (or vice
-     versa). Report it with the repair. */
+  /* A receipt value the source does not define contradicts it: the lint
+     accepts what the type rejects. Values the receipt drops are the
+     intended narrowing mechanism, so they are a note, not a failure. */
   const shown = value =>
     typeof value === 'string' ? `'${value}'` : String(value)
+  /* cva variant keys for boolean props are the strings 'true'/'false'
+     while receipts record the booleans they select. */
+  const variantValue = value =>
+    value === 'true' ? true : value === 'false' ? false : value
   const compare = (record, prop, sourceValues, where) => {
     const label = `\`${record.name}\` (${record.contract}) variant \`${prop}\``
     const receiptValues = record.variants[prop]
-    if (!Array.isArray(receiptValues)) {
-      fail(
-        `${record.file}: ${label} is defined by ${where} but missing from the receipt; add it to the receipt in a reviewed change, or remove it from the source`,
-      )
-      return
-    }
-    for (const value of sourceValues)
-      if (!receiptValues.includes(value))
-        fail(
-          `${record.file}: ${label} allows ${shown(value)} in ${where} but not in the receipt; add the value to the receipt in a reviewed change, or remove it from the source`,
-        )
-    for (const value of receiptValues)
-      if (!sourceValues.includes(value))
+    /* A prop the receipt does not list carries no restriction at all. */
+    if (!Array.isArray(receiptValues)) return
+    const source = sourceValues.map(variantValue)
+    const receipt = receiptValues.map(variantValue)
+    for (const value of receipt)
+      if (!source.includes(value))
         fail(
           `${record.file}: ${label} allows ${shown(value)} in the receipt but not in ${where}; remove the value from the receipt, or add it to the source`,
         )
+    const narrowed = source.filter(value => !receipt.includes(value))
+    if (narrowed.length > 0)
+      console.log(
+        `note    ${record.file}: ${label} drops ${narrowed.map(shown).join(', ')} (narrowed by the receipt)`,
+      )
   }
   for (const byName of strict.ownership.exports.values())
     for (const record of byName.values()) {
