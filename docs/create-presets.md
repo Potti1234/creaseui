@@ -24,6 +24,12 @@ preset is installed.
 - writes `@/crease-preset.json` so the design choice remains inspectable and
   reproducible.
 
+Some `/create` settings now affect only the page preview and are not written
+into the generated artifact: heading scale, heading weight, heading tracking,
+and motion. They still travel in the preset code so a shared link reproduces
+the preview exactly, but an installed preset keeps the components' own
+heading sizing and motion defaults.
+
 Host the copied JSON as a registry endpoint and add it with the shadcn CLI, or
 materialize the same files locally from a preset code:
 
