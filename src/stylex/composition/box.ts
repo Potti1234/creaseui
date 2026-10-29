@@ -48,7 +48,6 @@ export type BoxProps<Message = never> = Readonly<{
   radius?: BoxRadius
   rail?: 'none' | 'customizer'
   slot?: string
-  style?: Record<string, string>
   surface?: BoxSurface
   visibility?: 'always' | 'desktop' | 'mobile'
   width?:
@@ -235,7 +234,6 @@ export const box = <Message>(
     props.as ?? 'div',
     [
       ...primitiveAttributes(style, props.slot, props.data, h),
-      ...(props.style === undefined ? [] : [h.Style(props.style)]),
       ...(props.attrs ?? []),
     ],
     props.children,

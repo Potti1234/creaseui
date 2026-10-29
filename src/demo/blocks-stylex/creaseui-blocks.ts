@@ -45,6 +45,13 @@ import {
   toolbar,
 } from '@/stylex/composition'
 import { appChrome, type ChromeState } from './app-chrome'
+import {
+  kanbanAnnouncementRegion,
+  kanbanDropPlaceholder,
+  kanbanGhostCard,
+  kanbanKeyboardPreviewAttr,
+  kanbanLaneTargetAttr,
+} from '@/stylex/kanban-dnd'
 import { icon } from '@/stylex/composition/icon'
 import {
   sidebarContent,
@@ -802,39 +809,17 @@ export const kanbanBoard = <Message>(
             },
             h,
           ),
+          ...(keyboardPreview ? [kanbanKeyboardPreviewAttr(h)] : []),
         ],
         children: [laneCardContent(card)],
         padding: 'sm',
         radius: 'md',
-        ...(keyboardPreview
-          ? {
-              style: {
-                outline: '2px solid var(--ring)',
-                outlineOffset: '2px',
-              },
-            }
-          : {}),
         surface: 'card',
       },
       h,
     )
 
-  const dropPlaceholder = (): Html =>
-    box(
-      {
-        attrs: [h.AriaHidden(true)],
-        children: [],
-        style: {
-          backgroundColor:
-            'color-mix(in oklab, var(--accent) 65%, transparent)',
-          border:
-            '2px dashed color-mix(in oklab, var(--primary) 55%, transparent)',
-          borderRadius: 'var(--radius-md)',
-          minHeight: '5rem',
-        },
-      },
-      h,
-    )
+  const dropPlaceholder = (): Html => kanbanDropPlaceholder(h)
 
   /* A fixed-position clone follows the pointer while the source card leaves
      the DOM — same ghost pattern as the foldkit kanban example. */
@@ -844,21 +829,7 @@ export const kanbanBoard = <Message>(
       onSome: ghostPosition =>
         draggedCard === undefined
           ? h.empty
-          : box(
-              {
-                attrs: [h.AriaHidden(true)],
-                children: [laneCardContent(draggedCard)],
-                padding: 'sm',
-                radius: 'md',
-                style: {
-                  ...ghostPosition,
-                  rotate: '2deg',
-                  width: '16rem',
-                },
-                surface: 'card',
-              },
-              h,
-            ),
+          : kanbanGhostCard(ghostPosition, laneCardContent(draggedCard), h),
     })
 
   const lane = (laneData: KanbanLaneData): Html => {
@@ -885,15 +856,10 @@ export const kanbanBoard = <Message>(
     ]
     return box<Message>(
       {
-        attrs: [...Dnd.droppable(laneData.id, laneData.name)],
-        style: {
-          border: `2px dashed ${
-            isTarget
-              ? 'color-mix(in oklab, var(--primary) 60%, transparent)'
-              : 'transparent'
-          }`,
-          borderRadius: 'var(--radius-xl)',
-        },
+        attrs: [
+          ...Dnd.droppable(laneData.id, laneData.name),
+          kanbanLaneTargetAttr(isTarget, h),
+        ],
         children: [
           stack(
             {
@@ -1003,22 +969,7 @@ export const kanbanBoard = <Message>(
                 h,
               ),
               ghostElement(),
-              box(
-                {
-                  attrs: [h.AriaLive('assertive')],
-                  style: {
-                    clip: 'rect(0 0 0 0)',
-                    height: '1px',
-                    margin: '-1px',
-                    overflow: 'hidden',
-                    position: 'absolute',
-                    whiteSpace: 'nowrap',
-                    width: '1px',
-                  },
-                  children: [kanban.announcement],
-                },
-                h,
-              ),
+              kanbanAnnouncementRegion(kanban.announcement, h),
             ],
             minHeight: 'full',
             width: 'full',
