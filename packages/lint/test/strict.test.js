@@ -248,6 +248,62 @@ test('component contract: appearance props, layout values, variants and string c
   )
 })
 
+/* `input` (control.input) has no `size` prop: the override advice must not
+   name a prop that does not exist. `button` keeps the named-size advice. */
+test('geometry override names the size prop only when the component has one', () => {
+  const manifest = JSON.parse(
+    readFileSync(path.join(root, 'crease.lock.json'), 'utf8'),
+  )
+  const contextFor = renderer =>
+    createStrictContext({
+      rootDir: root,
+      manifest: { ...manifest, renderer },
+      renderer,
+      tsconfig: './tsconfig.json',
+      typeInformation: 'syntactic',
+    })
+  const contractMessages = code =>
+    lint(code, 'src/feature.ts', contextFor('tailwind')).filter(
+      message => message.ruleId === 'crease/component-contract',
+    )
+
+  const inputClass = contractMessages(`${HEADER}
+    import { input } from '@design/input'
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      input({ class: 'h-7', placeholder: 'x' }, h)`)
+  assert.equal(inputClass.length, 1, JSON.stringify(inputClass))
+  assert.match(
+    inputClass[0].message,
+    /change it in the component or the theme/u,
+  )
+  assert.doesNotMatch(inputClass[0].message, /`size` option/u)
+
+  const buttonClass = contractMessages(`${HEADER}
+    import { button } from '@design/button'
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      button({ class: 'h-7', children: [] }, h)`)
+  assert.ok(
+    buttonClass.some(message => /use its `size` option/u.test(message.message)),
+    JSON.stringify(buttonClass),
+  )
+
+  const inputLayout = lint(
+    `${HEADER}
+    import { input } from '@design/input'
+    import { layoutStyle } from '@design/contracts'
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      input({ layoutStyle: layoutStyle({ height: 32 }), placeholder: 'x' }, h)`,
+    'src/feature.ts',
+    contextFor('stylex'),
+  ).filter(message => message.ruleId === 'crease/component-contract')
+  assert.equal(inputLayout.length, 1, JSON.stringify(inputLayout))
+  assert.match(
+    inputLayout[0].message,
+    /change it in the component or the theme/u,
+  )
+  assert.doesNotMatch(inputLayout[0].message, /`size` option/u)
+})
+
 test('unverifiable: opaque spread, forged layout, computed tag, missing settings', () => {
   const messages = lint(`${HEADER}
     import { button } from '@design/button'
@@ -371,6 +427,7 @@ test('creaseui() returns scoped entries with exact implementation files', () => 
     [
       'src/design/behavior/button.ts',
       'src/design/button.ts',
+      'src/design/input.ts',
       'src/design/stack.ts',
       'src/design/text.ts',
     ],

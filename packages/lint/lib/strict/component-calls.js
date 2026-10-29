@@ -286,6 +286,33 @@ export const analyzeCall = ({
   const props = call.arguments[record.propsArgument]
   if (props === undefined) return findings
 
+  /* The override advice may only name `size` when the component has one:
+     a `size` variant on the receipt, or — with types — a `size` field on
+     the declared props argument (input and narrowed props have none). */
+  const hasSizeOption = (() => {
+    if (Array.isArray(record.variants?.size) && record.variants.size.length > 0)
+      return true
+    if (!analysis.hasTypes) return false
+    try {
+      const tsCall = analysis.services.esTreeNodeToTSNodeMap.get(call)
+      const parameter = analysis.checker
+        .getResolvedSignature(tsCall)
+        ?.getParameters()[record.propsArgument ?? 0]
+      return (
+        parameter !== undefined &&
+        analysis.checker
+          .getTypeOfSymbolAtLocation(parameter, tsCall)
+          .getProperty('size') !== undefined
+      )
+    } catch {
+      return false
+    }
+  })()
+  const sizeAdvice = subject =>
+    hasSizeOption
+      ? `${subject} overrides the named size of ${label(record)}; use its \`size\` option.`
+      : `${subject} overrides the height of ${label(record)}; the component owns its height — change it in the component or the theme.`
+
   const typedFields = node => {
     if (!analysis.hasTypes) return null
     try {
@@ -463,10 +490,7 @@ export const analyzeCall = ({
           ownsGeometry(record.contract) &&
           OWNED_GEOMETRY_PROPERTIES.has(key)
         )
-          violation(
-            property,
-            `\`${key}\` overrides the named size of ${label(record)}; use its \`size\` option.`,
-          )
+          violation(property, sizeAdvice(`\`${key}\``))
         else if (SQUARE_GEOMETRY_PROPERTIES.has(key) && squareChoices === null)
           unverifiable(
             property,
@@ -653,10 +677,7 @@ export const analyzeCall = ({
               .filter(token => isOwnedGeometryUtility(token))
           : []
         if (geometry.length > 0)
-          violation(
-            value,
-            `\`${geometry.join(' ')}\` overrides the named size of ${label(record)}; use its \`size\` option.`,
-          )
+          violation(value, sizeAdvice(`\`${geometry.join(' ')}\``))
         const squareGeometry = tokens
           .flatMap(token => token.trim().split(/\s+/u))
           .filter(
