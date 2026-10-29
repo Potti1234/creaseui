@@ -338,10 +338,17 @@ export const enforcementChanges = ({ baseline, rootDir }) => {
     )
   }
   const changes = []
+  /* `git show` returns committed bytes while readFileSync returns the
+     working-tree bytes; with core.autocrlf a checkout rewrites LF as CRLF,
+     so compare on normalized line endings only. */
+  const normalize = text =>
+    text === null ? null : text.replace(/\r\n/gu, '\n')
   for (const file of [...INPUTS, ...policyModules(rootDir, baseline)]) {
-    const before = atBaseline(rootDir, baseline, file)
+    const before = normalize(atBaseline(rootDir, baseline, file))
     const absolute = path.join(rootDir, file)
-    const after = existsSync(absolute) ? readFileSync(absolute, 'utf8') : null
+    const after = normalize(
+      existsSync(absolute) ? readFileSync(absolute, 'utf8') : null,
+    )
     if (before === after) continue
     if (before === null) changes.push(`adds ${file}`)
     else if (after === null) changes.push(`removes ${file}`)

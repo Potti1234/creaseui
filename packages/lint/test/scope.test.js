@@ -109,6 +109,45 @@ test('scope reports enforcement changes against a trusted baseline', () => {
   rmSync(root, { force: true, recursive: true })
 })
 
+test('scope ignores line-ending-only differences', () => {
+  const root = mkdtempSync(path.join(tmpdir(), 'creaseui-scope-crlf-'))
+  const git = (...args) =>
+    execFileSync(
+      'git',
+      ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args],
+      { cwd: root },
+    )
+  git('init', '-q')
+  write(root, 'crease.lock.json', receipt([]))
+  write(root, 'package.json', { scripts: { lint: 'eslint .' } })
+  write(root, 'eslint.config.js', 'export default []\n')
+  git('add', '.')
+  git('commit', '-q', '-m', 'baseline')
+
+  /* Working tree checked out with CRLF (core.autocrlf), content unchanged. */
+  const crlf = name => {
+    const absolute = path.join(root, name)
+    const text = execFileSync('git', ['show', `HEAD:./${name}`], {
+      cwd: root,
+      encoding: 'utf8',
+    })
+    writeFileSync(absolute, text.replace(/\r?\n/gu, '\r\n'))
+  }
+  for (const name of ['crease.lock.json', 'package.json', 'eslint.config.js'])
+    crlf(name)
+  const clean = scope(root, '--baseline', 'HEAD')
+  assert.equal(clean.status, 0, clean.stdout + clean.stderr)
+
+  writeFileSync(
+    path.join(root, 'eslint.config.js'),
+    "export default [{ ignores: ['src/design/**'] }]\r\n",
+  )
+  const loosened = scope(root, '--baseline', 'HEAD')
+  assert.equal(loosened.status, 1, loosened.stdout + loosened.stderr)
+  assert.match(loosened.stdout, /changes eslint\.config\.js/u)
+  rmSync(root, { force: true, recursive: true })
+})
+
 test('scope follows imported policy modules and every receipt field', () => {
   const root = mkdtempSync(path.join(tmpdir(), 'creaseui-scope-'))
   const git = (...args) =>
