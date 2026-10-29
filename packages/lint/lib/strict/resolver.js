@@ -232,6 +232,34 @@ export const createFileAnalysis = context => {
     return null
   }
 
+  /** Constant string/number/boolean through `const` bindings, plain
+      template literals and unary +/- on numeric literals; null when the
+      value cannot be resolved. */
+  const resolveLiteral = (node, seen = new Set()) => {
+    node = unwrap(node)
+    if (node?.type === 'Literal')
+      return typeof node.value === 'string' ||
+        typeof node.value === 'number' ||
+        typeof node.value === 'boolean'
+        ? node.value
+        : null
+    if (node?.type === 'TemplateLiteral' && node.expressions.length === 0)
+      return node.quasis[0].value.cooked
+    if (
+      node?.type === 'UnaryExpression' &&
+      (node.operator === '-' || node.operator === '+')
+    ) {
+      const operand = resolveLiteral(node.argument, seen)
+      if (typeof operand !== 'number') return null
+      return node.operator === '-' ? -operand : operand
+    }
+    if (node?.type === 'Identifier') {
+      const init = constInit(node, seen)
+      return init === null ? null : resolveLiteral(init, seen)
+    }
+    return null
+  }
+
   /** Initializer of an immutable `const` binding, or null. */
   const constInit = (identifier, seen = new Set()) => {
     const variable = variableOf(identifier)
@@ -434,6 +462,7 @@ export const createFileAnalysis = context => {
     isHtmlNamespace,
     isBuilderExpression,
     isDomMember,
+    resolveLiteral,
     resolveString,
     services,
     variableOf,

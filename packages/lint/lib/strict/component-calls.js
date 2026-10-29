@@ -719,11 +719,11 @@ export const analyzeCall = ({
               `Direct string children in ${label(record)}; render text through Text or a typography helper.`,
             )
       } else if (Array.isArray(record.variants[key])) {
-        const choice = analysis.resolveString(value)
+        const choice = analysis.resolveLiteral(value)
         if (choice !== null && !record.variants[key].includes(choice))
           violation(
             value,
-            `\`${key}: '${choice}'\` is not a ${label(record)} variant (allowed: ${record.variants[key].join(', ')}).`,
+            `\`${key}: ${typeof choice === 'string' ? `'${choice}'` : String(choice)}\` is not a ${label(record)} variant (allowed: ${record.variants[key].join(', ')}).`,
           )
       }
     }

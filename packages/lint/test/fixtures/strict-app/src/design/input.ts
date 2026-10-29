@@ -4,6 +4,8 @@ import type { ComponentLayoutStyle } from './contracts'
 
 export type InputProps = Readonly<{
   placeholder?: string
+  level?: number
+  disabled?: boolean
   layoutStyle?: ComponentLayoutStyle
 }>
 

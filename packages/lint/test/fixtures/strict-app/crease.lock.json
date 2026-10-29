@@ -86,7 +86,11 @@
         {
           "file": "src/design/input.ts",
           "name": "input",
-          "contract": "control.input"
+          "contract": "control.input",
+          "variants": {
+            "level": [4],
+            "disabled": [false]
+          }
         }
       ]
     },

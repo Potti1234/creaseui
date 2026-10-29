@@ -304,6 +304,37 @@ test('geometry override names the size prop only when the component has one', ()
   assert.doesNotMatch(inputLayout[0].message, /`size` option/u)
 })
 
+/* The fixture receipt records input.variants = { level: [4], disabled: [false] }:
+   non-string variant values must be enforced too, compared by type. */
+test('numeric and boolean receipt variants are enforced', () => {
+  const contractMessages = code =>
+    lint(code).filter(message => message.ruleId === 'crease/component-contract')
+  const bad = contractMessages(`${HEADER}
+    import { input } from '@design/input'
+    const lvl = 3
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      input({ level: 2, placeholder: 'x' }, h) ?? input({ level: lvl }, h) ?? input({ disabled: true }, h)`)
+  assert.equal(bad.length, 3, JSON.stringify(bad))
+  assert.match(
+    bad[0].message,
+    /`level: 2` is not a `input` \(control\.input\) variant \(allowed: 4\)/u,
+  )
+  assert.match(bad[1].message, /`level: 3` is not a `input`/u)
+  assert.match(bad[2].message, /`disabled: true` is not a `input`/u)
+  /* Type-sensitive: '4' is not 4. */
+  const stringChoice = contractMessages(`${HEADER}
+    import { input } from '@design/input'
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      input({ level: '4' }, h)`)
+  assert.equal(stringChoice.length, 1, JSON.stringify(stringChoice))
+  const good = contractMessages(`${HEADER}
+    import { input } from '@design/input'
+    const ok = 4
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      input({ level: ok, disabled: false, placeholder: 'x' }, h)`)
+  assert.deepEqual(good, [])
+})
+
 test('unverifiable: opaque spread, forged layout, computed tag, missing settings', () => {
   const messages = lint(`${HEADER}
     import { button } from '@design/button'
