@@ -802,18 +802,18 @@ export const kanbanBoard = <Message>(
             },
             h,
           ),
-          ...(keyboardPreview
-            ? [
-                h.Style({
-                  outline: '2px solid var(--ring)',
-                  outlineOffset: '2px',
-                }),
-              ]
-            : []),
         ],
         children: [laneCardContent(card)],
         padding: 'sm',
         radius: 'md',
+        ...(keyboardPreview
+          ? {
+              style: {
+                outline: '2px solid var(--ring)',
+                outlineOffset: '2px',
+              },
+            }
+          : {}),
         surface: 'card',
       },
       h,
@@ -822,18 +822,16 @@ export const kanbanBoard = <Message>(
   const dropPlaceholder = (): Html =>
     box(
       {
-        attrs: [
-          h.AriaHidden(true),
-          h.Style({
-            backgroundColor:
-              'color-mix(in oklab, var(--accent) 65%, transparent)',
-            border:
-              '2px dashed color-mix(in oklab, var(--primary) 55%, transparent)',
-            borderRadius: 'var(--radius-md)',
-            minHeight: '5rem',
-          }),
-        ],
+        attrs: [h.AriaHidden(true)],
         children: [],
+        style: {
+          backgroundColor:
+            'color-mix(in oklab, var(--accent) 65%, transparent)',
+          border:
+            '2px dashed color-mix(in oklab, var(--primary) 55%, transparent)',
+          borderRadius: 'var(--radius-md)',
+          minHeight: '5rem',
+        },
       },
       h,
     )
@@ -848,17 +846,15 @@ export const kanbanBoard = <Message>(
           ? h.empty
           : box(
               {
-                attrs: [
-                  h.AriaHidden(true),
-                  h.Style({
-                    ...ghostPosition,
-                    rotate: '2deg',
-                    width: '16rem',
-                  }),
-                ],
+                attrs: [h.AriaHidden(true)],
                 children: [laneCardContent(draggedCard)],
                 padding: 'sm',
                 radius: 'md',
+                style: {
+                  ...ghostPosition,
+                  rotate: '2deg',
+                  width: '16rem',
+                },
                 surface: 'card',
               },
               h,
@@ -889,17 +885,15 @@ export const kanbanBoard = <Message>(
     ]
     return box<Message>(
       {
-        attrs: [
-          ...Dnd.droppable(laneData.id, laneData.name),
-          h.Style({
-            border: `2px dashed ${
-              isTarget
-                ? 'color-mix(in oklab, var(--primary) 60%, transparent)'
-                : 'transparent'
-            }`,
-            borderRadius: 'var(--radius-xl)',
-          }),
-        ],
+        attrs: [...Dnd.droppable(laneData.id, laneData.name)],
+        style: {
+          border: `2px dashed ${
+            isTarget
+              ? 'color-mix(in oklab, var(--primary) 60%, transparent)'
+              : 'transparent'
+          }`,
+          borderRadius: 'var(--radius-xl)',
+        },
         children: [
           stack(
             {
@@ -1011,18 +1005,16 @@ export const kanbanBoard = <Message>(
               ghostElement(),
               box(
                 {
-                  attrs: [
-                    h.AriaLive('assertive'),
-                    h.Style({
-                      clip: 'rect(0 0 0 0)',
-                      height: '1px',
-                      margin: '-1px',
-                      overflow: 'hidden',
-                      position: 'absolute',
-                      whiteSpace: 'nowrap',
-                      width: '1px',
-                    }),
-                  ],
+                  attrs: [h.AriaLive('assertive')],
+                  style: {
+                    clip: 'rect(0 0 0 0)',
+                    height: '1px',
+                    margin: '-1px',
+                    overflow: 'hidden',
+                    position: 'absolute',
+                    whiteSpace: 'nowrap',
+                    width: '1px',
+                  },
                   children: [kanban.announcement],
                 },
                 h,
