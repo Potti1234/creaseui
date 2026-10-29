@@ -1,4 +1,4 @@
-﻿import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { Tooltip as TooltipPrimitive } from '@foldkit/ui'
 import { Option } from 'effect'

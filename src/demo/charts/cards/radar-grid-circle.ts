@@ -1,4 +1,4 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Chart from '@/lib/echarts'
 import { radarCard, radarOption } from './radar-shared'
 const HOST_ID = 'chart-radar-grid-circle'

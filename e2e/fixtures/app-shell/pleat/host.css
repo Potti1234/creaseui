@@ -1,0 +1,7 @@
+/* The consumer owns document typography; StyleX appends its rules here. */
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}

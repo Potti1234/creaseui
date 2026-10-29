@@ -286,6 +286,33 @@ export const analyzeCall = ({
   const props = call.arguments[record.propsArgument]
   if (props === undefined) return findings
 
+  /* The override advice may only name `size` when the component has one:
+     a `size` variant on the receipt, or — with types — a `size` field on
+     the declared props argument (input and narrowed props have none). */
+  const hasSizeOption = (() => {
+    if (Array.isArray(record.variants?.size) && record.variants.size.length > 0)
+      return true
+    if (!analysis.hasTypes) return false
+    try {
+      const tsCall = analysis.services.esTreeNodeToTSNodeMap.get(call)
+      const parameter = analysis.checker
+        .getResolvedSignature(tsCall)
+        ?.getParameters()[record.propsArgument ?? 0]
+      return (
+        parameter !== undefined &&
+        analysis.checker
+          .getTypeOfSymbolAtLocation(parameter, tsCall)
+          .getProperty('size') !== undefined
+      )
+    } catch {
+      return false
+    }
+  })()
+  const sizeAdvice = subject =>
+    hasSizeOption
+      ? `${subject} overrides the named size of ${label(record)}; use its \`size\` option.`
+      : `${subject} overrides the height of ${label(record)}; the component owns its height — change it in the component or the theme.`
+
   const typedFields = node => {
     if (!analysis.hasTypes) return null
     try {
@@ -463,10 +490,7 @@ export const analyzeCall = ({
           ownsGeometry(record.contract) &&
           OWNED_GEOMETRY_PROPERTIES.has(key)
         )
-          violation(
-            property,
-            `\`${key}\` overrides the named size of ${label(record)}; use its \`size\` option.`,
-          )
+          violation(property, sizeAdvice(`\`${key}\``))
         else if (SQUARE_GEOMETRY_PROPERTIES.has(key) && squareChoices === null)
           unverifiable(
             property,
@@ -480,7 +504,20 @@ export const analyzeCall = ({
             property,
             `\`${key}\` distorts the square \`${squareChoices.join('/')}\` size of ${label(record)}; pick another named icon size.`,
           )
-        else if (!LAYOUT_PROPERTIES.has(key))
+        else if (key === 'display') {
+          const value = unwrap(property.value)
+          const resolved =
+            value !== null && value !== undefined
+              ? value.type === 'Literal'
+                ? value.value
+                : analysis.resolveString(value)
+              : undefined
+          if (resolved !== 'none')
+            violation(
+              property,
+              `\`display\` in a placement value may only be \`'none'\`; parents hide a component, other display changes stay component-owned.`,
+            )
+        } else if (!LAYOUT_PROPERTIES.has(key))
           violation(
             property,
             `\`${key}\` is not a placement property; ${label(record)} owns its padding, gap, typography, color, border, radius, shadow, opacity and motion.`,
@@ -523,6 +560,16 @@ export const analyzeCall = ({
     }
     if (node.type === 'ArrayExpression') {
       for (const element of node.elements) checkLayout(element, slot, seen)
+      return
+    }
+    /* A curried constructor application (layoutWhen(cond, decls)(self)):
+       check the inner call's declaration object, then the applied value. */
+    if (
+      node.type === 'CallExpression' &&
+      node.callee.type === 'CallExpression'
+    ) {
+      checkLayout(node.callee, slot, seen)
+      for (const argument of node.arguments) checkLayout(argument, slot, seen)
       return
     }
     if (node.type === 'CallExpression' && node.callee.type === 'Identifier') {
@@ -644,19 +691,17 @@ export const analyzeCall = ({
           )
           continue
         }
-        const appearance = tokens
+        const utilities = tokens
           .flatMap(token => token.trim().split(/\s+/u))
-          .filter(token => token !== '' && !isPlacementUtility(token))
+          .filter(token => token !== '')
+        const appearance = utilities.filter(
+          token => !isPlacementUtility(token, utilities),
+        )
         const geometry = ownsGeometry(record.contract)
-          ? tokens
-              .flatMap(token => token.trim().split(/\s+/u))
-              .filter(token => isOwnedGeometryUtility(token))
+          ? utilities.filter(token => isOwnedGeometryUtility(token))
           : []
         if (geometry.length > 0)
-          violation(
-            value,
-            `\`${geometry.join(' ')}\` overrides the named size of ${label(record)}; use its \`size\` option.`,
-          )
+          violation(value, sizeAdvice(`\`${geometry.join(' ')}\``))
         const squareGeometry = tokens
           .flatMap(token => token.trim().split(/\s+/u))
           .filter(
@@ -698,11 +743,11 @@ export const analyzeCall = ({
               `Direct string children in ${label(record)}; render text through Text or a typography helper.`,
             )
       } else if (Array.isArray(record.variants[key])) {
-        const choice = analysis.resolveString(value)
+        const choice = analysis.resolveLiteral(value)
         if (choice !== null && !record.variants[key].includes(choice))
           violation(
             value,
-            `\`${key}: '${choice}'\` is not a ${label(record)} variant (allowed: ${record.variants[key].join(', ')}).`,
+            `\`${key}: ${typeof choice === 'string' ? `'${choice}'` : String(choice)}\` is not a ${label(record)} variant (allowed: ${record.variants[key].join(', ')}).`,
           )
       }
     }

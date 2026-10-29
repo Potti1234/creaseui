@@ -364,7 +364,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "AvatarFallbackProps",
       "kind": "type",
-      "signature": "AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; }>"
+      "signature": "AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; tone?: 'muted' | 'accent'; }>"
     },
     {
       "name": "avatarFallback",
@@ -394,7 +394,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "AvatarGroupCountProps",
       "kind": "type",
-      "signature": "AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; }>"
+      "signature": "AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; tone?: 'muted' | 'accent'; }>"
     },
     {
       "name": "avatarGroupCount",

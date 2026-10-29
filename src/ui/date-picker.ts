@@ -1,4 +1,4 @@
-﻿import { Option } from 'effect'
+import { Option } from 'effect'
 import * as FoldkitCalendar from 'foldkit/calendar'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 

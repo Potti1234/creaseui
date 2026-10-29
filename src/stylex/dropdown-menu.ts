@@ -172,7 +172,8 @@ const updateTyped = <Item extends string>(
   const result = Behavior.update(model, message)
   return {
     model: result.model,
-    ...(message._tag === 'Closed' && model.isOpen
+    ...((message._tag === 'Closed' && model.isOpen) ||
+    (Option.isSome(result.selection) && model.isOpen && !result.model.isOpen)
       ? { commands: [FocusTrigger({ id: model.id })] }
       : {}),
     ...(Option.isNone(result.selection)

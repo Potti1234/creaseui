@@ -1,4 +1,4 @@
-﻿import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { type InputBehaviorProps, renderInput } from '@/lib/input'
 import { cn } from '@/lib/utils'

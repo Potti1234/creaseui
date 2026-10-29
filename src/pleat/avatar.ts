@@ -42,6 +42,11 @@ const styles = {
     width: '100%',
   }),
   loading: Style.make({ opacity: 0 }),
+  toneAccent: Style.make({
+    backgroundColor: foundationTokens.primarySoft15,
+    color: tokens.primary,
+    fontWeight: 500,
+  }),
   fallback: Style.make({
     inset: 0,
     alignItems: 'center',
@@ -177,6 +182,7 @@ export type AvatarFallbackProps = Readonly<{
   layoutStyle?: ComponentLayoutStyle | undefined
   children: ReadonlyArray<Html | string>
   model?: Model
+  tone?: 'muted' | 'accent' | undefined
 }>
 export const avatarFallback = <Msg>(
   p: AvatarFallbackProps,
@@ -187,7 +193,14 @@ export const avatarFallback = <Msg>(
     : h.div(
         [
           h.DataAttribute('slot', 'avatar-fallback'),
-          h.Class(className(styles.fallback, styles.round, p.layoutStyle)),
+          h.Class(
+            className(
+              styles.fallback,
+              styles.round,
+              p.tone === 'accent' ? styles.toneAccent : false,
+              p.layoutStyle,
+            ),
+          ),
         ],
         [...p.children],
       )
@@ -244,6 +257,7 @@ export const avatarGroup = <Msg>(
   )
 export type AvatarGroupCountProps = Readonly<{
   size?: 'default' | 'sm' | 'lg'
+  tone?: 'muted' | 'accent' | undefined
   layoutStyle?: ComponentLayoutStyle | undefined
   children: ReadonlyArray<Html | string>
 }>
@@ -262,6 +276,7 @@ export const avatarGroupCount = <Msg>(
             : p.size === 'lg'
               ? styles.groupCountLg
               : styles.groupCount,
+          p.tone === 'accent' ? styles.toneAccent : false,
           p.layoutStyle,
         ),
       ),

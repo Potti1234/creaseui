@@ -1,3 +1,5 @@
+@import '@fontsource-variable/inter';
+
 :root,
 .light {
   --radius: 0.625rem;

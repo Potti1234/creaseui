@@ -65,10 +65,15 @@ export const creaseui = (options = {}) => {
   const files = options.files ?? ['src/**/*.{ts,tsx,mts,js,jsx,mjs}']
   const owned = [...strict.ownership.files.values()]
   const paths = filter => owned.filter(filter).map(file => file.path)
-  const raw = paths(file => grantOf(file) === 'raw')
-  const theme = paths(file => grantOf(file) === 'theme')
-  const setup = paths(file => grantOf(file) === 'setup')
-  const composing = paths(file => grantOf(file) === 'composing')
+  /* ESLint parses scripts only: a registered stylesheet (role 'theme') is
+     checked by `creaseui-lint css`, never by the TypeScript parser. */
+  const SCRIPT = /\.[cm]?[jt]sx?$/u
+  const scriptPaths = filter =>
+    paths(file => SCRIPT.test(file.path) && filter(file))
+  const raw = scriptPaths(file => grantOf(file) === 'raw')
+  const theme = scriptPaths(file => grantOf(file) === 'theme')
+  const setup = scriptPaths(file => grantOf(file) === 'setup')
+  const composing = scriptPaths(file => grantOf(file) === 'composing')
   const projects =
     strict.tsconfig === undefined
       ? undefined
@@ -92,7 +97,7 @@ export const creaseui = (options = {}) => {
   const entries = [
     {
       ...shared,
-      files: [...files, ...paths(() => true)],
+      files: [...files, ...scriptPaths(() => true)],
       languageOptions: {
         parser: tseslint.parser,
         parserOptions:

@@ -1,5 +1,12 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
@@ -187,6 +194,30 @@ test('StyleX apps place components with stylex.create entries', () => {
     ids(view("page: { maxWidth: '42rem' }", "styles['missing']")),
     ['crease/no-unverifiable-ui'],
   )
+  const when = use =>
+    lint(
+      `${HEADER}
+    import { stack } from '@design/stack'
+    import { layoutStyle, layoutWhen } from '@design/contracts'
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      stack({ layoutStyle: ${use}, children: [] }, h)`,
+      'src/feature.ts',
+      stylexContext,
+    )
+  assert.deepEqual(
+    when(
+      "layoutWhen('@media (max-width: 767px)', { display: 'none' })(layoutStyle({}))",
+    ),
+    [],
+  )
+  assert.deepEqual(
+    ids(
+      when(
+        "layoutWhen('@media (min-width: 768px)', { display: 'grid' })(layoutStyle({}))",
+      ),
+    ),
+    ['crease/component-contract'],
+  )
   const props = lint(
     `${HEADER}
     import * as stylex from '@stylexjs/stylex'
@@ -239,6 +270,93 @@ test('component contract: appearance props, layout values, variants and string c
       /`style` is an appearance override/u.test(message),
     ),
   )
+})
+
+/* `input` (control.input) has no `size` prop: the override advice must not
+   name a prop that does not exist. `button` keeps the named-size advice. */
+test('geometry override names the size prop only when the component has one', () => {
+  const manifest = JSON.parse(
+    readFileSync(path.join(root, 'crease.lock.json'), 'utf8'),
+  )
+  const contextFor = renderer =>
+    createStrictContext({
+      rootDir: root,
+      manifest: { ...manifest, renderer },
+      renderer,
+      tsconfig: './tsconfig.json',
+      typeInformation: 'syntactic',
+    })
+  const contractMessages = code =>
+    lint(code, 'src/feature.ts', contextFor('tailwind')).filter(
+      message => message.ruleId === 'crease/component-contract',
+    )
+
+  const inputClass = contractMessages(`${HEADER}
+    import { input } from '@design/input'
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      input({ class: 'h-7', placeholder: 'x' }, h)`)
+  assert.equal(inputClass.length, 1, JSON.stringify(inputClass))
+  assert.match(
+    inputClass[0].message,
+    /change it in the component or the theme/u,
+  )
+  assert.doesNotMatch(inputClass[0].message, /`size` option/u)
+
+  const buttonClass = contractMessages(`${HEADER}
+    import { button } from '@design/button'
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      button({ class: 'h-7', children: [] }, h)`)
+  assert.ok(
+    buttonClass.some(message => /use its `size` option/u.test(message.message)),
+    JSON.stringify(buttonClass),
+  )
+
+  const inputLayout = lint(
+    `${HEADER}
+    import { input } from '@design/input'
+    import { layoutStyle } from '@design/contracts'
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      input({ layoutStyle: layoutStyle({ height: 32 }), placeholder: 'x' }, h)`,
+    'src/feature.ts',
+    contextFor('stylex'),
+  ).filter(message => message.ruleId === 'crease/component-contract')
+  assert.equal(inputLayout.length, 1, JSON.stringify(inputLayout))
+  assert.match(
+    inputLayout[0].message,
+    /change it in the component or the theme/u,
+  )
+  assert.doesNotMatch(inputLayout[0].message, /`size` option/u)
+})
+
+/* The fixture receipt records input.variants = { level: [4], disabled: [false] }:
+   non-string variant values must be enforced too, compared by type. */
+test('numeric and boolean receipt variants are enforced', () => {
+  const contractMessages = code =>
+    lint(code).filter(message => message.ruleId === 'crease/component-contract')
+  const bad = contractMessages(`${HEADER}
+    import { input } from '@design/input'
+    const lvl = 3
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      input({ level: 2, placeholder: 'x' }, h) ?? input({ level: lvl }, h) ?? input({ disabled: true }, h)`)
+  assert.equal(bad.length, 3, JSON.stringify(bad))
+  assert.match(
+    bad[0].message,
+    /`level: 2` is not a `input` \(control\.input\) variant \(allowed: 4\)/u,
+  )
+  assert.match(bad[1].message, /`level: 3` is not a `input`/u)
+  assert.match(bad[2].message, /`disabled: true` is not a `input`/u)
+  /* Type-sensitive: '4' is not 4. */
+  const stringChoice = contractMessages(`${HEADER}
+    import { input } from '@design/input'
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      input({ level: '4' }, h)`)
+  assert.equal(stringChoice.length, 1, JSON.stringify(stringChoice))
+  const good = contractMessages(`${HEADER}
+    import { input } from '@design/input'
+    const ok = 4
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      input({ level: ok, disabled: false, placeholder: 'x' }, h)`)
+  assert.deepEqual(good, [])
 })
 
 test('unverifiable: opaque spread, forged layout, computed tag, missing settings', () => {
@@ -364,6 +482,7 @@ test('creaseui() returns scoped entries with exact implementation files', () => 
     [
       'src/design/behavior/button.ts',
       'src/design/button.ts',
+      'src/design/input.ts',
       'src/design/stack.ts',
       'src/design/text.ts',
     ],
@@ -377,4 +496,47 @@ test('creaseui() returns scoped entries with exact implementation files', () => 
   assert.deepEqual(byName['@creaseui/lint/strict/theme'].files, [
     'src/design/contracts.ts',
   ])
+})
+
+/* A registered stylesheet is checked by `creaseui-lint css`, not parsed by
+   ESLint: no config block may name a `.css` path in `files`. */
+test('creaseui() keeps registered stylesheets out of ESLint file lists', () => {
+  const directory = mkdtempSync(path.join(tmpdir(), 'creaseui-css-ext-'))
+  mkdirSync(path.join(directory, 'src/theme'), { recursive: true })
+  writeFileSync(
+    path.join(directory, 'src/theme/geometry.css'),
+    ':root { --x: 1; }\n',
+  )
+  writeFileSync(
+    path.join(directory, 'src/theme/mode.ts'),
+    'export const mode = 1\n',
+  )
+  for (const renderer of ['tailwind', 'stylex']) {
+    const entries = creaseui({
+      extensions: [
+        {
+          id: 'theme-preset',
+          reason: 'Generated theme stylesheet',
+          role: 'theme',
+          files: ['src/theme/geometry.css', 'src/theme/mode.ts'],
+        },
+      ],
+      manifest: {
+        artifacts: [],
+        policyVersion: 'crease-default-v1',
+        renderer,
+        schemaVersion: 1,
+      },
+      renderer,
+      rootDir: directory,
+    })
+    for (const entry of entries)
+      for (const file of entry.files ?? [])
+        assert.doesNotMatch(file, /\.css$/u, `${renderer}: ${entry.name}`)
+    assert.ok(
+      entries.some(entry => (entry.files ?? []).includes('src/theme/mode.ts')),
+      `${renderer}: script extension keeps its role`,
+    )
+  }
+  rmSync(directory, { force: true, recursive: true })
 })

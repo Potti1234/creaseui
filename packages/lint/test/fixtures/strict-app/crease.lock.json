@@ -73,6 +73,28 @@
       ]
     },
     {
+      "id": "crease/pleat-input",
+      "version": "0.1.0",
+      "files": [
+        {
+          "path": "src/design/input.ts",
+          "role": "renderer",
+          "rawRendering": true
+        }
+      ],
+      "exports": [
+        {
+          "file": "src/design/input.ts",
+          "name": "input",
+          "contract": "control.input",
+          "variants": {
+            "level": [4],
+            "disabled": [false]
+          }
+        }
+      ]
+    },
+    {
       "id": "crease/pleat-contracts",
       "version": "0.1.0",
       "files": [{ "path": "src/design/contracts.ts", "role": "theme" }],

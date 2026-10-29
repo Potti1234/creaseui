@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { extname, join } from 'node:path'
 import { readdir } from 'node:fs/promises'
 
-const roots = ['src', 'docs', 'brand']
+const roots = ['src', 'docs', 'brand', 'registry']
 const rootFiles = ['README.md', 'CONTRIBUTING.md']
 const textExtensions = new Set(['.ts', '.md', '.json', '.css', '.html', '.svg'])
 const suspicious = /(?:Ã.|Â.|â.|ð.|Ø.|Ù.|ï.)/u
@@ -71,22 +71,34 @@ const walk = async directory => {
 const files = [...rootFiles, ...(await Promise.all(roots.map(walk))).flat()]
 const write = process.argv.includes('--write')
 const failures = []
+const bomFailures = []
 
 for (const file of files) {
   const source = await readFile(file, 'utf8')
+  /* A UTF-8 byte-order mark reads as an invisible U+FEFF at the start of
+     the file and makes installed sources differ from the registry text. */
+  const bom = source.startsWith('\uFEFF')
   const repaired = source
+    .slice(bom ? 1 : 0)
     .split(/(?<=\n)/u)
     .map(repairLine)
     .join('')
 
   if (repaired === source) continue
   if (write) await writeFile(file, repaired, 'utf8')
+  else if (bom) bomFailures.push(file)
   else failures.push(file)
 }
 
-if (failures.length > 0) {
-  console.error('Mojibake-like UTF-8 text found in:')
-  for (const file of failures) console.error(`- ${file}`)
+if (failures.length > 0 || bomFailures.length > 0) {
+  if (failures.length > 0) {
+    console.error('Mojibake-like UTF-8 text found in:')
+    for (const file of failures) console.error(`- ${file}`)
+  }
+  if (bomFailures.length > 0) {
+    console.error('UTF-8 byte-order marks found in:')
+    for (const file of bomFailures) console.error(`- ${file}`)
+  }
   console.error('Run `npm run docs:encoding:fix` and review the changes.')
   process.exitCode = 1
 } else if (write) {

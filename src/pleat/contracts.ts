@@ -43,7 +43,8 @@ export type ComponentLayoutProperties = Pick<
   | 'minWidth'
   | 'order'
   | 'width'
->
+> &
+  Readonly<{ display?: 'none' }>
 
 declare const componentLayoutBrand: unique symbol
 
@@ -72,6 +73,11 @@ export const layoutStyle = (
         `layoutStyle only accepts parent-layout properties, got "${property}"`,
       )
     }
+  }
+  if (declarations.display !== undefined && declarations.display !== 'none') {
+    throw new Error(
+      `layoutStyle only accepts display: 'none', got ${JSON.stringify(declarations.display)}`,
+    )
   }
   return Style.make(declarations as Declarations) as ComponentLayoutStyle
 }

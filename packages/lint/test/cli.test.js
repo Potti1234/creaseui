@@ -992,3 +992,257 @@ test('css accepts a custom semantic role and names the collision for an ambiguou
     /src\/global\.css:2.*@apply bg-cover .* is ambiguous: `bg-cover` is also a Tailwind utility .*rename the role/u,
   )
 })
+
+/* Receipt variants drift from the renderer's source of truth: Tailwind keeps
+   them in the export's cva `variants` config; StyleX and Pleat keep them as
+   <EXPORT>_<PROP> `as const` arrays in a contracts module. */
+test('doctor reconciles receipt variants with the renderer sources', () => {
+  const project = (renderer, receipt, files) => {
+    const directory = mkdtempSync(
+      path.join(tmpdir(), 'creaseui-lint-variants-'),
+    )
+    mkdirSync(path.join(directory, 'node_modules/@creaseui'), {
+      recursive: true,
+    })
+    symlinkSync(
+      fileURLToPath(new URL('..', import.meta.url)),
+      path.join(directory, 'node_modules/@creaseui/lint'),
+      'junction',
+    )
+    for (const [name, text] of Object.entries(files)) {
+      const absolute = path.join(directory, name)
+      mkdirSync(path.dirname(absolute), { recursive: true })
+      writeFileSync(absolute, text)
+    }
+    writeFileSync(
+      path.join(directory, 'crease.lock.json'),
+      `${JSON.stringify(
+        {
+          artifacts: receipt,
+          policyVersion: 'crease-default-v1',
+          renderer,
+          schemaVersion: 1,
+        },
+        null,
+        2,
+      )}\n`,
+    )
+    writeFileSync(
+      path.join(directory, 'eslint.config.js'),
+      `import { fileURLToPath } from 'node:url'
+import { creaseui } from '@creaseui/lint'
+
+export default [
+  ...creaseui({
+    rootDir: fileURLToPath(new URL('.', import.meta.url)),
+    renderer: '${renderer}',
+    preset: 'strict',
+    files: ['src/**/*.{ts,tsx,js,jsx}'],
+    tsconfig: './tsconfig.json',
+  }),
+]
+`,
+    )
+    writeFileSync(
+      path.join(directory, 'tsconfig.json'),
+      '{"compilerOptions":{"strict":true,"noEmit":true,"skipLibCheck":true},"include":["src"]}\n',
+    )
+    return directory
+  }
+  const component = `import type { Html, HtmlBuilder } from 'foldkit/html'
+
+export const button = <Msg>(props: { children: string[] }, h: HtmlBuilder<Msg>): Html =>
+  h.button([], props.children)
+`
+  /* Tailwind: the cva `variants` keys are the allowed values. */
+  const tailwind = project(
+    'tailwind',
+    [
+      {
+        id: 'crease/button',
+        files: [
+          {
+            path: 'src/design/button.ts',
+            rawRendering: true,
+            role: 'renderer',
+          },
+        ],
+        exports: [
+          {
+            contract: 'control.button',
+            file: 'src/design/button.ts',
+            name: 'button',
+            variants: { intent: ['primary', 'secondary'] },
+          },
+        ],
+      },
+    ],
+    {
+      'src/design/button.ts': `import { cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+
+export const buttonVariants = cva('base', {
+  variants: {
+    intent: {
+      danger: 'x',
+      primary: 'y',
+      secondary: 'z',
+    },
+  },
+})
+
+export const button = <Msg>(props: { children: string[] }, h: HtmlBuilder<Msg>): Html =>
+  h.button([], props.children)
+`,
+    },
+  )
+  /* A source value the receipt drops is intended narrowing: a note,
+     not a failure. */
+  const stale = run(tailwind, 'doctor')
+  assert.equal(stale.status, 0, stale.stdout + stale.stderr)
+  assert.match(
+    stale.stdout,
+    /`button`.*`intent`.*'danger'.*narrowed by the receipt/u,
+  )
+  rmSync(tailwind, { force: true, recursive: true })
+
+  /* StyleX and Pleat: the <EXPORT>_<PROP>S `as const` arrays are the source.
+     StyleX covers a mismatch in both directions; Pleat covers a receipt that
+     does not restrict a value the source adds. */
+  const contracts = (variant, size) => ({
+    'src/design/button.ts': component,
+    'src/design/contracts.ts': `export const BUTTON_VARIANTS = [${variant}] as const
+export const BUTTON_SIZES = [${size}] as const
+`,
+  })
+  const receipt = variants => [
+    {
+      id: 'crease/stylex-button',
+      files: [
+        {
+          path: 'src/design/button.ts',
+          rawRendering: true,
+          role: 'renderer',
+        },
+        { path: 'src/design/contracts.ts', role: 'theme' },
+      ],
+      exports: [
+        {
+          contract: 'control.button',
+          file: 'src/design/button.ts',
+          name: 'button',
+          variants,
+        },
+      ],
+    },
+  ]
+  const stylex = project(
+    'stylex',
+    receipt({ size: ['default', 'huge'], variant: ['default', 'outline'] }),
+    contracts(`'default', 'outline', 'ghost'`, `'default'`),
+  )
+  const both = run(stylex, 'doctor')
+  assert.equal(both.status, 1, both.stdout + both.stderr)
+  assert.match(both.stdout, /`variant`.*'ghost'.*narrowed by the receipt/u)
+  assert.match(both.stdout, /`size`.*'huge'.*receipt/u)
+  rmSync(stylex, { force: true, recursive: true })
+
+  const pleat = project(
+    'pleat',
+    receipt({ variant: ['default'] }),
+    contracts(`'default', 'outline'`, `'default'`),
+  )
+  const added = run(pleat, 'doctor')
+  assert.equal(added.status, 0, added.stdout + added.stderr)
+  assert.match(added.stdout, /`variant`.*'outline'.*narrowed by the receipt/u)
+  rmSync(pleat, { force: true, recursive: true })
+
+  /* Intentional narrowing across several components — including a
+     boolean cva prop recorded as a receipt boolean — exits 0. */
+  const pair = project(
+    'tailwind',
+    [
+      {
+        id: 'crease/text',
+        files: [
+          { path: 'src/design/text.ts', rawRendering: true, role: 'renderer' },
+        ],
+        exports: [
+          {
+            contract: 'display.text',
+            file: 'src/design/text.ts',
+            name: 'text',
+            variants: { size: ['default'] },
+          },
+        ],
+      },
+      {
+        id: 'crease/badge',
+        files: [
+          { path: 'src/design/badge.ts', rawRendering: true, role: 'renderer' },
+        ],
+        exports: [
+          {
+            contract: 'display.badge',
+            file: 'src/design/badge.ts',
+            name: 'badge',
+            variants: { variant: ['secondary'], icon: [true] },
+          },
+        ],
+      },
+    ],
+    {
+      'src/design/text.ts': `import { cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+
+export const textVariants = cva('base', {
+  variants: {
+    size: {
+      default: 'x',
+      sm: 'y',
+      lg: 'z',
+    },
+  },
+})
+
+export const text = <Msg>(props: { children: string[] }, h: HtmlBuilder<Msg>): Html =>
+  h.span([], props.children)
+`,
+      'src/design/badge.ts': `import { cva } from 'class-variance-authority'
+import type { Html, HtmlBuilder } from 'foldkit/html'
+
+export const badgeVariants = cva('base', {
+  variants: {
+    variant: {
+      primary: 'x',
+      secondary: 'y',
+      destructive: 'z',
+    },
+    icon: {
+      true: 'x',
+      false: 'y',
+    },
+  },
+})
+
+export const badge = <Msg>(props: { children: string[] }, h: HtmlBuilder<Msg>): Html =>
+  h.span([], props.children)
+`,
+    },
+  )
+  const narrowed = run(pair, 'doctor')
+  assert.equal(narrowed.status, 0, narrowed.stdout + narrowed.stderr)
+  assert.match(
+    narrowed.stdout,
+    /`text`.*`size`.*'sm'.*narrowed by the receipt/u,
+  )
+  assert.match(
+    narrowed.stdout,
+    /`badge`.*`variant`.*'primary'.*narrowed by the receipt/u,
+  )
+  assert.match(
+    narrowed.stdout,
+    /`badge`.*`icon`.*false.*narrowed by the receipt/u,
+  )
+  rmSync(pair, { force: true, recursive: true })
+})

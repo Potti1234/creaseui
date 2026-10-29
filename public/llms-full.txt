@@ -1562,8 +1562,8 @@ Bad (`src/styles.css`):
 
 ```text
 $ npx creaseui-lint doctor
-ok      receipt valid (renderer pleat, policy crease-default-v1, 7 owned files)
-ok      9 source files inspected, 0 uncovered UI modules
+ok      receipt valid (renderer pleat, policy crease-default-v1, 8 owned files)
+ok      10 source files inspected, 0 uncovered UI modules
 ok      1 stylesheets inspected
 problem src/design/tokens.ts reads --color-border, which no stylesheet defines; install the theme (crease-theme for Tailwind, crease-theme-css for StyleX and Pleat) and import it
 coverage complete
@@ -1580,8 +1580,8 @@ Good (`src/styles.css`):
 
 ```text
 $ npx creaseui-lint doctor
-ok      receipt valid (renderer pleat, policy crease-default-v1, 7 owned files)
-ok      9 source files inspected, 0 uncovered UI modules
+ok      receipt valid (renderer pleat, policy crease-default-v1, 8 owned files)
+ok      10 source files inspected, 0 uncovered UI modules
 ok      1 stylesheets inspected
 coverage complete
 ```
@@ -1605,9 +1605,9 @@ export const badge = <Msg>(label: string, h: HtmlBuilder<Msg>): Html =>
 
 ```text
 $ npx creaseui-lint doctor
-ok      receipt valid (renderer pleat, policy crease-default-v1, 6 owned files)
+ok      receipt valid (renderer pleat, policy crease-default-v1, 7 owned files)
 problem src/design/badge.ts is installed in src/design but not registered in crease.lock.json; re-run creaseui-lint init
-ok      9 source files inspected, 1 uncovered UI modules
+ok      10 source files inspected, 1 uncovered UI modules
 ok      0 stylesheets inspected
 coverage feature-only: 1 implementation or UI files are ignored, lose Crease rules or have unregistered rendering exports; this is not complete design-system enforcement
 ```
@@ -1624,8 +1624,8 @@ export const badge = <Msg>(label: string, h: HtmlBuilder<Msg>): Html =>
 
 ```text
 $ npx creaseui-lint doctor
-ok      receipt valid (renderer pleat, policy crease-default-v1, 7 owned files)
-ok      9 source files inspected, 0 uncovered UI modules
+ok      receipt valid (renderer pleat, policy crease-default-v1, 8 owned files)
+ok      10 source files inspected, 0 uncovered UI modules
 ok      0 stylesheets inspected
 coverage complete
 ```
@@ -1810,13 +1810,13 @@ Examples: Demo, Basic, Badge, Badge with Icon, Avatar Group, Avatar Group Count,
 - `avatar<Msg>(props: AvatarProps, h: HtmlBuilder<Msg>): Html` (function)
 - `AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; }>` (type)
 - `avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html` (function)
-- `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; }>` (type)
+- `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; tone?: 'muted' | 'accent'; }>` (type)
 - `avatarFallback<Msg>(props: AvatarFallbackProps, h: HtmlBuilder<Msg>): Html` (function)
 - `AvatarBadgeProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>` (type)
 - `avatarBadge<Msg>(props: AvatarBadgeProps, h: HtmlBuilder<Msg>): Html` (function)
 - `AvatarGroupProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html` (function)
-- `AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; }>` (type)
+- `AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; tone?: 'muted' | 'accent'; }>` (type)
 - `avatarGroupCount<Msg>(props: AvatarGroupCountProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Badge

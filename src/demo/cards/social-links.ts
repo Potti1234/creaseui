@@ -1,4 +1,4 @@
-﻿import { Match as M, Schema as S } from 'effect'
+import { Match as M, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import type { Command } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'

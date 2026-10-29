@@ -1,4 +1,4 @@
-﻿import { Schema as S } from 'effect'
+import { Schema as S } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
@@ -81,6 +81,9 @@ export type AvatarFallbackProps = Readonly<{
   class?: string
   children: ReadonlyArray<Html | string>
   model?: Model
+  /** `accent` tints the fallback with the primary colour, for surfaces
+      whose background equals --muted (the preset sidebar). */
+  tone?: 'muted' | 'accent'
 }>
 
 export const avatarFallback = <Msg>(
@@ -95,6 +98,7 @@ export const avatarFallback = <Msg>(
       h.Class(
         cn(
           'absolute inset-0 flex size-full items-center justify-center rounded-full bg-muted text-sm text-foreground group-data-[size=sm]/avatar:text-xs',
+          props.tone === 'accent' && 'bg-primary/15 font-medium text-primary',
           props.class,
         ),
       ),
@@ -155,6 +159,7 @@ export const avatarGroup = <Msg>(
 export type AvatarGroupCountProps = Readonly<{
   class?: string
   children: ReadonlyArray<Html | string>
+  tone?: 'muted' | 'accent'
 }>
 
 export const avatarGroupCount = <Msg>(
@@ -167,6 +172,7 @@ export const avatarGroupCount = <Msg>(
       h.Class(
         cn(
           'relative flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-sm text-foreground ring-2 ring-background group-has-data-[size=lg]/avatar-group:size-10 group-has-data-[size=sm]/avatar-group:size-6 [&>svg]:size-4 group-has-data-[size=lg]/avatar-group:[&>svg]:size-5 group-has-data-[size=sm]/avatar-group:[&>svg]:size-3',
+          props.tone === 'accent' && 'bg-primary/15 font-medium text-primary',
           props.class,
         ),
       ),

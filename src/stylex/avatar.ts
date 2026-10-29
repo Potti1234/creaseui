@@ -42,6 +42,11 @@ const styles = stylex.create({
     width: '100%',
   },
   loading: { opacity: 0 },
+  toneAccent: {
+    backgroundColor: foundationTokens.primarySoft15,
+    color: tokens.primary,
+    fontWeight: 500,
+  },
   fallback: {
     inset: 0,
     alignItems: 'center',
@@ -176,6 +181,7 @@ export type AvatarFallbackProps = Readonly<{
   layoutStyle?: ComponentLayoutStyle
   children: ReadonlyArray<Html | string>
   model?: Model
+  tone?: 'muted' | 'accent'
 }>
 export const avatarFallback = <Msg>(
   p: AvatarFallbackProps,
@@ -186,7 +192,14 @@ export const avatarFallback = <Msg>(
     : h.div(
         [
           h.DataAttribute('slot', 'avatar-fallback'),
-          h.Class(className(styles.fallback, styles.round, p.layoutStyle)),
+          h.Class(
+            className(
+              styles.fallback,
+              styles.round,
+              p.tone === 'accent' && styles.toneAccent,
+              p.layoutStyle,
+            ),
+          ),
         ],
         [...p.children],
       )
@@ -243,6 +256,7 @@ export const avatarGroup = <Msg>(
   )
 export type AvatarGroupCountProps = Readonly<{
   size?: 'default' | 'sm' | 'lg'
+  tone?: 'muted' | 'accent'
   layoutStyle?: ComponentLayoutStyle
   children: ReadonlyArray<Html | string>
 }>
@@ -261,6 +275,7 @@ export const avatarGroupCount = <Msg>(
             : p.size === 'lg'
               ? styles.groupCountLg
               : styles.groupCount,
+          p.tone === 'accent' && styles.toneAccent,
           p.layoutStyle,
         ),
       ),

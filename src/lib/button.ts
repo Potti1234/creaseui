@@ -17,6 +17,12 @@ export type ButtonBehaviorProps<Msg> = Readonly<{
   type?: ButtonType
   isAutofocus?: boolean
   ariaLabel?: string
+  /** For a button that shows or hides something (a disclosure): whether it is shown. */
+  ariaExpanded?: boolean
+  /** The id of the element the button shows, hides, or controls. */
+  ariaControls?: string
+  /** The kind of popup the button can open. */
+  ariaHasPopup?: 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog' | 'true'
   name?: string
   value?: string
   form?: string
@@ -109,6 +115,15 @@ export const renderButton = <Msg>(
             ...(props.ariaLabel === undefined
               ? []
               : [h.AriaLabel(props.ariaLabel)]),
+            ...(props.ariaExpanded === undefined
+              ? []
+              : [h.AriaExpanded(props.ariaExpanded)]),
+            ...(props.ariaControls === undefined
+              ? []
+              : [h.AriaControls(props.ariaControls)]),
+            ...(props.ariaHasPopup === undefined
+              ? []
+              : [h.AriaHasPopup(props.ariaHasPopup)]),
             ...(props.name === undefined ? [] : [h.Name(props.name)]),
             ...(props.value === undefined ? [] : [h.Value(props.value)]),
             ...(props.form === undefined ? [] : [h.FormAttr(props.form)]),

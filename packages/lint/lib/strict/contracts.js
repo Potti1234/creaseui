@@ -81,6 +81,7 @@ export const isLayoutSlot = name =>
 /* Same closed allowlist as src/lib/layout-properties.ts. */
 export const LAYOUT_PROPERTIES = new Set([
   'aspectRatio',
+  'display',
   'alignSelf',
   'flexBasis',
   'flexGrow',
@@ -152,10 +153,23 @@ const PLACEMENT_UTILITY = new RegExp(
 )
 const VARIANT_PREFIX = /^(?:(?:sm|md|lg|xl|2xl|rtl|ltr|print):)*/u
 
-/** True for a Tailwind utility that only places a component in its parent. */
-export const isPlacementUtility = token => {
+/* Display values: `hidden` (bare or under a breakpoint) only removes the
+   component — placement. `<bp>:<display>` like `md:flex` reveals it again;
+   that is placement only when the same class list also hides the component
+   (`hidden md:flex`), because a bare reveal like `md:grid` alone restyles
+   the component at a breakpoint without ever hiding it. */
+const DISPLAY_UTILITY =
+  /^(?:block|inline-block|inline|flex|inline-flex|table|inline-table|table-caption|table-cell|table-column|table-column-group|table-footer-group|table-header-group|table-row-group|table-row|flow-root|grid|inline-grid|contents|list-item|hidden)$/u
+
+/** True for a Tailwind utility that only places a component in its parent.
+    `all` is the full utility list of the same `class` value. */
+export const isPlacementUtility = (token, all = [token]) => {
   const bare = token.replace(VARIANT_PREFIX, '')
-  return new RegExp(`^(?:${PLACEMENT_UTILITY.source})$`, 'u').test(bare)
+  if (new RegExp(`^(?:${PLACEMENT_UTILITY.source})$`, 'u').test(bare))
+    return true
+  if (bare === 'hidden') return true
+  if (bare === token || !DISPLAY_UTILITY.test(bare)) return false
+  return all.some(other => other.replace(VARIANT_PREFIX, '') === 'hidden')
 }
 
 /* Controls with named sizes own their block size; parents may only stretch

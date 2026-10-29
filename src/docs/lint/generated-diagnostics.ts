@@ -547,8 +547,8 @@ export const LINT_CLI_OUTPUT: Readonly<
       "command": "npx creaseui-lint doctor",
       "exitCode": 1,
       "lines": [
-        "ok      receipt valid (renderer pleat, policy crease-default-v1, 7 owned files)",
-        "ok      9 source files inspected, 0 uncovered UI modules",
+        "ok      receipt valid (renderer pleat, policy crease-default-v1, 8 owned files)",
+        "ok      10 source files inspected, 0 uncovered UI modules",
         "ok      1 stylesheets inspected",
         "problem src/design/tokens.ts reads --color-border, which no stylesheet defines; install the theme (crease-theme for Tailwind, crease-theme-css for StyleX and Pleat) and import it",
         "coverage complete"
@@ -558,8 +558,8 @@ export const LINT_CLI_OUTPUT: Readonly<
       "command": "npx creaseui-lint doctor",
       "exitCode": 0,
       "lines": [
-        "ok      receipt valid (renderer pleat, policy crease-default-v1, 7 owned files)",
-        "ok      9 source files inspected, 0 uncovered UI modules",
+        "ok      receipt valid (renderer pleat, policy crease-default-v1, 8 owned files)",
+        "ok      10 source files inspected, 0 uncovered UI modules",
         "ok      1 stylesheets inspected",
         "coverage complete"
       ]
@@ -570,9 +570,9 @@ export const LINT_CLI_OUTPUT: Readonly<
       "command": "npx creaseui-lint doctor",
       "exitCode": 2,
       "lines": [
-        "ok      receipt valid (renderer pleat, policy crease-default-v1, 6 owned files)",
+        "ok      receipt valid (renderer pleat, policy crease-default-v1, 7 owned files)",
         "problem src/design/badge.ts is installed in src/design but not registered in crease.lock.json; re-run creaseui-lint init",
-        "ok      9 source files inspected, 1 uncovered UI modules",
+        "ok      10 source files inspected, 1 uncovered UI modules",
         "ok      0 stylesheets inspected",
         "coverage feature-only: 1 implementation or UI files are ignored, lose Crease rules or have unregistered rendering exports; this is not complete design-system enforcement"
       ]
@@ -581,8 +581,8 @@ export const LINT_CLI_OUTPUT: Readonly<
       "command": "npx creaseui-lint doctor",
       "exitCode": 0,
       "lines": [
-        "ok      receipt valid (renderer pleat, policy crease-default-v1, 7 owned files)",
-        "ok      9 source files inspected, 0 uncovered UI modules",
+        "ok      receipt valid (renderer pleat, policy crease-default-v1, 8 owned files)",
+        "ok      10 source files inspected, 0 uncovered UI modules",
         "ok      0 stylesheets inspected",
         "coverage complete"
       ]

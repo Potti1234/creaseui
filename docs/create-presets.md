@@ -15,10 +15,20 @@ preset is installed.
 
 - installs the `crease-core` component set;
 - installs one of the five Foldkit-native icon adapters;
-- writes `@/styles/crease-preset.css` with light and dark tokens, five chart
-  colors, typography, radius, menu treatment, and structural style rules; and
+- writes `@/styles/crease-preset-tokens.css` with light and dark tokens, five
+  chart colors, typography, radius, menu treatment, and shadows — custom
+  properties only, so it passes the `creaseui-lint css` policy anywhere;
+- writes `@/styles/crease-preset-geometry.css` with the style's structural
+  rules (`:where([data-slot=…])` heights, borders and relief), which a project
+  registers as owned theme CSS; and
 - writes `@/crease-preset.json` so the design choice remains inspectable and
   reproducible.
+
+Some `/create` settings now affect only the page preview and are not written
+into the generated artifact: heading scale, heading weight, heading tracking,
+and motion. They still travel in the preset code so a shared link reproduces
+the preview exactly, but an installed preset keeps the components' own
+heading sizing and motion defaults.
 
 Host the copied JSON as a registry endpoint and add it with the shadcn CLI, or
 materialize the same files locally from a preset code:
@@ -27,14 +37,20 @@ materialize the same files locally from a preset code:
 npm run preset:build -- --preset b27GcrRo --output ./generated-preset
 ```
 
-The output directory contains `registry-item.json`, `crease-preset.css`, and
-`crease-preset.json`. Import the CSS after Tailwind and the base Crease theme so
-the preset values win the cascade:
+The output directory contains `registry-item.json`,
+`crease-preset-tokens.css`, `crease-preset-geometry.css`, and
+`crease-preset.json`. Import both stylesheets after Tailwind and the base
+Crease theme so the preset values win the cascade:
 
 ```css
 @import "tailwindcss";
-@import "./crease-preset.css";
+@import "./crease-preset-tokens.css";
+@import "./crease-preset-geometry.css";
 ```
+
+`crease-preset-geometry.css` styles components from a global stylesheet, which
+`creaseui-lint css` rejects unless the file is registered as theme CSS — add a
+`role: 'theme'` entry for it in the `extensions` list passed to `creaseui()`.
 
 The CSS includes Google Fonts imports for the selected families. Applications
 with a self-hosting, offline, or strict content-security-policy requirement can

@@ -33,4 +33,25 @@ describe('pleat layout contract', () => {
       /parent-layout properties/u,
     )
   })
+
+  it('accepts display: none and rejects other display values', () => {
+    const hidden = layoutStyle({ display: 'none' })
+    assert.equal(Style.isStyle(hidden), true)
+
+    assert.throws(
+      () =>
+        layoutStyle({
+          // @ts-expect-error 'none' is the only placement display value
+          display: 'grid',
+        }),
+      /display: 'none'/u,
+    )
+    assert.throws(
+      () =>
+        layoutStyle({
+          display: 'grid',
+        } as Parameters<typeof layoutStyle>[0]),
+      /display: 'none'/u,
+    )
+  })
 })

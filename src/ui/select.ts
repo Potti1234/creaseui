@@ -1,4 +1,4 @@
-﻿import { Option } from 'effect'
+import { Option } from 'effect'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
 import { Listbox as ListboxPrimitive } from '@foldkit/ui'
