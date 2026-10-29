@@ -162,7 +162,11 @@ export const contrastRatio = (first: Rgba, second: Rgba): number => {
 /** Declarations of every rule whose selector list contains `selector`, merged in order. */
 export const declarationsFor = (css: string, selector: string): ThemeValues => {
   const values: Record<string, string> = {}
-  const source = css.replace(/\/\*[\s\S]*?\*\//g, '')
+  /* Statement at-rules (@import, @charset, @tailwind) carry no braces and
+     would otherwise merge into the next rule's selector list. */
+  const source = css
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/@[\w-]+[^;{]*;/g, '')
   const rule = /([^{}]+)\{([^{}]*)\}/g
   for (const [, selectors = '', body = ''] of source.matchAll(rule)) {
     if (!selectors.split(',').some(item => item.trim() === selector)) continue
