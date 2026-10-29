@@ -71,6 +71,22 @@ const view =
                   [h.DataAttribute('slot', 'fixture-content')],
                   ['Main content'],
                 ),
+                // A one-line row that clips its own overflow, like a real
+                // toolbar/title row: it still drives min-width:auto on the
+                // inset, but must not paint past the viewport itself.
+                h.div(
+                  [
+                    h.DataAttribute('slot', 'fixture-wide-row'),
+                    h.Style({
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                    }),
+                  ],
+                  [
+                    'wide row '.repeat(60) +
+                      'a one-line row wider than the inset',
+                  ],
+                ),
               ],
             },
             h,

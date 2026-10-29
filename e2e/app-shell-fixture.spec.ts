@@ -102,4 +102,20 @@ test.describe('shared app-shell fixture', () => {
       expect(sidebarHeight).toBe(700)
       expect(errors).toEqual([])
     })
+
+  for (const renderer of RENDERERS)
+    test(`${renderer}: sidebar inset shrinks below its content width`, async ({
+      page,
+    }) => {
+      const errors = await openFixture(
+        page,
+        servers.get(renderer)!.resolvedUrls!.local[0]!,
+      )
+      const { scrollWidth, clientWidth } = await page.evaluate(() => ({
+        scrollWidth: document.documentElement.scrollWidth,
+        clientWidth: document.documentElement.clientWidth,
+      }))
+      expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
+      expect(errors).toEqual([])
+    })
 })

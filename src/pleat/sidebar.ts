@@ -165,6 +165,7 @@ const styles = {
     flexGrow: '1',
     flexShrink: '1',
     position: 'relative',
+    minWidth: 0,
     width: '100%',
   }),
   insetVariant: Style.make({

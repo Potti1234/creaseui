@@ -161,6 +161,7 @@ const styles = stylex.create({
     flexGrow: '1',
     flexShrink: '1',
     position: 'relative',
+    minWidth: 0,
     width: '100%',
   },
   insetVariant: {
