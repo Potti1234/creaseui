@@ -327,8 +327,9 @@ describe('preset CSS policy', () => {
   }
 
   const findings = (root: string, owned: string | undefined) => {
+    const toPosix = (value: string) => value.replaceAll(path.sep, '/')
     const run = createCssAudit({
-      isOwned: (file: string) => path.relative(root, file) === owned,
+      isOwned: (file: string) => toPosix(path.relative(root, file)) === owned,
       rootDir: root,
       rootsOf: () => undefined,
     })
