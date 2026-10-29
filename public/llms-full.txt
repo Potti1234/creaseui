@@ -1810,13 +1810,13 @@ Examples: Demo, Basic, Badge, Badge with Icon, Avatar Group, Avatar Group Count,
 - `avatar<Msg>(props: AvatarProps, h: HtmlBuilder<Msg>): Html` (function)
 - `AvatarImageProps = Readonly<{ src: string; alt: string; class?: string; model?: Model; }>` (type)
 - `avatarImage<Msg>(props: AvatarImageProps & Readonly<{ toParentMessage?: (message: Message) => Msg; }>, h: HtmlBuilder<Msg>): Html` (function)
-- `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; }>` (type)
+- `AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; tone?: 'muted' | 'accent'; }>` (type)
 - `avatarFallback<Msg>(props: AvatarFallbackProps, h: HtmlBuilder<Msg>): Html` (function)
 - `AvatarBadgeProps = Readonly<{ class?: string; children?: ReadonlyArray<Html | string>; }>` (type)
 - `avatarBadge<Msg>(props: AvatarBadgeProps, h: HtmlBuilder<Msg>): Html` (function)
 - `AvatarGroupProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `avatarGroup<Msg>(props: AvatarGroupProps, h: HtmlBuilder<Msg>): Html` (function)
-- `AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; }>` (type)
+- `AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; tone?: 'muted' | 'accent'; }>` (type)
 - `avatarGroupCount<Msg>(props: AvatarGroupCountProps, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Badge

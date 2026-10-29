@@ -82,7 +82,11 @@ const styles = stylex.create({
     height: '1.25rem',
     minWidth: '1.25rem',
     right: '0.25rem',
-    top: '0.375rem',
+    top: {
+      default: '0.375rem',
+      [stylex.when.ancestor('[data-sidebar="menu-sub-item"]', sidebarScope)]:
+        '0.25rem',
+    },
   },
   actionHalo: {
     inset: '-0.5rem',
@@ -161,6 +165,7 @@ const styles = stylex.create({
     flexGrow: '1',
     flexShrink: '1',
     position: 'relative',
+    minWidth: 0,
     width: '100%',
   },
   insetVariant: {
@@ -418,7 +423,7 @@ const styles = stylex.create({
     color: complexTokens.sidebarForeground,
     display: 'flex',
     flexDirection: 'column',
-    height: '100%',
+    height: '100svh',
     width: 'var(--sidebar-width)',
   },
   panelTransparent: { backgroundColor: tokens.transparent },
@@ -1354,29 +1359,29 @@ export const sidebarMenuSubButton = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const size = props.size ?? 'md'
-  return h.a(
-    [
-      h.DataAttribute('slot', 'sidebar-menu-sub-button'),
-      h.DataAttribute('sidebar', 'menu-sub-button'),
-      h.DataAttribute('size', size),
-      ...(props.isActive === true
-        ? [
-            h.DataAttribute('active', ''),
-            ...(props.href === undefined ? [] : [h.AriaCurrent('page')]),
-          ]
-        : []),
-      ...(props.href === undefined ? [] : [h.Href(props.href)]),
-      ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
-      h.Class(
-        className(
-          reset.link,
-          styles.subButton,
-          size === 'sm' ? styles.subSm : styles.subMd,
-          props.isActive === true && styles.subButtonActive,
-          props.layoutStyle,
-        ),
+  const renderAsButton = props.href === undefined
+  const attributes = [
+    h.DataAttribute('slot', 'sidebar-menu-sub-button'),
+    h.DataAttribute('sidebar', 'menu-sub-button'),
+    h.DataAttribute('size', size),
+    ...(props.isActive === true
+      ? [
+          h.DataAttribute('active', ''),
+          ...(renderAsButton ? [] : [h.AriaCurrent('page')]),
+        ]
+      : []),
+    ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
+    h.Class(
+      className(
+        renderAsButton ? reset.button : reset.link,
+        styles.subButton,
+        size === 'sm' ? styles.subSm : styles.subMd,
+        props.isActive === true && styles.subButtonActive,
+        props.layoutStyle,
       ),
-    ],
-    [...props.children],
-  )
+    ),
+  ]
+  return renderAsButton
+    ? h.button([...attributes, h.Type('button')], [...props.children])
+    : h.a([h.Href(props.href), ...attributes], [...props.children])
 }

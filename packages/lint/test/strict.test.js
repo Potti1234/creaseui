@@ -194,6 +194,30 @@ test('StyleX apps place components with stylex.create entries', () => {
     ids(view("page: { maxWidth: '42rem' }", "styles['missing']")),
     ['crease/no-unverifiable-ui'],
   )
+  const when = use =>
+    lint(
+      `${HEADER}
+    import { stack } from '@design/stack'
+    import { layoutStyle, layoutWhen } from '@design/contracts'
+    export const view = <M>(h: HtmlBuilder<M>): Html =>
+      stack({ layoutStyle: ${use}, children: [] }, h)`,
+      'src/feature.ts',
+      stylexContext,
+    )
+  assert.deepEqual(
+    when(
+      "layoutWhen('@media (max-width: 767px)', { display: 'none' })(layoutStyle({}))",
+    ),
+    [],
+  )
+  assert.deepEqual(
+    ids(
+      when(
+        "layoutWhen('@media (min-width: 768px)', { display: 'grid' })(layoutStyle({}))",
+      ),
+    ),
+    ['crease/component-contract'],
+  )
   const props = lint(
     `${HEADER}
     import * as stylex from '@stylexjs/stylex'

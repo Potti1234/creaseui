@@ -81,6 +81,7 @@ export const isLayoutSlot = name =>
 /* Same closed allowlist as src/lib/layout-properties.ts. */
 export const LAYOUT_PROPERTIES = new Set([
   'aspectRatio',
+  'display',
   'alignSelf',
   'flexBasis',
   'flexGrow',
@@ -152,10 +153,21 @@ const PLACEMENT_UTILITY = new RegExp(
 )
 const VARIANT_PREFIX = /^(?:(?:sm|md|lg|xl|2xl|rtl|ltr|print):)*/u
 
+/* Display values: under a breakpoint variant (`sm:flex`, `md:hidden`) they
+   hide or reveal a component — the parent's placement decision. Bare (no
+   variant) `flex`, `grid`... restyle the component itself and stay rejected;
+   bare `hidden` is placement because it only removes the component. */
+const DISPLAY_UTILITY =
+  /^(?:block|inline-block|inline|flex|inline-flex|table|inline-table|table-caption|table-cell|table-column|table-column-group|table-footer-group|table-header-group|table-row-group|table-row|flow-root|grid|inline-grid|contents|list-item|hidden)$/u
+
 /** True for a Tailwind utility that only places a component in its parent. */
 export const isPlacementUtility = token => {
   const bare = token.replace(VARIANT_PREFIX, '')
-  return new RegExp(`^(?:${PLACEMENT_UTILITY.source})$`, 'u').test(bare)
+  return (
+    new RegExp(`^(?:${PLACEMENT_UTILITY.source})$`, 'u').test(bare) ||
+    bare === 'hidden' ||
+    (bare !== token && DISPLAY_UTILITY.test(bare))
+  )
 }
 
 /* Controls with named sizes own their block size; parents may only stretch
