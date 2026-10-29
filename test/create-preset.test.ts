@@ -1,5 +1,10 @@
 import assert from 'node:assert/strict'
+import { execFileSync } from 'node:child_process'
+import { mkdtempSync, readFileSync, readdirSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
 import { describe, it } from 'node:test'
+import { fileURLToPath } from 'node:url'
 import { Option } from 'effect'
 
 import {
@@ -110,6 +115,45 @@ describe('shadcn preset compatibility', () => {
       shuffled,
     )
     assert.notDeepEqual(shufflePreset(), shuffled)
+  })
+
+  it('materializes a preset code into CSS and a registry record', () => {
+    const repo = fileURLToPath(new URL('..', import.meta.url))
+    const output = mkdtempSync(path.join(tmpdir(), 'crease-preset-'))
+    execFileSync(
+      process.execPath,
+      [
+        '--import',
+        'tsx',
+        'scripts/materialize-create-preset.ts',
+        '--preset',
+        'c41ST0kztg1aRr803UlnDN6',
+        '--output',
+        output,
+      ],
+      { cwd: repo },
+    )
+    const files = readdirSync(output)
+    const item = JSON.parse(
+      readFileSync(path.join(output, 'registry-item.json'), 'utf8'),
+    )
+    const config = Option.getOrThrow(decodePreset('c41ST0kztg1aRr803UlnDN6'))
+    assert.equal(
+      item.name,
+      `crease-preset-${encodePreset(config).toLowerCase()}`,
+    )
+    const css = item.files.find(file => file.target.endsWith('.css'))
+    assert.match(css.content, /--background:/)
+    const record = item.files.find(file =>
+      file.target.endsWith('crease-preset.json'),
+    )
+    assert.equal(JSON.parse(record.content).style, 'mira')
+    assert.equal(JSON.parse(record.content).hue, 277)
+    for (const file of item.files)
+      assert.ok(
+        files.includes(file.path),
+        `${file.path} written to the output directory`,
+      )
   })
 })
 
