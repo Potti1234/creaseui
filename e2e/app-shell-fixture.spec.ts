@@ -104,6 +104,27 @@ test.describe('shared app-shell fixture', () => {
     })
 
   for (const renderer of RENDERERS)
+    test(`${renderer}: a sub-menu <button> fills the item like an <a>`, async ({
+      page,
+    }) => {
+      await openFixture(page, servers.get(renderer)!.resolvedUrls!.local[0]!)
+      const widths = await page.evaluate(() =>
+        Object.fromEntries(
+          [
+            ...document.querySelectorAll(
+              '[data-slot="sidebar-menu-sub-button"]',
+            ),
+          ].map(element => [
+            element.tagName,
+            element.getBoundingClientRect().width,
+          ]),
+        ),
+      )
+      expect(widths.BUTTON).toBeGreaterThan(0)
+      expect(Math.abs(widths.BUTTON - widths.A)).toBeLessThanOrEqual(1)
+    })
+
+  for (const renderer of RENDERERS)
     test(`${renderer}: sub-menu entries are keyboard reachable`, async ({
       page,
     }) => {

@@ -581,6 +581,8 @@ const styles = stylex.create({
     transform: 'translateX(-1px)',
     height: '1.75rem',
     minWidth: 0,
+    width: '100%',
+    textAlign: 'start',
   },
   subButtonActive: {
     backgroundColor: complexTokens.sidebarAccent,

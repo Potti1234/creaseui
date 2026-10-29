@@ -579,6 +579,8 @@ const styles = {
     transform: 'translateX(-1px)',
     height: '1.75rem',
     minWidth: 0,
+    width: '100%',
+    textAlign: 'start',
   }).pipe(
     Style.when(When.hover, {
       backgroundColor: complexTokens.sidebarAccent,
