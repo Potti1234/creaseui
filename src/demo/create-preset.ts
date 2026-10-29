@@ -1086,12 +1086,12 @@ const TEXT_SIZES = [
 
 const HEADING_SIZES = { h1: 2, h2: 1.5, h3: 1.17, h4: 1 } as const
 
-const buildCss = (
+const buildCssParts = (
   config: Config,
   scope: string,
   darkScope: string,
   rulePrefix: string,
-): string => {
+): Readonly<{ tokens: string; base: string; geometry: string }> => {
   const chroma = config.chroma
   const hue = config.hue
   const accent = oklch(config.lightness, chroma, hue)
@@ -1280,7 +1280,7 @@ const buildCss = (
       .join(';')
 
   const headingPrefix = rulePrefix === '' ? '' : `${rulePrefix} `
-  const theme = `${scope}{${decls(lightTokens)};${textVars}font-family:var(--font-sans);${translucentMenu ? 'backdrop-filter:blur(16px);' : ''}}${headingPrefix}h1,${headingPrefix}h2,${headingPrefix}h3,${headingPrefix}h4{font-family:${heading};font-weight:${config.headingWeight};letter-spacing:${config.tracking}em}${config.headingScale === 1 ? '' : `${headingPrefix}h1{font-size:calc(${HEADING_SIZES.h1}em*${config.headingScale})}${headingPrefix}h2{font-size:calc(${HEADING_SIZES.h2}em*${config.headingScale})}${headingPrefix}h3{font-size:calc(${HEADING_SIZES.h3}em*${config.headingScale})}${headingPrefix}h4{font-size:calc(${HEADING_SIZES.h4}em*${config.headingScale})}`}${darkScope}{${decls(darkTokens)}}`
+  const headingRules = `${headingPrefix}h1,${headingPrefix}h2,${headingPrefix}h3,${headingPrefix}h4{font-family:${heading};font-weight:${config.headingWeight};letter-spacing:${config.tracking}em}${config.headingScale === 1 ? '' : `${headingPrefix}h1{font-size:calc(${HEADING_SIZES.h1}em*${config.headingScale})}${headingPrefix}h2{font-size:calc(${HEADING_SIZES.h2}em*${config.headingScale})}${headingPrefix}h3{font-size:calc(${HEADING_SIZES.h3}em*${config.headingScale})}${headingPrefix}h4{font-size:calc(${HEADING_SIZES.h4}em*${config.headingScale})}`}`
 
   const style = (STYLE_RULES[config.style] ?? '').replaceAll(
     ':where(',
@@ -1293,7 +1293,7 @@ const buildCss = (
     phosphor: '1.75',
     remixicon: '2.25',
   }
-  const icons = `${scope} svg{stroke-width:${strokeWidths[config.iconLibrary] ?? '2'}}`
+  const iconRule = `${scope} svg{stroke-width:${strokeWidths[config.iconLibrary] ?? '2'}}`
 
   const borderRule =
     config.border === 1
@@ -1308,7 +1308,28 @@ const buildCss = (
       ? ''
       : `${rulePrefix} *{${config.motion === 1 ? '' : `transition-duration:calc(150ms*${config.motion});animation-duration:calc(1.2s*${config.motion});`}${config.easing === 'ease' ? '' : `transition-timing-function:${SPRING_EASE};animation-timing-function:${SPRING_EASE};`}}`
 
-  return `${theme}${shadows ? `${scope}{${shadows}}` : ''}${style}${icons}${reliefRules(config, config.outlines === 'soft' ? borderL : `color-mix(in oklch,${ink} 88%,transparent)`).replaceAll(':where(', `${rulePrefix} :where(`)}${borderRule}${shapeRule}${motionRule}`
+  return {
+    /* Custom properties only, so the file is plain theme CSS under the
+       creaseui-lint css policy. */
+    tokens: `${scope}{${decls(lightTokens)};${textVars}}${darkScope}{${decls(darkTokens)}}${shadows ? `${scope}{${shadows}}` : ''}`,
+    /* Document presentation the policy keeps out of global CSS (font-family
+       on the scope, native-element heading/svg rules, the `*` motion rule).
+       Only emitted scoped, inside the docs app. */
+    base: `${scope}{font-family:var(--font-sans);${translucentMenu ? 'backdrop-filter:blur(16px);' : ''}}${headingRules}${iconRule}${motionRule}`,
+    /* Owned theme CSS: every rule keys on data-slot, so a project that
+       registers it (role 'theme' extension) stays inside the policy. */
+    geometry: `${style}${reliefRules(config, config.outlines === 'soft' ? borderL : `color-mix(in oklch,${ink} 88%,transparent)`).replaceAll(':where(', `${rulePrefix} :where(`)}${borderRule}${shapeRule}${translucentMenu ? `${rulePrefix} :where([data-slot="sidebar"]){backdrop-filter:blur(16px)}` : ''}`,
+  }
+}
+
+const buildCss = (
+  config: Config,
+  scope: string,
+  darkScope: string,
+  rulePrefix: string,
+): string => {
+  const parts = buildCssParts(config, scope, darkScope, rulePrefix)
+  return `${parts.tokens}${parts.base}${parts.geometry}`
 }
 
 /* The board scope: `.create-board-theme` on the preview element. Dark vars
@@ -1330,15 +1351,31 @@ const fontImport = (font: string): string => {
   return `@import url('https://fonts.googleapis.com/css2?family=${family}:wght@400;500;600;700&display=swap');`
 }
 
-export const presetInstallCss = (config: Config): string => {
+const fontImports = (config: Config): string => {
   const headingFont =
     config.fontHeading === 'inherit' ? config.font : config.fontHeading
-  const imports = Array.from(new Set([config.font, headingFont]))
+  return Array.from(new Set([config.font, headingFont]))
     .map(fontImport)
     .join('\n')
-  const css = buildCss(config, ':root', '.dark', '')
-  return `${imports}\n${css}\n`
 }
+
+/* App-wide preview CSS for the docs theme lab — the full rule set, scoped
+   by the caller to keep the docs app's own elements unaffected. */
+export const presetInstallCss = (config: Config): string =>
+  `${fontImports(config)}\n${buildCss(config, ':root', '.dark', '')}\n`
+
+/* The files a preset ships. tokens.css is custom properties only, so it is
+   plain theme CSS under the `creaseui-lint css` policy. geometry.css holds
+   the :where([data-slot=…]) sizing and shape rules; a project registers it
+   as owned theme CSS (an extensions entry with role 'theme') so the policy
+   scopes it to the components it styles. The h1–h4, `:root svg` and `*`
+   rules the policy forbids in global CSS are not shipped — the base theme
+   supplies document font and the components own their presentation. */
+export const presetTokensCss = (config: Config): string =>
+  `${fontImports(config)}\n${buildCssParts(config, ':root', '.dark', '').tokens}\n`
+
+export const presetGeometryCss = (config: Config): string =>
+  `${buildCssParts(config, ':root', '.dark', '').geometry}\n`
 
 export type PresetManifest = Readonly<{
   version: 1
@@ -1358,8 +1395,12 @@ export const presetManifest = (config: Config): PresetManifest => ({
   ],
   files: [
     {
-      target: '@/styles/crease-preset.css',
-      content: presetInstallCss(config),
+      target: '@/styles/crease-preset-tokens.css',
+      content: presetTokensCss(config),
+    },
+    {
+      target: '@/styles/crease-preset-geometry.css',
+      content: presetGeometryCss(config),
     },
     {
       target: '@/crease-preset.json',

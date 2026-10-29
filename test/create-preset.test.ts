@@ -1,15 +1,28 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, readdirSync } from 'node:fs'
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { Option } from 'effect'
 
+// @ts-expect-error no published types for the strict CSS audit internals
+import {
+  createCssAudit,
+  findStylesheets,
+} from '../packages/lint/lib/strict/css.js'
+
 import {
   DEFAULT_CONFIG,
   accentForTheme,
+  presetManifest,
   contrastRatio,
   decodePreset,
   encodePreset,
@@ -297,5 +310,61 @@ describe('token overrides', () => {
     ]) {
       assert.ok(!validTokenValue(bad), bad)
     }
+  })
+})
+
+describe('preset CSS policy', () => {
+  const project = (
+    files: ReadonlyArray<Readonly<{ target: string; content: string }>>,
+  ): string => {
+    const root = mkdtempSync(path.join(tmpdir(), 'preset-css-'))
+    for (const file of files) {
+      const target = path.join(root, file.target.replace('@/', 'src/'))
+      mkdirSync(path.dirname(target), { recursive: true })
+      writeFileSync(target, file.content)
+    }
+    return root
+  }
+
+  const findings = (root: string, owned: string | undefined) => {
+    const run = createCssAudit({
+      isOwned: (file: string) => path.relative(root, file) === owned,
+      rootDir: root,
+      rootsOf: () => undefined,
+    })
+    for (const file of findStylesheets(root)) run.auditFile(file)
+    return run.findings
+  }
+
+  it('splits install CSS into policy-clean tokens and theme geometry', () => {
+    const config = Option.getOrThrow(decodePreset('c41ST0kztg1aRr803UlnDN6'))
+    const manifest = presetManifest(config)
+    const targets = manifest.files.map(file => file.target)
+    assert.ok(targets.includes('@/styles/crease-preset-tokens.css'))
+    assert.ok(targets.includes('@/styles/crease-preset-geometry.css'))
+    assert.ok(!targets.includes('@/styles/crease-preset.css'))
+
+    const geometry = manifest.files.find(
+      file => file.target === '@/styles/crease-preset-geometry.css',
+    )
+    assert.ok(geometry)
+    assert.match(geometry.content, /:where\(\[data-slot=/)
+
+    const root = project(manifest.files)
+    /* tokens.css is custom properties only: clean as plain global CSS. */
+    const unregistered = findings(root, undefined)
+    assert.deepEqual(
+      unregistered.filter(f => f.file.endsWith('tokens.css')),
+      [],
+    )
+    assert.ok(
+      unregistered.some(f => f.file.endsWith('geometry.css')),
+      'geometry must be registered as theme CSS',
+    )
+    /* geometry.css registers as owned theme CSS (role: 'theme' extension). */
+    assert.deepEqual(
+      findings(root, 'src/styles/crease-preset-geometry.css'),
+      [],
+    )
   })
 })
