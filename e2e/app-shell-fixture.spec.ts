@@ -137,6 +137,38 @@ test.describe('shared app-shell fixture', () => {
     })
 
   for (const renderer of RENDERERS)
+    test(`${renderer}: accent avatar fallback stays visible on the sidebar`, async ({
+      page,
+    }) => {
+      const errors = await openFixture(
+        page,
+        servers.get(renderer)!.resolvedUrls!.local[0]!,
+      )
+      const accent = page.locator(
+        '[data-slot="fixture-avatar-accent"] [data-slot="avatar-fallback"]',
+      )
+      const muted = page.locator(
+        '[data-slot="fixture-avatar-muted"] [data-slot="avatar-fallback"]',
+      )
+      const accentBg = await accent.evaluate(
+        el => getComputedStyle(el).backgroundColor,
+      )
+      const mutedBg = await muted.evaluate(
+        el => getComputedStyle(el).backgroundColor,
+      )
+      // The accent tint is a real, non-transparent fill distinct from muted.
+      expect(accentBg).not.toBe(mutedBg)
+      expect(accentBg).not.toBe('rgba(0, 0, 0, 0)')
+      expect(accentBg).not.toBe('transparent')
+      const accentColor = await accent.evaluate(
+        el => getComputedStyle(el).color,
+      )
+      const mutedColor = await muted.evaluate(el => getComputedStyle(el).color)
+      expect(accentColor).not.toBe(mutedColor)
+      expect(errors).toEqual([])
+    })
+
+  for (const renderer of RENDERERS)
     test(`${renderer}: sidebar inset shrinks below its content width`, async ({
       page,
     }) => {

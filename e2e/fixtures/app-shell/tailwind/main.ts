@@ -13,6 +13,8 @@ import {
   sidebarProvider,
 } from '@/ui/sidebar'
 
+import { avatarFallback } from '@/ui/avatar'
+
 import { runAppShell } from '../shared'
 
 runAppShell({
@@ -26,4 +28,5 @@ runAppShell({
   sidebarMenuSubItem,
   sidebarMenuSubButton,
   sidebarMenuBadge,
+  avatarFallback,
 })

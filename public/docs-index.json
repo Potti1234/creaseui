@@ -540,7 +540,7 @@
         {
           "name": "AvatarFallbackProps",
           "kind": "type",
-          "signature": "AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; }>"
+          "signature": "AvatarFallbackProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; model?: Model; tone?: 'muted' | 'accent'; }>"
         },
         {
           "name": "avatarFallback",
@@ -570,7 +570,7 @@
         {
           "name": "AvatarGroupCountProps",
           "kind": "type",
-          "signature": "AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; }>"
+          "signature": "AvatarGroupCountProps = Readonly<{ class?: string; children: ReadonlyArray<Html | string>; tone?: 'muted' | 'accent'; }>"
         },
         {
           "name": "avatarGroupCount",

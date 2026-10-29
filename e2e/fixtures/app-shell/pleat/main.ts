@@ -11,6 +11,8 @@ import {
   sidebarProvider,
 } from '@/pleat/sidebar'
 
+import { avatarFallback } from '@/pleat/avatar'
+
 import { runAppShell } from '../shared'
 import { installThemeVariables } from '../theme'
 
@@ -27,4 +29,5 @@ runAppShell({
   sidebarMenuSubItem,
   sidebarMenuSubButton,
   sidebarMenuBadge,
+  avatarFallback,
 })

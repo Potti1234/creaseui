@@ -55,6 +55,13 @@ export type Kit = Readonly<{
     props: Readonly<{ children: ReadonlyArray<Html | string> }>,
     h: HtmlBuilder<Msg>,
   ) => Html
+  avatarFallback: <Msg>(
+    props: Readonly<{
+      children: ReadonlyArray<Html | string>
+      tone?: 'muted' | 'accent'
+    }>,
+    h: HtmlBuilder<Msg>,
+  ) => Html
 }>
 
 const Model = S.Struct({})
@@ -140,6 +147,41 @@ const view =
                           ],
                         },
                         h,
+                      ),
+                      // Avatar fallbacks on the muted sidebar surface: the
+                      // accent tone must stay visible where muted would
+                      // blend in (A0.18).
+                      h.div(
+                        [
+                          h.DataAttribute('slot', 'fixture-avatar-accent'),
+                          h.Style({
+                            position: 'relative',
+                            width: '2rem',
+                            height: '2rem',
+                          }),
+                        ],
+                        [
+                          kit.avatarFallback(
+                            { children: ['AM'], tone: 'accent' },
+                            h,
+                          ),
+                        ],
+                      ),
+                      h.div(
+                        [
+                          h.DataAttribute('slot', 'fixture-avatar-muted'),
+                          h.Style({
+                            position: 'relative',
+                            width: '2rem',
+                            height: '2rem',
+                          }),
+                        ],
+                        [
+                          kit.avatarFallback(
+                            { children: ['AM'], tone: 'muted' },
+                            h,
+                          ),
+                        ],
                       ),
                     ],
                   },

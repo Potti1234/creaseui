@@ -113,6 +113,7 @@ export const themeRoleGroups = {
       'color-mix(in oklab, var(--muted-foreground) 60%, transparent)',
     foregroundFaint: 'color-mix(in oklab, var(--foreground) 5%, transparent)',
     primaryFaint: 'color-mix(in oklab, var(--primary) 5%, transparent)',
+    primarySoft15: 'color-mix(in oklab, var(--primary) 15%, transparent)',
     primarySoft20: 'color-mix(in oklab, var(--primary) 20%, transparent)',
     destructiveFaint: 'color-mix(in oklab, var(--destructive) 5%, transparent)',
     destructiveEdge40:
