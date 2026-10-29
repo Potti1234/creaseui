@@ -378,6 +378,7 @@ const verifyRenderer = (
             value: 'deep-action',
             index: 2,
           }),
+          triggerFocused,
           Scene.expect(Scene.selector('#ctx-submenu-1')).toBeAbsent(),
           Scene.expect(menu).toBeAbsent(),
         )
@@ -421,6 +422,7 @@ const verifyRenderer = (
             value: 'back',
             index: 0,
           }),
+          triggerFocused,
           Scene.expect(menu).toBeAbsent(),
         )
       })
