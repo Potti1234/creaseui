@@ -157,6 +157,26 @@ describe('shadcn preset compatibility', () => {
   })
 })
 
+describe('sidebar tokens', () => {
+  it('gives the light sidebar a visible accent surface', () => {
+    const light = presetTokens(DEFAULT_CONFIG, 'light')
+    assert.notEqual(
+      light['sidebar-accent'],
+      light['sidebar'],
+      'hovered/active sidebar links need a distinct surface',
+    )
+  })
+
+  it('emits every sidebar token in dark that light has', () => {
+    const light = presetTokens(DEFAULT_CONFIG, 'light')
+    const dark = presetTokens(DEFAULT_CONFIG, 'dark')
+    for (const name of Object.keys(light).filter(key =>
+      key.startsWith('sidebar'),
+    ))
+      assert.ok(name in dark, `dark --${name}`)
+  })
+})
+
 describe('token overrides', () => {
   const overridden: typeof DEFAULT_CONFIG = {
     ...DEFAULT_CONFIG,
@@ -189,7 +209,7 @@ describe('token overrides', () => {
     assert.equal(light['primary'], 'oklch(0.6 0.2 150)')
     assert.equal(dark['primary'], 'oklch(0.7 0.15 150)')
     /* dark declares its own --primary, so a light override doesn't cascade
-       there — but it does reach tokens dark leaves undeclared (sidebar). */
+       there — dark mode needs the dark: prefix. */
     const lightOnly = presetTokens(
       {
         ...overridden,
@@ -204,7 +224,10 @@ describe('token overrides', () => {
       lightOnly['primary'],
       presetTokens(DEFAULT_CONFIG, 'dark')['primary'],
     )
-    assert.equal(lightOnly['sidebar'], 'oklch(0.4 0.1 90)')
+    assert.equal(
+      lightOnly['sidebar'],
+      presetTokens(DEFAULT_CONFIG, 'dark')['sidebar'],
+    )
     /* untouched tokens keep derived values */
     assert.equal(
       light['secondary'],

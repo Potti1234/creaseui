@@ -1222,11 +1222,16 @@ const buildCss = (
       ? accent
       : invertedMenu
         ? `color-mix(in oklch,${ink} 88%,white)`
-        : muted,
+        : `color-mix(in oklch,${ink} 6%,${sidebar})`,
     'sidebar-accent-foreground': boldMenu || invertedMenu ? primaryFg : ink,
+    'sidebar-border': borderL,
+    'sidebar-ring': accent,
     radius: radiusRem,
     'font-sans': fontFamily(config.font),
   }
+  const sidebarDark = invertedMenu
+    ? `color-mix(in oklch,white 88%,${pageDark})`
+    : `color-mix(in oklch,${pageDark} 96%,white)`
   const darkTokens: Record<string, string> = {
     background: pageDark,
     foreground: nearWhite,
@@ -1252,8 +1257,20 @@ const buildCss = (
     'chart-3': `color-mix(in oklch,${chart[1]} 72%,${pageDark})`,
     'chart-4': `color-mix(in oklch,${chart[0]} 68%,white)`,
     'chart-5': `color-mix(in oklch,${chart[1]} 52%,white)`,
+    sidebar: translucentMenu
+      ? `color-mix(in oklch,${sidebarDark} 82%,transparent)`
+      : sidebarDark,
+    'sidebar-foreground': invertedMenu ? ink : nearWhite,
     'sidebar-primary': accentDark,
     'sidebar-primary-foreground': ink,
+    'sidebar-accent': boldMenu
+      ? accentDark
+      : invertedMenu
+        ? `color-mix(in oklch,white 80%,${pageDark})`
+        : `color-mix(in oklch,white 10%,${sidebarDark})`,
+    'sidebar-accent-foreground': boldMenu || invertedMenu ? ink : nearWhite,
+    'sidebar-border': borderD,
+    'sidebar-ring': accentDark,
   }
   Object.assign(lightTokens, overridesFor(config.overrides, 'light'))
   Object.assign(darkTokens, overridesFor(config.overrides, 'dark'))
