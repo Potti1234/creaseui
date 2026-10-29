@@ -6,6 +6,7 @@
 export const COMPONENT_LAYOUT_PROPERTY_NAMES: ReadonlySet<string> = new Set([
   'aspectRatio',
   'alignSelf',
+  'display',
   'flexBasis',
   'flexGrow',
   'flexShrink',

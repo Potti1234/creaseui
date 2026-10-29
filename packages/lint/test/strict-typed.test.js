@@ -414,6 +414,26 @@ const cases = {
     "type Row = { style: { color: string; setProperty: (a: string, b: string) => void }; classList: { add: (token: string) => void } }\nexport const tag = (row: Row) => {\n  const style = row.style\n  style.color = 'gold'\n  style.setProperty('a', 'b')\n  const { classList } = row\n  classList.add('vip')\n}",
     [],
   ],
+  'tailwind-visibility-responsive': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['X'], class: 'hidden md:flex' }, h)`,
+    [],
+  ],
+  'tailwind-visibility-hide-stack': [
+    `${header}import { stack } from '@design/stack'\nexport const view = (h: HtmlBuilder<unknown>): Html => stack({ children: [], class: 'md:hidden' }, h)`,
+    [],
+  ],
+  'tailwind-visibility-appearance': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['X'], class: 'md:bg-muted' }, h)`,
+    ['crease/component-contract'],
+  ],
+  'styled-visibility-none': [
+    `${header}import { stack } from '@design/stack'\nimport { layoutStyle, layoutWhen } from '@design/contracts'\nexport const view = (h: HtmlBuilder<unknown>): Html => stack({ children: [], layoutStyle: layoutWhen('@media (max-width: 767px)', { display: 'none' })(layoutStyle({})) }, h)`,
+    [],
+  ],
+  'styled-visibility-grid': [
+    `${header}import { stack } from '@design/stack'\nimport { layoutStyle, layoutWhen } from '@design/contracts'\nexport const view = (h: HtmlBuilder<unknown>): Html => stack({ children: [], layoutStyle: layoutWhen('@media (min-width: 768px)', { display: 'grid' })(layoutStyle({})) }, h)`,
+    ['crease/component-contract'],
+  ],
   approved: [
     `${header}import { button } from '@design/button'\nexport const view = <M>(h: HtmlBuilder<M>): Html => button({children:['Good'],variant:'outline'}, h)`,
     [],

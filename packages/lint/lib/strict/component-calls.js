@@ -480,7 +480,20 @@ export const analyzeCall = ({
             property,
             `\`${key}\` distorts the square \`${squareChoices.join('/')}\` size of ${label(record)}; pick another named icon size.`,
           )
-        else if (!LAYOUT_PROPERTIES.has(key))
+        else if (key === 'display') {
+          const value = unwrap(property.value)
+          const resolved =
+            value !== null && value !== undefined
+              ? value.type === 'Literal'
+                ? value.value
+                : analysis.resolveString(value)
+              : undefined
+          if (resolved !== 'none')
+            violation(
+              property,
+              `\`display\` in a placement value may only be \`'none'\`; parents hide a component, other display changes stay component-owned.`,
+            )
+        } else if (!LAYOUT_PROPERTIES.has(key))
           violation(
             property,
             `\`${key}\` is not a placement property; ${label(record)} owns its padding, gap, typography, color, border, radius, shadow, opacity and motion.`,
@@ -523,6 +536,16 @@ export const analyzeCall = ({
     }
     if (node.type === 'ArrayExpression') {
       for (const element of node.elements) checkLayout(element, slot, seen)
+      return
+    }
+    /* A curried constructor application (layoutWhen(cond, decls)(self)):
+       check the inner call's declaration object, then the applied value. */
+    if (
+      node.type === 'CallExpression' &&
+      node.callee.type === 'CallExpression'
+    ) {
+      checkLayout(node.callee, slot, seen)
+      for (const argument of node.arguments) checkLayout(argument, slot, seen)
       return
     }
     if (node.type === 'CallExpression' && node.callee.type === 'Identifier') {
