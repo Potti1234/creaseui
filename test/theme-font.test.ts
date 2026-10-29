@@ -13,6 +13,7 @@ const themeItems = (): ReadonlyArray<{
   name: string
   dependencies?: ReadonlyArray<string>
   cssVars?: { theme?: Record<string, string> }
+  css?: Record<string, unknown>
 }> => JSON.parse(readFileSync('registry/theme/registry.json', 'utf8')).items
 
 describe('base theme font', () => {
@@ -40,6 +41,19 @@ describe('base theme font', () => {
     assert.match(
       readFileSync('src/styles.css', 'utf8'),
       /--font-sans: 'Inter Variable'/u,
+    )
+  })
+
+  it('injects the font import into a fresh Tailwind install', () => {
+    /* shadcn merges a registry:theme item's `css` into the consumer
+       stylesheet; an `@rule: {}` key emits a bare `@rule;` statement, so
+       this entry is what actually loads the package on install. */
+    const theme = themeItems().find(entry => entry.name === 'crease-theme')
+    assert.ok(
+      Object.keys(theme!.css ?? {}).includes(
+        "@import '@fontsource-variable/inter'",
+      ),
+      'crease-theme css must emit the font @import statement',
     )
   })
 

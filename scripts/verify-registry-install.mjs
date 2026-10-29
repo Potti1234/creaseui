@@ -314,6 +314,17 @@ try {
     }
   }
   verifyImports(join(fixture, 'src'))
+  /* crease-theme injects its `css` map into the consumer stylesheet; the
+     `@import '@fontsource-variable/inter'` statement is what loads the
+     declared font dependency. Whenever the theme was applied (its vars
+     are in the file), the import statement must be there too. */
+  const stylesheet = readFileSync(join(fixture, 'src', 'styles.css'), 'utf8')
+  if (stylesheet.includes("'Inter Variable'"))
+    assert.match(
+      stylesheet,
+      /@import '@fontsource-variable\/inter';/u,
+      'crease-theme applied its variables but not the font @import',
+    )
   const installedPackage = JSON.parse(
     readFileSync(join(fixture, 'package.json'), 'utf8'),
   )
