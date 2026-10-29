@@ -88,6 +88,7 @@ export const Model = S.Struct({
     chart: ColorPicker.Model,
   }),
   canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
+  blocksKanbanAnnouncement: S.String,
   blocksKanbanDnd: Dnd.Model,
   blocksKanbanLanes: S.Array(BlocksBlocks.KanbanLaneData),
   blocksSidebarCollapsed: S.Boolean,
@@ -375,6 +376,7 @@ export const init = (preset: Preset.Config = Preset.DEFAULT_CONFIG): Model => ({
     chart: initColorPicker('create-chart-picker', Preset.chartToken(preset)),
   },
   canvas: 'board',
+  blocksKanbanAnnouncement: '',
   blocksKanbanDnd: Dnd.init({ id: 'create-blocks-kanban' }),
   blocksKanbanLanes: BlocksBlocks.initialKanbanLanes,
   blocksSidebarCollapsed: false,
@@ -652,14 +654,21 @@ export const update = (model: Model, message: Message): UpdateReturn =>
             ? BlocksBlocks.moveKanbanCard(
                 model.blocksKanbanLanes,
                 result.outMessage,
-                model.blocksKanbanDnd.dragState._tag === 'KeyboardDragging',
               )
             : model.blocksKanbanLanes
+        const blocksKanbanAnnouncement = BlocksBlocks.kanbanAnnouncement(
+          blocksKanbanLanes,
+          model.blocksKanbanDnd,
+          result.model,
+          result.outMessage,
+          model.blocksKanbanAnnouncement,
+        )
         return {
           commands: Command.mapMessages(result.commands ?? [], next =>
             Message.GotBlocksKanbanDndMessage({ message: next }),
           ),
           model: modifyFields(model, {
+            blocksKanbanAnnouncement: () => blocksKanbanAnnouncement,
             blocksKanbanDnd: () => result.model,
             blocksKanbanLanes: () => blocksKanbanLanes,
           }),
@@ -2045,6 +2054,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
         BlocksBlocks.kanbanBoard<Message>(
           blocksChrome,
           {
+            announcement: model.blocksKanbanAnnouncement,
             dnd: model.blocksKanbanDnd,
             lanes: model.blocksKanbanLanes,
             toDndMessage: message =>

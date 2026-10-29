@@ -57,6 +57,7 @@ import {
   kanbanBoard,
   kanbanSubscriptions,
   moveKanbanCard,
+  kanbanAnnouncement as announceKanban,
   orderDetail,
 } from './creaseui-blocks'
 import { appShell } from './app-shell'
@@ -80,6 +81,7 @@ export const Model = S.Struct({
   password: S.String,
   query: S.String,
   radioGroup: RadioGroup.Model,
+  kanbanAnnouncement: S.String,
   kanbanDnd: Dnd.Model,
   kanbanLanes: S.Array(KanbanLaneData),
   sidebarCollapsed: S.Boolean,
@@ -157,6 +159,7 @@ export const init = (): Model => ({
   checkout: {},
   delivery: 'standard',
   email: '',
+  kanbanAnnouncement: '',
   kanbanDnd: Dnd.init({ id: 'featured-kanban' }),
   kanbanLanes: initialKanbanLanes,
   kind: 'all',
@@ -204,17 +207,25 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     const result = Dnd.update(model.kanbanDnd, message.message)
     const kanbanLanes =
       result.outMessage?._tag === 'Reordered'
-        ? moveKanbanCard(
-            model.kanbanLanes,
-            result.outMessage,
-            model.kanbanDnd.dragState._tag === 'KeyboardDragging',
-          )
+        ? moveKanbanCard(model.kanbanLanes, result.outMessage)
         : model.kanbanLanes
+    const kanbanAnnouncement = announceKanban(
+      kanbanLanes,
+      model.kanbanDnd,
+      result.model,
+      result.outMessage,
+      model.kanbanAnnouncement,
+    )
     return {
       commands: Command.mapMessages(result.commands ?? [], inner =>
         GotKanbanDndMessage({ message: inner }),
       ),
-      model: { ...model, kanbanDnd: result.model, kanbanLanes },
+      model: {
+        ...model,
+        kanbanAnnouncement,
+        kanbanDnd: result.model,
+        kanbanLanes,
+      },
     }
   }
   if (message._tag === 'ToggledBlockSidebar')
@@ -1159,6 +1170,7 @@ const blocks: ReadonlyArray<Block> = [
       kanbanBoard(
         chromeState(model),
         {
+          announcement: model.kanbanAnnouncement,
           dnd: model.kanbanDnd,
           lanes: model.kanbanLanes,
           toDndMessage: message => GotKanbanDndMessage({ message }),

@@ -587,6 +587,7 @@ export const initialKanbanLanes: ReadonlyArray<KanbanLaneData> = [
 ]
 
 export type KanbanBoardState<Message> = Readonly<{
+  announcement: string
   dnd: Dnd.Model
   lanes: ReadonlyArray<KanbanLaneData>
   toDndMessage: (message: Dnd.Message) => Message
@@ -632,35 +633,29 @@ const KanbanDropRelease = Mount.defineStream('KanbanDropRelease', {
     ),
 })
 
-/* Pointer drops report the index counting the dragged card (full space) while
-   keyboard drops report it among the other cards (reduced space) — the caller
-   passes the dragState tag so a same-lane downward pointer move can subtract
-   the dragged card's own slot without breaking keyboard moves. */
+/* While a drag is live the dragged card leaves the DOM entirely (the ghost
+   follows the pointer instead), so every reported drop index — pointer or
+   keyboard — counts only the remaining cards. Reordering is therefore just
+   remove + insert at the reported index, like foldkit's kanban example. */
 export const moveKanbanCard = (
   lanes: ReadonlyArray<KanbanLaneData>,
   out: {
     itemId: string
     fromContainerId: string
-    fromIndex: number
     toContainerId: string
     toIndex: number
   },
-  keyboard: boolean,
 ): ReadonlyArray<KanbanLaneData> => {
   const fromLane = lanes.findIndex(lane => lane.id === out.fromContainerId)
   const toLane = lanes.findIndex(lane => lane.id === out.toContainerId)
   if (fromLane === -1 || toLane === -1) return lanes
-  const card = lanes[fromLane]!.cards[out.fromIndex]
-  if (card === undefined || card.id !== out.itemId) return lanes
+  const card = lanes[fromLane]!.cards.find(({ id }) => id === out.itemId)
+  if (card === undefined) return lanes
   const sameLane = fromLane === toLane
-  const targetIndex =
-    sameLane && !keyboard && out.toIndex > out.fromIndex
-      ? out.toIndex - 1
-      : out.toIndex
-  const without = lanes[fromLane]!.cards.filter((_, i) => i !== out.fromIndex)
+  const without = lanes[fromLane]!.cards.filter(({ id }) => id !== out.itemId)
   const insertAt = (cards: ReadonlyArray<KanbanCardData>) => {
     const next = [...cards]
-    next.splice(Math.max(0, Math.min(targetIndex, next.length)), 0, card)
+    next.splice(Math.max(0, Math.min(out.toIndex, next.length)), 0, card)
     return next
   }
   return lanes.map((lane, index) => {
@@ -670,6 +665,53 @@ export const moveKanbanCard = (
     if (index === toLane) return { ...lane, cards: insertAt(lane.cards) }
     return lane
   })
+}
+
+const kanbanCardTitle = (
+  lanes: ReadonlyArray<KanbanLaneData>,
+  cardId: string,
+): string =>
+  lanes.flatMap(lane => lane.cards).find(card => card.id === cardId)?.title ??
+  cardId
+
+const kanbanLaneName = (
+  lanes: ReadonlyArray<KanbanLaneData>,
+  laneId: string,
+): string => lanes.find(lane => lane.id === laneId)?.name ?? laneId
+
+/* Screen-reader announcements for the live region — same wording as the
+   foldkit kanban example: pickup, position moves, drop and cancel. */
+export const kanbanAnnouncement = (
+  lanes: ReadonlyArray<KanbanLaneData>,
+  previous: Dnd.Model,
+  next: Dnd.Model,
+  outMessage: Dnd.OutMessage | undefined,
+  fallback: string,
+): string => {
+  if (outMessage?._tag === 'Reordered') {
+    return `Dropped ${kanbanCardTitle(lanes, outMessage.itemId)} in position ${String(outMessage.toIndex + 1)} of ${kanbanLaneName(lanes, outMessage.toContainerId)}.`
+  }
+  if (outMessage?._tag === 'Cancelled') {
+    return Option.match(Dnd.maybeDraggedItemId(previous), {
+      onNone: () => 'Drag cancelled.',
+      onSome: cardId =>
+        `Drag cancelled, ${kanbanCardTitle(lanes, cardId)} returned to original position.`,
+    })
+  }
+  if (next.dragState._tag !== 'KeyboardDragging') return fallback
+  if (previous.dragState._tag !== 'KeyboardDragging') {
+    return `Picked up ${kanbanCardTitle(lanes, next.dragState.itemId)}. Use arrow keys to move within column, Tab to move between columns, Space to drop, Escape to cancel.`
+  }
+  const laneName = kanbanLaneName(lanes, next.dragState.targetContainerId)
+  if (
+    previous.dragState.targetContainerId !== next.dragState.targetContainerId
+  ) {
+    return `Moved to ${laneName}, position ${String(next.dragState.targetIndex + 1)}.`
+  }
+  if (previous.dragState.targetIndex !== next.dragState.targetIndex) {
+    return `Position ${String(next.dragState.targetIndex + 1)} in ${laneName}.`
+  }
+  return fallback
 }
 
 export const kanbanBoard = <Message>(
@@ -682,11 +724,70 @@ export const kanbanBoard = <Message>(
     Dnd.maybeDraggedItemId(kanban.dnd),
     () => '',
   )
+  const isPointerDrag = kanban.dnd.dragState._tag === 'Dragging'
+  const isKeyboardDrag = kanban.dnd.dragState._tag === 'KeyboardDragging'
+  const isDragging = isPointerDrag || isKeyboardDrag
+  const draggedCard = isDragging
+    ? kanban.lanes
+        .flatMap(laneData => laneData.cards)
+        .find(card => card.id === draggedId)
+    : undefined
+
+  const laneCardContent = (card: KanbanCardData): Html =>
+    stack(
+      {
+        children: [
+          inline(
+            {
+              children: [
+                badge({ children: [card.tag], variant: card.tagVariant }, h),
+                icon({ name: 'grip-vertical' }, h),
+              ],
+              justify: 'between',
+              width: 'full',
+            },
+            h,
+          ),
+          text({ children: [card.title], variant: 'label' }, h),
+          inline(
+            {
+              children: [
+                initials(card.owner, h),
+                inline(
+                  {
+                    align: 'center',
+                    children: [
+                      icon({ name: 'message-circle' }, h),
+                      text(
+                        {
+                          children: [String(card.comments)],
+                          tone: 'secondary',
+                          variant: 'caption',
+                        },
+                        h,
+                      ),
+                    ],
+                    gap: 'xs',
+                  },
+                  h,
+                ),
+              ],
+              justify: 'between',
+              width: 'full',
+            },
+            h,
+          ),
+        ],
+        gap: 'sm',
+      },
+      h,
+    )
 
   const laneCard = (
     card: KanbanCardData,
     laneId: string,
     index: number,
+    keyboardPreview: boolean,
   ): Html =>
     box(
       {
@@ -701,82 +802,104 @@ export const kanbanBoard = <Message>(
             },
             h,
           ),
+          ...(keyboardPreview
+            ? [
+                h.Style({
+                  outline: '2px solid var(--ring)',
+                  outlineOffset: '2px',
+                }),
+              ]
+            : []),
         ],
-        children: [
-          stack(
-            {
-              children: [
-                inline(
-                  {
-                    children: [
-                      badge(
-                        { children: [card.tag], variant: card.tagVariant },
-                        h,
-                      ),
-                      icon({ name: 'grip-vertical' }, h),
-                    ],
-                    justify: 'between',
-                    width: 'full',
-                  },
-                  h,
-                ),
-                text({ children: [card.title], variant: 'label' }, h),
-                inline(
-                  {
-                    children: [
-                      initials(card.owner, h),
-                      inline(
-                        {
-                          align: 'center',
-                          children: [
-                            icon({ name: 'message-circle' }, h),
-                            text(
-                              {
-                                children: [String(card.comments)],
-                                tone: 'secondary',
-                                variant: 'caption',
-                              },
-                              h,
-                            ),
-                          ],
-                          gap: 'xs',
-                        },
-                        h,
-                      ),
-                    ],
-                    justify: 'between',
-                    width: 'full',
-                  },
-                  h,
-                ),
-              ],
-              gap: 'sm',
-            },
-            h,
-          ),
-        ],
+        children: [laneCardContent(card)],
         padding: 'sm',
         radius: 'md',
         surface: 'card',
-        ...(card.id === draggedId ? { data: { dragged: 'true' } } : {}),
       },
       h,
     )
 
-  const lane = (laneData: KanbanLaneData): Html => {
-    const targetHere =
-      dropTarget !== null && dropTarget.containerId === laneData.id
-        ? dropTarget.index
-        : -1
-    const cells: ReadonlyArray<Html> = laneData.cards.flatMap((card, index) => [
-      ...(index === targetHere
-        ? [separator({ orientation: 'horizontal' }, h)]
-        : []),
-      laneCard(card, laneData.id, index),
-    ])
-    return box(
+  const dropPlaceholder = (): Html =>
+    box(
       {
-        attrs: [...Dnd.droppable(laneData.id, laneData.name)],
+        attrs: [
+          h.AriaHidden(true),
+          h.Style({
+            backgroundColor:
+              'color-mix(in oklab, var(--accent) 65%, transparent)',
+            border:
+              '2px dashed color-mix(in oklab, var(--primary) 55%, transparent)',
+            borderRadius: 'var(--radius-md)',
+            minHeight: '5rem',
+          }),
+        ],
+        children: [],
+      },
+      h,
+    )
+
+  /* A fixed-position clone follows the pointer while the source card leaves
+     the DOM — same ghost pattern as the foldkit kanban example. */
+  const ghostElement = (): Html =>
+    Option.match(Dnd.ghostStyle(kanban.dnd), {
+      onNone: () => h.empty,
+      onSome: ghostPosition =>
+        draggedCard === undefined
+          ? h.empty
+          : box(
+              {
+                attrs: [
+                  h.AriaHidden(true),
+                  h.Style({
+                    ...ghostPosition,
+                    rotate: '2deg',
+                    width: '16rem',
+                  }),
+                ],
+                children: [laneCardContent(draggedCard)],
+                padding: 'sm',
+                radius: 'md',
+                surface: 'card',
+              },
+              h,
+            ),
+    })
+
+  const lane = (laneData: KanbanLaneData): Html => {
+    const isTarget =
+      dropTarget !== null && dropTarget.containerId === laneData.id
+    const visibleCards = isDragging
+      ? laneData.cards.filter(card => card.id !== draggedId)
+      : laneData.cards
+    const targetIndex = isTarget
+      ? Math.min(dropTarget!.index, visibleCards.length)
+      : -1
+    const previewElement =
+      targetIndex === -1
+        ? h.empty
+        : isPointerDrag || draggedCard === undefined
+          ? dropPlaceholder()
+          : laneCard(draggedCard, laneData.id, targetIndex, true)
+    const cells: ReadonlyArray<Html> = [
+      ...visibleCards.flatMap((card, index) => [
+        ...(index === targetIndex ? [previewElement] : []),
+        laneCard(card, laneData.id, index, false),
+      ]),
+      ...(targetIndex === visibleCards.length ? [previewElement] : []),
+    ]
+    return box<Message>(
+      {
+        attrs: [
+          ...Dnd.droppable(laneData.id, laneData.name),
+          h.Style({
+            border: `2px dashed ${
+              isTarget
+                ? 'color-mix(in oklab, var(--primary) 60%, transparent)'
+                : 'transparent'
+            }`,
+            borderRadius: 'var(--radius-xl)',
+          }),
+        ],
         children: [
           stack(
             {
@@ -801,13 +924,9 @@ export const kanbanBoard = <Message>(
                 ),
                 stack(
                   {
-                    children: [
-                      ...cells,
-                      ...(targetHere === laneData.cards.length
-                        ? [separator({ orientation: 'horizontal' }, h)]
-                        : []),
-                    ],
+                    children: cells,
                     gap: 'sm',
+                    grow: true,
                   },
                   h,
                 ),
@@ -886,6 +1005,25 @@ export const kanbanBoard = <Message>(
                   ],
                   gap: 'lg',
                   grow: true,
+                },
+                h,
+              ),
+              ghostElement(),
+              box(
+                {
+                  attrs: [
+                    h.AriaLive('assertive'),
+                    h.Style({
+                      clip: 'rect(0 0 0 0)',
+                      height: '1px',
+                      margin: '-1px',
+                      overflow: 'hidden',
+                      position: 'absolute',
+                      whiteSpace: 'nowrap',
+                      width: '1px',
+                    }),
+                  ],
+                  children: [kanban.announcement],
                 },
                 h,
               ),
