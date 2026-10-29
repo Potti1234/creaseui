@@ -146,6 +146,11 @@ accept an option merely to ignore it later. Where arbitrary dynamic composition
 cannot be proven, require a more structured API, report the unresolved supported
 case, or document the separate verification; do not claim universal AST inference.
 
+A validated `policy` option on `creaseui()` carrying these restrictions is
+future work. The supported routes today — receipt `variants` and a plain
+ESLint config module spread after `creaseui()` — are documented in
+`packages/lint/docs/strict-rules.md` ("Product rules").
+
 Show how another product can legitimately choose different commit or composition
 policies. Within the task manager, a quick property selection and a multi-field
 composer already illustrate different commit boundaries. Keep that distinction
