@@ -29,7 +29,7 @@ await mkdir(output, { recursive: true })
 await Promise.all([
   writeFile(
     resolve(output, 'registry-item.json'),
-    presetRegistryJson(config),
+    presetRegistryJson(config.value),
     'utf8',
   ),
   ...manifest.files.map(file =>

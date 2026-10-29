@@ -21,7 +21,7 @@ const styles = {
     color: tokens.mutedForeground,
     display: 'inline-flex',
     fontFamily:
-      "var(--font-sans, 'Inter', 'Inter Fallback', ui-sans-serif, system-ui, sans-serif)",
+      "var(--font-sans, 'Inter Variable', 'Inter', ui-sans-serif, system-ui, sans-serif)",
     fontSize: '0.75rem',
     fontWeight: 500,
     justifyContent: 'center',

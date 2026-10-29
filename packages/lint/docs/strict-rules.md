@@ -59,6 +59,73 @@ schema/policy versions, globbed, missing, outside-root or symlinked-out paths,
 case-only duplicates, conflicting owners, raw grants on theme/setup files)
 throw `CreaseConfigError`; they never produce a clean lint result.
 
+## Product rules
+
+`creaseui()` accepts `rootDir`, `renderer`, `files`, `tsconfig`, `manifest`,
+`extensions`, `preset`, `typeInformation` and `migrationFiles`; `policy` pins
+the receipt's policy version. There is no option that forbids a prop, narrows
+a variant list, or scopes placement per product. Until one lands, the
+supported routes are the receipt and a plain ESLint config module:
+
+- **Narrow variants in `crease.lock.json`.** An export record's `variants`
+  lists the values `component-contract` accepts per prop. Removing a value
+  the product does not use turns every call site that passes it into an
+  error — for example "feature code may not pass `variant: 'destructive'`
+  to `badge`":
+
+  ```json
+  {
+    "file": "src/design/badge.ts",
+    "name": "badge",
+    "contract": "display.badge",
+    "variants": { "variant": ["default", "secondary", "outline"] }
+  }
+  ```
+
+  A receipt edit is a design-system change; `creaseui-lint scope` reports it
+  against the trusted baseline.
+
+- **Spread product rules after `creaseui()`.** Core rules
+  (`no-restricted-imports`, `no-restricted-syntax`,
+  `no-restricted-properties`) and custom plugins compose like anywhere else:
+
+  ```js
+  import { creaseui } from '@creaseui/lint'
+
+  const product = {
+    name: 'product/policy',
+    files: ['src/features/**/*.{ts,js}'],
+    rules: {
+      // Feature code imports the public surface, never behavior internals.
+      'no-restricted-imports': ['error', {
+        patterns: [{
+          group: ['**/design/behavior/*'],
+          message: 'Behavior modules are implementation; import the component.',
+        }],
+      }],
+      // Feature code may not pass `variant` to badge at all: the product's
+      // tone mapping owns the choice, not the page.
+      'no-restricted-syntax': ['error', {
+        selector:
+          'CallExpression[callee.name="badge"] Property[key.name="variant"]',
+        message: 'Pass the product tone prop, not variant, to badge.',
+      }],
+    },
+  }
+
+  export default [
+    ...creaseui({ rootDir, files: ['src/**/*.{ts,js}'] }),
+    product,
+  ]
+  ```
+
+A validated `policy` option carrying declarative product restrictions
+(forbidden props, per-component placement allowances, structured-content
+constraints) is future work — see
+`docs/plan/design-system-policy-and-ai-plan.md`, "Common restrictions through
+configuration". An unknown `policy` value today is a `CreaseConfigError`,
+never a silent no-op.
+
 ## no-raw-controls
 
 Native `button`, `input`, `textarea`, `select`, `option`, `optgroup` and
