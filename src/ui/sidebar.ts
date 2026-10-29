@@ -267,6 +267,9 @@ export const sidebarTrigger = <Msg>(
         h.Type('button'),
         h.Class(
           cn(
+            // The trigger reuses Button's ghost icon style. A project that
+            // narrows Button's variants (removes 'ghost' or 'icon') gets a
+            // type error here on purpose: update this call in step.
             buttonVariants({ variant: 'ghost', size: 'icon' }),
             'size-7',
             visibilityClass,
