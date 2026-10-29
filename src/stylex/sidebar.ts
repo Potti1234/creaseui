@@ -418,7 +418,7 @@ const styles = stylex.create({
     color: complexTokens.sidebarForeground,
     display: 'flex',
     flexDirection: 'column',
-    height: '100%',
+    height: '100svh',
     width: 'var(--sidebar-width)',
   },
   panelTransparent: { backgroundColor: tokens.transparent },

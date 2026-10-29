@@ -105,7 +105,7 @@ export const sidebar = <Msg>(
         h.DataAttribute('slot', 'sidebar'),
         h.Class(
           cn(
-            'flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground',
+            'flex h-svh w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground',
             props.class,
           ),
         ),
