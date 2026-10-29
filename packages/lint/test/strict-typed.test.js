@@ -434,6 +434,14 @@ const cases = {
     `${header}import { stack } from '@design/stack'\nimport { layoutStyle, layoutWhen } from '@design/contracts'\nexport const view = (h: HtmlBuilder<unknown>): Html => stack({ children: [], layoutStyle: layoutWhen('@media (min-width: 768px)', { display: 'grid' })(layoutStyle({})) }, h)`,
     ['crease/component-contract'],
   ],
+  'tailwind-button-aria-props': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['More'], ariaExpanded: true, ariaControls: 'nav-panel', ariaHasPopup: 'menu' }, h)`,
+    [],
+  ],
+  'styled-button-aria-props': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['More'], ariaExpanded: true, ariaControls: 'nav-panel', ariaHasPopup: 'menu' }, h)`,
+    [],
+  ],
   approved: [
     `${header}import { button } from '@design/button'\nexport const view = <M>(h: HtmlBuilder<M>): Html => button({children:['Good'],variant:'outline'}, h)`,
     [],
