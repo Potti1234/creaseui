@@ -577,11 +577,11 @@ const styles = stylex.create({
     },
     display: 'flex',
     outlineStyle: 'none',
+    textAlign: 'start',
     textDecorationLine: 'none',
     transform: 'translateX(-1px)',
     height: '1.75rem',
     minWidth: 0,
-    textAlign: 'start',
     width: '100%',
   },
   subButtonActive: {
