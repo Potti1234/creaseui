@@ -422,6 +422,10 @@ const cases = {
     `${header}import { stack } from '@design/stack'\nexport const view = (h: HtmlBuilder<unknown>): Html => stack({ children: [], class: 'md:hidden' }, h)`,
     [],
   ],
+  'tailwind-visibility-reveal-only': [
+    `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['X'], class: 'md:grid' }, h)`,
+    ['crease/component-contract'],
+  ],
   'tailwind-visibility-appearance': [
     `${header}import { button } from '@design/button'\nexport const view = (h: HtmlBuilder<unknown>): Html => button({ children: ['X'], class: 'md:bg-muted' }, h)`,
     ['crease/component-contract'],

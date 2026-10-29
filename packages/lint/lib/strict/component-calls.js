@@ -691,13 +691,14 @@ export const analyzeCall = ({
           )
           continue
         }
-        const appearance = tokens
+        const utilities = tokens
           .flatMap(token => token.trim().split(/\s+/u))
-          .filter(token => token !== '' && !isPlacementUtility(token))
+          .filter(token => token !== '')
+        const appearance = utilities.filter(
+          token => !isPlacementUtility(token, utilities),
+        )
         const geometry = ownsGeometry(record.contract)
-          ? tokens
-              .flatMap(token => token.trim().split(/\s+/u))
-              .filter(token => isOwnedGeometryUtility(token))
+          ? utilities.filter(token => isOwnedGeometryUtility(token))
           : []
         if (geometry.length > 0)
           violation(value, sizeAdvice(`\`${geometry.join(' ')}\``))
