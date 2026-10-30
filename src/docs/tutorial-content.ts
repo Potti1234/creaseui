@@ -8,8 +8,9 @@ import { LINT_RULE_GROUPS } from '@/docs/lint/rules'
 import { sidebarScrollMemory } from '@/docs/sidebar-scroll'
 import {
   TUTORIAL_CHAPTERS,
-  type TutorialChapter,
-} from '@/docs/tutorial/chapters'
+  type TutorialChapterMeta,
+} from '@/docs/tutorial/chapter-meta'
+import type { TutorialChapter } from '@/docs/tutorial/chapters'
 import * as Icon from '@/lib/icon'
 import * as Text from '@/ui/text'
 import * as Typography from '@/ui/typography'
@@ -27,7 +28,7 @@ export type TutorialDocsProps<Msg> = Readonly<{ sidebarScrolled: Msg }>
 
 const DEMO_REPO = 'https://github.com/Potti1234/creaseui-demo'
 
-export const chapterTagHref = (chapter: TutorialChapter): string | null =>
+export const chapterTagHref = (chapter: TutorialChapterMeta): string | null =>
   chapter.tag === null ? null : `${DEMO_REPO}/releases/tag/${chapter.tag}`
 
 /* Mounts a chapter's essay app in `element` for the element's lifetime: the
@@ -115,7 +116,7 @@ const makeShell = <Msg>(
   return { h, styles, props, text, link, externalLink }
 }
 
-const chapterNavLabel = (chapter: TutorialChapter): string =>
+const chapterNavLabel = (chapter: TutorialChapterMeta): string =>
   chapter.id === 'short'
     ? 'Overview: the short version'
     : `${chapter.id}. ${chapter.title}`
@@ -353,7 +354,7 @@ export const chapterView = <Msg>(
 ): Html => {
   const shell = makeShell(h, styles, props)
   const { text, externalLink } = shell
-  const chapterIndex = TUTORIAL_CHAPTERS.indexOf(chapter)
+  const chapterIndex = TUTORIAL_CHAPTERS.findIndex(c => c.id === chapter.id)
   const previous =
     chapterIndex > 0 ? TUTORIAL_CHAPTERS[chapterIndex - 1] : undefined
   const next = TUTORIAL_CHAPTERS[chapterIndex + 1]
@@ -361,7 +362,7 @@ export const chapterView = <Msg>(
   const chapterLabel =
     chapter.id === 'short' ? 'The short version' : `Chapter ${chapter.id}`
   const chapterNav = (
-    c: TutorialChapter,
+    c: TutorialChapterMeta,
     direction: 'previous' | 'next',
   ): Html =>
     h.li(

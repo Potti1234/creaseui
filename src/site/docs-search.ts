@@ -6,7 +6,7 @@ import { defineMessageUnion } from 'foldkit/message'
 
 import { authoredPages } from '@/docs/components/pages'
 import { LINT_RULE_GROUPS } from '@/docs/lint/rules'
-import { TUTORIAL_CHAPTERS } from '@/docs/tutorial/chapters'
+import { TUTORIAL_CHAPTERS } from '@/docs/tutorial/chapter-meta'
 import * as Icon from '@/lib/icon'
 import { CommandMenu, Dialog } from '@/site/docs-search-ui'
 import { skin } from '@/site/skin'

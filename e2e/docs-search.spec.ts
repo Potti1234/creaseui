@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright'
 
 import { COMPONENTS } from '../src/docs/component-metadata'
 import { LINT_RULE_GROUPS } from '../src/docs/lint/rules'
-import { TUTORIAL_CHAPTERS } from '../src/docs/tutorial/chapters'
+import { TUTORIAL_CHAPTERS } from '../src/docs/tutorial/chapter-meta'
 
 const SEARCH_ENTRIES =
   COMPONENTS.length +
