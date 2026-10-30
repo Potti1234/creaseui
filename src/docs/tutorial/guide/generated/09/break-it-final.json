@@ -1,0 +1,128 @@
+[
+  {
+    "id": "wrap",
+    "title": "The inline row may wrap again",
+    "file": "src/ui/item.ts",
+    "from": "inline: 'h-9 flex-nowrap py-0 whitespace-nowrap'",
+    "to": "inline: 'h-9 flex-nowrap py-0'",
+    "caught": {
+      "types": null,
+      "lint": null,
+      "lint fixtures": null,
+      "tests": null,
+      "browser": "✗ Component: an inline item keeps text in its content on one 36px line in a 240px column"
+    }
+  },
+  {
+    "id": "restyle",
+    "title": "A view rounds its button",
+    "file": "src/features/issues.ts",
+    "from": "{ onClick: M.ToggledGrouping(), children",
+    "to": "{ class: 'rounded-full', onClick: M.ToggledGrouping(), children",
+    "caught": {
+      "types": null,
+      "lint": "15:20  error  `rounded-full` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)  crease/component-contract",
+      "lint fixtures": null,
+      "tests": null,
+      "browser": null
+    }
+  },
+  {
+    "id": "ghost",
+    "title": "A removed intent comes back",
+    "file": "src/features/my-issues.ts",
+    "from": "{ onClick: M.ToggledSort(), children",
+    "to": "{ intent: 'ghost', onClick: M.ToggledSort(), children",
+    "caught": {
+      "types": "src/features/my-issues.ts(27,13): error TS2322: Type '\"ghost\"' is not assignable to type 'ButtonIntent'.",
+      "lint": "27:21  error  `intent: 'ghost'` is not a `button` (control.button) variant (allowed: primary, secondary). (component-contract)  crease/component-contract",
+      "lint fixtures": null,
+      "tests": null,
+      "browser": null
+    }
+  },
+  {
+    "id": "own-row",
+    "title": "Search draws its own row",
+    "file": "src/features/search.ts",
+    "from": "import { button } from '@/ui/button'",
+    "to": "import { button } from '@/ui/button'\nimport { item } from '@/ui/item'\nexport const ownRow = item",
+    "caught": {
+      "types": null,
+      "lint": "7:1  error  '@/ui/item' import is restricted from being used. List issues with issueCollection or issueRow from src/design (decision D3)  no-restricted-imports",
+      "lint fixtures": null,
+      "tests": null,
+      "browser": null
+    }
+  },
+  {
+    "id": "no-save",
+    "title": "A property change is not saved",
+    "file": "src/model.ts",
+    "from": "return { model: next, commands: [...menuCommands, save(next)] }",
+    "to": "return { model: next, commands: menuCommands }",
+    "caught": {
+      "types": null,
+      "lint": null,
+      "lint fixtures": null,
+      "tests": "× commits at once and saves 5ms",
+      "browser": "✗ A refused save shows SaveNotice; Retry saves once storage works again"
+    }
+  },
+  {
+    "id": "empty-title",
+    "title": "An empty title is accepted",
+    "file": "src/design/issue-composer.ts",
+    "from": "if (trimmed === '') return { ok: false, error: 'Give the issue a title.' }",
+    "to": "",
+    "caught": {
+      "types": null,
+      "lint": null,
+      "lint fixtures": null,
+      "tests": "× an empty title shows an error and focuses the title; nothing is created 3ms",
+      "browser": "✗ D8: an empty title is refused, with the error at the field and focus on it"
+    }
+  },
+  {
+    "id": "draft-lost",
+    "title": "Closing the composer drops the draft",
+    "file": "src/model.ts",
+    "from": "return { model: { ...model, composer: closed.model }, commands: toComposer(closed.commands) }\n      },\n      CompletedFocusTitle",
+    "to": "return { model: { ...model, composer: closed.model, draft: emptyDraft }, commands: toComposer(closed.commands) }\n      },\n      CompletedFocusTitle",
+    "caught": {
+      "types": null,
+      "lint": null,
+      "lint fixtures": null,
+      "tests": "× closing the composer keeps the draft (D8) 6ms",
+      "browser": null
+    }
+  },
+  {
+    "id": "ellipsis",
+    "title": "The row title loses its ellipsis",
+    "file": "src/design/issue-row.ts",
+    "from": "color: 'inherit', maxLines: 1, class: 'min-w-0 max-w-full', onClick",
+    "to": "color: 'inherit', onClick",
+    "caught": {
+      "types": null,
+      "lint": null,
+      "lint fixtures": null,
+      "tests": null,
+      "browser": "✗ D1: a long title is cut with an ellipsis at 900px"
+    }
+  },
+  {
+    "id": "focus",
+    "title": "The menu forgets focus after a selection",
+    "file": "src/ui/dropdown-menu.ts",
+    "from": "(Option.isSome(result.selection) && model.isOpen && !result.model.isOpen)",
+    "to": "false",
+    "caught": {
+      "types": null,
+      "lint": null,
+      "lint fixtures": null,
+      "tests": "× commits at once and saves 10ms",
+      "browser": "✗ D1: search results stay on one line on a 480px phone screen"
+    }
+  }
+]

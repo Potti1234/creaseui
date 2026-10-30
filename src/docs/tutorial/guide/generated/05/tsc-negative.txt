@@ -1,0 +1,4 @@
+src/features/negative-fixture.ts(6,12): error TS2322: Type '"ghost"' is not assignable to type 'ButtonIntent'.
+src/features/negative-fixture.ts(7,10): error TS2345: Argument of type '{ shape: "icon"; children: string[]; }' is not assignable to parameter of type 'ButtonProps<Msg>'.
+  Type '{ shape: "icon"; children: string[]; }' is not assignable to type 'Readonly<{ children: readonly (string | Html)[]; onClick?: Msg; buttonAttributes?: readonly (Readonly<{ readonly attribute: unknown; readonly dispatch: DispatchSync; readonly resolveUnm
+    Property 'ariaLabel' is missing in type '{ shape: "icon"; children: string[]; }' but required in type 'Readonly<{ shape: "icon"; ariaLabel: string; }>'.

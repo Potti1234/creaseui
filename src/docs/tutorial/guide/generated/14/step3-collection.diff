@@ -1,0 +1,30 @@
+diff --git a/src/design/issue-collection.ts b/src/design/issue-collection.ts
+index 949f705..fcfa046 100644
+--- a/src/design/issue-collection.ts
++++ b/src/design/issue-collection.ts
+@@ -17,7 +17,9 @@ import { text } from '@/ui/text'
+  *
+  * Rules:
+- * - One bar above the list. Display controls (grouping, ordering) sit at
+- *   its start; a summary of what is shown ("6 results for …") sits after
+- *   them. Filters join this bar in a later chapter.
++ * - One bar above the list (decision D13). Display options come first, as
++ *   "Name: value" buttons in the order Layout, Grouping, Order; then the
++ *   summary of what is shown ("6 results for …"); then actions on the list
++ *   itself ("Clear search"). A view passes data; the collection draws the
++ *   bar, so every list page has the same one.
+  * - The body is one of four things: groups by status, a flat list, a
+  *   board (IssueBoard, one column per status), or an empty state that says
+@@ -64,6 +66,4 @@ const displayButtons = <Msg>(options: ReadonlyArray<DisplayOption<Msg>>, h: Html
+ export const issueCollection = <Msg>(
+   props: Readonly<{
+-    /** @deprecated Since chapter 14: pass `display` and `actions`. Removed once no view uses it. */
+-    controls?: ReadonlyArray<Html>
+     display?: ReadonlyArray<DisplayOption<Msg>>
+     actions?: ReadonlyArray<CollectionAction<Msg>>
+@@ -87,5 +87,4 @@ export const issueCollection = <Msg>(
+             paddingBlockEnd: 2,
+             children: [
+-              ...(props.controls ?? []),
+               ...displayButtons(props.display ?? [], h),
+               ...(props.summary === undefined ? [] : [text({ size: 'xsm', color: 'secondary', children: [props.summary] }, h)]),

@@ -1,0 +1,23 @@
+RUN  v5.0.5 creaseui-demo
+
+ ✓ test/update.test.ts > changing a property in place > commits at once and saves
+ ✓ test/update.test.ts > changing a property in place > a failed save keeps the change and offers Retry, which saves again
+ ✓ test/update.test.ts > creating an issue > an empty title shows an error and focuses the title; nothing is created
+ ✓ test/update.test.ts > creating an issue > closing the composer keeps the draft (D8)
+ ✓ test/update.test.ts > creating an issue > a valid draft becomes the next issue, the draft clears and the issues are saved
+ ✓ test/update.test.ts > a team page > a new issue created there belongs to that team
+ ✓ test/update.test.ts > the issue page > an empty title is not saved; the issue keeps its last valid title
+ ✓ test/update.test.ts > the issue page > a valid title and a description are saved as they are typed
+ ✓ test/update.test.ts > the issue page > choosing a list closes the issue page
+ ✓ test/update.test.ts > shortcuts and the theme > C opens the composer, and does nothing while a dialog is open
+ ✓ test/update.test.ts > shortcuts and the theme > switching the theme applies it and saves the choice
+ ✓ test/update.test.ts > validateTitle > "" is valid: false
+ ✓ test/update.test.ts > validateTitle > "   " is valid: false
+ ✓ test/update.test.ts > validateTitle > "A" is valid: true
+ ✓ test/update.test.ts > validateTitle > "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is valid: true
+ ✓ test/update.test.ts > validateTitle > "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" is valid: false
+
+ Test Files  1 passed (1)
+      Tests  16 passed (16)
+   Start at  15:56:19
+   Duration  690ms (import 83%, transform 15%, tests 2%, worker 1%)

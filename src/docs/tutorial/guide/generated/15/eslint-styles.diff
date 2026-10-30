@@ -1,0 +1,20 @@
+diff --git a/eslint.config.js b/eslint.config.js
+index 6b93da4..f8f093a 100644
+--- a/eslint.config.js
++++ b/eslint.config.js
+@@ -5,6 +5,4 @@ import { productPolicy } from './policy/product-policy.js'
+ 
+ export default [
+-  // Stylesheets are checked by `creaseui-lint css`, not by ESLint.
+-  { ignores: ['**/*.css'] },
+   ...creaseui({
+     rootDir: fileURLToPath(new URL('.', import.meta.url)),
+diff --git a/src/styles.css b/src/styles.css
+index 4a26706..6f5ae70 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -1,3 +1,4 @@
+ @import "tailwindcss";
++@import '@fontsource-variable/inter';
+ 
+ @custom-variant dark (&:is(.dark *));

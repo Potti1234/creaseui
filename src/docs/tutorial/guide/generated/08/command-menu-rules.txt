@@ -1,0 +1,14 @@
+/**
+ * CommandMenu: every action and destination of the app, behind Ctrl+K.
+ *
+ * Rules:
+ * - One menu for the whole app, in a dialog, opened with Ctrl+K (Cmd+K on a
+ *   Mac) or the search button in the sidebar. Every entry also has a
+ *   pointer route outside the menu (D9).
+ * - Entries are grouped: actions first, then places to go, then issues by
+ *   identifier and title. Typing filters all groups at once.
+ * - An entry shows its keyboard shortcut when it has one, so the menu also
+ *   teaches the shortcuts.
+ * - Choosing an entry closes the menu and does the same thing as the button
+ *   or link it stands for; the menu has no actions of its own.
+ */

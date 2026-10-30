@@ -1,0 +1,80 @@
+[
+  {
+    "file": "src/features/issues.ts",
+    "line": 20,
+    "rule": "crease/component-contract",
+    "message": "`flex-nowrap rounded-none border-b border-b-border px-4` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "file": "src/features/issues.ts",
+    "line": 31,
+    "rule": "crease/component-contract",
+    "message": "`block truncate` on `itemTitle` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "file": "src/features/issues.ts",
+    "line": 58,
+    "rule": "crease/component-contract",
+    "message": "`bg-muted` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "file": "src/features/my-issues.ts",
+    "line": 29,
+    "rule": "crease/component-contract",
+    "message": "`flex-nowrap gap-2 py-1.5` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "file": "src/features/my-issues.ts",
+    "line": 35,
+    "rule": "crease/component-contract",
+    "message": "`truncate` on `itemTitle` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "file": "src/features/my-issues.ts",
+    "line": 61,
+    "rule": "crease/component-contract",
+    "message": "`h-7` overrides the named size of `button` (control.button); use its `size` option. (component-contract)"
+  },
+  {
+    "file": "src/features/my-issues.ts",
+    "line": 61,
+    "rule": "crease/component-contract",
+    "message": "`rounded-md` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "file": "src/features/search.ts",
+    "line": 23,
+    "rule": "crease/component-contract",
+    "message": "`flex-nowrap px-3 hover:bg-accent` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "file": "src/features/search.ts",
+    "line": 27,
+    "rule": "crease/component-contract",
+    "message": "`flex-row items-baseline gap-2` on `itemContent` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "file": "src/features/search.ts",
+    "line": 30,
+    "rule": "crease/component-contract",
+    "message": "`truncate` on `itemTitle` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "file": "src/features/search.ts",
+    "line": 51,
+    "rule": "crease/component-contract",
+    "message": "`px-0` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "file": "src/view.ts",
+    "line": 124,
+    "rule": "crease/component-contract",
+    "message": "`h-7` overrides the named size of `input` (control.input); use its `size` option. (component-contract)"
+  },
+  {
+    "file": "src/view.ts",
+    "line": 124,
+    "rule": "crease/component-contract",
+    "message": "`text-xs` on `input` (control.input) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  }
+]

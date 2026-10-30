@@ -1,0 +1,7 @@
+✓ implementation.ts    expected crease/no-unapproved-renderer    got crease/no-unapproved-renderer
+✓ own-row.ts           expected no-restricted-imports            got no-restricted-imports
+✓ placement.ts         expected none                             got none
+✓ raw-button.ts        expected crease/no-raw-controls           got crease/no-raw-controls
+✓ removed-intent.ts    expected crease/component-contract        got crease/component-contract
+✓ restyle.ts           expected crease/component-contract        got crease/component-contract
+lint fixtures: all as expected

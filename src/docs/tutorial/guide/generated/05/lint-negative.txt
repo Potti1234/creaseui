@@ -1,0 +1,7 @@
+
+src/features/negative-fixture.ts
+   9:20  warning  `intent: 'ghost'` is not a `button` (control.button) variant (allowed: primary, secondary). (component-contract)      crease/component-contract
+  10:10  warning  Props for `button` (control.button) use a type assertion; asserted UI props cannot be verified. (no-unverifiable-ui)  crease/no-unverifiable-ui
+
+✖ 2 problems (0 errors, 2 warnings)
+

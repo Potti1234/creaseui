@@ -5,7 +5,7 @@ import { type LintDocsProps, view as lintDocsView } from '@/docs/lint-content'
 import { tailwindLintKit } from '@/docs/lint/kit.tailwind'
 import type * as CodeBlock from '@/ui/code-block'
 
-const styles = {
+export const styles = {
   layout:
     'mx-auto grid w-full max-w-[1500px] lg:grid-cols-[220px_minmax(0,1fr)_190px]',
   mobile: 'group mx-5 mt-5 rounded-lg border bg-background lg:hidden',

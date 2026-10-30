@@ -1,0 +1,38 @@
+diff --git a/crease.lock.json b/crease.lock.json
+index c6d5ef6..3f894f0 100644
+--- a/crease.lock.json
++++ b/crease.lock.json
+@@ -446,5 +446,10 @@
+           "contract": "component.badge",
+           "file": "src/ui/badge.ts",
+-          "name": "badge"
++          "name": "badge",
++          "variants": {
++            "variant": [
++              "outline"
++            ]
++          }
+         }
+       ],
+@@ -862,5 +867,20 @@
+           "contract": "typography.text",
+           "file": "src/ui/text.ts",
+-          "name": "text"
++          "name": "text",
++          "variants": {
++            "size": [
++              "xsm",
++              "sm"
++            ],
++            "color": [
++              "primary",
++              "secondary"
++            ],
++            "weight": [
++              "normal",
++              "medium",
++              "semibold"
++            ]
++          }
+         }
+       ],

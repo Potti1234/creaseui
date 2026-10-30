@@ -38,7 +38,7 @@
     "test:scene": "vitest run",
     "test:e2e": "playwright test",
     "test:browser": "npm run build && playwright test",
-    "check": "npm run format:check && npm run docs:encoding && npm run docs:metadata && npm run lint-docs:check && npm run icons:adapters && npm run parity:check && npm run lint:composition && npm run lint:stylex-templates && npm run lint:stylex-contracts && npm run lint:stylex-governance && npm run stylex:adoption && npm run lint && npm run lint:design-system && npm run typecheck && npm test && npm run build",
+    "check": "npm run format:check && npm run docs:encoding && npm run docs:metadata && npm run lint-docs:check && npm run tutorial:css:check && npm run icons:adapters && npm run parity:check && npm run lint:composition && npm run lint:stylex-templates && npm run lint:stylex-contracts && npm run lint:stylex-governance && npm run stylex:adoption && npm run lint && npm run lint:design-system && npm run typecheck && npm test && npm run build",
     "check:full": "npm run check && npm run parity:upstream && npm run test:registry && npm run test:e2e",
     "docs:encoding": "node scripts/normalize-doc-encoding.mjs",
     "docs:encoding:fix": "node scripts/normalize-doc-encoding.mjs --write",
@@ -81,7 +81,9 @@
     "build:pleat": "vite build --mode pleat",
     "preview:pleat": "vite preview --mode pleat",
     "lint:consumers": "node scripts/verify-lint-consumer.mjs",
-    "test:strict-consumers": "node scripts/verify-strict-consumers.mjs"
+    "test:strict-consumers": "node scripts/verify-strict-consumers.mjs",
+    "tutorial:css": "node scripts/generate-tutorial-css.mjs",
+    "tutorial:css:check": "node scripts/generate-tutorial-css.mjs --check"
   },
   "lint-staged": {
     "*": "oxfmt --write --no-error-on-unmatched-pattern"

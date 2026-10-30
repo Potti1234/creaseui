@@ -56,6 +56,8 @@ export const AppRoute = defineRouteUnion({
   Theming: {},
   LintRules: {},
   LintRule: { rule: S.String },
+  TutorialIndex: {},
+  TutorialChapter: { chapter: S.String },
   ComponentDocs: { component: S.String },
   NotFound: { path: S.String },
 })
@@ -140,6 +142,19 @@ const lintRulesRouter = pipe(
   Route.mapTo(AppRoute.LintRules),
 )
 
+const tutorialChapterRouter = pipe(
+  literal('docs'),
+  slash(literal('tutorial')),
+  slash(string('chapter')),
+  Route.mapTo(AppRoute.TutorialChapter),
+)
+
+const tutorialIndexRouter = pipe(
+  literal('docs'),
+  slash(literal('tutorial')),
+  Route.mapTo(AppRoute.TutorialIndex),
+)
+
 const routeParser = Route.oneOf(
   createRouter,
   chartsRouter,
@@ -153,6 +168,8 @@ const routeParser = Route.oneOf(
   themingRouter,
   lintRuleRouter,
   lintRulesRouter,
+  tutorialChapterRouter,
+  tutorialIndexRouter,
   componentDocsRouter,
   homeRouter,
 )
@@ -192,3 +209,8 @@ export const themingPath = (): string => themingRouter()
 export const lintRulesPath = (): string => lintRulesRouter()
 
 export const lintRulePath = (rule: string): string => lintRuleRouter({ rule })
+
+export const tutorialIndexPath = (): string => tutorialIndexRouter()
+
+export const tutorialChapterPath = (chapter: string): string =>
+  tutorialChapterRouter({ chapter })

@@ -1,0 +1,13 @@
+import type { Html, HtmlBuilder } from 'foldkit/html'
+
+import { button } from '@/ui/button'
+import { icon } from '@/ui/icon'
+
+export const collapse = <Msg>(isOpen: boolean, onToggle: Msg, h: HtmlBuilder<Msg>): Html =>
+  button({
+    shape: 'icon',
+    ariaLabel: 'Collapse Todo',
+    buttonAttributes: [h.AriaExpanded(isOpen)],
+    onClick: onToggle,
+    children: [icon({ name: 'chevron-down' }, h)],
+  }, h)

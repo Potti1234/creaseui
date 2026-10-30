@@ -1,0 +1,9 @@
+> crease-tasks@0.0.0 check
+> tsc --noEmit && eslint src --max-warnings 0 && creaseui-lint doctor && creaseui-lint css
+
+ok      receipt valid (renderer tailwind, policy crease-default-v1, 26 owned files)
+ok      36 source files inspected, 0 uncovered UI modules
+note    no installed replacement for: control.textarea, control.native-select, control.combobox, control.label, control.field, composition.form, composition.grid, composition.center, composition.section, navigation.nav, navigation.link, composition.list, data.table, control.disclosure, overlay.dialog, feedback.progress (diagnostics show install commands)
+ok      3 stylesheets inspected
+coverage complete
+css: 3 stylesheets, 0 violations, 0 unverifiable

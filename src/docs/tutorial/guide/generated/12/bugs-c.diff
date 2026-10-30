@@ -1,0 +1,66 @@
+diff --git a/src/features/views.ts b/src/features/views.ts
+index b96d667..a8b508c 100644
+--- a/src/features/views.ts
++++ b/src/features/views.ts
+@@ -22,6 +22,14 @@ export const SAVED_VIEWS: ReadonlyArray<SavedView> = [
+     icon: 'user-round-x',
+     matches: issue => issue.assigneeId === null && (issue.status === 'backlog' || issue.status === 'todo'),
+   },
++  {
++    view: 'active-bugs',
++    label: 'Active bugs',
++    icon: 'bug',
++    matches: issue =>
++      issue.labels.includes('Bug') &&
++      (issue.status === 'todo' || issue.status === 'in_progress' || issue.status === 'in_review'),
++  },
+ ]
+ 
+ export const savedViewOf = (view: View): SavedView | undefined => SAVED_VIEWS.find(each => each.view === view)
+diff --git a/src/model.ts b/src/model.ts
+index a4e431f..40a0efb 100644
+--- a/src/model.ts
++++ b/src/model.ts
+@@ -15,7 +15,7 @@ import * as DropdownMenu from '@/ui/dropdown-menu'
+ 
+ /* What the main area shows: everything, the signed-in person's issues, one
+    team's issues, or a saved view (src/features/views.ts). */
+-export const View = S.Literals(['all', 'mine', 'team:eng', 'team:des', 'urgent', 'unassigned'])
++export const View = S.Literals(['all', 'mine', 'team:eng', 'team:des', 'urgent', 'unassigned', 'active-bugs'])
+ export type View = typeof View.Type
+ 
+ export const Sort = S.Literals(['priority', 'newest'])
+diff --git a/test/update.test.ts b/test/update.test.ts
+index 9f558d2..297173b 100644
+--- a/test/update.test.ts
++++ b/test/update.test.ts
+@@ -2,8 +2,9 @@ import { Dialog as DialogPrimitive } from '@foldkit/ui'
+ import { Story } from 'foldkit'
+ import { describe, expect, test } from 'vitest'
+ 
+-import { SEED } from '../src/domain'
++import { type Issue, SEED } from '../src/domain'
+ import { validateTitle } from '../src/design/issue-composer'
++import { savedViewOf } from '../src/features/views'
+ import { ApplyTheme, FocusTitle, Message, type Model, init, update } from '../src/model'
+ import { SaveIssues, SaveMessage } from '../src/storage'
+ import * as DropdownMenu from '../src/ui/dropdown-menu'
+@@ -193,3 +194,18 @@ describe('validateTitle', () => {
+     ['x'.repeat(201), false],
+   ])('%j is valid: %s', (title, valid) => expect(validateTitle(title).ok).toBe(valid))
+ })
++
++describe('Active bugs', () => {
++  test('lists the issues labelled Bug in Todo, In Progress or In Review', () => {
++    const activeBugs = savedViewOf('active-bugs')
++    const base = SEED[0]!
++    const bug = (status: Issue['status']): Issue => ({ ...base, status, labels: ['Bug'] })
++    expect(SEED.filter(each => activeBugs?.matches(each) === true).map(each => each.id)).toEqual(['CRE-142', 'CRE-136'])
++    expect(activeBugs?.matches(bug('todo'))).toBe(true)
++    expect(activeBugs?.matches(bug('in_progress'))).toBe(true)
++    expect(activeBugs?.matches(bug('in_review'))).toBe(true)
++    expect(activeBugs?.matches(bug('backlog'))).toBe(false)
++    expect(activeBugs?.matches(bug('done'))).toBe(false)
++    expect(activeBugs?.matches({ ...base, status: 'todo', labels: ['Feature'] })).toBe(false)
++  })
++})

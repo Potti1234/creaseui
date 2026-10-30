@@ -16,6 +16,7 @@ import {
   themingPath,
   lintRulePath,
   lintRulesPath,
+  tutorialIndexPath,
 } from '@/route'
 import { LINT_RULE_GROUPS } from '@/docs/lint/rules'
 import { renderer, siteOrigin } from '@/site/config'
@@ -751,6 +752,7 @@ export const view = <Msg>(
         h.li([], [link(gettingStartedPath(), 'Get Started', isGettingStarted)]),
         h.li([], [link(themingPath(), 'Theming', !isGettingStarted)]),
         h.li([], [link(lintRulesPath(), 'Lint rules', false)]),
+        h.li([], [link(tutorialIndexPath(), 'Tutorial', false)]),
       ],
     )
   const lintLink = (id: string, title: string): Html =>

@@ -1,0 +1,9 @@
+problem crease.lock.json registers src/lib/dropdown-menu-behavior.ts
+problem crease.lock.json registers src/ui/dropdown-menu.ts with rawRendering
+problem crease.lock.json adds the contract for src/ui/dropdown-menu.ts#dropdownMenu
+problem changes eslint.config.js
+problem package.json changes script check
+problem package.json changes script lint
+problem changes AGENTS.md
+scope: 7 enforcement changes against chapter-06
+a feature change must not change enforcement inputs; rerun with --allow-enforcement-changes for a reviewed system change

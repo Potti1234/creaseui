@@ -1,0 +1,60 @@
+diff --git a/crease.lock.json b/crease.lock.json
+index 24b45fa..a19534b 100644
+--- a/crease.lock.json
++++ b/crease.lock.json
+@@ -463,10 +463,30 @@
+           "contract": "control.button",
+           "file": "src/ui/button.ts",
+-          "name": "button"
++          "name": "button",
++          "variants": {
++            "intent": [
++              "primary",
++              "secondary"
++            ],
++            "shape": [
++              "text",
++              "icon"
++            ]
++          }
+         },
+         {
+           "contract": "control.button",
+           "file": "src/ui/button.ts",
+-          "name": "buttonLink"
++          "name": "buttonLink",
++          "variants": {
++            "intent": [
++              "primary",
++              "secondary"
++            ],
++            "shape": [
++              "text",
++              "icon"
++            ]
++          }
+         }
+       ],
+@@ -561,5 +581,21 @@
+           "contract": "component.item",
+           "file": "src/ui/item.ts",
+-          "name": "item"
++          "name": "item",
++          "variants": {
++            "variant": [
++              "default",
++              "outline",
++              "muted"
++            ],
++            "size": [
++              "default",
++              "sm",
++              "xs"
++            ],
++            "layout": [
++              "wrap",
++              "inline"
++            ]
++          }
+         },
+         {

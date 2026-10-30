@@ -36,6 +36,8 @@ import * as ChartsStyleX from '@/demo/charts-stylex/page'
 import * as ChartsPleat from '@/demo/charts-pleat/page'
 import * as ComponentCatalog from '@/docs/components/catalog'
 import * as GettingStartedPage from '@/docs/getting-started-view'
+import * as TutorialDocs from '@/docs/tutorial-view'
+import { tutorialChapter } from '@/docs/tutorial/chapters'
 import * as CopyFeedback from '@/docs/copy-feedback'
 import * as CodeFile from '@/lib/code-file'
 import * as Icon from '@/lib/icon'
@@ -56,6 +58,8 @@ import {
   themingPath,
   lintRulePath,
   lintRulesPath,
+  tutorialChapterPath,
+  tutorialIndexPath,
   createPath,
   homePath,
   isChartSection,
@@ -433,9 +437,13 @@ export const update = (model: Model, message: Message): UpdateReturn =>
               ? [
                   NavigateInternal({
                     url: new URL(
-                      next.outMessage.slug.startsWith('lint:')
-                        ? lintRulePath(next.outMessage.slug.slice(5))
-                        : componentDocsPath(next.outMessage.slug),
+                      next.outMessage.slug === 'tutorial'
+                        ? tutorialIndexPath()
+                        : next.outMessage.slug.startsWith('tutorial:')
+                          ? tutorialChapterPath(next.outMessage.slug.slice(9))
+                          : next.outMessage.slug.startsWith('lint:')
+                            ? lintRulePath(next.outMessage.slug.slice(5))
+                            : componentDocsPath(next.outMessage.slug),
                       model.currentUrl,
                     ).href,
                   }),
@@ -1726,6 +1734,36 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
           : keyed('page-not-found', notFoundView(themingPath(), h)),
       LintRules: () => lintDocsView(model, h),
       LintRule: () => lintDocsView(model, h),
+      TutorialIndex: () =>
+        model.page._tag === 'TutorialPage'
+          ? keyed(
+              'page-tutorial-index',
+              TutorialDocs.tutorialIndexView(
+                {
+                  sidebarScrolled: Message.ObservedDocsSidebarScroll(),
+                },
+                h,
+              ),
+            )
+          : keyed('page-not-found', notFoundView(tutorialIndexPath(), h)),
+      TutorialChapter: ({ chapter }) => {
+        const entry = tutorialChapter(chapter)
+        return entry !== undefined && model.page._tag === 'TutorialPage'
+          ? keyed(
+              `page-tutorial-${chapter}`,
+              TutorialDocs.tutorialChapterView(
+                entry,
+                {
+                  sidebarScrolled: Message.ObservedDocsSidebarScroll(),
+                },
+                h,
+              ),
+            )
+          : keyed(
+              'page-not-found',
+              notFoundView(`/docs/tutorial/${chapter}`, h),
+            )
+      },
       NotFound: ({ path }) => keyed('page-not-found', notFoundView(path, h)),
     }),
   )
@@ -1744,7 +1782,11 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
           ? 'Theming - crease/ui'
           : model.route._tag === 'LintRules' || model.route._tag === 'LintRule'
             ? 'Lint rules - crease/ui'
-            : 'crease/ui'
+            : model.route._tag === 'TutorialIndex'
+              ? 'Tutorial - crease/ui'
+              : model.route._tag === 'TutorialChapter'
+                ? `${tutorialChapter(model.route.chapter)?.title ?? 'Tutorial'} - crease/ui`
+                : 'crease/ui'
 
   return {
     title,

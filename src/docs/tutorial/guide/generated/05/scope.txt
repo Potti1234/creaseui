@@ -1,0 +1,5 @@
+problem crease.lock.json changes variants of src/ui/button.ts#button
+problem crease.lock.json changes variants of src/ui/button.ts#buttonLink
+problem crease.lock.json changes variants of src/ui/item.ts#item
+scope: 3 enforcement changes against chapter-04
+a feature change must not change enforcement inputs; rerun with --allow-enforcement-changes for a reviewed system change
