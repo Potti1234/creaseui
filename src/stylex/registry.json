@@ -4060,6 +4060,23 @@
       ]
     },
     {
+      "name": "stylex-kanban-dnd",
+      "type": "registry:lib",
+      "title": "StyleX Kanban Dnd Source",
+      "description": "A shared StyleX source module used by Crease UI components.",
+      "files": [
+        {
+          "path": "kanban-dnd.ts",
+          "type": "registry:lib",
+          "target": "@ui/stylex/kanban-dnd.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/crease-theme-css",
+        "Potti1234/creaseui/stylex-composition-box"
+      ]
+    },
+    {
       "name": "stylex-kbd",
       "type": "registry:ui",
       "title": "Kbd",
