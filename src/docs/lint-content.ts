@@ -27,6 +27,7 @@ import {
   lintRulesPath,
   themingPath,
   componentDocsPath,
+  tutorialIndexPath,
 } from '@/route'
 import { COMPONENT_GROUPS, toSlug } from '@/docs/component-metadata'
 
@@ -64,6 +65,7 @@ export const view = <Msg>(
             h.li([], [link(gettingStartedPath(), 'Get Started', false)]),
             h.li([], [link(themingPath(), 'Theming', false)]),
             h.li([], [link(lintRulesPath(), 'Lint rules', rule === '')]),
+            h.li([], [link(tutorialIndexPath(), 'Tutorial', false)]),
           ],
         ),
       ],

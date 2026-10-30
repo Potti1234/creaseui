@@ -6,6 +6,7 @@ import { defineMessageUnion } from 'foldkit/message'
 
 import { authoredPages } from '@/docs/components/pages'
 import { LINT_RULE_GROUPS } from '@/docs/lint/rules'
+import { TUTORIAL_CHAPTERS } from '@/docs/tutorial/chapters'
 import * as Icon from '@/lib/icon'
 import { CommandMenu, Dialog } from '@/site/docs-search-ui'
 import { skin } from '@/site/skin'
@@ -25,6 +26,19 @@ export const DOC_PAGES = Object.values(authoredPages)
         description: rule.summary,
       })),
     ),
+    [
+      {
+        slug: 'tutorial',
+        title: 'Tutorial',
+        description:
+          'The Crease Tasks tutorial: a design system built chapter by chapter.',
+      },
+    ],
+    TUTORIAL_CHAPTERS.map(chapter => ({
+      slug: `tutorial:${chapter.id}`,
+      title: `${chapter.title} (tutorial)`,
+      description: chapter.summary,
+    })),
   )
   .sort((left, right) => left.title.localeCompare(right.title, 'en'))
 

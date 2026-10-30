@@ -67,20 +67,32 @@ export default defineConfig(({ mode }) => {
         transformIndexHtml: {
           order: 'pre',
           handler(html) {
-            return html
-              .replace(
-                '<html lang="en">',
-                `<html lang="en" data-renderer="${renderer}">`,
-              )
-              .replace('https://creaseui.com/', canonicalOrigin)
-              .replace(
-                '/src/styles.css',
-                isTailwind ? '/src/styles.css' : `/src/site/${renderer}.css`,
-              )
-              .replace(
-                '/src/entry.ts',
-                isTailwind ? '/src/entry.ts' : `/src/entry-${renderer}.ts`,
-              )
+            return (
+              html
+                .replace(
+                  '<html lang="en">',
+                  `<html lang="en" data-renderer="${renderer}">`,
+                )
+                .replace('https://creaseui.com/', canonicalOrigin)
+                .replace(
+                  '/src/styles.css',
+                  isTailwind ? '/src/styles.css' : `/src/site/${renderer}.css`,
+                )
+                // The StyleX and Pleat sites have no Tailwind pipeline, but the
+                // vendored tutorial essays are styled with Tailwind classes, so
+                // they link the pre-generated utility sheet (public/, not part
+                // of the bundle — the leak check below only scans bundle assets).
+                .replace(
+                  '</head>',
+                  isTailwind
+                    ? '</head>'
+                    : '    <link href="/tutorial-essays.css" rel="stylesheet" />\n  </head>',
+                )
+                .replace(
+                  '/src/entry.ts',
+                  isTailwind ? '/src/entry.ts' : `/src/entry-${renderer}.ts`,
+                )
+            )
           },
         },
         generateBundle(_options, bundle) {
@@ -136,6 +148,7 @@ export default defineConfig(({ mode }) => {
               '@/docs/getting-started-view': source(
                 'site/getting-started.stylex.ts',
               ),
+              '@/docs/tutorial-view': source('site/tutorial.stylex.ts'),
               '@/ui/code': source('stylex/code.ts'),
               '@/ui/code-block': source('stylex/code-block.ts'),
               '@/ui/heading': source('stylex/heading.ts'),
@@ -159,6 +172,7 @@ export default defineConfig(({ mode }) => {
                 '@/docs/getting-started-view': source(
                   'site/getting-started.pleat.ts',
                 ),
+                '@/docs/tutorial-view': source('site/tutorial.pleat.ts'),
                 '@/ui/code': source('pleat/code.ts'),
                 '@/ui/code-block': source('pleat/code-block.ts'),
                 '@/ui/heading': source('pleat/heading.ts'),

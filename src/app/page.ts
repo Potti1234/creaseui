@@ -21,6 +21,7 @@ import * as ChartsStyleX from '@/demo/charts-stylex/page'
 import * as ChartsPleat from '@/demo/charts-pleat/page'
 import * as ComponentCatalog from '@/docs/components/catalog'
 import * as CopyFeedback from '@/docs/copy-feedback'
+import { tutorialChapter } from '@/docs/tutorial/chapters'
 import * as CodeBlock from '@/ui/code-block'
 import type { AppRoute } from '@/route'
 import { renderer } from '@/site/config'
@@ -89,6 +90,9 @@ export const LintDocs = taggedStruct('LintDocsPage', {
   codeBlock: CodeBlock.Model,
   rule: S.String,
 })
+export const Tutorial = taggedStruct('TutorialPage', {
+  chapter: S.String,
+})
 export const NotFound = taggedStruct('NotFoundPage')
 
 export const Page = S.Union([
@@ -102,6 +106,7 @@ export const Page = S.Union([
   GettingStarted,
   LintDocs,
   Theming,
+  Tutorial,
   NotFound,
 ])
 export type Page = typeof Page.Type
@@ -165,6 +170,9 @@ export const init = (route: AppRoute): Page =>
       Theming: () => Theming({ codeBlock: CodeBlock.init() }),
       LintRules: () => LintDocs({ codeBlock: CodeBlock.init(), rule: '' }),
       LintRule: ({ rule }) => LintDocs({ codeBlock: CodeBlock.init(), rule }),
+      TutorialIndex: () => Tutorial({ chapter: 'index' }),
+      TutorialChapter: ({ chapter }) =>
+        tutorialChapter(chapter) ? Tutorial({ chapter }) : NotFound(),
       NotFound: () => NotFound(),
     }),
   )
