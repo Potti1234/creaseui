@@ -1,0 +1,1 @@
+src/features/__old.ts(7,21): error TS2353: Object literal may only specify known properties, and 'controls' does not exist in type 'Readonly<{ display?, actions?, summary?, body, pickers, onOpen }>'.

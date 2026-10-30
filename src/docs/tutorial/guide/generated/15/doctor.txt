@@ -1,0 +1,9 @@
+ok      receipt valid (renderer tailwind, policy crease-default-v1, 40 owned files)
+ok      60 source files inspected, 0 uncovered UI modules
+note    no installed replacement for: control.native-select, control.combobox, control.label, composition.form, composition.grid, composition.center, composition.section, navigation.nav, composition.list, data.table, control.disclosure, feedback.progress (diagnostics show install commands)
+ok      3 stylesheets inspected
+note    src/ui/badge.ts: `badge` (component.badge) variant `variant` drops 'default', 'secondary', 'destructive', 'ghost', 'link' (narrowed by the receipt)
+note    src/ui/text.ts: `text` (typography.text) variant `color` drops 'disabled', 'placeholder', 'accent', 'inherit' (narrowed by the receipt)
+note    src/ui/text.ts: `text` (typography.text) variant `size` drops '4xs', '3xs', '2xs', 'base', 'lg', 'xl', '2xl', '3xl', '4xl' (narrowed by the receipt)
+note    src/ui/text.ts: `text` (typography.text) variant `weight` drops 'bold' (narrowed by the receipt)
+coverage complete

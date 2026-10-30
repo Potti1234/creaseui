@@ -1,0 +1,20 @@
+> crease-tasks@0.0.0 check:browser
+> node scripts/check-browser.mjs
+
+✓ D1: at 900px every row is 36px and nothing scrolls sideways
+✓ D1: search results stay on one line on a 480px phone screen
+✓ D1: a long title is cut with an ellipsis at 900px
+✓ D3: search results use the same row as the list
+✓ D7: a status changes in place, the issue regroups, focus returns to its glyph
+✓ D8: an empty title is refused, with the error at the field and focus on it
+✓ D8: closing keeps the draft, Ctrl+Enter creates the next issue
+✓ Changes survive a reload
+✓ A refused save shows SaveNotice; Retry saves once storage works again
+✓ Unreadable saved data falls back to the sample, with a notice
+✓ Navigation: a team page and a saved view list only their issues
+✓ The row title opens the issue page; an empty title is refused, a valid one saved
+✓ D9: Ctrl+K finds a place by name; C opens the composer
+✓ Dark theme: the sidebar turns dark too, and the choice survives a reload
+✓ Component: an inline item keeps text in its content on one 36px line in a 240px column
+✓ No errors in the console
+browser check: 16 of 16 passed

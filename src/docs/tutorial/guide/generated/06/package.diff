@@ -1,0 +1,13 @@
+diff --git a/package.json b/package.json
+index 8a7ed8b..f4389c6 100644
+--- a/package.json
++++ b/package.json
+@@ -10,5 +10,7 @@
+     "typecheck": "tsc --noEmit",
+     "lint": "eslint src --max-warnings 1",
+-    "doctor": "creaseui-lint doctor"
++    "doctor": "creaseui-lint doctor",
++    "check": "tsc --noEmit && eslint src --max-warnings 1 && creaseui-lint doctor && creaseui-lint css",
++    "scope": "creaseui-lint scope --baseline HEAD"
+   },
+   "dependencies": {

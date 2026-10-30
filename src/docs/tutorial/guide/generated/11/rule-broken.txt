@@ -1,0 +1,8 @@
+✓ valid > one primary and secondaries
+ ✓ valid > no intent means secondary
+ ✓ valid > another module's button is not ours
+ × invalid > two primaries in one file
+ × invalid > a renamed import and a conditional intent
+ × invalid > buttonLink counts too
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  3 failed | 3 passed (6)

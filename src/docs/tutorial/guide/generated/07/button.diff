@@ -1,0 +1,19 @@
+diff --git a/src/ui/button.ts b/src/ui/button.ts
+index 9f31861..88fbddf 100644
+--- a/src/ui/button.ts
++++ b/src/ui/button.ts
+@@ -51,4 +51,6 @@ export type ButtonProps<Msg> = ButtonBehaviorProps<Msg> &
+     /** `primary` for the one main action of a region, `secondary` for everything else (D4). */
+     intent?: ButtonIntent
++    /** For a button that shows or hides something (a disclosure): whether it is shown. */
++    ariaExpanded?: boolean
+     class?: string
+   }>
+@@ -70,4 +72,7 @@ export const button = <Msg>(
+         ? [h.DataAttribute('size', dataSize(shape))]
+         : []),
++      ...(props.ariaExpanded === undefined
++        ? []
++        : [h.AriaExpanded(props.ariaExpanded)]),
+       h.Class(cn(buttonVariants({ intent, shape }), props.class)),
+     ],

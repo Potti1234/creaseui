@@ -1,0 +1,22 @@
+src/features/issues.ts
+  20:14  warning  `flex-nowrap rounded-none border-b border-b-border px-4` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)  crease/component-contract
+  31:41  warning  `block truncate` on `itemTitle` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)                                     crease/component-contract
+  58:16  warning  `bg-muted` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)                                            crease/component-contract
+
+src/features/my-issues.ts
+  29:14  warning  `flex-nowrap gap-2 py-1.5` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)  crease/component-contract
+  35:32  warning  `truncate` on `itemTitle` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)             crease/component-contract
+  61:20  warning  `h-7` overrides the named size of `button` (control.button); use its `size` option. (component-contract)                                                           crease/component-contract
+  61:20  warning  `rounded-md` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)              crease/component-contract
+
+src/features/search.ts
+  23:14  warning  `flex-nowrap px-3 hover:bg-accent` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)      crease/component-contract
+  27:18  warning  `flex-row items-baseline gap-2` on `itemContent` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)  crease/component-contract
+  30:32  warning  `truncate` on `itemTitle` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)                         crease/component-contract
+  51:56  warning  `px-0` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)                                crease/component-contract
+
+src/view.ts
+  124:32  warning  `h-7` overrides the named size of `input` (control.input); use its `size` option. (component-contract)                                            crease/component-contract
+  124:32  warning  `text-xs` on `input` (control.input) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)  crease/component-contract
+
+✖ 13 problems (0 errors, 13 warnings)

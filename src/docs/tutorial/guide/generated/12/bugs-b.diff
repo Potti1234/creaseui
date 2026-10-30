@@ -1,0 +1,60 @@
+diff --git a/src/features/views.ts b/src/features/views.ts
+index b96d667..a8b508c 100644
+--- a/src/features/views.ts
++++ b/src/features/views.ts
+@@ -22,6 +22,14 @@ export const SAVED_VIEWS: ReadonlyArray<SavedView> = [
+     icon: 'user-round-x',
+     matches: issue => issue.assigneeId === null && (issue.status === 'backlog' || issue.status === 'todo'),
+   },
++  {
++    view: 'active-bugs',
++    label: 'Active bugs',
++    icon: 'bug',
++    matches: issue =>
++      issue.labels.includes('Bug') &&
++      (issue.status === 'todo' || issue.status === 'in_progress' || issue.status === 'in_review'),
++  },
+ ]
+ 
+ export const savedViewOf = (view: View): SavedView | undefined => SAVED_VIEWS.find(each => each.view === view)
+diff --git a/src/model.ts b/src/model.ts
+index a4e431f..40a0efb 100644
+--- a/src/model.ts
++++ b/src/model.ts
+@@ -15,7 +15,7 @@ import * as DropdownMenu from '@/ui/dropdown-menu'
+ 
+ /* What the main area shows: everything, the signed-in person's issues, one
+    team's issues, or a saved view (src/features/views.ts). */
+-export const View = S.Literals(['all', 'mine', 'team:eng', 'team:des', 'urgent', 'unassigned'])
++export const View = S.Literals(['all', 'mine', 'team:eng', 'team:des', 'urgent', 'unassigned', 'active-bugs'])
+ export type View = typeof View.Type
+ 
+ export const Sort = S.Literals(['priority', 'newest'])
+diff --git a/test/views.test.ts b/test/views.test.ts
+new file mode 100644
+index 0000000..c0618f6
+--- /dev/null
++++ b/test/views.test.ts
+@@ -0,0 +1,22 @@
++import { describe, expect, test } from 'vitest'
++
++import { SEED } from '../src/domain'
++import { savedViewOf } from '../src/features/views'
++
++describe('Active bugs', () => {
++  test('lists issues labelled Bug that are in Todo, In Progress or In Review', () => {
++    const saved = savedViewOf('active-bugs')
++    expect(saved?.label).toBe('Active bugs')
++    const ids = SEED.filter(issue => saved?.matches(issue) === true).map(issue => issue.id)
++    expect(ids).toEqual(['CRE-142', 'CRE-136'])
++  })
++
++  test('leaves out bugs in Backlog or Done', () => {
++    const matches = savedViewOf('active-bugs')?.matches
++    const bug = SEED[0]
++    expect(bug.labels).toContain('Bug')
++    expect(matches?.({ ...bug, status: 'backlog' })).toBe(false)
++    expect(matches?.({ ...bug, status: 'done' })).toBe(false)
++    expect(matches?.({ ...bug, status: 'todo' })).toBe(true)
++  })
++})

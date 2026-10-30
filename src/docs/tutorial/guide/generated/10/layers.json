@@ -1,0 +1,62 @@
+[
+  {
+    "id": "text-lg",
+    "call": "text({ size: 'lg', children: ['Release notes'] }, h)",
+    "messages": [
+      {
+        "rule": "crease/component-contract",
+        "message": "`size: 'lg'` is not a `text` (typography.text) variant (allowed: xsm, sm). (component-contract)"
+      }
+    ]
+  },
+  {
+    "id": "badge-secondary",
+    "call": "badge({ variant: 'secondary', children: ['Bug'] }, h)",
+    "messages": [
+      {
+        "rule": "crease/component-contract",
+        "message": "`variant: 'secondary'` is not a `badge` (component.badge) variant (allowed: outline). (component-contract)"
+      }
+    ]
+  },
+  {
+    "id": "button-rounded",
+    "call": "button({ class: 'rounded-full', children: ['Save'] }, h)",
+    "messages": [
+      {
+        "rule": "crease/component-contract",
+        "message": "`rounded-full` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+      }
+    ]
+  },
+  {
+    "id": "raw-div",
+    "call": "h.div([], ['Save'])",
+    "messages": [
+      {
+        "rule": "crease/no-raw-composition",
+        "message": "Raw `div` rendering is forbidden in application views (no-raw-composition, contract composition.stack). Use `stack` from '../ui/stack'. Raw rendering is only allowed in exact implementation files registered in crease.lock.json."
+      }
+    ]
+  },
+  {
+    "id": "own-row",
+    "call": "item({ children: [] }, h)",
+    "messages": [
+      {
+        "rule": "no-restricted-imports",
+        "message": "'@/ui/item' import is restricted from being used. List issues with issueCollection or issueRow from src/design (decision D3)."
+      }
+    ]
+  },
+  {
+    "id": "heading-2",
+    "call": "heading({ level: 2, children: ['Release'] }, h)",
+    "messages": []
+  },
+  {
+    "id": "text-xsm",
+    "call": "text({ size: 'xsm', color: 'secondary', children: ['CRE-136'] }, h)",
+    "messages": []
+  }
+]

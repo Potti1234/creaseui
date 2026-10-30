@@ -1,0 +1,38 @@
+diff --git a/package.json b/package.json
+index 40134a2..70890dd 100644
+--- a/package.json
++++ b/package.json
+@@ -9,7 +9,7 @@
+     "preview": "vite preview --host 127.0.0.1 --port 4190 --strictPort",
+     "typecheck": "tsc --noEmit",
+-    "lint": "eslint src --max-warnings 0",
++    "lint": "eslint src --max-warnings 4",
+     "doctor": "creaseui-lint doctor",
+-    "check": "tsc --noEmit && eslint src --max-warnings 0 && creaseui-lint doctor && creaseui-lint css && node scripts/check-lint-fixtures.mjs && vitest run",
++    "check": "tsc --noEmit && eslint src --max-warnings 4 && creaseui-lint doctor && creaseui-lint css && node scripts/check-lint-fixtures.mjs && vitest run",
+     "scope": "creaseui-lint scope --baseline HEAD",
+     "test": "vitest run",
+diff --git a/policy/product-policy.js b/policy/product-policy.js
+index ed04eb9..264713b 100644
+--- a/policy/product-policy.js
++++ b/policy/product-policy.js
+@@ -40,3 +40,19 @@ export const productPolicy = [
+     },
+   },
++  {
++    name: 'crease-tasks/deprecations',
++    files: ['src/features/**/*.ts', 'src/view.ts'],
++    rules: {
++      // Chapter 14: IssueCollection's free-form `controls` is replaced by
++      // structured `display` and `actions`. A warning per caller, counted by
++      // the ratchet in package.json until none is left.
++      'no-restricted-syntax': [
++        'warn',
++        {
++          selector: "CallExpression[callee.name='issueCollection'] Property[key.name='controls']",
++          message: 'IssueCollection `controls` is deprecated: pass `display` options and `actions` instead (chapter 14).',
++        },
++      ],
++    },
++  },
+ ]
