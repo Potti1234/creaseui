@@ -138,5 +138,8 @@
     "unplugin": "^2.3.11",
     "vite": "^8.0.16",
     "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "minimatch": "^11.0.1"
   }
 }
