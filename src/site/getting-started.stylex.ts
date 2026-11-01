@@ -215,7 +215,7 @@ const styles = stylex.create({
   },
 })
 
-const classes = {
+export const classes = {
   layout: className(styles.layout),
   mobile: className(styles.mobile),
   summary: className(styles.summary),

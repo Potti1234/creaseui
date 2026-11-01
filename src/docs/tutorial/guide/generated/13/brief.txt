@@ -1,0 +1,15 @@
+Task (system change):
+Turn the board proposal that is already applied in this working copy (src/design/issue-board.ts, src/design/issue-card.ts, design-system/changes/008-issue-board.md, and the changes to issue-collection.ts, app-sidebar.ts, features/issues.ts, model.ts, view.ts, test/update.test.ts and the design-system documents) into a reviewed design-system change for the product decision "Each team's issues can be shown as a board, one column per status, each issue a card."
+This task authorizes edits to: src/design/issue-board.ts, src/design/issue-card.ts, src/design/issue-collection.ts, src/design/app-sidebar.ts, src/features/issues.ts, src/model.ts, src/view.ts, tests (test/), scripts/check-browser.mjs, design-system/principles.md, design-system/patterns.md and design-system/changes/008-issue-board.md.
+It does not authorize changes to src/ui, src/lib, src/theme, crease.lock.json, eslint.config.js, policy/, tooling/ or package.json.
+Preserve: decisions D1 to D11 in design-system/principles.md as they are at chapter-12, the feature boundary in AGENTS.md and design-system/boundaries.md, and every existing check.
+
+Review notes to resolve (from the design-system owner):
+R1. At 1280px the In Review column is cut off and Done is not visible, with no sign that more columns exist. Required: columns share the available width down to a minimum width; only below that minimum does the board scroll sideways, inside its own region. The page itself must never scroll sideways.
+R2. The card's title wraps, unlike a row (D1), and the proposal changed D3 inside a feature task. Restore D3 to its chapter-12 wording. Add D12 to design-system/principles.md instead (the card: same parts and order as the row, title and labels may wrap, where it is enforced). Update patterns.md accordingly.
+R3. A system change includes its checks: extend scripts/check-browser.mjs with board steps: the sidebar's Board link opens the board; at 1280px all five columns are visible without page-level sideways scrolling; a status change on a card moves it to the right column with focus returning to its glyph. Keep or add Story tests for the board views.
+R4. A board is reached two ways, the sidebar's Board link and the Layout button. Both must lead to the same view, and the sidebar must mark the page that is shown as active. No drag and drop: acceptable, but say so in the change record.
+
+Run, and make pass: npm run check; the browser check against your own dev server (start it with `npx vite --host 127.0.0.1 --port 5301 --strictPort`, run `BASE_URL=http://127.0.0.1:5301/ npm run check:browser`, stop the server when done; this worktree borrows node_modules from outside its folder, so the Inter font file returns 403 and the console step reports that one error: ignore it, every other step must pass); and npx creaseui-lint scope --baseline chapter-12 (it must not list changes to the files this task does not authorize).
+
+Produce the complete reviewable change and a migration note in the change record.

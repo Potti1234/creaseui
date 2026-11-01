@@ -1,0 +1,13 @@
+src/features/issues.ts
+  17:7  warning  IssueCollection `controls` is deprecated: pass `display` options and `actions` instead (chapter 14)  no-restricted-syntax
+
+src/features/my-issues.ts
+  25:7  warning  IssueCollection `controls` is deprecated: pass `display` options and `actions` instead (chapter 14)  no-restricted-syntax
+
+src/features/search.ts
+  19:7  warning  IssueCollection `controls` is deprecated: pass `display` options and `actions` instead (chapter 14)  no-restricted-syntax
+
+src/features/views.ts
+  41:7  warning  IssueCollection `controls` is deprecated: pass `display` options and `actions` instead (chapter 14)  no-restricted-syntax
+
+✖ 4 problems (0 errors, 4 warnings)

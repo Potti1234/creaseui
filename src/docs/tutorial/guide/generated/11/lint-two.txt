@@ -1,0 +1,4 @@
+src/features/__two.ts
+  9:12  error  A region has one primary action (decision D4). This file already has one at line 8; make this one `secondary`, or move it to its own region  crease-tasks/one-primary-action
+
+✖ 1 problem (1 error, 0 warnings)

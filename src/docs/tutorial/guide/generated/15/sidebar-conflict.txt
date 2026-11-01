@@ -1,0 +1,23 @@
+    h.button(
+      [
+        h.DataAttribute('sidebar', 'trigger'),
+        h.DataAttribute('slot', 'sidebar-trigger'),
+        h.OnClick(onClick),
+        h.Type('button'),
+        h.Class(
+          cn(
+<<<<<<< src/ui/sidebar.ts
+            buttonVariants({ intent: 'secondary', shape: 'icon' }),
+=======
+            // The trigger reuses Button's ghost icon style. A project that
+            // narrows Button's variants (removes 'ghost' or 'icon') gets a
+            // type error here on purpose: update this call in step.
+            buttonVariants({ variant: 'ghost', size: 'icon' }),
+>>>>>>> d0bf498a
+            'size-7',
+            visibilityClass,
+            props.class,
+          ),
+        ),
+      ],
+      [

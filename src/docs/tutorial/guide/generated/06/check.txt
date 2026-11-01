@@ -1,0 +1,15 @@
+> crease-tasks@0.0.0 check
+> tsc --noEmit && eslint src --max-warnings 1 && creaseui-lint doctor && creaseui-lint css
+
+
+src/features/issues.ts
+  70:16  warning  `bg-muted` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)  crease/component-contract
+
+✖ 1 problem (0 errors, 1 warning)
+
+ok      receipt valid (renderer tailwind, policy crease-default-v1, 24 owned files)
+ok      30 source files inspected, 0 uncovered UI modules
+note    no installed replacement for: control.textarea, control.native-select, control.combobox, control.label, control.field, composition.form, composition.grid, composition.center, composition.section, navigation.nav, navigation.link, composition.list, data.table, control.disclosure, overlay.dialog, feedback.progress (diagnostics show install commands)
+ok      3 stylesheets inspected
+coverage complete
+css: 3 stylesheets, 0 violations, 0 unverifiable

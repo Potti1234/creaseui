@@ -1,0 +1,12 @@
+diff --git a/policy/product-policy.js b/policy/product-policy.js
+index 54f7979..ff51fbc 100644
+--- a/policy/product-policy.js
++++ b/policy/product-policy.js
+@@ -15,7 +15,6 @@ export const productPolicy = [
+         {
+           paths: [
+             // D3: every list shows issues with the same row.
+-            { name: '@/ui/item', message: 'List issues with issueCollection or issueRow from src/design (decision D3).' },
+             // D7: properties change through the picker, nowhere else.
+             { name: '@/ui/dropdown-menu', message: 'Change issue properties with propertyPicker from src/design (decision D7).' },
+             // D8: issues are created by the composer only.

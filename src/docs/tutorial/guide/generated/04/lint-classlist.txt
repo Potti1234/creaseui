@@ -1,0 +1,4 @@
+src/model.ts
+  41:7  error  `classList` mutation restyles DOM outside the component contracts. Appearance belongs to installed components, named variants and theme tokens (no-application-styles)  crease/no-application-styles
+
+✖ 1 problem (1 error, 0 warnings)

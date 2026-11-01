@@ -1,0 +1,4 @@
+src/fixtures/stale.ts
+  6:20  error  `intent: 'danger'` is not a `button` (control.button) variant (allowed: primary, secondary). (component-contract)  crease/component-contract
+
+✖ 1 problem (1 error, 0 warnings)

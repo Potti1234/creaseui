@@ -82,6 +82,9 @@ export default tseslint.config(
       '.registry-validation/**',
       'dist/**',
       'node_modules/**',
+      // Vendored tutorial essay source (see src/docs/tutorial): ported
+      // verbatim, includes generated artifacts like a sample eslint.config.js.
+      'src/docs/tutorial/guide/**',
     ],
   },
   {

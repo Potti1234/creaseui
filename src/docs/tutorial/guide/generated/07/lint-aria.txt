@@ -1,0 +1,4 @@
+src/features/tmp/collapse.ts
+  10:23  error  `buttonAttributes` is an appearance override on `button` (control.button); use a named variant or composition prop. (component-contract)  crease/component-contract
+
+✖ 1 problem (1 error, 0 warnings)

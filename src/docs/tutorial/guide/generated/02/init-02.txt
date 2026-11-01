@@ -1,0 +1,3 @@
+keep    crease.lock.json (up to date; registered artifacts are never rewritten)
+keep    eslint.config.js (already spreads creaseui())
+receipt: 23 artifacts, 18 raw-rendering files

@@ -1,0 +1,6 @@
+src/fixtures/boundary-fixture.ts
+  3:10  error  `renderButton` is an implementation-only render export of crease/lib-button (implementation.button); application views must use the public styled component (no-unapproved-renderer)                                               crease/no-unapproved-renderer
+  8:3   error  Raw `button` rendering is forbidden in application views (no-raw-controls, contract control.button). Use `button` from '../ui/button'. Raw rendering is only allowed in exact implementation files registered in crease.lock.json  crease/no-raw-controls
+  8:13  error  `Class` authors appearance directly. Appearance belongs to installed components, named variants and theme tokens (no-application-styles)                                                                                           crease/no-application-styles
+
+✖ 3 problems (3 errors, 0 warnings)

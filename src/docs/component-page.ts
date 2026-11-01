@@ -13,6 +13,7 @@ import {
   themingPath,
   lintRulePath,
   lintRulesPath,
+  tutorialIndexPath,
 } from '@/route'
 import { LINT_RULE_GROUPS } from '@/docs/lint/rules'
 import type { ApiEntry } from '@/docs/generated-component-api'
@@ -433,6 +434,21 @@ export const componentPage = <Msg>(
                 ),
               ],
               ['Lint rules'],
+            ),
+          ],
+        ),
+        h.li(
+          [],
+          [
+            h.a(
+              [
+                h.Href(tutorialIndexPath()),
+                h.AriaCurrent('false'),
+                h.Class(
+                  'block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground',
+                ),
+              ],
+              ['Tutorial'],
             ),
           ],
         ),

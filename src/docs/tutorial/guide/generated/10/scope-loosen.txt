@@ -1,0 +1,3 @@
+problem changes policy/product-policy.js
+scope: 1 enforcement changes against HEAD
+a feature change must not change enforcement inputs; rerun with --allow-enforcement-changes for a reviewed system change

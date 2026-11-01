@@ -10,6 +10,7 @@ import {
   themingPath,
   lintRulePath,
   lintRulesPath,
+  tutorialIndexPath,
 } from '@/route'
 import { LINT_RULE_GROUPS } from '@/docs/lint/rules'
 import {
@@ -1065,6 +1066,19 @@ export const componentPage = <Msg>(
                 h.Class(className(reset.link, styles.navLink)),
               ],
               ['Lint rules'],
+            ),
+          ],
+        ),
+        h.li(
+          [],
+          [
+            h.a(
+              [
+                h.Href(tutorialIndexPath()),
+                h.AriaCurrent('false'),
+                h.Class(className(reset.link, styles.navLink)),
+              ],
+              ['Tutorial'],
             ),
           ],
         ),

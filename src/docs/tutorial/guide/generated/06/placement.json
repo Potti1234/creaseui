@@ -1,0 +1,650 @@
+[
+  {
+    "component": "button",
+    "className": "mt-4",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "button",
+    "className": "w-56",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "button",
+    "className": "w-full",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "button",
+    "className": "min-w-0",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "button",
+    "className": "flex-1",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "button",
+    "className": "self-end",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "button",
+    "className": "order-last",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "button",
+    "className": "hidden md:flex",
+    "allowed": false,
+    "message": "`hidden md:flex` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "button",
+    "className": "h-7",
+    "allowed": false,
+    "message": "`h-7` overrides the named size of `button` (control.button); use its `size` option. (component-contract)"
+  },
+  {
+    "component": "button",
+    "className": "px-0",
+    "allowed": false,
+    "message": "`px-0` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "button",
+    "className": "gap-2",
+    "allowed": false,
+    "message": "`gap-2` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "button",
+    "className": "rounded-full",
+    "allowed": false,
+    "message": "`rounded-full` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "button",
+    "className": "bg-muted",
+    "allowed": false,
+    "message": "`bg-muted` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "button",
+    "className": "border-b",
+    "allowed": false,
+    "message": "`border-b` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "button",
+    "className": "shadow-none",
+    "allowed": false,
+    "message": "`shadow-none` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "button",
+    "className": "text-xs",
+    "allowed": false,
+    "message": "`text-xs` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "button",
+    "className": "font-semibold",
+    "allowed": false,
+    "message": "`font-semibold` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "button",
+    "className": "truncate",
+    "allowed": false,
+    "message": "`truncate` on `button` (control.button) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "input",
+    "className": "mt-4",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "input",
+    "className": "w-56",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "input",
+    "className": "w-full",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "input",
+    "className": "min-w-0",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "input",
+    "className": "flex-1",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "input",
+    "className": "self-end",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "input",
+    "className": "order-last",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "input",
+    "className": "hidden md:flex",
+    "allowed": false,
+    "message": "`hidden md:flex` on `input` (control.input) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "input",
+    "className": "h-7",
+    "allowed": false,
+    "message": "`h-7` overrides the named size of `input` (control.input); use its `size` option. (component-contract)"
+  },
+  {
+    "component": "input",
+    "className": "px-0",
+    "allowed": false,
+    "message": "`px-0` on `input` (control.input) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "input",
+    "className": "gap-2",
+    "allowed": false,
+    "message": "`gap-2` on `input` (control.input) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "input",
+    "className": "rounded-full",
+    "allowed": false,
+    "message": "`rounded-full` on `input` (control.input) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "input",
+    "className": "bg-muted",
+    "allowed": false,
+    "message": "`bg-muted` on `input` (control.input) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "input",
+    "className": "border-b",
+    "allowed": false,
+    "message": "`border-b` on `input` (control.input) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "input",
+    "className": "shadow-none",
+    "allowed": false,
+    "message": "`shadow-none` on `input` (control.input) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "input",
+    "className": "text-xs",
+    "allowed": false,
+    "message": "`text-xs` on `input` (control.input) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "input",
+    "className": "font-semibold",
+    "allowed": false,
+    "message": "`font-semibold` on `input` (control.input) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "input",
+    "className": "truncate",
+    "allowed": false,
+    "message": "`truncate` on `input` (control.input) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "item",
+    "className": "mt-4",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "item",
+    "className": "w-56",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "item",
+    "className": "w-full",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "item",
+    "className": "min-w-0",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "item",
+    "className": "flex-1",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "item",
+    "className": "self-end",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "item",
+    "className": "order-last",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "item",
+    "className": "hidden md:flex",
+    "allowed": false,
+    "message": "`hidden md:flex` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "item",
+    "className": "h-7",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "item",
+    "className": "px-0",
+    "allowed": false,
+    "message": "`px-0` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "item",
+    "className": "gap-2",
+    "allowed": false,
+    "message": "`gap-2` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "item",
+    "className": "rounded-full",
+    "allowed": false,
+    "message": "`rounded-full` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "item",
+    "className": "bg-muted",
+    "allowed": false,
+    "message": "`bg-muted` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "item",
+    "className": "border-b",
+    "allowed": false,
+    "message": "`border-b` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "item",
+    "className": "shadow-none",
+    "allowed": false,
+    "message": "`shadow-none` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "item",
+    "className": "text-xs",
+    "allowed": false,
+    "message": "`text-xs` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "item",
+    "className": "font-semibold",
+    "allowed": false,
+    "message": "`font-semibold` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "item",
+    "className": "truncate",
+    "allowed": false,
+    "message": "`truncate` on `item` (component.item) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "stack",
+    "className": "mt-4",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "stack",
+    "className": "w-56",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "stack",
+    "className": "w-full",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "stack",
+    "className": "min-w-0",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "stack",
+    "className": "flex-1",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "stack",
+    "className": "self-end",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "stack",
+    "className": "order-last",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "stack",
+    "className": "hidden md:flex",
+    "allowed": false,
+    "message": "`hidden md:flex` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "stack",
+    "className": "h-7",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "stack",
+    "className": "px-0",
+    "allowed": false,
+    "message": "`px-0` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "stack",
+    "className": "gap-2",
+    "allowed": false,
+    "message": "`gap-2` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "stack",
+    "className": "rounded-full",
+    "allowed": false,
+    "message": "`rounded-full` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "stack",
+    "className": "bg-muted",
+    "allowed": false,
+    "message": "`bg-muted` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "stack",
+    "className": "border-b",
+    "allowed": false,
+    "message": "`border-b` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "stack",
+    "className": "shadow-none",
+    "allowed": false,
+    "message": "`shadow-none` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "stack",
+    "className": "text-xs",
+    "allowed": false,
+    "message": "`text-xs` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "stack",
+    "className": "font-semibold",
+    "allowed": false,
+    "message": "`font-semibold` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "stack",
+    "className": "truncate",
+    "allowed": false,
+    "message": "`truncate` on `stack` (composition.stack) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "text",
+    "className": "mt-4",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "text",
+    "className": "w-56",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "text",
+    "className": "w-full",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "text",
+    "className": "min-w-0",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "text",
+    "className": "flex-1",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "text",
+    "className": "self-end",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "text",
+    "className": "order-last",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "text",
+    "className": "hidden md:flex",
+    "allowed": false,
+    "message": "`hidden md:flex` on `text` (typography.text) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "text",
+    "className": "h-7",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "text",
+    "className": "px-0",
+    "allowed": false,
+    "message": "`px-0` on `text` (typography.text) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "text",
+    "className": "gap-2",
+    "allowed": false,
+    "message": "`gap-2` on `text` (typography.text) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "text",
+    "className": "rounded-full",
+    "allowed": false,
+    "message": "`rounded-full` on `text` (typography.text) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "text",
+    "className": "bg-muted",
+    "allowed": false,
+    "message": "`bg-muted` on `text` (typography.text) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "text",
+    "className": "border-b",
+    "allowed": false,
+    "message": "`border-b` on `text` (typography.text) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "text",
+    "className": "shadow-none",
+    "allowed": false,
+    "message": "`shadow-none` on `text` (typography.text) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "text",
+    "className": "text-xs",
+    "allowed": false,
+    "message": "`text-xs` on `text` (typography.text) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "text",
+    "className": "font-semibold",
+    "allowed": false,
+    "message": "`font-semibold` on `text` (typography.text) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "text",
+    "className": "truncate",
+    "allowed": false,
+    "message": "`truncate` on `text` (typography.text) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "badge",
+    "className": "mt-4",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "badge",
+    "className": "w-56",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "badge",
+    "className": "w-full",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "badge",
+    "className": "min-w-0",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "badge",
+    "className": "flex-1",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "badge",
+    "className": "self-end",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "badge",
+    "className": "order-last",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "badge",
+    "className": "hidden md:flex",
+    "allowed": false,
+    "message": "`hidden md:flex` on `badge` (component.badge) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "badge",
+    "className": "h-7",
+    "allowed": true,
+    "message": ""
+  },
+  {
+    "component": "badge",
+    "className": "px-0",
+    "allowed": false,
+    "message": "`px-0` on `badge` (component.badge) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "badge",
+    "className": "gap-2",
+    "allowed": false,
+    "message": "`gap-2` on `badge` (component.badge) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "badge",
+    "className": "rounded-full",
+    "allowed": false,
+    "message": "`rounded-full` on `badge` (component.badge) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "badge",
+    "className": "bg-muted",
+    "allowed": false,
+    "message": "`bg-muted` on `badge` (component.badge) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "badge",
+    "className": "border-b",
+    "allowed": false,
+    "message": "`border-b` on `badge` (component.badge) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "badge",
+    "className": "shadow-none",
+    "allowed": false,
+    "message": "`shadow-none` on `badge` (component.badge) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "badge",
+    "className": "text-xs",
+    "allowed": false,
+    "message": "`text-xs` on `badge` (component.badge) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "badge",
+    "className": "font-semibold",
+    "allowed": false,
+    "message": "`font-semibold` on `badge` (component.badge) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  },
+  {
+    "component": "badge",
+    "className": "truncate",
+    "allowed": false,
+    "message": "`truncate` on `badge` (component.badge) is not a placement utility; parents own arrangement and named variants own appearance. (component-contract)"
+  }
+]

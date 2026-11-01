@@ -1,0 +1,4 @@
+src/features/tmp/archive.ts
+  3:1  error  '@/ui/item' import is restricted from being used. List issues with issueCollection or issueRow from src/design (decision D3)  no-restricted-imports
+
+✖ 1 problem (1 error, 0 warnings)

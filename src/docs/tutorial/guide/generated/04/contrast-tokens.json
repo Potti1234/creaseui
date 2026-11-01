@@ -1,0 +1,47 @@
+[
+  {
+    "token": "--background",
+    "c22": "oklch(1 0.004 286)",
+    "c6": "oklch(1 0.004 286)"
+  },
+  {
+    "token": "--foreground",
+    "c22": "oklch(0.205 0.008 286)",
+    "c6": "oklch(0.205 0.008 286)"
+  },
+  {
+    "token": "--sidebar",
+    "c22": "oklch(0.923 0.004 286)",
+    "c6": "oklch(0.979 0.004 286)"
+  },
+  {
+    "token": "--muted",
+    "c22": "oklch(0.923 0.004 286)",
+    "c6": "oklch(0.979 0.004 286)"
+  },
+  {
+    "token": "--secondary",
+    "c22": "oklch(0.923 0.004 286)",
+    "c6": "oklch(0.979 0.004 286)"
+  },
+  {
+    "token": "--accent",
+    "c22": "color-mix(in oklch,oklch(0.205 0.008 286) 8%,oklch(1 0.004 286))",
+    "c6": "color-mix(in oklch,oklch(0.205 0.008 286) 8%,oklch(1 0.004 286))"
+  },
+  {
+    "token": "--border",
+    "c22": "color-mix(in oklch,oklch(0.923 0.004 286) 82%,oklch(0.205 0.008 286))",
+    "c6": "color-mix(in oklch,oklch(0.979 0.004 286) 82%,oklch(0.205 0.008 286))"
+  },
+  {
+    "token": "--primary",
+    "c22": "oklch(0.55 0.16 277)",
+    "c6": "oklch(0.55 0.16 277)"
+  },
+  {
+    "token": "--muted-foreground",
+    "c22": "color-mix(in oklch,oklch(0.205 0.008 286) 62%,white)",
+    "c6": "color-mix(in oklch,oklch(0.205 0.008 286) 62%,white)"
+  }
+]

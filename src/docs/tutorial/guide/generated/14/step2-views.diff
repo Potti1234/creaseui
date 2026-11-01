@@ -1,0 +1,73 @@
+diff --git a/src/features/issues.ts b/src/features/issues.ts
+index 1208551..0183c25 100644
+--- a/src/features/issues.ts
++++ b/src/features/issues.ts
+@@ -4,5 +4,4 @@ import { type Issue, STATUSES } from '../domain'
+ import { issueCollection } from '../design/issue-collection'
+ import { type Message, Message as M, type Model, isBoardView, pickersOf, teamIdOf } from '../model'
+-import { button } from '@/ui/button'
+ 
+ /* All issues, or one team's. A list is grouped by status or flat; a team's
+@@ -15,10 +14,8 @@ export const allIssuesView = (model: Model, issues: ReadonlyArray<Issue>, h: Htm
+   return issueCollection(
+     {
+-      controls: [
+-        ...(isTeamPage ? [button({ onClick: M.ToggledLayout(), children: [isBoard ? 'Layout: Board' : 'Layout: List'] }, h)] : []),
++      display: [
++        ...(isTeamPage ? [{ name: 'Layout' as const, value: isBoard ? 'Board' : 'List', onChange: M.ToggledLayout() }] : []),
+         // A board always has one column per status; grouping is a list's choice.
+-        ...(isBoard
+-          ? []
+-          : [button({ onClick: M.ToggledGrouping(), children: [model.isGrouped ? 'Grouped by status' : 'Not grouped'] }, h)]),
++        ...(isBoard ? [] : [{ name: 'Grouping' as const, value: model.isGrouped ? 'Status' : 'None', onChange: M.ToggledGrouping() }]),
+       ],
+       body: isBoard
+diff --git a/src/features/my-issues.ts b/src/features/my-issues.ts
+index d9b4354..397db68 100644
+--- a/src/features/my-issues.ts
++++ b/src/features/my-issues.ts
+@@ -4,5 +4,4 @@ import { type Issue, ME, PRIORITY_RANK } from '../domain'
+ import { issueCollection } from '../design/issue-collection'
+ import { type Message, Message as M, type Model, pickersOf } from '../model'
+-import { button } from '@/ui/button'
+ 
+ /* The signed-in person's open issues, as one list. */
+@@ -23,10 +22,5 @@ export const myIssuesView = (model: Model, h: HtmlBuilder<Message>): Html => {
+   return issueCollection(
+     {
+-      controls: [
+-        button(
+-          { onClick: M.ToggledSort(), children: [model.sort === 'priority' ? 'Sort: Priority' : 'Sort: Newest'] },
+-          h,
+-        ),
+-      ],
++      display: [{ name: 'Order', value: model.sort === 'priority' ? 'Priority' : 'Newest', onChange: M.ToggledSort() }],
+       body:
+         issues.length === 0
+diff --git a/src/features/search.ts b/src/features/search.ts
+index 6b9adce..8fd7d3f 100644
+--- a/src/features/search.ts
++++ b/src/features/search.ts
+@@ -4,5 +4,4 @@ import type { Issue } from '../domain'
+ import { issueCollection } from '../design/issue-collection'
+ import { type Message, Message as M, type Model, pickersOf } from '../model'
+-import { button } from '@/ui/button'
+ 
+ /* Search results: issues whose identifier or title contains the query. */
+@@ -17,5 +16,5 @@ export const searchView = (model: Model, h: HtmlBuilder<Message>): Html => {
+   return issueCollection(
+     {
+-      controls: [button({ onClick: M.ClearedQuery(), children: ['Clear search'] }, h)],
++      actions: [{ label: 'Clear search', onClick: M.ClearedQuery() }],
+       summary: `${results.length} ${results.length === 1 ? 'result' : 'results'} for “${model.query}”`,
+       body:
+diff --git a/src/features/views.ts b/src/features/views.ts
+index a8b508c..3a7afc2 100644
+--- a/src/features/views.ts
++++ b/src/features/views.ts
+@@ -39,5 +39,4 @@ export const savedView = (model: Model, saved: SavedView, h: HtmlBuilder<Message
+   return issueCollection(
+     {
+-      controls: [],
+       body:
+         issues.length === 0

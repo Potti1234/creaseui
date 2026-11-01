@@ -1,0 +1,5 @@
+problem changes eslint.config.js
+problem package-lock.json changes the resolved lint/policy packages
+problem changes the local lint/policy package vendor/creaseui-lint-0.1.0.tgz
+scope: 3 enforcement changes against chapter-14
+a feature change must not change enforcement inputs; rerun with --allow-enforcement-changes for a reviewed system change

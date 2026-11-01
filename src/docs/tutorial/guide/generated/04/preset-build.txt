@@ -1,0 +1,18 @@
+> creaseui@0.1.0 preset:build
+> tsx scripts/materialize-create-preset.ts --preset c41ST0kztg1aRr803UlnDN6 --output ./generated-preset
+
+src/demo/create-preset.ts:725
+        BigInt(quantize(field, config[field.key] as number)) *
+        ^
+
+RangeError: The number NaN cannot be converted to a BigInt because it is not an integer
+    at BigInt (<anonymous>)
+    at <anonymous> (src\demo\create-preset.ts:725:9)
+    at Array.reduce (<anonymous>)
+    at encodePreset (src\demo\create-preset.ts:721:36)
+    at presetManifest (src\demo\create-preset.ts:1336:11)
+    at presetRegistryItem (src\demo\create-preset.ts:1357:20)
+    at presetRegistryJson (src\demo\create-preset.ts:1375:21)
+    at <anonymous> (scripts\materialize-create-preset.ts:32:5)
+
+Node.js v24.11.1

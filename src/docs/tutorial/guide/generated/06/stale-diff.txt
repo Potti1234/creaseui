@@ -1,0 +1,12 @@
+diff --git a/src/ui/button.ts b/src/ui/button.ts
+index 9f31861..35ebdd1 100644
+--- a/src/ui/button.ts
++++ b/src/ui/button.ts
+@@ -23,2 +23,3 @@ export const buttonVariants = cva(
+       intent: {
++        danger: 'bg-destructive text-white',
+         primary: 'bg-primary text-primary-foreground hover:bg-primary/80',
+@@ -39,3 +40,3 @@ export const buttonVariants = cva(
+ 
+-export type ButtonIntent = 'primary' | 'secondary'
++export type ButtonIntent = 'primary' | 'secondary' | 'danger'

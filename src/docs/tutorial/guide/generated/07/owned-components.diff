@@ -1,0 +1,38 @@
+diff --git a/src/ui/avatar.ts b/src/ui/avatar.ts
+index 7c80eb7..2b11024 100644
+--- a/src/ui/avatar.ts
++++ b/src/ui/avatar.ts
+@@ -79,4 +79,7 @@ export const avatarImage = <Msg>(
+ 
+ export type AvatarFallbackProps = Readonly<{
++  /** Crease Tasks: `accent` for avatars on the sidebar, whose surface has the
++   *  same colour as the default `bg-muted` fill (journal A0.18). */
++  tone?: 'muted' | 'accent'
+   class?: string
+   children: ReadonlyArray<Html | string>
+@@ -96,4 +99,5 @@ export const avatarFallback = <Msg>(
+         cn(
+           'absolute inset-0 flex size-full items-center justify-center rounded-full bg-muted text-sm text-foreground group-data-[size=sm]/avatar:text-xs',
++          props.tone === 'accent' && 'bg-primary/15 font-medium text-primary',
+           props.class,
+         ),
+diff --git a/src/ui/sidebar.ts b/src/ui/sidebar.ts
+index 1b65762..8ca721f 100644
+--- a/src/ui/sidebar.ts
++++ b/src/ui/sidebar.ts
+@@ -543,4 +543,9 @@ export type SidebarMenuButtonProps<Msg> = Readonly<{
+   variant?: SidebarMenuButtonVariants['variant']
+   size?: SidebarMenuButtonVariants['size']
++  /** Crease Tasks: a nested link (a team's Issues) that stays a menu button,
++   *  so it keeps keyboard focus and `sidebarMenuBadge` alignment. crease's
++   *  `sidebarMenuSubButton` renders an anchor, which is not focusable without
++   *  an `href` (journal A0.17), and has no badge slot (A5). */
++  indent?: boolean
+   tooltip?: string
+   class?: string
+@@ -567,4 +572,5 @@ export const sidebarMenuButton = <Msg>(
+           size,
+         }),
++        (props.indent ?? false) && 'pl-8',
+         props.class,
+       ),

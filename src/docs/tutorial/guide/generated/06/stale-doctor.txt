@@ -1,0 +1,4 @@
+ok      receipt valid (renderer tailwind, policy crease-default-v1, 24 owned files)
+ok      31 source files inspected, 0 uncovered UI modules
+ok      3 stylesheets inspected
+coverage complete

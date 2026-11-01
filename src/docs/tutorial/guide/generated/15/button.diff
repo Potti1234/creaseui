@@ -1,0 +1,15 @@
+diff --git a/src/ui/button.ts b/src/ui/button.ts
+index 88fbddf..9f31861 100644
+--- a/src/ui/button.ts
++++ b/src/ui/button.ts
+@@ -52,4 +52,2 @@ export type ButtonProps<Msg> = ButtonBehaviorProps<Msg> &
+     intent?: ButtonIntent
+-    /** For a button that shows or hides something (a disclosure): whether it is shown. */
+-    ariaExpanded?: boolean
+     class?: string
+@@ -73,5 +71,2 @@ export const button = <Msg>(
+         : []),
+-      ...(props.ariaExpanded === undefined
+-        ? []
+-        : [h.AriaExpanded(props.ariaExpanded)]),
+       h.Class(cn(buttonVariants({ intent, shape }), props.class)),

@@ -1,0 +1,26 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index f8d348a..06575d5 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -11,4 +11,6 @@ Crease Tasks is a Foldkit app built on crease/ui components (Tailwind). Before w
+ If a feature seems to need a class the lint rejects, it is a design-system question: stop and describe the need instead of working around the rule.
+ 
++If a feature needs something `design-system/patterns.md` does not name (a board, a timeline), that is a design-system change too. Do not build it inside the feature task, and do not edit the decisions in `design-system/principles.md`. Describe the proposed pattern, what it decides and what it leaves open, and stop; it is reviewed and built as its own change.
++
+ ## Checks
+ 
+diff --git a/design-system/principles.md b/design-system/principles.md
+index 4894388..158e149 100644
+--- a/design-system/principles.md
++++ b/design-system/principles.md
+@@ -40,4 +40,10 @@ Navigation, toolbars and metadata stay quiet so a person scanning the list reads
+ | D10. Priorities are Urgent, High, Medium, Low and No priority, in that order, everywhere. Statuses are Backlog, Todo, In Progress, In Review and Done. | The domain schemas in `src/domain.ts` |
+ 
++## 6. A saved view is one entry
++
++| Decision | Enforced by |
++|---|---|
++| D11. A saved view is one entry in `src/features/views.ts`: its id is its label in kebab case (`active-bugs`), its filter is in the entry, and its tests are in `test/views.test.ts`. | Review; the drift test of chapter 12 (two of three agents did this unasked) |
++
+ ## How these change
+ 

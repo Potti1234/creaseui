@@ -1,0 +1,5 @@
+src/features/issues.ts(78,13): error TS2353: Object literal may only specify known properties, and 'variant' does not exist in type 'ButtonProps<Message>'.
+src/features/my-issues.ts(59,13): error TS2353: Object literal may only specify known properties, and 'variant' does not exist in type 'ButtonProps<Message>'.
+src/features/search.ts(51,20): error TS2353: Object literal may only specify known properties, and 'variant' does not exist in type 'ButtonProps<Message>'.
+src/ui/sidebar.ts(270,30): error TS2353: Object literal may only specify known properties, and 'variant' does not exist in type 'ConfigVariants<{ intent; shape }>'.
+src/view.ts(61,7): error TS2353: Object literal may only specify known properties, and 'variant' does not exist in type 'ButtonProps<Message>'.

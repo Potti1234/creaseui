@@ -1,0 +1,7 @@
+import type { Html, HtmlBuilder } from 'foldkit/html'
+
+import { issueCollection } from '../design/issue-collection'
+import { type Message, type Model, pickersOf } from '../model'
+
+export const old = (model: Model, h: HtmlBuilder<Message>): Html =>
+  issueCollection({ controls: [], body: { kind: 'rows', issues: model.issues }, pickers: pickersOf(model) }, h)

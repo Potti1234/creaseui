@@ -1,0 +1,26 @@
+diff --git a/src/features/search.ts b/src/features/search.ts
+index 7893c6e..3e01a80 100644
+--- a/src/features/search.ts
++++ b/src/features/search.ts
+@@ -21,12 +21,11 @@ const result = (issue: Issue, h: HtmlBuilder<Message>): Html =>
+     {
+       size: 'xs',
+-      class: 'flex-nowrap h-9 px-3 hover:bg-accent',
++      layout: 'inline',
+       children: [
+         itemMedia({ children: [statusGlyph(issue.status, h)] }, h),
+         itemContent({
+-          class: 'min-w-0 flex-row items-baseline gap-2',
+           children: [
+             text({ size: 'xsm', color: 'secondary', hasTabularNumbers: true, children: [issue.id] }, h),
+-            itemTitle({ class: 'truncate', children: [issue.title] }, h),
++            itemTitle({ children: [issue.title] }, h),
+           ],
+         }, h),
+@@ -49,5 +48,5 @@ export const searchView = (model: Model, h: HtmlBuilder<Message>): Html => {
+         children: [
+           text({ size: 'xsm', color: 'secondary', children: [`${results.length} ${results.length === 1 ? 'result' : 'results'} for “${model.query}”`] }, h),
+-          button({ variant: 'link', size: 'xs', class: 'px-0', onClick: M.ClearedQuery(), children: ['Clear search'] }, h),
++          button({ onClick: M.ClearedQuery(), children: ['Clear search'] }, h),
+         ],
+       }, h),

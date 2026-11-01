@@ -1,0 +1,571 @@
+diff --git a/design-system/changes/008-issue-board.md b/design-system/changes/008-issue-board.md
+new file mode 100644
+index 0000000..04fb68a
+--- /dev/null
++++ b/design-system/changes/008-issue-board.md
+@@ -0,0 +1,22 @@
++# 008: The board and the card
++
++A new pattern, and a case added to D3. No component, theme, receipt or lint change: the board and the card compose existing crease components with values the receipt already allows.
++
++## Why
++
++Each team's page needed a board: one column per status, each issue a card. `patterns.md` named a board as a new pattern to decide first, and `IssueRow` left the card undecided.
++
++## What changed
++
++- `src/design/issue-card.ts`: `IssueCard`. An `item` with the `outline` look and the `sm` size. The parts and their order are the row's (D3): priority, identifier and status; the title; labels, date and assignee. The title wraps, because a column is narrow. Priority, status and assignee are PropertyPickers (D7); changing the status moves the card to its new column, which is the pointer route between columns (D9). There is no drag and drop.
++- `src/design/issue-board.ts`: `IssueBoard`. One column per status in workflow order (`STATUSES_IN_ORDER`), empty columns included. The column header is the group header without the collapse button. Columns are 272px and never shrink; the board scrolls sideways.
++- `src/design/issue-collection.ts`: a fourth body, `board`, so the board shares the controls bar with the list.
++- `src/design/app-sidebar.ts`: the rules name Board as a team's second page, without a count.
++- `design-system/principles.md`: D3 gains the card case.
++- `design-system/patterns.md`: `IssueBoard` and `IssueCard`.
++- Feature: the views `board:eng` and `board:des`, a Board link under each team, a "Layout" switch on a team's page, and Go to entries in the command menu.
++
++## Open
++
++- The browser check does not cover the board yet: cards at 900px and on a phone, sideways scrolling, and focus return from a card's picker.
++- Grouping and collapsed groups do not apply to a board; the "Grouped by status" control is hidden there.
+diff --git a/design-system/patterns.md b/design-system/patterns.md
+index 0e61f88..844511a 100644
+--- a/design-system/patterns.md
++++ b/design-system/patterns.md
+@@ -7,16 +7,18 @@ The product's own vocabulary, built from crease components in `src/design`. Each
+ | `AppSidebar` | `src/design/app-sidebar.ts` | The navigation of every page: personal links, teams and their pages, saved views, the signed-in person | Navigation inside a page (tabs, a list of settings) |
+ | `IssueDetail` | `src/design/issue-detail.ts` | One issue on its own page: title and description edited in place, properties through PropertyPicker | Creating an issue (that is `IssueComposer`) |
+ | `CommandMenu` | `src/design/command-menu.ts` | The one Ctrl+K menu of the app: actions, places, issues | Choosing a value for a field (that is a picker) |
+-| `IssueCollection` | `src/design/issue-collection.ts` | The body of any page that lists issues: All issues, My issues, search results, saved views | A single issue's page, or a list of something that is not an issue |
++| `IssueCollection` | `src/design/issue-collection.ts` | The body of any page that lists issues: All issues, My issues, search results, saved views, a team's board | A single issue's page, or a list of something that is not an issue |
+ | `IssueGroup` | `src/design/issue-group.ts` | Issues of one status under a collapsible header; `IssueCollection` uses it for grouped lists | Grouping by anything other than status (not decided yet: ask first) |
+-| `IssueRow` | `src/design/issue-row.ts` | One issue in any list. Parts and order are fixed: priority, identifier, status, title, labels, date, assignee | A card layout, a board (chapter 12 decides the card) |
++| `IssueRow` | `src/design/issue-row.ts` | One issue in any list. Parts and order are fixed: priority, identifier, status, title, labels, date, assignee | A board (that is `IssueCard`) |
++| `IssueBoard` | `src/design/issue-board.ts` | Issues as cards in one column per status, in workflow order, empty columns included; `IssueCollection` uses it for its `board` body | Grouping by anything other than status, or a list (that is `IssueGroup`) |
++| `IssueCard` | `src/design/issue-card.ts` | One issue on a board: the row's parts in the row's order, on three lines, with a title that wraps | Any list: lists use `IssueRow` |
+ | `PropertyPicker` | `src/design/property-picker.ts` | Changing status, priority or assignee where it is shown, in rows and in the composer | Editing text, or properties that need more than one value at once |
+ | `IssueComposer` | `src/design/issue-composer.ts` | Creating an issue: a dialog with a draft, a required title and the three pickers | Editing an existing issue (that changes in place, without a draft) |
+ | `SaveNotice` | `src/design/save-notice.ts` | Telling the person that the browser did not keep a change, or could not read saved data, with Retry when it can help | Confirming a successful save: success needs no message |
+ 
+ ## How a page is described in this vocabulary
+ 
+-"A page for one project's issues" is an `IssueCollection` with the issues of that project, grouped by status, and a link in `AppSidebar`. A saved view is an entry in `src/features/views.ts`: a name, an icon and a filter. It needs no new layout, row or menu. A request that does not fit these names (a timeline, a board) is a new pattern: decide it, add it here and in `src/design`, then build the page.
++"A page for one project's issues" is an `IssueCollection` with the issues of that project, grouped by status, and a link in `AppSidebar`. A saved view is an entry in `src/features/views.ts`: a name, an icon and a filter. It needs no new layout, row or menu. "A team's board" is an `IssueCollection` with that team's issues and the `board` body, and a Board link under the team in `AppSidebar`. A request that does not fit these names (a timeline) is a new pattern: decide it, add it here and in `src/design`, then build the page.
+ 
+ ## Enforced by
+ 
+diff --git a/design-system/principles.md b/design-system/principles.md
+index 4894388..5f73154 100644
+--- a/design-system/principles.md
++++ b/design-system/principles.md
+@@ -10,7 +10,7 @@ Navigation, toolbars and metadata stay quiet so a person scanning the list reads
+ |---|---|
+ | D1. An issue row has one height (36px) and never wraps. A long title is cut with an ellipsis; metadata keeps its place at the end. | `item({ size: 'xs', layout: 'inline' })` in `src/ui/item.ts`; the allowed values are in `crease.lock.json` |
+ | D2. Metadata in a row (identifier, labels, date, assignee) uses the small secondary text style. | `IssueRow` in `src/design/issue-row.ts`; labels through `badge`'s `outline` look (`src/ui/badge.ts`) |
+-| D3. Every view shows an issue with the same row: same parts, same order. | `IssueRow`; feature code may not import `@/ui/item` (`eslint.config.js`) |
++| D3. Every view shows an issue with the same row: same parts, same order. A board shows it as a card with the row's parts in the row's order. | `IssueRow` and `IssueCard`; feature code may not import `@/ui/item` (`eslint.config.js`) |
+ 
+ ## 2. Actions are few and predictable
+ 
+diff --git a/src/design/app-sidebar.ts b/src/design/app-sidebar.ts
+index 2e95678..7f0cdba 100644
+--- a/src/design/app-sidebar.ts
++++ b/src/design/app-sidebar.ts
+@@ -26,9 +26,10 @@ import { text } from '@/ui/text'
+  *   (My issues, All issues), "Your teams", "Views", then the signed-in
+  *   person with their actions. Sections without entries are left out.
+  * - A link is an icon, a label and, where it helps, a count of open issues.
+- *   All issues and saved views show no count.
++ *   All issues, saved views and a team's Board show no count (the Board
++ *   holds the same issues as the Issues link above it).
+  * - A team is its initial and name, not a link. Its pages are indented links
+- *   below it (Issues, and later Board).
++ *   below it: Issues, then Board.
+  * - Actions are icon buttons with a name; the pattern places them, the page
+  *   decides which exist.
+  */
+diff --git a/src/design/issue-board.ts b/src/design/issue-board.ts
+new file mode 100644
+index 0000000..9f52771
+--- /dev/null
++++ b/src/design/issue-board.ts
+@@ -0,0 +1,99 @@
++import type { Html, HtmlBuilder } from 'foldkit/html'
++
++import { type Issue, STATUSES_IN_ORDER, STATUS_LABEL, type Status } from '../domain'
++import { statusGlyph } from './glyphs'
++import { issueCard } from './issue-card'
++import type { PickerContext } from './property-picker'
++import { item, itemContent, itemMedia, itemTitle } from '@/ui/item'
++import { stack, stackItem } from '@/ui/stack'
++import { text } from '@/ui/text'
++
++/**
++ * IssueBoard: issues as cards, in one column per status.
++ *
++ * Rules:
++ * - One column for every status, in workflow order (Backlog to Done, as
++ *   the picker offers them). Unlike groups, an empty column is shown: it
++ *   is a place an issue can move to.
++ * - A column's header is the group header without its collapse button: a
++ *   muted `item` row with the status glyph, the status name and the number
++ *   of issues.
++ * - Cards are IssueCards, one below the other. An empty column says so in
++ *   the small secondary text style.
++ * - Columns have one fixed width. When they do not fit, the board scrolls
++ *   sideways; columns never shrink.
++ *
++ * The view decides which issues show and in which order; each column keeps
++ * that order. The board decides the columns.
++ */
++
++type BoardColumn = Readonly<{ status: Status; issues: ReadonlyArray<Issue> }>
++
++const COLUMN_WIDTH = 272
++
++const column = <Msg>(
++  props: BoardColumn & Readonly<{ pickers: PickerContext<Msg>; onOpen: (id: string) => Msg }>,
++  h: HtmlBuilder<Msg>,
++): Html =>
++  stackItem(
++    {
++      as: 'section',
++      children: [
++        stack(
++          {
++            gap: 2,
++            width: COLUMN_WIDTH,
++            children: [
++              item(
++                {
++                  variant: 'muted',
++                  size: 'xs',
++                  layout: 'inline',
++                  children: [
++                    itemMedia({ children: [statusGlyph(props.status, h)] }, h),
++                    itemContent(
++                      {
++                        children: [
++                          itemTitle({ children: [STATUS_LABEL[props.status]] }, h),
++                          text({ size: 'xsm', color: 'secondary', hasTabularNumbers: true, children: [String(props.issues.length)] }, h),
++                        ],
++                      },
++                      h,
++                    ),
++                  ],
++                },
++                h,
++              ),
++              ...(props.issues.length === 0
++                ? [stack({ paddingInline: 2, children: [text({ size: 'xsm', color: 'secondary', children: ['No issues'] }, h)] }, h)]
++                : props.issues.map(issue => issueCard({ issue, pickers: props.pickers, onOpen: props.onOpen }, h))),
++            ],
++          },
++          h,
++        ),
++      ],
++    },
++    h,
++  )
++
++export const issueBoard = <Msg>(
++  props: Readonly<{
++    issues: ReadonlyArray<Issue>
++    pickers: PickerContext<Msg>
++    onOpen: (id: string) => Msg
++  }>,
++  h: HtmlBuilder<Msg>,
++): Html =>
++  stack(
++    {
++      direction: 'horizontal',
++      align: 'start',
++      gap: 3,
++      paddingBlockEnd: 2,
++      isScrollable: true,
++      children: STATUSES_IN_ORDER.map(status =>
++        column({ status, issues: props.issues.filter(issue => issue.status === status), pickers: props.pickers, onOpen: props.onOpen }, h),
++      ),
++    },
++    h,
++  )
+diff --git a/src/design/issue-card.ts b/src/design/issue-card.ts
+new file mode 100644
+index 0000000..3c9bfcb
+--- /dev/null
++++ b/src/design/issue-card.ts
+@@ -0,0 +1,92 @@
++import type { Html, HtmlBuilder } from 'foldkit/html'
++
++import type { Issue } from '../domain'
++import { type PickerContext, propertyPicker } from './property-picker'
++import { badge } from '@/ui/badge'
++import { item, itemContent, itemFooter, itemHeader, itemTitle } from '@/ui/item'
++import { link } from '@/ui/link'
++import { stack } from '@/ui/stack'
++import { text } from '@/ui/text'
++
++/**
++ * IssueCard: one issue on a board.
++ *
++ * Rules (decisions D2, D3, D7):
++ * - Every board uses this card; lists use IssueRow. A card shows the same
++ *   parts as the row, in the same order, on three lines: priority,
++ *   identifier and status; the title; labels, date and assignee.
++ * - A part with no value keeps its place (an unassigned issue shows the
++ *   empty assignee).
++ * - The title is a link to the issue's own page (IssueDetail), drawn in
++ *   the card's text colour; it is the card's only way in. Unlike a row, a
++ *   card's title wraps: the column is narrow and the title is what a person
++ *   reads first.
++ * - Metadata (identifier, date) uses the small secondary text style.
++ * - Priority, status and assignee are PropertyPickers: they change the
++ *   issue in place (D7). Changing the status moves the card to the
++ *   column of its new status; that is the pointer route between columns.
++ *
++ * A board decides which issues to show and in which order. This card
++ * decides how each one appears.
++ */
++export const issueCard = <Msg>(
++  props: Readonly<{ issue: Issue; pickers: PickerContext<Msg>; onOpen: (id: string) => Msg }>,
++  h: HtmlBuilder<Msg>,
++): Html => {
++  const { issue, pickers } = props
++  return item(
++    {
++      variant: 'outline',
++      size: 'sm',
++      element: 'article',
++      children: [
++        itemHeader(
++          {
++            children: [
++              stack(
++                {
++                  direction: 'horizontal',
++                  align: 'center',
++                  gap: 2,
++                  children: [
++                    propertyPicker({ issue, field: 'priority', context: pickers }, h),
++                    text({ size: 'xsm', color: 'secondary', hasTabularNumbers: true, children: [issue.id] }, h),
++                    propertyPicker({ issue, field: 'status', context: pickers }, h),
++                  ],
++                },
++                h,
++              ),
++            ],
++          },
++          h,
++        ),
++        itemContent(
++          { children: [itemTitle({ children: [link({ href: `#${issue.id}`, color: 'inherit', onClick: props.onOpen(issue.id), children: [issue.title] }, h)] }, h)] },
++          h,
++        ),
++        itemFooter(
++          {
++            children: [
++              stack(
++                {
++                  direction: 'horizontal',
++                  align: 'center',
++                  gap: 2,
++                  wrap: 'wrap',
++                  children: [
++                    ...issue.labels.map(label => badge({ variant: 'outline', children: [label] }, h)),
++                    text({ size: 'xsm', color: 'secondary', children: [issue.updated] }, h),
++                  ],
++                },
++                h,
++              ),
++              propertyPicker({ issue, field: 'assignee', context: pickers }, h),
++            ],
++          },
++          h,
++        ),
++      ],
++    },
++    h,
++  )
++}
+diff --git a/src/design/issue-collection.ts b/src/design/issue-collection.ts
+index b4d400a..7044d25 100644
+--- a/src/design/issue-collection.ts
++++ b/src/design/issue-collection.ts
+@@ -1,6 +1,7 @@
+ import type { Html, HtmlBuilder } from 'foldkit/html'
+ 
+ import type { Issue, Status } from '../domain'
++import { issueBoard } from './issue-board'
+ import { issueGroup } from './issue-group'
+ import { issueRow } from './issue-row'
+ import type { PickerContext } from './property-picker'
+@@ -17,9 +18,11 @@ import { text } from '@/ui/text'
+  * - One bar above the list. Display controls (grouping, ordering) sit at
+  *   its start; a summary of what is shown ("6 results for …") sits after
+  *   them. Filters join this bar in a later chapter.
+- * - The body is one of three things: groups by status, a flat list, or an
+- *   empty state that says what to try instead. A view picks one; it does
+- *   not build its own list.
++ * - The body is one of four things: groups by status, a flat list, a
++ *   board (IssueBoard, one column per status), or an empty state that says
++ *   what to try instead. A view picks one; it does not build its own list.
++ *   A board is never replaced by the empty state: its empty columns are
++ *   where new issues go.
+  * - Groups follow the workflow order the domain defines and leave out
+  *   empty statuses.
+  * - Rows are always IssueRows, separated by a line, inset from the page
+@@ -35,6 +38,7 @@ export type CollectionBody<Msg> =
+       groups: ReadonlyArray<Readonly<{ status: Status; issues: ReadonlyArray<Issue>; isCollapsed: boolean; onToggle: Msg }>>
+     }>
+   | Readonly<{ kind: 'rows'; issues: ReadonlyArray<Issue> }>
++  | Readonly<{ kind: 'board'; issues: ReadonlyArray<Issue> }>
+   | Readonly<{ kind: 'empty'; title: string; description: string }>
+ 
+ export const issueCollection = <Msg>(
+@@ -93,6 +97,8 @@ const body = <Msg>(content: CollectionBody<Msg>, pickers: PickerContext<Msg>, on
+         },
+         h,
+       )
++    case 'board':
++      return issueBoard({ issues: content.issues, pickers, onOpen }, h)
+     case 'empty':
+       return empty(
+         {
+diff --git a/src/features/issues.ts b/src/features/issues.ts
+index 91bb3f3..5587987 100644
+--- a/src/features/issues.ts
++++ b/src/features/issues.ts
+@@ -5,30 +5,41 @@ import { issueCollection } from '../design/issue-collection'
+ import { type Message, Message as M, type Model, pickersOf } from '../model'
+ import { button } from '@/ui/button'
+ 
+-/* All issues, or one team's, grouped by status or as one list. */
++/* All issues, or one team's. A list is grouped by status or flat; a team's
++   page can also show its issues as a board, and switches between the two. */
+ 
+-export const allIssuesView = (model: Model, issues: ReadonlyArray<Issue>, h: HtmlBuilder<Message>): Html =>
+-  issueCollection(
++/** A team's page: whether it shows the board, and the Message that switches. */
++export type TeamLayout = Readonly<{ isBoard: boolean; onSwitch: Message }>
++
++export const allIssuesView = (model: Model, issues: ReadonlyArray<Issue>, layout: TeamLayout | undefined, h: HtmlBuilder<Message>): Html => {
++  const isBoard = layout?.isBoard === true
++  return issueCollection(
+     {
+       controls: [
+-        button(
+-          { onClick: M.ToggledGrouping(), children: [model.isGrouped ? 'Grouped by status' : 'Not grouped'] },
+-          h,
+-        ),
++        ...(layout === undefined
++          ? []
++          : [button({ onClick: layout.onSwitch, children: [layout.isBoard ? 'Layout: Board' : 'Layout: List'] }, h)]),
++        // A board always has one column per status; grouping is a list's choice.
++        ...(isBoard
++          ? []
++          : [button({ onClick: M.ToggledGrouping(), children: [model.isGrouped ? 'Grouped by status' : 'Not grouped'] }, h)]),
+       ],
+-      body: model.isGrouped
+-        ? {
+-            kind: 'groups',
+-            groups: STATUSES.map(status => ({
+-              status,
+-              issues: issues.filter(issue => issue.status === status),
+-              isCollapsed: model.collapsed.includes(status),
+-              onToggle: M.ToggledGroup({ status }),
+-            })),
+-          }
+-        : { kind: 'rows', issues },
++      body: isBoard
++        ? { kind: 'board', issues }
++        : model.isGrouped
++          ? {
++              kind: 'groups',
++              groups: STATUSES.map(status => ({
++                status,
++                issues: issues.filter(issue => issue.status === status),
++                isCollapsed: model.collapsed.includes(status),
++                onToggle: M.ToggledGroup({ status }),
++              })),
++            }
++          : { kind: 'rows', issues },
+       pickers: pickersOf(model),
+       onOpen: id => M.OpenedIssue({ id }),
+     },
+     h,
+   )
++}
+diff --git a/src/model.ts b/src/model.ts
+index a4e431f..29ffa41 100644
+--- a/src/model.ts
++++ b/src/model.ts
+@@ -14,10 +14,15 @@ import * as Dialog from '@/ui/dialog'
+ import * as DropdownMenu from '@/ui/dropdown-menu'
+ 
+ /* What the main area shows: everything, the signed-in person's issues, one
+-   team's issues, or a saved view (src/features/views.ts). */
+-export const View = S.Literals(['all', 'mine', 'team:eng', 'team:des', 'urgent', 'unassigned'])
++   team's issues as a list (`team:`) or as a board (`board:`), or a saved view
++   (src/features/views.ts). */
++export const View = S.Literals(['all', 'mine', 'team:eng', 'team:des', 'board:eng', 'board:des', 'urgent', 'unassigned'])
+ export type View = typeof View.Type
+ 
++/** The team whose page a view is, list or board; undefined for every other view. */
++export const teamIdOf = (view: View): string | undefined =>
++  view === 'team:eng' || view === 'board:eng' ? 'eng' : view === 'team:des' || view === 'board:des' ? 'des' : undefined
++
+ export const Sort = S.Literals(['priority', 'newest'])
+ export type Sort = typeof Sort.Type
+ 
+@@ -155,7 +160,7 @@ const submit = (model: Model): Return => {
+   const checked = validateTitle(model.draft.title)
+   if (!checked.ok) return { model: { ...model, titleError: checked.error }, commands: [FocusTitle()] }
+   // A new issue belongs to the team whose page is open, otherwise to the draft's team.
+-  const teamId = model.view === 'team:des' ? 'des' : model.view === 'team:eng' ? 'eng' : model.draft.teamId
++  const teamId = teamIdOf(model.view) ?? model.draft.teamId
+   const created: Issue = { ...model.draft, id: `CRE-${model.nextNumber}`, teamId, title: checked.title, updated: 'Just now' }
+   const closed = Dialog.close(model.composer)
+   const next: Model = {
+diff --git a/src/view.ts b/src/view.ts
+index aed3500..b08b18d 100644
+--- a/src/view.ts
++++ b/src/view.ts
+@@ -1,6 +1,6 @@
+ import type { Html, HtmlBuilder } from 'foldkit/html'
+ 
+-import { type Issue, ME, TEAMS, personOf } from './domain'
++import { type Issue, ME, TEAMS, type Team, personOf } from './domain'
+ import { appSidebar } from './design/app-sidebar'
+ import { issuePage } from './features/issue'
+ import { allIssuesView } from './features/issues'
+@@ -10,7 +10,7 @@ import { SAVED_VIEWS, savedView, savedViewOf } from './features/views'
+ import { type CommandEntry, commandMenu } from './design/command-menu'
+ import { issueComposer } from './design/issue-composer'
+ import { saveNotice } from './design/save-notice'
+-import { type Message, Message as M, type Model, type View, pickersOf } from './model'
++import { type Message, Message as M, type Model, type View, pickersOf, teamIdOf } from './model'
+ import { button } from '@/ui/button'
+ import { heading } from '@/ui/heading'
+ import { icon } from '@/ui/icon'
+@@ -22,6 +22,10 @@ const isOpen = (issue: Issue): boolean => issue.status !== 'done'
+ 
+ const teamView = (teamId: string): View => (teamId === 'eng' ? 'team:eng' : 'team:des')
+ 
++const boardView = (teamId: string): View => (teamId === 'eng' ? 'board:eng' : 'board:des')
++
++const teamOf = (view: View): Team | undefined => TEAMS.find(each => each.id === teamIdOf(view))
++
+ const teamIssues = (model: Model, teamId: string): ReadonlyArray<Issue> =>
+   model.issues.filter(issue => issue.teamId === teamId)
+ 
+@@ -67,6 +71,12 @@ const navigation = (model: Model, h: HtmlBuilder<Message>): Html =>
+             onClick: M.SelectedView({ view: teamView(team.id) }),
+             count: teamIssues(model, team.id).filter(isOpen).length,
+           },
++          {
++            label: 'Board',
++            icon: 'kanban',
++            isActive: isShown(model, boardView(team.id)),
++            onClick: M.SelectedView({ view: boardView(team.id) }),
++          },
+         ],
+       })),
+       views: SAVED_VIEWS.map(saved => ({
+@@ -89,7 +99,10 @@ const commandEntries = (model: Model): ReadonlyArray<CommandEntry> => [
+   { id: 'theme', label: model.isDark ? 'Use light theme' : 'Use dark theme', group: 'Actions' },
+   { id: 'go:mine', label: 'My issues', group: 'Go to' },
+   { id: 'go:all', label: 'All issues', group: 'Go to' },
+-  ...TEAMS.map(team => ({ id: `go:${teamView(team.id)}`, label: `${team.name} · Issues`, group: 'Go to' as const })),
++  ...TEAMS.flatMap(team => [
++    { id: `go:${teamView(team.id)}`, label: `${team.name} · Issues`, group: 'Go to' as const },
++    { id: `go:${boardView(team.id)}`, label: `${team.name} · Board`, group: 'Go to' as const },
++  ]),
+   ...SAVED_VIEWS.map(saved => ({ id: `go:${saved.view}`, label: saved.label, group: 'Go to' as const })),
+   ...model.issues.map(issue => ({ id: `issue:${issue.id}`, label: `${issue.id} ${issue.title}`, group: 'Issues' as const })),
+ ]
+@@ -98,8 +111,9 @@ const listTitle = (model: Model): string => {
+   if (model.query !== '') return 'Search'
+   if (model.view === 'mine') return 'My issues'
+   if (model.view === 'all') return 'All issues'
+-  const team = TEAMS.find(each => teamView(each.id) === model.view)
+-  return team === undefined ? (savedViewOf(model.view)?.label ?? 'All issues') : `${team.name} · Issues`
++  const team = teamOf(model.view)
++  if (team === undefined) return savedViewOf(model.view)?.label ?? 'All issues'
++  return model.view === boardView(team.id) ? `${team.name} · Board` : `${team.name} · Issues`
+ }
+ 
+ const title = (model: Model): string => {
+@@ -114,8 +128,15 @@ const main = (model: Model, h: HtmlBuilder<Message>): Html => {
+   if (model.view === 'mine') return myIssuesView(model, h)
+   const saved = savedViewOf(model.view)
+   if (saved !== undefined) return savedView(model, saved, h)
+-  const team = TEAMS.find(each => teamView(each.id) === model.view)
+-  return allIssuesView(model, team === undefined ? model.issues : teamIssues(model, team.id), h)
++  const team = teamOf(model.view)
++  if (team === undefined) return allIssuesView(model, model.issues, undefined, h)
++  const isBoard = model.view === boardView(team.id)
++  return allIssuesView(
++    model,
++    teamIssues(model, team.id),
++    { isBoard, onSwitch: M.SelectedView({ view: isBoard ? teamView(team.id) : boardView(team.id) }) },
++    h,
++  )
+ }
+ 
+ const notices = (model: Model, h: HtmlBuilder<Message>): ReadonlyArray<Html> =>
+diff --git a/test/update.test.ts b/test/update.test.ts
+index 9f558d2..dc6bb65 100644
+--- a/test/update.test.ts
++++ b/test/update.test.ts
+@@ -4,7 +4,7 @@ import { describe, expect, test } from 'vitest'
+ 
+ import { SEED } from '../src/domain'
+ import { validateTitle } from '../src/design/issue-composer'
+-import { ApplyTheme, FocusTitle, Message, type Model, init, update } from '../src/model'
++import { ApplyTheme, FocusTitle, Message, type Model, init, teamIdOf, update } from '../src/model'
+ import { SaveIssues, SaveMessage } from '../src/storage'
+ import * as DropdownMenu from '../src/ui/dropdown-menu'
+ 
+@@ -120,6 +120,44 @@ describe('a team page', () => {
+       Story.Command.resolve(SaveIssues, SaveMessage.SucceededSave()),
+       Story.model(model => expect(model.issues[0]).toMatchObject({ id: 'CRE-143', teamId: 'des' })),
+     ))
++
++  test('a new issue created on its board belongs to that team too', () =>
++    Story.story(
++      update,
++      Story.given(start),
++      Story.message(Message.SelectedView({ view: 'board:eng' })),
++      ...openComposer,
++      Story.message(Message.ChangedDraftTitle({ title: 'Cards keep their column width' })),
++      Story.message(Message.SubmittedComposer()),
++      Story.Command.resolve(DialogPrimitive.CloseDialog, DialogPrimitive.Message.CompletedCloseDialog()),
++      Story.Command.resolve(SaveIssues, SaveMessage.SucceededSave()),
++      Story.model(model => expect(model.issues[0]).toMatchObject({ id: 'CRE-143', teamId: 'eng' })),
++    ))
++
++  test('changing a status on the board moves the issue and saves', () =>
++    Story.story(
++      update,
++      Story.given(start),
++      Story.message(Message.SelectedView({ view: 'board:eng' })),
++      ...choose('CRE-124--status', 'in_progress', 2),
++      focusReturned,
++      Story.Command.resolve(SaveIssues, SaveMessage.SucceededSave()),
++      Story.model(model => {
++        expect(model.view).toBe('board:eng')
++        expect(issue(model, 'CRE-124')?.status).toBe('in_progress')
++      }),
++    ))
++})
++
++describe('teamIdOf', () => {
++  test.each([
++    ['team:eng', 'eng'],
++    ['board:eng', 'eng'],
++    ['team:des', 'des'],
++    ['board:des', 'des'],
++    ['all', undefined],
++    ['urgent', undefined],
++  ] as const)('%s belongs to %s', (view, teamId) => expect(teamIdOf(view)).toBe(teamId))
+ })
+ 
+ describe('the issue page', () => {
