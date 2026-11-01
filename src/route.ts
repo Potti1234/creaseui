@@ -213,4 +213,6 @@ export const lintRulePath = (rule: string): string => lintRuleRouter({ rule })
 export const tutorialIndexPath = (): string => tutorialIndexRouter()
 
 export const tutorialChapterPath = (chapter: string): string =>
-  tutorialChapterRouter({ chapter })
+  chapter === 'short'
+    ? tutorialIndexRouter()
+    : tutorialChapterRouter({ chapter })

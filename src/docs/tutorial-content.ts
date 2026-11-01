@@ -2,9 +2,7 @@ import { Effect, Stream } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { autoCloseDetails } from '@/docs/details-nav'
-import { COMPONENT_GROUPS, toSlug } from '@/docs/component-metadata'
 import type { DocsGuideStyles } from '@/docs/getting-started-content'
-import { LINT_RULE_GROUPS } from '@/docs/lint/rules'
 import { sidebarScrollMemory } from '@/docs/sidebar-scroll'
 import {
   TUTORIAL_CHAPTERS,
@@ -13,13 +11,8 @@ import {
 import type { TutorialChapter } from '@/docs/tutorial/chapters'
 import * as Icon from '@/lib/icon'
 import * as Text from '@/ui/text'
-import * as Typography from '@/ui/typography'
 import {
-  componentDocsPath,
   gettingStartedPath,
-  lintRulePath,
-  lintRulesPath,
-  themingPath,
   tutorialChapterPath,
   tutorialIndexPath,
 } from '@/route'
@@ -121,74 +114,45 @@ const chapterNavLabel = (chapter: TutorialChapterMeta): string =>
     ? 'Overview: the short version'
     : `${chapter.id}. ${chapter.title}`
 
-/* The docs nav every docs page shows: the guide links plus a Tutorial group,
-   then the component and lint rule groups shared with the other sections. */
+/* The tutorial space's own navigation: only the fifteen chapters — no
+   component, lint or other docs sidebar entries. */
 const navGroups = <Msg>(
   shell: Shell<Msg>,
-  currentTutorial: 'index' | 'chapter',
   currentChapter: string | undefined,
   isMobile: boolean,
 ): ReadonlyArray<Html> => {
   const { h, styles, text, link } = shell
-  const guideLinks = h.ul(
-    [h.Class(styles.navList)],
-    [
-      h.li([], [link(gettingStartedPath(), 'Get Started', false)]),
-      h.li([], [link(themingPath(), 'Theming', false)]),
-      h.li([], [link(lintRulesPath(), 'Lint rules', false)]),
-      h.li(
-        [],
-        [link(tutorialIndexPath(), 'Tutorial', currentTutorial === 'index')],
-      ),
-    ],
-  )
-  const group = (label: string, items: ReadonlyArray<Html>): Html =>
+  return [
     h.div(
       [h.Class(styles.navGroup)],
       [
         h.div(
           [h.Class(styles.navLabel)],
-          [text([label], { type: 'label', color: 'primary' })],
+          [text(['Tutorial'], { type: 'label', color: 'primary' })],
         ),
-        h.ul([h.Class(isMobile ? styles.mobileNav : styles.navList)], items),
+        h.ul(
+          [h.Class(isMobile ? styles.mobileNav : styles.navList)],
+          TUTORIAL_CHAPTERS.filter(chapter => chapter.id !== 'short').map(
+            chapter =>
+              h.li(
+                [],
+                [
+                  link(
+                    tutorialChapterPath(chapter.id),
+                    chapterNavLabel(chapter),
+                    currentChapter === chapter.id,
+                  ),
+                ],
+              ),
+          ),
+        ),
       ],
-    )
-  const linkItem = (href: string, label: string, isCurrent: boolean): Html =>
-    h.li([], [link(href, label, isCurrent)])
-  return [
-    h.div([h.Class(styles.navGroup)], [guideLinks]),
-    group(
-      'Tutorial',
-      TUTORIAL_CHAPTERS.map(chapter =>
-        linkItem(
-          tutorialChapterPath(chapter.id),
-          chapterNavLabel(chapter),
-          currentTutorial === 'chapter' && currentChapter === chapter.id,
-        ),
-      ),
-    ),
-    ...COMPONENT_GROUPS.map(componentGroup =>
-      group(
-        componentGroup.label,
-        componentGroup.components.map(name =>
-          linkItem(componentDocsPath(toSlug(name)), name, false),
-        ),
-      ),
-    ),
-    ...LINT_RULE_GROUPS.map(lintGroup =>
-      group(
-        lintGroup.label,
-        lintGroup.rules.map(rule =>
-          linkItem(lintRulePath(rule.id), rule.title, false),
-        ),
-      ),
     ),
   ]
 }
 
 const shellLayout = <Msg>(
   shell: Shell<Msg>,
-  currentTutorial: 'index' | 'chapter',
   currentChapter: string | undefined,
   breadcrumb: ReadonlyArray<Html>,
   content: ReadonlyArray<Html>,
@@ -210,10 +174,10 @@ const shellLayout = <Msg>(
           ),
           h.nav(
             [
-              h.AriaLabel('Documentation navigation'),
+              h.AriaLabel('Tutorial navigation'),
               h.Class(styles.mobileNavOuter),
             ],
-            navGroups(shell, currentTutorial, currentChapter, true),
+            navGroups(shell, currentChapter, true),
           ),
         ],
       ),
@@ -224,8 +188,8 @@ const shellLayout = <Msg>(
         ],
         [
           h.nav(
-            [h.AriaLabel('Documentation navigation')],
-            navGroups(shell, currentTutorial, currentChapter, false),
+            [h.AriaLabel('Tutorial navigation')],
+            navGroups(shell, currentChapter, false),
           ),
         ],
       ),
@@ -265,87 +229,6 @@ const shellLayout = <Msg>(
   )
 }
 
-export const indexView = <Msg>(
-  props: TutorialDocsProps<Msg>,
-  h: HtmlBuilder<Msg>,
-  styles: DocsGuideStyles,
-): Html => {
-  const shell = makeShell(h, styles, props)
-  const { text, externalLink } = shell
-  return shellLayout(
-    shell,
-    'index',
-    undefined,
-    [
-      h.a(
-        [h.Href(gettingStartedPath()), h.Class(styles.link)],
-        [text(['Docs'], { color: 'inherit', display: 'inline' })],
-      ),
-      h.span(
-        [h.AriaHidden(true)],
-        [text(['/'], { color: 'secondary', display: 'inline' })],
-      ),
-      text(['Tutorial'], { color: 'primary', display: 'inline' }),
-    ],
-    [
-      Typography.typographyMuted(
-        {
-          children: [
-            'A design system built chapter by chapter on crease: one issue tracker, from a quick first slice to a system that carries its own decisions. Every chapter is a ',
-            externalLink(DEMO_REPO, 'tag in the creaseui-demo repository'),
-            '.',
-          ],
-        },
-        h,
-      ),
-      h.section(
-        [h.Class(styles.section)],
-        [
-          h.ul(
-            [h.Class('space-y-6')],
-            TUTORIAL_CHAPTERS.map(chapter =>
-              h.li(
-                [],
-                [
-                  h.a(
-                    [
-                      h.Href(tutorialChapterPath(chapter.id)),
-                      h.Class(styles.link),
-                    ],
-                    [
-                      text([chapterNavLabel(chapter)], {
-                        color: 'primary',
-                        display: 'inline',
-                      }),
-                    ],
-                  ),
-                  text([chapter.summary], { color: 'secondary' }),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    ],
-    TUTORIAL_CHAPTERS.map(chapter =>
-      h.li(
-        [],
-        [
-          h.a(
-            [h.Href(tutorialChapterPath(chapter.id)), h.Class(styles.link)],
-            [
-              text([chapterNavLabel(chapter)], {
-                color: 'inherit',
-                display: 'inline',
-              }),
-            ],
-          ),
-        ],
-      ),
-    ),
-  )
-}
-
 export const chapterView = <Msg>(
   chapter: TutorialChapter,
   props: TutorialDocsProps<Msg>,
@@ -382,32 +265,62 @@ export const chapterView = <Msg>(
 
   return shellLayout(
     shell,
-    'chapter',
-    chapter.id,
+    chapter.id === 'short' ? undefined : chapter.id,
     [
       h.a(
-        [h.Href(tutorialIndexPath()), h.Class(styles.link)],
-        [text(['Tutorial'], { color: 'inherit', display: 'inline' })],
+        [h.Href(gettingStartedPath()), h.Class(styles.link)],
+        [text(['Docs'], { color: 'inherit', display: 'inline' })],
       ),
       h.span(
         [h.AriaHidden(true)],
         [text(['/'], { color: 'secondary', display: 'inline' })],
       ),
-      text([chapterLabel], { color: 'primary', display: 'inline' }),
+      ...(chapter.id === 'short'
+        ? [text(['Tutorial'], { color: 'primary', display: 'inline' })]
+        : [
+            h.a(
+              [h.Href(tutorialIndexPath()), h.Class(styles.link)],
+              [text(['Tutorial'], { color: 'inherit', display: 'inline' })],
+            ),
+            h.span(
+              [h.AriaHidden(true)],
+              [text(['/'], { color: 'secondary', display: 'inline' })],
+            ),
+            text([chapterLabel], { color: 'primary', display: 'inline' }),
+          ]),
     ],
     [
-      ...(tagHref === null
-        ? []
-        : [
+      ...(chapter.id === 'short'
+        ? [
             text(
               [
-                'The app at the end of this chapter is the ',
-                externalLink(tagHref, `tag ${chapter.tag} on GitHub`),
-                ` (git switch --detach ${chapter.tag}).`,
+                'The condensed overview — the ',
+                h.a(
+                  [h.Href(tutorialChapterPath('01')), h.Class(styles.link)],
+                  [
+                    text(['full fifteen-chapter guide'], {
+                      color: 'primary',
+                      display: 'inline',
+                    }),
+                  ],
+                ),
+                ' walks the same build in depth.',
               ],
               { color: 'secondary' },
             ),
-          ]),
+          ]
+        : tagHref === null
+          ? []
+          : [
+              text(
+                [
+                  'The app at the end of this chapter is the ',
+                  externalLink(tagHref, `tag ${chapter.tag} on GitHub`),
+                  ` (git switch --detach ${chapter.tag}).`,
+                ],
+                { color: 'secondary' },
+              ),
+            ]),
       // The embedded runtime derives its id from container.id — without one
       // the fiber dies before the first render.
       h.div(

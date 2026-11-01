@@ -8,7 +8,6 @@ import { TUTORIAL_CHAPTERS } from '../src/docs/tutorial/chapter-meta'
 const SEARCH_ENTRIES =
   COMPONENTS.length +
   LINT_RULE_GROUPS.reduce((total, group) => total + group.rules.length, 0) +
-  1 +
   TUTORIAL_CHAPTERS.length
 
 for (const renderer of ['tailwind', 'stylex'] as const) {

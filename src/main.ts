@@ -1737,8 +1737,9 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
       TutorialIndex: () =>
         model.page._tag === 'TutorialPage'
           ? keyed(
-              'page-tutorial-index',
-              TutorialDocs.tutorialIndexView(
+              'page-tutorial-short',
+              TutorialDocs.tutorialChapterView(
+                tutorialChapter('short')!,
                 {
                   sidebarScrolled: Message.ObservedDocsSidebarScroll(),
                 },

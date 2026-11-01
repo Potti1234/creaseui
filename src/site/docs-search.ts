@@ -26,14 +26,6 @@ export const DOC_PAGES = Object.values(authoredPages)
         description: rule.summary,
       })),
     ),
-    [
-      {
-        slug: 'tutorial',
-        title: 'Tutorial',
-        description:
-          'The Crease Tasks tutorial: a design system built chapter by chapter.',
-      },
-    ],
     TUTORIAL_CHAPTERS.map(chapter => ({
       slug: `tutorial:${chapter.id}`,
       title: `${chapter.title} (tutorial)`,

@@ -170,7 +170,7 @@ export const init = (route: AppRoute): Page =>
       Theming: () => Theming({ codeBlock: CodeBlock.init() }),
       LintRules: () => LintDocs({ codeBlock: CodeBlock.init(), rule: '' }),
       LintRule: ({ rule }) => LintDocs({ codeBlock: CodeBlock.init(), rule }),
-      TutorialIndex: () => Tutorial({ chapter: 'index' }),
+      TutorialIndex: () => Tutorial({ chapter: 'short' }),
       TutorialChapter: ({ chapter }) =>
         tutorialChapter(chapter) ? Tutorial({ chapter }) : NotFound(),
       NotFound: () => NotFound(),
