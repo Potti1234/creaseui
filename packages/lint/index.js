@@ -1,6 +1,19 @@
 import { plugin as shadcn } from '@shadcn/lint'
 import stylexPlugin from '@stylexjs/eslint-plugin'
 
+import { defensiveAutoFillNotFit } from './rules/defensive-auto-fill-not-fit.js'
+import { defensiveBackgroundRepeat } from './rules/defensive-background-repeat.js'
+import { defensiveBgImageFallback } from './rules/defensive-bg-image-fallback.js'
+import { defensiveCssVarFallback } from './rules/defensive-css-var-fallback.js'
+import { defensiveFlexMinSize } from './rules/defensive-flex-min-size.js'
+import { defensiveHoverMedia } from './rules/defensive-hover-media.js'
+import { defensiveImageObjectFit } from './rules/defensive-image-object-fit.js'
+import { defensiveInputFontSize } from './rules/defensive-input-font-size.js'
+import { defensiveNoSpaceBetweenWrap } from './rules/defensive-no-space-between-wrap.js'
+import { defensiveOverscrollContain } from './rules/defensive-overscroll-contain.js'
+import { defensivePreferMinSize } from './rules/defensive-prefer-min-size.js'
+import { defensivePreferOverflowAuto } from './rules/defensive-prefer-overflow-auto.js'
+import { defensiveStickyGridAlign } from './rules/defensive-sticky-grid-align.js'
 import { formAssociation } from './rules/form-association.js'
 import { noComponentRestyle } from './rules/no-component-restyle.js'
 import { noNativeGlyphs } from './rules/no-native-glyphs.js'
@@ -16,7 +29,58 @@ export { STRICT_RULE_IDS, creaseui } from './creaseui.js'
 export { CreaseConfigError } from './lib/strict/ownership.js'
 export { createStrictContext } from './lib/strict/context.js'
 
+export const DEFENSIVE_ERROR_RULE_IDS = [
+  'defensive-prefer-overflow-auto',
+  'defensive-no-space-between-wrap',
+  'defensive-auto-fill-not-fit',
+  'defensive-hover-media',
+  'defensive-bg-image-fallback',
+  'defensive-background-repeat',
+  'defensive-css-var-fallback',
+]
+
+export const DEFENSIVE_WARN_RULE_IDS = [
+  'defensive-flex-min-size',
+  'defensive-image-object-fit',
+  'defensive-input-font-size',
+  'defensive-sticky-grid-align',
+  'defensive-overscroll-contain',
+  'defensive-prefer-min-size',
+]
+
+/* The fourteenth defensive check (scrollbar-gutter on html/body/:root) is
+   expressible only in stylesheet selectors; it lives in the css audit. */
+export const DEFENSIVE_CSS_RULE_IDS = ['defensive-scrollbar-gutter']
+
+export const defensiveEntries = (severity, options = {}, shared = {}) =>
+  options.defensive === false
+    ? {}
+    : {
+        ...Object.fromEntries(
+          DEFENSIVE_ERROR_RULE_IDS.map(id => [
+            `crease/${id}`,
+            [severity, shared],
+          ]),
+        ),
+        ...Object.fromEntries(
+          DEFENSIVE_WARN_RULE_IDS.map(id => [`crease/${id}`, ['warn', shared]]),
+        ),
+      }
+
 export const rules = {
+  'defensive-auto-fill-not-fit': defensiveAutoFillNotFit,
+  'defensive-background-repeat': defensiveBackgroundRepeat,
+  'defensive-bg-image-fallback': defensiveBgImageFallback,
+  'defensive-css-var-fallback': defensiveCssVarFallback,
+  'defensive-flex-min-size': defensiveFlexMinSize,
+  'defensive-hover-media': defensiveHoverMedia,
+  'defensive-image-object-fit': defensiveImageObjectFit,
+  'defensive-input-font-size': defensiveInputFontSize,
+  'defensive-no-space-between-wrap': defensiveNoSpaceBetweenWrap,
+  'defensive-overscroll-contain': defensiveOverscrollContain,
+  'defensive-prefer-min-size': defensivePreferMinSize,
+  'defensive-prefer-overflow-auto': defensivePreferOverflowAuto,
+  'defensive-sticky-grid-align': defensiveStickyGridAlign,
   'form-association': formAssociation,
   'no-component-restyle': noComponentRestyle,
   'no-foldkit-inline-style': noFoldkitInlineStyle,
@@ -89,6 +153,7 @@ export const tailwind = (options = {}) => {
                 scanAllStrings: true,
               },
             ],
+      ...defensiveEntries(severity, options, shared),
     },
   }
 }
@@ -162,6 +227,10 @@ export const stylex = (options = {}) => {
           allowPropsIn: options.allowPropsIn ?? ['.*'],
         },
       ],
+      ...defensiveEntries(severity, options, {
+        componentImports: options.componentImports ?? ['^@/stylex(?:/|$)'],
+        ignoreImports: options.ignoreImports ?? [],
+      }),
     },
   }
 }
@@ -198,6 +267,10 @@ export const pleat = (options = {}) => {
           ],
         },
       ],
+      ...defensiveEntries(severity, options, {
+        componentImports: options.componentImports ?? ['^@/pleat(?:/|$)'],
+        ignoreImports: options.ignoreImports ?? [],
+      }),
     },
   }
 }

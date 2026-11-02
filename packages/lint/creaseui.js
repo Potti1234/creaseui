@@ -2,7 +2,14 @@ import path from 'node:path'
 
 import tseslint from 'typescript-eslint'
 
-import { pleat, plugin, stylex, tailwind } from './index.js'
+import {
+  DEFENSIVE_ERROR_RULE_IDS,
+  DEFENSIVE_WARN_RULE_IDS,
+  pleat,
+  plugin,
+  stylex,
+  tailwind,
+} from './index.js'
 import { createStrictContext } from './lib/strict/context.js'
 
 export const STRICT_RULE_IDS = [
@@ -54,6 +61,14 @@ export const grantOf = file =>
 
 const levels = (names, level) =>
   Object.fromEntries(names.map(name => [`crease/${name}`, level]))
+
+/* Defensive CSS family: the seven clean detections run at the strict
+   level; the six heuristics stay warnings everywhere. scrollbar-gutter
+   has no JS-side rule (it is a stylesheet-selector audit). */
+const defensiveLevels = strictLevel => ({
+  ...levels(DEFENSIVE_ERROR_RULE_IDS, strictLevel),
+  ...levels(DEFENSIVE_WARN_RULE_IDS, 'warn'),
+})
 
 /**
  * Strict consumer configuration: application views may only compose
@@ -114,6 +129,7 @@ export const creaseui = (options = {}) => {
       name: '@creaseui/lint/strict/application',
       rules: {
         ...levels(STRICT_RULE_IDS, strictLevel),
+        ...defensiveLevels(strictLevel),
         'crease/form-association': strictLevel,
         'crease/no-native-glyphs': strictLevel,
       },
@@ -161,6 +177,7 @@ export const creaseui = (options = {}) => {
       name: '@creaseui/lint/strict/composing',
       rules: {
         ...levels(RULES_BY_GRANT.composing, strictLevel),
+        ...defensiveLevels(strictLevel),
         'crease/form-association': strictLevel,
         'crease/no-native-glyphs': strictLevel,
       },

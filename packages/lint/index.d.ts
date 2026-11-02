@@ -15,6 +15,9 @@ export interface CommonOptions {
   severity?: Severity
   componentImports?: string[]
   ignoreImports?: string[]
+  /* Defensive CSS family (defensivecss.dev): set false to disable all
+     crease/defensive-* rules. */
+  defensive?: boolean
 }
 
 export interface TailwindOptions extends CommonOptions {
