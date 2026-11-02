@@ -316,7 +316,7 @@ test('registered component CSS must stay inside its own scope', () => {
     audit(
       {
         'src/design/chart.css':
-          '.crease-chart [data-slot="tick"] { fill: currentColor; }\n[data-slot="chart"]:hover { opacity: 0.9; }',
+          '.crease-chart [data-slot="tick"] { fill: currentColor; }\n@media (hover: hover) { [data-slot="chart"]:hover { opacity: 0.9; } }',
       },
       owned,
     ),
