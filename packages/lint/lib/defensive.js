@@ -323,7 +323,10 @@ export const createDeclCollector = (context, options = {}) => {
     return false
   }
 
-  /* Declaration objects of one call, or null when the call styles nothing. */
+  /* Declaration objects of one call, or null when the call styles nothing.
+     Each entry is { node, conditions }; `Style.when(cond, {...})` carries
+     its condition argument so rules see ':hover'/'@media …' like nested
+     StyleX keys. */
   const declObjectsOf = node => {
     const callee = node.callee
     if (isStylexCallee(callee)) {
@@ -334,7 +337,7 @@ export const createDeclCollector = (context, options = {}) => {
       return object.properties.flatMap(property =>
         property.type === 'Property' &&
         property.value.type === 'ObjectExpression'
-          ? [property.value]
+          ? [{ node: property.value, conditions: [] }]
           : [],
       )
     }
@@ -351,7 +354,13 @@ export const createDeclCollector = (context, options = {}) => {
           node.arguments.length >= (method === 'make' ? 1 : 2)
         ) {
           const object = resolveObject(argument, variables)
-          if (object !== null) return [object]
+          if (object !== null) {
+            const conditions =
+              method === 'when'
+                ? staticValues(node.arguments[0], variables).strings
+                : []
+            return [{ node: object, conditions }]
+          }
         }
       }
     }
@@ -417,8 +426,10 @@ export const runDefensiveRule = (context, options, siteFn, declFn) => {
       if (siteFn !== null) siteFn(info, walker)
       if (declFn !== null) {
         const objects = collector.declObjectsOf(node)
-        if (objects !== null) for (const object of objects) declFn(object, info)
-        for (const object of info.styleObjects) declFn(object, info)
+        if (objects !== null)
+          for (const { node: object, conditions } of objects)
+            declFn(object, info, conditions)
+        for (const object of info.styleObjects) declFn(object, info, [])
       }
     },
     'CallExpression:exit'() {

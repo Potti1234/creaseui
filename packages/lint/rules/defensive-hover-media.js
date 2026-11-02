@@ -62,13 +62,12 @@ export const defensiveHoverMedia = {
             )
               context.report({ node: src.node, messageId: 'hoverMedia' })
       },
-      object => {
-        for (const d of styleDecls(object))
-          if (
-            d.conditions.some(cond => cond.includes(':hover')) &&
-            !hoverGuarded(d.conditions)
-          )
+      (object, info, conditions) => {
+        for (const d of styleDecls(object)) {
+          const all = [...conditions, ...d.conditions]
+          if (all.some(cond => cond.includes(':hover')) && !hoverGuarded(all))
             context.report({ node: d.node, messageId: 'hoverMedia' })
+        }
       },
     )
   },

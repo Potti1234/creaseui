@@ -5,7 +5,7 @@
 const BARE_VAR = /var\(\s*(--[\w-]+)\s*\)/gu
 const URL_VALUE = /url\(/iu
 const SCROLLING_PROP = /^overflow(-x|-y)?$/u
-const SCROLL_ROOT = /^(?:html|body|:root)$/u
+const SCROLL_ROOT = /^(?:html|body|:root|#root|#app)$/u
 const AUTO_FIT = /repeat\(\s*auto-fit\b/iu
 
 const hasHoverMedia = node => {
