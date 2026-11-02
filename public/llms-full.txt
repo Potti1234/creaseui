@@ -1492,6 +1492,7 @@ export const notice = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div([h.Class('w-[45px]')], ['!'])
 ```
 
+- src/ui/notice.ts:3:18 `crease/defensive-prefer-min-size`: fixed `w-[45px]` on a layout container clips overflowing content; prefer `min-w-[45px]`.
 - src/ui/notice.ts:3:18 `shadcn/no-arbitrary-values`: "w-[45px]" hardcodes an off-token value. Use "w-11.25" instead (same value, on the scale). See the Crease design-system lint documentation for approved exceptions.
 
 Good:
@@ -1500,6 +1501,496 @@ Good:
 import type { Html, HtmlBuilder } from 'foldkit/html'
 export const notice = <Msg>(h: HtmlBuilder<Msg>): Html =>
   h.div([h.Class('size-9')], ['!'])
+```
+
+## Defensive CSS
+
+### Prefer overflow: auto (`defensive-prefer-overflow-auto`)
+
+overflow: scroll forces disabled scrollbars when nothing overflows.
+
+#### A scrollbar that never disappears
+
+overflow-y-scroll renders a disabled scrollbar track even when the content fits, which reads as a broken panel on Windows.
+
+Renderers: tailwind
+
+Bad (`src/app/sidebar.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class('overflow-y-scroll max-h-60')], ['Nav items'])
+```
+
+- src/app/sidebar.ts:3:18 `crease/defensive-prefer-overflow-auto`: `overflow-y-scroll: scroll` forces scrollbars even when nothing overflows; use `auto` so scrollbars appear only when needed.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class('overflow-y-auto max-h-60')], ['Nav items'])
+```
+
+### No justify-between + flex-wrap (`defensive-no-space-between-wrap`)
+
+Wrapped rows lose spacing control with justify-between; use gap.
+
+#### justify-between on a wrapping row
+
+Once the row wraps, justify-between pushes the wrapped items apart with no spacing control — the second line drifts to the edges.
+
+Renderers: tailwind
+
+Bad (`src/app/toolbar.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class('flex flex-wrap justify-between')], [
+    h.span([], ['Status']),
+    h.span([], ['Actions']),
+  ])
+```
+
+- src/app/toolbar.ts:3:18 `crease/defensive-no-space-between-wrap`: justify-between + flex-wrap leaves wrapped rows without spacing control; use `gap` instead of justify-between.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class('flex flex-wrap gap-4')], [
+    h.span([], ['Status']),
+    h.span([], ['Actions']),
+  ])
+```
+
+### auto-fill, not auto-fit (`defensive-auto-fill-not-fit`)
+
+repeat(auto-fit, minmax(…)) collapses empty tracks and stretches items.
+
+#### auto-fit stretching the last row
+
+With fewer items than tracks, auto-fit collapses the empty tracks so the real items stretch to full width instead of keeping their size.
+
+Renderers: pleat
+
+Bad (`src/pleat/gallery.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { Style } from '@pleat/core'
+
+const gallery = Style.make({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
+})
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html => h.div([], [])
+```
+
+- src/pleat/gallery.ts:6:3 `crease/defensive-auto-fill-not-fit`: `repeat(auto-fit, minmax(...))` collapses empty tracks so the real items stretch; use `auto-fill` unless that stretching is intended.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { Style } from '@pleat/core'
+
+const gallery = Style.make({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+})
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html => h.div([], [])
+```
+
+### Guard :hover with media query (`defensive-hover-media`)
+
+Raw :hover sticks after taps on touch devices; wrap it in @media (hover: hover).
+
+#### A hover state that sticks on touch
+
+On touch devices a tapped element keeps :hover until something else is tapped. @media (hover: hover) only applies the style where hover exists.
+
+Renderers: stylex
+
+Bad (`src/stylex/link.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as stylex from '@stylexjs/stylex'
+
+const styles = stylex.create({
+  link: { color: { default: 'currentColor', ':hover': 'transparent' } },
+})
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.a([...stylex.props(styles.link)], ['Docs'])
+```
+
+- src/stylex/link.ts:5:45 `crease/defensive-hover-media`: `:hover` style is not guarded by `@media (hover: hover)` — it sticks after taps on touch devices.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as stylex from '@stylexjs/stylex'
+
+const styles = stylex.create({
+  link: {
+    color: {
+      default: 'currentColor',
+      '@media (hover: hover)': { ':hover': 'transparent' },
+    },
+  },
+})
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.a([...stylex.props(styles.link)], ['Docs'])
+```
+
+### Background-image fallback color (`defensive-bg-image-fallback`)
+
+A url() background without a fallback color leaves content unstyled while it loads.
+
+#### A hero with no fallback color
+
+While hero.png loads — or if the request fails — the section shows whatever is behind it, usually the page background with unreadable text.
+
+Renderers: pleat
+
+Bad (`src/pleat/hero.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { Style } from '@pleat/core'
+
+const hero = Style.make({
+  backgroundImage: 'url(/hero.png)',
+  padding: '2rem',
+})
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html => h.div([], [])
+```
+
+- src/pleat/hero.ts:5:3 `crease/defensive-bg-image-fallback`: background image without a background-color fallback; add a bg-* color so content is still styled while/if the image fails to load.
+- src/pleat/hero.ts:5:3 `crease/defensive-background-repeat`: background `url()` without an explicit repeat; add `bg-no-repeat`/`bg-repeat-*` or `backgroundRepeat`.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { Style } from '@pleat/core'
+
+const hero = Style.make({
+  backgroundColor: 'transparent',
+  backgroundImage: 'url(/hero.png)',
+  backgroundRepeat: 'no-repeat',
+  padding: '2rem',
+})
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html => h.div([], [])
+```
+
+### Explicit background-repeat (`defensive-background-repeat`)
+
+url() backgrounds tile by default unless background-repeat says otherwise.
+
+#### A texture that tiles by accident
+
+background-repeat defaults to repeat: a single logo or illustration tiles across the element unless the repeat is stated.
+
+Renderers: pleat
+
+Bad (`src/pleat/hero.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { Style } from '@pleat/core'
+
+const hero = Style.make({
+  backgroundColor: 'transparent',
+  backgroundImage: 'url(/logo.png)',
+})
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html => h.div([], [])
+```
+
+- src/pleat/hero.ts:6:3 `crease/defensive-background-repeat`: background `url()` without an explicit repeat; add `bg-no-repeat`/`bg-repeat-*` or `backgroundRepeat`.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { Style } from '@pleat/core'
+
+const hero = Style.make({
+  backgroundColor: 'transparent',
+  backgroundImage: 'url(/logo.png)',
+  backgroundRepeat: 'no-repeat',
+})
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html => h.div([], [])
+```
+
+### Fallback for custom properties (`defensive-css-var-fallback`)
+
+var(--x) without a fallback resolves to nothing when --x is undefined.
+
+#### A variable nobody defines
+
+--banner-top is not a declared token, so var(--banner-top) resolves to nothing and the offset silently disappears.
+
+Renderers: pleat
+
+Bad (`src/pleat/banner.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { Style } from '@pleat/core'
+
+const banner = Style.make({ top: 'var(--banner-top)' })
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html => h.div([], [])
+```
+
+- src/pleat/banner.ts:4:29 `crease/defensive-css-var-fallback`: var(--banner-top) has no fallback and is not a defined token; use var(--banner-top, <default>).
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { Style } from '@pleat/core'
+
+const banner = Style.make({ top: 'var(--banner-top, 0px)' })
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html => h.div([], [])
+```
+
+### Stable scrollbar gutter (`defensive-scrollbar-gutter`)
+
+Page roots that scroll without scrollbar-gutter shift the layout when the bar appears.
+
+#### A page root that shifts when the scrollbar appears
+
+body scrolls without scrollbar-gutter, so every page jumps sideways the moment content grows past the viewport.
+
+Bad (`src/styles.css`):
+
+```css
+body {
+  overflow-y: auto;
+}
+```
+
+```text
+$ npx creaseui-lint css
+violation src/styles.css:2 page root scrolls without `scrollbar-gutter: stable` — the layout shifts when the scrollbar appears (defensive-scrollbar-gutter)
+css: 1 stylesheets, 1 violations, 0 unverifiable
+```
+
+Good (`src/styles.css`):
+
+```css
+body {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+```
+
+```text
+$ npx creaseui-lint css
+css: 1 stylesheets, 0 violations, 0 unverifiable
+```
+
+### Flex children need min-size 0 (`defensive-flex-min-size`)
+
+Truncating children cannot shrink below content size without min-w-0/min-h-0.
+
+#### Truncation that cannot shrink
+
+A flex child defaults to min-width: auto, so the long title refuses to shrink and pushes the row wider than the screen instead of truncating.
+
+Renderers: tailwind
+
+Bad (`src/app/list-row.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class('flex gap-2')], [
+    h.div([h.Class('truncate')], ['A very long section title']),
+  ])
+```
+
+- src/app/list-row.ts:4:5 `crease/defensive-flex-min-size`: truncating element inside a flex/grid container without `min-w-0`/`min-h-0` — it cannot shrink below its content size; add `min-w-0` (or `min-h-0` for columns).
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class('flex gap-2')], [
+    h.div([h.Class('min-w-0 truncate')], ['A very long section title']),
+  ])
+```
+
+### Sized images need object-fit (`defensive-image-object-fit`)
+
+An image with fixed width/height distorts or crops badly without object-fit.
+
+#### A stretched avatar
+
+The avatar forces the image into 64×64 without saying how to crop, so a landscape photo squashes to a square.
+
+Renderers: tailwind
+
+Bad (`src/app/profile.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.img([h.Class('h-16 w-16 rounded-full')])
+```
+
+- src/app/profile.ts:3:3 `crease/defensive-image-object-fit`: image with explicit width/height but no `object-fit`; add object-cover/contain to control the crop.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.img([h.Class('h-16 w-16 rounded-full object-cover')])
+```
+
+### Input font-size ≥ 16px (`defensive-input-font-size`)
+
+Smaller text on form controls triggers iOS Safari auto-zoom on focus.
+
+#### A search field that zooms the page
+
+iOS Safari auto-zooms when an input under 16px gets focus; the page stays zoomed after the user leaves the field.
+
+Renderers: tailwind
+
+Bad (`src/app/search.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.input([h.Class('w-full rounded-md border px-3 py-2 text-sm')])
+```
+
+- src/app/search.ts:3:20 `crease/defensive-input-font-size`: form control with font-size below 16px triggers iOS Safari auto-zoom on focus; use text-base (16px) or larger.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.input([h.Class('w-full rounded-md border px-3 py-2 text-base')])
+```
+
+### Sticky needs alignment in grids (`defensive-sticky-grid-align`)
+
+Grid stretch keeps a sticky child at full height so it never sticks.
+
+#### A sticky sidebar that never sticks
+
+Grid children stretch to the row height, so the sidebar is always as tall as the grid and position: sticky has no room to move.
+
+Renderers: tailwind
+
+Bad (`src/app/layout.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class('grid grid-cols-4 gap-6')], [
+    h.div([h.Class('sticky top-0')], ['Nav']),
+    h.div([], ['Content']),
+  ])
+```
+
+- src/app/layout.ts:4:5 `crease/defensive-sticky-grid-align`: sticky element inside a grid container without `self-start`/`align-self: start` — grid stretch prevents it from sticking.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class('grid grid-cols-4 gap-6')], [
+    h.div([h.Class('sticky top-0 self-start')], ['Nav']),
+    h.div([], ['Content']),
+  ])
+```
+
+### Overscroll containment in overlays (`defensive-overscroll-contain`)
+
+Scrollable overlay regions leak wheel/touch scroll to the page behind.
+
+#### A drawer that scrolls the page
+
+Reaching the end of the drawer list keeps scrolling the page behind it; overscroll-contain stops the leak.
+
+Renderers: tailwind
+
+Bad (`src/app/menu.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { drawer } from '@/ui/drawer'
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  drawer({ class: 'fixed inset-y-0 right-0 w-80' }, [
+    h.div([h.Class('h-full overflow-y-auto p-4')], ['Links']),
+  ])
+```
+
+- src/app/menu.ts:6:5 `crease/defensive-overscroll-contain`: scrollable region inside an overlay without `overscroll-contain`/`overscrollBehavior` — wheel/touch scroll leaks to the page behind.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import { drawer } from '@/ui/drawer'
+
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  drawer({ class: 'fixed inset-y-0 right-0 w-80' }, [
+    h.div([h.Class('h-full overflow-y-auto overscroll-contain p-4')], ['Links']),
+  ])
+```
+
+### Prefer min-size over fixed size (`defensive-prefer-min-size`)
+
+Fixed h-[Npx]/w-[Npx] clips overflowing content; min-* lets it grow.
+
+#### A fixed width that clips
+
+w-[20rem] hard-codes the sidebar: longer translated labels or larger user font settings clip instead of growing the panel.
+
+Renderers: tailwind
+
+Bad (`src/app/sidebar.ts`):
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class('w-[20rem] shrink-0')], ['Sidebar'])
+```
+
+- src/app/sidebar.ts:3:18 `crease/defensive-prefer-min-size`: fixed `w-[20rem]` on a layout container clips overflowing content; prefer `min-w-[20rem]`.
+- src/app/sidebar.ts:3:18 `shadcn/no-arbitrary-values`: "w-[20rem]" hardcodes an off-token value. Use a theme token or scale value instead. See the Crease design-system lint documentation for approved exceptions.
+
+Good:
+
+```ts
+import type { Html, HtmlBuilder } from 'foldkit/html'
+export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
+  h.div([h.Class('min-w-80 shrink-0')], ['Sidebar'])
 ```
 
 ## CLI checks
