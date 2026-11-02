@@ -24,6 +24,37 @@ const tokensOf = info => info.classSources.flatMap(src => src.tokens)
 
 const HOVER_MEDIA = /@media[^)]*hover\s*:\s*hover/iu
 
+/* Only `:hover` inside an arbitrary `[...]` selector is raw — a plain
+   `hover:`/`group-hover:`/`has-[…]:hover:` variant segment compiles under
+   @media (hover: hover) in Tailwind v4. An arbitrary variant carrying its
+   own `(hover:hover)` guards the rest of the token. */
+const rawHoverSelector = token => {
+  let guarded = false
+  for (let i = 0; i < token.length; i += 1) {
+    if (token[i] !== '[') continue
+    let depth = 1
+    let parens = 0
+    let quote = ''
+    let j = i + 1
+    for (; j < token.length && depth > 0; j += 1) {
+      const c = token[j]
+      if (quote) {
+        if (c === quote) quote = ''
+      } else if (c === '"' || c === "'" || c === '`') quote = c
+      else if (c === '(') parens += 1
+      else if (c === ')') parens -= 1
+      else if (c === '[' && parens === 0) depth += 1
+      else if (c === ']' && parens === 0) depth -= 1
+    }
+    const inner = token.slice(i + 1, j - 1)
+    if (inner.includes('hover:hover') || inner.includes('hover: hover'))
+      guarded = true
+    else if (inner.includes(':hover') && !guarded) return true
+    i = j
+  }
+  return false
+}
+
 const hoverGuarded = conditions => {
   let guarded = false
   for (const cond of conditions) {
@@ -55,11 +86,7 @@ export const defensiveHoverMedia = {
       info => {
         for (const src of info.classSources)
           for (const token of src.tokens)
-            if (
-              token.includes(':hover') &&
-              !token.includes('hover:hover') &&
-              !token.includes('hover: hover')
-            )
+            if (rawHoverSelector(token))
               context.report({ node: src.node, messageId: 'hoverMedia' })
       },
       (object, info, conditions) => {

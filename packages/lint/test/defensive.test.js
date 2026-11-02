@@ -136,7 +136,11 @@ tester.run('crease/defensive-hover-media', defensiveHoverMedia, {
       errors: [{ messageId: 'hoverMedia' }],
     },
     {
-      code: `h.div([h.Class('[@supports(display:grid)]:hover:bg-red-500')])`,
+      code: `h.div([h.Class('[&:hover]:bg-red-500')])`,
+      errors: [{ messageId: 'hoverMedia' }],
+    },
+    {
+      code: `h.div([h.Class('[&>a:hover]:text-red-500')])`,
       errors: [{ messageId: 'hoverMedia' }],
     },
   ],

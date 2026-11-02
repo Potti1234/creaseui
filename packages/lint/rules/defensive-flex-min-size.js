@@ -72,7 +72,17 @@ export const defensiveFlexMinSize = {
             ),
           )
         if (!truncating) return
+        /* shrink-0 children never shrink — min-w-0 is pointless on them. */
+        const noShrink =
+          tokens.has('shrink-0') ||
+          info.styleObjects.some(object =>
+            styleDecls(object).some(
+              d =>
+                d.prop === 'flexShrink' && (d.value === '0' || d.value === 0),
+            ),
+          )
         const hasMinZero =
+          noShrink ||
           [...tokens].some(t => MINZERO.has(t)) ||
           info.styleObjects.some(object =>
             styleDecls(object).some(
