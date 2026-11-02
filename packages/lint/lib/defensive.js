@@ -104,11 +104,13 @@ export const createDefensiveWalker = (context, options = {}) => {
         if (key === 'class' || key === 'className') push(property.value)
         if (key === 'attributes' && property.value.type === 'ArrayExpression')
           for (const element of property.value.elements)
-            if (isClassAttribute(element)) push(element)
+            if (isClassAttribute(element))
+              for (const argument of element.arguments) push(argument)
       }
     else if (arg0?.type === 'ArrayExpression')
       for (const element of arg0.elements)
-        if (isClassAttribute(element)) push(element)
+        if (isClassAttribute(element))
+          for (const argument of element.arguments) push(argument)
     if (
       node.callee.type === 'Identifier' &&
       VARIANT_FACTORIES.has(node.callee.name)
@@ -234,6 +236,9 @@ export const styleDecls = object => {
         )
         continue
       }
+      /* Once a property name is established (`color: {':hover': 'red'}`),
+         the leaf's own key is a condition like `default`, `:hover` or
+         `@media …` — append it to the chain. */
       const text =
         value?.type === 'Literal' && value.value !== null
           ? String(value.value)
@@ -241,7 +246,7 @@ export const styleDecls = object => {
             ? (value.quasis[0]?.value.cooked ?? null)
             : null
       out.push({
-        conditions,
+        conditions: prop === null ? conditions : [...conditions, key],
         key,
         node: property,
         prop: prop ?? key,
@@ -358,7 +363,7 @@ export const createDeclCollector = (context, options = {}) => {
 
 /* -- custom property inventory -------------------------------------- */
 
-const VARIABLE_DEFINITION = /(--[\w-]+)\s*:/gu
+const VARIABLE_DEFINITION = /(--[\w-]+)\s*['"]?\s*:/gu
 
 const stylesheetVariables = new Map()
 const projectVariables = rootDir => {

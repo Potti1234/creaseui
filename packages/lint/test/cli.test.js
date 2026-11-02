@@ -268,7 +268,10 @@ test('owned renderers without a raw grant keep every application rule', async ()
       [...new Set(result.messages.map(message => message.ruleId))].sort(),
     ]),
   )
-  assert.deepEqual(rules.wrapper, ['crease/component-contract'])
+  assert.deepEqual(rules.wrapper, [
+    'crease/component-contract',
+    'crease/defensive-prefer-min-size',
+  ])
   assert.ok(
     rules['raw-wrapper'].includes('crease/no-raw-controls'),
     JSON.stringify(results.map(result => result.messages)),
