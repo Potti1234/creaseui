@@ -17,7 +17,7 @@ export interface CommonOptions {
   ignoreImports?: string[]
   /* Defensive CSS family (defensivecss.dev): set false to disable all
      crease/defensive-* rules. */
-  defensive?: boolean
+  defensive?: boolean | { off?: string[] }
 }
 
 export interface TailwindOptions extends CommonOptions {

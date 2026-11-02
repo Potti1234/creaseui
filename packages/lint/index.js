@@ -52,20 +52,28 @@ export const DEFENSIVE_WARN_RULE_IDS = [
    expressible only in stylesheet selectors; it lives in the css audit. */
 export const DEFENSIVE_CSS_RULE_IDS = ['defensive-scrollbar-gutter']
 
-export const defensiveEntries = (severity, options = {}, shared = {}) =>
-  options.defensive === false
-    ? {}
-    : {
-        ...Object.fromEntries(
-          DEFENSIVE_ERROR_RULE_IDS.map(id => [
-            `crease/${id}`,
-            [severity, shared],
-          ]),
-        ),
-        ...Object.fromEntries(
-          DEFENSIVE_WARN_RULE_IDS.map(id => [`crease/${id}`, ['warn', shared]]),
-        ),
-      }
+/* options.defensive: false disables the whole family; { off: [...rule-ids] }
+   disables individual rules (e.g. prefer-min-size in a component library
+   whose control geometry is intentionally fixed). */
+export const defensiveEntries = (severity, options = {}, shared = {}) => {
+  const defensive = options.defensive
+  if (defensive === false) return {}
+  const off = new Set(defensive?.off ?? [])
+  return {
+    ...Object.fromEntries(
+      DEFENSIVE_ERROR_RULE_IDS.filter(id => !off.has(id)).map(id => [
+        `crease/${id}`,
+        [severity, shared],
+      ]),
+    ),
+    ...Object.fromEntries(
+      DEFENSIVE_WARN_RULE_IDS.filter(id => !off.has(id)).map(id => [
+        `crease/${id}`,
+        ['warn', shared],
+      ]),
+    ),
+  }
+}
 
 export const rules = {
   'defensive-auto-fill-not-fit': defensiveAutoFillNotFit,
