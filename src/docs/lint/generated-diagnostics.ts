@@ -512,12 +512,166 @@ export const LINT_DIAGNOSTICS: Readonly<
   ],
   "no-arbitrary-values/arbitrary-width/tailwind": [
     {
+      "ruleId": "crease/defensive-prefer-min-size",
+      "message": "fixed `w-[45px]` on a layout container clips overflowing content; prefer `min-w-[45px]`.",
+      "line": 3,
+      "column": 18,
+      "endLine": 3,
+      "endColumn": 28
+    },
+    {
       "ruleId": "shadcn/no-arbitrary-values",
       "message": "\"w-[45px]\" hardcodes an off-token value. Use \"w-11.25\" instead (same value, on the scale). See the Crease design-system lint documentation for approved exceptions.",
       "line": 3,
       "column": 18,
       "endLine": 3,
       "endColumn": 28
+    }
+  ],
+  "defensive-prefer-overflow-auto/forced-scrollbar/tailwind": [
+    {
+      "ruleId": "crease/defensive-prefer-overflow-auto",
+      "message": "`overflow-y-scroll: scroll` forces scrollbars even when nothing overflows; use `auto` so scrollbars appear only when needed.",
+      "line": 3,
+      "column": 18,
+      "endLine": 3,
+      "endColumn": 46
+    }
+  ],
+  "defensive-no-space-between-wrap/wrapped-rows-drift/tailwind": [
+    {
+      "ruleId": "crease/defensive-no-space-between-wrap",
+      "message": "justify-between + flex-wrap leaves wrapped rows without spacing control; use `gap` instead of justify-between.",
+      "line": 3,
+      "column": 18,
+      "endLine": 3,
+      "endColumn": 50
+    }
+  ],
+  "defensive-auto-fill-not-fit/stretching-empty-tracks/pleat": [
+    {
+      "ruleId": "crease/defensive-auto-fill-not-fit",
+      "message": "`repeat(auto-fit, minmax(...))` collapses empty tracks so the real items stretch; use `auto-fill` unless that stretching is intended.",
+      "line": 6,
+      "column": 3,
+      "endLine": 6,
+      "endColumn": 62
+    }
+  ],
+  "defensive-hover-media/stuck-hover/stylex": [
+    {
+      "ruleId": "crease/defensive-hover-media",
+      "message": "`:hover` style is not guarded by `@media (hover: hover)` — it sticks after taps on touch devices.",
+      "line": 5,
+      "column": 45,
+      "endLine": 5,
+      "endColumn": 68
+    }
+  ],
+  "defensive-bg-image-fallback/missing-fallback-color/pleat": [
+    {
+      "ruleId": "crease/defensive-bg-image-fallback",
+      "message": "background image without a background-color fallback; add a bg-* color so content is still styled while/if the image fails to load.",
+      "line": 5,
+      "column": 3,
+      "endLine": 5,
+      "endColumn": 36
+    },
+    {
+      "ruleId": "crease/defensive-background-repeat",
+      "message": "background `url()` without an explicit repeat; add `bg-no-repeat`/`bg-repeat-*` or `backgroundRepeat`.",
+      "line": 5,
+      "column": 3,
+      "endLine": 5,
+      "endColumn": 36
+    }
+  ],
+  "defensive-background-repeat/tiling-texture/pleat": [
+    {
+      "ruleId": "crease/defensive-background-repeat",
+      "message": "background `url()` without an explicit repeat; add `bg-no-repeat`/`bg-repeat-*` or `backgroundRepeat`.",
+      "line": 6,
+      "column": 3,
+      "endLine": 6,
+      "endColumn": 36
+    }
+  ],
+  "defensive-css-var-fallback/undefined-variable/pleat": [
+    {
+      "ruleId": "crease/defensive-css-var-fallback",
+      "message": "var(--banner-top) has no fallback and is not a defined token; use var(--banner-top, <default>).",
+      "line": 4,
+      "column": 29,
+      "endLine": 4,
+      "endColumn": 53
+    }
+  ],
+  "defensive-flex-min-size/unshrinkable-truncate/tailwind": [
+    {
+      "ruleId": "crease/defensive-flex-min-size",
+      "message": "truncating element inside a flex/grid container without `min-w-0`/`min-h-0` — it cannot shrink below its content size; add `min-w-0` (or `min-h-0` for columns).",
+      "line": 4,
+      "column": 5,
+      "endLine": 4,
+      "endColumn": 64
+    }
+  ],
+  "defensive-image-object-fit/distorted-avatar/tailwind": [
+    {
+      "ruleId": "crease/defensive-image-object-fit",
+      "message": "image with explicit width/height but no `object-fit`; add object-cover/contain to control the crop.",
+      "line": 3,
+      "column": 3,
+      "endLine": 3,
+      "endColumn": 45
+    }
+  ],
+  "defensive-input-font-size/ios-zoom/tailwind": [
+    {
+      "ruleId": "crease/defensive-input-font-size",
+      "message": "form control with font-size below 16px triggers iOS Safari auto-zoom on focus; use text-base (16px) or larger.",
+      "line": 3,
+      "column": 20,
+      "endLine": 3,
+      "endColumn": 64
+    }
+  ],
+  "defensive-sticky-grid-align/unsticky-sidebar/tailwind": [
+    {
+      "ruleId": "crease/defensive-sticky-grid-align",
+      "message": "sticky element inside a grid container without `self-start`/`align-self: start` — grid stretch prevents it from sticking.",
+      "line": 4,
+      "column": 5,
+      "endLine": 4,
+      "endColumn": 46
+    }
+  ],
+  "defensive-overscroll-contain/leaky-scroll/tailwind": [
+    {
+      "ruleId": "crease/defensive-overscroll-contain",
+      "message": "scrollable region inside an overlay without `overscroll-contain`/`overscrollBehavior` — wheel/touch scroll leaks to the page behind.",
+      "line": 6,
+      "column": 5,
+      "endLine": 6,
+      "endColumn": 62
+    }
+  ],
+  "defensive-prefer-min-size/clipped-content/tailwind": [
+    {
+      "ruleId": "crease/defensive-prefer-min-size",
+      "message": "fixed `w-[20rem]` on a layout container clips overflowing content; prefer `min-w-[20rem]`.",
+      "line": 3,
+      "column": 18,
+      "endLine": 3,
+      "endColumn": 38
+    },
+    {
+      "ruleId": "shadcn/no-arbitrary-values",
+      "message": "\"w-[20rem]\" hardcodes an off-token value. Use a theme token or scale value instead. See the Crease design-system lint documentation for approved exceptions.",
+      "line": 3,
+      "column": 18,
+      "endLine": 3,
+      "endColumn": 38
     }
   ]
 }
@@ -603,6 +757,23 @@ export const LINT_CLI_OUTPUT: Readonly<
       "exitCode": 0,
       "lines": [
         "scope: 0 enforcement changes against main"
+      ]
+    }
+  },
+  "defensive-scrollbar-gutter/page-root-overflow": {
+    "bad": {
+      "command": "npx creaseui-lint css",
+      "exitCode": 1,
+      "lines": [
+        "violation src/styles.css:2 page root scrolls without `scrollbar-gutter: stable` — the layout shifts when the scrollbar appears (defensive-scrollbar-gutter)",
+        "css: 1 stylesheets, 1 violations, 0 unverifiable"
+      ]
+    },
+    "good": {
+      "command": "npx creaseui-lint css",
+      "exitCode": 0,
+      "lines": [
+        "css: 1 stylesheets, 0 violations, 0 unverifiable"
       ]
     }
   }

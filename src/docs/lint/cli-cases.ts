@@ -144,4 +144,31 @@ export const view = <Msg>(h: HtmlBuilder<Msg>): Html =>
     goodReinit: false,
     expect: 'changes eslint.config.js',
   },
+  {
+    check: 'defensive-scrollbar-gutter',
+    id: 'page-root-overflow',
+    title: 'A page root that shifts when the scrollbar appears',
+    description:
+      'body scrolls without scrollbar-gutter, so every page jumps sideways the moment content grows past the viewport.',
+    command: ['css'],
+    setup: [mainEntry],
+    baseline: false,
+    bad: {
+      path: 'src/styles.css',
+      contents: `body {
+  overflow-y: auto;
+}
+`,
+    },
+    good: {
+      path: 'src/styles.css',
+      contents: `body {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+`,
+    },
+    goodReinit: false,
+    expect: 'layout shifts when the scrollbar appears',
+  },
 ]
