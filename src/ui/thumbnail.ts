@@ -43,7 +43,7 @@ export type ThumbnailProps<Msg> = Readonly<{
 const CONTAINER_CLASS =
   'relative inline-flex w-16 shrink-0 isolate flex-col group/thumbnail'
 const IMAGE_CONTAINER_CLASS =
-  'relative aspect-square w-full overflow-hidden rounded-md bg-muted'
+  'relative aspect-square w-full min-w-0 overflow-hidden rounded-md bg-muted'
 const IMAGE_CLASS = 'block h-full w-full object-cover'
 const INSET_BORDER_CLASS =
   'pointer-events-none absolute inset-0 rounded-[inherit] border border-solid border-input'

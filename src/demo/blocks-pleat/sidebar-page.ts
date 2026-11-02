@@ -293,7 +293,7 @@ const searchStyles = {
     borderRightStyle: 'solid',
     borderRightWidth: 1,
     height: '100%',
-    width: 'calc(var(--sidebar-width-icon) + 1px)',
+    width: 'calc(var(--sidebar-width-icon, 3rem) + 1px)',
   }),
   mailColumn: Style.make({
     backgroundColor: complexTokens.sidebar,

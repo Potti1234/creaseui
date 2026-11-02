@@ -42,7 +42,7 @@ const styles = stylex.create({
   ghostViewport: { maxHeight: '16rem', overflowY: 'auto' },
   content: {
     minWidth: '8rem',
-    width: 'var(--button-width)',
+    width: 'var(--button-width, 8rem)',
   },
   trigger: {
     boxShadow: {

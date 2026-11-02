@@ -42,7 +42,7 @@ const styles = {
   contents: Style.make({ display: 'contents' }),
   ghostContent: Style.make({ outlineStyle: 'none' }),
   ghostViewport: Style.make({ maxHeight: '16rem', overflowY: 'auto' }),
-  content: Style.make({ minWidth: '8rem', width: 'var(--button-width)' }),
+  content: Style.make({ minWidth: '8rem', width: 'var(--button-width, 8rem)' }),
   trigger: Style.make({
     boxShadow: foundationTokens.shadowXs,
     color: tokens.foreground,

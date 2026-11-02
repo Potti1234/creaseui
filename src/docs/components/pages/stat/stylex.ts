@@ -16,7 +16,7 @@ const styles = stylex.create({
   grid: {
     gap: '1rem',
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 12rem), 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 12rem), 1fr))',
   },
   row: { gap: '2rem', alignItems: 'flex-end', display: 'flex' },
   sparkline: {

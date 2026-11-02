@@ -285,7 +285,7 @@ const styles = {
     zIndex: 50,
     maxWidth: 'calc(100vw - 2rem)',
     minWidth: '8rem',
-    width: 'var(--button-width)',
+    width: 'var(--button-width, 8rem)',
   }),
   clearButton: Style.make({
     borderRadius: foundationTokens.radiusSm,

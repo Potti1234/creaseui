@@ -158,13 +158,13 @@ const MENU_ITEM_TITLE_CLASS = 'text-sm leading-5 font-semibold text-foreground'
 const MENU_ITEM_DESC_CLASS = 'text-xs leading-4 text-muted-foreground'
 
 const MEGA_CONTAINER_CLASS =
-  'z-50 box-border flex max-h-[min(70vh,480px)] flex-col overflow-hidden rounded-lg border-t border-border bg-popover text-popover-foreground shadow-md outline-none'
+  'z-50 box-border flex max-h-[min(70vh,480px)] min-h-0 flex-col overflow-hidden rounded-lg border-t border-border bg-popover text-popover-foreground shadow-md outline-none'
 const MEGA_CONTENT_CLASS =
   'box-border flex max-w-[min(960px,calc(100dvw-2rem))] flex-wrap gap-6 overflow-y-auto overscroll-contain px-3 py-3'
 const MEGA_ITEMS_CLASS =
   'grid min-w-0 shrink grow-2 basis-[300px] grid-cols-2 gap-2'
 const MEGA_FEATURED_CLASS =
-  'flex shrink grow basis-[200px] flex-col overflow-hidden rounded-lg bg-muted'
+  'flex min-w-0 shrink grow basis-[200px] flex-col overflow-hidden rounded-lg bg-muted'
 
 const FEATURED_IMAGE_CLASS = 'block h-[140px] w-full object-cover'
 const FEATURED_BODY_CLASS = 'flex flex-col gap-2 p-4'
@@ -179,8 +179,9 @@ const HEADING_INTERACTIVE_CLASS =
   'cursor-pointer rounded-md border-none bg-transparent font-[inherit] text-start transition-colors duration-150 hover:bg-accent'
 const HEADING_TEXT_CLASS = 'flex min-w-0 flex-col'
 const HEADING_TITLE_CLASS =
-  'truncate text-[17px] leading-6 font-semibold text-foreground no-underline'
-const HEADING_SUB_CLASS = 'truncate text-xs leading-4 text-muted-foreground'
+  'min-w-0 truncate text-[17px] leading-6 font-semibold text-foreground no-underline'
+const HEADING_SUB_CLASS =
+  'min-w-0 truncate text-xs leading-4 text-muted-foreground'
 const HEADING_ROW_CLASS = 'flex items-center gap-1'
 const HEADING_LOGO_CLASS = 'flex shrink-0 items-center justify-center'
 const HEADING_CHEVRON_CLASS =

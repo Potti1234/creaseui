@@ -13,9 +13,9 @@ const styles = stylex.create({
   wrap: { gap: '1rem', display: 'grid', maxWidth: '28rem', width: '100%' },
   action: { gridColumnStart: '2', marginTop: '0.5rem' },
   amber: {
-    borderColor: 'var(--color-amber-200)',
-    backgroundColor: 'var(--color-amber-50)',
-    color: 'var(--color-amber-900)',
+    borderColor: 'var(--color-amber-200, #fde68a)',
+    backgroundColor: 'var(--color-amber-50, #fffbeb)',
+    color: 'var(--color-amber-900, #78350f)',
   },
 })
 

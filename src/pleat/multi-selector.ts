@@ -271,7 +271,7 @@ const styles = {
     minWidth: '8rem',
     overflowX: 'hidden',
     overflowY: 'auto',
-    width: 'var(--button-width)',
+    width: 'var(--button-width, 8rem)',
   }),
   search: Style.make({
     padding: '0.5rem',

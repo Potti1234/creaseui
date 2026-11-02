@@ -19,9 +19,9 @@ const styles = {
   action: Style.make({ gridColumnStart: '2', marginTop: '0.5rem' }),
   iconSvg: Style.make({ height: '1rem', width: '1rem' }),
   amber: Style.make({
-    borderColor: 'var(--color-amber-200)',
-    backgroundColor: 'var(--color-amber-50)',
-    color: 'var(--color-amber-900)',
+    borderColor: 'var(--color-amber-200, #fde68a)',
+    backgroundColor: 'var(--color-amber-50, #fffbeb)',
+    color: 'var(--color-amber-900, #78350f)',
   }),
 }
 

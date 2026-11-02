@@ -23,7 +23,7 @@ const styles = stylex.create({
   grid: {
     gap: '1rem',
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
     maxWidth: '640px',
   },
   spanningCard: {

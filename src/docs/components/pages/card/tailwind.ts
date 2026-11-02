@@ -361,7 +361,7 @@ export const cardTailwindPreviewProgram = definePreviewProgram<
                     h.div(
                       [
                         h.Class(
-                          '-mx-(--card-spacing) max-h-48 space-y-4 overflow-y-scroll border-t bg-muted/50 px-(--card-spacing) py-4 text-sm leading-relaxed',
+                          '-mx-(--card-spacing) max-h-48 space-y-4 overflow-y-auto border-t bg-muted/50 px-(--card-spacing) py-4 text-sm leading-relaxed',
                         ),
                       ],
                       [

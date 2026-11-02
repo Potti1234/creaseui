@@ -285,7 +285,7 @@ const searchStyles = stylex.create({
   },
   fullWidth: { width: '100%' },
   /* TW-09 nested sidebars: flex-row wrapper inside the 350px icon sidebar —
-     rail 'w-[calc(var(--sidebar-width-icon)+1px)] border-r' + 'flex-1' mail. */
+     rail 'w-[calc(var(--sidebar-width-icon, 3rem)+1px)] border-r' + 'flex-1' mail. */
   mailRow: {
     display: 'flex',
     flexDirection: 'row',
@@ -302,7 +302,7 @@ const searchStyles = stylex.create({
     borderRightStyle: 'solid',
     borderRightWidth: 1,
     height: '100%',
-    width: 'calc(var(--sidebar-width-icon) + 1px)',
+    width: 'calc(var(--sidebar-width-icon, 3rem) + 1px)',
   },
   mailColumn: {
     backgroundColor: complexTokens.sidebar,
