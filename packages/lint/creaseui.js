@@ -106,6 +106,12 @@ export const creaseui = (options = {}) => {
      lengths; colours stay checked against the theme. */
   const rendererConfig = { pleat, stylex, tailwind }[strict.renderer]({
     arbitraryValues: false,
+    /* Registered implementation sources (installed Crease components and
+       whole-file raw grants) are library code: they already passed the
+       library's own lint, and consumers cannot fix them. The defensive
+       family audits application code — the application and composing
+       entries below keep it. */
+    defensive: false,
     files: raw,
   })
 
