@@ -227,7 +227,13 @@ const renderCitation = <Msg>(
   const children: ReadonlyArray<Html | string> = [
     ...(source.icon === undefined
       ? []
-      : [h.img([h.Src(source.icon), h.Alt(''), h.Class('size-3 shrink-0')])]),
+      : [
+          h.img([
+            h.Src(source.icon),
+            h.Alt(''),
+            h.Class('size-3 shrink-0 object-contain'),
+          ]),
+        ]),
     h.span([h.Class('truncate')], [source.title]),
   ]
   const chipClass =

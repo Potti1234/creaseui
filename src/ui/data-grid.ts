@@ -211,7 +211,7 @@ const cellContent = <Row>(
                   h.Attribute('rel', 'noopener noreferrer'),
                   h.Tabindex(-1),
                   h.Class(
-                    'truncate text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary/60',
+                    'min-w-0 truncate text-primary underline decoration-primary/30 underline-offset-2 hover:decoration-primary/60',
                   ),
                 ],
                 [column.get(row)],
@@ -265,7 +265,7 @@ const cellContent = <Row>(
         [h.Class('flex h-full items-center px-2')],
         [
           h.span(
-            [h.Class('truncate text-muted-foreground')],
+            [h.Class('min-w-0 truncate text-muted-foreground')],
             [column.get(row)],
           ),
         ],
@@ -639,7 +639,7 @@ const cellEditor = <Row>(
                       { class: 'size-3.5 shrink-0 text-muted-foreground' },
                       h,
                     ),
-                    h.span([h.Class('flex-1 truncate')], [file.name]),
+                    h.span([h.Class('min-w-0 flex-1 truncate')], [file.name]),
                     h.span(
                       [h.Class('shrink-0 text-xs text-muted-foreground')],
                       [formatFileSize(file.size)],
@@ -1244,7 +1244,10 @@ export const dataGrid = <Row>(
                               },
                               h,
                             ),
-                            h.span([h.Class('truncate')], [column.header]),
+                            h.span(
+                              [h.Class('min-w-0 truncate')],
+                              [column.header],
+                            ),
                             ...(entry === undefined
                               ? []
                               : [
@@ -1452,7 +1455,7 @@ export const dataGrid = <Row>(
                       h.div(
                         [
                           h.Class(
-                            'sticky inset-s-0 flex items-center gap-2 px-3 text-muted-foreground',
+                            'sticky inset-s-0 flex items-center gap-2 self-start px-3 text-muted-foreground',
                           ),
                         ],
                         [

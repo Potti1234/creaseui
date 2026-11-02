@@ -15,7 +15,7 @@ import { className } from './style'
 
 const styles = {
   contents: Style.make({ display: 'contents' }),
-  content: Style.make({ minWidth: '8rem', width: 'var(--button-width)' }),
+  content: Style.make({ minWidth: '8rem', width: 'var(--button-width, 8rem)' }),
   inputWrapperFix: Style.make({ position: 'relative', height: '2.25rem' }).pipe(
     Style.when(When.data('size', 'sm'), { height: '2rem' }),
     Style.when(When.before, {

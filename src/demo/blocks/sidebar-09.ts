@@ -383,7 +383,8 @@ const iconSidebar = (model: Model, h: HtmlBuilder<Message>): Html => {
   return sidebar(
     {
       collapsible: 'none',
-      class: 'w-full md:w-[calc(var(--sidebar-width-icon)+1px)]! border-r',
+      class:
+        'w-full md:w-[calc(var(--sidebar-width-icon, 3rem)+1px)]! border-r',
       children: [
         sidebarHeader(
           {

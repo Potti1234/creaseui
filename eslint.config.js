@@ -8,6 +8,20 @@ import {
 
 import { stylexStyleResolution } from './stylex.config.js'
 
+/* Heuristic defensive-css rules kept off in demo/docs reference copies —
+   those files mirror upstream examples verbatim. src/ui keeps the fixable
+   subset (flex-min-size, image-object-fit, sticky-grid-align,
+   overscroll-contain) on; prefer-min-size and input-font-size are exempted
+   everywhere creaseui ships components (compact controls are deliberate). */
+const DEFENSIVE_WARN_RULES = [
+  'defensive-flex-min-size',
+  'defensive-image-object-fit',
+  'defensive-input-font-size',
+  'defensive-overscroll-contain',
+  'defensive-prefer-min-size',
+  'defensive-sticky-grid-align',
+]
+
 export const stylexPropLimits = {
   '*Color': {
     limit: ['transparent', 'currentColor'],
@@ -125,6 +139,11 @@ export default tseslint.config(
     arbitraryValues: false,
     restyle: false,
     staticClasses: false,
+    /* creaseui's compact controls intentionally use sub-16px text
+       (input-font-size) and fixed control geometry (prefer-min-size). */
+    defensive: {
+      off: ['defensive-input-font-size', 'defensive-prefer-min-size'],
+    },
   }),
   creaseTailwind({
     files: [
@@ -139,6 +158,8 @@ export default tseslint.config(
       'src/demo/board-constrained.{ts,tsx}',
     ],
     severity: 'warn',
+    /* Reference copies: the heuristic warn tier is advisory-only here. */
+    defensive: { off: DEFENSIVE_WARN_RULES },
     contracts: [
       {
         pattern: '(Content|Footer|Header|Group|Item|Panel|Row)$',
@@ -148,30 +169,43 @@ export default tseslint.config(
     ],
   }),
   creaseStylex({
+    files: ['src/stylex/**/*.{ts,tsx}'],
+    /* StyleX `':hover'` keys are the renderer's established idiom
+       (~190 sites) — guarded-hoist belongs in a dedicated migration. */
+    defensive: {
+      off: [
+        'defensive-hover-media',
+        'defensive-input-font-size',
+        'defensive-prefer-min-size',
+      ],
+    },
+    propLimits: stylexPropLimits,
+    styleResolution: stylexStyleResolution,
+  }),
+  creaseStylex({
     files: [
-      'src/stylex/**/*.{ts,tsx}',
       'src/demo/board-stylex.{ts,tsx}',
       'src/demo/stylex-cards/**/*.{ts,tsx}',
       'src/demo/blocks-stylex/**/*.{ts,tsx}',
       'src/demo/charts-stylex/**/*.{ts,tsx}',
     ],
     propLimits: stylexPropLimits,
+    severity: 'warn',
     styleResolution: stylexStyleResolution,
+    defensive: { off: [...DEFENSIVE_WARN_RULES, 'defensive-hover-media'] },
   }),
   creaseStylex({
     files: ['src/docs/components/pages/**/stylex.{ts,tsx}'],
     propLimits: {},
     severity: 'warn',
     styleResolution: stylexStyleResolution,
+    defensive: { off: [...DEFENSIVE_WARN_RULES, 'defensive-hover-media'] },
   }),
   creasePleat({
-    files: [
-      'src/pleat/**/*.{ts,tsx}',
-      'src/demo/board-pleat.{ts,tsx}',
-      'src/demo/pleat-cards/**/*.{ts,tsx}',
-      'src/demo/blocks-pleat/**/*.{ts,tsx}',
-      'src/demo/charts-pleat/**/*.{ts,tsx}',
-    ],
+    files: ['src/pleat/**/*.{ts,tsx}'],
+    defensive: {
+      off: ['defensive-input-font-size', 'defensive-prefer-min-size'],
+    },
     propLimits: pleatPropLimits,
     tokenFiles: [
       '/foundations',
@@ -183,9 +217,29 @@ export default tseslint.config(
     ],
   }),
   creasePleat({
+    files: [
+      'src/demo/board-pleat.{ts,tsx}',
+      'src/demo/pleat-cards/**/*.{ts,tsx}',
+      'src/demo/blocks-pleat/**/*.{ts,tsx}',
+      'src/demo/charts-pleat/**/*.{ts,tsx}',
+    ],
+    propLimits: pleatPropLimits,
+    severity: 'warn',
+    tokenFiles: [
+      '/foundations',
+      '/tokens',
+      '/theme',
+      '/markers',
+      '/reset',
+      '/composition/',
+    ],
+    defensive: { off: DEFENSIVE_WARN_RULES },
+  }),
+  creasePleat({
     files: ['src/docs/components/pages/**/pleat.{ts,tsx}'],
     propLimits: {},
     severity: 'warn',
+    defensive: { off: DEFENSIVE_WARN_RULES },
   }),
   constrainedStylex({ files: ['src/demo/board-constrained.{ts,tsx}'] }),
 )

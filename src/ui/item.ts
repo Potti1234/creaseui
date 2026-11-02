@@ -145,7 +145,7 @@ export const itemDescription = <Msg>(
       h.Class(
         cn(
           'line-clamp-2 text-sm leading-normal font-normal text-balance text-muted-foreground',
-          '[&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary',
+          '[&>a]:underline [&>a]:underline-offset-4 [@media(hover:hover)]:[&>a:hover]:text-primary',
           props.class,
         ),
       ),

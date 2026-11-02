@@ -3,6 +3,8 @@ import path from 'node:path'
 
 import postcss from 'postcss'
 
+import { createDefensiveCss } from './defensive-css.js'
+
 /* Authored CSS policy. Global stylesheets may import frameworks and fonts,
    define and bind semantic tokens and carry a narrow base/reset; component
    appearance belongs to component source. Anything the parser cannot place is
@@ -47,8 +49,15 @@ const BASE_PROPERTIES = new Set([
   'min-height',
   'min-width',
   'outline-color',
+  'overscroll-behavior',
+  'overscroll-behavior-x',
+  'overscroll-behavior-y',
+  'overflow',
+  'overflow-x',
+  'overflow-y',
   'padding',
   'scroll-behavior',
+  'scrollbar-gutter',
   'tab-size',
   'text-rendering',
   'text-size-adjust',
@@ -378,12 +387,27 @@ export const createCssAudit = ({
           for (const role of themeColorRoles(root)) projectRoles.add(role)
           for (const size of themeNames(root, '--text-'))
             projectTextSizes.add(size)
+          root.walkDecls(decl => {
+            if (decl.prop.startsWith('--')) declaredVariables.add(decl.prop)
+          })
         } catch {
           /* unparsable files are reported when they are audited */
         }
     }
     return projectRoles
   }
+
+  /* Custom properties a stylesheet may read without a fallback: every `--x:`
+     declaration in the project's stylesheets (lazily scanned with the role
+     inventory) plus the `--x` declarations of the text audited so far. */
+  const declaredVariables = new Set()
+  const projectScanned = () => {
+    colorRoles()
+    return declaredVariables
+  }
+  const defensive = createDefensiveCss({
+    declared: name => projectScanned().has(name),
+  })
   /* A colour utility is accepted only when its role is a theme colour and
      no other Tailwind utility shares its spelling. */
   const baseApplyVerdict = token => {
@@ -514,6 +538,10 @@ export const createCssAudit = ({
       const kind = kinds.reduce((worst, next) =>
         RANK[next] > RANK[worst] ? next : worst,
       )
+      /* Defensive CSS checks: registered component CSS, plus the page-root
+         scrollbar-gutter policy that only global selectors can express. */
+      if (owned) defensive.checkOwnedRule(file, node, selectors, add)
+      else defensive.checkScrollRoot(file, node, selectors, add)
       if (owned) {
         const unscoped = selectors.find(
           selector =>
@@ -660,6 +688,9 @@ export const createCssAudit = ({
       }
     for (const role of themeColorRoles(root)) auditedRoles.add(role)
     for (const size of themeNames(root, '--text-')) auditedTextSizes.add(size)
+    root.walkDecls(decl => {
+      if (decl.prop.startsWith('--')) declaredVariables.add(decl.prop)
+    })
     visit(file, root, [], isOwned(file))
   }
 

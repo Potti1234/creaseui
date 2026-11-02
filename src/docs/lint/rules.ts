@@ -1,4 +1,8 @@
-export type LintRuleGroupId = 'application' | 'component-authoring' | 'cli'
+export type LintRuleGroupId =
+  | 'application'
+  | 'component-authoring'
+  | 'defensive'
+  | 'cli'
 
 export type LintRuleSummary = Readonly<{
   id: string
@@ -125,6 +129,98 @@ export const LINT_RULE_GROUPS: ReadonlyArray<LintRuleGroup> = [
         title: 'No arbitrary values',
         summary:
           'Arbitrary Tailwind values instead of the scale (shadcn/no-arbitrary-values).',
+      },
+    ],
+  },
+  {
+    id: 'defensive',
+    label: 'Defensive CSS',
+    description:
+      'Styles that break on touch devices, overflow, slow networks or missing content — the defensivecss.dev tips, as lint rules.',
+    rules: [
+      {
+        id: 'defensive-prefer-overflow-auto',
+        title: 'Prefer overflow: auto',
+        summary:
+          'overflow: scroll forces disabled scrollbars when nothing overflows.',
+      },
+      {
+        id: 'defensive-no-space-between-wrap',
+        title: 'No justify-between + flex-wrap',
+        summary:
+          'Wrapped rows lose spacing control with justify-between; use gap.',
+      },
+      {
+        id: 'defensive-auto-fill-not-fit',
+        title: 'auto-fill, not auto-fit',
+        summary:
+          'repeat(auto-fit, minmax(…)) collapses empty tracks and stretches items.',
+      },
+      {
+        id: 'defensive-hover-media',
+        title: 'Guard :hover with media query',
+        summary:
+          'Raw :hover sticks after taps on touch devices; wrap it in @media (hover: hover).',
+      },
+      {
+        id: 'defensive-bg-image-fallback',
+        title: 'Background-image fallback color',
+        summary:
+          'A url() background without a fallback color leaves content unstyled while it loads.',
+      },
+      {
+        id: 'defensive-background-repeat',
+        title: 'Explicit background-repeat',
+        summary:
+          'url() backgrounds tile by default unless background-repeat says otherwise.',
+      },
+      {
+        id: 'defensive-css-var-fallback',
+        title: 'Fallback for custom properties',
+        summary:
+          'var(--x) without a fallback resolves to nothing when --x is undefined.',
+      },
+      {
+        id: 'defensive-scrollbar-gutter',
+        title: 'Stable scrollbar gutter',
+        summary:
+          'Page roots that scroll without scrollbar-gutter shift the layout when the bar appears.',
+      },
+      {
+        id: 'defensive-flex-min-size',
+        title: 'Flex children need min-size 0',
+        summary:
+          'Truncating children cannot shrink below content size without min-w-0/min-h-0.',
+      },
+      {
+        id: 'defensive-image-object-fit',
+        title: 'Sized images need object-fit',
+        summary:
+          'An image with fixed width/height distorts or crops badly without object-fit.',
+      },
+      {
+        id: 'defensive-input-font-size',
+        title: 'Input font-size ≥ 16px',
+        summary:
+          'Smaller text on form controls triggers iOS Safari auto-zoom on focus.',
+      },
+      {
+        id: 'defensive-sticky-grid-align',
+        title: 'Sticky needs alignment in grids',
+        summary:
+          'Grid stretch keeps a sticky child at full height so it never sticks.',
+      },
+      {
+        id: 'defensive-overscroll-contain',
+        title: 'Overscroll containment in overlays',
+        summary:
+          'Scrollable overlay regions leak wheel/touch scroll to the page behind.',
+      },
+      {
+        id: 'defensive-prefer-min-size',
+        title: 'Prefer min-size over fixed size',
+        summary:
+          'Fixed h-[Npx]/w-[Npx] clips overflowing content; min-* lets it grow.',
       },
     ],
   },

@@ -83,7 +83,7 @@ const styles = {
     borderTopStyle: 'solid',
     borderTopWidth: 1,
     maxHeight: '12rem',
-    overflowY: 'scroll',
+    overflowY: 'auto',
   }),
   edgeFooterInner: Style.make({
     gap: '0.5rem',

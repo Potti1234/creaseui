@@ -75,7 +75,8 @@ const TRIGGER_GHOST_CLASS =
 const TRIGGER_CONTENT_CLASS =
   'flex min-w-0 flex-1 items-center gap-1 overflow-hidden'
 
-const TRIGGER_TEXT_CLASS = 'overflow-hidden text-ellipsis whitespace-nowrap'
+const TRIGGER_TEXT_CLASS =
+  'min-w-0 overflow-hidden text-ellipsis whitespace-nowrap'
 
 const TRIGGER_PLACEHOLDER_CLASS = 'text-muted-foreground'
 

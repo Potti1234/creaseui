@@ -70,7 +70,7 @@ export const avatarImage = <Msg>(
       : [h.DataAttribute('loading', '')]),
     h.Class(
       cn(
-        'relative z-10 aspect-square size-full data-[loading]:opacity-0',
+        'relative z-10 aspect-square size-full object-cover data-[loading]:opacity-0',
         props.class,
       ),
     ),
