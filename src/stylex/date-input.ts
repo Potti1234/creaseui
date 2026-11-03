@@ -111,7 +111,9 @@ const styles = stylex.create({
     boxShadow: {
       default: foundationTokens.shadowXs,
       ':focus-within': `inset 0 0 0 2px ${foundationTokens.ringSoft}`,
-      ':hover': `inset 0 0 0 2px ${foundationTokens.inputDark}`,
+      '@media (hover: hover)': {
+        ':hover': `inset 0 0 0 2px ${foundationTokens.inputDark}`,
+      },
     },
     display: 'flex',
     outlineStyle: 'none',
@@ -172,11 +174,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
     },
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',
@@ -207,11 +209,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
     },
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',

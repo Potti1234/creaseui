@@ -120,9 +120,11 @@ const styles = stylex.create({
     boxShadow: {
       default: tokens.shadowNone,
       ':focus-within': `inset 0 0 0 2px color-mix(in srgb, ${tokens.ring} 20%, transparent)`,
-      /* astryx: hover shows a 2px inset tint of the border color; focus-within
+      '@media (hover: hover)': {
+        /* astryx: hover shows a 2px inset tint of the border color; focus-within
          shows the accent-muted inset. Crease maps accent→ring. */
-      ':hover:not(:focus-within)': `inset 0 0 0 2px color-mix(in srgb, ${tokens.input} 30%, transparent)`,
+        ':hover:not(:focus-within)': `inset 0 0 0 2px color-mix(in srgb, ${tokens.input} 30%, transparent)`,
+      },
     },
   },
   wrapperDisabled: {
@@ -181,11 +183,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': tokens.muted,
+      '@media (hover: hover)': { ':hover': tokens.muted },
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
     },
     cursor: interactionTokens.cursorAction,
     display: 'flex',
@@ -232,11 +234,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.background,
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.accentForeground,
+      '@media (hover: hover)': { ':hover': tokens.accentForeground },
     },
     cursor: {
       default: interactionTokens.cursorAction,

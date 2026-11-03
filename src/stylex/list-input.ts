@@ -197,11 +197,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': tokens.muted,
+      '@media (hover: hover)': { ':hover': tokens.muted },
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
     },
     cursor: {
       default: interactionTokens.cursorAction,

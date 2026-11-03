@@ -43,7 +43,10 @@ const styles = stylex.create({
     justifyContent: 'space-between',
   },
   forgotLink: {
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
+    },
     fontSize: '0.75rem',
     fontWeight: 500,
     letterSpacing: '0.05em',

@@ -84,7 +84,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: foundationTokens.transparent,
-      ':hover': foundationTokens.muted,
+      '@media (hover: hover)': { ':hover': foundationTokens.muted },
     },
     color: tokens.foreground,
     display: 'inline-flex',

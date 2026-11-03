@@ -46,7 +46,10 @@ const styles = stylex.create({
     display: 'inline-flex',
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
-    textDecorationLine: { default: 'none', ':hover': 'underline' },
+    textDecorationLine: {
+      default: 'none',
+      '@media (hover: hover)': { ':hover': 'underline' },
+    },
     textUnderlineOffset: '4px',
   },
   inputWidth: { width: '75%' },

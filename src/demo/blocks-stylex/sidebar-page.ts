@@ -267,11 +267,13 @@ const searchStyles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': complexTokens.sidebarAccent,
+      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
     },
     color: {
       default: complexTokens.sidebarForeground,
-      ':hover': complexTokens.sidebarAccentForeground,
+      '@media (hover: hover)': {
+        ':hover': complexTokens.sidebarAccentForeground,
+      },
     },
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',
@@ -413,12 +415,14 @@ const searchStyles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': complexTokens.sidebarAccent,
       ':active': complexTokens.sidebarAccent,
+      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
     },
     color: {
       default: complexTokens.sidebarForeground,
-      ':hover': complexTokens.sidebarAccentForeground,
+      '@media (hover: hover)': {
+        ':hover': complexTokens.sidebarAccentForeground,
+      },
     },
     cursor: interactionTokens.cursorAction,
     display: 'flex',
@@ -526,11 +530,13 @@ const searchStyles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': complexTokens.sidebarAccent,
+      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
     },
     color: {
       default: complexTokens.sidebarForeground,
-      ':hover': complexTokens.sidebarAccentForeground,
+      '@media (hover: hover)': {
+        ':hover': complexTokens.sidebarAccentForeground,
+      },
     },
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',
@@ -632,7 +638,7 @@ const searchStyles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': complexTokens.sidebarAccent,
+      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
     },
     color: complexTokens.sidebarForeground,
     display: 'flex',
@@ -640,7 +646,7 @@ const searchStyles = stylex.create({
     opacity: {
       default: 0,
       ':focus-visible': 1,
-      ':hover': 1,
+      '@media (hover: hover)': { ':hover': 1 },
     },
     outlineStyle: 'none',
     position: 'absolute',
@@ -655,7 +661,9 @@ const searchStyles = stylex.create({
   dimmedButton: {
     color: {
       default: complexTokens.sidebarForegroundDim,
-      ':hover': complexTokens.sidebarAccentForeground,
+      '@media (hover: hover)': {
+        ':hover': complexTokens.sidebarAccentForeground,
+      },
     },
   },
   /* TW-12/15 calendar checkbox 'size-4 rounded-sm border
@@ -711,7 +719,7 @@ const searchStyles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: complexTokens.sidebarAccent,
-      ':hover': complexTokens.sidebarAccent,
+      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
     },
     color: complexTokens.sidebarAccentForeground,
     cursor: interactionTokens.cursorAction,

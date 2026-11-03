@@ -19,7 +19,10 @@ const styles = stylex.create({
     marginTop: '0.75rem',
   },
   link: {
-    color: { default: 'inherit', ':hover': tokens.primary },
+    color: {
+      default: 'inherit',
+      '@media (hover: hover)': { ':hover': tokens.primary },
+    },
     textDecorationLine: 'underline',
     textUnderlineOffset: '4px',
   },

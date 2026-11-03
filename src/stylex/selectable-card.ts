@@ -44,8 +44,10 @@ const styles = stylex.create({
   interactive: {
     backgroundImage: {
       default: 'none',
-      ':hover': `linear-gradient(${foundationTokens.foregroundFaint}, ${foundationTokens.foregroundFaint})`,
       ':active': `linear-gradient(${foundationTokens.foregroundSoft}, ${foundationTokens.foregroundSoft})`,
+      '@media (hover: hover)': {
+        ':hover': `linear-gradient(${foundationTokens.foregroundFaint}, ${foundationTokens.foregroundFaint})`,
+      },
     },
     color: 'inherit',
     cursor: interactionTokens.cursorAction,

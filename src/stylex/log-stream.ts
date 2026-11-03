@@ -221,13 +221,13 @@ const styles = stylex.create({
   rowButtonHover: {
     backgroundColor: {
       default: 'transparent',
-      ':hover': complexTokens.mutedSurface,
+      '@media (hover: hover)': { ':hover': complexTokens.mutedSurface },
     },
   },
   rowButtonHoverTerminal: {
     backgroundColor: {
       default: 'transparent',
-      ':hover': logStreamTerminalInk.hover,
+      '@media (hover: hover)': { ':hover': logStreamTerminalInk.hover },
     },
   },
   timestamp: {
@@ -278,7 +278,10 @@ const styles = stylex.create({
     paddingBlock: '0.25rem',
     paddingInline: '0.75rem',
     alignItems: 'center',
-    backgroundColor: { default: tokens.card, ':hover': tokens.muted },
+    backgroundColor: {
+      default: tokens.card,
+      '@media (hover: hover)': { ':hover': tokens.muted },
+    },
     boxShadow: foundationTokens.shadowMd,
     color: tokens.foreground,
     cursor: interactionTokens.cursorAction,
@@ -300,7 +303,7 @@ const styles = stylex.create({
     borderColor: logStreamTerminalInk.edge,
     backgroundColor: {
       default: logStreamTerminalInk.hover,
-      ':hover': logStreamTerminalInk.hoverStrong,
+      '@media (hover: hover)': { ':hover': logStreamTerminalInk.hoverStrong },
     },
     color: logStreamTerminalInk.textBright,
   },

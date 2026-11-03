@@ -101,7 +101,9 @@ const styles = stylex.create({
     boxShadow: {
       default: foundationTokens.shadowXs,
       ':focus-within': `inset 0 0 0 2px ${foundationTokens.ringSoft}`,
-      ':hover': `inset 0 0 0 2px ${foundationTokens.inputDark}`,
+      '@media (hover: hover)': {
+        ':hover': `inset 0 0 0 2px ${foundationTokens.inputDark}`,
+      },
     },
     display: 'flex',
     outlineStyle: 'none',
@@ -120,7 +122,9 @@ const styles = stylex.create({
     boxShadow: {
       default: foundationTokens.shadowXs,
       ':focus-within': `inset 0 0 0 2px ${foundationTokens.destructiveRingSoft}`,
-      ':hover': `inset 0 0 0 2px ${foundationTokens.inputDark}`,
+      '@media (hover: hover)': {
+        ':hover': `inset 0 0 0 2px ${foundationTokens.inputDark}`,
+      },
     },
   },
   wrapperError: { borderColor: tokens.destructive },
@@ -134,11 +138,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
     },
     display: 'inline-flex',
     flexShrink: 0,
@@ -176,11 +180,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
     },
     display: 'inline-flex',
     flexShrink: 0,
@@ -258,7 +262,7 @@ const styles = stylex.create({
   presetButton: {
     backgroundColor: {
       default: 'transparent',
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
     },
     borderRadius: foundationTokens.radiusMd,
     color: tokens.foreground,

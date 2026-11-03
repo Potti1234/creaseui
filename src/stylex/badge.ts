@@ -73,18 +73,21 @@ const variants = stylex.create({
     borderColor: tokens.transparent,
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.badgeMutedHover,
+      '@media (hover: hover)': { ':hover': tokens.badgeMutedHover },
     },
     color: {
       default: tokens.foreground,
-      ':hover': tokens.mutedForeground,
+      '@media (hover: hover)': { ':hover': tokens.mutedForeground },
     },
   },
   link: {
     borderColor: tokens.transparent,
     backgroundColor: tokens.transparent,
     color: tokens.primary,
-    textDecorationLine: { default: 'none', ':hover': 'underline' },
+    textDecorationLine: {
+      default: 'none',
+      '@media (hover: hover)': { ':hover': 'underline' },
+    },
     textUnderlineOffset: '0.25rem',
   },
 })
@@ -96,29 +99,29 @@ const anchor = stylex.create({
   default: {
     backgroundColor: {
       default: tokens.primary,
-      ':hover': tokens.badgePrimaryHover,
+      '@media (hover: hover)': { ':hover': tokens.badgePrimaryHover },
     },
   },
   secondary: {
     backgroundColor: {
       default: tokens.secondary,
-      ':hover': tokens.badgeSecondaryHover,
+      '@media (hover: hover)': { ':hover': tokens.badgeSecondaryHover },
     },
   },
   destructive: {
     backgroundColor: {
       default: tokens.badgeDestructiveSurface,
-      ':hover': tokens.badgeDestructiveHover,
+      '@media (hover: hover)': { ':hover': tokens.badgeDestructiveHover },
     },
   },
   outline: {
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.muted,
+      '@media (hover: hover)': { ':hover': tokens.muted },
     },
     color: {
       default: tokens.foreground,
-      ':hover': tokens.mutedForeground,
+      '@media (hover: hover)': { ':hover': tokens.mutedForeground },
     },
   },
   ghost: {},

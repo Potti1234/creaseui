@@ -141,7 +141,7 @@ const styles = stylex.create({
     borderWidth: 1,
     backgroundColor: {
       default: boardTokens.transparent,
-      ':hover': boardTokens.hover,
+      '@media (hover: hover)': { ':hover': boardTokens.hover },
     },
     color: boardTokens.text,
     fontSize: '0.875rem',
@@ -181,7 +181,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: boardTokens.transparent,
       ':focus-visible': boardTokens.hover,
-      ':hover': boardTokens.hover,
+      '@media (hover: hover)': { ':hover': boardTokens.hover },
     },
     display: 'flex',
     fontSize: '0.875rem',
@@ -217,7 +217,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: boardTokens.text,
-      ':hover': boardTokens.textMuted,
+      '@media (hover: hover)': { ':hover': boardTokens.textMuted },
     },
     color: boardTokens.textInverse,
     display: 'inline-flex',
@@ -411,7 +411,7 @@ const styles = stylex.create({
     alignItems: 'flex-end',
     backgroundColor: {
       default: boardTokens.panelField,
-      ':hover': boardTokens.hover,
+      '@media (hover: hover)': { ':hover': boardTokens.hover },
     },
     display: 'flex',
     justifyContent: 'space-between',
@@ -509,7 +509,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: boardTokens.panelField,
-      ':hover': boardTokens.hover,
+      '@media (hover: hover)': { ':hover': boardTokens.hover },
     },
     display: 'flex',
     textAlign: 'left',
@@ -588,7 +588,7 @@ const styles = stylex.create({
     paddingInline: '0.5rem',
     backgroundColor: {
       default: boardTokens.hover,
-      ':hover': boardTokens.selected,
+      '@media (hover: hover)': { ':hover': boardTokens.selected },
     },
     color: boardTokens.textMuted,
     fontSize: '0.75rem',
@@ -630,7 +630,7 @@ const styles = stylex.create({
     alignItems: 'flex-start',
     backgroundColor: {
       default: boardTokens.panelField,
-      ':hover': boardTokens.hover,
+      '@media (hover: hover)': { ':hover': boardTokens.hover },
     },
     display: 'flex',
     flexDirection: 'column',

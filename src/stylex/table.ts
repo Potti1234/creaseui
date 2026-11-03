@@ -54,7 +54,7 @@ const styles = stylex.create({
   row: {
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': complexTokens.mutedSurface,
+      '@media (hover: hover)': { ':hover': complexTokens.mutedSurface },
     },
     transitionProperty: 'color, background-color',
     borderBottomColor: tokens.border,

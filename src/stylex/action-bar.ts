@@ -78,21 +78,18 @@ const styles = stylex.create({
   itemDestructive: {
     backgroundColor: {
       default: 'transparent',
-      ':hover': foundationTokens.destructiveSoft,
+      '@media (hover: hover)': { ':hover': foundationTokens.destructiveSoft },
     },
     color: {
       default: tokens.destructive,
-      ':hover': tokens.destructive,
+      '@media (hover: hover)': { ':hover': tokens.destructive },
     },
   },
   close: {
     /* TW rounded-xs (2px). */
     borderRadius: complexTokens.smallRadius,
     color: 'inherit',
-    opacity: {
-      default: 0.7,
-      ':hover': 1,
-    },
+    opacity: { default: 0.7, '@media (hover: hover)': { ':hover': 1 } },
   },
   separator: {
     backgroundColor: tokens.border,

@@ -142,7 +142,9 @@ const styles = stylex.create({
     boxShadow: {
       default: tokens.shadowNone,
       ':focus-within': `inset 0 0 0 2px color-mix(in srgb, ${tokens.ring} 20%, transparent)`,
-      ':hover:not(:focus-within)': `inset 0 0 0 2px color-mix(in srgb, ${tokens.input} 30%, transparent)`,
+      '@media (hover: hover)': {
+        ':hover:not(:focus-within)': `inset 0 0 0 2px color-mix(in srgb, ${tokens.input} 30%, transparent)`,
+      },
     },
   },
   wrapperDisabled: {
@@ -203,11 +205,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': tokens.muted,
+      '@media (hover: hover)': { ':hover': tokens.muted },
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
     },
     cursor: interactionTokens.cursorAction,
     display: 'flex',

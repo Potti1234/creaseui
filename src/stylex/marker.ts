@@ -64,7 +64,7 @@ const styles = stylex.create({
   interactive: {
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
     },
     cursor: interactionTokens.cursorAction,
     transitionDuration: interactionTokens.motionFast,

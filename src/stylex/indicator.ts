@@ -43,22 +43,22 @@ const base = stylex.create({
   unchecked: {
     borderColor: {
       default: tokens.input,
-      ':hover': tokens.ring,
+      '@media (hover: hover)': { ':hover': tokens.ring },
     },
     backgroundColor: {
       default: tokens.background,
-      ':hover': tokens.mutedHover,
+      '@media (hover: hover)': { ':hover': tokens.mutedHover },
     },
     color: tokens.primary,
   },
   checked: {
     borderColor: {
       default: tokens.primary,
-      ':hover': tokens.primaryHover,
+      '@media (hover: hover)': { ':hover': tokens.primaryHover },
     },
     backgroundColor: {
       default: tokens.primary,
-      ':hover': tokens.primaryHover,
+      '@media (hover: hover)': { ':hover': tokens.primaryHover },
     },
     color: tokens.primaryForeground,
   },

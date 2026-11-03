@@ -77,7 +77,10 @@ export const styles = stylex.create({
     borderRadius: tokens.controlRadius,
     gap: '0.375rem',
     alignItems: 'center',
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
+    },
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',
     outlineColor: {
@@ -100,7 +103,7 @@ export const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': complexTokens.mutedSurface,
+      '@media (hover: hover)': { ':hover': complexTokens.mutedSurface },
     },
     display: 'grid',
     transitionDuration: interactionTokens.motionFast,

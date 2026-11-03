@@ -65,7 +65,7 @@ const styles = stylex.create({
     backgroundColor: foundationTokens.transparent,
     color: {
       default: foundationTokens.foregroundMuted,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
     },
     display: 'inline-flex',
     fontSize: '0.875rem',

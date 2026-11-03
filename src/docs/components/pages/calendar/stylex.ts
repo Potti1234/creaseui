@@ -125,7 +125,10 @@ const styles = stylex.create({
     borderRadius: '0.5rem',
     borderStyle: 'none',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { ':hover': tokens.accent },
+    },
     cursor: 'pointer',
     display: 'flex',
     fontSize: '0.8rem',

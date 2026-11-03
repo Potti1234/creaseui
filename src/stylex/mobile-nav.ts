@@ -144,7 +144,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.mutedHover,
+      '@media (hover: hover)': { ':hover': tokens.mutedHover },
     },
     color: tokens.foreground,
     cursor: interactionTokens.cursorAction,

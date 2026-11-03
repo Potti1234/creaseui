@@ -216,7 +216,10 @@ const styles = stylex.create({
   },
   lead: { fontSize: '1rem', lineHeight: '1.75rem' },
   link: {
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
+    },
     fontSize: '.875rem',
     lineHeight: '1.25rem',
     textUnderlineOffset: '4px',
@@ -228,10 +231,15 @@ const styles = stylex.create({
     borderRadius: '.375rem',
     fontSize: '.875rem',
     lineHeight: '1.25rem',
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
+    },
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': 'color-mix(in oklab, var(--muted) 60%, transparent)',
+      '@media (hover: hover)': {
+        ':hover': 'color-mix(in oklab, var(--muted) 60%, transparent)',
+      },
     },
     transitionProperty: 'color, background-color',
     transitionDuration: '.15s',
@@ -271,7 +279,10 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
   },
   breadcrumbLink: {
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
+    },
   },
   sep: { color: tokens.border },
   linkSmall: {
@@ -449,7 +460,7 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.background,
+      '@media (hover: hover)': { ':hover': tokens.background },
     },
     boxShadow: { default: 'none', ':focus-visible': tokens.focusRingShadow },
     transform: { default: 'scale(1)', ':active': 'scale(0.96)' },
@@ -493,7 +504,10 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: tokens.border,
-    backgroundColor: { default: tokens.background, ':hover': tokens.accent },
+    backgroundColor: {
+      default: tokens.background,
+      '@media (hover: hover)': { ':hover': tokens.accent },
+    },
     paddingInline: '.75rem',
     fontSize: '.875rem',
     lineHeight: '1.25rem',
@@ -534,10 +548,13 @@ const styles = stylex.create({
     justifyContent: 'center',
     borderRadius: '.375rem',
     cursor: 'pointer',
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
+    },
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.background,
+      '@media (hover: hover)': { ':hover': tokens.background },
     },
     boxShadow: { default: 'none', ':focus-visible': tokens.focusRingShadow },
     transitionProperty: 'color, background-color',
@@ -646,7 +663,9 @@ const styles = stylex.create({
     color: tokens.foreground,
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': 'color-mix(in oklab, var(--muted) 50%, transparent)',
+      '@media (hover: hover)': {
+        ':hover': 'color-mix(in oklab, var(--muted) 50%, transparent)',
+      },
     },
   },
   pageLinkNext: { justifyContent: 'flex-end' },

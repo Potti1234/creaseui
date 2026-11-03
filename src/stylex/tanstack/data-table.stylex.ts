@@ -90,7 +90,10 @@ export const styles = stylex.create({
     gap: '0.375rem',
     alignItems: 'center',
     backgroundColor: tokens.transparent,
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
+    },
     cursor: interactionTokens.cursorAction,
     display: 'flex',
     flexBasis: '0%',
@@ -108,7 +111,7 @@ export const styles = stylex.create({
   staticHeader: {
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.mutedForeground,
+      '@media (hover: hover)': { ':hover': tokens.mutedForeground },
     },
     cursor: interactionTokens.cursorDefault,
   },
@@ -147,7 +150,7 @@ export const styles = stylex.create({
   rowInteractive: {
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': complexTokens.mutedSurface,
+      '@media (hover: hover)': { ':hover': complexTokens.mutedSurface },
     },
     cursor: interactionTokens.cursorAction,
   },
@@ -226,7 +229,7 @@ export const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: complexTokens.mutedSurface,
-      ':hover': tokens.border,
+      '@media (hover: hover)': { ':hover': tokens.border },
     },
     cursor: interactionTokens.cursorResizeHorizontal,
     display: 'flex',
@@ -259,7 +262,7 @@ export const styles = stylex.create({
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',
     justifyContent: 'center',
-    opacity: { default: 0, ':hover': 1 },
+    opacity: { default: 0, '@media (hover: hover)': { ':hover': 1 } },
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'opacity, background-color, color',
     height: '1.5rem',
@@ -417,7 +420,10 @@ export const styles = stylex.create({
     gap: '0.5rem',
     paddingInline: '0.75rem',
     alignItems: 'center',
-    backgroundColor: { default: tokens.transparent, ':hover': tokens.accent },
+    backgroundColor: {
+      default: tokens.transparent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
+    },
     color: tokens.foreground,
     cursor: interactionTokens.cursorAction,
     display: 'flex',
@@ -467,7 +473,7 @@ export const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': complexTokens.mutedSurface,
+      '@media (hover: hover)': { ':hover': complexTokens.mutedSurface },
     },
     color: tokens.foreground,
     cursor: interactionTokens.cursorAction,
@@ -493,7 +499,7 @@ export const styles = stylex.create({
     borderWidth: 0,
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': complexTokens.mutedSurface,
+      '@media (hover: hover)': { ':hover': complexTokens.mutedSurface },
     },
     color: tokens.foreground,
     cursor: interactionTokens.cursorAction,
@@ -615,7 +621,10 @@ export const styles = stylex.create({
     borderRadius: tokens.controlRadius,
     borderWidth: 0,
     alignItems: 'center',
-    backgroundColor: { default: tokens.transparent, ':hover': tokens.accent },
+    backgroundColor: {
+      default: tokens.transparent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
+    },
     color: tokens.mutedForeground,
     cursor: interactionTokens.cursorAction,
     display: 'flex',
@@ -729,7 +738,7 @@ export const styles = stylex.create({
     paddingInline: '0.75rem',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': complexTokens.mutedSurface,
+      '@media (hover: hover)': { ':hover': complexTokens.mutedSurface },
     },
     color: tokens.foreground,
     cursor: interactionTokens.cursorAction,

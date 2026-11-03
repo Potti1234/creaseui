@@ -92,7 +92,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: foundationTokens.overlay40,
-      ':hover': foundationTokens.overlay50,
+      '@media (hover: hover)': { ':hover': foundationTokens.overlay50 },
     },
     color: foundationTokens.white,
     cursor: interactionTokens.cursorAction,

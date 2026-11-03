@@ -39,7 +39,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: tokens.background,
       ':is([aria-expanded="true"])': tokens.muted,
-      ':hover': tokens.muted,
+      '@media (hover: hover)': { ':hover': tokens.muted },
     },
     boxShadow: {
       default: tokens.shadowSm,

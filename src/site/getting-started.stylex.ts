@@ -124,11 +124,14 @@ const styles = stylex.create({
     listStyleType: 'disc',
   },
   link: {
-    color: { default: tokens.foreground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.foreground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
+    },
     textDecorationLine: 'underline',
     textDecorationColor: {
       default: tokens.border,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
     },
     textUnderlineOffset: '4px',
   },
@@ -136,10 +139,15 @@ const styles = stylex.create({
     display: 'block',
     borderRadius: '.375rem',
     padding: '.375rem .5rem',
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
+    },
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': 'color-mix(in oklab, var(--muted) 60%, transparent)',
+      '@media (hover: hover)': {
+        ':hover': 'color-mix(in oklab, var(--muted) 60%, transparent)',
+      },
     },
     fontSize: '.875rem',
     lineHeight: '1.25rem',

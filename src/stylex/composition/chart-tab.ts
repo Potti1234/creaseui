@@ -28,7 +28,10 @@ const styles = stylex.create({
     height: '1.75rem',
   },
   inactive: {
-    color: { default: tokens.mutedForeground, ':hover': tokens.primary },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { ':hover': tokens.primary },
+    },
   },
 })
 

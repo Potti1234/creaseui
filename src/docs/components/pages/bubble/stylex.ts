@@ -58,10 +58,13 @@ const styles = stylex.create({
   iconTrigger: {
     borderRadius: foundationTokens.radiusMd,
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': 'var(--accent)' },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { ':hover': 'var(--accent)' },
+    },
     color: {
       default: 'var(--muted-foreground)',
-      ':hover': 'var(--accent-foreground)',
+      '@media (hover: hover)': { ':hover': 'var(--accent-foreground)' },
     },
     display: 'flex',
     justifyContent: 'center',
@@ -71,11 +74,14 @@ const styles = stylex.create({
   iconTriggerPopover: {
     borderRadius: foundationTokens.radiusMd,
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': 'var(--accent)' },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { ':hover': 'var(--accent)' },
+    },
     color: {
       '[aria-expanded="true"]': 'var(--destructive)',
       default: 'var(--muted-foreground)',
-      ':hover': 'var(--accent-foreground)',
+      '@media (hover: hover)': { ':hover': 'var(--accent-foreground)' },
     },
     display: 'inline-flex',
     justifyContent: 'center',

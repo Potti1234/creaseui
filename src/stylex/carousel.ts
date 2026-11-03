@@ -36,7 +36,10 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: 1,
     alignItems: 'center',
-    backgroundColor: { default: tokens.background, ':hover': tokens.accent },
+    backgroundColor: {
+      default: tokens.background,
+      '@media (hover: hover)': { ':hover': tokens.accent },
+    },
     boxShadow: tokens.shadowSm,
     display: 'flex',
     justifyContent: 'center',

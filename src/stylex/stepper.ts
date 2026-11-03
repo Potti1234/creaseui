@@ -328,7 +328,7 @@ const styles = stylex.create({
     appearance: 'none',
     backgroundColor: {
       default: 'transparent',
-      ':hover': foundationTokens.foregroundSoft,
+      '@media (hover: hover)': { ':hover': foundationTokens.foregroundSoft },
     },
     boxSizing: 'border-box',
     color: 'inherit',

@@ -68,11 +68,12 @@ const styles = stylex.create({
     backgroundClip: 'padding-box',
     backgroundColor: {
       default: tokens.transparent,
-      [stylex.when.ancestor(':is([data-selected])', dayScope)]: tokens.primary,
-      ':hover': {
-        default: tokens.muted,
-        [stylex.when.ancestor(':is([data-selected])', dayScope)]:
-          tokens.primary,
+      '@media (hover: hover)': {
+        ':hover': {
+          default: tokens.muted,
+          [stylex.when.ancestor(':is([data-selected])', dayScope)]:
+            tokens.primary,
+        },
       },
     },
     boxShadow: {
@@ -83,14 +84,12 @@ const styles = stylex.create({
     },
     color: {
       default: 'inherit',
-      [stylex.when.ancestor(':is([data-outside-month])', dayScope)]:
-        tokens.mutedForeground,
-      [stylex.when.ancestor(':is([data-selected])', dayScope)]:
-        tokens.primaryForeground,
-      ':hover': {
-        default: tokens.foreground,
-        [stylex.when.ancestor(':is([data-selected])', dayScope)]:
-          tokens.primaryForeground,
+      '@media (hover: hover)': {
+        ':hover': {
+          default: tokens.foreground,
+          [stylex.when.ancestor(':is([data-selected])', dayScope)]:
+            tokens.primaryForeground,
+        },
       },
     },
     display: 'flex',
@@ -149,12 +148,13 @@ const styles = stylex.create({
   },
   dayRangeSingle: { borderRadius: tokens.controlRadius },
   dayRangeEndpointButton: {
-    backgroundColor: { default: tokens.primary, ':hover': tokens.primary },
+    backgroundColor: {
+      default: tokens.primary,
+      '@media (hover: hover)': { ':hover': tokens.primary },
+    },
     color: {
       default: tokens.primaryForeground,
-      [stylex.when.ancestor(':is([data-outside-month])', dayScope)]:
-        tokens.primaryForeground,
-      ':hover': tokens.primaryForeground,
+      '@media (hover: hover)': { ':hover': tokens.primaryForeground },
     },
   },
   grid: { borderCollapse: 'collapse', outlineStyle: 'none', width: '100%' },
@@ -196,7 +196,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: tokens.transparent,
       ':is([aria-expanded="true"])': tokens.muted,
-      ':hover': tokens.muted,
+      '@media (hover: hover)': { ':hover': tokens.muted },
     },
     boxShadow: {
       default: tokens.shadowNone,
@@ -205,7 +205,7 @@ const styles = stylex.create({
     color: {
       default: tokens.foreground,
       ':is([aria-expanded="true"])': tokens.foreground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { ':hover': tokens.foreground },
     },
     display: 'inline-flex',
     flexShrink: 0,
@@ -238,11 +238,12 @@ const styles = stylex.create({
     backgroundClip: 'padding-box',
     backgroundColor: {
       default: tokens.transparent,
-      [stylex.when.ancestor(':is([data-selected])', cellScope)]: tokens.primary,
-      ':hover': {
-        default: tokens.muted,
-        [stylex.when.ancestor(':is([data-selected])', cellScope)]:
-          tokens.primary,
+      '@media (hover: hover)': {
+        ':hover': {
+          default: tokens.muted,
+          [stylex.when.ancestor(':is([data-selected])', cellScope)]:
+            tokens.primary,
+        },
       },
     },
     boxShadow: {
@@ -253,12 +254,12 @@ const styles = stylex.create({
     },
     color: {
       default: tokens.foreground,
-      [stylex.when.ancestor(':is([data-selected])', cellScope)]:
-        tokens.primaryForeground,
-      ':hover': {
-        default: tokens.foreground,
-        [stylex.when.ancestor(':is([data-selected])', cellScope)]:
-          tokens.primaryForeground,
+      '@media (hover: hover)': {
+        ':hover': {
+          default: tokens.foreground,
+          [stylex.when.ancestor(':is([data-selected])', cellScope)]:
+            tokens.primaryForeground,
+        },
       },
     },
     display: 'inline-flex',

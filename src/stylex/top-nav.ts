@@ -179,7 +179,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: 'transparent',
       ':focus-visible': tokens.accent,
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
     },
     boxShadow: {
       default: tokens.shadowNone,
@@ -268,7 +268,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: 'transparent',
       ':focus-visible': tokens.accent,
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
     },
     color: 'inherit',
     cursor: interactionTokens.cursorAction,
@@ -413,7 +413,7 @@ const styles = stylex.create({
     borderWidth: 0,
     backgroundColor: {
       default: 'transparent',
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
     },
     cursor: interactionTokens.cursorAction,
     fontFamily: 'inherit',
@@ -475,7 +475,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
     },
     color: 'inherit',
     cursor: interactionTokens.cursorAction,
@@ -519,7 +519,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: 'transparent',
       ':focus-visible': tokens.accent,
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { ':hover': tokens.accent },
     },
     cursor: interactionTokens.cursorAction,
     display: 'flex',
