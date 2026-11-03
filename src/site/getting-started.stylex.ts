@@ -126,12 +126,12 @@ const styles = stylex.create({
   link: {
     color: {
       default: tokens.foreground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     textDecorationLine: 'underline',
     textDecorationColor: {
       default: tokens.border,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     textUnderlineOffset: '4px',
   },
@@ -141,11 +141,12 @@ const styles = stylex.create({
     padding: '.375rem .5rem',
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     backgroundColor: {
       default: tokens.transparent,
       '@media (hover: hover)': {
+        default: null,
         ':hover': 'color-mix(in oklab, var(--muted) 60%, transparent)',
       },
     },

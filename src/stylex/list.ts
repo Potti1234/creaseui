@@ -70,7 +70,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: 'transparent',
       ':active': foundationTokens.foregroundSoft,
-      '@media (hover: hover)': { ':hover': tokens.mutedHover },
+      '@media (hover: hover)': { default: null, ':hover': tokens.mutedHover },
     },
     cursor: {
       default: interactionTokens.cursorAction,

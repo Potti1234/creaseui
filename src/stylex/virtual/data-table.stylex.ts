@@ -79,7 +79,7 @@ export const styles = stylex.create({
     alignItems: 'center',
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',
@@ -103,7 +103,10 @@ export const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': complexTokens.mutedSurface },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.mutedSurface,
+      },
     },
     display: 'grid',
     transitionDuration: interactionTokens.motionFast,

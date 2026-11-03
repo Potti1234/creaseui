@@ -26,7 +26,7 @@ const styles = stylex.create({
     paddingInline: '0.25rem',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.muted },
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
     },
     boxShadow: {
       default: tokens.shadowNone,

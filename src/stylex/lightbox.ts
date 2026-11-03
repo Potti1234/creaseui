@@ -56,7 +56,7 @@ const styles = stylex.create({
     opacity: {
       default: 1,
       ':disabled': 0.4,
-      '@media (hover: hover)': { ':hover': 0.85 },
+      '@media (hover: hover)': { default: null, ':hover': 0.85 },
     },
     outlineColor: {
       default: 'transparent',

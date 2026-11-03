@@ -57,7 +57,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.background,
-      '@media (hover: hover)': { ':hover': tokens.muted },
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
     },
     cursor: interactionTokens.cursorAction,
     display: { default: 'flex', ':is([hidden])': 'none' },
@@ -157,7 +157,7 @@ const styles = stylex.create({
     backgroundColor: tokens.transparent,
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     cursor: interactionTokens.cursorAction,
     display: 'flex',

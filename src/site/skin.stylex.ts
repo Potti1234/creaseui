@@ -46,7 +46,7 @@ const styles = stylex.create({
     fontWeight: 500,
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     transitionProperty: 'color',
     transitionDuration: '.15s',
@@ -68,7 +68,7 @@ const styles = stylex.create({
     fontWeight: 500,
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
   },
   otherLabel: {
@@ -99,12 +99,13 @@ const styles = stylex.create({
     backgroundColor: {
       default: 'color-mix(in oklab, var(--muted) 30%, transparent)',
       '@media (hover: hover)': {
+        default: null,
         ':hover': 'color-mix(in oklab, var(--muted) 60%, transparent)',
       },
     },
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     fontSize: '.875rem',
     lineHeight: '1.25rem',
@@ -194,11 +195,14 @@ const styles = stylex.create({
     cursor: 'pointer',
     color: {
       default: tokens.foreground,
-      '@media (hover: hover)': { ':hover': tokens.accentForeground },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.accentForeground,
+      },
     },
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     boxShadow: { default: 'none', ':focus-visible': tokens.focusRingShadow },
     transform: { default: 'scale(1)', ':active': 'scale(0.96)' },
@@ -225,7 +229,7 @@ const styles = stylex.create({
     borderRadius: '.375rem',
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
   },
   menu: {
@@ -260,7 +264,7 @@ const styles = stylex.create({
     borderColor: tokens.border,
     backgroundColor: {
       default: tokens.background,
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: tokens.foreground,
     boxShadow: '0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -4px rgba(0,0,0,.1)',
@@ -330,11 +334,14 @@ const styles = stylex.create({
   themeLabApplyOff: {
     backgroundColor: {
       default: 'var(--muted)',
-      '@media (hover: hover)': { ':hover': 'var(--accent)' },
+      '@media (hover: hover)': { default: null, ':hover': 'var(--accent)' },
     },
     color: {
       default: 'var(--muted-foreground)',
-      '@media (hover: hover)': { ':hover': 'var(--accent-foreground)' },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': 'var(--accent-foreground)',
+      },
     },
   },
   themeLabIconButton: {
@@ -346,11 +353,14 @@ const styles = stylex.create({
     borderRadius: '.375rem',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': 'var(--accent)' },
+      '@media (hover: hover)': { default: null, ':hover': 'var(--accent)' },
     },
     color: {
       default: 'var(--muted-foreground)',
-      '@media (hover: hover)': { ':hover': 'var(--accent-foreground)' },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': 'var(--accent-foreground)',
+      },
     },
     cursor: 'pointer',
   },

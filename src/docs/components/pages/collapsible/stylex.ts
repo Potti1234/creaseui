@@ -36,7 +36,7 @@ const styles = stylex.create({
     paddingInline: '0.5rem',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': 'var(--muted)' },
+      '@media (hover: hover)': { default: null, ':hover': 'var(--muted)' },
     },
     fontWeight: 500,
     width: '100%',
@@ -47,7 +47,7 @@ const styles = stylex.create({
     paddingInline: '0.25rem',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': 'var(--muted)' },
+      '@media (hover: hover)': { default: null, ':hover': 'var(--muted)' },
     },
     textAlign: 'start',
     width: '100%',
@@ -57,7 +57,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': 'var(--muted)' },
+      '@media (hover: hover)': { default: null, ':hover': 'var(--muted)' },
     },
     display: 'inline-flex',
     justifyContent: 'center',

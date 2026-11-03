@@ -127,12 +127,15 @@ const st = stylex.create({
     backgroundColor: {
       default: 'transparent',
       ':focus': tokens.accent,
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: {
       default: null,
       ':focus': tokens.accentForeground,
-      '@media (hover: hover)': { ':hover': tokens.accentForeground },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.accentForeground,
+      },
     },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
@@ -200,12 +203,15 @@ const st = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     boxShadow: foundationTokens.shadowXs,
     color: {
       default: null,
-      '@media (hover: hover)': { ':hover': tokens.accentForeground },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.accentForeground,
+      },
     },
     display: 'inline-flex',
     fontSize: '0.875rem',

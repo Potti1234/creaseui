@@ -48,6 +48,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: tokens.card,
       '@media (hover: hover)': {
+        default: null,
         ':has(> a):hover': `color-mix(in oklab, ${tokens.muted} 50%, transparent)`,
         ':has(> button):hover': `color-mix(in oklab, ${tokens.muted} 50%, transparent)`,
       },

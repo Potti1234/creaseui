@@ -69,6 +69,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: tokens.transparent,
       '@media (hover: hover)': {
+        default: null,
         ':hover': {
           default: tokens.muted,
           [stylex.when.ancestor(':is([data-selected])', dayScope)]:
@@ -85,6 +86,7 @@ const styles = stylex.create({
     color: {
       default: 'inherit',
       '@media (hover: hover)': {
+        default: null,
         ':hover': {
           default: tokens.foreground,
           [stylex.when.ancestor(':is([data-selected])', dayScope)]:
@@ -150,11 +152,14 @@ const styles = stylex.create({
   dayRangeEndpointButton: {
     backgroundColor: {
       default: tokens.primary,
-      '@media (hover: hover)': { ':hover': tokens.primary },
+      '@media (hover: hover)': { default: null, ':hover': tokens.primary },
     },
     color: {
       default: tokens.primaryForeground,
-      '@media (hover: hover)': { ':hover': tokens.primaryForeground },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.primaryForeground,
+      },
     },
   },
   grid: { borderCollapse: 'collapse', outlineStyle: 'none', width: '100%' },
@@ -196,7 +201,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: tokens.transparent,
       ':is([aria-expanded="true"])': tokens.muted,
-      '@media (hover: hover)': { ':hover': tokens.muted },
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
     },
     boxShadow: {
       default: tokens.shadowNone,
@@ -205,7 +210,7 @@ const styles = stylex.create({
     color: {
       default: tokens.foreground,
       ':is([aria-expanded="true"])': tokens.foreground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     display: 'inline-flex',
     flexShrink: 0,
@@ -239,6 +244,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: tokens.transparent,
       '@media (hover: hover)': {
+        default: null,
         ':hover': {
           default: tokens.muted,
           [stylex.when.ancestor(':is([data-selected])', cellScope)]:
@@ -255,6 +261,7 @@ const styles = stylex.create({
     color: {
       default: tokens.foreground,
       '@media (hover: hover)': {
+        default: null,
         ':hover': {
           default: tokens.foreground,
           [stylex.when.ancestor(':is([data-selected])', cellScope)]:

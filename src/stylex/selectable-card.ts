@@ -46,6 +46,7 @@ const styles = stylex.create({
       default: 'none',
       ':active': `linear-gradient(${foundationTokens.foregroundSoft}, ${foundationTokens.foregroundSoft})`,
       '@media (hover: hover)': {
+        default: null,
         ':hover': `linear-gradient(${foundationTokens.foregroundFaint}, ${foundationTokens.foregroundFaint})`,
       },
     },

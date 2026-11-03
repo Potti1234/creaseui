@@ -267,11 +267,15 @@ const searchStyles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     color: {
       default: complexTokens.sidebarForeground,
       '@media (hover: hover)': {
+        default: null,
         ':hover': complexTokens.sidebarAccentForeground,
       },
     },
@@ -416,11 +420,15 @@ const searchStyles = stylex.create({
     backgroundColor: {
       default: 'transparent',
       ':active': complexTokens.sidebarAccent,
-      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     color: {
       default: complexTokens.sidebarForeground,
       '@media (hover: hover)': {
+        default: null,
         ':hover': complexTokens.sidebarAccentForeground,
       },
     },
@@ -530,11 +538,15 @@ const searchStyles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     color: {
       default: complexTokens.sidebarForeground,
       '@media (hover: hover)': {
+        default: null,
         ':hover': complexTokens.sidebarAccentForeground,
       },
     },
@@ -638,7 +650,10 @@ const searchStyles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     color: complexTokens.sidebarForeground,
     display: 'flex',
@@ -646,7 +661,7 @@ const searchStyles = stylex.create({
     opacity: {
       default: 0,
       ':focus-visible': 1,
-      '@media (hover: hover)': { ':hover': 1 },
+      '@media (hover: hover)': { default: null, ':hover': 1 },
     },
     outlineStyle: 'none',
     position: 'absolute',
@@ -662,6 +677,7 @@ const searchStyles = stylex.create({
     color: {
       default: complexTokens.sidebarForegroundDim,
       '@media (hover: hover)': {
+        default: null,
         ':hover': complexTokens.sidebarAccentForeground,
       },
     },
@@ -719,7 +735,10 @@ const searchStyles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: complexTokens.sidebarAccent,
-      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     color: complexTokens.sidebarAccentForeground,
     cursor: interactionTokens.cursorAction,

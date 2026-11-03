@@ -102,6 +102,7 @@ const styles = stylex.create({
       default: foundationTokens.shadowXs,
       ':focus-within': `inset 0 0 0 2px ${foundationTokens.ringSoft}`,
       '@media (hover: hover)': {
+        default: null,
         ':hover': `inset 0 0 0 2px ${foundationTokens.inputDark}`,
       },
     },
@@ -123,6 +124,7 @@ const styles = stylex.create({
       default: foundationTokens.shadowXs,
       ':focus-within': `inset 0 0 0 2px ${foundationTokens.destructiveRingSoft}`,
       '@media (hover: hover)': {
+        default: null,
         ':hover': `inset 0 0 0 2px ${foundationTokens.inputDark}`,
       },
     },
@@ -138,11 +140,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     display: 'inline-flex',
     flexShrink: 0,
@@ -180,11 +182,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     display: 'inline-flex',
     flexShrink: 0,
@@ -262,7 +264,7 @@ const styles = stylex.create({
   presetButton: {
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     borderRadius: foundationTokens.radiusMd,
     color: tokens.foreground,

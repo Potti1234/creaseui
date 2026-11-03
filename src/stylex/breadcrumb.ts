@@ -31,7 +31,7 @@ const styles = stylex.create({
   link: {
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color',

@@ -46,7 +46,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     display: 'inline-flex',
     justifyContent: 'center',
@@ -60,7 +60,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.secondary,
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: tokens.foreground,
     display: 'flex',

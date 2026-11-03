@@ -60,11 +60,14 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': 'var(--accent)' },
+      '@media (hover: hover)': { default: null, ':hover': 'var(--accent)' },
     },
     color: {
       default: 'var(--muted-foreground)',
-      '@media (hover: hover)': { ':hover': 'var(--accent-foreground)' },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': 'var(--accent-foreground)',
+      },
     },
     display: 'flex',
     justifyContent: 'center',
@@ -76,12 +79,15 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': 'var(--accent)' },
+      '@media (hover: hover)': { default: null, ':hover': 'var(--accent)' },
     },
     color: {
       '[aria-expanded="true"]': 'var(--destructive)',
       default: 'var(--muted-foreground)',
-      '@media (hover: hover)': { ':hover': 'var(--accent-foreground)' },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': 'var(--accent-foreground)',
+      },
     },
     display: 'inline-flex',
     justifyContent: 'center',

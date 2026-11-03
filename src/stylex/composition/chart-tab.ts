@@ -30,7 +30,7 @@ const styles = stylex.create({
   inactive: {
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.primary },
+      '@media (hover: hover)': { default: null, ':hover': tokens.primary },
     },
   },
 })

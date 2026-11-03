@@ -46,12 +46,15 @@ const st = stylex.create({
     backgroundColor: {
       default: 'transparent',
       ':focus': tokens.accent,
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: {
       default: null,
       ':focus': tokens.accentForeground,
-      '@media (hover: hover)': { ':hover': tokens.accentForeground },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.accentForeground,
+      },
     },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
@@ -89,7 +92,7 @@ const st = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     boxShadow: foundationTokens.shadowXs,
     display: 'inline-flex',
@@ -189,7 +192,7 @@ const st = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     boxShadow: foundationTokens.shadowXs,
     display: 'inline-flex',
@@ -286,7 +289,7 @@ const st = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     display: 'inline-flex',
     justifyContent: 'center',
@@ -364,7 +367,7 @@ const st = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     display: 'flex',
     fontSize: '0.875rem',
@@ -452,6 +455,7 @@ const st = stylex.create({
       default: `color-mix(in srgb, ${tokens.muted} 30%, transparent)`,
       ':focus': `color-mix(in srgb, ${tokens.muted} 50%, transparent)`,
       '@media (hover: hover)': {
+        default: null,
         ':hover': `color-mix(in srgb, ${tokens.muted} 50%, transparent)`,
       },
     },
@@ -594,7 +598,7 @@ const st = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
@@ -660,7 +664,7 @@ const st = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
@@ -698,7 +702,7 @@ const st = stylex.create({
     paddingBlock: '0.375rem',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: tokens.mutedForeground,
     fontSize: '0.875rem',
@@ -737,7 +741,7 @@ const st = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     display: 'inline-flex',
     flexShrink: 0,
@@ -755,7 +759,7 @@ const st = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: tokens.mutedForeground,
     cursor: interactionTokens.cursorAction,
@@ -797,7 +801,7 @@ const st = stylex.create({
     backgroundColor: {
       default: 'transparent',
       ':focus': tokens.accent,
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: { default: null, ':focus': tokens.accentForeground },
     cursor: interactionTokens.cursorDefault,

@@ -31,11 +31,17 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': 'var(--sidebar-accent)' },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': 'var(--sidebar-accent)',
+      },
     },
     color: {
       default: 'var(--sidebar-foreground)',
-      '@media (hover: hover)': { ':hover': 'var(--sidebar-accent-foreground)' },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': 'var(--sidebar-accent-foreground)',
+      },
     },
     display: 'flex',
     justifyContent: 'center',
@@ -228,11 +234,17 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': 'var(--sidebar-accent)' },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': 'var(--sidebar-accent)',
+      },
     },
     color: {
       default: 'var(--sidebar-foreground)',
-      '@media (hover: hover)': { ':hover': 'var(--sidebar-accent-foreground)' },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': 'var(--sidebar-accent-foreground)',
+      },
     },
     display: 'flex',
     fontSize: '0.875rem',
@@ -250,7 +262,10 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': 'var(--sidebar-accent)' },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': 'var(--sidebar-accent)',
+      },
     },
     color: 'var(--sidebar-foreground)',
     cursor: 'pointer',

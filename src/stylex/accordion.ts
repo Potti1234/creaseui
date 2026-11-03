@@ -108,7 +108,7 @@ const styles = stylex.create({
     textAlign: 'left',
     textDecorationLine: {
       default: 'none',
-      '@media (hover: hover)': { ':hover': 'underline' },
+      '@media (hover: hover)': { default: null, ':hover': 'underline' },
     },
     minHeight: '2.5rem',
   },

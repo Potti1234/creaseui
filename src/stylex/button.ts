@@ -74,14 +74,20 @@ const variants = stylex.create({
   default: {
     backgroundColor: {
       default: tokens.primary,
-      '@media (hover: hover)': { ':hover': tokens.buttonPrimaryHover },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.buttonPrimaryHover,
+      },
     },
     color: tokens.primaryForeground,
   },
   destructive: {
     backgroundColor: {
       default: tokens.softDestructiveSurface,
-      '@media (hover: hover)': { ':hover': tokens.softDestructiveHover },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.softDestructiveHover,
+      },
     },
     color: tokens.destructive,
   },
@@ -92,7 +98,7 @@ const variants = stylex.create({
     backgroundColor: {
       default: tokens.background,
       ':is([aria-expanded="true"])': tokens.muted,
-      '@media (hover: hover)': { ':hover': tokens.muted },
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
     },
     boxShadow: tokens.shadowSm,
     color: {
@@ -103,7 +109,10 @@ const variants = stylex.create({
   secondary: {
     backgroundColor: {
       default: tokens.secondary,
-      '@media (hover: hover)': { ':hover': tokens.buttonSecondaryHover },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.buttonSecondaryHover,
+      },
     },
     color: tokens.secondaryForeground,
   },
@@ -111,12 +120,12 @@ const variants = stylex.create({
     backgroundColor: {
       default: tokens.transparent,
       ':is([aria-expanded="true"])': tokens.muted,
-      '@media (hover: hover)': { ':hover': tokens.mutedHover },
+      '@media (hover: hover)': { default: null, ':hover': tokens.mutedHover },
     },
     color: {
       default: 'inherit',
       ':is([aria-expanded="true"])': tokens.foreground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
   },
   link: {
@@ -124,7 +133,7 @@ const variants = stylex.create({
     color: tokens.primary,
     textDecorationLine: {
       default: 'none',
-      '@media (hover: hover)': { ':hover': 'underline' },
+      '@media (hover: hover)': { default: null, ':hover': 'underline' },
     },
     textUnderlineOffset: '4px',
   },

@@ -21,7 +21,7 @@ const styles = stylex.create({
   link: {
     color: {
       default: 'inherit',
-      '@media (hover: hover)': { ':hover': tokens.primary },
+      '@media (hover: hover)': { default: null, ':hover': tokens.primary },
     },
     textDecorationLine: 'underline',
     textUnderlineOffset: '4px',

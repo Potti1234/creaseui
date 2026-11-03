@@ -72,7 +72,7 @@ const styles = stylex.create({
     cursor: 'pointer',
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
   },
   selected: { backgroundColor: tokens.muted, color: tokens.foreground },
@@ -85,7 +85,7 @@ const styles = stylex.create({
     textUnderlineOffset: '4px',
     textDecorationLine: {
       default: 'none',
-      '@media (hover: hover)': { ':hover': 'underline' },
+      '@media (hover: hover)': { default: null, ':hover': 'underline' },
     },
   },
   linkIcon: { width: '1em', height: '1em' },
@@ -138,7 +138,7 @@ const styles = stylex.create({
     cursor: 'pointer',
     backgroundColor: {
       default: tokens.background,
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
   },
   codeOpen: {
@@ -217,7 +217,7 @@ const styles = stylex.create({
     cursor: 'pointer',
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
   },
   code: { minWidth: 0, flex: 1, overflow: 'auto' },

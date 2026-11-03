@@ -102,7 +102,7 @@ const styles = stylex.create({
   interactive: {
     backgroundColor: {
       default: 'transparent',
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     boxShadow: {
       default: 'none',

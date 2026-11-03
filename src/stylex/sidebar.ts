@@ -34,11 +34,15 @@ const styles = stylex.create({
     aspectRatio: '1 / 1',
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     color: {
       default: complexTokens.sidebarForeground,
       '@media (hover: hover)': {
+        default: null,
         ':hover': complexTokens.sidebarAccentForeground,
       },
     },
@@ -235,7 +239,10 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     color: complexTokens.sidebarForeground,
     display: {
@@ -254,7 +261,7 @@ const styles = stylex.create({
     opacity: {
       default: 0,
       ':focus-visible': 1,
-      '@media (hover: hover)': { ':hover': 1 },
+      '@media (hover: hover)': { default: null, ':hover': 1 },
     },
   },
   menuButton: {
@@ -274,11 +281,15 @@ const styles = stylex.create({
     backgroundColor: {
       default: tokens.transparent,
       ':active': complexTokens.sidebarAccent,
-      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     color: {
       default: complexTokens.sidebarForeground,
       '@media (hover: hover)': {
+        default: null,
         ':hover': complexTokens.sidebarAccentForeground,
       },
     },
@@ -332,11 +343,17 @@ const styles = stylex.create({
   menuButtonOutline: {
     backgroundColor: {
       default: tokens.background,
-      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     boxShadow: {
       default: complexTokens.sidebarEdgeRing,
-      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccentRing },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccentRing,
+      },
     },
   },
   /* Mirrors the blocks demos' `bg-primary text-primary-foreground
@@ -346,11 +363,14 @@ const styles = stylex.create({
   menuButtonPrimary: {
     backgroundColor: {
       default: tokens.primary,
-      '@media (hover: hover)': { ':hover': tokens.primaryHover },
+      '@media (hover: hover)': { default: null, ':hover': tokens.primaryHover },
     },
     color: {
       default: tokens.primaryForeground,
-      '@media (hover: hover)': { ':hover': tokens.primaryForeground },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.primaryForeground,
+      },
     },
   },
   menuButtonSm: {
@@ -412,11 +432,15 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     color: {
       default: complexTokens.sidebarForeground,
       '@media (hover: hover)': {
+        default: null,
         ':hover': complexTokens.sidebarAccentForeground,
       },
     },
@@ -442,6 +466,7 @@ const styles = stylex.create({
     backgroundImage: {
       default: 'none',
       '@media (hover: hover)': {
+        default: null,
         ':hover': `linear-gradient(${complexTokens.sidebarBorder}, ${complexTokens.sidebarBorder})`,
       },
     },
@@ -581,11 +606,15 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': complexTokens.sidebarAccent },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     color: {
       default: complexTokens.sidebarForeground,
       '@media (hover: hover)': {
+        default: null,
         ':hover': complexTokens.sidebarAccentForeground,
       },
     },
@@ -630,11 +659,11 @@ const styles = stylex.create({
     backgroundClip: 'padding-box',
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': tokens.muted },
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
     },
     color: {
       default: 'inherit',
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     display: 'inline-flex',
     flexShrink: 0,

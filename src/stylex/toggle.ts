@@ -24,11 +24,17 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: foundationTokens.transparent,
-      '@media (hover: hover)': { ':hover': foundationTokens.muted },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': foundationTokens.muted,
+      },
     },
     color: {
       default: tokens.foreground,
-      '@media (hover: hover)': { ':hover': tokens.mutedForeground },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.mutedForeground,
+      },
     },
     display: 'inline-flex',
     fontSize: '0.875rem',

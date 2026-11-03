@@ -36,7 +36,7 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
     textDecorationLine: {
       default: 'none',
-      '@media (hover: hover)': { ':hover': 'underline' },
+      '@media (hover: hover)': { default: null, ':hover': 'underline' },
     },
     textUnderlineOffset: '4px',
     marginLeft: 'auto',

@@ -58,7 +58,10 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.secondary,
-      '@media (hover: hover)': { ':hover': tokens.secondaryHover },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.secondaryHover,
+      },
     },
     color: tokens.secondaryForeground,
     cursor: interactionTokens.cursorAction,

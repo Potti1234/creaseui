@@ -218,7 +218,7 @@ const styles = stylex.create({
   link: {
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     fontSize: '.875rem',
     lineHeight: '1.25rem',
@@ -233,11 +233,12 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     backgroundColor: {
       default: tokens.transparent,
       '@media (hover: hover)': {
+        default: null,
         ':hover': 'color-mix(in oklab, var(--muted) 60%, transparent)',
       },
     },
@@ -281,7 +282,7 @@ const styles = stylex.create({
   breadcrumbLink: {
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
   },
   sep: { color: tokens.border },
@@ -460,7 +461,7 @@ const styles = stylex.create({
     color: tokens.mutedForeground,
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': tokens.background },
+      '@media (hover: hover)': { default: null, ':hover': tokens.background },
     },
     boxShadow: { default: 'none', ':focus-visible': tokens.focusRingShadow },
     transform: { default: 'scale(1)', ':active': 'scale(0.96)' },
@@ -506,7 +507,7 @@ const styles = stylex.create({
     borderColor: tokens.border,
     backgroundColor: {
       default: tokens.background,
-      '@media (hover: hover)': { ':hover': tokens.accent },
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     paddingInline: '.75rem',
     fontSize: '.875rem',
@@ -550,11 +551,11 @@ const styles = stylex.create({
     cursor: 'pointer',
     color: {
       default: tokens.mutedForeground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': tokens.background },
+      '@media (hover: hover)': { default: null, ':hover': tokens.background },
     },
     boxShadow: { default: 'none', ':focus-visible': tokens.focusRingShadow },
     transitionProperty: 'color, background-color',
@@ -664,6 +665,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: tokens.transparent,
       '@media (hover: hover)': {
+        default: null,
         ':hover': 'color-mix(in oklab, var(--muted) 50%, transparent)',
       },
     },

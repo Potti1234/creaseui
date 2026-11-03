@@ -249,6 +249,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: 'transparent',
       '@media (hover: hover)': {
+        default: null,
         ':hover': 'color-mix(in oklab,var(--muted) 50%,transparent)',
       },
     },
@@ -324,7 +325,7 @@ const styles = stylex.create({
   footerLink: {
     color: {
       default: 'inherit',
-      '@media (hover: hover)': { ':hover': 'var(--foreground)' },
+      '@media (hover: hover)': { default: null, ':hover': 'var(--foreground)' },
     },
   },
   revision: {
@@ -332,7 +333,7 @@ const styles = stylex.create({
       'var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace)',
     color: {
       default: 'inherit',
-      '@media (hover: hover)': { ':hover': 'var(--foreground)' },
+      '@media (hover: hover)': { default: null, ':hover': 'var(--foreground)' },
     },
   },
   icon: { width: '1rem', height: '1rem' },

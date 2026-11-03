@@ -28,23 +28,23 @@ const styles = stylex.create({
     borderColor: tokens.border,
     backgroundColor: {
       default: tokens.background,
-      '@media (hover: hover)': { ':hover': tokens.muted },
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
     },
     boxShadow: tokens.shadowSm,
     color: {
       default: tokens.foreground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
   },
   actionActive: {
     backgroundColor: {
       default: tokens.background,
-      '@media (hover: hover)': { ':hover': tokens.muted },
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
     },
     boxShadow: tokens.shadowSm,
     color: {
       default: tokens.foreground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
   },
   directionLink: { gap: '0.25rem', paddingInline: '0.625rem' },
@@ -80,11 +80,11 @@ const styles = stylex.create({
     backgroundClip: 'padding-box',
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': tokens.muted },
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
     },
     color: {
       default: tokens.foreground,
-      '@media (hover: hover)': { ':hover': tokens.foreground },
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     display: 'inline-flex',
     flexShrink: 0,

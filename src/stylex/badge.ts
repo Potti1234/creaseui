@@ -73,11 +73,17 @@ const variants = stylex.create({
     borderColor: tokens.transparent,
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': tokens.badgeMutedHover },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.badgeMutedHover,
+      },
     },
     color: {
       default: tokens.foreground,
-      '@media (hover: hover)': { ':hover': tokens.mutedForeground },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.mutedForeground,
+      },
     },
   },
   link: {
@@ -86,7 +92,7 @@ const variants = stylex.create({
     color: tokens.primary,
     textDecorationLine: {
       default: 'none',
-      '@media (hover: hover)': { ':hover': 'underline' },
+      '@media (hover: hover)': { default: null, ':hover': 'underline' },
     },
     textUnderlineOffset: '0.25rem',
   },
@@ -99,29 +105,41 @@ const anchor = stylex.create({
   default: {
     backgroundColor: {
       default: tokens.primary,
-      '@media (hover: hover)': { ':hover': tokens.badgePrimaryHover },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.badgePrimaryHover,
+      },
     },
   },
   secondary: {
     backgroundColor: {
       default: tokens.secondary,
-      '@media (hover: hover)': { ':hover': tokens.badgeSecondaryHover },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.badgeSecondaryHover,
+      },
     },
   },
   destructive: {
     backgroundColor: {
       default: tokens.badgeDestructiveSurface,
-      '@media (hover: hover)': { ':hover': tokens.badgeDestructiveHover },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.badgeDestructiveHover,
+      },
     },
   },
   outline: {
     backgroundColor: {
       default: tokens.transparent,
-      '@media (hover: hover)': { ':hover': tokens.muted },
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
     },
     color: {
       default: tokens.foreground,
-      '@media (hover: hover)': { ':hover': tokens.mutedForeground },
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.mutedForeground,
+      },
     },
   },
   ghost: {},
