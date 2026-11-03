@@ -1,5 +1,6 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
+import * as Icon from '@/lib/icon'
 import * as Heading from '@/ui/heading'
 import * as Typography from '@/ui/typography'
 
@@ -63,6 +64,42 @@ const stack = <Msg>(
   children: ReadonlyArray<Html>,
   h: HtmlBuilder<Msg>,
 ): Html => h.div([h.Class(kit.styles.preview)], [...children])
+
+/** Small annotation inside a preview panel — used for rules whose effect is
+    device- or engine-specific and cannot be rendered here. */
+const note = <Msg>(
+  kit: LintRendererKit,
+  text: string,
+  h: HtmlBuilder<Msg>,
+): Html => h.p([h.Class(kit.styles.note)], [text])
+
+const previewCol = <Msg>(
+  children: ReadonlyArray<Html>,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.div(
+    [
+      h.Style({
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.5rem',
+        width: '100%',
+      }),
+    ],
+    [...children],
+  )
+
+const inlineIcon = <Msg>(name: string, h: HtmlBuilder<Msg>): Html =>
+  h.span(
+    [
+      h.Style({
+        display: 'inline-flex',
+        fontSize: '1rem',
+        verticalAlign: '-0.125em',
+      }),
+    ],
+    [Icon.icon<Msg>(name, {}, h)],
+  )
 
 /** Live renders of each documented case: the bad version is the UI the
     flagged code actually produces, the good version uses the installed
@@ -321,6 +358,597 @@ export const lintPreview = <Msg>(
         bad
           ? h.button([h.Type('button')], ['Save changes'])
           : button({ children: ['Save changes'] }, h),
+      )
+    case 'no-native-glyphs/arrow-glyph-tailwind':
+    case 'no-native-glyphs/arrow-glyph-stylex':
+    case 'no-native-glyphs/arrow-glyph-pleat':
+      return one(
+        h.a(
+          [
+            h.Href('#'),
+            h.Style({ color: 'var(--primary)', textDecoration: 'none' }),
+          ],
+          bad
+            ? ['Continue to installation →']
+            : ['Continue to installation ', inlineIcon('arrow-right', h)],
+        ),
+      )
+    case 'no-native-glyphs/emoji-label-tailwind':
+    case 'no-native-glyphs/emoji-label-stylex':
+    case 'no-native-glyphs/emoji-label-pleat':
+      return one(
+        h.span(
+          [
+            h.Style({
+              alignItems: 'center',
+              display: 'inline-flex',
+              gap: '0.375rem',
+            }),
+          ],
+          bad ? ['🚀 Deploy now'] : ['Deploy now', inlineIcon('rocket', h)],
+        ),
+      )
+    case 'defensive-prefer-overflow-auto/forced-scrollbar': {
+      const navItem = (label: string): Html =>
+        h.div([h.Style({ fontSize: '0.8125rem' })], [label])
+      return one(
+        previewCol(
+          [
+            h.div(
+              [
+                h.Style({
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.25rem',
+                  height: '5.5rem',
+                  overflowY: bad ? 'scroll' : 'auto',
+                  padding: '0.5rem 0.75rem',
+                  width: '11rem',
+                }),
+              ],
+              [navItem('Dashboard'), navItem('Billing'), navItem('Settings')],
+            ),
+            bad
+              ? note(
+                  kit,
+                  'The scrollbar track renders even though everything fits.',
+                  h,
+                )
+              : note(
+                  kit,
+                  'The scrollbar only appears when content overflows.',
+                  h,
+                ),
+          ],
+          h,
+        ),
+      )
+    }
+    case 'defensive-no-space-between-wrap/wrapped-rows-drift': {
+      const chip = (label: string): Html =>
+        h.span(
+          [
+            h.Style({
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius)',
+              flexShrink: '0',
+              fontSize: '0.75rem',
+              padding: '0.125rem 0.5rem',
+            }),
+          ],
+          [label],
+        )
+      return one(
+        previewCol(
+          [
+            h.div(
+              [
+                h.Style({
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  width: '13rem',
+                  ...(bad
+                    ? { justifyContent: 'space-between' }
+                    : { gap: '0.75rem' }),
+                }),
+              ],
+              ['Status', 'Owner', 'Due date', 'Actions', 'Priority'].map(chip),
+            ),
+            bad
+              ? note(
+                  kit,
+                  'Wrapped rows stretch to the edges — spacing is no longer controlled.',
+                  h,
+                )
+              : note(kit, 'gap keeps the same spacing on every row.', h),
+          ],
+          h,
+        ),
+      )
+    }
+    case 'defensive-auto-fill-not-fit/stretching-empty-tracks': {
+      const cell = (label: string): Html =>
+        h.div(
+          [
+            h.Style({
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius)',
+              fontSize: '0.75rem',
+              padding: '0.5rem',
+            }),
+          ],
+          [label],
+        )
+      return one(
+        previewCol(
+          [
+            h.div(
+              [
+                h.Style({
+                  display: 'grid',
+                  gap: '0.5rem',
+                  gridTemplateColumns: `repeat(${bad ? 'auto-fit' : 'auto-fill'}, minmax(5.5rem, 1fr))`,
+                  width: '100%',
+                }),
+              ],
+              [cell('Card A'), cell('Card B')],
+            ),
+            bad
+              ? note(
+                  kit,
+                  'auto-fit collapses the empty tracks, so both cards stretch.',
+                  h,
+                )
+              : note(
+                  kit,
+                  'auto-fill keeps the empty tracks — cards stay their size.',
+                  h,
+                ),
+          ],
+          h,
+        ),
+      )
+    }
+    case 'defensive-hover-media/stuck-hover':
+      return one(
+        previewCol(
+          [
+            h.a(
+              [
+                h.Href('#'),
+                h.Style({
+                  color: 'var(--primary)',
+                  textDecoration: 'underline',
+                }),
+              ],
+              ['Docs link'],
+            ),
+            bad
+              ? note(
+                  kit,
+                  'Touch-device issue, invisible here: after a tap, :hover stays applied until something else is tapped.',
+                  h,
+                )
+              : note(
+                  kit,
+                  'Hover still works on a precise pointer; touch taps never trigger it.',
+                  h,
+                ),
+          ],
+          h,
+        ),
+      )
+    case 'defensive-bg-image-fallback/missing-fallback-color':
+      return one(
+        previewCol(
+          [
+            h.div(
+              [
+                h.Style({
+                  alignItems: 'center',
+                  backgroundImage: 'url(/lint-preview/missing-hero.png)',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: 'cover',
+                  borderRadius: 'var(--radius)',
+                  display: 'flex',
+                  height: '4.5rem',
+                  justifyContent: 'center',
+                  ...(bad ? {} : { backgroundColor: '#1c1f2a' }),
+                }),
+              ],
+              [
+                h.span(
+                  [
+                    h.Style({
+                      color: '#ffffff',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                    }),
+                  ],
+                  ['Build faster'],
+                ),
+              ],
+            ),
+            bad
+              ? note(
+                  kit,
+                  'The image 404s, so the white headline sits on the page background — invisible.',
+                  h,
+                )
+              : note(kit, 'The fallback color keeps the headline readable.', h),
+          ],
+          h,
+        ),
+      )
+    case 'defensive-background-repeat/tiling-texture': {
+      const logo =
+        'data:image/svg+xml;utf8,' +
+        encodeURIComponent(
+          `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="9" fill="#6366f1"/><circle cx="10" cy="10" r="3" fill="#fff"/></svg>`,
+        )
+      return one(
+        previewCol(
+          [
+            h.div(
+              [
+                h.Style({
+                  backgroundColor: 'var(--muted)',
+                  backgroundImage: `url("${logo}")`,
+                  borderRadius: 'var(--radius)',
+                  height: '4rem',
+                  width: '100%',
+                  ...(bad
+                    ? {}
+                    : {
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                      }),
+                }),
+              ],
+              [],
+            ),
+            bad
+              ? note(
+                  kit,
+                  'background-repeat defaults to repeat — the logo tiles.',
+                  h,
+                )
+              : note(kit, 'no-repeat renders the logo once, centered.', h),
+          ],
+          h,
+        ),
+      )
+    }
+    case 'defensive-css-var-fallback/undefined-variable':
+      return one(
+        previewCol(
+          [
+            h.div(
+              [
+                h.Style({
+                  border: '1px dashed var(--border)',
+                  borderRadius: 'var(--radius)',
+                  padding: '0.75rem',
+                }),
+              ],
+              [
+                h.div(
+                  [
+                    h.Style({
+                      background: 'var(--secondary)',
+                      borderRadius: 'var(--radius)',
+                      height: '1rem',
+                      position: 'relative',
+                      top: bad ? 'var(--banner-top)' : 'var(--banner-top, 0px)',
+                      width: '6rem',
+                    }),
+                  ],
+                  [],
+                ),
+              ],
+            ),
+            note(
+              kit,
+              'No visual difference here: --banner-top is undefined, so var() drops the declaration silently. Only the fallback argument saves it.',
+              h,
+            ),
+          ],
+          h,
+        ),
+      )
+    case 'defensive-flex-min-size/unshrinkable-truncate':
+      return one(
+        previewCol(
+          [
+            h.div(
+              [
+                h.Style({
+                  alignItems: 'center',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius)',
+                  display: 'flex',
+                  fontSize: '0.8125rem',
+                  gap: '0.5rem',
+                  maxWidth: '15rem',
+                  overflow: 'hidden',
+                  padding: '0.5rem 0.75rem',
+                }),
+              ],
+              [
+                h.span(
+                  [
+                    h.Style({
+                      flex: '1',
+                      minWidth: bad ? 'auto' : '0',
+                      ...(bad
+                        ? {}
+                        : { overflow: 'hidden', textOverflow: 'ellipsis' }),
+                      whiteSpace: 'nowrap',
+                    }),
+                  ],
+                  ['Q3 revenue report — final review notes for the board'],
+                ),
+                h.span(
+                  [
+                    h.Style({
+                      color: 'var(--muted-foreground)',
+                      flexShrink: '0',
+                      fontSize: '0.75rem',
+                    }),
+                  ],
+                  ['2h ago'],
+                ),
+              ],
+            ),
+            bad
+              ? note(
+                  kit,
+                  'min-width: auto keeps the title at full size — the timestamp is pushed out of the row.',
+                  h,
+                )
+              : note(kit, 'min-w-0 lets the title shrink and truncate.', h),
+          ],
+          h,
+        ),
+      )
+    case 'defensive-image-object-fit/distorted-avatar': {
+      const photo =
+        'data:image/svg+xml;utf8,' +
+        encodeURIComponent(
+          `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="90"><rect width="160" height="90" fill="#0ea5e9"/><circle cx="80" cy="45" r="22" fill="#fbbf24"/><rect x="20" y="60" width="120" height="30" fill="#0c4a6e"/></svg>`,
+        )
+      return one(
+        previewCol(
+          [
+            h.img([
+              h.Src(photo),
+              h.Alt('Team photo'),
+              h.Style({
+                borderRadius: '50%',
+                height: '4rem',
+                width: '4rem',
+                ...(bad ? {} : { objectFit: 'cover' as const }),
+              }),
+            ]),
+            bad
+              ? note(kit, 'The landscape photo squashes into a square.', h)
+              : note(kit, 'object-fit: cover crops instead of distorting.', h),
+          ],
+          h,
+        ),
+      )
+    }
+    case 'defensive-input-font-size/ios-zoom':
+      return one(
+        previewCol(
+          [
+            h.input([
+              h.Type('text'),
+              h.Placeholder('Search…'),
+              h.Style({
+                border: '1px solid var(--input)',
+                borderRadius: 'var(--radius)',
+                fontSize: bad ? '0.875rem' : '1rem',
+                padding: '0.375rem 0.75rem',
+                width: '100%',
+              }),
+            ]),
+            bad
+              ? note(
+                  kit,
+                  'iOS-Safari-only behavior: focusing a control under 16px zooms the page and leaves it zoomed.',
+                  h,
+                )
+              : note(
+                  kit,
+                  '16px text keeps iOS Safari from zooming on focus.',
+                  h,
+                ),
+          ],
+          h,
+        ),
+      )
+    case 'defensive-sticky-grid-align/unsticky-sidebar':
+      return one(
+        previewCol(
+          [
+            h.div(
+              [
+                h.Style({
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius)',
+                  height: '6.5rem',
+                  overflowY: 'auto',
+                }),
+              ],
+              [
+                h.div(
+                  [
+                    h.Style({
+                      display: 'grid',
+                      gap: '0.75rem',
+                      gridTemplateColumns: '4.5rem 1fr',
+                      padding: '0.5rem',
+                    }),
+                  ],
+                  [
+                    h.div(
+                      [
+                        h.Style({
+                          background: 'var(--secondary)',
+                          borderRadius: 'calc(var(--radius) - 2px)',
+                          fontSize: '0.75rem',
+                          padding: '0.375rem',
+                          position: 'sticky',
+                          top: '0',
+                          ...(bad ? {} : { alignSelf: 'start' }),
+                        }),
+                      ],
+                      ['Nav'],
+                    ),
+                    h.div(
+                      [h.Style({ fontSize: '0.75rem', lineHeight: '1.5' })],
+                      [
+                        'Scroll me. ' +
+                          'Content '.repeat(60) +
+                          'end of the long column.',
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            bad
+              ? note(
+                  kit,
+                  'Scroll the panel: the nav is stretched to the grid height, so sticky never engages and it scrolls away.',
+                  h,
+                )
+              : note(kit, 'Scroll the panel: self-start pins the nav.', h),
+          ],
+          h,
+        ),
+      )
+    case 'defensive-overscroll-contain/leaky-scroll':
+      return one(
+        previewCol(
+          [
+            h.div(
+              [
+                h.Style({
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius)',
+                  height: '8rem',
+                  overflowY: 'auto',
+                  padding: '0.5rem',
+                }),
+              ],
+              [
+                h.div(
+                  [
+                    h.Style({
+                      fontSize: '0.75rem',
+                      lineHeight: '1.5',
+                      marginBottom: '0.5rem',
+                    }),
+                  ],
+                  ['Page content above the drawer.'],
+                ),
+                h.div(
+                  [
+                    h.Style({
+                      background: 'var(--muted)',
+                      borderRadius: 'calc(var(--radius) - 2px)',
+                      fontSize: '0.75rem',
+                      height: '4rem',
+                      overflowY: 'auto',
+                      padding: '0.375rem',
+                      ...(bad ? {} : { overscrollBehavior: 'contain' }),
+                    }),
+                  ],
+                  Array.from({ length: 10 }, (_, i) =>
+                    h.div(
+                      [
+                        h.Style({
+                          lineHeight: '1.8',
+                          padding: '0 0.25rem',
+                          whiteSpace: 'nowrap',
+                        }),
+                      ],
+                      [`Drawer item ${i + 1}`],
+                    ),
+                  ),
+                ),
+                h.div(
+                  [
+                    h.Style({
+                      fontSize: '0.75rem',
+                      lineHeight: '1.5',
+                      marginTop: '0.5rem',
+                    }),
+                  ],
+                  [
+                    'Page content below keeps scrolling once the drawer is exhausted. '.repeat(
+                      4,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            note(
+              kit,
+              'Scroll the drawer list to its end: without overscroll-contain the wheel leaks to the page; with it, the page stays put.',
+              h,
+            ),
+          ],
+          h,
+        ),
+      )
+    case 'defensive-prefer-min-size/clipped-content':
+      return one(
+        previewCol(
+          [
+            h.div(
+              [
+                h.Style({
+                  alignItems: 'center',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius)',
+                  display: 'flex',
+                  fontSize: '0.8125rem',
+                  minHeight: '2.25rem',
+                  overflow: 'hidden',
+                  padding: '0 0.5rem',
+                  ...(bad ? { width: '8.5rem' } : { minWidth: '8.5rem' }),
+                }),
+              ],
+              ['Notificationssettings'],
+            ),
+            bad
+              ? note(
+                  kit,
+                  'A longer label (translation, larger text) clips against the fixed width.',
+                  h,
+                )
+              : note(kit, 'min-width keeps the default but lets it grow.', h),
+          ],
+          h,
+        ),
+      )
+    case 'defensive-scrollbar-gutter/page-root-overflow':
+      return one(
+        previewCol(
+          [
+            note(
+              kit,
+              'Viewport-level behavior, not previewable here: the page jumps sideways when a scrollbar appears — scrollbar-gutter: stable reserves the space.',
+              h,
+            ),
+          ],
+          h,
+        ),
       )
     default:
       return one(muted('No preview for this case.', h))

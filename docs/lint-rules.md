@@ -1020,7 +1020,7 @@ const styles = stylex.create({
   link: {
     color: {
       default: 'currentColor',
-      '@media (hover: hover)': { ':hover': 'transparent' },
+      '@media (hover: hover)': { default: null, ':hover': 'transparent' },
     },
   },
 })
