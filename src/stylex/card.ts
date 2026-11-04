@@ -89,6 +89,8 @@ type Slot = Readonly<{
 export type CardProps = Slot &
   Readonly<{
     element?: 'div' | 'section' | 'article'
+    /** Id on the card element, for in-page links and `aria-labelledby`. */
+    id?: string
     density?: 'default' | 'flush'
     size?: 'default' | 'sm'
     /** Overrides the --card-spacing CSS variable (spacing demo). */
@@ -109,6 +111,7 @@ const slot =
 export const card = <Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html => {
   const attributes = [
     h.DataAttribute('slot', 'card'),
+    ...(props.id === undefined ? [] : [h.Id(props.id)]),
     h.DataAttribute('size', props.size ?? 'default'),
     h.Style({
       '--card-spacing':
