@@ -772,7 +772,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CardProps",
       "kind": "type",
-      "signature": "CardProps = Slot & Readonly<{ element?: 'div' | 'section' | 'article'; size?: 'default' | 'sm'; }>"
+      "signature": "CardProps = Slot & Readonly<{ element?: 'div' | 'section' | 'article'; id?: string; size?: 'default' | 'sm'; }>"
     },
     {
       "name": "card",
