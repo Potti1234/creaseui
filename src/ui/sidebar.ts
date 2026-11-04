@@ -558,7 +558,12 @@ export const sidebarMenuButton = <Msg>(
     h.DataAttribute('slot', 'sidebar-menu-button'),
     h.DataAttribute('sidebar', 'menu-button'),
     h.DataAttribute('size', size),
-    ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []),
+    ...((props.isActive ?? false)
+      ? [
+          h.DataAttribute('active', ''),
+          ...(props.href === undefined ? [] : [h.AriaCurrent('page')]),
+        ]
+      : []),
     ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
     ...(props.ariaExpanded === undefined
       ? []
@@ -749,7 +754,12 @@ export const sidebarMenuSubButton = <Msg>(
     h.DataAttribute('slot', 'sidebar-menu-sub-button'),
     h.DataAttribute('sidebar', 'menu-sub-button'),
     h.DataAttribute('size', size),
-    ...((props.isActive ?? false) ? [h.DataAttribute('active', '')] : []),
+    ...((props.isActive ?? false)
+      ? [
+          h.DataAttribute('active', ''),
+          ...(props.href === undefined ? [] : [h.AriaCurrent('page')]),
+        ]
+      : []),
     ...(props.onClick === undefined ? [] : [h.OnClick(props.onClick)]),
     h.Class(
       cn(
