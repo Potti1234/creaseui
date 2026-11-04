@@ -30,6 +30,7 @@ export type DropdownMenuFixture = Readonly<{
   radioValue?: string
   direction?: 'ltr' | 'rtl'
   keepOpenOnCheckableSelect?: boolean
+  activateOnHover?: boolean
 }>
 
 export const dropdownMenuFixtures: Readonly<
@@ -39,6 +40,19 @@ export const dropdownMenuFixtures: Readonly<
     title: 'Basic',
     description:
       'A basic dropdown menu: a labeled group and a separator between sections.',
+    trigger: { kind: 'button', label: 'Open' },
+    items: [
+      { value: 'profile', label: 'Profile', group: 'My Account' },
+      { value: 'billing', label: 'Billing', group: 'My Account' },
+      { value: 'team', label: 'Team' },
+      { value: 'subscription', label: 'Subscription' },
+    ],
+  },
+  {
+    title: 'Hover Without Activation',
+    description:
+      'activateOnHover: false styles hover in CSS and lets only the keys move the active item, so the pointer sends no Message per item crossed. For menus whose update runs on a server.',
+    activateOnHover: false,
     trigger: { kind: 'button', label: 'Open' },
     items: [
       { value: 'profile', label: 'Profile', group: 'My Account' },
@@ -554,6 +568,7 @@ ${updateExtra}
         items: [${topLevelValues}]${specs.some(spec => spec.submenu !== undefined) ? ' as ReadonlyArray<Item>' : ''},
         ${itemToConfigSource}
         ${fixture.keepOpenOnCheckableSelect === true ? 'keepOpenOnCheckableSelect: true,' : ''}
+        ${fixture.activateOnHover === false ? 'activateOnHover: false,' : ''}
         ${fixture.direction === 'rtl' ? "direction: 'rtl'," : ''}
       }, h),
       h.p([h.Role('status'), h.Class('text-sm')], [Option.match(model.maybeLastAction, { onNone: () => 'No action selected', onSome: value => \`Selected: \${configs[value].label}\` })]),

@@ -1,6 +1,6 @@
 import * as Scene from 'foldkit/scene'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { describe, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import * as StyleXMenu from '@/stylex/dropdown-menu'
 import * as TailwindMenu from '@/ui/dropdown-menu'
@@ -127,6 +127,7 @@ const makeView =
       direction?: 'ltr' | 'rtl'
       openOnContextMenu?: boolean
       trigger?: string
+      activateOnHover?: boolean
     }>,
   ) =>
   (model: Model, h: HtmlBuilder<Message>): Html =>
@@ -144,6 +145,9 @@ const makeView =
         ...(options?.openOnContextMenu === undefined
           ? {}
           : { openOnContextMenu: options.openOnContextMenu }),
+        ...(options?.activateOnHover === undefined
+          ? {}
+          : { activateOnHover: options.activateOnHover }),
       },
       h,
     )
@@ -855,10 +859,48 @@ const verifyRenderer = (name: string, Menu: MenuModule) => {
         )
       })
 
-      it.todo(
-        'prop: highlightItemOnHover={false} suppresses pointer highlight ' +
-          '(creaseui always activates on pointer enter; no such prop)',
-      )
+      describe('prop: activateOnHover={false} (Base UI highlightItemOnHover)', () => {
+        const hoverlessView = makeView(Menu, standardConfig, {
+          activateOnHover: false,
+        })
+
+        it('binds no pointer highlight on plain items', () => {
+          expect(() =>
+            Scene.scene(
+              { update, view: hoverlessView },
+              givenStandard,
+              Scene.click(trigger),
+              Scene.expectHandled(),
+              Scene.hover(menuItem('Item 2')),
+            ),
+          ).toThrow(/has no mouse(enter|over) handler/)
+        })
+
+        it('still moves the highlight with the arrow keys', () => {
+          Scene.scene(
+            { update, view: hoverlessView },
+            givenStandard,
+            Scene.keydown(trigger, 'ArrowDown'),
+            Scene.expectHandled(),
+            Scene.keydown(rootMenu, 'ArrowDown'),
+            Scene.expectHandled(),
+            Scene.expect(menuItem('Item 2')).toHaveAttr('data-active', 'true'),
+            Scene.expect(menuItem('Item 2')).toHaveAttr('tabIndex', '0'),
+          )
+        })
+
+        it('still opens a submenu on pointer enter', () => {
+          Scene.scene(
+            { update, view: hoverlessView },
+            givenStandard,
+            Scene.click(trigger),
+            Scene.expectHandled(),
+            Scene.hover(menuItem('Item 4')),
+            Scene.expectHandled(),
+            Scene.expect(submenuPanel('Item 4')).toExist(),
+          )
+        })
+      })
     })
 
     describe('nested menus', () => {
