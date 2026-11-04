@@ -1,5 +1,5 @@
 import * as Scene from 'foldkit/scene'
-import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 import { describe, it } from 'vitest'
 
 import * as StyleXInput from '@/stylex/input'
@@ -31,6 +31,7 @@ type InputModule = Readonly<{
       inputMode?: 'email'
       isReadOnly?: boolean
       isInvalid?: boolean
+      attributes?: ReadonlyArray<Attribute<Msg>>
     },
     h: HtmlBuilder<Msg>,
   ) => Html
@@ -98,6 +99,32 @@ const verifyRenderer = (name: string, Input: InputModule) => {
         Scene.expect(
           Scene.selector('[data-slot="input-description"]'),
         ).toBeAbsent(),
+      )
+    })
+
+    it('spreads app attributes onto the control element', () => {
+      Scene.scene(
+        {
+          update,
+          view: (model, h) =>
+            Input.input(
+              {
+                id: 'inline-input',
+                value: model.value,
+                label: 'Title',
+                attributes: [
+                  h.DataAttribute('field', 'input'),
+                  h.OnBlur(ChangedInput('saved on blur')),
+                ],
+              },
+              h,
+            ),
+        },
+        Scene.given({ value: 'draft' }),
+        Scene.expect(Scene.label('Title')).toHaveAttr('data-field', 'input'),
+        Scene.blur(Scene.label('Title')),
+        Scene.expectHandled(),
+        Scene.expect(Scene.label('Title')).toHaveValue('saved on blur'),
       )
     })
   })

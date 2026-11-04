@@ -33,6 +33,10 @@ export type InputBehaviorProps<Msg> = Readonly<{
   isInvalid?: boolean
   isAutofocus?: boolean
   isRequired?: boolean
+  /** Extra attributes for the input element itself, after crease's own: an
+   *  event the props do not name (`h.OnBlur`, `h.OnKeyDown`), a data or ARIA
+   *  attribute. */
+  attributes?: ReadonlyArray<Attribute<Msg>>
 }>
 
 export type InputVisualAttributes<Msg> = Readonly<{
@@ -105,6 +109,7 @@ export const renderInput = <Msg>(
             ? []
             : [h.AriaDescribedBy(describedBy)]),
           ...visual.input,
+          ...(props.attributes ?? []),
         ])
 
         if (props.label === undefined && props.description === undefined)
