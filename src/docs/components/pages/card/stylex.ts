@@ -34,7 +34,10 @@ const styles = stylex.create({
     color: 'inherit',
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
-    textDecorationLine: { default: 'none', ':hover': 'underline' },
+    textDecorationLine: {
+      default: 'none',
+      '@media (hover: hover)': { default: null, ':hover': 'underline' },
+    },
     textUnderlineOffset: '4px',
     marginLeft: 'auto',
   },

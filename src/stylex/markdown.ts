@@ -131,11 +131,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.mutedHover,
+      '@media (hover: hover)': { default: null, ':hover': tokens.mutedHover },
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     display: 'inline-flex',
     fontSize: '0.75rem',

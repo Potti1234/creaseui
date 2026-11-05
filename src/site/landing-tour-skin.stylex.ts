@@ -47,7 +47,7 @@ const styles = stylex.create({
     fontWeight: 500,
     color: {
       default: 'var(--muted-foreground)',
-      ':hover': 'var(--foreground)',
+      '@media (hover: hover)': { default: null, ':hover': 'var(--foreground)' },
     },
     transitionProperty: 'color, background-color, border-color',
     transitionDuration: '.15s',
@@ -146,7 +146,7 @@ const styles = stylex.create({
     transitionDuration: '.15s',
     scale: {
       default: null,
-      ':hover': '1.1',
+      '@media (hover: hover)': { default: null, ':hover': '1.1' },
     },
   },
   showcaseFrame: {
@@ -290,11 +290,11 @@ const styles = stylex.create({
     transitionDuration: '200ms',
     backgroundColor: {
       default: 'color-mix(in oklab, var(--muted) 70%, transparent)',
-      ':hover': 'var(--muted)',
+      '@media (hover: hover)': { default: null, ':hover': 'var(--muted)' },
     },
     color: {
       default: 'color-mix(in oklab, var(--foreground) 75%, transparent)',
-      ':hover': 'var(--foreground)',
+      '@media (hover: hover)': { default: null, ':hover': 'var(--foreground)' },
     },
     scale: {
       default: null,
@@ -635,13 +635,13 @@ const styles = stylex.create({
     borderRadius: '9999px',
     color: {
       default: 'var(--muted-foreground)',
-      ':hover': 'var(--foreground)',
+      '@media (hover: hover)': { default: null, ':hover': 'var(--foreground)' },
     },
     transitionProperty: 'color, background-color, border-color',
     transitionDuration: '.15s',
     backgroundColor: {
       default: null,
-      ':hover': 'var(--muted)',
+      '@media (hover: hover)': { default: null, ':hover': 'var(--muted)' },
     },
     outlineStyle: {
       default: null,
@@ -683,7 +683,7 @@ const styles = stylex.create({
     fontWeight: 500,
     color: {
       default: 'var(--muted-foreground)',
-      ':hover': 'var(--foreground)',
+      '@media (hover: hover)': { default: null, ':hover': 'var(--foreground)' },
     },
     transitionProperty: 'color, background-color, border-color',
     transitionDuration: '.15s',
@@ -796,7 +796,7 @@ const styles = stylex.create({
     transitionDuration: '200ms',
     color: {
       default: 'color-mix(in oklab, var(--foreground) 75%, transparent)',
-      ':hover': 'var(--foreground)',
+      '@media (hover: hover)': { default: null, ':hover': 'var(--foreground)' },
     },
     scale: {
       default: null,
@@ -863,7 +863,10 @@ const styles = stylex.create({
     },
     backgroundColor: {
       default: 'transparent',
-      ':hover': 'color-mix(in oklab, var(--muted) 50%, transparent)',
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': 'color-mix(in oklab, var(--muted) 50%, transparent)',
+      },
     },
   },
   chartFooter: {

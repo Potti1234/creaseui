@@ -41,7 +41,7 @@ const styles = stylex.create({
     backgroundColor: {
       default: tokens.transparent,
       ':focus-visible': tokens.accent,
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     fontSize: '0.875rem',
     fontWeight: 500,

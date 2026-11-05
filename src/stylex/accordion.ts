@@ -106,7 +106,10 @@ const styles = stylex.create({
     opacity: { default: 1, ':disabled': 0.5 },
     outlineStyle: 'none',
     textAlign: 'left',
-    textDecorationLine: { default: 'none', ':hover': 'underline' },
+    textDecorationLine: {
+      default: 'none',
+      '@media (hover: hover)': { default: null, ':hover': 'underline' },
+    },
     minHeight: '2.5rem',
   },
   triggerRow: {

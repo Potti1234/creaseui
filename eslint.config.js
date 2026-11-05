@@ -170,14 +170,10 @@ export default tseslint.config(
   }),
   creaseStylex({
     files: ['src/stylex/**/*.{ts,tsx}'],
-    /* StyleX `':hover'` keys are the renderer's established idiom
-       (~190 sites) — guarded-hoist belongs in a dedicated migration. */
+    /* creaseui's compact controls intentionally use sub-16px text
+       (input-font-size) and fixed control geometry (prefer-min-size). */
     defensive: {
-      off: [
-        'defensive-hover-media',
-        'defensive-input-font-size',
-        'defensive-prefer-min-size',
-      ],
+      off: ['defensive-input-font-size', 'defensive-prefer-min-size'],
     },
     propLimits: stylexPropLimits,
     styleResolution: stylexStyleResolution,
@@ -192,14 +188,14 @@ export default tseslint.config(
     propLimits: stylexPropLimits,
     severity: 'warn',
     styleResolution: stylexStyleResolution,
-    defensive: { off: [...DEFENSIVE_WARN_RULES, 'defensive-hover-media'] },
+    defensive: { off: DEFENSIVE_WARN_RULES },
   }),
   creaseStylex({
     files: ['src/docs/components/pages/**/stylex.{ts,tsx}'],
     propLimits: {},
     severity: 'warn',
     styleResolution: stylexStyleResolution,
-    defensive: { off: [...DEFENSIVE_WARN_RULES, 'defensive-hover-media'] },
+    defensive: { off: DEFENSIVE_WARN_RULES },
   }),
   creasePleat({
     files: ['src/pleat/**/*.{ts,tsx}'],

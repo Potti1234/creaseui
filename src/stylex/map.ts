@@ -55,7 +55,10 @@ const styles = stylex.create({
     outline: { default: 'none', ':focus-visible': '2px solid' },
     paddingInline: '0.5rem',
     alignItems: 'center',
-    backgroundColor: { default: tokens.background, ':hover': tokens.muted },
+    backgroundColor: {
+      default: tokens.background,
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
+    },
     cursor: interactionTokens.cursorAction,
     display: { default: 'flex', ':is([hidden])': 'none' },
     fontSize: '1.125rem',
@@ -152,7 +155,10 @@ const styles = stylex.create({
     outline: { default: 'none', ':focus-visible': '2px solid' },
     alignItems: 'center',
     backgroundColor: tokens.transparent,
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
+    },
     cursor: interactionTokens.cursorAction,
     display: 'flex',
     fontSize: '1.125rem',

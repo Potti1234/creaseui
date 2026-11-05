@@ -44,7 +44,10 @@ const styles = stylex.create({
   menuButton: {
     borderRadius: tokens.controlRadius,
     alignItems: 'center',
-    backgroundColor: { default: tokens.transparent, ':hover': tokens.accent },
+    backgroundColor: {
+      default: tokens.transparent,
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     display: 'inline-flex',
     justifyContent: 'center',
     height: '2rem',
@@ -55,7 +58,10 @@ const styles = stylex.create({
     borderRadius: tokens.controlRadius,
     gap: '0.75rem',
     alignItems: 'center',
-    backgroundColor: { default: tokens.secondary, ':hover': tokens.accent },
+    backgroundColor: {
+      default: tokens.secondary,
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     color: tokens.foreground,
     display: 'flex',
     textDecorationLine: 'none',

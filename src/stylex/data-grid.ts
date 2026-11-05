@@ -45,13 +45,16 @@ const st = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': tokens.accent,
       ':focus': tokens.accent,
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: {
       default: null,
-      ':hover': tokens.accentForeground,
       ':focus': tokens.accentForeground,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.accentForeground,
+      },
     },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
@@ -87,7 +90,10 @@ const st = stylex.create({
     gap: '0.375rem',
     paddingInline: '0.625rem',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     boxShadow: foundationTokens.shadowXs,
     display: 'inline-flex',
     fontSize: '0.875rem',
@@ -184,7 +190,10 @@ const st = stylex.create({
     gap: '0.375rem',
     paddingInline: '0.625rem',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     boxShadow: foundationTokens.shadowXs,
     display: 'inline-flex',
     fontSize: '0.875rem',
@@ -278,7 +287,10 @@ const st = stylex.create({
   c133: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     display: 'inline-flex',
     justifyContent: 'center',
     height: '1.5rem',
@@ -353,7 +365,10 @@ const st = stylex.create({
     paddingBlock: '0.375rem',
     paddingInline: '0.75rem',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     display: 'flex',
     fontSize: '0.875rem',
     fontWeight: 500,
@@ -438,8 +453,11 @@ const st = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: `color-mix(in srgb, ${tokens.muted} 30%, transparent)`,
-      ':hover': `color-mix(in srgb, ${tokens.muted} 50%, transparent)`,
       ':focus': `color-mix(in srgb, ${tokens.muted} 50%, transparent)`,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': `color-mix(in srgb, ${tokens.muted} 50%, transparent)`,
+      },
     },
     display: 'flex',
     flexGrow: '1',
@@ -578,7 +596,10 @@ const st = stylex.create({
     gap: '0.5rem',
     paddingBlock: '0.375rem',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
     fontSize: '0.875rem',
@@ -641,7 +662,10 @@ const st = stylex.create({
     paddingBlock: '0.375rem',
     paddingInline: '0.5rem',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
     fontSize: '0.875rem',
@@ -676,7 +700,10 @@ const st = stylex.create({
   multiClear: {
     borderRadius: foundationTokens.radiusSm,
     paddingBlock: '0.375rem',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     color: tokens.mutedForeground,
     fontSize: '0.875rem',
     outlineStyle: 'none',
@@ -712,7 +739,10 @@ const st = stylex.create({
   fileRemove: {
     borderRadius: foundationTokens.radiusSm,
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     display: 'inline-flex',
     flexShrink: 0,
     justifyContent: 'center',
@@ -727,7 +757,10 @@ const st = stylex.create({
     borderWidth: '1px',
     gap: '0.25rem',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     color: tokens.mutedForeground,
     cursor: interactionTokens.cursorAction,
     display: 'flex',
@@ -767,8 +800,8 @@ const st = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': tokens.accent,
       ':focus': tokens.accent,
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: { default: null, ':focus': tokens.accentForeground },
     cursor: interactionTokens.cursorDefault,

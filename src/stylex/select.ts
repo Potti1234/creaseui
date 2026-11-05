@@ -24,7 +24,10 @@ const styles = stylex.create({
     insetInline: { default: null, '::before': 0 },
     paddingBlock: 0,
     paddingInline: '0.25rem',
-    backgroundColor: { default: 'transparent', ':hover': tokens.muted },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
+    },
     boxShadow: {
       default: tokens.shadowNone,
       ':focus-visible': tokens.focusRingShadow,

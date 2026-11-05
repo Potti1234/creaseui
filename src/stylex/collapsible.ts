@@ -25,12 +25,18 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': complexTokens.sidebarAccent,
       ':active': complexTokens.sidebarAccent,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     color: {
       default: complexTokens.sidebarForeground,
-      ':hover': complexTokens.sidebarAccentForeground,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccentForeground,
+      },
     },
     display: 'flex',
     fontSize: '0.875rem',
@@ -51,11 +57,17 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': complexTokens.sidebarAccent,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccent,
+      },
     },
     color: {
       default: complexTokens.sidebarForeground,
-      ':hover': complexTokens.sidebarAccentForeground,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.sidebarAccentForeground,
+      },
     },
     display: 'flex',
     flexShrink: 0,

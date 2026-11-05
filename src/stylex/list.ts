@@ -69,8 +69,8 @@ const styles = stylex.create({
   itemInteractive: {
     backgroundColor: {
       default: 'transparent',
-      ':hover': tokens.mutedHover,
       ':active': foundationTokens.foregroundSoft,
+      '@media (hover: hover)': { default: null, ':hover': tokens.mutedHover },
     },
     cursor: {
       default: interactionTokens.cursorAction,

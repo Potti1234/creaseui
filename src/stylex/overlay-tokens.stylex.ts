@@ -33,7 +33,10 @@ export const overlayStyles = stylex.create({
       ':focus': tokens.focusRingOffsetShadow,
     },
     cursor: interactionTokens.cursorAction,
-    opacity: { default: 0.7, ':hover': 1 },
+    opacity: {
+      default: 0.7,
+      '@media (hover: hover)': { default: null, ':hover': 1 },
+    },
     outlineStyle: 'none',
     position: 'absolute',
     transitionDuration: {
@@ -125,17 +128,19 @@ export const overlayStyles = stylex.create({
     paddingInline: '0.5rem',
     alignItems: 'center',
     backgroundColor: {
-      default: tokens.transparent,
-      // Foldkit uses empty active markers; dropdown menus emit boolean values.
+      default: tokens.transparent, // Foldkit uses empty active markers; dropdown menus emit boolean values.
       ':is([data-active="true"], [data-active=""], [data-selected])':
         tokens.accent,
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: {
       default: tokens.foreground,
       ':is([data-active="true"], [data-active=""], [data-selected])':
         tokens.accentForeground,
-      ':hover': tokens.accentForeground,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.accentForeground,
+      },
     },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',

@@ -63,7 +63,10 @@ const styles = stylex.create({
     alignItems: 'center',
     display: 'inline-flex',
     justifyContent: 'center',
-    opacity: { default: 0.6, ':hover': 1 },
+    opacity: {
+      default: 0.6,
+      '@media (hover: hover)': { default: null, ':hover': 1 },
+    },
   },
   multiInput: {
     paddingInline: '0.25rem',

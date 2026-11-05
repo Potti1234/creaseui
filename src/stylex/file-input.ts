@@ -117,7 +117,10 @@ const styles = stylex.create({
     alignItems: 'center',
     boxShadow: {
       default: tokens.shadowNone,
-      ':hover:not(:focus-within):not([data-drag-over])': `inset 0 0 0 2px color-mix(in srgb, ${tokens.ring} 20%, transparent)`,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover:not(:focus-within):not([data-drag-over])': `inset 0 0 0 2px color-mix(in srgb, ${tokens.ring} 20%, transparent)`,
+      },
     },
     display: 'flex',
     flexDirection: 'column',
@@ -139,7 +142,10 @@ const styles = stylex.create({
     alignItems: 'center',
     boxShadow: {
       default: tokens.shadowNone,
-      ':hover:not(:focus-within)': `inset 0 0 0 2px color-mix(in srgb, ${tokens.ring} 20%, transparent)`,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover:not(:focus-within)': `inset 0 0 0 2px color-mix(in srgb, ${tokens.ring} 20%, transparent)`,
+      },
     },
     display: 'flex',
     height: '2rem',
@@ -260,11 +266,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': tokens.muted,
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     cursor: interactionTokens.cursorAction,
     display: 'flex',

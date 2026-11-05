@@ -29,7 +29,10 @@ const styles = stylex.create({
   },
   item: { gap: '0.375rem', alignItems: 'center', display: 'inline-flex' },
   link: {
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
+    },
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color',
   },

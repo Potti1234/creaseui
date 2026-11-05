@@ -98,7 +98,10 @@ const styles = stylex.create({
     boxShadow: {
       default: foundationTokens.shadowSm,
       ':focus-visible': foundationTokens.ringShadow4,
-      ':hover': foundationTokens.ringShadow4,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': foundationTokens.ringShadow4,
+      },
     },
     display: 'block',
     flexShrink: 0,

@@ -58,7 +58,7 @@ const styles = stylex.create({
     lineHeight: 'inherit',
     textDecorationLine: {
       default: 'none',
-      ':hover': 'underline',
+      '@media (hover: hover)': { default: null, ':hover': 'underline' },
     },
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color, text-decoration',
@@ -125,16 +125,22 @@ const linkColorStyles = stylex.create({
   primary: {
     color: {
       default: tokens.foreground,
-      /* PORT-NOTE: astryx hovers links toward tint-hover via
+      '@media (hover: hover)': {
+        default: null,
+        /* PORT-NOTE: astryx hovers links toward tint-hover via
          color-mix(<color> 85%, light-dark(black,white) 15%); the nearest
          existing token is the 85% foreground alpha. */
-      ':hover': foundationTokens.foregroundMuted,
+        ':hover': foundationTokens.foregroundMuted,
+      },
     },
   },
   secondary: {
     color: {
       default: tokens.mutedForeground,
-      ':hover': foundationTokens.foregroundMuted,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': foundationTokens.foregroundMuted,
+      },
     },
   },
   /* PORT-NOTE: needs token 'textDisabled' = light #A4B0BC / dark #6F747C. */
@@ -148,9 +154,12 @@ const linkColorStyles = stylex.create({
   accent: {
     color: {
       default: tokens.primary,
-      /* PORT-NOTE: astryx hovers toward tint-hover (darken/lighten 15%);
+      '@media (hover: hover)': {
+        default: null,
+        /* PORT-NOTE: astryx hovers toward tint-hover (darken/lighten 15%);
          primaryHover is the 90% primary alpha mix — the closest token. */
-      ':hover': tokens.primaryHover,
+        ':hover': tokens.primaryHover,
+      },
     },
   },
   inherit: {

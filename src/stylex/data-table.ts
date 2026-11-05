@@ -197,7 +197,10 @@ const styles = stylex.create({
   row: {
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': complexTokens.mutedSurface,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': complexTokens.mutedSurface,
+      },
     },
     transitionProperty: 'color, background-color',
     borderBottomColor: tokens.border,
@@ -1003,13 +1006,16 @@ const fst = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': tokens.accent,
       ':focus': tokens.accent,
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: {
       default: 'inherit',
-      ':hover': tokens.accentForeground,
       ':focus': tokens.accentForeground,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.accentForeground,
+      },
     },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
@@ -1081,7 +1087,10 @@ const fst = stylex.create({
     paddingBlock: '0.375rem',
     paddingInline: '0.5rem',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     boxShadow: { default: null, ':focus': `inset 0 0 0 1px ${tokens.ring}` },
     cursor: interactionTokens.cursorAction,
     display: 'flex',
@@ -1098,8 +1107,17 @@ const fst = stylex.create({
   c23: {
     borderRadius: foundationTokens.radiusMd,
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
-    color: { default: 'inherit', ':hover': tokens.accentForeground },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
+    color: {
+      default: 'inherit',
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.accentForeground,
+      },
+    },
     display: 'inline-flex',
     justifyContent: 'center',
     height: '2rem',
@@ -1127,9 +1145,18 @@ const fst = stylex.create({
     gap: '0.375rem',
     paddingInline: '0.625rem',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     boxShadow: foundationTokens.shadowXs,
-    color: { default: 'inherit', ':hover': tokens.accentForeground },
+    color: {
+      default: 'inherit',
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.accentForeground,
+      },
+    },
     display: 'inline-flex',
     fontSize: '0.875rem',
     fontWeight: 500,
@@ -1169,7 +1196,10 @@ const fst = stylex.create({
     gap: '0.375rem',
     paddingInline: '0.625rem',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     boxShadow: foundationTokens.shadowXs,
     display: 'inline-flex',
     fontSize: '0.875rem',
@@ -1229,7 +1259,10 @@ const fst = stylex.create({
     borderWidth: '1px',
     paddingInline: '0.625rem',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     boxShadow: foundationTokens.shadowXs,
     display: 'inline-flex',
     fontSize: '0.875rem',
@@ -1250,9 +1283,18 @@ const fst = stylex.create({
     gap: '0.375rem',
     paddingInline: '0.625rem',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     boxShadow: foundationTokens.shadowXs,
-    color: { default: 'inherit', ':hover': tokens.accentForeground },
+    color: {
+      default: 'inherit',
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.accentForeground,
+      },
+    },
     display: { default: 'none', '@media (min-width: 1024px)': 'flex' },
     fontSize: '0.875rem',
     fontWeight: 500,
@@ -1271,9 +1313,18 @@ const fst = stylex.create({
     gap: '0.375rem',
     paddingInline: '0.625rem',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     boxShadow: foundationTokens.shadowXs,
-    color: { default: 'inherit', ':hover': tokens.accentForeground },
+    color: {
+      default: 'inherit',
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.accentForeground,
+      },
+    },
     display: 'inline-flex',
     fontSize: '0.875rem',
     fontWeight: 500,
@@ -1334,7 +1385,10 @@ const fst = stylex.create({
   },
   c58: { backgroundColor: tokens.accent, color: tokens.accentForeground },
   c59: {
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     color: tokens.mutedForeground,
   },
   c60: {
@@ -1342,9 +1396,15 @@ const fst = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': `color-mix(in srgb, ${tokens.destructive} 10%, transparent)`,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': `color-mix(in srgb, ${tokens.destructive} 10%, transparent)`,
+      },
     },
-    color: { default: tokens.mutedForeground, ':hover': tokens.destructive },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.destructive },
+    },
     display: 'inline-flex',
     justifyContent: 'center',
     height: '1.75rem',
@@ -1401,7 +1461,10 @@ const fst = stylex.create({
     borderStyle: 'solid',
     borderWidth: '1px',
     alignItems: 'center',
-    backgroundColor: { default: 'transparent', ':hover': tokens.accent },
+    backgroundColor: {
+      default: 'transparent',
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     boxShadow: foundationTokens.shadowXs,
     display: 'inline-flex',
     justifyContent: 'center',
@@ -1527,7 +1590,10 @@ const fst = stylex.create({
   c103: {
     backgroundColor: {
       default: 'transparent',
-      ':hover': `color-mix(in srgb, ${tokens.muted} 50%, transparent)`,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': `color-mix(in srgb, ${tokens.muted} 50%, transparent)`,
+      },
     },
     transitionDuration: interactionTokens.motionFast,
     transitionProperty: 'color, background-color, border-color, box-shadow',

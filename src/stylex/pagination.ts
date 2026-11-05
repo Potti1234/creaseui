@@ -26,14 +26,26 @@ type SlotProps = Readonly<{
 const styles = stylex.create({
   active: {
     borderColor: tokens.border,
-    backgroundColor: { default: tokens.background, ':hover': tokens.muted },
+    backgroundColor: {
+      default: tokens.background,
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
+    },
     boxShadow: tokens.shadowSm,
-    color: { default: tokens.foreground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.foreground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
+    },
   },
   actionActive: {
-    backgroundColor: { default: tokens.background, ':hover': tokens.muted },
+    backgroundColor: {
+      default: tokens.background,
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
+    },
     boxShadow: tokens.shadowSm,
-    color: { default: tokens.foreground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.foreground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
+    },
   },
   directionLink: { gap: '0.25rem', paddingInline: '0.625rem' },
   disabled: {
@@ -66,8 +78,14 @@ const styles = stylex.create({
     borderWidth: 1,
     alignItems: 'center',
     backgroundClip: 'padding-box',
-    backgroundColor: { default: tokens.transparent, ':hover': tokens.muted },
-    color: { default: tokens.foreground, ':hover': tokens.foreground },
+    backgroundColor: {
+      default: tokens.transparent,
+      '@media (hover: hover)': { default: null, ':hover': tokens.muted },
+    },
+    color: {
+      default: tokens.foreground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
+    },
     display: 'inline-flex',
     flexShrink: 0,
     fontSize: '0.875rem',

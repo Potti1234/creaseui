@@ -39,12 +39,21 @@ const styles = stylex.create({
     paddingBlock: '0.5rem',
     paddingInline: '1rem',
     alignItems: 'center',
-    backgroundColor: { default: tokens.background, ':hover': tokens.accent },
+    backgroundColor: {
+      default: tokens.background,
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
     boxShadow: {
       default: tokens.shadowNone,
       ':focus-visible': tokens.focusRingShadow,
     },
-    color: { default: tokens.foreground, ':hover': tokens.accentForeground },
+    color: {
+      default: tokens.foreground,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': tokens.accentForeground,
+      },
+    },
     display: 'inline-flex',
     fontSize: '0.875rem',
     fontWeight: 500,

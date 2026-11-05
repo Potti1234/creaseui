@@ -78,11 +78,14 @@ const styles = stylex.create({
   itemDestructive: {
     backgroundColor: {
       default: 'transparent',
-      ':hover': foundationTokens.destructiveSoft,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': foundationTokens.destructiveSoft,
+      },
     },
     color: {
       default: tokens.destructive,
-      ':hover': tokens.destructive,
+      '@media (hover: hover)': { default: null, ':hover': tokens.destructive },
     },
   },
   close: {
@@ -91,7 +94,7 @@ const styles = stylex.create({
     color: 'inherit',
     opacity: {
       default: 0.7,
-      ':hover': 1,
+      '@media (hover: hover)': { default: null, ':hover': 1 },
     },
   },
   separator: {

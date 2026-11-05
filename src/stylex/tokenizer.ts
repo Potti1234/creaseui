@@ -97,7 +97,10 @@ const styles = stylex.create({
     boxShadow: {
       default: foundationTokens.shadowXs,
       ':focus-within': `inset 0 0 0 2px ${foundationTokens.ringSoft}`,
-      ':hover': `inset 0 0 0 2px ${foundationTokens.inputDark}`,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': `inset 0 0 0 2px ${foundationTokens.inputDark}`,
+      },
     },
     cursor: interactionTokens.cursorDefault,
     display: 'flex',
@@ -295,7 +298,7 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     cursor: interactionTokens.cursorAction,
     display: 'inline-flex',

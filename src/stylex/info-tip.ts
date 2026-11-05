@@ -55,9 +55,9 @@ const styles = stylex.create({
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': {
+      '@media (hover: hover)': {
         default: null,
-        '@media (hover: hover)': tokens.foreground,
+        ':hover': tokens.foreground,
       },
     },
     cursor: interactionTokens.cursorAction,

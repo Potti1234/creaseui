@@ -31,7 +31,7 @@ const styles = stylex.create({
     paddingInline: '0.75rem',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.secondary,
+      '@media (hover: hover)': { default: null, ':hover': tokens.secondary },
     },
     flexShrink: 0,
   },
@@ -49,7 +49,10 @@ const styles = stylex.create({
   },
   dismiss: {
     padding: '0.25rem',
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
+    },
     opacity: { default: 0.7, ':focus': 1 },
     position: 'absolute',
     right: '0.5rem',

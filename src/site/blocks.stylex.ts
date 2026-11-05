@@ -70,7 +70,10 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
     fontWeight: 500,
     cursor: 'pointer',
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
+    },
   },
   selected: { backgroundColor: tokens.muted, color: tokens.foreground },
   link: {
@@ -80,7 +83,10 @@ const styles = stylex.create({
     fontSize: '.875rem',
     lineHeight: '1.25rem',
     textUnderlineOffset: '4px',
-    textDecorationLine: { default: 'none', ':hover': 'underline' },
+    textDecorationLine: {
+      default: 'none',
+      '@media (hover: hover)': { default: null, ':hover': 'underline' },
+    },
   },
   linkIcon: { width: '1em', height: '1em' },
   status: {
@@ -130,7 +136,10 @@ const styles = stylex.create({
     lineHeight: '1.25rem',
     fontWeight: 500,
     cursor: 'pointer',
-    backgroundColor: { default: tokens.background, ':hover': tokens.accent },
+    backgroundColor: {
+      default: tokens.background,
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
+    },
   },
   codeOpen: {
     borderColor: tokens.foreground,
@@ -206,7 +215,10 @@ const styles = stylex.create({
     whiteSpace: 'nowrap',
     borderRadius: '.375rem',
     cursor: 'pointer',
-    color: { default: tokens.mutedForeground, ':hover': tokens.foreground },
+    color: {
+      default: tokens.mutedForeground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
+    },
   },
   code: { minWidth: 0, flex: 1, overflow: 'auto' },
   loading: {

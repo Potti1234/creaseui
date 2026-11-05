@@ -124,7 +124,10 @@ const styles = stylex.create({
     boxShadow: {
       default: foundationTokens.shadowXs,
       ':focus-within': `inset 0 0 0 2px ${foundationTokens.ringSoft}`,
-      ':hover': `inset 0 0 0 2px ${foundationTokens.inputDark}`,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': `inset 0 0 0 2px ${foundationTokens.inputDark}`,
+      },
     },
     display: 'flex',
     flexBasis: '12.25rem',
@@ -174,11 +177,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     cursor: {
       default: interactionTokens.cursorAction,
@@ -216,11 +219,11 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: tokens.transparent,
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     color: {
       default: tokens.mutedForeground,
-      ':hover': tokens.foreground,
+      '@media (hover: hover)': { default: null, ':hover': tokens.foreground },
     },
     display: 'inline-flex',
     flexShrink: 0,
@@ -287,7 +290,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
-      ':hover': tokens.accent,
+      '@media (hover: hover)': { default: null, ':hover': tokens.accent },
     },
     borderRadius: foundationTokens.radiusSm,
     boxSizing: 'border-box',

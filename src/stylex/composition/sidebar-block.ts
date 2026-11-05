@@ -131,7 +131,10 @@ const styles = stylex.create({
     gap: '0.5rem',
     backgroundColor: {
       default: tokens.background,
-      ':hover': foundationTokens.muted,
+      '@media (hover: hover)': {
+        default: null,
+        ':hover': foundationTokens.muted,
+      },
     },
     display: 'flex',
     flexDirection: 'column',
