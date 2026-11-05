@@ -91,6 +91,9 @@ export const dropdownMenuPleatPreview: ExamplePreviewProvider = <Msg>(
           ...(fixture.keepOpenOnCheckableSelect === true
             ? { keepOpenOnCheckableSelect: true }
             : {}),
+          ...(fixture.activateOnHover === false
+            ? { activateOnHover: false }
+            : {}),
           ...(fixture.direction === 'rtl' ? { direction: 'rtl' as const } : {}),
         },
         h,

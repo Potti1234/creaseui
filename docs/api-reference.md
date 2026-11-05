@@ -267,7 +267,7 @@ Source: [`src/ui/card.ts`](../src/ui/card.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `CardProps` | type | `CardProps = Slot & Readonly<{ element?: 'div' \| 'section' \| 'article'; size?: 'default' \| 'sm'; }>` |
+| `CardProps` | type | `CardProps = Slot & Readonly<{ element?: 'div' \| 'section' \| 'article'; id?: string; size?: 'default' \| 'sm'; }>` |
 | `card` | function | `card<Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html` |
 | `cardHeader` | value | `cardHeader: value` |
 | `CardTitleProps` | type | `CardTitleProps = Slot & Readonly<{ element?: 'h2' \| 'h3' \| 'h4'; }>` |

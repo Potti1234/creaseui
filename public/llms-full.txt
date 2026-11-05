@@ -2460,7 +2460,7 @@ Source: `src/ui/card.ts`
 
 Examples: Basic, Size, Spacing, Edge to Edge, Image, RTL
 
-- `CardProps = Slot & Readonly<{ element?: 'div' | 'section' | 'article'; size?: 'default' | 'sm'; }>` (type)
+- `CardProps = Slot & Readonly<{ element?: 'div' | 'section' | 'article'; id?: string; size?: 'default' | 'sm'; }>` (type)
 - `card<Msg>(props: CardProps, h: HtmlBuilder<Msg>): Html` (function)
 - `cardHeader: value` (value)
 - `CardTitleProps = Slot & Readonly<{ element?: 'h2' | 'h3' | 'h4'; }>` (type)
@@ -2951,7 +2951,7 @@ A CreaseUI Dropdown Menu component for Foldkit.
 
 Source: `src/ui/dropdown-menu.ts`
 
-Examples: Basic, Submenu, Shortcuts, Icons, Checkboxes, Checkboxes Icons, Radio Group, Radio Icons, Destructive, Avatar, Complex, RTL
+Examples: Basic, Hover Without Activation, Submenu, Shortcuts, Icons, Checkboxes, Checkboxes Icons, Radio Group, Radio Icons, Destructive, Avatar, Complex, RTL
 
 - `Model: value` (value)
 - `Model = typeof Model.Type` (type)

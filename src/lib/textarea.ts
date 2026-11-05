@@ -28,6 +28,10 @@ export type TextareaBehaviorProps<Msg> = Readonly<{
   isReadOnly?: boolean
   isInvalid?: boolean
   isAutofocus?: boolean
+  /** Extra attributes for the textarea element itself, after crease's own:
+   *  an event the props do not name (`h.OnBlur`, `h.OnKeyDown`), a data or
+   *  ARIA attribute. */
+  attributes?: ReadonlyArray<TextareaAttribute<Msg>>
 }>
 
 export type TextareaVisualAttributes<Msg> = Readonly<{
@@ -91,6 +95,7 @@ export const renderTextarea = <Msg>(
             ? []
             : [h.AriaDescribedBy(describedBy)]),
           ...visual.textarea,
+          ...(props.attributes ?? []),
         ])
 
         if (props.label === undefined && props.description === undefined)

@@ -277,6 +277,12 @@ export type DropdownMenuProps<Item extends string, Msg> = Readonly<{
   /** When true, selecting a checkbox or radio item toggles it without
    * closing the menu, so several entries can be edited in one open. */
   keepOpenOnCheckableSelect?: boolean
+  /** Default true: moving the pointer over an item makes it the active
+   * item (a Message per item crossed). False: hover is styled in CSS and only
+   * keys move the active item; items with a submenu still open it on hover.
+   * For menus whose update runs away from the browser (a server), where
+   * every Message is a round trip. */
+  activateOnHover?: boolean
 }>
 
 const positionClass = (
@@ -478,7 +484,8 @@ export const dropdownMenu = <Item extends string, Msg>(
                 anchorName: `--${props.model.id}-sub-${String(index)}`,
               }),
             ]),
-        ...(config.isDisabled === true
+        ...(config.isDisabled === true ||
+        (props.activateOnHover === false && config.submenu === undefined)
           ? []
           : [
               h.OnMouseEnter(

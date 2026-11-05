@@ -1,5 +1,5 @@
 import * as Scene from 'foldkit/scene'
-import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { Html, HtmlBuilder, TextareaAttribute } from 'foldkit/html'
 import { describe, it } from 'vitest'
 
 import * as StyleXTextarea from '@/stylex/textarea'
@@ -32,6 +32,7 @@ type TextareaModule = Readonly<{
       resize?: 'none' | 'vertical'
       isReadOnly?: boolean
       isInvalid?: boolean
+      attributes?: ReadonlyArray<TextareaAttribute<Msg>>
     },
     h: HtmlBuilder<Msg>,
   ) => Html
@@ -103,6 +104,32 @@ const verifyRenderer = (name: string, Textarea: TextareaModule) => {
         Scene.expect(Scene.label('Generated summary')).not.toHaveAttr(
           'aria-describedby',
         ),
+      )
+    })
+
+    it('spreads app attributes onto the control element', () => {
+      Scene.scene(
+        {
+          update,
+          view: (model, h) =>
+            Textarea.textarea(
+              {
+                id: 'inline-textarea',
+                value: model.value,
+                label: 'Notes',
+                attributes: [
+                  h.DataAttribute('field', 'textarea'),
+                  h.OnBlur(ChangedTextarea('saved on blur')),
+                ],
+              },
+              h,
+            ),
+        },
+        Scene.given({ value: 'draft' }),
+        Scene.expect(Scene.label('Notes')).toHaveAttr('data-field', 'textarea'),
+        Scene.blur(Scene.label('Notes')),
+        Scene.expectHandled(),
+        Scene.expect(Scene.label('Notes')).toHaveValue('saved on blur'),
       )
     })
   })

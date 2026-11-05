@@ -22,9 +22,14 @@ All notable changes to Crease UI are recorded here. The project follows
 - A publishable `@creaseui/lint` package with Foldkit-aware Tailwind and StyleX
   component contracts, strict constrained-composition rules, and a CI warning
   ratchet for existing examples.
+- `attributes` on `input` and `textarea` for app attributes on the control
+  element, `activateOnHover` on `dropdownMenu` for menus whose update runs on a
+  server, and an `id` prop on `card`.
 
 ### Changed
 
+- Active Tailwind sidebar links now carry `aria-current="page"`, like StyleX
+  and Pleat.
 - Application startup now receives the selected theme through Foldkit Flags.
 - Route URLs are printed by Foldkit's bidirectional routers.
 - The documentation application stores only the active route's page model.
