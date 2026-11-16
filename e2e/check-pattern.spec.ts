@@ -44,6 +44,7 @@ type PatternCase = Readonly<{
   target: string
   trigger?: (main: Locator) => Locator
   opens?: string
+  checkerLimitations?: ReadonlyArray<RegExp>
 }>
 
 const CASES: ReadonlyArray<PatternCase> = [
@@ -73,12 +74,18 @@ const CASES: ReadonlyArray<PatternCase> = [
     pattern: 'disclosure',
     target: 'button[aria-expanded]',
   },
-  { slug: 'combobox', pattern: 'combobox', target: '[role="combobox"]' },
+  {
+    slug: 'combobox',
+    pattern: 'combobox',
+    target: '[role="combobox"]',
+    checkerLimitations: [/Escape should close its popup/u],
+  },
   {
     slug: 'select',
     pattern: 'listbox',
     target: 'button[aria-haspopup]',
     opens: '[role="listbox"]',
+    checkerLimitations: [/typing "a" should move focus/u],
   },
   {
     slug: 'dropdown-menu',
@@ -92,6 +99,7 @@ const CASES: ReadonlyArray<PatternCase> = [
     target: '[role="alertdialog"]',
     trigger: main => main.getByRole('button', { name: /show dialog/iu }),
     opens: '[role="alertdialog"]',
+    checkerLimitations: [/Escape should close it/u],
   },
 ]
 
@@ -112,15 +120,35 @@ const patternProblems = (target: Locator, pattern: Pattern) =>
     }
   }, pattern)
 
+/* checkPattern fires synthetic keys back to back, faster than Foldkit's
+   Escape and typeahead Commands settle. Those problems are listed per case
+   and covered with real key presses in the "real keys" tests below. */
+const unexplainedProblems = (
+  message: string,
+  limitations: ReadonlyArray<RegExp>,
+): ReadonlyArray<string> => {
+  if (message === '') return []
+  const problems = message
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line.startsWith('- '))
+  return problems.length === 0
+    ? [message]
+    : problems.filter(
+        problem => !limitations.some(limitation => limitation.test(problem)),
+      )
+}
+
+const rendererUrl = (renderer: Renderer, slug: string) =>
+  `http://127.0.0.1:${String(RENDERER_PORTS[renderer])}/docs/components/${slug}`
+
 for (const renderer of Object.keys(RENDERER_PORTS) as Array<Renderer>) {
   test.describe(`checkPattern (${renderer})`, () => {
     for (const patternCase of CASES) {
       test(`${patternCase.slug} follows the ${patternCase.pattern} pattern`, async ({
         page,
       }) => {
-        await page.goto(
-          `http://127.0.0.1:${String(RENDERER_PORTS[renderer])}/docs/components/${patternCase.slug}`,
-        )
+        await page.goto(rendererUrl(renderer, patternCase.slug))
         const main = page.locator('main').first()
         const initial = main.locator(patternCase.target).first()
         if (patternCase.opens !== undefined) {
@@ -132,8 +160,51 @@ for (const renderer of Object.keys(RENDERER_PORTS) as Array<Renderer>) {
             : page.locator(patternCase.opens).first()
         await expect(target).toBeVisible()
         await installChecker(page)
-        expect(await patternProblems(target, patternCase.pattern)).toBe('')
+        expect(
+          unexplainedProblems(
+            await patternProblems(target, patternCase.pattern),
+            patternCase.checkerLimitations ?? [],
+          ),
+        ).toEqual([])
       })
     }
+  })
+
+  test.describe(`checkPattern limitations with real keys (${renderer})`, () => {
+    test('Escape closes the alert dialog', async ({ page }) => {
+      await page.goto(rendererUrl(renderer, 'alert-dialog'))
+      await page
+        .locator('main')
+        .getByRole('button', { name: /show dialog/iu })
+        .first()
+        .click()
+      const dialog = page.getByRole('alertdialog')
+      await expect(dialog).toBeVisible()
+      await page.keyboard.press('Escape')
+      await expect(dialog).toBeHidden()
+    })
+
+    test('Escape closes the combobox popup', async ({ page }) => {
+      await page.goto(rendererUrl(renderer, 'combobox'))
+      const input = page.locator('main [role="combobox"]').first()
+      await input.click()
+      await page.keyboard.press('ArrowDown')
+      await expect(input).toHaveAttribute('aria-expanded', 'true')
+      await page.keyboard.press('Escape')
+      await expect(input).toHaveAttribute('aria-expanded', 'false')
+    })
+
+    test('typeahead moves the active select option', async ({ page }) => {
+      await page.goto(rendererUrl(renderer, 'select'))
+      await page.locator('main button[aria-haspopup]').first().click()
+      const listbox = page.getByRole('listbox').first()
+      await expect(listbox).toBeFocused()
+      await page.keyboard.press('b')
+      const banana = listbox.getByRole('option', { name: 'Banana' })
+      await expect(listbox).toHaveAttribute(
+        'aria-activedescendant',
+        (await banana.getAttribute('id')) ?? '',
+      )
+    })
   })
 }
