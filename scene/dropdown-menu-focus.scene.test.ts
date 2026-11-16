@@ -34,6 +34,33 @@ for (const [renderer, MenuModule] of [
       assert.equal(result.commands?.[0]?.args.id, 'account')
     })
 
+    it('moves focus onto the active item when the menu opens', () => {
+      const Menu = MenuModule.create<'profile' | 'billing'>()
+      const result = Menu.update(
+        MenuModule.init({ id: 'account' }),
+        MenuModule.Message.Opened(),
+      )
+      assert.equal(result.model.isOpen, true)
+      assert.deepEqual(
+        (result.commands ?? []).map(command => command.name),
+        ['FocusDropdownMenuItem'],
+      )
+      assert.equal(result.commands?.[0]?.args.id, 'account')
+    })
+
+    it('keeps focus on the active item as it moves', () => {
+      const Menu = MenuModule.create<'profile' | 'billing'>()
+      const opened = Menu.open(MenuModule.init({ id: 'account' })).model
+      const result = Menu.update(
+        opened,
+        MenuModule.Message.ActivatedItem({ index: 1 }),
+      )
+      assert.deepEqual(
+        (result.commands ?? []).map(command => command.name),
+        ['FocusDropdownMenuItem'],
+      )
+    })
+
     it('does not focus the trigger when the selection stays open', () => {
       const Menu = MenuModule.create<'profile' | 'billing'>()
       const opened = Menu.open(MenuModule.init({ id: 'account' })).model

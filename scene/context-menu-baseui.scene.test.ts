@@ -109,6 +109,13 @@ const nestedItemConfigs: Record<string, ItemConfig<string>> = {
 }
 const submenuTrigger = Scene.role('menuitem', { name: 'More tools' })
 
+/* Item focus is covered in dropdown-menu-focus; these ports assert menu
+   state, so the follow-up focus Command is not resolved in every scene. */
+const withoutItemFocus = <C extends Readonly<{ name: string }>>(
+  commands: ReadonlyArray<C>,
+): ReadonlyArray<C> =>
+  commands.filter(command => command.name !== 'FocusDropdownMenuItem')
+
 const verifyRenderer = (
   name: string,
   ContextMenu: ContextMenuModule,
@@ -136,7 +143,7 @@ const verifyRenderer = (
           ...result,
           model: { ...model, menu: result.model },
           commands: Command.mapMessages(
-            result.commands ?? [],
+            withoutItemFocus(result.commands ?? []),
             (message): Message => ({ _tag: 'Menu', message }),
           ),
         }
@@ -147,7 +154,7 @@ const verifyRenderer = (
           ...result,
           model: { ...model, inner: result.model },
           commands: Command.mapMessages(
-            result.commands ?? [],
+            withoutItemFocus(result.commands ?? []),
             (message): Message => ({ _tag: 'InnerMenu', message }),
           ),
         }
@@ -158,7 +165,7 @@ const verifyRenderer = (
           ...result,
           model: { ...model, outer: result.model },
           commands: Command.mapMessages(
-            result.commands ?? [],
+            withoutItemFocus(result.commands ?? []),
             (message): Message => ({ _tag: 'OuterMenu', message }),
           ),
         }
@@ -518,7 +525,7 @@ const verifyRenderer = (
           Scene.contextMenu(trigger),
           Scene.expectHandled(),
           Scene.expect(menu).toHaveAttr('aria-label', 'Actions'),
-          Scene.expect(menu).toHaveAttr('tabIndex', '0'),
+          Scene.expect(menu).toHaveAttr('tabIndex', '-1'),
           Scene.expect(Scene.role('menuitem', { name: 'Back' })).toExist(),
           Scene.expect(Scene.role('menuitem', { name: 'Reload' })).toExist(),
           Scene.expect(Scene.role('menuitem', { name: 'Forward' })).toHaveAttr(
