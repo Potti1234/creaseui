@@ -189,10 +189,11 @@ export const menubarTailwindPreviewProgram = definePreviewProgram<
         })
         const target = model.menuTargets[index]
         if (target === undefined) return { model: model }
+        const isMenuOpen = menubarTargets.some(t => model[t].isOpen)
         const next = menubarTargets.reduce<MenubarPreviewModel>(
           (acc, t) => ({
             ...acc,
-            [t]: (t === target
+            [t]: (t === target && isMenuOpen
               ? DropdownMenu.open(acc[t])
               : DropdownMenu.close(acc[t])
             ).model,

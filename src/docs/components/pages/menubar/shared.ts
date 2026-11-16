@@ -670,10 +670,11 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
       const index = Option.match(maybeMove, { onNone: () => menubar.activeIndex, onSome: move => move.index })
       const target = targets[index]
       if (target === undefined) return { model: model }
+      const isMenuOpen = targets.some(t => model[t].isOpen)
       const next = targets.reduce(
         (acc, t) => ({
           ...acc,
-          [t]: (t === target ? DropdownMenu.open(acc[t]) : DropdownMenu.close(acc[t])).model,
+          [t]: (t === target && isMenuOpen ? DropdownMenu.open(acc[t]) : DropdownMenu.close(acc[t])).model,
         }),
         { ...model, menubar },
       )
