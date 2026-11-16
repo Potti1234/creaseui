@@ -671,16 +671,20 @@ export const update = (model: Model, message: Message): Update.Return<Model, Mes
       const target = targets[index]
       if (target === undefined) return { model: model }
       const isMenuOpen = targets.some(t => model[t].isOpen)
+      const opened = isMenuOpen ? DropdownMenu.open(model[target]) : undefined
       const next = targets.reduce(
         (acc, t) => ({
           ...acc,
-          [t]: (t === target && isMenuOpen ? DropdownMenu.open(acc[t]) : DropdownMenu.close(acc[t])).model,
+          [t]: t === target && opened !== undefined ? opened.model : DropdownMenu.close(acc[t]).model,
         }),
         { ...model, menubar },
       )
       return {
         model: next,
-        commands: Command.mapMessages(commands, next2 => Message.GotMenubarMessage({ message: next2 })),
+        commands:
+          opened === undefined
+            ? Command.mapMessages(commands, next2 => Message.GotMenubarMessage({ message: next2 }))
+            : Command.mapMessages(opened.commands ?? [], next2 => Message.GotMenuMessage({ target, message: next2 })),
       }
     }
   }
