@@ -24,6 +24,7 @@ export type TreeListFixtureItem = Readonly<{
 
 export type TreeListFixtureTree = Readonly<{
   variant: TreeListVariant
+  ariaLabel: string
   caption?: string
 }>
 
@@ -70,14 +71,14 @@ export const treeListFixtures: Readonly<
 > = [
   {
     title: 'Tree List',
-    trees: [{ variant: 'lineGuides' }],
+    trees: [{ variant: 'lineGuides', ariaLabel: 'Project files' }],
     items: showcaseItems,
   },
   {
     title: 'TreeList — File Tree With Icons',
     description:
       'File browser tree with folder and document icons distinguishing directories from files.',
-    trees: [{ variant: 'lineGuides' }],
+    trees: [{ variant: 'lineGuides', ariaLabel: 'Project files' }],
     items: [
       {
         id: 'src',
@@ -110,7 +111,7 @@ export const treeListFixtures: Readonly<
   {
     title: 'TreeList — Interactive Settings',
     description: 'Settings tree with clickable items and a documentation link.',
-    trees: [{ variant: 'lineGuides' }],
+    trees: [{ variant: 'lineGuides', ariaLabel: 'Settings' }],
     items: [
       {
         id: 'settings',
@@ -133,7 +134,7 @@ export const treeListFixtures: Readonly<
   {
     title: 'TreeList — Mailbox Tree',
     description: 'Email folder tree with unread badge counts.',
-    trees: [{ variant: 'lineGuides' }],
+    trees: [{ variant: 'lineGuides', ariaLabel: 'Mailboxes' }],
     items: [
       {
         id: 'inbox',
@@ -157,7 +158,7 @@ export const treeListFixtures: Readonly<
   {
     title: 'TreeList — Navigation Tree',
     description: 'Navigation tree with a selected item for the current page.',
-    trees: [{ variant: 'lineGuides' }],
+    trees: [{ variant: 'lineGuides', ariaLabel: 'Navigation' }],
     items: [
       {
         id: 'nav',
@@ -176,8 +177,12 @@ export const treeListFixtures: Readonly<
     description:
       'The `variant` prop controls whether hierarchy guide lines are shown: `lineGuides` (default) draws connector lines between parent and child rows, while `noGuides` relies on indentation alone. It is orthogonal to `density`, which controls spacing.',
     trees: [
-      { variant: 'lineGuides', caption: 'lineGuides (default)' },
-      { variant: 'noGuides', caption: 'noGuides' },
+      {
+        variant: 'lineGuides',
+        ariaLabel: 'lineGuides (default)',
+        caption: 'lineGuides (default)',
+      },
+      { variant: 'noGuides', ariaLabel: 'noGuides', caption: 'noGuides' },
     ],
     items: [
       {
@@ -276,7 +281,11 @@ const submodelSource = (
         slotId: '${modelField}',
         model: model.${modelField},
         view: TreeList.view,
-        viewInputs: { items: items(h), variant: '${tree.variant}' },
+        viewInputs: {
+          items: items(h),
+          variant: '${tree.variant}',
+          ariaLabel: '${tree.ariaLabel}',
+        },
         toParentMessage: message => Message['${messageTag}']({ message }),
       })`
 

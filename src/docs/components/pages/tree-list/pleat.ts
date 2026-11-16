@@ -82,6 +82,7 @@ export const treeListPleatPreview: ExamplePreviewProvider = <Msg>(
       viewInputs: {
         items: decorateItems(fixture.items, h),
         variant: tree.variant,
+        ariaLabel: tree.ariaLabel,
       },
       toParentMessage: message =>
         onMessageJson(
