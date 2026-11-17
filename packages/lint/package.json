@@ -1,6 +1,6 @@
 {
   "name": "@creaseui/lint",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Agent-first lint rules for Foldkit design systems using Tailwind, StyleX or Pleat, including the strict creaseui() consumer policy.",
   "license": "MIT",
   "repository": {
