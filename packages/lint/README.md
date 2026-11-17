@@ -1,6 +1,13 @@
 # @creaseui/lint
 
-Agent-first ESLint rules for Foldkit design systems using Tailwind or StyleX.
+Agent-first ESLint rules for Foldkit design systems using Tailwind, StyleX or Pleat.
+
+```sh
+npm install --save-dev @creaseui/lint eslint typescript
+npx creaseui-lint init --renderer tailwind
+```
+
+Use `--renderer stylex` or `--renderer pleat` for the other renderers.
 
 Unlike JSX-oriented design-system linters, this package understands Foldkit
 component calls:
@@ -20,7 +27,7 @@ It provides three ESLint flat-config helpers:
 - `constrainedStylex()` closes raw StyleX and Foldkit composition escape
   hatches for agent-authored pages.
 
-See the repository's `docs/design-system-lint.md` for configuration, rule
+See the [design-system lint guide](https://github.com/Potti1234/creaseui/blob/main/docs/design-system-lint.md) for configuration, rule
 semantics, adoption, and exception policy.
 
 ## Optional rendered audit

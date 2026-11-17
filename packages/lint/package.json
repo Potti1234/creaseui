@@ -3,6 +3,18 @@
   "version": "0.1.0",
   "description": "Agent-first lint rules for Foldkit design systems using Tailwind, StyleX or Pleat, including the strict creaseui() consumer policy.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Potti1234/creaseui.git",
+    "directory": "packages/lint"
+  },
+  "homepage": "https://creaseui.com",
+  "bugs": {
+    "url": "https://github.com/Potti1234/creaseui/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "exports": {
     ".": {
@@ -32,7 +44,8 @@
     "docs",
     "lib",
     "rules",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=20.19"
@@ -49,7 +62,7 @@
     "typescript-eslint": "^8.66.0"
   },
   "bin": {
-    "creaseui-lint": "./bin/creaseui-lint.js"
+    "creaseui-lint": "bin/creaseui-lint.js"
   },
   "peerDependenciesMeta": {
     "playwright": {

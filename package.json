@@ -22,6 +22,11 @@
   },
   "type": "module",
   "scripts": {
+    "changeset": "changeset",
+    "version-packages": "changeset version && npm install --package-lock-only --no-audit --no-fund",
+    "release:lint:check": "node scripts/run-unit-tests.mjs test/publish-lint.test.ts && npm run test:lint-package && npm run lint-docs:check && npm run lint:consumers",
+    "release:lint:publish": "node scripts/publish-lint.mjs",
+    "release:lint": "npm run release:lint:check && npm run release:lint:publish",
     "audit": "npm audit",
     "prepare": "husky",
     "format": "oxfmt --write",
@@ -114,6 +119,8 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^3.0.3",
     "@creaseui/lint": "file:packages/lint",
     "@foldkit/vite-plugin": "0.25.0",
     "@iconify-json/hugeicons": "^1.2.32",
