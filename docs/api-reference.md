@@ -719,6 +719,7 @@ Source: [`src/ui/dropdown-menu.ts`](../src/ui/dropdown-menu.ts)
 | `Message` | value | `Message: value` |
 | `Message` | type | `Message = typeof Message.Type` |
 | `FocusTrigger` | value | `FocusTrigger: value` |
+| `FocusActiveItem` | value | `FocusActiveItem: value` |
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage<Item extends string = string> = Readonly<{ _tag: 'Selected'; value: Item; index: number; }>` |
 | `init` | function | `init(config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean; }>): Model` |

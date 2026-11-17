@@ -79,6 +79,7 @@ export const alertDialog = <Msg>(
     model: props.model,
     view: DialogPrimitive.view,
     viewInputs: {
+      hasDescription: true,
       toView: ({
         dialog: dialogAttributes,
         panel,
@@ -115,6 +116,7 @@ export const alertDialog = <Msg>(
         return hd.dialog(
           [
             ...dialogAttributes,
+            ...(isVisible ? [hd.Role('alertdialog')] : []),
             hd.DataAttribute('slot', 'alert-dialog'),
             hd.Class(DIALOG_CLASS),
           ],
@@ -132,7 +134,6 @@ export const alertDialog = <Msg>(
                 hd.div(
                   [
                     ...panel,
-                    hd.Role('alertdialog'),
                     hd.DataAttribute('slot', 'alert-dialog-content'),
                     hd.DataAttribute('size', size),
                     hd.Class(cn(CONTENT_CLASS, props.class)),

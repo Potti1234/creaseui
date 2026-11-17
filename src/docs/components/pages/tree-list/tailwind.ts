@@ -59,7 +59,11 @@ const decorateItems = <Msg>(
   }))
 
 const treeView = <Msg>(
-  tree: { variant: TreeList.TreeListVariant; caption?: string },
+  tree: {
+    variant: TreeList.TreeListVariant
+    ariaLabel: string
+    caption?: string
+  },
   items: ReadonlyArray<TreeListFixtureItem>,
   treeModel: TreeList.Model,
   index: number,
@@ -70,7 +74,11 @@ const treeView = <Msg>(
     slotId: `docs-tree-list-${String(index)}`,
     model: treeModel,
     view: TreeList.view,
-    viewInputs: { items: decorateItems(items, h), variant: tree.variant },
+    viewInputs: {
+      items: decorateItems(items, h),
+      variant: tree.variant,
+      ariaLabel: tree.ariaLabel,
+    },
     toParentMessage: message =>
       toParentMessage(
         GotTreeListPreviewMessage.GotTreeListPreviewMessage({

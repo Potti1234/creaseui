@@ -113,6 +113,7 @@ export const Message = defineMessageUnion({
   OpenedAt: { x: S.Number, y: S.Number },
   Closed: {},
   CompletedFocusDropdownMenuTrigger: {},
+  CompletedFocusDropdownMenuItem: {},
   ActivatedItem: { index: S.Number },
   OpenedSubmenu: { index: S.Number },
   ActivatedSubmenuItem: {
@@ -136,6 +137,18 @@ export const FocusTrigger = Command.define('FocusDropdownMenuTrigger', {
     Dom.focus(`[id="${id}-trigger"]`).pipe(
       Effect.ignore,
       Effect.as(Message.CompletedFocusDropdownMenuTrigger()),
+    ),
+})
+
+/* Focus follows the active item from the moment the menu opens, so arrows,
+   typeahead and Tab start inside the menu (APG menu button). */
+export const FocusActiveItem = Command.define('FocusDropdownMenuItem', {
+  args: { id: S.String },
+  messages: [Message.CompletedFocusDropdownMenuItem],
+  execute: ({ id }) =>
+    Dom.focus(`[id="${id}-content"] [data-active="true"]`).pipe(
+      Effect.ignore,
+      Effect.as(Message.CompletedFocusDropdownMenuItem()),
     ),
 })
 
@@ -171,14 +184,23 @@ const updateTyped = <Item extends string>(
   model: Model,
   message: Message,
 ): UpdateReturn<Item> => {
-  if (message._tag === 'CompletedFocusDropdownMenuTrigger') return { model }
+  if (
+    message._tag === 'CompletedFocusDropdownMenuTrigger' ||
+    message._tag === 'CompletedFocusDropdownMenuItem'
+  )
+    return { model }
   const result = Behavior.update(model, message)
   return {
     model: result.model,
-    ...((message._tag === 'Closed' && model.isOpen) ||
-    (Option.isSome(result.selection) && model.isOpen && !result.model.isOpen)
-      ? { commands: [FocusTrigger({ id: model.id })] }
-      : {}),
+    ...(result.model.isOpen &&
+    (!model.isOpen || result.model.activeIndex !== model.activeIndex)
+      ? { commands: [FocusActiveItem({ id: model.id })] }
+      : (message._tag === 'Closed' && model.isOpen) ||
+          (Option.isSome(result.selection) &&
+            model.isOpen &&
+            !result.model.isOpen)
+        ? { commands: [FocusTrigger({ id: model.id })] }
+        : {}),
     ...(Option.isNone(result.selection)
       ? {}
       : {
@@ -761,7 +783,7 @@ export const dropdownMenu = <Item extends string, Msg>(
                 h.Role('menu'),
                 h.Id(`${props.model.id}-content`),
                 h.AriaLabel(props.ariaLabel ?? 'Menu'),
-                h.Tabindex(0),
+                h.Tabindex(-1),
                 h.OnKeyDownPreventDefault(keyMessage),
                 h.DataAttribute('slot', 'dropdown-menu-content'),
                 ...(anchorX !== undefined && anchorY !== undefined

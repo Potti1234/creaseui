@@ -325,14 +325,10 @@ const renderItem = <Msg>(
   const reservesChevronColumn = ctx.hasExpandableItems && !children
 
   const chevron = children
-    ? h.button(
+    ? h.span(
         [
-          h.Type('button'),
-          h.AriaExpanded(expanded),
-          h.AriaLabel('Toggle children'),
+          h.AriaHidden(true),
           h.DataAttribute('tree-toggle', ''),
-          h.AriaDisabled(disabled),
-          h.Tabindex(-1),
           h.OnClick(
             ctx.toMessage(
               TreeListBehavior.Message.ToggledTreeListItem({
@@ -394,15 +390,8 @@ const renderItem = <Msg>(
           labelAndDescription,
         )
       : item.onSelect === true
-        ? h.button(
+        ? h.span(
             [
-              h.Type('button'),
-              h.AriaDisabled(disabled),
-              h.AriaLabelledBy(labelId),
-              ...(item.description === undefined
-                ? []
-                : [h.AriaDescribedBy(descriptionId)]),
-              h.Tabindex(-1),
               h.Id(TreeListBehavior.itemActionDomId(model.id, item.id)),
               h.OnClick(
                 ctx.toMessage(
@@ -440,6 +429,9 @@ const renderItem = <Msg>(
     [
       h.Role('treeitem'),
       h.Id(domId),
+      ...(item.description === undefined
+        ? []
+        : [h.AriaDescribedBy(descriptionId)]),
       ...(children ? [h.AriaExpanded(expanded)] : []),
       h.AriaSelected(item.isSelected === true),
       h.AriaDisabled(disabled),

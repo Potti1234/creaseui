@@ -615,10 +615,7 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI flips left/right under DirectionProvider rtl;
-      // foldkit renders dir="rtl" but never maps it onto the key bindings, so
-      // ArrowLeft still moves to the previous option. Severity: medium.
-      it.fails('flips horizontal arrows in RTL', () => {
+      it('flips horizontal arrows in RTL', () => {
         Scene.scene(
           {
             update,
