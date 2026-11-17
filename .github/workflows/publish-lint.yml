@@ -1,0 +1,55 @@
+name: Publish lint package
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: publish-lint-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - run: npm ci
+      - name: Install Chromium for rendered audit tests
+        run: npx playwright install --with-deps chromium
+      - name: Version or publish lint package
+        id: changesets
+        uses: changesets/action@v2
+        with:
+          version-script: npm run version-packages
+          publish-script: npm run release:lint
+          pr-title: Version Packages
+          commit-message: Version Packages
+          create-github-releases: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+      # GITHUB_TOKEN pushes do not trigger CI; dispatch it on the version branch.
+      - name: Run CI on the version PR
+        if: steps.changesets.outputs.has-changesets == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run ci.yml --ref changeset-release/main
