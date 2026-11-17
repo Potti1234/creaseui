@@ -27,8 +27,10 @@ test('lint publication scopes writes, fails closed and respects dry runs', () =>
 const args = process.argv.slice(2)
 appendFileSync(process.env.MOCK_LOG, JSON.stringify(args) + '\\n')
 if (args[0] === 'view') {
-  if (process.env.MOCK_SCENARIO === 'published') {
-    console.log(JSON.stringify(args[1].slice(args[1].lastIndexOf('@') + 1)))
+  if (process.env.MOCK_SCENARIO.startsWith('published')) {
+    const version = args[1].slice(args[1].lastIndexOf('@') + 1)
+    console.log(JSON.stringify(process.env.MOCK_SCENARIO === 'published-array' ? [version] :
+      process.env.MOCK_SCENARIO === 'published-mismatch' ? '99.0.0' : version))
   } else {
     console.error(process.env.MOCK_SCENARIO === 'auth' ? 'E401 Unauthorized' :
       process.env.MOCK_SCENARIO === 'network' ? 'ECONNRESET' : 'E404 Not Found')
@@ -43,6 +45,8 @@ if (args[0] === 'view') {
     for (const scenario of [
       'new',
       'published',
+      'published-array',
+      'published-mismatch',
       'auth',
       'network',
       'publish-failure',
@@ -70,11 +74,17 @@ if (args[0] === 'view') {
         .trim()
         .split('\n')
         .map(line => JSON.parse(line))
-      const shouldPublish = !['published', 'auth', 'network'].includes(scenario)
+      const shouldPublish =
+        !scenario.startsWith('published') &&
+        !['auth', 'network'].includes(scenario)
       assert.equal(calls.length, shouldPublish ? 2 : 1, scenario)
       assert.equal(
         result.status,
-        ['auth', 'network', 'publish-failure'].includes(scenario) ? 1 : 0,
+        ['auth', 'network', 'publish-failure', 'published-mismatch'].includes(
+          scenario,
+        )
+          ? 1
+          : 0,
         `${scenario}: ${result.stderr}`,
       )
       if (shouldPublish) {

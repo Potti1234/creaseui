@@ -25,7 +25,13 @@ const npm = args =>
 const existing = npm(['view', `${name}@${version}`, 'version', '--json'])
 if (existing.error) throw existing.error
 if (existing.status === 0) {
-  if (JSON.parse(existing.stdout) !== version)
+  const response = JSON.parse(existing.stdout)
+  const publishedVersion = Array.isArray(response)
+    ? response.length === 1
+      ? response[0]
+      : undefined
+    : response
+  if (publishedVersion !== version)
     throw new Error('Unexpected npm registry version response')
   console.log(`${name}@${version} is already published`)
   process.exit(0)
