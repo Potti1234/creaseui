@@ -3,6 +3,18 @@ name: Publish lint package
 on:
   push:
     branches: [main]
+  pull_request:
+    paths:
+      - '.github/workflows/publish-lint.yml'
+      - '.changeset/**'
+      - 'packages/lint/**'
+      - 'scripts/publish-lint.mjs'
+      - 'scripts/verify-lint-consumer.mjs'
+      - 'scripts/generate-lint-docs.mjs'
+      - 'test/publish-lint.test.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.node-version'
   workflow_dispatch:
 
 concurrency:
@@ -13,6 +25,21 @@ permissions:
   contents: read
 
 jobs:
+  verify:
+    name: Verify lint package
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run release:lint:check
+
   release:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest

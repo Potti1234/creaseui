@@ -47,6 +47,8 @@ See [npm's trusted publishing documentation](https://docs.npmjs.com/trusted-publ
 2. After merging to `main`, the Publish lint package workflow opens or updates
    a **Version Packages** PR. This bumps the package version, writes its
    changelog, and refreshes `package-lock.json`.
+   The same workflow verifies the lint package on pull requests, including its
+   rendered audit fixtures and packed consumer installations.
 3. Merge the version PR after CI passes. The workflow runs the package tests,
    generated documentation check, and packed-consumer checks before publishing.
    It publishes with OIDC and provenance, then creates a package tag and GitHub
