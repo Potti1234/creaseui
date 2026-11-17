@@ -76,7 +76,7 @@ jobs:
           NPM_CONFIG_PROVENANCE: true
       # GITHUB_TOKEN pushes do not trigger CI; dispatch it on the version branch.
       - name: Run CI on the version PR
-        if: steps.changesets.outputs.has-changesets == 'true'
+        if: steps.changesets.outputs.pr-number != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run ci.yml --ref changeset-release/main
