@@ -234,6 +234,11 @@
           "path": "toggle-group.ts",
           "type": "registry:lib",
           "target": "@lib/toggle-group.ts"
+        },
+        {
+          "path": "behaviors/roving-focus.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/roving-focus.ts"
         }
       ]
     },

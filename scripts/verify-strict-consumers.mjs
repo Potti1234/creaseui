@@ -204,7 +204,7 @@ export const settingsView = <M>(
 }
 
 /* Consumer finding: the public `init` must build the whole model, so an
-   app never fills in internals such as `maybeFocusedIndex`. */
+   app never constructs the internal RovingFocus Submodel. */
 const rangeApp = alias => `import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as ToggleGroup from '${alias}/toggle-group'

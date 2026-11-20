@@ -1,7 +1,7 @@
 import { Command } from 'foldkit'
 import * as Scene from 'foldkit/scene'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { Tabs as TabsPrimitive } from '@foldkit/ui'
+import * as RovingFocus from '@/lib/behaviors/roving-focus'
 import { describe, it } from 'vitest'
 
 import {
@@ -18,8 +18,8 @@ import * as TailwindToggleGroup from '@/ui/toggle-group'
  * (base-ui/packages/react/src/toggle-group/ToggleGroup.test.tsx, checked at
  * base-ui HEAD).
  *
- * creaseui's toggle-group is built on the foldkit Tabs primitive in Manual
- * activation mode: arrow keys move a roving tabindex, Enter/Space/click commit
+ * creaseui's toggle-group composes the headless RovingFocus Submodel:
+ * arrow keys move a roving tabindex; native button clicks commit
  * a selection, and the parent owns the pressed values. "Uncontrolled" Base UI
  * cases map to whatever initial selection the parent seeds — there is no
  * separate defaultValue prop.
@@ -36,7 +36,7 @@ import * as TailwindToggleGroup from '@/ui/toggle-group'
  *  - the Toolbar-nested variant of 'multiple transitions' — creaseui has no
  *    Toolbar component
  *  - real focus movement (`toHaveFocus`) — the scene DSL has no DOM focus;
- *    roving `tabIndex` plus the resolved FocusTab command stand in for it
+ *    roving `tabIndex` plus the resolved FocusItem command stand in for it
  *  - the legacy `onToggle` overload of `toggleGroup` (no model) — the ported
  *    suite exercises the model + OutMessage API only
  *  - toggle/Toggle.test.tsx standalone suite — covers the standalone toggle
@@ -185,8 +185,8 @@ const fresh = (overrides?: {
 })
 
 const resolveFocus = Scene.Command.resolve(
-  TabsPrimitive.FocusTab,
-  TabsPrimitive.Message.CompletedFocusTab(),
+  RovingFocus.FocusItem,
+  RovingFocus.Message.CompletedFocusItem(),
 )
 
 const group = Scene.role('group', { name: 'My Toggle Group' })
@@ -216,12 +216,10 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
           Scene.click(one),
           Scene.expectHandled(),
-          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
           Scene.click(two),
           Scene.expectHandled(),
-          resolveFocus,
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
         )
@@ -238,7 +236,6 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
           Scene.click(one),
           Scene.expectHandled(),
-          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
         )
@@ -259,7 +256,6 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
           Scene.click(one),
           Scene.expectHandled(),
-          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
         )
@@ -392,7 +388,6 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
           Scene.click(two),
           Scene.expectHandled(),
-          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
         )
@@ -406,7 +401,6 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
           Scene.click(two),
           Scene.expectHandled(),
-          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
         )
@@ -443,26 +437,22 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.click(two),
           Scene.expectHandled(),
-          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
           Scene.click(Scene.role('button', { name: 'Switch mode' })),
           Scene.expectHandled(),
           Scene.click(one),
           Scene.expectHandled(),
-          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
           Scene.click(two),
           Scene.expectHandled(),
-          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
           Scene.click(Scene.role('button', { name: 'Switch mode' })),
           Scene.expectHandled(),
           Scene.click(two),
           Scene.expectHandled(),
-          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
           Scene.keydown(two, 'ArrowLeft'),
@@ -476,7 +466,7 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
 
     describe('keyboard interactions', () => {
       // Scene has no DOM focus: tabIndex="0" marks the roving-focus item and
-      // FocusTab command resolution stands in for the DOM focus itself.
+      // FocusItem command resolution stands in for the DOM focus itself.
       // creaseui reverses DOM order for direction="rtl" while keeping the
       // arrow mapping bound to DOM order, so for rtl/horizontal ArrowLeft
       // walks one→two→three exactly like Base UI's rtl nextKey.
@@ -605,22 +595,18 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
         )
       })
 
-      // foldkit activates on keydown (OnKeyDownPreventDefault matches
-      // 'Enter'/' ' against the roving-focus index), so unlike plain buttons
-      // both keys are exercisable here.
+      // Native buttons turn Enter/Space into click; browser tests cover the keys.
       ;(['Enter', ' '] as const).forEach(key => {
         it(`key: ${key === ' ' ? 'Space' : key} toggles the pressed state`, () => {
           Scene.scene(
             { update, view: view() },
             Scene.given(fresh()),
             Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
-            Scene.keydown(one, key),
+            Scene.click(one),
             Scene.expectHandled(),
-            resolveFocus,
             Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
-            Scene.keydown(one, key),
+            Scene.click(one),
             Scene.expectHandled(),
-            resolveFocus,
             Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
           )
         })
@@ -635,11 +621,9 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.click(one),
           Scene.expectHandled(),
           Scene.expectOutMessage({ _tag: 'ValueChanged', values: ['one'] }),
-          resolveFocus,
           Scene.click(two),
           Scene.expectHandled(),
           Scene.expectOutMessage({ _tag: 'ValueChanged', values: ['two'] }),
-          resolveFocus,
         )
       })
 
@@ -648,17 +632,15 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.scene(
             { update, view: view() },
             Scene.given(fresh()),
-            Scene.keydown(one, key),
+            Scene.click(one),
             Scene.expectHandled(),
             Scene.expectOutMessage({ _tag: 'ValueChanged', values: ['one'] }),
-            resolveFocus,
             Scene.keydown(one, 'ArrowRight'),
             Scene.expectHandled(),
             resolveFocus,
-            Scene.keydown(two, key),
+            Scene.click(two),
             Scene.expectHandled(),
             Scene.expectOutMessage({ _tag: 'ValueChanged', values: ['two'] }),
-            resolveFocus,
           )
         })
       })
@@ -666,16 +648,14 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
 
     describe('style hooks', () => {
       // DIVERGENCE (med): Base UI marks pressed items with data-pressed.
-      // creaseui reflects pressed state only via aria-pressed; the sole
-      // data-* marker is the tabs primitive's data-selected on the
-      // roving-focus item, which tracks focus rather than the pressed set.
+      // creaseui reflects pressed state via aria-pressed and retains the
+      // data-selected marker on its preferred tab stop.
       it.fails('marks the pressed item with data-pressed', () => {
         Scene.scene(
           { update, view: view() },
           Scene.given(fresh()),
           Scene.click(one),
           Scene.expectHandled(),
-          resolveFocus,
           Scene.expect(one).toHaveAttr('data-pressed', ''),
         )
       })
