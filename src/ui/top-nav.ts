@@ -117,15 +117,20 @@ export type ViewInputs = Readonly<{
 // ---------------------------------------------------------------------------
 
 const NAV_CLASS =
-  'relative box-border flex w-full items-center p-2 text-foreground outline-none'
+  'relative box-border flex w-full items-center p-2 text-foreground outline-none max-sm:flex-wrap max-sm:gap-y-2'
 const NAV_GRID_CLASS =
-  'relative box-border grid w-full grid-cols-[1fr_auto_1fr] items-center p-2 text-foreground outline-none'
+  'relative box-border grid w-full grid-cols-[1fr_auto_1fr] items-center p-2 text-foreground outline-none max-sm:flex max-sm:flex-wrap max-sm:gap-y-2'
 
-const LEFT_SECTION_CLASS = 'flex min-w-0 flex-1 items-center gap-4'
+// On narrow screens the heading and actions share the first row; links get
+// their own full-width row instead of overflowing the shrinking left section.
+const LEFT_SECTION_CLASS =
+  'flex min-w-0 flex-1 items-center gap-4 max-sm:contents'
 const HEADING_SLOT_CLASS = 'flex shrink-0 items-center'
-const START_CONTENT_CLASS = 'flex items-center gap-1'
-const CENTER_CONTENT_CLASS = 'flex items-center justify-center gap-1'
-const RIGHT_SECTION_CLASS = 'flex items-center justify-end gap-1'
+const START_CONTENT_CLASS =
+  'flex items-center gap-1 max-sm:order-1 max-sm:w-full max-sm:flex-wrap'
+const CENTER_CONTENT_CLASS =
+  'flex items-center justify-center gap-1 max-sm:order-2 max-sm:w-full max-sm:flex-wrap'
+const RIGHT_SECTION_CLASS = 'flex items-center justify-end gap-1 max-sm:ms-auto'
 const END_CONTENT_CLASS = 'ms-auto flex shrink-0 items-center gap-1'
 
 const ITEM_CLASS =
@@ -415,9 +420,14 @@ const renderDropdown = <Msg>(
                 h.Class(MENU_PANEL_CLASS),
                 h.Role('menu'),
                 h.AriaLabel(menuData.label),
-                h.Style(
-                  anchorPositionStyle(anchorId, 'bottom', { gap: '0.25rem' }),
-                ),
+                h.Style({
+                  ...anchorPositionStyle(anchorId, 'bottom', {
+                    gap: '0.25rem',
+                  }),
+                  // Neither inline flip fits when a narrow-screen trigger is
+                  // near the middle. Reserve the panel's 17.5rem minimum width.
+                  left: 'clamp(0.5rem, anchor(left), calc(100% - 17.5rem - 0.5rem))',
+                }),
                 h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuPanel())),
                 h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuPanel())),
                 h.OnKeyDownPreventDefault(key =>
