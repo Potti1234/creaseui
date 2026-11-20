@@ -139,10 +139,15 @@ export const dialogRtlFields = [
   { id: 'username-1', label: 'اسم المستخدم', value: '@peduarte' },
 ] as const
 
-const emitStyles = `const styles = stylex.create({
+const emitWidth = (width: string, renderer: string): string =>
+  renderer === 'pleat'
+    ? `layoutStyle({ maxWidth: 'calc(100% - 2rem)' }).pipe(layoutWhen(When.minWidth('640px'), { maxWidth: '${width}' }))`
+    : `{ maxWidth: { default: 'calc(100% - 2rem)', '@media (min-width: 640px)': '${width}' } }`
+
+const emitStyles = (renderer: string): string => `const styles = stylex.create({
   shell: { alignItems: 'center', display: 'flex', justifyContent: 'center', minHeight: '100vh', padding: '2rem' },
-  compact: { maxWidth: '24rem' },
-  shareWidth: { maxWidth: '28rem' },
+  compact: ${emitWidth('24rem', renderer)},
+  shareWidth: ${emitWidth('28rem', renderer)},
   scrollArea: { marginInline: '-1rem', maxHeight: '50vh', overflowY: 'auto', paddingInline: '1rem' },
   lorem: { lineHeight: 'normal', marginBlockEnd: '1rem' },
   fieldGrid: { display: 'grid', gap: '1rem' },
@@ -277,11 +282,11 @@ const emitMaxWidth = (fixture: DialogFixture, isStyleX: boolean): string => {
     case 'compact':
     case 'rtl':
       return isStyleX
-        ? '      layoutStyle: layoutStyle({ maxWidth: "24rem" }),\n'
+        ? '      layoutStyle: styles.compact,\n'
         : "      class: 'sm:max-w-sm',\n"
     case 'share':
       return isStyleX
-        ? '      layoutStyle: layoutStyle({ maxWidth: "28rem" }),\n'
+        ? '      layoutStyle: styles.shareWidth,\n'
         : "      class: 'sm:max-w-md',\n"
     default:
       return ''
@@ -348,9 +353,9 @@ const dialogSource = (
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\nimport { layoutStyle } from '@/stylex/contracts'\n" : fixture.kind === 'noClose' || fixture.kind === 'scroll' ? '' : "\nimport { cn } from '@/lib/utils'\n"}
+${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : fixture.kind === 'noClose' || fixture.kind === 'scroll' ? '' : "\nimport { cn } from '@/lib/utils'\n"}${renderer === 'pleat' ? "import { When } from '@pleat/core'\nimport { layoutStyle, layoutWhen } from '@/pleat/contracts'\n" : ''}
 import * as Button from '@/${isStyleX ? 'stylex' : 'ui'}/button'
-import * as Dialog from '@/${isStyleX ? 'stylex' : 'ui'}/dialog'${inputs || fixture.kind === 'share' ? `\nimport * as Field from '@/${isStyleX ? 'stylex' : 'ui'}/field'\nimport * as Input from '@/${isStyleX ? 'stylex' : 'ui'}/input'` : ''}${isStyleX ? `\n\n${emitStyles}` : ''}`,
+import * as Dialog from '@/${isStyleX ? 'stylex' : 'ui'}/dialog'${inputs || fixture.kind === 'share' ? `\nimport * as Field from '@/${isStyleX ? 'stylex' : 'ui'}/field'\nimport * as Input from '@/${isStyleX ? 'stylex' : 'ui'}/input'` : ''}${isStyleX ? `\n\n${emitStyles(renderer)}` : ''}`,
     model: `export const Model = S.Struct({ dialog: Dialog.Model${inputs ? ', name: S.String, username: S.String' : ''} })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
@@ -423,12 +428,12 @@ const inviteSource = (
     imports: `import { Schema as S } from 'effect'
 import { Command, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
-${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}
+${isStyleX ? "\nimport * as stylex from '@stylexjs/stylex'\nimport { className } from '@/stylex/style'\n" : ''}${renderer === 'pleat' ? "import { When } from '@pleat/core'\nimport { layoutStyle, layoutWhen } from '@/pleat/contracts'\n" : ''}
 import * as Button from '@/${mod}/button'
 import * as Dialog from '@/${mod}/dialog'
 import * as Field from '@/${mod}/field'
 import * as Form from '@/${mod}/form'
-import * as Input from '@/${mod}/input'${isStyleX ? `\n\n${emitStyles}` : ''}`,
+import * as Input from '@/${mod}/input'${isStyleX ? `\n\n${emitStyles(renderer)}` : ''}`,
     model: `export const Model = S.Struct({
   dialog: Dialog.Model,
   email: S.String,

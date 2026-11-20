@@ -15,7 +15,12 @@ const styles = stylex.create({
     gap: '1rem',
     display: 'grid',
     outlineStyle: 'none',
-    maxWidth: '32rem',
+  },
+  defaultSize: {
+    maxWidth: {
+      default: 'calc(100% - 2rem)',
+      '@media (min-width: 640px)': '32rem',
+    },
   },
   /* TW settings dialog: 'overflow-hidden p-0 md:max-h-[560px]
      md:max-w-[700px] lg:max-w-[800px]' on a w-full panel. */
@@ -289,7 +294,9 @@ export const dialog = <Msg>(
                         overlayStyles.panel,
                         CONTENT_CLASS,
                         overlayStyles.modal,
-                        props.size === 'settings' && styles.settings,
+                        props.size === 'settings'
+                          ? styles.settings
+                          : styles.defaultSize,
                         props.layoutStyle,
                       ),
                     ),
