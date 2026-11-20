@@ -176,7 +176,7 @@ describe('RovingFocus update', () => {
 })
 
 describe('ToggleGroup composition', () => {
-  it('emits selection without a focus Command on click', () => {
+  it('records and focuses the clicked key while emitting selection', () => {
     const model = ToggleGroup.init({ id: 'group' })
     const result = ToggleGroup.create<'one' | 'two'>().update(
       model,
@@ -187,7 +187,13 @@ describe('ToggleGroup composition', () => {
       value: 'two',
       index: 1,
     })
-    assert.deepEqual(result.commands ?? [], [])
+    assert.deepEqual(
+      result.model.rovingFocus.maybeFocusedKey,
+      Option.some('two'),
+    )
+    assert.equal(result.commands?.length, 1)
+    assert.equal(result.commands?.[0]?.name, RovingFocus.FocusItem.name)
+    assert.deepEqual(result.commands?.[0]?.args, { id: 'group', key: 'two' })
     assert.equal(Schema.is(ToggleGroup.OutMessage)(result.outMessage), true)
     assert.deepEqual(
       ToggleGroup.OutMessage.Selected({ value: 'two', index: 1 }),

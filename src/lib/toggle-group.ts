@@ -45,10 +45,16 @@ const updateGroup = (model: Model, message: Message): UpdateReturn =>
         ),
       }
     },
-    PressedItem: ({ value, index }) => ({
-      model,
-      outMessage: OutMessage.Selected({ value, index }),
-    }),
+    PressedItem: ({ value, index }) => {
+      const next = RovingFocus.focus(model.rovingFocus, value)
+      return {
+        model: { ...model, rovingFocus: next.model },
+        commands: Command.mapMessages(next.commands, child =>
+          Message.GotRovingFocusMessage({ message: child }),
+        ),
+        outMessage: OutMessage.Selected({ value, index }),
+      }
+    },
   })
 
 export type ToggleGroupBehaviorItem<Value extends string> = Readonly<{

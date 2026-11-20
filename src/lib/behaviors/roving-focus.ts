@@ -42,15 +42,20 @@ export const FocusItem = Command.define('FocusItem', {
     ),
 })
 
+export const focus = (
+  model: Model,
+  key: string,
+): Update.Return<Model, Message> => ({
+  model: { ...model, maybeFocusedKey: Option.some(key) },
+  commands: [FocusItem({ id: model.id, key })],
+})
+
 export const update = (
   model: Model,
   message: Message,
 ): Update.Return<Model, Message> =>
   Message.match<Update.Return<Model, Message>>(message, {
-    MovedFocus: ({ key }) => ({
-      model: { ...model, maybeFocusedKey: Option.some(key) },
-      commands: [FocusItem({ id: model.id, key })],
-    }),
+    MovedFocus: ({ key }) => focus(model, key),
     FocusedItem: ({ key }) => ({
       model: { ...model, maybeFocusedKey: Option.some(key) },
     }),

@@ -41,5 +41,16 @@ for (const [renderer, port] of [
     await expect(strike).toBeFocused()
     await expect(bold).toHaveAttribute('aria-pressed', 'false')
     await expect(italic).toHaveAttribute('aria-pressed', 'false')
+    // Safari does not give mouse-clicked buttons focus by default.
+    await italic.evaluate(button =>
+      button.addEventListener('mousedown', event => event.preventDefault(), {
+        once: true,
+      }),
+    )
+    await italic.click()
+    await expect(italic).toHaveAttribute('aria-pressed', 'true')
+    await expect(italic).toBeFocused()
+    await page.keyboard.press('ArrowRight')
+    await expect(strike).toBeFocused()
   })
 }

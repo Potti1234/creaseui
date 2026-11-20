@@ -216,10 +216,12 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
           Scene.click(one),
           Scene.expectHandled(),
+          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
           Scene.click(two),
           Scene.expectHandled(),
+          resolveFocus,
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
         )
@@ -236,6 +238,7 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
           Scene.click(one),
           Scene.expectHandled(),
+          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
         )
@@ -256,6 +259,7 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
           Scene.click(one),
           Scene.expectHandled(),
+          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
         )
@@ -388,6 +392,7 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
           Scene.click(two),
           Scene.expectHandled(),
+          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
         )
@@ -401,6 +406,7 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
           Scene.click(two),
           Scene.expectHandled(),
+          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
         )
@@ -437,22 +443,26 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.click(two),
           Scene.expectHandled(),
+          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
           Scene.click(Scene.role('button', { name: 'Switch mode' })),
           Scene.expectHandled(),
           Scene.click(one),
           Scene.expectHandled(),
+          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
           Scene.click(two),
           Scene.expectHandled(),
+          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'false'),
           Scene.click(Scene.role('button', { name: 'Switch mode' })),
           Scene.expectHandled(),
           Scene.click(two),
           Scene.expectHandled(),
+          resolveFocus,
           Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
           Scene.expect(two).toHaveAttr('aria-pressed', 'true'),
           Scene.keydown(two, 'ArrowLeft'),
@@ -604,9 +614,11 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
             Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
             Scene.click(one),
             Scene.expectHandled(),
+            resolveFocus,
             Scene.expect(one).toHaveAttr('aria-pressed', 'true'),
             Scene.click(one),
             Scene.expectHandled(),
+            resolveFocus,
             Scene.expect(one).toHaveAttr('aria-pressed', 'false'),
           )
         })
@@ -621,9 +633,11 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.click(one),
           Scene.expectHandled(),
           Scene.expectOutMessage({ _tag: 'ValueChanged', values: ['one'] }),
+          resolveFocus,
           Scene.click(two),
           Scene.expectHandled(),
           Scene.expectOutMessage({ _tag: 'ValueChanged', values: ['two'] }),
+          resolveFocus,
         )
       })
 
@@ -635,12 +649,14 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
             Scene.click(one),
             Scene.expectHandled(),
             Scene.expectOutMessage({ _tag: 'ValueChanged', values: ['one'] }),
+            resolveFocus,
             Scene.keydown(one, 'ArrowRight'),
             Scene.expectHandled(),
             resolveFocus,
             Scene.click(two),
             Scene.expectHandled(),
             Scene.expectOutMessage({ _tag: 'ValueChanged', values: ['two'] }),
+            resolveFocus,
           )
         })
       })
@@ -656,6 +672,7 @@ const verifyRenderer = (name: string, ToggleGroup: ToggleGroupModule) => {
           Scene.given(fresh()),
           Scene.click(one),
           Scene.expectHandled(),
+          resolveFocus,
           Scene.expect(one).toHaveAttr('data-pressed', ''),
         )
       })
