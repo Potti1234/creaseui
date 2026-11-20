@@ -101,3 +101,58 @@ for (const block of ['tablecn', 'tablecn-grid']) {
     expect(errors).toEqual([])
   })
 }
+
+for (const theme of ['light', 'dark'] as const) {
+  for (const width of [390, 768, 1440]) {
+    test(`tablecn columns remain readable at ${width}px in ${theme}`, async ({
+      page,
+    }, info) => {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.addInitScript(theme => {
+        localStorage.setItem('creaseui-theme', theme)
+      }, theme)
+      await page.goto(`/blocks/preview/${info.project.name}--tablecn`)
+      const table = page.getByRole('table', { name: 'Tasks', exact: true })
+      await expect(table.locator('tbody tr')).toHaveCount(10)
+      await page.evaluate(() => document.fonts.ready)
+
+      const geometry = await table.evaluate(table => {
+        const overflow = [...table.querySelectorAll('th, td')].flatMap(cell => {
+          const bounds = cell.getBoundingClientRect()
+          return [...cell.children].flatMap(child => {
+            const content = child.getBoundingClientRect()
+            return content.left < bounds.left - 1 ||
+              content.right > bounds.right + 1
+              ? [cell.textContent?.trim()]
+              : []
+          })
+        })
+        const wrapper = table.parentElement!
+        return {
+          overflow,
+          tableWidth: table.getBoundingClientRect().width,
+          wrapperWidth: wrapper.clientWidth,
+          documentWidth: document.documentElement.scrollWidth,
+          viewportWidth: innerWidth,
+          columns: [...table.querySelectorAll('th')].map(
+            cell => cell.getBoundingClientRect().width,
+          ),
+        }
+      })
+      expect(geometry.overflow).toEqual([])
+      expect(geometry.documentWidth).toBeLessThanOrEqual(geometry.viewportWidth)
+      if (width === 1440) {
+        expect(geometry.tableWidth).toBe(geometry.wrapperWidth)
+        expect(geometry.columns).toEqual([40, 225, 225, 225, 225, 225, 225, 40])
+      } else {
+        expect(geometry.tableWidth).toBeGreaterThan(geometry.wrapperWidth)
+        const distance = await table.evaluate(table => {
+          const wrapper = table.parentElement!
+          wrapper.scrollLeft = wrapper.scrollWidth
+          return wrapper.scrollLeft
+        })
+        expect(distance).toBeGreaterThan(0)
+      }
+    })
+  }
+}

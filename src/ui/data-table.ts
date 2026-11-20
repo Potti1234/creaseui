@@ -2084,13 +2084,19 @@ const facetedDataTable = <Row, Msg>(
         ],
       ),
       h.div(
-        [h.Class('isolate min-h-0 flex-1 overflow-auto rounded-md border')],
+        [
+          h.Class(
+            '@container isolate min-h-0 w-full min-w-0 flex-1 overflow-auto rounded-md border',
+          ),
+        ],
         [
           h.table(
             [
               h.Role('table'),
               h.AriaLabel(props.ariaLabel ?? 'Data table'),
-              h.Class('w-full table-fixed caption-bottom text-sm'),
+              h.Class(
+                'w-full table-auto caption-bottom text-sm @5xl:table-fixed',
+              ),
               h.Style({ minWidth: '100%' }),
             ],
             [

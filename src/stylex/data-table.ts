@@ -1561,6 +1561,7 @@ const fst = stylex.create({
     width: { default: '10rem', '@media (min-width: 1024px)': '14rem' },
   },
   c98: {
+    containerType: 'inline-size',
     borderColor: tokens.border,
     borderRadius: foundationTokens.radiusMd,
     borderStyle: 'solid',
@@ -1569,13 +1570,18 @@ const fst = stylex.create({
     overflow: 'auto',
     isolation: 'isolate',
     minHeight: '0',
+    minWidth: '0',
+    width: '100%',
   },
   c99: {
     borderCollapse: 'collapse',
     captionSide: 'bottom',
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
-    tableLayout: 'fixed',
+    tableLayout: {
+      default: 'auto',
+      '@container (min-width: 64rem)': 'fixed',
+    },
     width: '100%',
   },
   c100: { opacity: '1' },
