@@ -99,12 +99,13 @@ const styles = {
   }),
   mobileDialog: Style.empty.pipe(
     Style.when(When.maxWidth('639px'), {
-      position: 'fixed',
+      // Override Foldkit's inline anchor only for the mobile dialog.
+      position: 'fixed !important',
       bottom: '0.75rem',
-      left: '0.75rem',
+      left: '0.75rem !important',
       maxWidth: 'calc(100vw - 1.5rem)',
       right: '0.75rem',
-      top: 'auto',
+      top: 'auto !important',
       width: 'auto',
     }),
   ),

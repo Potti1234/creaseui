@@ -6,6 +6,9 @@ License: MIT (see `LICENSE`, preserved from upstream)
 
 Local changes relative to upstream:
 
+- `declarations.ts`: allow a validated trailing ` !important` priority, including
+  on keyword-only properties, so responsive overlays can override primitive-owned
+  inline positioning without permitting declaration injection.
 - `when.ts`: added `Rank.startingStyle` and the `startingStyle` condition
   (`@starting-style` enter-transition support, used by overlay animations).
 - `when.ts`: widened `PSEUDO_SELECTOR` to admit `>` inside the argument list
