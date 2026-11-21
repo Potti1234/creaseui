@@ -74,11 +74,14 @@ const scrollAt = (
     }
   }
   const view = ownerDocument.defaultView
-  if (view && !scrolledY) {
-    const before = view.scrollY
-    const by = velocity(y, 0, view.innerHeight, edge, speed)
-    if (by) view.scrollBy(0, by)
-    scrolledY = before !== view.scrollY
+  if (view) {
+    const beforeX = view.scrollX
+    const beforeY = view.scrollY
+    const byX = scrolledX ? 0 : velocity(x, 0, view.innerWidth, edge, speed)
+    const byY = scrolledY ? 0 : velocity(y, 0, view.innerHeight, edge, speed)
+    if (byX || byY) view.scrollBy(byX, byY)
+    scrolledX ||= beforeX !== view.scrollX
+    scrolledY ||= beforeY !== view.scrollY
   }
   return scrolledX || scrolledY
 }

@@ -83,3 +83,24 @@ it('measures the mounted track itself when dragging', async () => {
     )
   })
 })
+
+it('scrolls the window horizontally during a drag with no scrollable ancestor', async () => {
+  const scroll = vi.spyOn(window, 'scrollBy')
+  try {
+    await withTrack(true, async (track, messages) => {
+      const y = window.innerHeight / 2
+      pointer(track, 'pointerdown', 40, y)
+      pointer(track, 'pointermove', window.innerWidth - 1, y)
+      await vi.waitFor(() => {
+        expect(scroll).toHaveBeenCalledWith(expect.any(Number), 0)
+        expect(window.scrollX).toBeGreaterThan(0)
+        expect(
+          messages.filter(message => message._tag === 'MovedPointer').length,
+        ).toBeGreaterThan(1)
+      })
+    })
+  } finally {
+    scroll.mockRestore()
+    window.scrollTo(0, 0)
+  }
+})
