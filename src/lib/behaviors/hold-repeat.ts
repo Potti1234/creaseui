@@ -1,9 +1,15 @@
-import { Effect, Option, Schema, Stream } from 'effect'
+import { Effect, Queue, Schema, Stream } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import * as Mount from 'foldkit/mount'
-import type { HtmlBuilder } from 'foldkit/html'
+import {
+  childAttributes,
+  type ChildAttribute,
+  type Html,
+  type HtmlBuilder,
+} from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
+import { defineView } from 'foldkit/submodel'
 
 // Adapted from @ui-sdk/core 0.1.0-beta.13 hold.ts and repeat.ts (Apache-2.0).
 export const Input = Schema.Literals([
@@ -13,6 +19,7 @@ export const Input = Schema.Literals([
   'keyboard',
   'click',
 ])
+
 export const Model = Schema.Struct({
   active: Schema.Boolean,
   held: Schema.Boolean,
@@ -27,6 +34,7 @@ export const Model = Schema.Struct({
   version: Schema.Int,
 })
 export type Model = typeof Model.Type
+
 export const Message = defineMessageUnion({
   Pressed: {
     input: Input,
@@ -50,14 +58,15 @@ export const Message = defineMessageUnion({
   Canceled: {},
   Clicked: {},
   Waited: { version: Schema.Int },
-  Mounted: {},
 })
 export type Message = typeof Message.Type
+
 export const OutMessage = defineMessageUnion({
   Stepped: { count: Schema.Int },
   Ended: { count: Schema.Int, held: Schema.Boolean, canceled: Schema.Boolean },
 })
 export type OutMessage = typeof OutMessage.Type
+
 export type Options = Readonly<{
   mode?: 'hold' | 'repeat'
   delay?: number
@@ -66,6 +75,7 @@ export type Options = Readonly<{
   disabled?: boolean
   canStep?: boolean
 }>
+
 export const init = (): Model => ({
   active: false,
   held: false,
@@ -79,6 +89,7 @@ export const init = (): Model => ({
   count: 0,
   version: 0,
 })
+
 export const Wait = Command.define('WaitHoldRepeat', {
   args: { delay: Schema.Number, version: Schema.Int },
   messages: [Message.Waited],
@@ -87,7 +98,9 @@ export const Wait = Command.define('WaitHoldRepeat', {
       Effect.as(Message.Waited({ version })),
     ),
 })
+
 type Return = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+
 export const update = (
   model: Model,
   message: Message,
@@ -198,26 +211,27 @@ export const update = (
       return repeating && !model.active
         ? step({ ...init(), input: 'click', version: model.version + 1 })
         : { model }
-    case 'Mounted':
-      return { model }
   }
 }
 
-const eventName = 'crease-hold-repeat'
 export const Observe = Mount.defineStream('ObserveHoldRepeat', {
-  messages: [Message.Mounted],
+  messages: [
+    Message.Pressed,
+    Message.Moved,
+    Message.Released,
+    Message.Canceled,
+    Message.Clicked,
+  ],
   execute: ({ element }) =>
-    Stream.callback<typeof Message.Mounted.Type>(() =>
+    Stream.callback<Exclude<Message, { _tag: 'Waited' }>>(queue =>
       Effect.gen(function* () {
         yield* Effect.acquireRelease(
           Effect.sync(() => {
             const doc = element.ownerDocument
             const win = doc.defaultView!
             const removers: Array<() => void> = []
-            const emit = (message: Message) =>
-              element.dispatchEvent(
-                new CustomEvent(eventName, { detail: message }),
-              )
+            const emit = (message: Exclude<Message, { _tag: 'Waited' }>) =>
+              Queue.offerUnsafe(queue, message)
             const on = <K extends keyof GlobalEventHandlersEventMap>(
               target: EventTarget,
               name: K,
@@ -332,12 +346,12 @@ export const Observe = Mount.defineStream('ObserveHoldRepeat', {
             })
             on(element, 'contextmenu', event => {
               if (
-                event instanceof PointerEvent &&
+                event instanceof win.PointerEvent &&
                 event.pointerType !== 'mouse'
               )
                 event.preventDefault()
             })
-            const observer = new MutationObserver(() => {
+            const observer = new win.MutationObserver(() => {
               if (
                 element.hasAttribute('disabled') ||
                 element.getAttribute('aria-disabled') === 'true'
@@ -363,14 +377,14 @@ export const Observe = Mount.defineStream('ObserveHoldRepeat', {
 export const attributes = <Msg>(
   h: HtmlBuilder<Msg>,
   toMessage: (message: Message) => Msg,
-) => [
-  h.OnMount(Mount.mapMessage(Observe(), toMessage)),
-  {
-    _tag: 'OnCustomEvent' as const,
-    name: eventName,
-    f: (event: CustomEvent<unknown>) =>
-      Schema.is(Message)(event.detail)
-        ? Option.some(toMessage(event.detail))
-        : Option.none(),
-  },
-]
+) => [h.OnMount(Mount.mapMessage(Observe(), toMessage))]
+
+export const view = defineView<
+  Model,
+  Message,
+  Readonly<{
+    toView: (attributes: ReadonlyArray<ChildAttribute>) => Html
+  }>
+>((_model, inputs, h) =>
+  inputs.toView(childAttributes(attributes(h, message => message))),
+)

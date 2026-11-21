@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { Option } from 'effect'
+import { Deferred, Effect, Fiber, Option, Stream } from 'effect'
+import { Window } from 'happy-dom'
+import * as Mount from 'foldkit/mount'
 
 import * as Hold from '../src/lib/behaviors/hold-repeat.ts'
 import * as NumberInput from '../src/lib/number-input.ts'
@@ -19,6 +21,62 @@ const release = (canceled = false) =>
   Hold.Message.Released({ pointerId: 7, key: '', canceled })
 
 describe('Hold/Repeat', () => {
+  it('emits DOM facts through the mapped Mount stream and removes listeners on release', async () => {
+    const window = new Window()
+    const ready = Deferred.makeUnsafe<void>()
+    const button = window.document.createElement('button')
+    const down = () =>
+      button.dispatchEvent(
+        new window.PointerEvent('pointerdown', {
+          button: 0,
+          pointerType: 'mouse',
+          pointerId: 7,
+          clientX: 4,
+          clientY: 5,
+        }),
+      )
+    const add = button.addEventListener.bind(button)
+    const remove = button.removeEventListener.bind(button)
+    const listeners = new Set<unknown>()
+    button.addEventListener = (type, listener, options) => {
+      listeners.add(listener)
+      add(type, listener, options)
+      if (type === 'contextmenu')
+        Effect.runSync(Deferred.succeed(ready, undefined))
+    }
+    button.removeEventListener = (type, listener, options) => {
+      listeners.delete(listener)
+      remove(type, listener, options)
+    }
+    try {
+      const message = await Effect.runPromise(
+        Effect.gen(function* () {
+          const action = Mount.mapMessage(Hold.Observe(), message => ({
+            received: message,
+          }))
+          const fiber = yield* Effect.forkChild(
+            Stream.runHead(action.f(button as Element, Stream.never)),
+          )
+          yield* Deferred.await(ready)
+          down()
+          return yield* Fiber.join(fiber)
+        }).pipe(Effect.timeout('2 seconds')),
+      )
+      assert.deepEqual(Option.getOrThrow(message), {
+        received: Hold.Message.Pressed({
+          input: 'mouse',
+          pointerId: 7,
+          key: '',
+          x: 4,
+          y: 5,
+        }),
+      })
+      assert.equal(listeners.size, 0)
+    } finally {
+      await window.happyDOM.close()
+    }
+  })
+
   it('steps on mouse press, waits 400ms, then repeats every 60ms without acceleration', () => {
     const started = Hold.update(Hold.init(), press())
     assert.equal(started.outMessage?._tag, 'Stepped')

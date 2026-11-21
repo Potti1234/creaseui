@@ -346,47 +346,55 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                 extra: 'border-t border-input',
               },
             ].map(({ delta, label, icon, extra }) =>
-              h.button(
-                [
-                  h.Type('button'),
-                  h.Tabindex(-1),
-                  h.AriaLabel(label),
-                  h.Disabled(
-                    props.isDisabled === true ||
-                      props.isReadOnly === true ||
-                      !canStep(delta, {
-                        value: stepValue,
-                        min: props.min,
-                        max: props.max,
-                      }),
-                  ),
-                  // Stepping edits the focused input; do not blur it on press.
-                  h.Attribute('onmousedown', 'event.preventDefault()'),
-                  h.OnClick(Message.FocusGained(), {
-                    propagation: 'Stop',
-                    focusSelector: `#${fieldIds.input}`,
+              h.submodel({
+                slotId: `${model.id}-hold-${delta}`,
+                model: model.hold,
+                view: HoldRepeat.view,
+                toParentMessage: message =>
+                  Message.HeldStepper({
+                    message,
+                    direction: delta,
+                    value: stepValue ?? null,
+                    min: props.min ?? null,
+                    max: props.max ?? null,
+                    step: props.step ?? null,
+                    disabled:
+                      props.isDisabled === true || props.isReadOnly === true,
                   }),
-                  ...HoldRepeat.attributes(h, message =>
-                    Message.HeldStepper({
-                      message,
-                      direction: delta,
-                      value: stepValue ?? null,
-                      min: props.min ?? null,
-                      max: props.max ?? null,
-                      step: props.step ?? null,
-                      disabled:
-                        props.isDisabled === true || props.isReadOnly === true,
-                    }),
-                  ),
-                  h.Class(
-                    cn(
-                      'flex min-h-0 flex-1 cursor-pointer items-center justify-center bg-background text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:cursor-default disabled:text-muted-foreground/50 disabled:hover:bg-background',
-                      extra,
+                viewInputs: {
+                  toView: holdAttributes =>
+                    h.button(
+                      [
+                        h.Type('button'),
+                        h.Tabindex(-1),
+                        h.AriaLabel(label),
+                        h.Disabled(
+                          props.isDisabled === true ||
+                            props.isReadOnly === true ||
+                            !canStep(delta, {
+                              value: stepValue,
+                              min: props.min,
+                              max: props.max,
+                            }),
+                        ),
+                        // Stepping edits the focused input; do not blur it on press.
+                        h.Attribute('onmousedown', 'event.preventDefault()'),
+                        h.OnClick(Message.FocusGained(), {
+                          propagation: 'Stop',
+                          focusSelector: `#${fieldIds.input}`,
+                        }),
+                        ...holdAttributes,
+                        h.Class(
+                          cn(
+                            'flex min-h-0 flex-1 cursor-pointer items-center justify-center bg-background text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:cursor-default disabled:text-muted-foreground/50 disabled:hover:bg-background',
+                            extra,
+                          ),
+                        ),
+                      ],
+                      [Icon.icon(icon, { class: 'size-3.5' }, h)],
                     ),
-                  ),
-                ],
-                [Icon.icon(icon, { class: 'size-3.5' }, h)],
-              ),
+                },
+              }),
             ),
           )
         : undefined
