@@ -40,9 +40,11 @@ explicit requests separately from Escape, outside press, and focus-out dismissal
 requests. Read the reason from the OutMessage. For exit transitions, pass
 `waitForExit` to update, render while `isMounted(model)`, and send
 `CompletedExit` with that exit's `model.exitVersion` when it finishes.
-Dropdown Menu uses immediate unmount. Roles, event detection, positioning,
-focus and layering belong to the component; keep Foldkit's Dialog and Popover
-for overlays that already use their positioning and focus lifecycle.
+Dropdown Menu and Nav Menu use immediate unmount. More Menu, Context Menu
+and Menubar's item panels inherit Popup through Dropdown Menu. Nav Menu keeps
+hover intent, pinning and focus commands outside Popup. Roles, event detection,
+positioning, focus and layering belong to the component; keep Foldkit's Dialog
+and Popover for overlays that already use their positioning and focus lifecycle.
 
 ## ScrollPicker
 
@@ -99,6 +101,19 @@ Model only if the parent accepts the change. Use `reflect` for externally
 supplied values; changing the selected keys starts the next range over.
 Pass the current ordered keys for ranges or select-all. MultiSelector passes
 the visible keys for select-all so a filter never clears hidden choices.
+
+TreeCollection ports [ui-sdk.dev's tree helpers](https://ui-sdk.dev/docs/core/behaviors/trees).
+Foldkit UI does not expose a tree collection. Use `createTreeCollection` for
+parent, sibling, and descendant lookups and `visibleTreeRows` for flat render
+order. Use `visibleTreeRowsBy` with an existing item's key and expansion policy,
+as Tree List does. Sidebar navigation uses the same row projection without
+adopting tree ARIA or keyboard semantics.
+
+Store expanded and checked values in the parent Schema. Use
+`treeCheckedStates` in view and `toggleTreeChecked` in update with the same
+strategy (`leaf`, `trunk`, `branch`, or `independent`). Supply `checkable`
+to protect locked nodes and their descendants from ancestor toggles. The
+collection indexes input data but does not retain the last expansion value.
 
 Spans edits numeric ranges on named tracks, such as room bookings or clips.
 Foldkit Slider edits scalar values and DragAndDrop reorders items; neither
