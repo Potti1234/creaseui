@@ -32,7 +32,6 @@ export type ViewInputs<Item> = VirtualList.ViewInputs<Item>
 
 export type ScrollOptions = Readonly<{
   align?: 'start' | 'center' | 'end' | 'auto'
-  scrollMargin?: number
 }>
 
 const scroll = (
@@ -43,11 +42,10 @@ const scroll = (
   total: number,
   options: ScrollOptions,
 ): Update.Return<Model, Message> => {
-  const margin = Math.max(0, options.scrollMargin ?? 0)
   const measured = model.measurement._tag === 'Measured'
   const viewport = measured ? model.measurement.containerHeight : 0
   const align = measured ? (options.align ?? 'auto') : 'start'
-  const start = top + margin
+  const start = top
   const end = start + height - viewport
   const target =
     align === 'start'
@@ -61,10 +59,7 @@ const scroll = (
             : end > model.scrollTop
               ? Math.min(start, end)
               : model.scrollTop
-  const scrollTop = Math.max(
-    0,
-    Math.min(target, Math.max(0, total + margin - viewport)),
-  )
+  const scrollTop = Math.max(0, Math.min(target, Math.max(0, total - viewport)))
   if (align === 'auto' && scrollTop === model.scrollTop) return { model }
   const version = model.pendingScrollVersion + 1
   return {

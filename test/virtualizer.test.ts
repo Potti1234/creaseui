@@ -81,35 +81,6 @@ describe('Virtualizer', () => {
       40,
     )
   })
-  it('accounts for margin before the first row, including total height', () => {
-    assert.equal(
-      target(
-        V.scrollToIndex(measured, 100, 10, {
-          align: 'center',
-          scrollMargin: 30,
-        }),
-      ),
-      190,
-    )
-    assert.equal(
-      target(
-        V.scrollToIndex(measured, 100, 999, {
-          align: 'start',
-          scrollMargin: 30,
-        }),
-      ),
-      1930,
-    )
-    assert.equal(
-      target(
-        V.scrollToIndexVariable(measured, [20, 20], height => height, 0, {
-          align: 'start',
-          scrollMargin: 200,
-        }),
-      ),
-      140,
-    )
-  })
   it('clamps both edges and falls back to start before measurement', () => {
     assert.equal(
       target(V.scrollToIndex(measured, 100, -10, { align: 'end' })),
