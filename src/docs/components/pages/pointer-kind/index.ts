@@ -5,10 +5,10 @@ import { pointerKindTailwindPreviewProgram } from '@/docs/components/pages/point
 export const pointerKindPage = authoredPage({
   slug: 'pointer-kind',
   title: 'Pointer Kind',
-  kind: 'helper',
+  kind: 'submodel',
   previewProgram: pointerKindTailwindPreviewProgram,
   definition: {
-    kind: 'helper',
+    kind: 'submodel',
     source: {
       path: 'src/lib/behaviors/pointer-kind.ts',
       registryItem: 'pointer-kind',

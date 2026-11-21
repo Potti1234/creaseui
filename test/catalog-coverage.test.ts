@@ -268,6 +268,8 @@ describe('component catalog coverage', () => {
     assert.equal(componentKind('button'), 'helper')
     assert.equal(componentKind('dialog'), 'submodel')
     assert.equal(componentKind('toast'), 'submodel')
+    assert.equal(componentKind('pointer-kind'), 'submodel')
+    assert.equal(componentKind('avoid-keyboard'), 'helper')
     for (const shell of [
       'src/docs/component-page.ts',
       'src/site/docs.stylex.ts',
