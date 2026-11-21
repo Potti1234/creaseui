@@ -70,6 +70,23 @@ describe('Typeahead', () => {
     assert.deepEqual(search(first.model, 'c', -1).maybeIndex, Option.some(3))
   })
 
+  it('refines a prefix after cycling with repeated characters', () => {
+    const labels = ['public', 'package.json', 'patch.txt']
+    const result = [...'ppat'].reduce(
+      ({ model, currentIndex }, key) => {
+        const next = Typeahead.search(model, { key, labels, currentIndex })
+        return {
+          model: next.model,
+          currentIndex: Option.getOrElse(next.maybeIndex, () => currentIndex),
+        }
+      },
+      { model: Typeahead.init(), currentIndex: -1 },
+    )
+    assert.equal(result.model.query, 'pat')
+    assert.equal(result.model.isStepping, false)
+    assert.equal(result.currentIndex, 2)
+  })
+
   it('continues an active query with Space', () => {
     const model = { ...Typeahead.init(), query: 'ecole', lastKey: 'e' }
     assert.equal(Typeahead.isActive(model), true)

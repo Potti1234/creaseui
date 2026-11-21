@@ -86,7 +86,9 @@ export const search = (
   const char = normalize(key) || key
   const isStepping =
     char === model.lastKey && (model.isStepping || model.query.length === 1)
-  const query = model.query + char
+  const query =
+    (model.isStepping && char !== model.lastKey ? model.lastKey : model.query) +
+    char
   const next = { query, lastKey: char, isStepping, version: model.version + 1 }
   const scan = (prefix: string, start: number): Option.Option<number> => {
     for (let step = 0; step < labels.length; step++) {
