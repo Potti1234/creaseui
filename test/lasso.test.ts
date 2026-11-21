@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { Effect, Option, Schema } from 'effect'
+import { Effect, Fiber, Option, Schema, Stream } from 'effect'
+import * as Mount from 'foldkit/mount'
 import { Window } from 'happy-dom'
 
 import * as Lasso from '../src/lib/behaviors/lasso.ts'
@@ -234,5 +235,236 @@ describe('Lasso update', () => {
       width: '45px',
       height: '45px',
     })
+  })
+})
+
+const nextTurn = (): Promise<void> =>
+  new Promise(resolve => setImmediate(resolve))
+
+const observe = async () => {
+  const browser = new Window()
+  const globals = ['document', 'PointerEvent', 'KeyboardEvent'] as const
+  const descriptors = globals.map(key =>
+    Object.getOwnPropertyDescriptor(globalThis, key),
+  )
+  globals.forEach(key =>
+    Object.defineProperty(globalThis, key, {
+      configurable: true,
+      value: browser[key],
+    }),
+  )
+  const surface = document.createElement('div')
+  const child = document.createElement('div')
+  surface.append(child)
+  document.body.append(surface)
+  const frames = new Map<number, FrameRequestCallback>()
+  let frameId = 0
+  Object.defineProperty(browser, 'requestAnimationFrame', {
+    value: (callback: FrameRequestCallback) => {
+      frames.set(++frameId, callback)
+      return frameId
+    },
+  })
+  Object.defineProperty(browser, 'cancelAnimationFrame', {
+    value: (id: number) => {
+      frames.delete(id)
+    },
+  })
+  const messages: Array<Lasso.Message> = []
+  const fiber = Effect.runFork(
+    Stream.runForEach(
+      Lasso.ObserveSurface().f(surface, Mount.liveViewStateChanges),
+      message =>
+        Effect.sync(() => {
+          messages.push(message)
+        }),
+    ),
+  )
+  await nextTurn()
+  const pointer = (
+    type: string,
+    options: PointerEventInit = {},
+    target = document,
+  ) => {
+    target.dispatchEvent(
+      new PointerEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        pointerId: 1,
+        isPrimary: true,
+        button: 0,
+        ...options,
+      }),
+    )
+  }
+  const down = (options: PointerEventInit = {}, target = surface) => {
+    target.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        cancelable: true,
+        pointerId: 1,
+        isPrimary: true,
+        button: 0,
+        ...options,
+      }),
+    )
+  }
+  const escape = () => {
+    const event = new KeyboardEvent('keydown', {
+      key: 'Escape',
+      bubbles: true,
+      cancelable: true,
+    })
+    document.dispatchEvent(event)
+    return event
+  }
+  const flush = async () => {
+    const callbacks = [...frames.values()]
+    frames.clear()
+    callbacks.forEach(callback => callback(0))
+    await nextTurn()
+  }
+  const release = async () => {
+    await Effect.runPromise(Fiber.interrupt(fiber))
+  }
+  return {
+    browser,
+    surface,
+    child,
+    frames,
+    messages,
+    pointer,
+    down,
+    escape,
+    flush,
+    release,
+    close: async () => {
+      await release()
+      await browser.happyDOM.close()
+      globals.forEach((key, index) => {
+        const descriptor = descriptors[index]
+        if (descriptor) Object.defineProperty(globalThis, key, descriptor)
+        else Reflect.deleteProperty(globalThis, key)
+      })
+    },
+  }
+}
+
+describe('Lasso pointer lifecycle', () => {
+  it('ignores idle events and rejected presses, coalesces the active pointer and detaches on pointerup', async () => {
+    const observer = await observe()
+    const { pointer, down, escape, flush, messages, frames, child } = observer
+    try {
+      pointer('pointermove', { clientX: 10 })
+      pointer('pointerup')
+      pointer('pointercancel')
+      assert.equal(escape().defaultPrevented, false)
+      down({ button: 2 })
+      down({ isPrimary: false })
+      down({}, child)
+      pointer('pointermove')
+      await flush()
+      assert.deepEqual(messages, [])
+
+      down({ shiftKey: true, clientX: 10, clientY: 20 })
+      down({ pointerId: 2 })
+      pointer('pointermove', { pointerId: 2 })
+      assert.equal(frames.size, 0)
+      pointer('pointermove', { clientX: 30, clientY: 40 })
+      pointer('pointermove', { clientX: 50, clientY: 60 })
+      assert.equal(frames.size, 1)
+      await flush()
+      assert.deepEqual(messages, [
+        Lasso.Message.Started({
+          pointerId: 1,
+          point: { x: 10, y: 20 },
+          shift: true,
+        }),
+        Lasso.Message.Moved({ pointerId: 1, point: { x: 50, y: 60 } }),
+      ])
+      pointer('pointermove', { clientX: 70, clientY: 80 })
+      pointer('pointerup', { pointerId: 2 })
+      assert.equal(frames.size, 1)
+      pointer('pointerup')
+      assert.equal(frames.size, 0)
+      pointer('pointermove')
+      pointer('pointerup')
+      assert.equal(escape().defaultPrevented, false)
+      await flush()
+      assert.deepEqual(messages.slice(2), [
+        Lasso.Message.Moved({ pointerId: 1, point: { x: 70, y: 80 } }),
+        Lasso.Message.Ended({ pointerId: 1 }),
+      ])
+    } finally {
+      await observer.close()
+    }
+  })
+
+  it('captures Escape only during a drag and drops queued movement on Escape and pointercancel', async () => {
+    const observer = await observe()
+    const { browser, pointer, down, escape, flush, messages, frames } = observer
+    let bubbled = 0
+    browser.document.addEventListener('keydown', () => {
+      bubbled++
+    })
+    try {
+      assert.equal(escape().defaultPrevented, false)
+      assert.equal(bubbled, 1)
+      down()
+      pointer('pointermove')
+      assert.equal(escape().defaultPrevented, true)
+      assert.equal(bubbled, 1)
+      assert.equal(frames.size, 0)
+      pointer('pointermove')
+      pointer('pointerup')
+      await flush()
+      assert.deepEqual(
+        messages.map(message => message._tag),
+        ['Started', 'Escaped'],
+      )
+      assert.equal(escape().defaultPrevented, false)
+      assert.equal(bubbled, 2)
+
+      down()
+      pointer('pointermove')
+      pointer('pointercancel', { pointerId: 2 })
+      assert.equal(frames.size, 1)
+      pointer('pointercancel')
+      assert.equal(frames.size, 0)
+      pointer('pointermove')
+      pointer('pointerup')
+      await flush()
+      assert.deepEqual(
+        messages.slice(2).map(message => message._tag),
+        ['Started', 'CanceledPointer'],
+      )
+      assert.equal(escape().defaultPrevented, false)
+    } finally {
+      await observer.close()
+    }
+  })
+
+  it('releases active document listeners, its pending frame and permanent pointerdown listener on unmount', async () => {
+    const observer = await observe()
+    try {
+      observer.down()
+      observer.pointer('pointermove')
+      assert.equal(observer.frames.size, 1)
+      await nextTurn()
+      await observer.release()
+      assert.equal(observer.frames.size, 0)
+      observer.down()
+      observer.pointer('pointermove')
+      observer.pointer('pointerup')
+      observer.pointer('pointercancel')
+      assert.equal(observer.escape().defaultPrevented, false)
+      await observer.flush()
+      assert.deepEqual(
+        observer.messages.map(message => message._tag),
+        ['Started'],
+      )
+    } finally {
+      await observer.close()
+    }
   })
 })

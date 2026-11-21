@@ -8,6 +8,7 @@ import { defineView, type View as SubmodelView } from 'foldkit/submodel'
 
 export const Point = Schema.Struct({ x: Schema.Number, y: Schema.Number })
 export type Point = typeof Point.Type
+
 export const Rectangle = Schema.Struct({
   left: Schema.Number,
   top: Schema.Number,
@@ -15,12 +16,15 @@ export const Rectangle = Schema.Struct({
   bottom: Schema.Number,
 })
 export type Rectangle = typeof Rectangle.Type
+
 export const Item = Schema.Struct({ key: Schema.String, rect: Rectangle })
 export type Item = typeof Item.Type
+
 export const Draft = Schema.Struct({
   ...Rectangle.fields,
   keys: Schema.Array(Schema.String),
 })
+
 export const Session = Schema.Struct({
   pointerId: Schema.Number,
   origin: Point,
@@ -29,6 +33,7 @@ export const Session = Schema.Struct({
   box: Schema.Option(Rectangle),
   items: Schema.Array(Item),
 })
+
 export const Model = Schema.Struct({
   id: Schema.String,
   version: Schema.Int,
@@ -50,6 +55,7 @@ export const Message = defineMessageUnion({
   Escaped: {},
 })
 export type Message = typeof Message.Type
+
 export const OutMessage = defineMessageUnion({
   Selected: { keys: Schema.Array(Schema.String) },
   Canceled: {},
@@ -57,14 +63,17 @@ export const OutMessage = defineMessageUnion({
 export type OutMessage = typeof OutMessage.Type
 
 export const dragThreshold = 3
+
 export const rectangle = (a: Point, b: Point): Rectangle => ({
   left: Math.min(a.x, b.x),
   top: Math.min(a.y, b.y),
   right: Math.max(a.x, b.x),
   bottom: Math.max(a.y, b.y),
 })
+
 export const touches = (a: Rectangle, b: Rectangle): boolean =>
   a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top
+
 export const hits = <Key extends string>(
   rect: Rectangle,
   items: ReadonlyArray<Readonly<{ key: Key; rect: Rectangle }>>,
@@ -78,14 +87,17 @@ export const hits = <Key extends string>(
       .map(item => item.key),
   ]),
 ]
+
 export const relative = (rect: Rectangle, surface: Rectangle): Rectangle => ({
   left: rect.left - surface.left,
   right: rect.right - surface.left,
   top: rect.top - surface.top,
   bottom: rect.bottom - surface.top,
 })
+
 export const isTouched = (model: Model, key: string): boolean =>
   Option.isSome(model.draft) && model.draft.value.keys.includes(key)
+
 export const rectangleStyle = (model: Model): Record<string, string> => {
   if (Option.isNone(model.draft)) return { display: 'none' }
   const rect = model.draft.value
@@ -98,11 +110,13 @@ export const rectangleStyle = (model: Model): Record<string, string> => {
     height: `${rect.bottom - rect.top}px`,
   }
 }
+
 export const selectionMessage = (
   count: number,
   message?: (count: number) => string,
 ): string =>
   message?.(count) ?? `${count} ${count === 1 ? 'item' : 'items'} selected.`
+
 export const init = ({ id }: Readonly<{ id: string }>): Model => ({
   id,
   version: 0,
@@ -148,7 +162,9 @@ export type Options<Key extends string = string> = Readonly<{
   selected?: ReadonlyArray<Key>
   selectable?: (key: Key) => boolean
 }>
+
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+
 const draw = (model: Model): Model => {
   if (Option.isNone(model.session)) return model
   const session = model.session.value
@@ -172,6 +188,7 @@ const draw = (model: Model): Model => {
     }),
   }
 }
+
 export const update = (
   model: Model,
   message: Message,
@@ -268,6 +285,9 @@ export const ObserveSurface = Mount.defineStream('ObserveLassoSurface', {
         yield* Effect.acquireRelease(
           Effect.sync(() => {
             const doc = element.ownerDocument
+            const view = doc.defaultView
+            if (!view) return () => {}
+            let releaseDrag: (() => void) | undefined
             const emit = (message: Exclude<Message, { _tag: 'Measured' }>) => {
               Queue.offerUnsafe(queue, message)
             }
@@ -275,10 +295,61 @@ export const ObserveSurface = Mount.defineStream('ObserveLassoSurface', {
               if (
                 event.target !== element ||
                 event.button !== 0 ||
-                !event.isPrimary
+                !event.isPrimary ||
+                releaseDrag !== undefined
               )
                 return
               event.preventDefault()
+              const pointerId = event.pointerId
+              let frame: number | undefined
+              let pending: typeof Message.Moved.Type | undefined
+              const flush = () => {
+                frame = undefined
+                if (pending) emit(pending)
+                pending = undefined
+              }
+              const stop = () => {
+                if (frame !== undefined) view.cancelAnimationFrame(frame)
+                frame = undefined
+                pending = undefined
+                doc.removeEventListener('pointermove', move)
+                doc.removeEventListener('pointerup', up)
+                doc.removeEventListener('pointercancel', cancel)
+                doc.removeEventListener('keydown', key, true)
+                releaseDrag = undefined
+              }
+              const move = (event: PointerEvent) => {
+                if (event.pointerId !== pointerId) return
+                pending = Message.Moved({
+                  pointerId,
+                  point: { x: event.clientX, y: event.clientY },
+                })
+                frame ??= view.requestAnimationFrame(flush)
+              }
+              const up = (event: PointerEvent) => {
+                if (event.pointerId !== pointerId) return
+                if (frame !== undefined) view.cancelAnimationFrame(frame)
+                flush()
+                stop()
+                emit(Message.Ended({ pointerId }))
+              }
+              const cancel = (event: PointerEvent) => {
+                if (event.pointerId !== pointerId) return
+                stop()
+                emit(Message.CanceledPointer({ pointerId }))
+              }
+              const key = (event: KeyboardEvent) => {
+                if (event.key !== 'Escape') return
+                event.preventDefault()
+                event.stopPropagation()
+                stop()
+                emit(Message.Escaped())
+              }
+              releaseDrag = stop
+              doc.addEventListener('pointermove', move)
+              doc.addEventListener('pointerup', up)
+              doc.addEventListener('pointercancel', cancel)
+              doc.addEventListener('keydown', key, true)
               emit(
                 Message.Started({
                   pointerId: event.pointerId,
@@ -287,31 +358,10 @@ export const ObserveSurface = Mount.defineStream('ObserveLassoSurface', {
                 }),
               )
             }
-            const move = (event: PointerEvent) =>
-              emit(
-                Message.Moved({
-                  pointerId: event.pointerId,
-                  point: { x: event.clientX, y: event.clientY },
-                }),
-              )
-            const up = (event: PointerEvent) =>
-              emit(Message.Ended({ pointerId: event.pointerId }))
-            const cancel = (event: PointerEvent) =>
-              emit(Message.CanceledPointer({ pointerId: event.pointerId }))
-            const key = (event: KeyboardEvent) => {
-              if (event.key === 'Escape') emit(Message.Escaped())
-            }
             element.addEventListener('pointerdown', down as EventListener)
-            doc.addEventListener('pointermove', move)
-            doc.addEventListener('pointerup', up)
-            doc.addEventListener('pointercancel', cancel)
-            doc.addEventListener('keydown', key)
             return () => {
               element.removeEventListener('pointerdown', down as EventListener)
-              doc.removeEventListener('pointermove', move)
-              doc.removeEventListener('pointerup', up)
-              doc.removeEventListener('pointercancel', cancel)
-              doc.removeEventListener('keydown', key)
+              releaseDrag?.()
             }
           }),
           release => Effect.sync(release),
@@ -337,6 +387,7 @@ export type ViewInputs<Key extends string = string> = Readonly<{
     }>,
   ) => Html
 }>
+
 export type Bundle<Key extends string = string> = Readonly<{
   update: (
     model: Model,
@@ -345,6 +396,7 @@ export type Bundle<Key extends string = string> = Readonly<{
   ) => UpdateReturn
   view: SubmodelView<Model, Message, ViewInputs<Key>>
 }>
+
 export const create = <Key extends string = string>(): Bundle<Key> => ({
   update: (model, message, options = {}) =>
     update(model, message, {
@@ -369,4 +421,5 @@ export const create = <Key extends string = string>(): Bundle<Key> => ({
     }),
   ),
 })
+
 export const view = create().view
