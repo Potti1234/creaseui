@@ -69,9 +69,10 @@ test('reduced motion still opens and closes a picker', async ({
     .click()
   const trigger = page.locator('#create-base-picker-button')
   await trigger.click()
-  await expect(page.locator('[data-slot="popover-content"]')).toBeVisible()
+  const popover = page.locator('#create-base-picker-panel')
+  // Foldkit focuses the panel on the frame after it becomes visible.
+  await expect(popover.and(page.locator(':focus-within'))).toBeVisible()
   await page.keyboard.press('Escape')
-  const popover = page.locator('[data-slot="popover-content"]')
   if (browserName === 'webkit') {
     // WebKit can stall the leave transition under reduced motion — the
     // element carries data-closed + data-leave but stays painted. The
