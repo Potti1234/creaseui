@@ -6865,5 +6865,139 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "kind": "function",
       "signature": "visuallyHidden<Msg>(props: VisuallyHiddenProps, h: HtmlBuilder<Msg>): Html"
     }
+  ],
+  "pointer-kind": [
+    {
+      "name": "PointerPrecision",
+      "kind": "value",
+      "signature": "PointerPrecision: value"
+    },
+    {
+      "name": "PointerPrecision",
+      "kind": "type",
+      "signature": "PointerPrecision = typeof PointerPrecision.Type"
+    },
+    {
+      "name": "PointerHover",
+      "kind": "value",
+      "signature": "PointerHover: value"
+    },
+    {
+      "name": "PointerHover",
+      "kind": "type",
+      "signature": "PointerHover = typeof PointerHover.Type"
+    },
+    {
+      "name": "Model",
+      "kind": "value",
+      "signature": "Model: value"
+    },
+    {
+      "name": "Model",
+      "kind": "type",
+      "signature": "Model = typeof Model.Type"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "init",
+      "kind": "function",
+      "signature": "init(initial: Partial<Model> = {}): Model"
+    },
+    {
+      "name": "update",
+      "kind": "function",
+      "signature": "update(model: Model, message: Message): Update.Return<Model, Message>"
+    },
+    {
+      "name": "read",
+      "kind": "function",
+      "signature": "read(matchMedia: (query: string) => { matches: boolean; }): Model"
+    },
+    {
+      "name": "pointerKindOf",
+      "kind": "function",
+      "signature": "pointerKindOf(mobileHint?: string | null): Partial<Model>"
+    },
+    {
+      "name": "canHover",
+      "kind": "function",
+      "signature": "canHover(model: Model): boolean"
+    },
+    {
+      "name": "ReadPointerKind",
+      "kind": "value",
+      "signature": "ReadPointerKind: value"
+    },
+    {
+      "name": "changes",
+      "kind": "function",
+      "signature": "changes(): Stream.Stream<Message>"
+    },
+    {
+      "name": "subscriptions",
+      "kind": "value",
+      "signature": "subscriptions: value"
+    }
+  ],
+  "avoid-keyboard": [
+    {
+      "name": "Length",
+      "kind": "type",
+      "signature": "Length = Readonly<{ percent: number; px: number; }>"
+    },
+    {
+      "name": "lengthOf",
+      "kind": "function",
+      "signature": "lengthOf(value: string): Length"
+    },
+    {
+      "name": "cssLength",
+      "kind": "function",
+      "signature": "cssLength({ percent, px }: Length): string"
+    },
+    {
+      "name": "parseTranslate",
+      "kind": "function",
+      "signature": "parseTranslate(value: string): Readonly<{ x: string; y: Length; z: string | undefined; }>"
+    },
+    {
+      "name": "Coverage",
+      "kind": "type",
+      "signature": "Coverage = Readonly<{ box: Readonly<{ top: number; bottom: number; height: number; }>; rest: Length; now: Length; originTop: number; innerHeight: number; offsetTop: number; height: number; }>"
+    },
+    {
+      "name": "coveredPixels",
+      "kind": "function",
+      "signature": "coveredPixels({ box, rest, now, originTop, innerHeight, offsetTop, height, }: Coverage): number"
+    },
+    {
+      "name": "avoidKeyboard",
+      "kind": "function",
+      "signature": "avoidKeyboard(element: HTMLElement): (() => void)"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "AvoidKeyboard",
+      "kind": "value",
+      "signature": "AvoidKeyboard: value"
+    }
   ]
 };

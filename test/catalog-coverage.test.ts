@@ -29,6 +29,18 @@ const registry = JSON.parse(readFileSync('src/ui/registry.json', 'utf8')) as {
 const rootRegistry = JSON.parse(readFileSync('registry.json', 'utf8')) as {
   include: ReadonlyArray<string>
 }
+const libraryRegistry = JSON.parse(
+  readFileSync('src/lib/registry.json', 'utf8'),
+) as {
+  items: ReadonlyArray<{
+    name: string
+    docs?: string
+    files: ReadonlyArray<{ path: string; target: string }>
+  }>
+}
+const documentedLibraries = libraryRegistry.items.filter(item =>
+  item.docs?.startsWith('/docs/components/'),
+)
 const presetRegistry = JSON.parse(
   readFileSync('registry/presets/registry.json', 'utf8'),
 ) as {
@@ -86,6 +98,10 @@ const registrySlugs = registry.items
   .filter(item => item.type === 'registry:ui')
   .map(item => item.name)
   .sort()
+const discoverySlugs = [
+  ...registrySlugs,
+  ...documentedLibraries.map(item => item.name),
+].sort()
 
 describe('component catalog coverage', () => {
   it("keeps every migrated page's renderer examples in parity", () => {
@@ -98,6 +114,9 @@ describe('component catalog coverage', () => {
           page.slug,
           page.definition.examples,
           stylexExamples,
+          page.definition.source?.path
+            .replace(/^src\//, '@/')
+            .replace(/\.ts$/, ''),
         ),
         true,
         `${page.slug} renderer examples drifted`,
@@ -105,8 +124,35 @@ describe('component catalog coverage', () => {
     }
   })
 
-  it('documents every registry UI item and no stale component routes', () => {
-    assert.deepEqual(documentedSlugs, registrySlugs)
+  it('requires both shared-library examples to import their documented source', () => {
+    const source = '@/lib/behaviors/example'
+    const examples = [{ title: 'Shared', code: `import '${source}'` }]
+    assert.equal(
+      rendererExamplesAreInParity('example', examples, examples, source),
+      true,
+    )
+    assert.equal(rendererExamplesAreInParity('example', [], [], source), true)
+    assert.equal(
+      rendererExamplesAreInParity('example', examples, [], source),
+      false,
+    )
+    assert.equal(
+      rendererExamplesAreInParity('example', examples, examples),
+      false,
+    )
+    assert.equal(
+      rendererExamplesAreInParity(
+        'example',
+        examples,
+        [{ title: 'Shared', code: "import '@/lib/other'" }],
+        source,
+      ),
+      false,
+    )
+  })
+
+  it('documents every registry UI item and opted-in library without stale routes', () => {
+    assert.deepEqual(documentedSlugs, discoverySlugs)
   })
 
   it('publishes generated discovery metadata for every registry UI item', () => {
@@ -289,10 +335,10 @@ describe('component catalog coverage', () => {
   })
 
   it('publishes searchable and LLM-readable API metadata', () => {
-    assert.equal(docsIndex.componentCount, registrySlugs.length)
+    assert.equal(docsIndex.componentCount, discoverySlugs.length)
     assert.deepEqual(
       docsIndex.components.map(component => component.slug).sort(),
-      registrySlugs,
+      discoverySlugs,
     )
     assert.ok(
       docsIndex.components.every(component => component.examples.length >= 2),
@@ -310,6 +356,22 @@ describe('component catalog coverage', () => {
     for (const slug of registrySlugs) {
       assert.match(llms, new RegExp(`/docs/components/${slug}(?:\\s|$)`))
       assert.match(llmsFull, new RegExp(`src/ui/${slug}\\.ts`))
+    }
+    for (const item of documentedLibraries) {
+      assert.equal(
+        authoredPages[item.name]?.definition.source?.registryItem,
+        item.name,
+      )
+      assert.equal(
+        authoredPages[item.name]?.definition.source?.path,
+        `src/lib/${item.files[0]?.path}`,
+      )
+      assert.match(llms, new RegExp(`/docs/components/${item.name}(?:\\s|$)`))
+      for (const file of item.files) {
+        assert.ok(existsSync(`src/lib/${file.path}`))
+        assert.ok(llmsFull.includes(`src/lib/${file.path}`))
+        assert.equal(file.target, `@lib/${file.path}`)
+      }
     }
   })
 

@@ -2199,3 +2199,43 @@ Source: [`src/ui/visually-hidden.ts`](../src/ui/visually-hidden.ts)
 | `VisuallyHiddenElement` | type | `VisuallyHiddenElement = 'article' \| 'aside' \| 'code' \| 'div' \| 'em' \| 'footer' \| 'h1' \| 'h2' \| 'h3' \| 'h4' \| 'h5' \| 'h6' \| 'header' \| 'label' \| 'li' \| 'main' \| 'nav' \| 'p' \| 'section' \| 'small' \| 'span' \| 'strong' \| 'ul' \| 'ol'` |
 | `VisuallyHiddenProps` | type | `VisuallyHiddenProps = Readonly<{ as?: VisuallyHiddenElement; ariaLive?: 'polite' \| 'assertive' \| 'off'; role?: string; id?: string; children: ReadonlyArray<Html \| string>; }>` |
 | `visuallyHidden` | function | `visuallyHidden<Msg>(props: VisuallyHiddenProps, h: HtmlBuilder<Msg>): Html` |
+
+## Pointer Kind
+
+Source: [`src/lib/behaviors/pointer-kind.ts`](../src/lib/behaviors/pointer-kind.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `PointerPrecision` | value | `PointerPrecision: value` |
+| `PointerPrecision` | type | `PointerPrecision = typeof PointerPrecision.Type` |
+| `PointerHover` | value | `PointerHover: value` |
+| `PointerHover` | type | `PointerHover = typeof PointerHover.Type` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `init` | function | `init(initial: Partial<Model> = {}): Model` |
+| `update` | function | `update(model: Model, message: Message): Update.Return<Model, Message>` |
+| `read` | function | `read(matchMedia: (query: string) => { matches: boolean; }): Model` |
+| `pointerKindOf` | function | `pointerKindOf(mobileHint?: string \| null): Partial<Model>` |
+| `canHover` | function | `canHover(model: Model): boolean` |
+| `ReadPointerKind` | value | `ReadPointerKind: value` |
+| `changes` | function | `changes(): Stream.Stream<Message>` |
+| `subscriptions` | value | `subscriptions: value` |
+
+## Avoid Keyboard
+
+Source: [`src/lib/behaviors/avoid-keyboard.ts`](../src/lib/behaviors/avoid-keyboard.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Length` | type | `Length = Readonly<{ percent: number; px: number; }>` |
+| `lengthOf` | function | `lengthOf(value: string): Length` |
+| `cssLength` | function | `cssLength({ percent, px }: Length): string` |
+| `parseTranslate` | function | `parseTranslate(value: string): Readonly<{ x: string; y: Length; z: string \| undefined; }>` |
+| `Coverage` | type | `Coverage = Readonly<{ box: Readonly<{ top: number; bottom: number; height: number; }>; rest: Length; now: Length; originTop: number; innerHeight: number; offsetTop: number; height: number; }>` |
+| `coveredPixels` | function | `coveredPixels({ box, rest, now, originTop, innerHeight, offsetTop, height, }: Coverage): number` |
+| `avoidKeyboard` | function | `avoidKeyboard(element: HTMLElement): (() => void)` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `AvoidKeyboard` | value | `AvoidKeyboard: value` |

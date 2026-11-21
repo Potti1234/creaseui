@@ -120,6 +120,8 @@ import { dataTablePleatPreview } from '@/docs/components/pages/data-table/pleat'
 import { dateInputPleatPreview } from '@/docs/components/pages/date-input/pleat'
 import { datePickerPleatPreview } from '@/docs/components/pages/date-picker/pleat'
 import { directionPleatPreview } from '@/docs/components/pages/direction/pleat'
+import { pointerKindPleatPreview } from '@/docs/components/pages/pointer-kind/pleat'
+import { avoidKeyboardPleatPreview } from '@/docs/components/pages/avoid-keyboard/pleat'
 import { fieldPleatPreview } from '@/docs/components/pages/field/pleat'
 import { formPleatPreview } from '@/docs/components/pages/form/pleat'
 import { inputGroupPleatPreview } from '@/docs/components/pages/input-group/pleat'
@@ -233,6 +235,8 @@ installPleatExamplePreviewProvider('data-table', dataTablePleatPreview)
 installPleatExamplePreviewProvider('date-input', dateInputPleatPreview)
 installPleatExamplePreviewProvider('date-picker', datePickerPleatPreview)
 installPleatExamplePreviewProvider('direction', directionPleatPreview)
+installPleatExamplePreviewProvider('pointer-kind', pointerKindPleatPreview)
+installPleatExamplePreviewProvider('avoid-keyboard', avoidKeyboardPleatPreview)
 installPleatExamplePreviewProvider('field', fieldPleatPreview)
 installPleatExamplePreviewProvider('form', formPleatPreview)
 installPleatExamplePreviewProvider('grid', gridPleatPreview)

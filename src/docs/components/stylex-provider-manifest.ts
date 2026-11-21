@@ -111,6 +111,8 @@ import { dataTableStyleXPreview } from '@/docs/components/pages/data-table/style
 import { dateInputStyleXPreview } from '@/docs/components/pages/date-input/stylex'
 import { datePickerStyleXPreview } from '@/docs/components/pages/date-picker/stylex'
 import { directionStyleXPreview } from '@/docs/components/pages/direction/stylex'
+import { pointerKindStyleXPreview } from '@/docs/components/pages/pointer-kind/stylex'
+import { avoidKeyboardStyleXPreview } from '@/docs/components/pages/avoid-keyboard/stylex'
 import { fieldStyleXPreview } from '@/docs/components/pages/field/stylex'
 import { formStyleXPreview } from '@/docs/components/pages/form/stylex'
 import { inputGroupStyleXPreview } from '@/docs/components/pages/input-group/stylex'
@@ -215,6 +217,8 @@ installExamplePreviewProvider('data-table', dataTableStyleXPreview)
 installExamplePreviewProvider('date-input', dateInputStyleXPreview)
 installExamplePreviewProvider('date-picker', datePickerStyleXPreview)
 installExamplePreviewProvider('direction', directionStyleXPreview)
+installExamplePreviewProvider('pointer-kind', pointerKindStyleXPreview)
+installExamplePreviewProvider('avoid-keyboard', avoidKeyboardStyleXPreview)
 installExamplePreviewProvider('field', fieldStyleXPreview)
 installExamplePreviewProvider('form', formStyleXPreview)
 installExamplePreviewProvider('grid', gridStyleXPreview)

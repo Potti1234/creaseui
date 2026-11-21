@@ -2,6 +2,26 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "items": [
     {
+      "name": "pointer-kind",
+      "type": "registry:lib",
+      "title": "Pointer Kind",
+      "description": "Tracks pointer precision and hover support with Foldkit state and subscriptions.",
+      "docs": "/docs/components/pointer-kind",
+      "files": [
+        { "path": "behaviors/pointer-kind.ts", "type": "registry:lib", "target": "@lib/behaviors/pointer-kind.ts" }
+      ]
+    },
+    {
+      "name": "avoid-keyboard",
+      "type": "registry:lib",
+      "title": "Avoid Keyboard",
+      "description": "Keeps a footer above the on-screen keyboard with a scoped Foldkit Mount.",
+      "docs": "/docs/components/avoid-keyboard",
+      "files": [
+        { "path": "behaviors/avoid-keyboard.ts", "type": "registry:lib", "target": "@lib/behaviors/avoid-keyboard.ts" }
+      ]
+    },
+    {
       "name": "time-input-core",
       "type": "registry:lib",
       "title": "Time Input State",
