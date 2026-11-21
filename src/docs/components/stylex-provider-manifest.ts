@@ -3,6 +3,8 @@ import {
   installStyleXPreviewView,
 } from '@/docs/components/catalog'
 import { mapStyleXPreview } from '@/docs/components/pages/map/stylex'
+import { connectPreviewProgram } from '@/docs/components/pages/connect'
+installStyleXPreviewView('connect', connectPreviewProgram.view)
 installExamplePreviewProvider('map', mapStyleXPreview('map'))
 installExamplePreviewProvider('map-controls', mapStyleXPreview('map-controls'))
 installExamplePreviewProvider('map-marker', mapStyleXPreview('map-marker'))

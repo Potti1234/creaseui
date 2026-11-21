@@ -310,7 +310,8 @@ export const canonicalComponentSlug = (slug: string): string =>
   COMPONENT_SLUG_ALIASES[slug] ?? slug
 
 export const componentTitle = (slug: string): string | undefined =>
-  COMPONENTS.find(name => toSlug(name) === canonicalComponentSlug(slug))
+  COMPONENTS.find(name => toSlug(name) === canonicalComponentSlug(slug)) ??
+  (slug === 'connect' ? 'Connect' : undefined)
 export const apiPurpose = (entry: ApiEntry): string => {
   switch (entry.name) {
     case 'Model':

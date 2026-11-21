@@ -22,9 +22,11 @@ import type {
 } from '@/docs/components/page-definition'
 import { componentApi } from '@/docs/generated-component-api'
 import { authoredPages } from '@/docs/components/pages'
+import { connectPage } from '@/docs/components/pages/connect'
 import { RoutedDocsPreviewMessage } from '@/docs/components/pages/authored-page'
 import type { ErasedPreviewProgram } from '@/docs/components/pages/authored-page'
 import { renderer } from '@/site/config'
+const pages: typeof authoredPages = { ...authoredPages, connect: connectPage }
 const stylexExamplePreviewProviders = new Map<string, ExamplePreviewProvider>()
 
 export const installExamplePreviewProvider = (
@@ -64,12 +66,12 @@ export const installPleatPreviewView = (
 
 const definitions: PageDefinitions = {
   ...Object.fromEntries(
-    Object.values(authoredPages).map(page => [page.slug, page.definition]),
+    Object.values(pages).map(page => [page.slug, page.definition]),
   ),
 }
 
 const EXAMPLE_STATE_COUNT = 32
-const localPrograms = Object.values(authoredPages).flatMap(page =>
+const localPrograms = Object.values(pages).flatMap(page =>
   page.previewProgram === undefined
     ? []
     : [{ slug: page.slug, program: page.previewProgram }],
@@ -111,7 +113,7 @@ export const init = (slug?: string): Model => {
             : (definitions[canonicalSlug]?.examples.length ?? 0) + 1,
       },
       (_, index) => {
-        const program = authoredPages[canonicalSlug]?.previewProgram
+        const program = pages[canonicalSlug]?.previewProgram
         if (program === undefined)
           throw new Error(`Missing preview program for ${canonicalSlug}`)
         return program.init(index)
@@ -139,7 +141,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
   const current = model.examples[message.index]
   if (current === undefined) return { model: model }
 
-  const program = authoredPages[model.slug]?.previewProgram
+  const program = pages[model.slug]?.previewProgram
   if (program === undefined) return { model: model }
   const { model: example, commands: exampleCommands__ } = program.update(
     current,
@@ -181,7 +183,7 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
                 message: message as RoutedDocsPreviewMessage,
               }),
             // A lifted subscription must only fire while its own page is
-            // active: GotExampleMessage is routed to authoredPages[model.slug],
+            // active: GotExampleMessage is routed to pages[model.slug],
             // so emitting on another page feeds it a foreign message shape.
             when: model => model.slug === slug,
           })
@@ -340,7 +342,7 @@ export const view = (
       : model.renderer === 'stylex' && stylexExamples !== undefined
         ? stylexExamples
         : definition.examples
-  const authoredProgram = authoredPages[slug]?.previewProgram
+  const authoredProgram = pages[slug]?.previewProgram
 
   // stateIndex selects the preview-model slot; contentIndex selects which
   // example fixture it renders — the hero reuses content 0 on a spare slot.

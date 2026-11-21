@@ -3,6 +3,8 @@ import {
   installPleatPreviewView,
 } from '@/docs/components/catalog'
 import { mapPleatPreview } from '@/docs/components/pages/map/pleat'
+import { connectPreviewProgram } from '@/docs/components/pages/connect'
+installPleatPreviewView('connect', connectPreviewProgram.view)
 installPleatExamplePreviewProvider('map', mapPleatPreview('map'))
 installPleatExamplePreviewProvider(
   'map-controls',
