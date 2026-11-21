@@ -1,8 +1,3 @@
-import {
-  currentPlatform,
-  formatShortcut,
-  toAriaKeyshortcuts,
-} from '@/lib/behaviors/shortcuts'
 import type { Update } from 'foldkit'
 import { Effect, Option, Schema as S } from 'effect'
 import * as Command from 'foldkit/command'
@@ -10,6 +5,11 @@ import * as Dom from 'foldkit/dom'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
+import {
+  currentPlatform,
+  formatShortcut,
+  toAriaKeyshortcuts,
+} from '@/lib/behaviors/shortcuts'
 import * as Icon from '@/lib/icon'
 import * as Behavior from '@/lib/dropdown-menu-behavior'
 import { cn } from '@/lib/utils'

@@ -1,10 +1,11 @@
 import { Effect, Schema } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
-import type { Attribute } from 'foldkit/html'
+import type { Attribute, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 export const Priority = Schema.Literals(['polite', 'assertive'])
+
 export type Priority = typeof Priority.Type
 
 export type ListChange =
@@ -20,16 +21,22 @@ export const describeList = (change: ListChange): string => {
 
 export const liveRegionAttributes = <Msg>(
   priority: Priority,
+  h: HtmlBuilder<Msg>,
 ): ReadonlyArray<Attribute<Msg>> => [
-  { _tag: 'Role', value: priority === 'assertive' ? 'alert' : 'status' },
-  { _tag: 'AriaLive', value: priority },
-  { _tag: 'AriaAtomic', value: true },
-  {
-    _tag: 'Attribute',
-    key: 'style',
-    value:
-      'position:fixed;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap',
-  },
+  h.Role(priority === 'assertive' ? 'alert' : 'status'),
+  h.AriaLive(priority),
+  h.AriaAtomic(true),
+  h.Style({
+    position: 'fixed',
+    width: '1px',
+    height: '1px',
+    margin: '-1px',
+    padding: '0',
+    border: '0',
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+  }),
 ]
 
 export const Model = Schema.Struct({
@@ -38,12 +45,16 @@ export const Model = Schema.Struct({
   priority: Priority,
   version: Schema.Int,
 })
+
 export type Model = typeof Model.Type
+
 export const Message = defineMessageUnion({
   RequestedAnnouncement: { text: Schema.String, priority: Priority },
   CompletedDelay: { version: Schema.Int },
 })
+
 export type Message = typeof Message.Type
+
 export const init = (): Model => ({
   text: '',
   pendingText: '',

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
+import { inertHtml } from 'foldkit/html'
 import * as Announce from '../src/lib/behaviors/announce.ts'
 
 describe('Announce', () => {
@@ -28,7 +29,7 @@ describe('Announce', () => {
 
   it('publishes visually-hidden atomic regions at either priority', () => {
     for (const priority of ['polite', 'assertive'] as const) {
-      const attrs = Announce.liveRegionAttributes(priority)
+      const attrs = Announce.liveRegionAttributes(priority, inertHtml)
       assert.ok(
         attrs.some(
           attribute =>
@@ -51,9 +52,8 @@ describe('Announce', () => {
       assert.ok(
         attrs.some(
           attribute =>
-            attribute._tag === 'Attribute' &&
-            attribute.key === 'style' &&
-            attribute.value.includes('clip-path:inset(50%)'),
+            attribute._tag === 'Style' &&
+            attribute.value.clipPath === 'inset(50%)',
         ),
       )
     }

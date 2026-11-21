@@ -11,7 +11,6 @@ import {
   retainCommandQuery,
 } from '@/lib/command'
 import * as Icon from '@/lib/icon'
-import { liveRegionAttributes } from '@/lib/behaviors/announce'
 import {
   currentPlatform,
   formatShortcut,
@@ -192,11 +191,16 @@ const renderCommand = <Item extends string, Msg>(
         ? filteredItems
         : filteredItems.slice(0, Math.max(0, props.maxVisibleItems))
 
-  const commandControl = h.submodel({
+  const control = h.submodel({
     slotId: props.model.id,
     model: props.model,
     view: commandView,
     viewInputs: {
+      announcement: commandAnnouncement(
+        props.model.inputValue,
+        filteredItems.length,
+        props.status,
+      ),
       maybeSelectedValue: props.maybeSelectedValue,
       restingInputValue: props.restingInputValue,
       items: visibleItems,
@@ -278,20 +282,6 @@ const renderCommand = <Item extends string, Msg>(
     },
     toParentMessage: props.toParentMessage,
   })
-
-  const control = h.div(
-    [],
-    [
-      commandControl,
-      h.div(liveRegionAttributes<Msg>('polite'), [
-        commandAnnouncement(
-          props.model.inputValue,
-          filteredItems.length,
-          props.status,
-        ),
-      ]),
-    ],
-  )
 
   const statusContent =
     props.status === 'loading'

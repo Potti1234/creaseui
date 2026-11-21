@@ -3,7 +3,9 @@ import * as Mount from 'foldkit/mount'
 import { defineMessageUnion } from 'foldkit/message'
 
 export const Platform = Schema.Literals(['apple', 'other'])
+
 export type Platform = typeof Platform.Type
+
 export const currentPlatform = (): Platform =>
   typeof navigator !== 'undefined' &&
   /Mac|iPhone|iPad|iPod/u.test(navigator.platform || navigator.userAgent)
@@ -42,6 +44,7 @@ const keyNames: Readonly<Record<string, string>> = {
   pageup: 'PageUp',
   pagedown: 'PageDown',
 }
+
 export const toAriaKeyshortcuts = (keys: string, platform: Platform): string =>
   keys
     .split('+')
@@ -77,6 +80,7 @@ const glyphs: Readonly<Record<string, string>> = {
   Home: '↖',
   End: '↘',
 }
+
 const names: Readonly<Record<string, string>> = {
   Control: 'Ctrl',
   Delete: 'Del',
@@ -86,6 +90,7 @@ const names: Readonly<Record<string, string>> = {
   ArrowLeft: 'Left',
   ArrowRight: 'Right',
 }
+
 export const formatShortcut = (keys: string, platform: Platform): string =>
   `\u2066${toAriaKeyshortcuts(keys, platform)
     .split('+')
@@ -100,6 +105,7 @@ export type ShortcutEvent = Readonly<{
   altKey: boolean
   shiftKey: boolean
 }>
+
 export const matchesShortcut = (
   event: ShortcutEvent,
   keys: string,
@@ -123,13 +129,16 @@ export const matchesShortcut = (
     event.shiftKey === parts.includes('Shift')
   )
 }
+
 export const hasCommandModifier = (keys: string): boolean =>
   /(^|\+)(Meta|Control|Alt)(\+|$)/u.test(toAriaKeyshortcuts(keys, 'apple'))
+
 export type TypingTarget = Readonly<{
   tagName?: string
   type?: string
   isContentEditable?: boolean
 }>
+
 export const isTypingTarget = (
   target: TypingTarget | null | undefined,
 ): boolean => {
@@ -147,11 +156,13 @@ export const isTypingTarget = (
     )
   )
 }
+
 export type Binding = Readonly<{
   keys: string
   allowInInput?: boolean
   isEnabled?: () => boolean
 }>
+
 export const resolveShortcut = <Entry extends Binding>(
   bindings: ReadonlyArray<Entry>,
   event: ShortcutEvent,
@@ -171,7 +182,9 @@ export const resolveShortcut = <Entry extends Binding>(
 export const Message = defineMessageUnion({
   PressedShortcut: { keys: Schema.String },
 })
+
 export type Message = typeof Message.Type
+
 export const ListenShortcuts = Mount.defineStream('ListenShortcuts', {
   args: { keys: Schema.Array(Schema.String) },
   messages: [Message.PressedShortcut],

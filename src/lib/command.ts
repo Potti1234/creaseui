@@ -3,7 +3,7 @@ import { Combobox } from '@foldkit/ui'
 import { defineView } from 'foldkit/submodel'
 import type { Html } from 'foldkit/html'
 import type { Update } from 'foldkit'
-import { describeList } from './behaviors/announce'
+import { describeList, liveRegionAttributes } from './behaviors/announce'
 
 export const commandAnnouncement = (
   query: string,
@@ -31,6 +31,7 @@ export const filterCommandItems = <Item>(
 }
 
 type CommandViewInputs<Item extends string> = Combobox.ViewInputs<Item> & {
+  announcement: string
   itemToKeys?: (item: Item) => string | undefined
 }
 
@@ -100,6 +101,7 @@ export const createInlineCommandView = <Item extends string>() =>
           props.maybeSelectedValue,
           value => value === valueAt(item, index),
         )
+        const keys = props.itemToKeys?.(item)
         const config = props.itemToConfig(item, {
           isActive: active === index,
           isDisabled: disabled,
@@ -112,9 +114,7 @@ export const createInlineCommandView = <Item extends string>() =>
             h.Id(itemId(index)),
             h.Role('option'),
             h.AriaSelected(selected),
-            ...(props.itemToKeys?.(item) === undefined
-              ? []
-              : [h.AriaKeyshortcuts(props.itemToKeys?.(item) ?? '')]),
+            ...(keys === undefined ? [] : [h.AriaKeyshortcuts(keys)]),
             ...(active === index ? [h.DataAttribute('active', '')] : []),
             ...(selected ? [h.DataAttribute('selected', '')] : []),
             ...(disabled
@@ -210,6 +210,7 @@ export const createInlineCommandView = <Item extends string>() =>
           ...(props.attributes ?? []),
         ],
         [
+          h.div(liveRegionAttributes('polite', h), [props.announcement]),
           h.div(
             [
               ...(props.inputWrapperClassName === undefined

@@ -76,14 +76,14 @@ import * as Dom from 'foldkit/dom'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import * as Icon from '@/lib/icon'
-import * as Behavior from '@/lib/dropdown-menu-behavior'
-import * as stylex from '@stylexjs/stylex'
 import {
   currentPlatform,
   formatShortcut,
   toAriaKeyshortcuts,
 } from '@/lib/behaviors/shortcuts'
+import * as Icon from '@/lib/icon'
+import * as Behavior from '@/lib/dropdown-menu-behavior'
+import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
 import * as Button from './button'
