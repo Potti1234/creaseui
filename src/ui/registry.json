@@ -5950,6 +5950,14 @@
             "view",
             "visibleItems"
           ],
+          "recipes": [
+            {
+              "id": "tree-list-state",
+              "title": "Tree List — nested typeahead state",
+              "docs": "https://creaseui.com/docs/components/tree-list",
+              "summary": "Start the Model with TreeList.init({ id }) rather than constructing the Typeahead Submodel yourself, route TreeList.Message through TreeList.update, and pass item data to treeList({ model, toParentMessage, items })."
+            }
+          ],
           "renderer": "tailwind",
           "replaces": [],
           "schemaVersion": 1,
