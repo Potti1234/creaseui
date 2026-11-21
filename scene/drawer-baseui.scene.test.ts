@@ -29,13 +29,8 @@ import * as TailwindDrawer from '@/ui/drawer'
  *  - Content swipe-ignore attrs, dev-mode warnings, render-prop payloads,
  *    React internals (StrictMode, refs, owner stack, React 17).
  *
- * Deviation: the scene DSL has no pointermove, pointerleave, or dialog
- * `cancel` steps, so DraggedSwipe and CancelledSwipe are fed through
- * Scene.Subscription.emit — the same dispatch path a real subscription
- * message takes. EndedSwipe is also emitted directly when a test needs a
- * deterministic release timestamp (scene pointerUp synthesizes 0).
- * ResizeObserver / MutationObserver mounts are resolved once via
- * Scene.Mount.resolve, which delivers their initial measurement.
+ * Swipe messages are injected into update; browser tests cover pointer
+ * binding and hit testing. Scene.Mount.resolve delivers initial measurements.
  */
 
 type Model = Readonly<{ drawer: DrawerBehavior.Model }>
@@ -169,6 +164,10 @@ const emit = (message: DrawerBehavior.Message) =>
     _tag: 'GotDrawerMessage',
     message,
   })
+
+const emitStarted = emit(
+  DrawerBehavior.Message.StartedSwipe({ x: 200, y: 400, timeStamp: 0 }),
+)
 
 const emitDragged = (x: number, y: number, timeStamp: number) =>
   emit(DrawerBehavior.Message.DraggedSwipe({ x, y, timeStamp }))
@@ -537,13 +536,11 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
             '--drawer-snap-point-offset',
             '440px',
           ),
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
+          emitStarted,
           // Drag up 300px: target offset 140, closer to 0 (expanded) than
           // to the 440px '10rem' point.
           emitDragged(200, 100, 500),
           emitEnded(200, 100, 800),
-          Scene.expectHandled(),
           Scene.expect(popup).not.toHaveAttr('data-swiping'),
           Scene.expect(popup).toHaveAttr('data-expanded', ''),
           Scene.expect(popup).toHaveStyle('--drawer-snap-point-offset', '0px'),
@@ -557,8 +554,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           Scene.given(openModel('snap-drag', { snapPoints: ['10rem', 1] })),
           resolveAcquireResources,
           ...resolveObservers({ width: 400, height: 600 }),
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
+          emitStarted,
           emitDragged(200, 480, 200),
           Scene.expect(popup).toHaveAttr('data-swiping', ''),
           Scene.expect(popup).toHaveStyle('--drawer-swipe-progress', '1'),
@@ -646,101 +642,15 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
     })
 
     describe('swipe gestures', () => {
-      it('starts a swipe from the swipe handle on primary pointer down', () => {
+      it('renders the swiping state after the drag mount starts', () => {
         Scene.scene(
           { update, view },
           Scene.given(openModel('drag-start')),
           resolveAcquireResources,
           ...resolveObservers(),
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
+          emitStarted,
           Scene.expect(popup).toHaveAttr('data-swiping', ''),
           ...expectOpen(),
-        )
-      })
-
-      it('starts a swipe anywhere on the popup', () => {
-        Scene.scene(
-          { update, view },
-          Scene.given(openModel('drag-popup')),
-          resolveAcquireResources,
-          ...resolveObservers(),
-          Scene.pointerDown(popup, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
-          Scene.expect(popup).toHaveAttr('data-swiping', ''),
-        )
-      })
-
-      it('does not start a swipe on non-primary pointer down', () => {
-        Scene.scene(
-          { update, view },
-          Scene.given(openModel('drag-secondary')),
-          resolveAcquireResources,
-          ...resolveObservers(),
-          Scene.pointerDown(handle, {
-            button: 2,
-            screenX: 200,
-            screenY: 400,
-          }),
-          Scene.expectIgnored(),
-          Scene.expect(popup).not.toHaveAttr('data-swiping'),
-          ...expectOpen(),
-        )
-      })
-
-      it('does not start a swipe outside the popup', () => {
-        Scene.scene(
-          { update, view },
-          Scene.given(openModel('drag-viewport')),
-          resolveAcquireResources,
-          ...resolveObservers(),
-          Scene.pointerDown(viewport, { screenX: 20, screenY: 20 }),
-          Scene.expectIgnored(),
-          Scene.expect(popup).not.toHaveAttr('data-swiping'),
-        )
-      })
-
-      it('does not start a swipe from interactive elements', () => {
-        Scene.scene(
-          { update, view },
-          Scene.given(openModel('drag-button')),
-          resolveAcquireResources,
-          ...resolveObservers(),
-          Scene.pointerDown(cancelButton, { screenX: 200, screenY: 400 }),
-          Scene.expectIgnored(),
-          Scene.expect(popup).not.toHaveAttr('data-swiping'),
-        )
-      })
-
-      it('blocks non-touch swipes starting inside drawer content', () => {
-        Scene.scene(
-          { update, view },
-          Scene.given(openModel('drag-content')),
-          resolveAcquireResources,
-          ...resolveObservers(),
-          Scene.pointerDown(drawerTitle, {
-            pointerType: 'mouse',
-            screenX: 200,
-            screenY: 400,
-          }),
-          Scene.expectIgnored(),
-          Scene.expect(popup).not.toHaveAttr('data-swiping'),
-        )
-      })
-
-      it('allows touch swipes starting inside drawer content', () => {
-        Scene.scene(
-          { update, view },
-          Scene.given(openModel('drag-content-touch')),
-          resolveAcquireResources,
-          ...resolveObservers(),
-          Scene.pointerDown(drawerTitle, {
-            pointerType: 'touch',
-            screenX: 200,
-            screenY: 400,
-          }),
-          Scene.expectHandled(),
-          Scene.expect(popup).toHaveAttr('data-swiping', ''),
         )
       })
 
@@ -750,8 +660,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           Scene.given(openModel('drag-offset')),
           resolveAcquireResources,
           ...resolveObservers(),
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
+          emitStarted,
           emitDragged(200, 480, 100),
           Scene.expect(popup).toHaveStyle('--drawer-swipe-movement-y', '80px'),
           Scene.expect(popup).toHaveStyle(
@@ -769,8 +678,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           Scene.given(openModel('drag-clamp')),
           resolveAcquireResources,
           ...resolveObservers(),
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
+          emitStarted,
           emitDragged(200, 360, 100),
           // -40 raw → -sqrt(40) damped off-direction travel.
           Scene.expect(popup).toHaveStyle(
@@ -787,11 +695,9 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           Scene.given(openModel('drag-short')),
           resolveAcquireResources,
           ...resolveObservers(),
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
+          emitStarted,
           emitDragged(200, 450, 400),
-          Scene.pointerUp(handle),
-          Scene.expectHandled(),
+          emitEnded(200, 450, 1200),
           Scene.expect(popup).not.toHaveAttr('data-swiping'),
           Scene.expect(popup).toHaveStyle('--drawer-swipe-movement-y', '0px'),
           ...expectOpen(),
@@ -804,12 +710,10 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           Scene.given(openModel('size-threshold')),
           resolveAcquireResources,
           ...resolveObservers(),
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
+          emitStarted,
           // 160 > 150 (half of the measured 300px popup).
           emitDragged(200, 560, 1000),
-          Scene.pointerUp(handle),
-          Scene.expectHandled(),
+          emitEnded(200, 560, 1200),
           Scene.expectOutMessage(DrawerBehavior.OutMessage.Closed()),
           resolveCloseDialog,
           expectAcquireEnded(),
@@ -824,11 +728,9 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           Scene.given(openModel('below-threshold')),
           resolveAcquireResources,
           ...resolveObservers(),
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
+          emitStarted,
           emitDragged(200, 540, 1000),
-          Scene.pointerUp(handle),
-          Scene.expectHandled(),
+          emitEnded(200, 540, 1200),
           ...expectOpen(),
         )
       })
@@ -883,8 +785,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           Scene.given(openModel('drag-cancel')),
           resolveAcquireResources,
           ...resolveObservers(),
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
+          emitStarted,
           emitDragged(200, 550, 400),
           emitCancelled,
           Scene.expect(popup).not.toHaveAttr('data-swiping'),
@@ -898,10 +799,8 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           Scene.given(openModel('drag-inplace')),
           resolveAcquireResources,
           ...resolveObservers(),
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
-          Scene.pointerUp(handle),
-          Scene.expectHandled(),
+          emitStarted,
+          emitEnded(200, 400, 1200),
           Scene.expect(popup).not.toHaveAttr('data-swiping'),
           ...expectOpen(),
         )
@@ -913,8 +812,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           Scene.given(openModel('drag-stationary')),
           resolveAcquireResources,
           ...resolveObservers(),
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
+          emitStarted,
           emitDragged(200, 400, 100),
           Scene.expect(popup).toHaveStyle('--drawer-swipe-movement-y', '0px'),
           ...expectOpen(),
@@ -949,8 +847,7 @@ const verifyRenderer = (name: string, Drawer: DrawerModule) => {
           Scene.expect(popup).toHaveAttr('data-nested-drawer-open', ''),
           // The pointerdown still produces StartedSwipe — the model ignores
           // it, so the popup stays out of the swiping state.
-          Scene.pointerDown(handle, { screenX: 200, screenY: 400 }),
-          Scene.expectHandled(),
+          emitStarted,
           Scene.expect(popup).not.toHaveAttr('data-swiping'),
         )
       })
