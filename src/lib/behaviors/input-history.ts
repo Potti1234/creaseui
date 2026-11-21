@@ -159,6 +159,7 @@ export const measureCaretLine = (
     mirror.style.setProperty(property, computed.getPropertyValue(property))
   }
   Object.assign(mirror.style, {
+    display: 'block',
     position: 'absolute',
     visibility: 'hidden',
     top: '0',

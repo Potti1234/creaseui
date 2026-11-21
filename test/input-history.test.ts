@@ -141,6 +141,33 @@ const key = (key = 'ArrowUp', extra: KeyboardEventInit = {}) =>
   new window.KeyboardEvent('keydown', { key, cancelable: true, ...extra })
 
 describe('InputHistory DOM gating', () => {
+  it('measures text in block flow even when the textarea uses flex or grid layout', () => {
+    const field = textarea()
+    field.value = 'A message that wraps across visual lines'
+    field.style.padding = '0px'
+    Object.defineProperty(field, 'clientWidth', { value: 300 })
+    const original = window.HTMLElement.prototype.getBoundingClientRect
+    const measuredDisplays: string[] = []
+    window.HTMLElement.prototype.getBoundingClientRect = function () {
+      if (this.localName === 'span' && this.textContent === '\u200b') {
+        measuredDisplays.push(this.parentElement?.style.display ?? '')
+      }
+      return original.call(this)
+    }
+    const childCount = document.body.childElementCount
+    try {
+      for (const display of ['flex', 'grid']) {
+        field.style.display = display
+        assert.equal(History.measureCaretLine(field, field.value.length), 0)
+        assert.equal(document.body.childElementCount, childCount)
+      }
+      assert.deepEqual(measuredDisplays, ['block', 'block'])
+    } finally {
+      window.HTMLElement.prototype.getBoundingClientRect = original
+      field.remove()
+    }
+  })
+
   it('moves the caret after rendering and tolerates missing or unsupported fields', async () => {
     const globals = [
       'document',

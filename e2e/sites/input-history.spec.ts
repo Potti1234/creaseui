@@ -65,3 +65,91 @@ test('chat history recalls sent messages and restores the draft', async ({
   await expectValueAndCaret(field, draft)
   expect(errors).toEqual([])
 })
+
+test('wrapped history entries keep native arrows until the first or last visual line', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      'foldkit-devtools',
+      '{"isOpen":false,"isFlattened":false}',
+    )
+    localStorage.setItem('creaseui-theme', 'light')
+  })
+  await page.goto('/docs/components/textarea')
+  const field = page.getByRole('textbox', { name: 'Chat message', exact: true })
+  const wrapped = 'A message that should wrap across several visual lines. '
+    .repeat(5)
+    .slice(0, 263)
+  await field.evaluate(element => {
+    element.addEventListener('keydown', event => {
+      queueMicrotask(() => {
+        element.dataset.historyPrevented = String(event.defaultPrevented)
+      })
+    })
+  })
+  for (const value of [wrapped, 'Short entry']) {
+    await field.fill(value)
+    await field.press('Enter')
+    await expectValueAndCaret(field, '')
+  }
+  await field.press('ArrowUp')
+  await expectValueAndCaret(field, 'Short entry')
+  await field.press('ArrowUp')
+  await expectValueAndCaret(field, wrapped)
+  expect(
+    await field.evaluate(element => {
+      const style = getComputedStyle(element)
+      return (
+        (element.scrollHeight -
+          parseFloat(style.paddingTop) -
+          parseFloat(style.paddingBottom)) /
+        parseFloat(style.lineHeight)
+      )
+    }),
+  ).toBeGreaterThanOrEqual(3)
+
+  await field.press('ArrowUp')
+  await expect(field).toHaveValue(wrapped)
+  await expect(field).toHaveAttribute('data-history-prevented', 'false')
+  await expect
+    .poll(() =>
+      field.evaluate(element =>
+        element instanceof HTMLTextAreaElement ? element.selectionStart : -1,
+      ),
+    )
+    .toBeLessThan(wrapped.length)
+  await field.press('Control+Home')
+  await expect
+    .poll(() =>
+      field.evaluate(element =>
+        element instanceof HTMLTextAreaElement ? element.selectionStart : -1,
+      ),
+    )
+    .toBe(0)
+  await field.press('ArrowDown')
+  await expect(field).toHaveValue(wrapped)
+  await expect(field).toHaveAttribute('data-history-prevented', 'false')
+  await expect
+    .poll(() =>
+      field.evaluate(element =>
+        element instanceof HTMLTextAreaElement ? element.selectionStart : -1,
+      ),
+    )
+    .toBeGreaterThan(0)
+
+  await field.press('Control+Home')
+  await expect
+    .poll(() =>
+      field.evaluate(element =>
+        element instanceof HTMLTextAreaElement ? element.selectionStart : -1,
+      ),
+    )
+    .toBe(0)
+  await field.press('ArrowUp')
+  await expectValueAndCaret(field, 'Can you help me with my order?')
+  await field.press('ArrowDown')
+  await expectValueAndCaret(field, wrapped)
+  await field.press('ArrowDown')
+  await expectValueAndCaret(field, 'Short entry')
+})
