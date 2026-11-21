@@ -10,6 +10,14 @@ Bind key unions once with `create<Key>()`; pass item collections as view inputs.
 Keep navigation helpers pure and test them independently of rendered views.
 RovingFocus establishes this convention for subsequent behavior modules.
 
+FocusRecovery tracks focus by stable key in a Schema Model. Bind keys once
+with `create<Key>()`, report focus and blur facts, and pass the previous and
+next key order to `recover` after a removal. It picks the next surviving
+enabled key, then the previous, or requests a component-owned fallback.
+Map that result to `RecoverFocus` with target and lost element IDs. The Command
+waits for the render commit and never steals focus from another connected
+element. Components own element IDs, fallback targets, and disabled policy.
+
 Popup is the pure open/close lifecycle for custom overlays. Route trigger or
 explicit requests separately from Escape, outside press, and focus-out dismissal
 requests. Read the reason from the OutMessage. For exit transitions, pass

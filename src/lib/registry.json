@@ -2,6 +2,19 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "items": [
     {
+      "name": "focus-recovery-behavior",
+      "type": "registry:lib",
+      "title": "Focus Recovery Behavior",
+      "description": "Key-based focus recovery after item removal with guarded post-render focus.",
+      "files": [
+        {
+          "path": "behaviors/focus-recovery.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/focus-recovery.ts"
+        }
+      ]
+    },
+    {
       "name": "time-input-core",
       "type": "registry:lib",
       "title": "Time Input State",
@@ -912,6 +925,9 @@
           "type": "registry:lib",
           "target": "@lib/tokenizer.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/focus-recovery-behavior"
       ]
     },
     {

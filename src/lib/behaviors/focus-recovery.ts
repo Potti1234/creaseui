@@ -1,0 +1,79 @@
+/** Focus ownership and recovery policy adapted from ui-sdk core's focus-recovery. */
+import { Effect, Option, Schema } from 'effect'
+import * as Command from 'foldkit/command'
+import { defineMessageUnion } from 'foldkit/message'
+import { afterCommit } from 'foldkit/render'
+
+export const Model = Schema.Struct({
+  maybeFocusedKey: Schema.Option(Schema.String),
+  version: Schema.Number,
+})
+export type Model = typeof Model.Type
+
+export const Message = defineMessageUnion({ CompletedRecoverFocus: {} })
+export type Message = typeof Message.Type
+
+export const RecoverFocus = Command.define('RecoverFocus', {
+  args: { targetId: Schema.String, lostId: Schema.String },
+  messages: [Message.CompletedRecoverFocus],
+  execute: ({ targetId, lostId }) =>
+    afterCommit.pipe(
+      Effect.andThen(
+        Effect.sync(() => {
+          const active = document.activeElement
+          const lost = document.getElementById(lostId)
+          if (
+            active &&
+            active !== document.body &&
+            active.isConnected &&
+            !lost?.contains(active)
+          )
+            return
+          document.getElementById(targetId)?.focus({ preventScroll: true })
+        }),
+      ),
+      Effect.as(Message.CompletedRecoverFocus()),
+    ),
+})
+
+export type Target<Key extends string> =
+  | Readonly<{ type: 'Item'; key: Key }>
+  | Readonly<{ type: 'Fallback' }>
+
+export type RecoveryInput<Key extends string> = Readonly<{
+  previousKeys: ReadonlyArray<Key>
+  nextKeys: ReadonlyArray<Key>
+  isDisabled?: (key: Key) => boolean
+}>
+
+export const create = <Key extends string = string>() => {
+  const init = (): Model => ({ maybeFocusedKey: Option.none(), version: 0 })
+  const focused = (model: Model, key: Key): Model => ({
+    ...model,
+    maybeFocusedKey: Option.some(key),
+  })
+  const blurred = (model: Model): Model => ({
+    ...model,
+    maybeFocusedKey: Option.none(),
+  })
+  const recover = (
+    model: Model,
+    { previousKeys, nextKeys, isDisabled = () => false }: RecoveryInput<Key>,
+  ): Readonly<{ model: Model; maybeTarget: Option.Option<Target<Key>> }> => {
+    const lost = Option.getOrUndefined(model.maybeFocusedKey)
+    const index = previousKeys.findIndex(key => key === lost)
+    if (index < 0 || nextKeys.some(key => key === lost))
+      return { model, maybeTarget: Option.none() }
+    const survives = (key: Key) => nextKeys.includes(key) && !isDisabled(key)
+    const key =
+      previousKeys.slice(index + 1).find(survives) ??
+      previousKeys.slice(0, index).reverse().find(survives)
+    return {
+      model: { ...blurred(model), version: model.version + 1 },
+      maybeTarget: Option.some(
+        key === undefined ? { type: 'Fallback' } : { type: 'Item', key },
+      ),
+    }
+  }
+  return { init, focused, blurred, recover }
+}
