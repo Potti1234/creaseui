@@ -974,6 +974,10 @@
       "type": "registry:lib",
       "title": "Action Bar Behavior",
       "description": "Shared Foldkit behavior and helpers for Action Bar.",
+      "registryDependencies": [
+        "Potti1234/creaseui/layer-behavior",
+        "Potti1234/creaseui/toolbar-behavior"
+      ],
       "files": [
         {
           "path": "action-bar.ts",
@@ -1033,11 +1037,43 @@
       "type": "registry:lib",
       "title": "Overlay Boundary Behavior",
       "description": "Shared Foldkit behavior and helpers for Overlay Boundary.",
+      "registryDependencies": [
+        "Potti1234/creaseui/position-behavior"
+      ],
       "files": [
         {
           "path": "overlay-boundary.ts",
           "type": "registry:lib",
           "target": "@lib/overlay-boundary.ts"
+        }
+      ]
+    },
+    {
+      "name": "position-behavior",
+      "type": "registry:lib",
+      "title": "Position Behavior",
+      "description": "Foldkit Anchor mount and floating positioning for elements, points and live rectangles.",
+      "dependencies": [
+        "@floating-ui/dom@1.8.0"
+      ],
+      "files": [
+        {
+          "path": "behaviors/position.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/position.ts"
+        }
+      ]
+    },
+    {
+      "name": "layer-behavior",
+      "type": "registry:lib",
+      "title": "Layer Behavior",
+      "description": "Foldkit Popover and a standalone scoped mount for Escape and outside-press dismissal.",
+      "files": [
+        {
+          "path": "behaviors/layer.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/layer.ts"
         }
       ]
     },
