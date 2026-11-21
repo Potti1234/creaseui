@@ -133,7 +133,14 @@ export const create = <Key extends string = string>() => {
     const values = [...available].every(key => selected.has(key))
       ? model.values.filter(key => !available.has(key))
       : addKeys(model.values, [...available])
-    return values.length === 0 ? init() : withValues(model, values)
+    return {
+      ...model,
+      values,
+      maybeAnchor:
+        values.length === 0
+          ? Option.none()
+          : Option.map(model.maybeAnchor, ({ key }) => ({ key, base: values })),
+    }
   }
 
   return {

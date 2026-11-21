@@ -106,6 +106,24 @@ describe('Selection', () => {
     )
   })
 
+  it('does not restore scoped deselections when extending a range', () => {
+    const anchored = selection.toggle(
+      selection.init(['hidden', 'a']),
+      'c',
+      collection,
+    )
+    const deselected = selection.toggleAll(anchored, {
+      multiple: true,
+      order: ['a'],
+    })
+    assert.deepEqual(deselected.values, ['hidden', 'c'])
+    assert.deepEqual(selection.extend(deselected, 'd', collection).values, [
+      'hidden',
+      'c',
+      'd',
+    ])
+  })
+
   it('retains the range when reflected keys match and resets it on new membership', () => {
     const initial = selection.toggle(
       selection.init(['hidden']),
