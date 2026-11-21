@@ -18,3 +18,9 @@ requests. Read the reason from the OutMessage. For exit transitions, pass
 Dropdown Menu uses immediate unmount. Roles, event detection, positioning,
 focus and layering belong to the component; keep Foldkit's Dialog and Popover
 for overlays that already use their positioning and focus lifecycle.
+
+InlineEdit is the pure in-place editing lifecycle. It owns the editing id,
+draft and type-over flag, and reports starts, changed commits, unchanged ends,
+cancellation and rejected validation through OutMessages. Use startKey and
+inputKey for keyboard intent. Components own editor focus, selection/caret,
+focus restoration, roles and ARIA; grids retain navigation and editor policy.
