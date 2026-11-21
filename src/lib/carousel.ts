@@ -2,7 +2,7 @@ import EmblaCarousel, {
   type EmblaOptionsType,
   type EmblaPluginType,
 } from 'embla-carousel'
-import { Effect, Queue, Schema as S, Stream } from 'effect'
+import { Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 
 import { navigationIntent } from '@/lib/behaviors/roving-focus'
@@ -94,13 +94,14 @@ export const mountCarousel = <Msg>(
         const next = () => api.scrollNext()
         const onKeyDown = (event: KeyboardEvent) => {
           if (!props.keyboardNavigation || event.defaultPrevented) return
-          const intent = navigationIntent({
+          const maybeIntent = navigationIntent({
             pressedKey: event.key,
             orientation:
               props.orientation === 'vertical' ? 'Vertical' : 'Horizontal',
             direction: props.direction,
           })
-          switch (intent) {
+          if (Option.isNone(maybeIntent)) return
+          switch (maybeIntent.value) {
             case 'Previous':
               api.scrollPrev()
               break
@@ -113,8 +114,6 @@ export const mountCarousel = <Msg>(
             case 'Last':
               api.scrollTo(api.scrollSnapList().length - 1)
               break
-            case undefined:
-              return
           }
           event.preventDefault()
         }

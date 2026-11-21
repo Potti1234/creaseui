@@ -84,11 +84,12 @@ export const navigationIntent = ({
   pressedKey,
   orientation = 'Horizontal',
   direction = 'ltr',
-}: Pick<NavigationInput<never>, 'pressedKey' | 'orientation' | 'direction'>):
-  | NavigationIntent
-  | undefined => {
-  if (pressedKey === 'Home') return 'First'
-  if (pressedKey === 'End') return 'Last'
+}: Pick<
+  NavigationInput<never>,
+  'pressedKey' | 'orientation' | 'direction'
+>): Option.Option<NavigationIntent> => {
+  if (pressedKey === 'Home') return Option.some('First')
+  if (pressedKey === 'End') return Option.some('Last')
 
   const horizontal = orientation !== 'Vertical'
   const vertical = orientation !== 'Horizontal'
@@ -100,15 +101,18 @@ export const navigationIntent = ({
     (horizontal &&
       pressedKey === (direction === 'rtl' ? 'ArrowRight' : 'ArrowLeft')) ||
     (vertical && pressedKey === 'ArrowUp')
-  return forward ? 'Next' : backward ? 'Previous' : undefined
+  if (forward) return Option.some('Next')
+  if (backward) return Option.some('Previous')
+  return Option.none()
 }
 
 export const navigate = <Key>(
   input: NavigationInput<Key>,
 ): Option.Option<Key> => {
   const { keys, currentKey, loop = true, isDisabled = () => false } = input
-  const intent = navigationIntent(input)
-  if (intent === undefined || keys.length === 0) return Option.none()
+  const maybeIntent = navigationIntent(input)
+  if (Option.isNone(maybeIntent) || keys.length === 0) return Option.none()
+  const intent = maybeIntent.value
   const step = intent === 'First' || intent === 'Next' ? 1 : -1
   const boundary = step === 1 ? -1 : keys.length
   const currentIndex = currentKey === undefined ? -1 : keys.indexOf(currentKey)
