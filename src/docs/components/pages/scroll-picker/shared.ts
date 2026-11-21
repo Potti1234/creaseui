@@ -1,4 +1,4 @@
-import { Option, Schema } from 'effect'
+import { Effect, Option, Schema } from 'effect'
 import { Command } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
@@ -27,6 +27,23 @@ const PreviewMessage = defineMessageUnion({
 })
 type PreviewModel = typeof PreviewModel.Type
 type PreviewMessage = typeof PreviewMessage.Type
+const FocusOption = Command.define('FocusDocsPickerOption', {
+  args: { id: Schema.String, index: Schema.Int, part: Part },
+  messages: [PreviewMessage.GotPickerMessage],
+  execute: ({ id, index, part }) =>
+    Effect.sync(() => {
+      document
+        .getElementById(Picker.itemId(id, index))
+        ?.focus({ preventScroll: true })
+    }).pipe(
+      Effect.as(
+        PreviewMessage.GotPickerMessage({
+          part,
+          message: Picker.Message.CompletedScroll(),
+        }),
+      ),
+    ),
+})
 export type Classes = Readonly<
   Record<
     | 'shell'
@@ -170,9 +187,14 @@ export const createPreview = (classes: Classes) =>
               ? { selectedHour: selected }
               : { selectedMinute: selected }),
         },
-        commands: Command.mapMessages(next.commands ?? [], message =>
-          PreviewMessage.GotPickerMessage({ part, message }),
-        ),
+        commands: [
+          ...Command.mapMessages(next.commands ?? [], message =>
+            PreviewMessage.GotPickerMessage({ part, message }),
+          ),
+          ...(message._tag === 'SelectedOption'
+            ? [FocusOption({ id: model[part].id, index: message.index, part })]
+            : []),
+        ],
       }
     },
     view: previewView(classes),
