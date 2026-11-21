@@ -366,7 +366,7 @@ describe('data grid editor seed', () => {
     assert.equal(contact(model, 'ada')?.name, 'Ada')
     assert.equal(model.editingCell.row, -1)
     assert.deepEqual(model.focusedCell, { row: 1, column: 'name' })
-    assert.equal(model.pastStates.length, 0)
+    assert.equal(model.history.past.length, 0)
   })
 
   it('Escape leaves the value untouched', () => {

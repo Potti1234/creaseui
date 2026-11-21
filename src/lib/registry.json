@@ -1009,6 +1009,11 @@
           "path": "data-grid.ts",
           "type": "registry:lib",
           "target": "@lib/data-grid.ts"
+        },
+        {
+          "path": "behaviors/undo-stack.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/undo-stack.ts"
         }
       ],
       "registryDependencies": [

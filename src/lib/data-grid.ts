@@ -11,6 +11,7 @@ import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 
 import { dateFromISO, dateToISO } from '@/lib/date-parse'
+import * as UndoStack from '@/lib/behaviors/undo-stack'
 
 export type CellVariant =
   | 'text'
@@ -112,8 +113,7 @@ export const Model = S.Struct({
   searchOpen: S.Boolean,
   searchQuery: S.String,
   matchIndex: S.Number,
-  pastStates: S.Array(S.Any),
-  futureStates: S.Array(S.Any),
+  history: UndoStack.Model(S.Array(S.Any)),
   direction: S.Literals(['ltr', 'rtl']),
   scrollTop: S.Number,
   cellCalendar: CalendarPrimitive.Model,
@@ -221,8 +221,7 @@ export const init = <Row>(
   searchOpen: false,
   searchQuery: '',
   matchIndex: 0,
-  pastStates: [],
-  futureStates: [],
+  history: UndoStack.init(),
   direction: 'ltr',
   scrollTop: 0,
   viewportHeight: 400,
@@ -314,8 +313,7 @@ const commitCell = <Row>(
   const snapshot = model.rows
   return {
     ...model,
-    pastStates: [...model.pastStates, snapshot],
-    futureStates: [],
+    history: UndoStack.push(model.history, snapshot),
     rows: rowsArray<Row>(model).map(r =>
       config.rowKey(r) === config.rowKey(target) ? write(r, value) : r,
     ),
@@ -336,8 +334,7 @@ const commitFiles = <Row>(
   const snapshot = model.rows
   return {
     ...model,
-    pastStates: [...model.pastStates, snapshot],
-    futureStates: [],
+    history: UndoStack.push(model.history, snapshot),
     rows: rowsArray<Row>(model).map(r =>
       config.rowKey(r) === config.rowKey(target) ? writeFiles(r, files) : r,
     ),
@@ -791,8 +788,7 @@ const applyMessage = <Row>(
       )
       return {
         ...model,
-        pastStates: [...model.pastStates, model.rows],
-        futureStates: [],
+        history: UndoStack.push(model.history, model.rows),
         rows: rowsArray<Row>(model).filter(
           row => !keys.has(config.rowKey(row)),
         ),
@@ -821,23 +817,21 @@ const applyMessage = <Row>(
       }
     }
     case 'Undo': {
-      const previous = model.pastStates[model.pastStates.length - 1]
-      if (previous === undefined) return model
+      if (!UndoStack.canUndo(model.history)) return model
+      const result = UndoStack.undo(model.history, model.rows)
       return {
         ...model,
-        pastStates: model.pastStates.slice(0, -1),
-        futureStates: [model.rows, ...model.futureStates],
-        rows: previous,
+        history: result.model,
+        rows: result.present,
       }
     }
     case 'Redo': {
-      const next = model.futureStates[0]
-      if (next === undefined) return model
+      if (!UndoStack.canRedo(model.history)) return model
+      const result = UndoStack.redo(model.history, model.rows)
       return {
         ...model,
-        futureStates: model.futureStates.slice(1),
-        pastStates: [...model.pastStates, model.rows],
-        rows: next,
+        history: result.model,
+        rows: result.present,
       }
     }
     case 'SetDirection':
@@ -1288,8 +1282,7 @@ const insertRow = <Row>(
     /* append at end of the underlying array */
     return {
       ...model,
-      pastStates: [...model.pastStates, model.rows],
-      futureStates: [],
+      history: UndoStack.push(model.history, model.rows),
       rows: [...model.rows, config.createRow(key)],
     }
   }
@@ -1305,8 +1298,7 @@ const insertRow = <Row>(
   )
   return {
     ...model,
-    pastStates: [...model.pastStates, model.rows],
-    futureStates: [],
+    history: UndoStack.push(model.history, model.rows),
     rows: nextRows,
   }
 }
@@ -1321,8 +1313,7 @@ const deleteRow = <Row>(
   const targetKey = config.rowKey(target)
   return {
     ...model,
-    pastStates: [...model.pastStates, model.rows],
-    futureStates: [],
+    history: UndoStack.push(model.history, model.rows),
     rows: rowsArray<Row>(model).filter(r => config.rowKey(r) !== targetKey),
   }
 }
