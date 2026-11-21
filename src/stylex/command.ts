@@ -127,11 +127,12 @@ export const commandShortcut = <Msg>(
   content: Html | string,
   layoutStyle: ComponentLayoutStyle | undefined,
   h: HtmlBuilder<Msg>,
+  isAriaHidden = false,
 ): Html => {
   return h.span(
     [
       h.DataAttribute('slot', 'command-shortcut'),
-      h.AriaHidden(true),
+      ...(isAriaHidden ? [h.AriaHidden(true)] : []),
       h.Class(cn(SHORTCUT_CLASS, layoutStyle)),
     ],
     [content],
@@ -233,7 +234,14 @@ const renderCommand = <Item extends string, Msg>(
               config.content,
               ...(shortcut === undefined
                 ? []
-                : [commandShortcut(shortcut, undefined, h)]),
+                : [
+                    commandShortcut(
+                      shortcut,
+                      undefined,
+                      h,
+                      config.keys !== undefined,
+                    ),
+                  ]),
             ],
           ),
         }

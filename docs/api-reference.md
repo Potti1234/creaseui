@@ -498,7 +498,7 @@ Source: [`src/ui/command.ts`](../src/ui/command.ts)
 | `CommandItemConfig` | type | `CommandItemConfig = Readonly<{ content: Html \| string; searchText?: string; shortcut?: Html \| string; keys?: string; class?: string; isDisabled?: boolean; }>` |
 | `CommandProps` | type | `CommandProps<Item extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Item>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => CommandItemConfig; plac…` |
 | `commandGroupHeading` | function | `commandGroupHeading<Msg>(content: Html \| string, className: string \| undefined, h: HtmlBuilder<Msg>): Html` |
-| `commandShortcut` | function | `commandShortcut<Msg>(content: Html \| string, className: string \| undefined, h: HtmlBuilder<Msg>): Html` |
+| `commandShortcut` | function | `commandShortcut<Msg>(content: Html \| string, className: string \| undefined, h: HtmlBuilder<Msg>, isAriaHidden = false): Html` |
 | `commandSeparator` | function | `commandSeparator<Msg>(className: string \| undefined, h: HtmlBuilder<Msg>): Html` |
 | `commandEmpty` | function | `commandEmpty<Msg>(content: Html \| string, className: string \| undefined, h: HtmlBuilder<Msg>): Html` |
 | `CommandBundle` | type | `CommandBundle<Item extends string> = Readonly<{ update: ComboboxPrimitive.Bundle<Item>['update']; selectItem: ComboboxPrimitive.Bundle<Item>['selectItem']; open: ComboboxPrimitive.Bundle<Item>['open']; close: ComboboxPrimitive.Bundle<Item>['close']; command: …` |

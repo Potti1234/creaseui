@@ -566,7 +566,10 @@ export const dropdownMenu = <Item extends string, Msg>(
           ? []
           : [
               h.span(
-                [h.AriaHidden(true), h.Class(className(styles.shortcut))],
+                [
+                  ...(config.keys === undefined ? [] : [h.AriaHidden(true)]),
+                  h.Class(className(styles.shortcut)),
+                ],
                 [shortcut],
               ),
             ]),

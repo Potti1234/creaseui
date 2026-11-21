@@ -1531,7 +1531,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "commandShortcut",
       "kind": "function",
-      "signature": "commandShortcut<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html"
+      "signature": "commandShortcut<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>, isAriaHidden = false): Html"
     },
     {
       "name": "commandSeparator",

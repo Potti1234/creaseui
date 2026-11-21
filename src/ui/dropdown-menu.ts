@@ -466,7 +466,7 @@ export const dropdownMenu = <Item extends string, Msg>(
           : [
               h.span(
                 [
-                  h.AriaHidden(true),
+                  ...(config.keys === undefined ? [] : [h.AriaHidden(true)]),
                   h.Class(
                     'ml-auto text-xs tracking-widest text-muted-foreground',
                   ),
