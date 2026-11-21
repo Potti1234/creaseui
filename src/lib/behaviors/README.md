@@ -9,6 +9,7 @@ Components compose behaviors and own selection policy, semantics, and styling.
 Bind key unions once with `create<Key>()`; pass item collections as view inputs.
 Keep navigation helpers pure and test them independently of rendered views.
 RovingFocus establishes this convention for subsequent behavior modules.
+Typeahead follows this convention with a version-guarded timeout and pure label search.
 
 Popup is the pure open/close lifecycle for custom overlays. Route trigger or
 explicit requests separately from Escape, outside press, and focus-out dismissal
