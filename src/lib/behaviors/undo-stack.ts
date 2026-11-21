@@ -1,28 +1,55 @@
 import { Schema } from 'effect'
 
 export const Model = <A extends Schema.Top>(entry: A) =>
-  Schema.Struct({ past: Schema.Array(entry), future: Schema.Array(entry) })
+  Schema.Struct({
+    past: Schema.Array(entry),
+    future: Schema.Array(entry),
+    open: Schema.NullOr(
+      Schema.Struct({ group: Schema.String, time: Schema.Number }),
+    ),
+  })
 
 export type Model<A> = Readonly<{
   past: ReadonlyArray<A>
   future: ReadonlyArray<A>
+  open: Readonly<{ group: string; time: number }> | null
 }>
 
-export const init = <A>(): Model<A> => ({ past: [], future: [] })
+export const init = <A>(): Model<A> => ({ past: [], future: [], open: null })
+
+export type Options = Readonly<{ limit?: number }>
+export type PushOptions = Options &
+  Readonly<{
+    group?: string
+    now?: number
+    groupDelay?: number
+  }>
+
+export const seal = <A>(model: Model<A>): Model<A> =>
+  model.open === null ? model : { ...model, open: null }
 
 export const push = <A>(
   model: Model<A>,
   present: A,
-  options: Readonly<{ limit?: number }> = {},
+  options: PushOptions = {},
 ): Model<A> => {
-  const limit = options.limit ?? Infinity
+  const limit = options.limit ?? 100
   if (limit !== Infinity && (!Number.isInteger(limit) || limit < 0)) {
     throw new RangeError('Undo stack limit must be a non-negative integer')
   }
-  const past = [...model.past, present]
+  const { group, now, groupDelay = 500 } = options
+  if (group && (now === undefined || !Number.isFinite(now))) {
+    throw new RangeError('Grouped pushes require a finite caller-supplied time')
+  }
+  const joins =
+    !!group &&
+    model.open?.group === group &&
+    now! - model.open.time < groupDelay
+  const past = joins ? model.past : [...model.past, present]
   return {
-    past: past.slice(Math.max(0, past.length - limit)),
+    past: joins ? past : past.slice(Math.max(0, past.length - limit)),
     future: [],
+    open: group ? { group, time: now! } : null,
   }
 }
 
@@ -38,10 +65,11 @@ export const undo = <A>(
         model: {
           past: model.past.slice(0, -1),
           future: [present, ...model.future],
+          open: null,
         },
         present: model.past[model.past.length - 1]!,
       }
-    : { model, present }
+    : { model: seal(model), present }
 
 export const redo = <A>(
   model: Model<A>,
@@ -52,9 +80,10 @@ export const redo = <A>(
         model: {
           past: [...model.past, present],
           future: model.future.slice(1),
+          open: null,
         },
         present: model.future[0]!,
       }
-    : { model, present }
+    : { model: seal(model), present }
 
 export const clear = <A>(_model: Model<A>): Model<A> => init()

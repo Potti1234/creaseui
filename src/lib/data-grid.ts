@@ -59,6 +59,7 @@ export type DataGridColumn<Row> = Readonly<{
 }>
 
 export type DataGridConfig<Row> = Readonly<{
+  history?: UndoStack.Options
   columns: ReadonlyArray<DataGridColumn<Row>>
   rowKey: (row: Row) => string
   createRow: (key: string) => Row
@@ -313,7 +314,7 @@ const commitCell = <Row>(
   const snapshot = model.rows
   return {
     ...model,
-    history: UndoStack.push(model.history, snapshot),
+    history: UndoStack.push(model.history, snapshot, config.history),
     rows: rowsArray<Row>(model).map(r =>
       config.rowKey(r) === config.rowKey(target) ? write(r, value) : r,
     ),
@@ -334,7 +335,7 @@ const commitFiles = <Row>(
   const snapshot = model.rows
   return {
     ...model,
-    history: UndoStack.push(model.history, snapshot),
+    history: UndoStack.push(model.history, snapshot, config.history),
     rows: rowsArray<Row>(model).map(r =>
       config.rowKey(r) === config.rowKey(target) ? writeFiles(r, files) : r,
     ),
@@ -788,7 +789,7 @@ const applyMessage = <Row>(
       )
       return {
         ...model,
-        history: UndoStack.push(model.history, model.rows),
+        history: UndoStack.push(model.history, model.rows, config.history),
         rows: rowsArray<Row>(model).filter(
           row => !keys.has(config.rowKey(row)),
         ),
@@ -1282,7 +1283,7 @@ const insertRow = <Row>(
     /* append at end of the underlying array */
     return {
       ...model,
-      history: UndoStack.push(model.history, model.rows),
+      history: UndoStack.push(model.history, model.rows, config.history),
       rows: [...model.rows, config.createRow(key)],
     }
   }
@@ -1298,7 +1299,7 @@ const insertRow = <Row>(
   )
   return {
     ...model,
-    history: UndoStack.push(model.history, model.rows),
+    history: UndoStack.push(model.history, model.rows, config.history),
     rows: nextRows,
   }
 }
@@ -1313,7 +1314,7 @@ const deleteRow = <Row>(
   const targetKey = config.rowKey(target)
   return {
     ...model,
-    history: UndoStack.push(model.history, model.rows),
+    history: UndoStack.push(model.history, model.rows, config.history),
     rows: rowsArray<Row>(model).filter(r => config.rowKey(r) !== targetKey),
   }
 }

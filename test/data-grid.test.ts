@@ -56,6 +56,21 @@ const displayedIds = (model: Grid.Model) =>
   Grid.displayedRows<Row>(model, config).map(row => row.id)
 
 describe('data grid row identity', () => {
+  it('honors the configured undo history limit', () => {
+    const limited = { ...config, history: { limit: 1 } }
+    const edit = (model: Grid.Model, value: string) =>
+      Grid.update(
+        model,
+        Grid.Message.SetCellValue({ row: 0, column: 'name', value }),
+        limited,
+      )
+    const edited = edit(edit(Grid.init(limited, rows), 'First'), 'Second')
+    const undone = Grid.update(edited, Grid.Message.Undo(), limited)
+    assert.equal(byId(undone, 'z')?.name, 'First')
+    assert.equal(undone.history.past.length, 0)
+    const redone = Grid.update(undone, Grid.Message.Redo(), limited)
+    assert.equal(byId(redone, 'z')?.name, 'Second')
+  })
   it('edits the displayed row when the grid is sorted', () => {
     const sorted = sortedByName()
     assert.deepEqual(displayedIds(sorted), ['a', 'm', 'z'])

@@ -5,11 +5,96 @@ import { Schema } from 'effect'
 import * as UndoStack from '@/lib/behaviors/undo-stack'
 
 describe('UndoStack', () => {
+  it('merges matching groups using a sliding, strictly exclusive time window', () => {
+    const first = UndoStack.push(UndoStack.init<string>(), 'a', {
+      group: 'typing',
+      now: 0,
+    })
+    const second = UndoStack.push(first, 'b', { group: 'typing', now: 499 })
+    const third = UndoStack.push(second, 'c', { group: 'typing', now: 998 })
+    assert.deepEqual(third.past, ['a'])
+    assert.equal(UndoStack.undo(third, 'd').present, 'a')
+    assert.equal(
+      UndoStack.redo(UndoStack.undo(third, 'd').model, 'a').present,
+      'd',
+    )
+    assert.deepEqual(
+      UndoStack.push(third, 'd', { group: 'typing', now: 1498 }).past,
+      ['a', 'd'],
+    )
+    assert.deepEqual(first.open, { group: 'typing', time: 0 })
+  })
+
+  it('starts a new step for another group or an ungrouped push', () => {
+    const first = UndoStack.push(UndoStack.init<string>(), 'a', {
+      group: 'insert',
+      now: 0,
+    })
+    assert.deepEqual(
+      UndoStack.push(first, 'b', { group: 'delete', now: 1 }).past,
+      ['a', 'b'],
+    )
+    const ungrouped = UndoStack.push(first, 'b')
+    assert.equal(ungrouped.open, null)
+    assert.deepEqual(
+      UndoStack.push(ungrouped, 'c', { group: 'insert', now: 2 }).past,
+      ['a', 'b', 'c'],
+    )
+  })
+
+  it('ends groups on undo, redo, seal and clear, including empty moves', () => {
+    const first = UndoStack.push(UndoStack.init<string>(), 'a', {
+      group: 'typing',
+      now: 0,
+    })
+    for (const model of [
+      UndoStack.undo(first, 'b').model,
+      UndoStack.redo(first, 'b').model,
+      UndoStack.seal(first),
+      UndoStack.clear(first),
+    ]) {
+      assert.equal(model.open, null)
+      assert.equal(
+        UndoStack.push(model, 'c', { group: 'typing', now: 1 }).past.length,
+        model.past.length + 1,
+      )
+    }
+    const zero = UndoStack.push(UndoStack.init<string>(), 'a', {
+      group: 'typing',
+      now: 0,
+      limit: 0,
+    })
+    assert.equal(UndoStack.undo(zero, 'b').model.open, null)
+  })
+
+  it('supports a configurable window and requires grouped timestamps', () => {
+    const first = UndoStack.push(UndoStack.init<string>(), 'a', {
+      group: 'typing',
+      now: 0,
+    })
+    assert.deepEqual(
+      UndoStack.push(first, 'b', { group: 'typing', now: 5, groupDelay: 10 })
+        .past,
+      ['a'],
+    )
+    assert.throws(
+      () => UndoStack.push(first, 'b', { group: 'typing' }),
+      RangeError,
+    )
+  })
+
+  it('defaults to 100 undo steps and evicts oldest snapshots', () => {
+    let model = UndoStack.init<number>()
+    for (let index = 0; index < 102; index++)
+      model = UndoStack.push(model, index)
+    assert.equal(model.past.length, 100)
+    assert.equal(model.past[0], 2)
+  })
   it('pushes immutable snapshots and walks undo and redo in order', () => {
     const empty = UndoStack.init<string>()
     const first = UndoStack.push(empty, 'a')
     const second = UndoStack.push(first, 'b')
-    assert.deepEqual(empty, { past: [], future: [] })
+    assert.deepEqual(empty, { past: [], future: [], open: null })
     assert.deepEqual(first.past, ['a'])
     assert.equal(UndoStack.canUndo(second), true)
     const undone = UndoStack.undo(second, 'c')
@@ -71,8 +156,9 @@ describe('UndoStack', () => {
       Schema.decodeUnknownSync(UndoStack.Model(Schema.String))({
         past: ['a'],
         future: [],
+        open: null,
       }),
-      { past: ['a'], future: [] },
+      { past: ['a'], future: [], open: null },
     )
   })
 })
