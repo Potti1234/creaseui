@@ -7,19 +7,28 @@ import * as Preference from './preference'
 import type * as Storage from './storage'
 
 export const System = Schema.Literals(['light', 'dark', 'unknown'])
-export const Model = Schema.Struct({ value: Schema.String, system: System })
+
+export const Model = Schema.Struct({
+  value: Schema.Literals(['system', 'light', 'dark']),
+  system: System,
+})
+
 export type Model = typeof Model.Type
+
 export const Message = defineMessageUnion({
   GotPreferenceMessage: { message: Preference.Message },
   ChangedSystem: { system: System },
   CompletedApply: {},
 })
+
 export type Message = typeof Message.Type
+
 export const resolved = (model: Model): 'light' | 'dark' =>
   model.value === 'dark' ||
   (model.value === 'system' && model.system === 'dark')
     ? 'dark'
     : 'light'
+
 export const Apply = Command.define('ApplyColorScheme', {
   args: { model: Model },
   messages: [Message.CompletedApply],
@@ -35,6 +44,7 @@ export const Apply = Command.define('ApplyColorScheme', {
       return Message.CompletedApply()
     }),
 })
+
 export const create = (
   config: Readonly<{ storage?: Storage.Descriptor }> = {},
 ) => {
@@ -44,35 +54,43 @@ export const create = (
     defaultValue: 'system',
     attribute: 'data-color-scheme',
   })
+
   const init = (
     raw?: string | null,
     system: Model['system'] = 'unknown',
   ): Model => ({ ...preference.init(raw), system })
+
   const update = (
     model: Model,
     message: Message,
   ): Update.ReturnWithOutMessage<Model, Message, Preference.OutMessage> => {
-    if (message._tag === 'CompletedApply') return { model }
-    const result: Update.ReturnWithOutMessage<
-      Preference.Model & { readonly system?: Model['system'] },
-      Preference.Message,
-      Preference.OutMessage
-    > =
-      message._tag === 'GotPreferenceMessage'
-        ? preference.update(model, message.message)
-        : { model: { ...model, system: message.system } }
-    const next = { ...model, ...result.model }
-    return {
-      ...result,
-      model: next,
-      commands: [
-        ...Command.mapMessages(result.commands ?? [], message =>
-          Message.GotPreferenceMessage({ message }),
-        ),
-        ...(resolved(next) !== resolved(model) ? [Apply({ model: next })] : []),
-      ],
+    const apply = (next: Model) =>
+      resolved(next) !== resolved(model) ? [Apply({ model: next })] : []
+
+    switch (message._tag) {
+      case 'GotPreferenceMessage': {
+        const result = preference.update(model, message.message)
+        const next = { value: result.model.value, system: model.system }
+        return {
+          ...result,
+          model: next,
+          commands: [
+            ...Command.mapMessages(result.commands ?? [], message =>
+              Message.GotPreferenceMessage({ message }),
+            ),
+            ...apply(next),
+          ],
+        }
+      }
+      case 'ChangedSystem': {
+        const next = { ...model, system: message.system }
+        return { model: next, commands: apply(next) }
+      }
+      case 'CompletedApply':
+        return { model }
     }
   }
+
   const changes = (): Stream.Stream<Message> =>
     Stream.merge(
       preference
@@ -91,5 +109,6 @@ export const create = (
             }),
       ),
     )
+
   return { init, update, changes, preference }
 }

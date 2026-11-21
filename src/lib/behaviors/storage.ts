@@ -9,6 +9,7 @@ export const Descriptor = Schema.Struct({
   sameSite: Schema.optional(Schema.Literals(['Lax', 'Strict', 'None'])),
   secure: Schema.optional(Schema.Boolean),
 })
+
 export type Descriptor = typeof Descriptor.Type
 
 const webStorage = (storage: Descriptor): Storage =>
@@ -53,8 +54,10 @@ export const set = (
   storage: Descriptor,
   value: string,
 ): Effect.Effect<boolean> => write(storage, value)
+
 export const remove = (storage: Descriptor): Effect.Effect<boolean> =>
   write(storage, null)
+
 export const available = (storage: Descriptor): Effect.Effect<boolean> =>
   Effect.sync(() => {
     try {

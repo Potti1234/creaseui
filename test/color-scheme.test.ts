@@ -2,11 +2,20 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { runInNewContext } from 'node:vm'
 import { describe, it } from 'node:test'
+import { Schema } from 'effect'
 import * as ColorScheme from '../src/lib/behaviors/color-scheme.ts'
 import * as Preference from '../src/lib/behaviors/preference.ts'
 
 const scheme = ColorScheme.create()
 describe('ColorScheme', () => {
+  it('restricts model choices to system, light or dark', () => {
+    assert.throws(() =>
+      Schema.decodeUnknownSync(ColorScheme.Model)({
+        value: 'invalid',
+        system: 'light',
+      }),
+    )
+  })
   it('resolves explicit choices and defaults to system with a light unknown fallback', () => {
     assert.equal(ColorScheme.resolved(scheme.init()), 'light')
     assert.equal(ColorScheme.resolved(scheme.init(null, 'dark')), 'dark')

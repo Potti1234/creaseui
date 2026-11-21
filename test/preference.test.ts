@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
+import { Schema } from 'effect'
 import * as Preference from '../src/lib/behaviors/preference.ts'
 
 const preference = Preference.create<'a' | 'b'>({
@@ -9,6 +10,15 @@ const preference = Preference.create<'a' | 'b'>({
   storage: { kind: 'local', id: 'choice' },
 })
 describe('Preference', () => {
+  it('exposes a schema restricted to its configured values', () => {
+    assert.deepEqual(
+      Schema.decodeUnknownSync(preference.Model)({ value: 'b' }),
+      { value: 'b' },
+    )
+    assert.throws(() =>
+      Schema.decodeUnknownSync(preference.Model)({ value: 'invalid' }),
+    )
+  })
   it('decodes missing and invalid storage to the default', () => {
     for (const raw of [null, undefined, '', 'invalid'])
       assert.deepEqual(preference.init(raw), { value: 'a' })

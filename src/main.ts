@@ -74,7 +74,6 @@ import {
 export const Model = S.Struct({
   route: AppRoute,
   currentUrl: S.String,
-  isDark: S.Boolean,
   colorScheme: ColorScheme.Model,
   tailwindBoard: Board.Model,
   styleXBoard: BoardStyleX.Model,
@@ -91,8 +90,7 @@ export type Model = typeof Model.Type
 // FLAGS
 
 export const Flags = S.Struct({
-  isDark: S.Boolean,
-  colorScheme: S.optional(ColorScheme.Model),
+  colorScheme: ColorScheme.Model,
   themeLab: S.Struct({
     applied: S.Boolean,
     preset: S.NullOr(S.String),
@@ -139,7 +137,6 @@ export const flags: Effect.Effect<Flags> = Effect.gen(function* () {
       : 'light',
   )
   return {
-    isDark: ColorScheme.resolved(scheme) === 'dark',
     colorScheme: scheme,
     themeLab,
   }
@@ -155,7 +152,6 @@ export const Message = defineMessageUnion({
   ClickedLink: { request: UrlRequest },
   ChangedUrl: { url: Url },
   ClickedThemeToggle: {},
-  CompletedApplyTheme: {},
   GotColorSchemeMessage: { message: ColorScheme.Message },
   IgnoredBlocksPreviewInput: {},
   ChangedBlocksCategory: { category: Page.BlockCategory },
@@ -260,9 +256,7 @@ export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
     model: {
       route,
       currentUrl: urlToString(url),
-      isDark: flags.isDark,
-      colorScheme:
-        flags.colorScheme ?? colorScheme.init(flags.isDark ? 'dark' : 'light'),
+      colorScheme: flags.colorScheme,
       tailwindBoard: Board.init(storedPreset ?? Preset.DEFAULT_CONFIG),
       styleXBoard: BoardStyleX.init(storedPreset ?? Preset.DEFAULT_CONFIG),
       pleatBoard: BoardPleat.init(storedPreset ?? Preset.DEFAULT_CONFIG),
@@ -360,7 +354,6 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       CompletedScrollToTop: () => ({ model: model }),
       CompletedScrollToFragment: () => ({ model: model }),
       CompletedLoadExternal: () => ({ model: model }),
-      CompletedApplyTheme: () => ({ model: model }),
       CompletedPersistThemeLab: () => ({ model: model }),
       IgnoredBlocksPreviewInput: () => ({ model: model }),
       ToggledThemeLab: () => ({
@@ -594,7 +587,6 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           model: {
             ...model,
             colorScheme: result.model,
-            isDark: ColorScheme.resolved(result.model) === 'dark',
           },
           commands: Command.mapMessages(result.commands ?? [], message =>
             Message.GotColorSchemeMessage({ message }),
@@ -607,7 +599,6 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           model: {
             ...model,
             colorScheme: result.model,
-            isDark: ColorScheme.resolved(result.model) === 'dark',
           },
           commands: Command.mapMessages(result.commands ?? [], child =>
             Message.GotColorSchemeMessage({ message: child }),
@@ -1603,7 +1594,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 slotId: 'landing',
                 model: model.page.landing,
                 view: landingView,
-                viewInputs: model.isDark,
+                viewInputs: ColorScheme.resolved(model.colorScheme) === 'dark',
                 toParentMessage: (message: Landing.Message): Message =>
                   Message.GotLandingMessage({ message }),
               }),
@@ -1658,7 +1649,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               BlocksIndexPage.view(
                 {
                   ...model.page,
-                  isDark: model.isDark,
+                  isDark: ColorScheme.resolved(model.colorScheme) === 'dark',
                   onCategory: category =>
                     Message.ChangedBlocksCategory({ category }),
                   onToggleCode: block => Message.ToggledBlockCode({ block }),
@@ -1684,7 +1675,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               BlocksIndexPage.view(
                 {
                   ...model.page,
-                  isDark: model.isDark,
+                  isDark: ColorScheme.resolved(model.colorScheme) === 'dark',
                   onCategory: category =>
                     Message.ChangedBlocksCategory({ category }),
                   onToggleCode: block => Message.ToggledBlockCode({ block }),
@@ -1743,7 +1734,7 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
                 view: catalogDocsView,
                 viewInputs: {
                   slug: ComponentCatalog.canonicalComponentSlug(component),
-                  dark: model.isDark,
+                  dark: ColorScheme.resolved(model.colorScheme) === 'dark',
                   renderer,
                 },
                 toParentMessage: (message: ComponentCatalog.Message): Message =>
@@ -1851,7 +1842,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
             Chrome.header(
               {
                 route: model.route,
-                isDark: model.isDark,
+                isDark: ColorScheme.resolved(model.colorScheme) === 'dark',
                 onThemeToggle: Message.ClickedThemeToggle(),
                 onSearchOpen: Message.GotDocsSearchMessage({
                   message: DocsSearch.Message.OpenedSearch(),

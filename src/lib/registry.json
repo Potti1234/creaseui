@@ -109,16 +109,6 @@
           "path": "behaviors/storage.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/storage.ts"
-        },
-        {
-          "path": "behaviors/preference.ts",
-          "type": "registry:lib",
-          "target": "@lib/behaviors/preference.ts"
-        },
-        {
-          "path": "behaviors/color-scheme.ts",
-          "type": "registry:lib",
-          "target": "@lib/behaviors/color-scheme.ts"
         }
       ]
     },
