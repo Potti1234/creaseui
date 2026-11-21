@@ -282,6 +282,7 @@ export const Message = defineMessageUnion({
     min: S.NullOr(S.Number),
     max: S.NullOr(S.Number),
     step: S.NullOr(S.Number),
+    isIntegerOnly: S.Boolean,
     disabled: S.Boolean,
   },
   FocusGained: {},
@@ -325,6 +326,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         min: message.min ?? undefined,
         max: message.max ?? undefined,
         step: message.step ?? undefined,
+        isIntegerOnly: message.isIntegerOnly,
       }
       const next = HoldRepeat.update(model.hold, message.message, {
         disabled: message.disabled,

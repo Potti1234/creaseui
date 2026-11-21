@@ -599,6 +599,7 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                     min: props.min ?? null,
                     max: props.max ?? null,
                     step: props.step ?? null,
+                    isIntegerOnly: props.isIntegerOnly === true,
                     disabled:
                       props.isDisabled === true || props.isReadOnly === true,
                   }),

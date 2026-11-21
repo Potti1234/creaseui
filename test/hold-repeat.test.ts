@@ -194,6 +194,7 @@ describe('Hold/Repeat', () => {
         min: 0,
         max: 2,
         step: null,
+        isIntegerOnly: false,
         disabled: false,
       })
     const started = NumberInput.update(
@@ -233,6 +234,7 @@ describe('Hold/Repeat', () => {
         min: null,
         max: null,
         step: null,
+        isIntegerOnly: false,
         disabled: false,
       })
     const started = NumberInput.update(
@@ -245,5 +247,49 @@ describe('Hold/Repeat', () => {
       wrap(tick(started.model.hold)),
     )
     assert.equal(Option.getOrNull(held.outMessage!.value), 11)
+  })
+
+  it('number-input stepper gestures share the arrow-key integer-only step policy', () => {
+    for (const isIntegerOnly of [true, false]) {
+      for (const direction of [1, -1] as const) {
+        for (const value of [0, undefined]) {
+          const options = { value, step: 0.5, isIntegerOnly }
+          const wrap = (message: Hold.Message) =>
+            NumberInput.Message.HeldStepper({
+              message,
+              direction,
+              value: value ?? null,
+              min: null,
+              max: null,
+              step: options.step,
+              isIntegerOnly,
+              disabled: false,
+            })
+          const model = NumberInput.init({ id: 'integer-stepper' })
+          const expected = NumberInput.getSteppedValue(direction, options)
+          const started = NumberInput.update(model, wrap(press()))
+          assert.equal(Option.getOrNull(started.outMessage!.value), expected)
+          const repeated = NumberInput.update(
+            started.model,
+            wrap(tick(started.model.hold)),
+          )
+          assert.equal(
+            Option.getOrNull(repeated.outMessage!.value),
+            NumberInput.getSteppedValue(direction, {
+              ...options,
+              value: expected,
+            }),
+          )
+          const clicked = NumberInput.update(
+            model,
+            wrap(Hold.Message.Clicked()),
+          )
+          assert.equal(Option.getOrNull(clicked.outMessage!.value), expected)
+          const touched = NumberInput.update(model, wrap(press('touch')))
+          const tapped = NumberInput.update(touched.model, wrap(release()))
+          assert.equal(Option.getOrNull(tapped.outMessage!.value), expected)
+        }
+      }
+    }
   })
 })
