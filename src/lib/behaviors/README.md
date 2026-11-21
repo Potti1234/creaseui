@@ -19,6 +19,14 @@ Dropdown Menu uses immediate unmount. Roles, event detection, positioning,
 focus and layering belong to the component; keep Foldkit's Dialog and Popover
 for overlays that already use their positioning and focus lifecycle.
 
+Selection ports the key-based behavior from [ui-sdk.dev](https://ui-sdk.dev/docs/core/behaviors/selection).
+Bind keys with `Selection.create<Key>()` and embed `Selection.Model` in the
+parent Schema. Call its pure transitions from update and commit the returned
+Model only if the parent accepts the change. Use `reflect` for externally
+supplied values; changing the selected keys starts the next range over.
+Pass the current ordered keys for ranges or select-all. MultiSelector passes
+the visible keys for select-all so a filter never clears hidden choices.
+
 [StickToBottom](https://ui-sdk.dev/docs/core/behaviors/lists#stick-to-bottom)
 follows a growing scroll viewport with a configurable bottom threshold (24 px
 by default). Use the Schema model and `update`, and bind `viewportMount` to
