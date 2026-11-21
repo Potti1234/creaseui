@@ -127,6 +127,8 @@ export const Pointer = Mount.defineStream('SpansPointer', {
                     element.querySelectorAll(trackSelector),
                     measure,
                   )
+                  if (element.matches(trackSelector))
+                    rects.unshift(measure(element))
                   send(
                     PointerMessage.MovedPointer({
                       pointerId: active.id,
