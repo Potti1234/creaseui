@@ -4,6 +4,14 @@ const DOCS = 'https://creaseui.com/docs/components'
 
 export const RECIPES = [
   {
+    id: 'tree-list-state',
+    title: 'Tree List — nested typeahead state',
+    docs: `${DOCS}/tree-list`,
+    components: ['tree-list'],
+    summary:
+      'Start the Model with TreeList.init({ id }) rather than constructing the Typeahead Submodel yourself, route TreeList.Message through TreeList.update, and pass item data to treeList({ model, toParentMessage, items }).',
+  },
+  {
     id: 'dialog-form',
     title: 'Dialog — Invite member form',
     docs: `${DOCS}/dialog`,

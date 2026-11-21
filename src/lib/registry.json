@@ -28,6 +28,19 @@
       ]
     },
     {
+      "name": "drag-and-drop-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Drag and Drop Behavior",
+      "description": "Headless pointer and keyboard drag-and-drop Submodel and attribute bundles for sortable lists.",
+      "files": [
+        {
+          "path": "behaviors/drag-and-drop.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/drag-and-drop.ts"
+        }
+      ]
+    },
+    {
       "name": "input-status",
       "type": "registry:lib",
       "title": "Input Status",
@@ -986,6 +999,11 @@
           "path": "tree-list.ts",
           "type": "registry:lib",
           "target": "@lib/tree-list.ts"
+        },
+        {
+          "path": "behaviors/typeahead.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/typeahead.ts"
         }
       ]
     },
