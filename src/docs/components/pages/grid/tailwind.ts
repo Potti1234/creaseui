@@ -1,8 +1,10 @@
 import { Schema as S } from 'effect'
+import { Command } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
+import * as SpatialDemo from '@/docs/components/pages/grid/spatial-focus-demo'
 import {
   type GridFixture,
   gridFixtures,
@@ -20,11 +22,13 @@ import * as Stat from '@/ui/stat'
 
 const GridPreviewMessageUnion = defineMessageUnion({
   GotResizablePreviewMessage: { message: Resizable.Message },
+  GotSpatialPreviewMessage: { message: SpatialDemo.Message },
 })
 type GridPreviewMessage = typeof GridPreviewMessageUnion.Type
 const GridPreviewModel = S.Struct({
   _docsPage: S.Literal('grid'),
   resizable: Resizable.Model,
+  spatialDemo: SpatialDemo.Model,
 })
 type GridPreviewModel = typeof GridPreviewModel.Type
 
@@ -390,6 +394,52 @@ const viewFor = (
   h: HtmlBuilder<GridPreviewMessage>,
 ): Html => {
   switch (fixture.kind) {
+    case 'spatialFocus':
+      return SpatialDemo.preview(
+        model.spatialDemo,
+        message =>
+          GridPreviewMessageUnion.GotSpatialPreviewMessage({ message }),
+        h,
+        {
+          buttonClass:
+            'rounded-xl text-left outline-none focus-visible:outline-solid focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50',
+          noteClass: 'text-sm leading-6 text-muted-foreground',
+          frame: children =>
+            Grid.grid(
+              { columns: 1, gap: 4, width: '100%', maxWidth: 560, children },
+              h,
+            ),
+          renderCard: (key, index) =>
+            Card.card(
+              {
+                size: 'sm',
+                class: 'h-full',
+                children: [
+                  Card.cardContent(
+                    {
+                      children: [
+                        h.span(
+                          [h.Class('block text-sm font-semibold')],
+                          [`Card ${key}`],
+                        ),
+                        h.span(
+                          [h.Class('mt-2 block text-xs text-muted-foreground')],
+                          [
+                            key === 'D'
+                              ? 'Unavailable'
+                              : `Document position ${index + 1}`,
+                          ],
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+        },
+      )
     case 'showcase':
       return showcaseView(h)
     case 'spanning':
@@ -418,9 +468,19 @@ export const gridTailwindPreviewProgram = definePreviewProgram<
   init: () => ({
     _docsPage: 'grid',
     resizable: Resizable.init('grid-auto-fit', 96),
+    spatialDemo: SpatialDemo.init(),
   }),
   update: (model, message) => {
     switch (message._tag) {
+      case 'GotSpatialPreviewMessage': {
+        const next = SpatialDemo.update(model.spatialDemo, message.message)
+        return {
+          model: { ...model, spatialDemo: next.model },
+          commands: Command.mapMessages(next.commands ?? [], message =>
+            GridPreviewMessageUnion.GotSpatialPreviewMessage({ message }),
+          ),
+        }
+      }
       case 'GotResizablePreviewMessage':
         return {
           model: {

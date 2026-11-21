@@ -1,28 +1,6 @@
 import { expect, test } from '@playwright/test'
-import { createServer, type ViteDevServer } from 'vite'
 
 test.describe('SpatialFocus docs example', () => {
-  let server: ViteDevServer
-  let url: string
-
-  test.beforeAll(async () => {
-    server = await createServer({
-      configFile: false,
-      logLevel: 'error',
-      optimizeDeps: { entries: ['src/docs/examples/spatial-focus/index.html'] },
-      server: { host: '127.0.0.1', port: 0, watch: null },
-    })
-    await server.listen()
-    url = new URL(
-      '/src/docs/examples/spatial-focus/',
-      server.resolvedUrls?.local[0],
-    ).href
-  })
-
-  test.afterAll(async () => {
-    await server?.close()
-  })
-
   test('follows geometry, skips disabled cards, and preserves modified shortcuts', async ({
     page,
   }) => {
@@ -32,11 +10,14 @@ test.describe('SpatialFocus docs example', () => {
         '{"isOpen":false,"isFlattened":false}',
       ),
     )
-    await page.goto(url)
+    await page.goto('/docs/components/grid#grid-spatial-focus')
+    const demo = page.locator('[data-spatial-focus-demo]')
+    await expect(demo).toBeVisible()
     const card = (key: string) =>
-      page.getByRole('button', { name: `Card ${key}`, exact: false })
+      demo.getByRole('button', { name: `Card ${key}`, exact: true })
     await expect(card('D')).toBeDisabled()
-    await expect(page.locator('button[tabindex="0"]')).toHaveCount(1)
+    await expect(demo.locator('button[tabindex="0"]')).toHaveCount(1)
+    await demo.locator('#docs-grid-spatial-instructions').focus()
     await page.keyboard.press('Tab')
     await expect(card('A')).toBeFocused()
     await page.keyboard.press('ArrowRight')
@@ -53,6 +34,6 @@ test.describe('SpatialFocus docs example', () => {
     await expect(card('E')).toBeFocused()
     await page.keyboard.press('Home')
     await expect(card('A')).toBeFocused()
-    await expect(page.locator('button[tabindex="0"]')).toHaveCount(1)
+    await expect(demo.locator('button[tabindex="0"]')).toHaveCount(1)
   })
 })
