@@ -38,6 +38,9 @@ export const init = (
 export const isMounted = (model: Model): boolean =>
   model.isShowing || model.transitionState !== 'Idle'
 
+const idSelector = (id: string): string =>
+  `[id="${id.replace(/["\\\n\r\f]/gu, character => `\\${character.charCodeAt(0).toString(16)} `)}"]`
+
 export const ReturnFocus = Command.define('ReturnFocus', {
   args: { panelId: Schema.String, triggerId: Schema.String },
   messages: [Message.CompletedReturnFocus],
@@ -45,9 +48,7 @@ export const ReturnFocus = Command.define('ReturnFocus', {
     Effect.suspend(() => {
       const panel = document.getElementById(panelId)
       return panel?.contains(document.activeElement)
-        ? Dom.focus(
-            `[id="${triggerId.replace(/["\\\n\r\f]/gu, character => `\\${character.charCodeAt(0).toString(16)} `)}"]`,
-          )
+        ? Dom.focus(idSelector(triggerId))
         : Effect.void
     }).pipe(Effect.ignore, Effect.as(Message.CompletedReturnFocus())),
 })
