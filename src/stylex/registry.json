@@ -8123,6 +8123,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme-css",
+        "Potti1234/creaseui/drag-and-drop-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/stylex-button",
         "Potti1234/creaseui/stylex-contracts",
