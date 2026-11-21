@@ -1,5 +1,31 @@
 import { expect, test } from '@playwright/test'
 
+test('keyboard reorder keeps focus on the moved row handle', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/list-input')
+  const field = page
+    .locator('[data-slot="list-input"]')
+    .filter({
+      has: page.locator('[data-list-input-reorder]'),
+    })
+    .first()
+  const add = field.getByRole('button', { name: 'Add guest', exact: true })
+  await add.click()
+  await add.click()
+  const rows = field.locator('[data-list-input-row]')
+  const key = await rows.first().getAttribute('data-list-input-row')
+  const handle = field.locator(
+    `[data-list-input-row="${key}"] [data-list-input-reorder]`,
+  )
+  await handle.focus()
+  for (let index = 1; index <= 2; index++) {
+    await page.keyboard.press('ArrowDown')
+    await expect(rows.nth(index)).toHaveAttribute('data-list-input-row', key!)
+    await expect(handle).toBeFocused()
+  }
+})
+
 test('accepted row removal recovers to a surviving row and then Add', async ({
   page,
 }) => {

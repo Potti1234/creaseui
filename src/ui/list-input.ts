@@ -25,6 +25,7 @@ import {
   moveItem,
   resolveColumnTrack,
   removeId,
+  reorderId,
   addId,
   focusMount,
   type ListInputChange,
@@ -248,6 +249,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
                   boundary: delta < 0 ? 'first' : 'last',
                 })
               : Message.MoveRequested({
+                  key: itemKey,
                   fromIndex: index,
                   toIndex,
                   itemName,
@@ -403,6 +405,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
                 h.AriaPressed(isActiveReorder ? 'true' : 'false'),
                 h.Disabled(mutationsDisabled),
                 h.DataAttribute('list-input-reorder', ''),
+                h.Id(reorderId(model.id, itemKey)),
                 h.Class(
                   cn(
                     iconButtonClass,

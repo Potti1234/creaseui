@@ -138,6 +138,7 @@ test('immediate move announces the destination; boundary announces in place', ()
   const moved = update(
     model,
     Message.MoveRequested({
+      key: 'a',
       fromIndex: 0,
       toIndex: 1,
       itemName: 'guest',
@@ -145,6 +146,10 @@ test('immediate move announces the destination; boundary announces in place', ()
     }),
   )
   assert.equal(moved.outMessage?._tag, 'ItemReordered')
+  assert.deepEqual(moved.commands?.[0]?.args, {
+    targetId: 'li-reorder-a',
+    lostId: 'li-reorder-a',
+  })
   assert.equal(
     Option.getOrElse(moved.model.announcement, () => ''),
     'guest moved to position 2 of 3.',

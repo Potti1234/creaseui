@@ -8,6 +8,8 @@ import * as FocusRecovery from '@/lib/behaviors/focus-recovery'
 export const removeId = (id: string, key: string): string =>
   `${id}-remove-${key}`
 export const addId = (id: string): string => `${id}-add`
+export const reorderId = (id: string, key: string): string =>
+  `${id}-reorder-${key}`
 export const focusMount = <Msg>(send: (message: Message) => Msg) =>
   FocusRecovery.collectionMount(
     {
@@ -126,6 +128,7 @@ export const Message = defineMessageUnion({
   FieldEdited: { index: S.Number, nextItem: S.Unknown, columnKey: S.String },
   /* Arrow keys on the handle while not grabbed: immediate one-position move. */
   MoveRequested: {
+    key: S.String,
     fromIndex: S.Number,
     toIndex: S.Number,
     itemName: S.String,
@@ -157,6 +160,17 @@ export type UpdateReturn = Update.ReturnWithOutMessage<
   Message,
   OutMessage
 >
+
+const keepReorderFocus = (id: string, key: string) =>
+  Command.mapMessages(
+    [
+      FocusRecovery.RecoverFocus({
+        targetId: reorderId(id, key),
+        lostId: reorderId(id, key),
+      }),
+    ],
+    message => Message.GotFocusRecoveryMessage({ message }),
+  )
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
@@ -204,6 +218,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       }
     case 'MoveRequested':
       return {
+        commands: keepReorderFocus(model.id, message.key),
         model: {
           ...model,
           announcement: Option.some(
@@ -267,6 +282,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         },
         ...(didMove
           ? {
+              commands: keepReorderFocus(model.id, reorder.key),
               outMessage: OutMessage.ItemReordered({
                 fromIndex: reorder.fromIndex,
                 toIndex: reorder.previewIndex,
