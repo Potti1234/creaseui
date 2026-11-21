@@ -195,3 +195,48 @@ test('an iframe layer distinguishes inside and outside presses', async ({
   await frame.getByRole('button', { name: 'Outside' }).click()
   await expect(page.locator('output')).toHaveText('outside-press')
 })
+
+test('closed shadow layers distinguish inside, persistent and sibling presses', async ({
+  page,
+}) => {
+  await page.setContent('<div id="host"></div><output></output>')
+  await page.addScriptTag({ content: script })
+  const buttons = await page.evaluate(() => {
+    const host = document.querySelector('#host')!
+    const root = host.attachShadow({ mode: 'closed' })
+    root.innerHTML = `
+      <div id="layer"><button>Inside</button></div>
+      <button id="persistent">Persistent</button>
+      <button id="sibling">Outside</button>
+    `
+    const { Layer } = window.OverlayBehaviors
+    const output = document.querySelector('output')!
+    Layer.bindLayer(root.getElementById('layer')!, {
+      onDismiss: reason => (output.value += reason),
+    })
+    Layer.bindPersistentLayer(root.getElementById('persistent')!)
+
+    // Closed shadow nodes are not reachable by locators from the page.
+    return Array.from(root.querySelectorAll('button'), button => {
+      const bounds = button.getBoundingClientRect()
+      const name = button.textContent
+      button.addEventListener('click', () => {
+        host.setAttribute('data-last-press', name)
+      })
+      return {
+        name,
+        x: bounds.x + bounds.width / 2,
+        y: bounds.y + bounds.height / 2,
+      }
+    })
+  })
+
+  const host = page.locator('#host')
+  for (const { name, x, y } of buttons) {
+    await page.mouse.click(x, y)
+    await expect(host).toHaveAttribute('data-last-press', name)
+    await expect(page.locator('output')).toHaveText(
+      name === 'Outside' ? 'outside-press' : '',
+    )
+  }
+})

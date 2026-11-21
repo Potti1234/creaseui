@@ -60,6 +60,7 @@ type Entry = Readonly<{ element: HTMLElement; options: BindOptions }>
 type Resources = Readonly<{
   stack: Array<Entry>
   persistent: Map<HTMLElement, number>
+  retainRoots: (element: HTMLElement) => () => void
   release: () => void
 }>
 const documents = new WeakMap<Document, Resources>()
@@ -74,10 +75,8 @@ const begin = (doc: Document): Resources => {
     Array.from(persistent.keys()).some(
       element => element.isConnected && contains(element, target),
     )
-  const getTargets = (event: Event) =>
-    event
-      .composedPath()
-      .filter((target): target is Node => target instanceof realm.Node)
+  const getTargets = (path: ReadonlyArray<EventTarget>) =>
+    path.filter((target): target is Node => target instanceof realm.Node)
 
   const outside = (targets: ReadonlyArray<Node>) => {
     if (targets.some(isPersistent)) return []
@@ -130,10 +129,13 @@ const begin = (doc: Document): Resources => {
         y: number
       }>
     | undefined
-  const onPointerDown = (event: PointerEvent) => {
+  const onPointerDown = (
+    event: PointerEvent,
+    path: ReadonlyArray<EventTarget>,
+  ) => {
     if (!event.isPrimary) return
     touch = undefined
-    const targets = getTargets(event)
+    const targets = getTargets(path)
     const dismiss = outside(targets)
     const modal = dismiss.some(entry => entry.options.modal === true)
     if (event.pointerType === 'touch' && !modal) {
@@ -146,6 +148,63 @@ const begin = (doc: Document): Resources => {
     }
     for (const { options } of dismiss) options.onDismiss('outside-press', event)
   }
+
+  const roots = new Map<EventTarget, { count: number; release: () => void }>()
+  const pending = new WeakMap<PointerEvent, EventTarget>()
+  const capturePress = (event: PointerEvent) => {
+    const path = event.composedPath()
+    const boundary = event.currentTarget
+    if (boundary === null) return
+    // A closed root hides its descendants from outer listeners. Hand the
+    // press to that root before deciding whether it was outside the layer.
+    const host = path
+      .slice(0, path.indexOf(boundary))
+      .find(target => roots.has(target))
+    if (host === undefined) {
+      pending.delete(event)
+      onPointerDown(event, path)
+    } else {
+      pending.set(event, host)
+    }
+  }
+  const retainRoots = (element: HTMLElement) => {
+    const releases = []
+    let root = element.getRootNode()
+    while (root instanceof realm.ShadowRoot) {
+      const { host } = root
+      if (root.mode === 'closed') {
+        const shadow = root
+        const fallback = (event: PointerEvent) => {
+          // If the host itself was pressed, no root listener ran.
+          if (pending.get(event) !== host) return
+          pending.delete(event)
+          onPointerDown(event, event.composedPath())
+        }
+        let binding = roots.get(host)
+        if (binding === undefined) {
+          shadow.addEventListener('pointerdown', capturePress, true)
+          host.addEventListener('pointerdown', fallback)
+          binding = {
+            count: 0,
+            release: () => {
+              shadow.removeEventListener('pointerdown', capturePress, true)
+              host.removeEventListener('pointerdown', fallback)
+              roots.delete(host)
+            },
+          }
+          roots.set(host, binding)
+        }
+        const retained = binding
+        retained.count++
+        releases.push(() => {
+          if (--retained.count === 0) retained.release()
+        })
+      }
+      root = host.getRootNode()
+    }
+    return () => releases.forEach(release => release())
+  }
+
   const onClick = (event: MouseEvent) => {
     const press = touch
     touch = undefined
@@ -175,7 +234,7 @@ const begin = (doc: Document): Resources => {
     const entry = active().at(-1)
     if (entry === undefined) return
     // A native modal owns Escape while focus is in it, unless our layer is inside it.
-    const nativeModal = getTargets(event).find(
+    const nativeModal = getTargets(event.composedPath()).find(
       (target): target is Element =>
         target instanceof realm.Element && target.matches('dialog:modal'),
     )
@@ -209,7 +268,7 @@ const begin = (doc: Document): Resources => {
     }
   }
 
-  doc.addEventListener('pointerdown', onPointerDown, true)
+  doc.addEventListener('pointerdown', capturePress, true)
   doc.addEventListener('pointercancel', onPointerCancel, true)
   doc.addEventListener('click', onClick, true)
   doc.addEventListener('keydown', onKeyDown)
@@ -218,8 +277,9 @@ const begin = (doc: Document): Resources => {
   return {
     stack,
     persistent,
+    retainRoots,
     release: () => {
-      doc.removeEventListener('pointerdown', onPointerDown, true)
+      doc.removeEventListener('pointerdown', capturePress, true)
       doc.removeEventListener('pointercancel', onPointerCancel, true)
       doc.removeEventListener('click', onClick, true)
       doc.removeEventListener('keydown', onKeyDown)
@@ -266,6 +326,7 @@ export const bindLayer = (
   const doc = element.ownerDocument
   const resources = acquire(doc)
   const entry = { element, options }
+  const releaseRoots = resources.retainRoots(element)
   resources.stack.push(entry)
   const hide = options.topLayer === true ? showInTopLayer(element) : undefined
   return () => {
@@ -273,6 +334,7 @@ export const bindLayer = (
     if (index === -1) return
     resources.stack.splice(index, 1)
     hide?.()
+    releaseRoots()
     releaseIfUnused(doc, resources)
   }
 }
@@ -282,6 +344,7 @@ export const bindLayer = (
 export const bindPersistentLayer = (element: HTMLElement): (() => void) => {
   const doc = element.ownerDocument
   const resources = acquire(doc)
+  const releaseRoots = resources.retainRoots(element)
   resources.persistent.set(
     element,
     (resources.persistent.get(element) ?? 0) + 1,
@@ -293,6 +356,7 @@ export const bindPersistentLayer = (element: HTMLElement): (() => void) => {
     const count = resources.persistent.get(element) ?? 0
     if (count <= 1) resources.persistent.delete(element)
     else resources.persistent.set(element, count - 1)
+    releaseRoots()
     releaseIfUnused(doc, resources)
   }
 }
