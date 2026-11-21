@@ -47,9 +47,9 @@ export const push = <A>(
     now! - model.open.time < groupDelay
   const past = joins ? model.past : [...model.past, present]
   return {
-    past: joins ? past : past.slice(Math.max(0, past.length - limit)),
+    past: past.slice(Math.max(0, past.length - limit)),
     future: [],
-    open: group ? { group, time: now! } : null,
+    open: group && limit > 0 ? { group, time: now! } : null,
   }
 }
 

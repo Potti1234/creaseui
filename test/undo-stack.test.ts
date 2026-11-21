@@ -5,6 +5,25 @@ import { Schema } from 'effect'
 import * as UndoStack from '@/lib/behaviors/undo-stack'
 
 describe('UndoStack', () => {
+  it('trims capacity even when a grouped push joins', () => {
+    const initial = UndoStack.push(UndoStack.init<string>(), 'a')
+    const grouped = UndoStack.push(initial, 'b', { group: 'typing', now: 0 })
+    const trimmed = UndoStack.push(grouped, 'c', {
+      group: 'typing',
+      now: 1,
+      limit: 1,
+    })
+    assert.deepEqual(trimmed.past, ['b'])
+    const disabled = UndoStack.push(trimmed, 'd', {
+      group: 'typing',
+      now: 2,
+      limit: 0,
+    })
+    assert.deepEqual(disabled.past, [])
+    assert.equal(disabled.open, null)
+    const enabled = UndoStack.push(disabled, 'e', { group: 'typing', now: 3 })
+    assert.deepEqual(enabled.past, ['e'])
+  })
   it('merges matching groups using a sliding, strictly exclusive time window', () => {
     const first = UndoStack.push(UndoStack.init<string>(), 'a', {
       group: 'typing',
