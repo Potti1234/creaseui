@@ -150,16 +150,13 @@ const commitTokens = (
   })
   return {
     model: { ...model, tokens, focusRecovery: recovered.model },
-    commands: Option.match(recovered.maybeTarget, {
+    commands: Option.match(recovered.maybeRecovery, {
       onNone: () => [],
-      onSome: target =>
+      onSome: ({ lostKey, target }) =>
         Command.mapMessages(
           [
             FocusRecovery.RecoverFocus({
-              lostId: tokenRemoveId(
-                model.id,
-                Option.getOrThrow(model.focusRecovery.maybeFocusedKey),
-              ),
+              lostId: tokenRemoveId(model.id, lostKey),
               targetId:
                 target.type === 'Item'
                   ? tokenRemoveId(model.id, target.key)

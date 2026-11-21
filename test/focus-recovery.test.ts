@@ -17,16 +17,16 @@ describe('FocusRecovery', () => {
       [['a'], 'a'],
     ] as const) {
       assert.deepEqual(
-        recovery.recover(model, { previousKeys, nextKeys }).maybeTarget,
-        Option.some({ type: 'Item', key }),
+        recovery.recover(model, { previousKeys, nextKeys }).maybeRecovery,
+        Option.some({ lostKey: 'b', target: { type: 'Item', key } }),
       )
     }
     assert.deepEqual(
       recovery.recover(recovery.focused(model, 'd'), {
         previousKeys,
         nextKeys: ['a', 'b', 'c'],
-      }).maybeTarget,
-      Option.some({ type: 'Item', key: 'c' }),
+      }).maybeRecovery,
+      Option.some({ lostKey: 'd', target: { type: 'Item', key: 'c' } }),
     )
   })
 
@@ -37,8 +37,8 @@ describe('FocusRecovery', () => {
         previousKeys,
         nextKeys: ['a', 'c', 'd'],
         isDisabled: key => key === 'c',
-      }).maybeTarget,
-      Option.some({ type: 'Item', key: 'd' }),
+      }).maybeRecovery,
+      Option.some({ lostKey: 'b', target: { type: 'Item', key: 'd' } }),
     )
     for (const nextKeys of [[], ['a', 'c']] as const) {
       assert.deepEqual(
@@ -46,8 +46,8 @@ describe('FocusRecovery', () => {
           previousKeys,
           nextKeys,
           isDisabled: () => true,
-        }).maybeTarget,
-        Option.some({ type: 'Fallback' }),
+        }).maybeRecovery,
+        Option.some({ lostKey: 'b', target: { type: 'Fallback' } }),
       )
     }
   })
@@ -63,13 +63,13 @@ describe('FocusRecovery', () => {
         nextKeys: [],
       })
       assert.equal(result.model, model)
-      assert.deepEqual(result.maybeTarget, Option.none())
+      assert.deepEqual(result.maybeRecovery, Option.none())
     }
     assert.deepEqual(
       recovery.recover(recovery.focused(recovery.init(), 'b'), {
         previousKeys,
         nextKeys: ['b'],
-      }).maybeTarget,
+      }).maybeRecovery,
       Option.none(),
     )
   })

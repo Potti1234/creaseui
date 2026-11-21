@@ -59,20 +59,29 @@ export const create = <Key extends string = string>() => {
   const recover = (
     model: Model,
     { previousKeys, nextKeys, isDisabled = () => false }: RecoveryInput<Key>,
-  ): Readonly<{ model: Model; maybeTarget: Option.Option<Target<Key>> }> => {
-    const lost = Option.getOrUndefined(model.maybeFocusedKey)
-    const index = previousKeys.findIndex(key => key === lost)
-    if (index < 0 || nextKeys.some(key => key === lost))
-      return { model, maybeTarget: Option.none() }
+  ): Readonly<{
+    model: Model
+    maybeRecovery: Option.Option<
+      Readonly<{ lostKey: Key; target: Target<Key> }>
+    >
+  }> => {
+    const lostKey = previousKeys.find(key =>
+      Option.contains(model.maybeFocusedKey, key),
+    )
+    const index = previousKeys.findIndex(key => key === lostKey)
+    if (lostKey === undefined || nextKeys.includes(lostKey))
+      return { model, maybeRecovery: Option.none() }
     const survives = (key: Key) => nextKeys.includes(key) && !isDisabled(key)
     const key =
       previousKeys.slice(index + 1).find(survives) ??
       previousKeys.slice(0, index).reverse().find(survives)
     return {
       model: { ...blurred(model), version: model.version + 1 },
-      maybeTarget: Option.some(
-        key === undefined ? { type: 'Fallback' } : { type: 'Item', key },
-      ),
+      maybeRecovery: Option.some({
+        lostKey,
+        target:
+          key === undefined ? { type: 'Fallback' } : { type: 'Item', key },
+      }),
     }
   }
   return { init, focused, blurred, recover }
