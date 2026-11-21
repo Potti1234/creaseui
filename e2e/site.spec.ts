@@ -3892,6 +3892,7 @@ test('message scroller covers every upstream core-concept section in both render
   const historyViewport = history.locator(
     '[data-slot="message-scroller-viewport"]',
   )
+  await historyViewport.scrollIntoViewIfNeeded()
   await expect(historyViewport).toHaveAttribute('data-pending-scroll', 'false')
   await historyViewport.evaluate(node => {
     node.scrollTop = node.scrollHeight * 0.55
@@ -3909,7 +3910,7 @@ test('message scroller covers every upstream core-concept section in both render
     const item = node.querySelector(`[data-message-id="${messageId}"]`)
     if (item === null) return
     node.scrollTop +=
-      item.getBoundingClientRect().top - node.getBoundingClientRect().top - 40
+      item.getBoundingClientRect().top - node.getBoundingClientRect().top - 12
     node.dispatchEvent(new Event('scroll'))
   }, anchorId)
   await expect(historyViewport).toHaveAttribute('data-following', 'false')

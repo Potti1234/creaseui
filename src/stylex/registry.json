@@ -4495,7 +4495,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme-css",
-        "Potti1234/creaseui/message-scroller-behavior",
+        "Potti1234/creaseui/stick-to-bottom",
         "Potti1234/creaseui/stylex-complex-tokens-stylex",
         "Potti1234/creaseui/stylex-composition-icon",
         "Potti1234/creaseui/stylex-contracts",
@@ -5199,7 +5199,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/message-scroller-behavior",
+        "Potti1234/creaseui/stick-to-bottom",
         "Potti1234/creaseui/stylex-contracts",
         "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
         "Potti1234/creaseui/stylex-reset",

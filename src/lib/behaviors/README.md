@@ -18,3 +18,13 @@ requests. Read the reason from the OutMessage. For exit transitions, pass
 Dropdown Menu uses immediate unmount. Roles, event detection, positioning,
 focus and layering belong to the component; keep Foldkit's Dialog and Popover
 for overlays that already use their positioning and focus lifecycle.
+
+[StickToBottom](https://ui-sdk.dev/docs/core/behaviors/lists#stick-to-bottom)
+follows a growing scroll viewport with a configurable bottom threshold (24 px
+by default). Use the Schema model and `update`, and bind `viewportMount` to
+the element with ID `${id}-viewport`. Mount measures the visible row when
+content changes; update decides whether to follow, hold that row in place,
+or flag unseen growth. Use `RequestedScroll` to jump and follow again, or
+`Released` to stop following. Send `RequestedPrepend` immediately before
+adding history above to explicitly preserve the distance from the bottom.
+Message Scroller starts pinned; Log Stream opts out by default.

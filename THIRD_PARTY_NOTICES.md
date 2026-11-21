@@ -14,7 +14,10 @@ MIT licensed.
 | Phosphor Icons         | Generated icon adapter data            | MIT        |
 | Remix Icon             | Generated icon adapter data            | Apache-2.0 |
 | Apache ECharts         | Chart rendering                        | Apache-2.0 |
+| ui-sdk                 | StickToBottom viewport algorithm       | Apache-2.0 |
 
 Exact source packages for icon adapters are recorded in
 [`docs/create-presets.md`](docs/create-presets.md). Upstream repositories and
 pinned comparison revisions are recorded in [`docs/provenance.md`](docs/provenance.md).
+
+The ui-sdk adaptation ships with [Vercel's license](src/lib/behaviors/ui-sdk-LICENSE.txt).
