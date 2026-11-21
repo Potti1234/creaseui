@@ -66,6 +66,8 @@ for (const [renderer, port] of [
       'https://github.com/Potti1234/creaseui/blob/main/src/lib/behaviors/connect.ts',
     )
     const source = page.getByRole('button', { name: 'prompt out', exact: true })
+    for (const port of await page.locator('[data-connect-key]').all())
+      await expect(port).toHaveCSS('touch-action', 'none')
     await source.focus()
     await page.keyboard.press('Enter')
     await expect(source).toHaveAttribute('data-connect', 'Source')

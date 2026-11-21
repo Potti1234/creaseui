@@ -183,6 +183,7 @@ export const connectPreviewProgram = definePreviewProgram({
                         [
                           h.Key(port.key),
                           ...port.attributes,
+                          h.Style({ touchAction: 'none' }),
                           h.Tabindex(0),
                           h.Role('button'),
                           h.AriaLabel(port.key.replace(':', ' ')),
@@ -276,7 +277,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>) => h.div([], [
     viewInputs: {
       ...options, keys: portKeys, id: 'connection-ports',
       toView: (ports, attributes) => h.div([...attributes], ports.map(port =>
-        h.button([h.Key(port.key), h.Type('button'), ...port.attributes], [port.key]),
+        h.button([h.Key(port.key), h.Type('button'), ...port.attributes, h.Style({ touchAction: 'none' })], [port.key]),
       )),
     },
   }),
