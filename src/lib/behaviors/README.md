@@ -9,6 +9,7 @@ Components compose behaviors and own selection policy, semantics, and styling.
 Bind key unions once with `create<Key>()`; pass item collections as view inputs.
 Keep navigation helpers pure and test them independently of rendered views.
 RovingFocus establishes this convention for subsequent behavior modules.
+Typeahead follows this convention with a version-guarded timeout and pure label search.
 
 Popup is the pure open/close lifecycle for custom overlays. Route trigger or
 explicit requests separately from Escape, outside press, and focus-out dismissal
@@ -39,3 +40,11 @@ content and hardcodes 200ms. For find-in-page, keep content mounted with
 `hiddenAttributes(isOpen, true)` and `reveal(showMessage)` for beforematch.
 Accordion was not migrated: its exact-shape/no-Command contracts would break.
 Demo (all renderers): `/docs/components/collapsible#motion-presence`.
+
+Selection ports the key-based behavior from [ui-sdk.dev](https://ui-sdk.dev/docs/core/behaviors/selection).
+Bind keys with `Selection.create<Key>()` and embed `Selection.Model` in the
+parent Schema. Call its pure transitions from update and commit the returned
+Model only if the parent accepts the change. Use `reflect` for externally
+supplied values; changing the selected keys starts the next range over.
+Pass the current ordered keys for ranges or select-all. MultiSelector passes
+the visible keys for select-all so a filter never clears hidden choices.

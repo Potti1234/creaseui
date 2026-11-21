@@ -51,6 +51,7 @@ const ITEMS = [
   'table',
   'text',
   'toggle-group',
+  'tree-list',
 ]
 const CONSUMERS = [
   { renderer: 'tailwind', prefix: '', components: 'src/ui', alias: '@/ui' },
@@ -208,6 +209,15 @@ export const settingsView = <M>(
 const rangeApp = alias => `import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as ToggleGroup from '${alias}/toggle-group'
+import * as TreeList from '${alias}/tree-list'
+
+export const initialTree: TreeList.Model = TreeList.init({ id: 'files' })
+
+export const treeView = <M>(
+  model: TreeList.Model,
+  toParentMessage: (message: TreeList.Message) => M,
+  h: HtmlBuilder<M>,
+): Html => TreeList.treeList({ model, toParentMessage, items: [{ id: 'readme', label: 'README.md' }] }, h)
 
 export const initialRange: ToggleGroup.Model = ToggleGroup.init({ id: 'range' })
 
