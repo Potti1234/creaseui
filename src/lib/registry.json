@@ -228,7 +228,9 @@
           "target": "@lib/dropdown-menu-behavior.ts"
         }
       ],
-      "registryDependencies": ["Potti1234/creaseui/popup-behavior"]
+      "registryDependencies": [
+        "Potti1234/creaseui/popup-behavior"
+      ]
     },
     {
       "name": "popup-behavior",
@@ -824,7 +826,9 @@
           "target": "@lib/nav-menu.ts"
         }
       ],
-      "registryDependencies": ["Potti1234/creaseui/popup-behavior"]
+      "registryDependencies": [
+        "Potti1234/creaseui/popup-behavior"
+      ]
     },
     {
       "name": "number-input-behavior",
