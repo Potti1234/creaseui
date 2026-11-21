@@ -2083,6 +2083,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/tree-list",
       "item": "tree-list",
+      "recipes": ["tree-list-state"],
       "renderer": "tailwind",
       "state": "parent-model",
       "title": "Tree List"
@@ -4204,6 +4205,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-tree-list",
       "item": "stylex-tree-list",
+      "recipes": ["tree-list-state"],
       "renderer": "stylex",
       "state": "parent-model",
       "title": "Tree List"
@@ -6291,6 +6293,7 @@
       ],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-tree-list",
       "item": "pleat-tree-list",
+      "recipes": ["tree-list-state"],
       "renderer": "pleat",
       "state": "parent-model",
       "title": "Tree List"
