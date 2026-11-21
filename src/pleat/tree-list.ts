@@ -600,7 +600,7 @@ const render = <Msg>(
             return Option.some(
               toMessage(
                 TreeListBehavior.Message.AppliedTreeListTypeahead({
-                  key: intent.key,
+                  typeahead: intent.typeahead,
                   matchedId: intent.matchedId,
                 }),
               ),

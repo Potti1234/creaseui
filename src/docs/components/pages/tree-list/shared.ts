@@ -64,6 +64,8 @@ const showcaseItems: ReadonlyArray<TreeListFixtureItem> = [
   },
   { id: 'pkg', label: 'package.json', onSelect: true },
   { id: 'readme', label: 'README.md', onSelect: true },
+  { id: 'ecole', label: 'École notes.md', onSelect: true },
+  { id: 'llama', label: 'Llama.md', onSelect: true },
 ]
 
 export const treeListFixtures: Readonly<

@@ -3,6 +3,8 @@ import { describe, it } from 'node:test'
 
 import { Option } from 'effect'
 
+import * as Typeahead from '../src/lib/behaviors/typeahead.ts'
+
 import * as TreeList from '../src/ui/tree-list.ts'
 
 const MOD = { ctrlKey: false, metaKey: false, altKey: false }
@@ -227,7 +229,7 @@ describe('TreeList.resolveKey', () => {
     // 'public' matches 'p' before 'package.json'.
     assert.deepEqual(intent, {
       _tag: 'typeahead',
-      key: 'p',
+      typeahead: { query: 'p', lastKey: 'p', isStepping: false, version: 1 },
       matchedId: Option.some('public'),
     })
   })
@@ -235,12 +237,12 @@ describe('TreeList.resolveKey', () => {
   it('a repeated character cycles to the next match', () => {
     const m = model({
       focusedId: Option.some('public'),
-      typeahead: 'p',
+      typeahead: { query: 'p', lastKey: 'p', isStepping: false, version: 1 },
     })
     const intent = TreeList.resolveKey(items, m, 'p', MOD, 'ltr')
     assert.deepEqual(intent, {
       _tag: 'typeahead',
-      key: 'p',
+      typeahead: { query: 'pp', lastKey: 'p', isStepping: true, version: 2 },
       matchedId: Option.some('pkg'),
     })
   })
@@ -271,27 +273,33 @@ describe('TreeList.update', () => {
     const op__ = TreeList.update(
       m,
       TreeList.Message.AppliedTreeListTypeahead({
-        key: 'p',
+        typeahead: { query: 'p', lastKey: 'p', isStepping: false, version: 1 },
         matchedId: Option.some('public'),
       }),
     )
-    assert.equal(op__.model.typeahead, 'p')
-    assert.equal(op__.model.typeaheadVersion, 1)
+    assert.equal(op__.model.typeahead.query, 'p')
+    assert.equal(op__.model.typeahead.version, 1)
     assert.deepEqual(op__.model.focusedId, Option.some('public'))
     assert.equal((op__.commands ?? []).length, 2)
   })
 
   it('stale typeahead resets are ignored', () => {
-    const m = model({ typeahead: 'p', typeaheadVersion: 2 })
+    const m = model({
+      typeahead: { query: 'p', lastKey: 'p', isStepping: false, version: 2 },
+    })
     const stale = TreeList.update(
       m,
-      TreeList.Message.CompletedTreeListTypeaheadReset({ version: 1 }),
+      TreeList.Message.GotTypeaheadMessage({
+        message: Typeahead.Message.ElapsedTimeout({ version: 1 }),
+      }),
     )
-    assert.equal(stale.model.typeahead, 'p')
+    assert.equal(stale.model.typeahead.query, 'p')
     const current = TreeList.update(
       m,
-      TreeList.Message.CompletedTreeListTypeaheadReset({ version: 2 }),
+      TreeList.Message.GotTypeaheadMessage({
+        message: Typeahead.Message.ElapsedTimeout({ version: 2 }),
+      }),
     )
-    assert.equal(current.model.typeahead, '')
+    assert.equal(current.model.typeahead.query, '')
   })
 })
