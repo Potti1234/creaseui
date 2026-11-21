@@ -130,7 +130,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
 Runtime.run(
   Runtime.makeElement({
     Model,
-    init: () => ({
+    init: (): { model: Model } => ({
       model: {
         move: Move.init(start),
         selected: tiles,
