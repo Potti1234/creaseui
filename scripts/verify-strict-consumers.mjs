@@ -37,6 +37,7 @@ const ITEMS = [
   'button',
   'card',
   'chart',
+  'data-grid',
   'form',
   'heading',
   'icon',

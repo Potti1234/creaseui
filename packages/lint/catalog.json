@@ -523,6 +523,7 @@
       "exports": ["dataGrid"],
       "install": "npx shadcn@latest add Potti1234/creaseui/data-grid",
       "item": "data-grid",
+      "recipes": ["data-grid-focus"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Data Grid"
@@ -707,6 +708,7 @@
       "component": "dropdown-menu",
       "description": "A CreaseUI Dropdown Menu component for Foldkit.",
       "exports": [
+        "FocusActiveItem",
         "FocusTrigger",
         "Message",
         "Model",
@@ -2643,6 +2645,7 @@
       "exports": ["dataGrid"],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-data-grid",
       "item": "stylex-data-grid",
+      "recipes": ["data-grid-focus"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Data Grid"
@@ -2827,6 +2830,7 @@
       "component": "dropdown-menu",
       "description": "The StyleX Dropdown Menu component for Foldkit.",
       "exports": [
+        "FocusActiveItem",
         "FocusTrigger",
         "Message",
         "Model",
@@ -4730,6 +4734,7 @@
       "exports": ["dataGrid"],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-data-grid",
       "item": "pleat-data-grid",
+      "recipes": ["data-grid-focus"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Data Grid"
@@ -4914,6 +4919,7 @@
       "component": "dropdown-menu",
       "description": "The Pleat Dropdown Menu component for Foldkit.",
       "exports": [
+        "FocusActiveItem",
         "FocusTrigger",
         "Message",
         "Model",

@@ -1009,6 +1009,11 @@
           "path": "data-grid.ts",
           "type": "registry:lib",
           "target": "@lib/data-grid.ts"
+        },
+        {
+          "path": "behaviors/grid-focus.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/grid-focus.ts"
         }
       ],
       "registryDependencies": [

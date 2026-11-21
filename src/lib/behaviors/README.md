@@ -10,6 +10,12 @@ Bind key unions once with `create<Key>()`; pass item collections as view inputs.
 Keep navigation helpers pure and test them independently of rendered views.
 RovingFocus establishes this convention for subsequent behavior modules.
 
+GridFocus provides non-wrapping two-dimensional navigation, disabled-cell
+skipping, RTL arrows, row/grid boundaries and page jumps. Use `init`, route
+messages through `update`, and render `create().view` cell attributes with your
+own grid semantics. `navigate` and `tabStop` are pure; Data Grid maps its
+column ids to indexes and delegates keyboard navigation to `navigate`.
+
 Popup is the pure open/close lifecycle for custom overlays. Route trigger or
 explicit requests separately from Escape, outside press, and focus-out dismissal
 requests. Read the reason from the OutMessage. For exit transitions, pass

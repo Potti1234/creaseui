@@ -2455,6 +2455,14 @@
           "publicExports": [
             "dataGrid"
           ],
+          "recipes": [
+            {
+              "id": "data-grid-focus",
+              "title": "Data Grid — grid navigation",
+              "docs": "https://creaseui.com/docs/components/data-grid",
+              "summary": "Start with DataGrid.init(config, rows) and route GridKey messages through DataGrid.update. GridFocus.navigate maps visible column indexes and displayed rows without replacing the grid Model or mount stream."
+            }
+          ],
           "renderer": "stylex",
           "replaces": [],
           "schemaVersion": 1,
@@ -3049,6 +3057,7 @@
             "update"
           ],
           "publicExports": [
+            "FocusActiveItem",
             "FocusTrigger",
             "Message",
             "Model",

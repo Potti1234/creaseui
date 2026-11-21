@@ -4,6 +4,14 @@ const DOCS = 'https://creaseui.com/docs/components'
 
 export const RECIPES = [
   {
+    id: 'data-grid-focus',
+    title: 'Data Grid — grid navigation',
+    docs: `${DOCS}/data-grid`,
+    components: ['data-grid'],
+    summary:
+      'Start with DataGrid.init(config, rows) and route GridKey messages through DataGrid.update. GridFocus.navigate maps visible column indexes and displayed rows without replacing the grid Model or mount stream.',
+  },
+  {
     id: 'dialog-form',
     title: 'Dialog — Invite member form',
     docs: `${DOCS}/dialog`,

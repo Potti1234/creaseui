@@ -2116,8 +2116,13 @@ export const dataGrid = <Row>(
                 width: `${String(gridWidth)}px`,
               }),
             ],
-            people.slice(startIndex, endIndex).map((person, offset) => {
-              const rowIndex = startIndex + offset
+            DataGrid.renderedRowIndexes(
+              model,
+              people.length,
+              startIndex,
+              endIndex,
+            ).map(rowIndex => {
+              const person = people[rowIndex]!
               const isRowSelected = model.selectedRowIndexes.includes(rowIndex)
               return h.div(
                 [
@@ -2205,6 +2210,7 @@ export const dataGrid = <Row>(
                         h.DataAttribute('row-index', String(rowIndex)),
                         h.DataAttribute('column-id', column.id),
                         h.AriaSelected(inSelection || isFocused),
+                        h.DataAttribute('focused', String(isFocused)),
                         h.Class(
                           className(
                             st.c153,

@@ -55,6 +55,51 @@ const byId = (model: Grid.Model, id: string) =>
 const displayedIds = (model: Grid.Model) =>
   Grid.displayedRows<Row>(model, config).map(row => row.id)
 
+describe('data grid keyboard navigation', () => {
+  it('renders offscreen focus before revealing without expanding the virtual window', () => {
+    const model = {
+      ...Grid.init(config, rows),
+      focusedCell: { row: 99, column: 'name' },
+    }
+    assert.deepEqual(Grid.renderedRowIndexes(model, 100, 0, 3), [0, 1, 2, 99])
+    assert.deepEqual(Grid.renderedRowIndexes(model, 3, 0, 3), [0, 1, 2])
+    assert.deepEqual(Grid.renderedRowIndexes(model, 0, 0, 0), [])
+    assert.deepEqual(
+      Grid.renderedRowIndexes(
+        { ...model, focusedCell: { row: 1, column: 'name' } },
+        100,
+        0,
+        3,
+      ),
+      [0, 1, 2],
+    )
+  })
+  it('preserves arrows and Tab and adds row, grid and page jumps', () => {
+    let model = step(
+      Grid.init(config, rows),
+      Grid.Message.FocusedCell({ row: 0, column: 'name' }),
+    )
+    const press = (key: string, ctrl = false, meta = false) => {
+      model = step(
+        model,
+        Grid.Message.GridKey({ key, ctrl, meta, shift: false }),
+      )
+      return model.focusedCell
+    }
+    assert.deepEqual(press('ArrowRight'), { row: 0, column: 'done' })
+    assert.deepEqual(press('ArrowRight'), { row: 0, column: 'done' })
+    assert.deepEqual(press('ArrowDown'), { row: 1, column: 'done' })
+    assert.deepEqual(press('Home'), { row: 1, column: 'name' })
+    assert.deepEqual(press('End'), { row: 1, column: 'done' })
+    assert.deepEqual(press('Home', true), { row: 0, column: 'name' })
+    assert.deepEqual(press('End', false, true), { row: 2, column: 'done' })
+    assert.deepEqual(press('PageUp'), { row: 0, column: 'done' })
+    assert.deepEqual(press('PageDown'), { row: 2, column: 'done' })
+    assert.deepEqual(press('ArrowLeft'), { row: 2, column: 'name' })
+    assert.deepEqual(press('Tab'), { row: 2, column: 'done' })
+  })
+})
+
 describe('data grid row identity', () => {
   it('edits the displayed row when the grid is sorted', () => {
     const sorted = sortedByName()
