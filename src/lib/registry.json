@@ -998,6 +998,11 @@
           "path": "virtual-data-table-state.ts",
           "type": "registry:lib",
           "target": "@lib/virtual-data-table-state.ts"
+        },
+        {
+          "path": "behaviors/virtualizer.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/virtualizer.ts"
         }
       ]
     },
