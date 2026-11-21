@@ -973,6 +973,25 @@
           "type": "registry:lib",
           "target": "@lib/behaviors/typeahead.ts"
         }
+      ],
+      "registryDependencies": ["Potti1234/creaseui/tree-collection-behavior"]
+    },
+    {
+      "name": "tree-collection-behavior",
+      "type": "registry:lib",
+      "title": "Tree Collection Behavior",
+      "description": "Pure tree structure, visible row, and checked state helpers.",
+      "files": [
+        {
+          "path": "behaviors/tree-collection.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/tree-collection.ts"
+        },
+        {
+          "path": "behaviors/tree-collection.LICENSE.txt",
+          "type": "registry:file",
+          "target": "@lib/behaviors/tree-collection.LICENSE.txt"
+        }
       ]
     },
     {
