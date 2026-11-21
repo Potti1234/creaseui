@@ -76,11 +76,12 @@ const update = (
   if (message._tag === 'FocusedBooking') return { model }
   const result = timeline.update(model.timeline, message, {
     ...options,
-    create: range => ({
-      ...range,
-      id: String(model.nextId),
-      title: 'New booking',
-    }),
+    create: range =>
+      Option.some({
+        ...range,
+        id: String(model.nextId),
+        title: 'New booking',
+      }),
   })
   const out = result.outMessage
   if (!out) return { model: { ...model, timeline: result.model } }
@@ -127,9 +128,7 @@ const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
                     ...timeline.spansOn(model.timeline, room).map(booking => {
                       const attributes = Object.entries(
                         timeline.spanAttrs(model.timeline, booking.id),
-                      ).flatMap(([key, value]) =>
-                        value === undefined ? [] : [h.Attribute(key, value)],
-                      )
+                      ).map(([key, value]) => h.Attribute(key, value))
                       return h.keyed('button')(
                         booking.id,
                         [

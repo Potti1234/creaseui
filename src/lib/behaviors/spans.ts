@@ -1,4 +1,4 @@
-import { Schema } from 'effect'
+import { Option, Schema } from 'effect'
 import type { Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 
@@ -35,7 +35,7 @@ const pointerCases = {
   PressedTrack: { rect: TrackRect, point: Point, pointerId: Schema.Number },
   PressedSpan: {
     id: Schema.String,
-    edge: Schema.NullOr(Edge),
+    edge: Schema.Option(Edge),
     rect: TrackRect,
     point: Point,
     pointerId: Schema.Number,
@@ -68,7 +68,7 @@ export type Options<S extends Span> = Geometry &
     tracks?: ReadonlyArray<string>
     overlap?: boolean
     size?: number
-    create?: (span: Omit<Span, 'id'>) => S | null
+    create?: (span: Omit<Span, 'id'>) => Option.Option<S>
     isDisabled?: (span: S) => boolean
   }>
 
@@ -270,12 +270,12 @@ const sameRange = (a: Span, b: Span): boolean =>
 export const create = <S extends Span>(span: Schema.Codec<S>) => {
   const Model = Schema.Struct({
     spans: Schema.Array(span),
-    drag: Schema.NullOr(
+    drag: Schema.Option(
       Schema.Struct({
         original: span,
-        preview: Schema.NullOr(span),
+        preview: Schema.Option(span),
         action: PointerAction,
-        edge: Schema.NullOr(Edge),
+        edge: Schema.Option(Edge),
         pointerId: Schema.Number,
         origin: Point,
         anchor: Schema.Finite,
@@ -284,7 +284,7 @@ export const create = <S extends Span>(span: Schema.Codec<S>) => {
     ),
   })
   type Model = typeof Model.Type
-  type Drag = NonNullable<Model['drag']>
+  type Drag = Option.Option.Value<Model['drag']>
 
   const Message = defineMessageUnion({
     ...pointerCases,
@@ -314,26 +314,33 @@ export const create = <S extends Span>(span: Schema.Codec<S>) => {
 
   const init = (spans: ReadonlyArray<S> = []): Model => ({
     spans: [...spans],
-    drag: null,
+    drag: Option.none(),
   })
   const spans = (model: Model): ReadonlyArray<S> =>
-    model.drag?.preview ? replace(model.spans, model.drag.preview) : model.spans
+    model.drag.pipe(
+      Option.flatMap(({ preview }) => preview),
+      Option.match({
+        onNone: () => model.spans,
+        onSome: preview => replace(model.spans, preview),
+      }),
+    )
   const spansOn = (model: Model, track: string): ReadonlyArray<S> =>
     spans(model).filter(span => span.track === track)
   const action = (
     model: Model,
     id: string,
-  ): typeof PointerAction.Type | undefined =>
-    model.drag?.started && model.drag.original.id === id
-      ? model.drag.action
-      : undefined
+  ): Option.Option<typeof PointerAction.Type> =>
+    model.drag.pipe(
+      Option.filter(drag => drag.started && drag.original.id === id),
+      Option.map(drag => drag.action),
+    )
   const spanAttrs = (model: Model, id: string) => {
-    const active = action(model, id)
+    const active = Option.getOrUndefined(action(model, id))
     return {
       'data-span-id': id,
-      'data-dragging': active === 'move' ? '' : undefined,
-      'data-resizing': active === 'resize' ? '' : undefined,
-      'data-drawing': active === 'draw' ? '' : undefined,
+      ...(active === 'move' ? { 'data-dragging': '' } : {}),
+      ...(active === 'resize' ? { 'data-resizing': '' } : {}),
+      ...(active === 'draw' ? { 'data-drawing': '' } : {}),
     }
   }
 
@@ -371,7 +378,9 @@ export const create = <S extends Span>(span: Schema.Codec<S>) => {
     const span = model.spans.find(other => other.id === id)
     if (!span) return { model }
     return commit(
-      model.drag?.original.id === id ? { ...model, drag: null } : model,
+      Option.exists(model.drag, drag => drag.original.id === id)
+        ? { ...model, drag: Option.none() }
+        : model,
       span,
       reason,
       'delete',
@@ -404,23 +413,24 @@ export const create = <S extends Span>(span: Schema.Codec<S>) => {
     options: Options<S>,
   ): Model => {
     const next = { ...model, spans }
-    const drag = model.drag
-    if (!drag) return next
+    if (Option.isNone(model.drag)) return next
+    const drag = model.drag.value
     const current = spans.find(other => other.id === drag.original.id)
     if (drag.action === 'draw' ? current !== undefined : current === undefined)
-      return { ...next, drag: null }
-    if (drag.preview && !allowed(next, drag.preview, options))
-      return { ...next, drag: null }
-    const preview =
-      current && drag.preview
-        ? {
-            ...current,
-            track: drag.preview.track,
-            start: drag.preview.start,
-            end: drag.preview.end,
-          }
-        : drag.preview
-    return { ...next, drag: { ...drag, preview } }
+      return { ...next, drag: Option.none() }
+    if (
+      Option.exists(drag.preview, preview => !allowed(next, preview, options))
+    )
+      return { ...next, drag: Option.none() }
+    const preview = current
+      ? Option.map(drag.preview, preview => ({
+          ...current,
+          track: preview.track,
+          start: preview.start,
+          end: preview.end,
+        }))
+      : drag.preview
+    return { ...next, drag: Option.some({ ...drag, preview }) }
   }
 
   const propose = (
@@ -450,7 +460,7 @@ export const create = <S extends Span>(span: Schema.Codec<S>) => {
           )
     }
     if (drag.action === 'resize') {
-      return drag.edge === 'start'
+      return Option.exists(drag.edge, edge => edge === 'start')
         ? fit({ ...original, start: snap(at, options) }, 'end', options)
         : fit({ ...original, end: snap(at, options) }, 'start', options)
     }
@@ -473,7 +483,8 @@ export const create = <S extends Span>(span: Schema.Codec<S>) => {
     options: Options<S>,
   ): Result => {
     const span = model.spans.find(other => other.id === id)
-    if (!span || model.drag || options.isDisabled?.(span)) return { model }
+    if (!span || Option.isSome(model.drag) || options.isDisabled?.(span))
+      return { model }
     if (key === 'Delete' || key === 'Backspace')
       return remove(model, id, 'remove-press')
     const [left, right] = rtl
@@ -517,10 +528,10 @@ export const create = <S extends Span>(span: Schema.Codec<S>) => {
   }
 
   const cancel = (model: Model): Result => {
-    const drag = model.drag
-    if (!drag) return { model }
+    if (Option.isNone(model.drag)) return { model }
+    const drag = model.drag.value
     return {
-      model: { ...model, drag: null },
+      model: { ...model, drag: Option.none() },
       ...(drag.started && drag.action !== 'draw'
         ? { outMessage: OutMessage.CancelledEdit({ span: drag.original }) }
         : {}),
@@ -534,7 +545,7 @@ export const create = <S extends Span>(span: Schema.Codec<S>) => {
   ): Result =>
     Message.match<Result>(message, {
       PressedTrack: ({ rect, point, pointerId }) => {
-        if (model.drag || !options.create) return { model }
+        if (Option.isSome(model.drag) || !options.create) return { model }
         const start = snap(
           rawValueAt(rect, point, options),
           options,
@@ -542,29 +553,31 @@ export const create = <S extends Span>(span: Schema.Codec<S>) => {
         )
         const { max, step } = limits(options)
         const end = Math.min(max, cleanNumber(start + step))
-        const original = options.create({ track: rect.track, start, end })
+        const original = Option.getOrUndefined(
+          options.create({ track: rect.track, start, end }),
+        )
         return !original || model.spans.some(({ id }) => id === original.id)
           ? { model }
           : {
               model: {
                 ...model,
-                drag: {
+                drag: Option.some({
                   original: { ...original, track: rect.track, start, end },
-                  preview: null,
+                  preview: Option.none(),
                   action: 'draw',
-                  edge: null,
+                  edge: Option.none(),
                   pointerId,
                   origin: point,
                   anchor: start,
                   started: false,
-                },
+                }),
               },
             }
       },
       PressedSpan: ({ id, edge, rect, point, pointerId }) => {
         const original = model.spans.find(other => other.id === id)
         if (
-          model.drag ||
+          Option.isSome(model.drag) ||
           !original ||
           original.track !== rect.track ||
           options.isDisabled?.(original)
@@ -574,22 +587,26 @@ export const create = <S extends Span>(span: Schema.Codec<S>) => {
         return {
           model: {
             ...model,
-            drag: {
+            drag: Option.some({
               original,
-              preview: null,
-              action: edge === null ? 'move' : 'resize',
+              preview: Option.none(),
+              action: Option.isNone(edge) ? 'move' : 'resize',
               edge,
               pointerId,
               origin: point,
               anchor,
               started: false,
-            },
+            }),
           },
         }
       },
       MovedPointer: ({ rects, point, pointerId }) => {
-        const drag = model.drag
-        if (!drag || drag.pointerId !== pointerId) return { model }
+        if (
+          Option.isNone(model.drag) ||
+          model.drag.value.pointerId !== pointerId
+        )
+          return { model }
+        const drag = model.drag.value
         if (
           !drag.started &&
           Math.max(
@@ -610,15 +627,24 @@ export const create = <S extends Span>(span: Schema.Codec<S>) => {
               }
             : proposed
         const preview =
-          next && allowed(model, next, options) ? next : drag.preview
+          next && allowed(model, next, options)
+            ? Option.some(next)
+            : drag.preview
         return {
-          model: { ...model, drag: { ...drag, started: true, preview } },
+          model: {
+            ...model,
+            drag: Option.some({ ...drag, started: true, preview }),
+          },
         }
       },
       ReleasedPointer: ({ pointerId }) => {
-        const drag = model.drag
-        if (!drag || drag.pointerId !== pointerId) return { model }
-        const released = { ...model, drag: null }
+        if (
+          Option.isNone(model.drag) ||
+          model.drag.value.pointerId !== pointerId
+        )
+          return { model }
+        const drag = model.drag.value
+        const released = { ...model, drag: Option.none() }
         const candidate =
           !drag.started && drag.action === 'draw' && options.size !== undefined
             ? fit(
@@ -630,13 +656,15 @@ export const create = <S extends Span>(span: Schema.Codec<S>) => {
                 'size',
                 options,
               )
-            : drag.preview
+            : Option.getOrUndefined(drag.preview)
         return candidate && allowed(model, candidate, options)
           ? commit(released, candidate, 'drag', drag.action)
           : { model: released }
       },
       CancelledPointer: ({ pointerId }) =>
-        model.drag?.pointerId === pointerId ? cancel(model) : { model },
+        Option.exists(model.drag, drag => drag.pointerId === pointerId)
+          ? cancel(model)
+          : { model },
       CancelledDrag: () => cancel(model),
       PressedKey: key => keydown(model, key, options),
       ReflectedSpans: ({ spans }) => ({

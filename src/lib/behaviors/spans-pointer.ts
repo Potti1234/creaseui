@@ -1,4 +1,4 @@
-import { Effect, Queue, Schema, Stream } from 'effect'
+import { Effect, Option, Queue, Schema, Stream } from 'effect'
 import * as Mount from 'foldkit/mount'
 
 import { DRAG_THRESHOLD, PointerMessage, type TrackRect } from './spans'
@@ -201,7 +201,9 @@ export const Pointer = Mount.defineStream('SpansPointer', {
                       : PointerMessage.PressedSpan({
                           id,
                           edge:
-                            edge === 'start' || edge === 'end' ? edge : null,
+                            edge === 'start' || edge === 'end'
+                              ? Option.some(edge)
+                              : Option.none(),
                           rect,
                           point,
                           pointerId,

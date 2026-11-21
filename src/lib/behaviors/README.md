@@ -25,7 +25,8 @@ models drawing a range, resizing either edge, or testing track overlap. Use
 `Spans.create(Booking)` with a Schema extending `Spans.Span.fields`, then
 embed its `Model` and route its `Message` through `update`. Render `spansOn`
 to show the current draft and consume `ChangedSpans` once on release or for
-each keyboard/programmatic edit. `ReflectedSpans` reconciles owner edits
+each keyboard/programmatic edit. A `create` callback returns `Option.none()`
+to decline drawing. `ReflectedSpans` reconciles owner edits
 without committing a draft. `stackSpans` supplies lanes for overlaps when
 allowed.
 

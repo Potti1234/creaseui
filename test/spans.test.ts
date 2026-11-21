@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { Schema } from 'effect'
+import { Option, Schema } from 'effect'
 
 import * as Spans from '../src/lib/behaviors/spans.ts'
 
@@ -22,17 +22,18 @@ const drawOptions = {
   ...options,
   size: 30,
   maxSize: 30,
-  create: (range: Omit<Spans.Span, 'id'>) => ({
-    ...range,
-    id: 'new',
-    title: 'New',
-  }),
+  create: (range: Omit<Spans.Span, 'id'>) =>
+    Option.some({
+      ...range,
+      id: 'new',
+      title: 'New',
+    }),
 }
 
-const press = (edge: 'start' | 'end' | null = null) =>
+const press = (edge?: 'start' | 'end') =>
   Message.PressedSpan({
     id: 'a',
-    edge,
+    edge: Option.fromNullishOr(edge),
     rect,
     point: { x: edge === 'end' ? 40 : 23, y: 15 },
     pointerId: 1,
@@ -71,7 +72,7 @@ describe('Spans', () => {
         movedTrack: true,
       }),
     )
-    assert.equal(dropped.model.drag, null)
+    assert.deepEqual(dropped.model.drag, Option.none())
     assert.equal(
       spans.update(dropped.model, release, options).outMessage,
       undefined,
@@ -83,7 +84,8 @@ describe('Spans', () => {
     const pressed = spans.update(initial, pressTrack(44), drawOptions).model
     const preview = spans.update(pressed, move(17), drawOptions).model
     const booking = { id: 'new', title: 'New', track: 'A', start: 20, end: 50 }
-    assert.equal(spans.action(preview, 'new'), 'draw')
+    assert.deepEqual(spans.action(preview, 'new'), Option.some('draw'))
+    assert.deepEqual(spans.action(initial, 'new'), Option.none())
     assert.deepEqual(spans.spans(preview), [booking])
     assert.deepEqual(spans.update(preview, release, drawOptions).model.spans, [
       booking,
@@ -93,6 +95,13 @@ describe('Spans', () => {
       { ...booking, start: 70, end: 100 },
     ])
     assert.equal(spans.update(initial, pressTrack(95), options).model, initial)
+    assert.equal(
+      spans.update(initial, pressTrack(95), {
+        ...drawOptions,
+        create: Option.none,
+      }).model,
+      initial,
+    )
     assert.equal(
       spans.update(pressed, release, { ...drawOptions, size: 0 }).model.spans[0]
         ?.end,
@@ -142,18 +151,18 @@ describe('Spans', () => {
       { ...retitled, track: 'B', start: 30, end: 50 },
       b,
     ])
-    assert.equal(
+    assert.deepEqual(
       spans.update(preview, Message.ReflectedSpans({ spans: [b] }), options)
         .model.drag,
-      null,
+      Option.none(),
     )
-    assert.equal(
+    assert.deepEqual(
       spans.update(
         preview,
         Message.ReflectedSpans({ spans: [a, { ...b, start: 49 }] }),
         options,
       ).model.drag,
-      null,
+      Option.none(),
     )
   })
 
