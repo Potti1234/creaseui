@@ -13,11 +13,11 @@ export const toggleGroupPage = authoredPage({
       'Groups related toggle buttons while coordinating roving focus around parent-owned single or multiple selection.',
     architecture:
       'Bind the value union once with ToggleGroup.create<Value>(). The parent owns selected value(s); the child Model owns only the roving-focus cursor. Fold the typed Selected OutMessage according to exclusive or multiple-selection policy.',
-    apiHref: 'https://foldkit.dev/ui/tabs',
+    apiHref: 'https://creaseui.com/docs/components/toggle-group#api-reference',
     styling:
       'Use short labels or familiar icons. Joined arrangement reads as one segmented control; wrapped arrangement preserves individual boundaries on narrow viewports.',
     accessibility:
-      'The shared behavior adapts Foldkit manual roving focus to a named button group while removing tab-specific semantics. Each item remains a native button with aria-pressed; disabled items are skipped.',
+      'The shared RovingFocus Submodel supplies keyboard navigation without adding semantics. The group owns its name and aria-pressed buttons; disabled items are skipped. Enter and Space activate through native button clicks.',
     keyboard: [
       [
         'Arrow keys',

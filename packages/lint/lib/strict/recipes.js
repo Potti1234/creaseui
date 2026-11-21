@@ -25,7 +25,7 @@ export const RECIPES = [
     docs: `${DOCS}/toggle-group`,
     components: ['toggle-group'],
     summary:
-      'Start the Model with ToggleGroup.init({ id }) (never build maybeFocusedIndex or activationMode yourself), route ToggleGroup.Message through ToggleGroup.update and pass the selected value from your own Model to toggleGroup({ model, toParentMessage, ariaLabel, value, items }).',
+      'Start the Model with ToggleGroup.init({ id }) rather than constructing the RovingFocus Submodel yourself, route ToggleGroup.Message through ToggleGroup.update and pass the selected value from your own Model to toggleGroup({ model, toParentMessage, ariaLabel, value, items }).',
   },
   {
     id: 'icon',

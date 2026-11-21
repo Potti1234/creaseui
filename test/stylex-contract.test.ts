@@ -370,7 +370,7 @@ describe('StyleX component authoring contract', () => {
     const tailwind = readFileSync('src/ui/toggle-group.ts', 'utf8')
     const stylex = readFileSync('src/stylex/toggle-group.ts', 'utf8')
 
-    assert.match(behavior, /Tabs as TabsPrimitive/u)
+    assert.match(behavior, /@\/lib\/behaviors\/roving-focus/u)
     assert.match(tailwind, /@\/lib\/toggle-group/u)
     assert.match(stylex, /@\/lib\/toggle-group/u)
     assert.match(tailwind, /export const create = <\s*Value extends string/u)

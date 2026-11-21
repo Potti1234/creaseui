@@ -5547,7 +5547,7 @@
               "id": "toggle-group-state",
               "title": "Toggle Group — parent-owned selection",
               "docs": "https://creaseui.com/docs/components/toggle-group",
-              "summary": "Start the Model with ToggleGroup.init({ id }) (never build maybeFocusedIndex or activationMode yourself), route ToggleGroup.Message through ToggleGroup.update and pass the selected value from your own Model to toggleGroup({ model, toParentMessage, ariaLabel, value, items })."
+              "summary": "Start the Model with ToggleGroup.init({ id }) rather than constructing the RovingFocus Submodel yourself, route ToggleGroup.Message through ToggleGroup.update and pass the selected value from your own Model to toggleGroup({ model, toParentMessage, ariaLabel, value, items })."
             }
           ],
           "renderer": "tailwind",

@@ -1,15 +1,61 @@
-import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
-import { Tabs as TabsPrimitive } from '@foldkit/ui'
+import { Schema } from 'effect'
+import type { Update } from 'foldkit'
+import * as Command from 'foldkit/command'
+import {
+  childAttributes,
+  type Attribute,
+  type ChildAttribute,
+  type Html,
+  type HtmlBuilder,
+} from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
 
-export const Model = TabsPrimitive.Model
+import * as RovingFocus from '@/lib/behaviors/roving-focus'
+
+export const Model = Schema.Struct({ rovingFocus: RovingFocus.Model })
 export type Model = typeof Model.Type
-export const Message = TabsPrimitive.Message
+export const Message = defineMessageUnion({
+  GotRovingFocusMessage: { message: RovingFocus.Message },
+  PressedItem: { value: Schema.String, index: Schema.Number },
+})
 export type Message = typeof Message.Type
-export type OutMessage<Value extends string = string> =
-  TabsPrimitive.OutMessage<Value>
+export const OutMessage = defineMessageUnion({
+  Selected: { value: Schema.String, index: Schema.Number },
+})
+export type OutMessage<Value extends string = string> = Readonly<{
+  _tag: 'Selected'
+  value: Value
+  index: number
+}>
 
-export const init = (config: Readonly<{ id: string }>): Model =>
-  TabsPrimitive.init({ id: config.id, activationMode: 'Manual' })
+export const init = (config: Readonly<{ id: string }>): Model => ({
+  rovingFocus: RovingFocus.init(config),
+})
+
+type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+
+const updateGroup = (model: Model, message: Message): UpdateReturn =>
+  Message.match<UpdateReturn>(message, {
+    GotRovingFocusMessage: ({ message }) => {
+      const next = RovingFocus.update(model.rovingFocus, message)
+      return {
+        model: { ...model, rovingFocus: next.model },
+        commands: Command.mapMessages(next.commands, child =>
+          Message.GotRovingFocusMessage({ message: child }),
+        ),
+      }
+    },
+    PressedItem: ({ value, index }) => {
+      const next = RovingFocus.focus(model.rovingFocus, value)
+      return {
+        model: { ...model, rovingFocus: next.model },
+        commands: Command.mapMessages(next.commands, child =>
+          Message.GotRovingFocusMessage({ message: child }),
+        ),
+        outMessage: OutMessage.Selected({ value, index }),
+      }
+    },
+  })
 
 export type ToggleGroupBehaviorItem<Value extends string> = Readonly<{
   value: Value
@@ -40,20 +86,8 @@ export type ToggleGroupVisualAttributes<Msg> = Readonly<{
   item: (item: ToggleGroupItemState<string>) => ReadonlyArray<Attribute<Msg>>
 }>
 
-const childAttributeTag = (attribute: ChildAttribute): string | undefined => {
-  const value = attribute.attribute
-  return typeof value === 'object' &&
-    value !== null &&
-    '_tag' in value &&
-    typeof value._tag === 'string'
-    ? value._tag
-    : undefined
-}
-
-const tabOnlyAttributes = new Set(['Role', 'AriaSelected', 'AriaControls'])
-
 const renderToggleGroup = <Value extends string, Msg>(
-  bundle: TabsPrimitive.Bundle<Value>,
+  bundle: RovingFocus.Bundle<Value>,
   props: ToggleGroupBehaviorProps<Value, Msg>,
   visual: ToggleGroupVisualAttributes<Msg>,
   toItem: (item: ToggleGroupItemState<Value>, h: HtmlBuilder<Msg>) => Html,
@@ -80,17 +114,16 @@ const renderToggleGroup = <Value extends string, Msg>(
   }
 
   return h.submodel({
-    slotId: props.model.id,
-    model: props.model,
+    slotId: props.model.rovingFocus.id,
+    model: props.model.rovingFocus,
     view: bundle.view,
     viewInputs: {
-      tabs: orderedItems.map(item => item.value),
-      selectedValue: focusedValue,
-      ariaLabel: props.ariaLabel,
+      keys: orderedItems.map(item => item.value),
+      preferredKey: focusedValue,
       orientation: props.orientation === 'vertical' ? 'Vertical' : 'Horizontal',
-      isTabDisabled: value =>
+      isDisabled: value =>
         props.items.find(item => item.value === value)?.isDisabled === true,
-      toView: ({ tabs }) =>
+      toView: items =>
         h.div(
           [
             h.Role('group'),
@@ -100,30 +133,55 @@ const renderToggleGroup = <Value extends string, Msg>(
               : [h.Dir(props.direction === 'rtl' ? 'ltr' : props.direction)]),
             ...visual.group,
           ],
-          tabs.flatMap(tab => {
-            const config = props.items.find(item => item.value === tab.value)
+          items.flatMap(item => {
+            const config = props.items.find(config => config.value === item.key)
             if (config === undefined) return []
             const state: ToggleGroupItemState<Value> = {
-              value: tab.value,
-              index: tab.index,
-              isPressed: props.selectedValues.includes(tab.value),
-              isFocused: tab.isFocused,
-              isDisabled: tab.isDisabled,
-              attributes: tab.tab.filter(
-                attribute =>
-                  !tabOnlyAttributes.has(childAttributeTag(attribute) ?? ''),
-              ),
+              value: item.key,
+              index: item.index,
+              isPressed: props.selectedValues.includes(item.key),
+              isFocused: item.isTabStop,
+              isDisabled: item.isDisabled,
+              attributes: [
+                ...item.attributes,
+                ...childAttributes([
+                  h.Type('button'),
+                  ...(item.key === focusedValue
+                    ? [h.DataAttribute('selected', '')]
+                    : []),
+                  ...(item.isDisabled
+                    ? [
+                        h.Disabled(true),
+                        h.AriaDisabled(true),
+                        h.DataAttribute('disabled', ''),
+                      ]
+                    : [
+                        h.OnClick(
+                          props.toParentMessage(
+                            Message.PressedItem({
+                              value: item.key,
+                              index: item.index,
+                            }),
+                          ),
+                        ),
+                      ]),
+                ]),
+              ],
             }
             return [toItem(state, h)]
           }),
         ),
     },
-    toParentMessage: props.toParentMessage,
+    toParentMessage: message =>
+      props.toParentMessage(Message.GotRovingFocusMessage({ message })),
   })
 }
 
 export type Bundle<Value extends string> = Readonly<{
-  update: ReturnType<typeof TabsPrimitive.create<Value>>['update']
+  update: (
+    model: Model,
+    message: Message,
+  ) => Update.ReturnWithOutMessage<Model, Message, OutMessage<Value>>
   render: <Msg>(
     props: ToggleGroupBehaviorProps<Value, Msg>,
     visual: ToggleGroupVisualAttributes<Msg>,
@@ -133,9 +191,16 @@ export type Bundle<Value extends string> = Readonly<{
 }>
 
 export const create = <Value extends string = string>(): Bundle<Value> => {
-  const bundle = TabsPrimitive.create<Value>()
+  const bundle = RovingFocus.create<Value>()
+  type GenericReturn = Update.ReturnWithOutMessage<
+    Model,
+    Message,
+    OutMessage<Value>
+  >
+  const cast = (result: UpdateReturn): GenericReturn => result as GenericReturn
+
   return {
-    update: bundle.update,
+    update: (model, message) => cast(updateGroup(model, message)),
     render: (props, visual, toItem, h) =>
       renderToggleGroup(bundle, props, visual, toItem, h),
   }
