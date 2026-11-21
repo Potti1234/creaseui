@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-for (const [renderer, port] of [
-  ['Tailwind', 5173],
-  ['StyleX', 5174],
-  ['Pleat', 5175],
+for (const [renderer, baseUrl] of [
+  ['Tailwind', process.env.TAILWIND_BASE_URL ?? 'http://127.0.0.1:4173'],
+  ['StyleX', process.env.STYLEX_BASE_URL ?? 'http://127.0.0.1:4174'],
+  ['Pleat', process.env.PLEAT_BASE_URL ?? 'http://127.0.0.1:4175'],
 ] as const) {
   test(`tree-list typeahead (${renderer})`, async ({ page }) => {
-    await page.goto(`http://127.0.0.1:${port}/docs/components/tree-list`)
+    await page.goto(`${baseUrl}/docs/components/tree-list`)
     const tree = page
       .getByRole('tree', { name: 'Project files', exact: true })
       .first()
