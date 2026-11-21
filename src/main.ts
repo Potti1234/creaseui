@@ -36,6 +36,7 @@ import * as ChartsStyleX from '@/demo/charts-stylex/page'
 import * as ChartsPleat from '@/demo/charts-pleat/page'
 import * as ComponentCatalog from '@/docs/components/catalog'
 import * as GettingStartedPage from '@/docs/getting-started-view'
+import * as BehaviorDemo from '@/docs/behavior-demo'
 import * as TutorialDocs from '@/docs/tutorial-view'
 import { tutorialChapter } from '@/docs/tutorial/chapters'
 import * as CopyFeedback from '@/docs/copy-feedback'
@@ -206,6 +207,7 @@ export const Message = defineMessageUnion({
     message: ComponentCatalog.Message,
   },
   GotDocsGuideCodeBlockMessage: { message: CodeBlock.Message },
+  GotBehaviorDemoMessage: { message: BehaviorDemo.Message },
   ObservedDocsSidebarScroll: {},
   SubmittedLintPreview: {},
   GotDocsSearchMessage: { message: DocsSearch.Message },
@@ -952,6 +954,20 @@ export const update = (model: Model, message: Message): UpdateReturn =>
       ObservedDocsSidebarScroll: () => ({ model: model }),
 
       SubmittedLintPreview: () => ({ model: model }),
+
+      GotBehaviorDemoMessage: ({ message }) => {
+        if (model.page._tag !== 'GettingStartedPage') return { model }
+        const result = BehaviorDemo.update(model.page.behaviorDemo, message)
+        return {
+          model: {
+            ...model,
+            page: { ...model.page, behaviorDemo: result.model },
+          },
+          commands: Command.mapMessages(result.commands ?? [], message =>
+            Message.GotBehaviorDemoMessage({ message }),
+          ),
+        }
+      },
 
       GotDocsGuideCodeBlockMessage: ({ message: childMessage }) => {
         const currentPage = model.page
@@ -1709,6 +1725,11 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               GettingStartedPage.view(
                 {
                   model: model.page.codeBlock,
+                  behaviorDemo: GettingStartedPage.behaviorDemo(
+                    model.page.behaviorDemo,
+                    message => Message.GotBehaviorDemoMessage({ message }),
+                    h,
+                  ),
                   toParentMessage: message =>
                     Message.GotDocsGuideCodeBlockMessage({ message }),
                   sidebarScrolled: Message.ObservedDocsSidebarScroll(),
