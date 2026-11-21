@@ -1,5 +1,5 @@
 import { Style, Global } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import { Progress as ProgressPrimitive } from '@foldkit/ui'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 

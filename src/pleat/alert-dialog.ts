@@ -1,5 +1,5 @@
 import { Style, When } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { Dialog as DialogPrimitive } from '@foldkit/ui'

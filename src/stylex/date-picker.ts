@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import { Option } from 'effect'
 import * as FoldkitCalendar from 'foldkit/calendar'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'

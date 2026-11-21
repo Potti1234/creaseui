@@ -6,16 +6,16 @@ import { Style, When } from '@pleat/core'
 
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { reset } from '@/pleat/reset'
-import { className } from '@/pleat/style'
-import { tokens } from '@/pleat/tokens'
-import { foundationTokens } from '@/pleat/foundations-tokens'
-import { interactionTokens } from '@/pleat/interaction-tokens'
+import { reset } from '@/ui/pleat/reset'
+import { className } from '@/ui/pleat/style'
+import { tokens } from '@/ui/pleat/tokens'
+import { foundationTokens } from '@/ui/pleat/foundations-tokens'
+import { interactionTokens } from '@/ui/pleat/interaction-tokens'
 
 import { dateFromISO } from '@/lib/date-parse'
-import { icon } from '@/pleat/composition/icon'
+import { icon } from '@/ui/pleat/composition/icon'
 import * as Icon from '@/lib/icon'
-import * as Calendar from '@/pleat/calendar'
+import * as Calendar from '@/ui/pleat/calendar'
 import * as DataGrid from '@/lib/data-grid'
 import type {
   DataGridColumn,

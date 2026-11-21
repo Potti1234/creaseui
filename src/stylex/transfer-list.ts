@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import { Command, type Update } from 'foldkit'
 import { Effect, Option, Schema as S } from 'effect'
 import { DragAndDrop as Dnd } from '@foldkit/ui'

@@ -20,7 +20,7 @@ import { className } from './style'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 import { tokens } from './tokens.stylex'
-import * as Popover from '@/stylex/popover'
+import * as Popover from '@/ui/stylex/popover'
 
 export const Model = Picker.Model
 export type Model = typeof Model.Type

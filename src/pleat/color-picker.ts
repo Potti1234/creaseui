@@ -21,7 +21,7 @@ import { className } from './style'
 import { foundationTokens } from './foundations-tokens'
 import { interactionTokens } from './interaction-tokens'
 import { tokens } from './tokens'
-import * as Popover from '@/pleat/popover'
+import * as Popover from '@/ui/pleat/popover'
 
 export const Model = Picker.Model
 export type Model = typeof Model.Type

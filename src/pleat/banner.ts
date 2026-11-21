@@ -1,5 +1,5 @@
 import { Style } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'

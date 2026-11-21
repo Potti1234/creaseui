@@ -1,5 +1,5 @@
 import { Style, When } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 /* Ported from Meta Astryx InfoTip (packages/lab/src/InfoTip/InfoTip.tsx) — examples and visual spec adapted to Crease UI tokens.
 
    Astryx wraps Tooltip around a real button with touchTrigger="tap" so the tap

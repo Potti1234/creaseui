@@ -132,6 +132,8 @@ export default defineConfig(({ mode }) => {
     },
     resolve: {
       alias: {
+        '@/ui/stylex': source('stylex'),
+        '@/ui/pleat': source('pleat'),
         ...(isStyleX
           ? {
               '@/site/skin': source('site/skin.stylex.ts'),

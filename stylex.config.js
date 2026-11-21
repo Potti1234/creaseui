@@ -8,6 +8,9 @@ export const stylexStyleResolution = 'property-specificity'
 export const stylexCompilerOptions = Object.freeze({
   // StyleX resolves theme imports before Vite applies its aliases.
   aliases: Object.freeze({
+    '@/ui/stylex/*': Object.freeze([
+      fileURLToPath(new URL('./src/stylex/*', import.meta.url)),
+    ]),
     '@/*': Object.freeze([fileURLToPath(new URL('./src/*', import.meta.url))]),
   }),
   styleResolution: stylexStyleResolution,

@@ -1,5 +1,5 @@
 import { Style, When } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 /* Ported from Meta Astryx TimeInput (packages/core/src/TimeInput) —
    examples and visual spec adapted to Crease UI tokens.
 
