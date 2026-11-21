@@ -5,6 +5,7 @@ import { describe, it } from 'node:test'
 import ts from 'typescript'
 
 import { authoredPages } from '../src/docs/components/pages/index.ts'
+import { connectPage } from '../src/docs/components/pages/connect.ts'
 
 const compilerOptions = (): ts.CompilerOptions => {
   const configPath = ts.findConfigFile(
@@ -32,7 +33,7 @@ const compilerOptions = (): ts.CompilerOptions => {
 describe('copyable documentation applications', () => {
   it('typecheck against the real Foldkit and Crease UI APIs', () => {
     const sources = new Map<string, string>()
-    for (const page of Object.values(authoredPages)) {
+    for (const page of [...Object.values(authoredPages), connectPage]) {
       const variants: ReadonlyArray<
         readonly [string, ReadonlyArray<{ code: string }>]
       > = [

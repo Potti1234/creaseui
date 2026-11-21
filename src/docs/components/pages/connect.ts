@@ -223,6 +223,66 @@ export const connectPreviewProgram = definePreviewProgram({
     ),
 })
 
+const usage = `import { Schema } from 'effect'
+import { Command, type Update } from 'foldkit'
+import type { HtmlBuilder } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import * as Connect from '@/lib/behaviors/connect'
+
+const portKeys = ['prompt:out', 'answer:in'] as const
+type PortKey = typeof portKeys[number]
+const connect = Connect.create<PortKey>()
+const options: Connect.Options = {
+  keys: portKeys,
+  canConnect: (from, to) => from.endsWith(':out') && to.endsWith(':in'),
+  announcementId: 'connections-live',
+}
+
+export const Model = Schema.Struct({
+  connect: Connect.Model,
+  edges: Schema.Array(Schema.Struct({ from: Schema.String, to: Schema.String })),
+})
+type Model = typeof Model.Type
+export const Message = defineMessageUnion({ GotConnect: { message: Connect.Message } })
+type Message = typeof Message.Type
+export const init = (): Model => ({ connect: Connect.init(), edges: [] })
+
+export const update = (model: Model, { message }: Message): Update.Return<Model, Message> => {
+  const next = Connect.update(model.connect, message, options)
+  const request = next.outMessage
+  if (request?._tag === 'RequestedConnection' &&
+      !model.edges.some(edge => edge.from === request.from && edge.to === request.to)) {
+    const edge = { from: request.from, to: request.to }
+    const accepted = Connect.update(next.model, Connect.Message.Connected(edge), options)
+    return {
+      model: { connect: next.model, edges: [...model.edges, edge] },
+      commands: Command.mapMessages([
+        ...(next.commands ?? []), ...(accepted.commands ?? []),
+      ], message => Message.GotConnect({ message })),
+    }
+  }
+  return {
+    model: { ...model, connect: next.model },
+    commands: Command.mapMessages(next.commands ?? [], message => Message.GotConnect({ message })),
+  }
+}
+
+export const view = (model: Model, h: HtmlBuilder<Message>) => h.div([], [
+  h.submodel({
+    slotId: 'connections',
+    model: model.connect,
+    view: connect.view,
+    toParentMessage: message => Message.GotConnect({ message }),
+    viewInputs: {
+      ...options, keys: portKeys, id: 'connection-ports',
+      toView: (ports, attributes) => h.div([...attributes], ports.map(port =>
+        h.button([h.Key(port.key), h.Type('button'), ...port.attributes], [port.key]),
+      )),
+    },
+  }),
+  h.p([h.Id('connections-live'), h.AriaLive('assertive'), h.AriaAtomic(true)], []),
+])`
+
 const examples = [
   {
     title: 'Connect ports',
@@ -230,25 +290,7 @@ const examples = [
       'A renderer-neutral SVG canvas with component-owned saved edges. Duplicate requests are refused without announcing success.',
     heroOnly: true,
     keepIdsCanonical: true,
-    code: `import * as Connect from '@/lib/behaviors/connect'
-
-const portKeys = ['prompt:out', 'answer:in'] as const
-type PortKey = typeof portKeys[number]
-export const connect = Connect.create<PortKey>()
-export const model = Connect.init()
-const options: Connect.Options = {
-  keys: portKeys,
-  canConnect: (from, to) => from.endsWith(':out') && to.endsWith(':in'),
-  announcementId: 'connections-live',
-}
-export const update = (model: Connect.Model, message: Connect.Message) =>
-  Connect.update(model, message, options)
-// Route Connect.update(model, message, options).
-// On RequestedConnection, save the edge if accepted, then route Connected.
-// Render connect.view with id, options and toView(ports, rootAttributes).
-// Apply rootAttributes to the canvas and each port's attributes to its element.
-// DOM adapter facts use client pixels; convert them at the component boundary.
-// Render a live region with id="connections-live" and aria-live="assertive".`,
+    code: usage,
   },
 ]
 
@@ -258,10 +300,118 @@ export const connectPage = authoredPage({
   kind: 'submodel',
   previewProgram: connectPreviewProgram,
   definition: {
+    kind: 'submodel',
+    sourcePath: 'src/lib/behaviors/connect.ts',
     description:
       'A headless connection draft for pointer and keyboard port connections.',
     architecture:
       'Connect is a pure behavior Model. The component owns ports, coordinates, saved edges and acceptance policy.',
+    usage,
+    composition: `Connect (src/lib/behaviors/connect.ts)
+├── ConnectDraft / Model — Option draft in the parent Model
+├── init — initial Model with no draft
+├── Message / update — facts in, Model + Commands + optional OutMessage out
+├── OutMessage.RequestedConnection — parent accepts and saves the edge
+│   └── Message.Connected — acknowledge acceptance before announcing success
+├── OutMessage.Canceled — emitted only when a draft existed
+├── create<Key>() / view — scoped port and root attribute bundles
+├── role / keyboardTarget / nearestInDirection / connectMessage — pure helpers
+└── ObservePorts / MeasurePorts / Announce — Mount and DOM Commands`,
+    apiHref:
+      'https://github.com/Potti1234/creaseui/blob/main/src/lib/behaviors/connect.ts',
+    apiDescription:
+      'Import these exports from your copied behavior module. State, saved edges, acceptance, semantics and styling stay in the component. The module imports Foldkit and Effect, not ui-sdk.',
+    apiEntries: [
+      {
+        name: 'ConnectDraft',
+        kind: 'schema',
+        signature:
+          'Schema.Struct({ from: String, to: Option(String), x: Number, y: Number, isKeyboard: Boolean })',
+      },
+      {
+        name: 'Model',
+        kind: 'schema',
+        signature: 'Schema.Struct({ draft: Schema.Option(ConnectDraft) })',
+      },
+      {
+        name: 'Message',
+        kind: 'tagged union',
+        signature:
+          'RequestedKey | MeasuredKey | Started | Targeted | MovedPointer | RequestedCommit | RequestedCancel | Connected | CompletedAnnouncement',
+      },
+      {
+        name: 'OutMessage',
+        kind: 'tagged union',
+        signature:
+          'RequestedConnection { from, to, reason: Drag | ConnectKey } | Canceled { from }',
+      },
+      { name: 'init', kind: 'function', signature: 'init(): Model' },
+      {
+        name: 'update',
+        kind: 'function',
+        signature:
+          'update(model: Model, message: Message, options: Options): Update.ReturnWithOutMessage<Model, Message, OutMessage>',
+      },
+      {
+        name: 'create',
+        kind: 'function',
+        signature: 'create<Key extends string = string>(): Bundle<Key>',
+      },
+      {
+        name: 'view',
+        kind: 'view',
+        signature: 'SubmodelView<Model, Message, ViewInputs<string>>',
+      },
+      {
+        name: 'role',
+        kind: 'function',
+        signature:
+          "role(model: Model, key: string, options: Options): 'Source' | 'Target' | 'Candidate' | undefined",
+      },
+      {
+        name: 'keyboardTarget',
+        kind: 'function',
+        signature:
+          'keyboardTarget(model: Model, pressedKey: string, ports: ReadonlyArray<Port>, options: Options): { handled: boolean; preventDefault: boolean; message: Option<Message> }',
+      },
+      {
+        name: 'nearestInDirection',
+        kind: 'function',
+        signature:
+          'nearestInDirection<Key extends string>(fromRect: Rect, candidates: ReadonlyArray<Port<Key>>, direction: readonly [number, number]): Key | undefined',
+      },
+      {
+        name: 'connectMessage',
+        kind: 'function',
+        signature:
+          'connectMessage(message: ConnectMessage, label: (key: string) => string): string',
+      },
+      {
+        name: 'ObservePorts',
+        kind: 'Mount',
+        signature:
+          'ObservePorts({ pairs: ReadonlyArray<{ from: string; to: string }>, radius: number }): MountAction',
+      },
+      {
+        name: 'MeasurePorts',
+        kind: 'Command',
+        signature:
+          'MeasurePorts({ id: string, from: string, key: string }): Command<Message>',
+      },
+      {
+        name: 'Announce',
+        kind: 'Command',
+        signature: 'Announce({ id: string, text: string }): Command<Message>',
+      },
+    ],
+    sections: [
+      {
+        id: 'coordinates-and-lifecycle',
+        title: 'Coordinates and lifecycle',
+        description:
+          'The DOM adapter emits client-pixel facts. Convert Started, Targeted, MovedPointer and MeasuredKey rectangles at the component boundary when drawing in canvas units; direct facts already use caller units. Apply port attributes to the measured port element, not a wrapper containing its label. Mount policy and snapping radius are captured on insertion: remount the root when changing them. Update revalidates current policy. Components supply focus styles and touch-action policy.',
+      },
+    ],
     accessibility:
       'Components supply port semantics and a live region. Enter or Space starts and commits; arrows choose a candidate; Escape and Tab cancel without trapping Tab.',
     examples,

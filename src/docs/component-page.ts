@@ -335,6 +335,7 @@ export type ComponentPageConfig<Msg> = Readonly<{
   kind: ComponentKind
   architecture: string
   installation: string
+  sourcePath?: string
   usage: string
   sections?: ReadonlyArray<DocsSection>
   styling?: string
@@ -788,14 +789,20 @@ export const componentPage = <Msg>(
                           ),
                         ],
                         [
-                          'CLI (npm / pnpm / yarn / bun)',
+                          config.sourcePath === undefined
+                            ? 'CLI (npm / pnpm / yarn / bun)'
+                            : 'Manual source install',
                           h.span([h.AriaHidden(true)], ['·']),
-                          'Manual: copy the registry-owned source into your app',
+                          config.sourcePath === undefined
+                            ? 'Manual: copy the registry-owned source into your app'
+                            : 'Copy this behavior module and preserve its Foldkit and Effect imports. No registry item is required.',
                         ],
                       ),
                       codeBlock<Msg>(
                         config.installation,
-                        'install.sh',
+                        config.sourcePath === undefined
+                          ? 'install.sh'
+                          : 'source.txt',
                         copy(config.installation, 'installation command'),
                         config.dark === true,
                         config.codeFileMessage,
@@ -965,7 +972,11 @@ export const componentPage = <Msg>(
                             'font-medium text-foreground underline underline-offset-4',
                           ),
                         ],
-                        ['Read the Foldkit UI reference'],
+                        [
+                          config.sourcePath === undefined
+                            ? 'Read the Foldkit UI reference'
+                            : 'Read the behavior source',
+                        ],
                       ),
                       '.',
                     ],
@@ -1064,7 +1075,11 @@ export const componentPage = <Msg>(
                           h.Href(config.apiHref),
                           h.Class('font-medium underline underline-offset-4'),
                         ],
-                        ['Foldkit API'],
+                        [
+                          config.sourcePath === undefined
+                            ? 'Foldkit API'
+                            : 'Behavior API',
+                        ],
                       ),
                       ...(config.sourceHref === undefined
                         ? []

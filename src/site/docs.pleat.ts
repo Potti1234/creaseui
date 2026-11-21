@@ -1374,7 +1374,9 @@ export const componentPage = <Msg>(
                       [
                         'Source install',
                         h.span([h.AriaHidden(true)], ['·']),
-                        'Copy the StyleX source and its imports into your application; no Tailwind reset is required',
+                        config.sourcePath === undefined
+                          ? 'Copy the StyleX source and its imports into your application; no Tailwind reset is required'
+                          : 'Copy this behavior module and preserve its Foldkit and Effect imports. No registry item is required.',
                       ],
                     ),
                     code(
@@ -1480,7 +1482,11 @@ export const componentPage = <Msg>(
                           h.Href(config.apiHref),
                           h.Class(className(reset.link, styles.apiLink)),
                         ],
-                        ['Read the Foldkit UI reference'],
+                        [
+                          config.sourcePath === undefined
+                            ? 'Read the Foldkit UI reference'
+                            : 'Read the behavior source',
+                        ],
                       ),
                       '.',
                     ],
@@ -1574,7 +1580,11 @@ export const componentPage = <Msg>(
                           h.Href(config.apiHref),
                           h.Class(className(reset.link, styles.apiLink)),
                         ],
-                        ['Foldkit API'],
+                        [
+                          config.sourcePath === undefined
+                            ? 'Foldkit API'
+                            : 'Behavior API',
+                        ],
                       ),
                       ...(config.sourceHref === undefined
                         ? []
