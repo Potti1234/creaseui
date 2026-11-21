@@ -1750,43 +1750,46 @@ test('drawer handle supports mouse cancellation and touch threshold dismissal', 
   const drawer = page.locator('#docs-drawer-3')
   const viewport = page.locator('[data-slot="drawer-viewport"]')
   const panel = drawer.locator('[data-slot="drawer-popup"]')
-  let handle = drawer.locator('[data-slot="drawer-swipe-handle"]')
+  const handle = drawer.locator('[data-slot="drawer-swipe-handle"]')
   await expect(handle).toBeVisible()
   await expect(panel).toHaveCSS('transition-property', 'none')
 
-  await handle.dispatchEvent('pointerdown', {
+  const mouse = {
+    pointerId: 7,
     pointerType: 'mouse',
-    button: 0,
-    screenX: 100,
-    screenY: 100,
+    isPrimary: true,
+    buttons: 1,
+    clientX: 100,
+    clientY: 100,
+  }
+  await handle.dispatchEvent('pointerdown', { ...mouse, button: 0 })
+  await expect(panel).toHaveAttribute('data-swiping', '')
+  await viewport.dispatchEvent('pointermove', { ...mouse, clientY: 150 })
+  await viewport.dispatchEvent('pointercancel', { ...mouse, buttons: 0 })
+  await expect(panel).not.toHaveAttribute('data-swiping', '')
+  await expect(drawer).toBeVisible()
+
+  const bounds = (await handle.boundingBox())!
+  const x = bounds.x + bounds.width / 2
+  const y = bounds.y + bounds.height / 2
+  const endY = page.viewportSize()!.height - 2
+  const touch = await page.context().newCDPSession(page)
+  await touch.send('Input.dispatchTouchEvent', {
+    type: 'touchStart',
+    touchPoints: [{ x, y }],
   })
   await expect(panel).toHaveAttribute('data-swiping', '')
-  await viewport.dispatchEvent('pointermove', {
-    pointerType: 'mouse',
-    screenX: 100,
-    screenY: 150,
+  for (const fraction of [0.25, 0.5, 1]) {
+    await touch.send('Input.dispatchTouchEvent', {
+      type: 'touchMove',
+      touchPoints: [{ x, y: y + (endY - y) * fraction }],
+    })
+  }
+  await touch.send('Input.dispatchTouchEvent', {
+    type: 'touchEnd',
+    touchPoints: [],
   })
-  await viewport.dispatchEvent('pointerleave', { pointerType: 'mouse' })
-  await expect(drawer).toBeVisible()
-  await expect(panel).not.toHaveAttribute('data-swiping', '')
-
-  handle = drawer.locator('[data-slot="drawer-swipe-handle"]')
-  await handle.dispatchEvent('pointerdown', {
-    pointerType: 'touch',
-    button: 0,
-    screenX: 100,
-    screenY: 100,
-  })
-  await viewport.dispatchEvent('pointermove', {
-    pointerType: 'touch',
-    screenX: 100,
-    screenY: 600,
-  })
-  await viewport.dispatchEvent('pointerup', {
-    pointerType: 'touch',
-    screenX: 100,
-    screenY: 600,
-  })
+  await touch.detach()
   await expect(drawer).toBeHidden()
   await expect(trigger).toBeFocused()
 })
