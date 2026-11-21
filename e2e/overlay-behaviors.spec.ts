@@ -172,3 +172,26 @@ test('layers route Escape, persistent presses, outside modal clicks and blur', a
   await outside.click()
   await expect(output).toHaveText(`${dismissed}outside;`)
 })
+
+test('an iframe layer distinguishes inside and outside presses', async ({
+  page,
+}) => {
+  await page.setContent('<iframe></iframe><output></output>')
+  await page.addScriptTag({ content: script })
+  await page.evaluate(() => {
+    const doc = document.querySelector('iframe')!.contentDocument!
+    doc.body.innerHTML =
+      '<div id="layer"><button>Inside</button></div><button>Outside</button>'
+    const output = document.querySelector('output')!
+    window.OverlayBehaviors.Layer.bindLayer(
+      doc.querySelector<HTMLElement>('#layer')!,
+      { onDismiss: reason => (output.value += reason) },
+    )
+  })
+
+  const frame = page.frameLocator('iframe')
+  await frame.getByRole('button', { name: 'Inside' }).click()
+  await expect(page.locator('output')).toHaveText('')
+  await frame.getByRole('button', { name: 'Outside' }).click()
+  await expect(page.locator('output')).toHaveText('outside-press')
+})

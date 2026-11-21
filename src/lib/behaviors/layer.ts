@@ -35,12 +35,13 @@ type BindOptions = Omit<Config, 'insideIds'> &
   }>
 
 const contains = (element: Element, target: Node): boolean => {
+  const realm = element.ownerDocument.defaultView ?? globalThis
   for (let node: Node | null = target; node !== null;) {
     if (element === node) return true
     node =
-      node instanceof Element && node.assignedSlot !== null
+      node instanceof realm.Element && node.assignedSlot !== null
         ? node.assignedSlot
-        : node instanceof ShadowRoot
+        : node instanceof realm.ShadowRoot
           ? node.host
           : node.parentNode
   }
@@ -67,6 +68,7 @@ const begin = (doc: Document): Resources => {
   const stack: Array<Entry> = []
   const persistent = new Map<HTMLElement, number>()
   const win = doc.defaultView
+  const realm = win ?? globalThis
   const active = () => stack.filter(({ element }) => element.isConnected)
   const isPersistent = (target: Node) =>
     Array.from(persistent.keys()).some(
@@ -75,7 +77,7 @@ const begin = (doc: Document): Resources => {
   const getTargets = (event: Event) =>
     event
       .composedPath()
-      .filter((target): target is Node => target instanceof Node)
+      .filter((target): target is Node => target instanceof realm.Node)
 
   const outside = (targets: ReadonlyArray<Node>) => {
     if (targets.some(isPersistent)) return []
@@ -174,12 +176,10 @@ const begin = (doc: Document): Resources => {
     if (entry === undefined) return
     // A native modal owns Escape while focus is in it, unless our layer is inside it.
     const nativeModal = getTargets(event).find(
-      target => target instanceof Element && target.matches('dialog:modal'),
+      (target): target is Element =>
+        target instanceof realm.Element && target.matches('dialog:modal'),
     )
-    if (
-      nativeModal !== undefined &&
-      !contains(nativeModal as Element, entry.element)
-    )
+    if (nativeModal !== undefined && !contains(nativeModal, entry.element))
       return
     event.preventDefault()
     entry.options.onDismiss('escape-key', event)
@@ -193,7 +193,7 @@ const begin = (doc: Document): Resources => {
     if (
       !('newState' in event) ||
       event.newState !== 'open' ||
-      !(event.target instanceof Element) ||
+      !(event.target instanceof realm.Element) ||
       isPersistent(event.target)
     )
       return
@@ -204,7 +204,7 @@ const begin = (doc: Document): Resources => {
         element.showPopover()
       }
     }
-    if (focused instanceof HTMLElement && focused !== doc.activeElement) {
+    if (focused instanceof realm.HTMLElement && focused !== doc.activeElement) {
       focused.focus({ preventScroll: true })
     }
   }
@@ -331,7 +331,8 @@ export const mount = Mount.defineStream('ObserveLayer', {
           ? Stream.never
           : Stream.callback<Message>(queue =>
               Effect.gen(function* () {
-                if (!(element instanceof HTMLElement))
+                const realm = element.ownerDocument.defaultView ?? globalThis
+                if (!(element instanceof realm.HTMLElement))
                   return yield* Effect.never
                 const root = element.getRootNode()
                 yield* Effect.acquireRelease(
@@ -339,8 +340,8 @@ export const mount = Mount.defineStream('ObserveLayer', {
                     bindLayer(element, {
                       ...options,
                       contains: target =>
-                        (root instanceof Document ||
-                          root instanceof ShadowRoot) &&
+                        (root instanceof realm.Document ||
+                          root instanceof realm.ShadowRoot) &&
                         insideIds.some(id => {
                           const inside = root.getElementById(id)
                           return inside !== null && contains(inside, target)
