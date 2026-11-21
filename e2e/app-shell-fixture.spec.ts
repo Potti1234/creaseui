@@ -63,7 +63,13 @@ test.describe('shared app-shell fixture', () => {
         root: resolve('e2e/fixtures/app-shell', renderer),
         logLevel: 'error',
         plugins: pluginsFor(renderer),
-        resolve: { alias: { '@': resolve('src') } },
+        resolve: {
+          alias: {
+            '@/ui/stylex': resolve('src/stylex'),
+            '@/ui/pleat': resolve('src/pleat'),
+            '@': resolve('src'),
+          },
+        },
         build: { outDir: output },
       }
       await build(config)

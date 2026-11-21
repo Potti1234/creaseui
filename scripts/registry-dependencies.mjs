@@ -66,7 +66,11 @@ export const sourceDependencies = (root, sourcePath, owners, itemName) => {
   for (const specifier of moduleSpecifiers(readFileSync(sourcePath, 'utf8'))) {
     if (specifier.startsWith('@/') || specifier.startsWith('.')) {
       const path = specifier.startsWith('@/')
-        ? resolve(root, 'src', specifier.slice(2))
+        ? resolve(
+            root,
+            'src',
+            specifier.replace(/^@\/ui\/(stylex|pleat)\//u, '@/$1/').slice(2),
+          )
         : resolve(dirname(sourcePath), specifier)
       const owner = owners.get(path) ?? owners.get(`${path}.ts`)
       if (!owner) {

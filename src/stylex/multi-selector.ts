@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
@@ -12,9 +12,9 @@ import {
   optionContent,
   searchablePopover,
 } from '@/lib/multi-selector-view'
-import * as Checkbox from '@/stylex/checkbox'
-import * as Drawer from '@/stylex/drawer'
-import * as Button from '@/stylex/button'
+import * as Checkbox from '@/ui/stylex/checkbox'
+import * as Drawer from '@/ui/stylex/drawer'
+import * as Button from '@/ui/stylex/button'
 import {
   Message,
   Model,

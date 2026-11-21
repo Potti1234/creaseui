@@ -12,6 +12,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "paths": {
+      "@/ui/stylex/*": ["./src/stylex/*"],
+      "@/ui/pleat/*": ["./src/pleat/*"],
       "@/*": ["./src/*"]
     }
   },

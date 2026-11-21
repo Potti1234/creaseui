@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { Option } from 'effect'

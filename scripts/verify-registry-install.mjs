@@ -51,9 +51,11 @@ const componentNames =
     ? [
         ...defaultComponentNames,
         'stylex-button',
+        'stylex-multi-selector',
         'stylex-data-table',
         'stylex-integrations-echarts',
         'pleat-button',
+        'pleat-multi-selector',
       ]
     : requestedComponentNames
 const sourcePackage = JSON.parse(
@@ -134,7 +136,7 @@ const fixtureTsconfig = JSON.parse(
   readFileSync(join(fixture, 'tsconfig.json'), 'utf8'),
 )
 fixtureTsconfig.compilerOptions.paths = {
-  ...fixtureTsconfig.compilerOptions.paths,
+  '@/*': ['./src/*'],
   ...Object.fromEntries(
     Object.entries(pleatAliases).map(([name, path]) => [name, [path]]),
   ),

@@ -1,5 +1,5 @@
 import { Style, When } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 /* Ported from Meta Astryx Lightbox (packages/core/src/Lightbox/Lightbox.tsx) — examples and visual spec adapted to Crease UI tokens. */
 
 import { Option } from 'effect'

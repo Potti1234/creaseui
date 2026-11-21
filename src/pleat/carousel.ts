@@ -1,5 +1,5 @@
 import { Style, When } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import type { EmblaPluginType } from 'embla-carousel'
 import { Stream } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'

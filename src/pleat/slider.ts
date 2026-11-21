@@ -1,6 +1,6 @@
 import { Style, When } from '@pleat/core'
 import { Option } from 'effect'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Slider as SliderPrimitive } from '@foldkit/ui'
 

@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 /* Ported from Meta Astryx Lightbox (packages/core/src/Lightbox/Lightbox.tsx) — examples and visual spec adapted to Crease UI tokens. */
 
 import { Option } from 'effect'

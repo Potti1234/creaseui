@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import { Option } from 'effect'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'

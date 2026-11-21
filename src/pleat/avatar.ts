@@ -1,5 +1,5 @@
 import { Style, When } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import { Schema as S } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'

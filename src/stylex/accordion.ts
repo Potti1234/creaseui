@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineView } from 'foldkit/submodel'
 import * as stylex from '@stylexjs/stylex'

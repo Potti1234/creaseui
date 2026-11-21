@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 /* Ported from Meta Astryx TimeInput (packages/core/src/TimeInput) —
    examples and visual spec adapted to Crease UI tokens.
 

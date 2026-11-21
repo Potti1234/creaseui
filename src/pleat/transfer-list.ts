@@ -1,5 +1,5 @@
 import { Style, When } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import { Command, type Update } from 'foldkit'
 import { Effect, Option, Schema as S } from 'effect'
 import { DragAndDrop as Dnd } from '@foldkit/ui'

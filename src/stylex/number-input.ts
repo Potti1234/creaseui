@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 /* Ported from Meta Astryx NumberInput (packages/core/src/NumberInput) —
    examples and visual spec adapted to Crease UI tokens.
 
