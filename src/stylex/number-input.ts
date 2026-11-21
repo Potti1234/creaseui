@@ -15,6 +15,7 @@ import { defineView } from 'foldkit/submodel'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as Icon from '@/lib/icon'
+import * as HoldRepeat from '@/lib/behaviors/hold-repeat'
 import {
   renderAttachedStatus,
   renderDetachedStatus,
@@ -656,10 +657,22 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                   ),
                   // Stepping edits the focused input; do not blur it on press.
                   h.Attribute('onmousedown', 'event.preventDefault()'),
-                  h.OnClick(Message.Stepped({ value: stepper(delta) }), {
+                  h.OnClick(Message.FocusGained(), {
                     propagation: 'Stop',
                     focusSelector: `#${fieldIds.input}`,
                   }),
+                  ...HoldRepeat.attributes(h, message =>
+                    Message.HeldStepper({
+                      message,
+                      direction: delta,
+                      value: stepValue ?? null,
+                      min: props.min ?? null,
+                      max: props.max ?? null,
+                      step: props.step ?? null,
+                      disabled:
+                        props.isDisabled === true || props.isReadOnly === true,
+                    }),
+                  ),
                   h.Class(className(reset.button, styles.stepperButton, extra)),
                 ],
                 [Icon.icon(icon, { class: className(styles.stepperIcon) }, h)],
