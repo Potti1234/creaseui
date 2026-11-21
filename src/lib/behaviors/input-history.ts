@@ -1,4 +1,4 @@
-import { Effect, Queue, Schema, Stream } from 'effect'
+import { Effect, Option, Queue, Schema, Stream } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import * as Render from 'foldkit/render'
@@ -8,7 +8,7 @@ import * as Mount from 'foldkit/mount'
 
 export const Model = Schema.Struct({
   id: Schema.String,
-  currentKey: Schema.NullOr(Schema.String),
+  maybeCurrentKey: Schema.Option(Schema.String),
   draft: Schema.String,
   edits: Schema.Record(Schema.String, Schema.String),
 })
@@ -40,7 +40,7 @@ export type Inputs = Readonly<{
 
 export const init = ({ id }: Readonly<{ id: string }>): Model => ({
   id,
-  currentKey: null,
+  maybeCurrentKey: Option.none(),
   draft: '',
   edits: {},
 })
@@ -52,47 +52,51 @@ const navigationStep = (
   model: Model,
   { entries, getEntryKey = defaultEntryKey }: Inputs,
   direction: Direction,
-):
-  | Readonly<{ keys: ReadonlyArray<string>; current: number; next: number }>
-  | undefined => {
+): Option.Option<
+  Readonly<{ keys: ReadonlyArray<string>; current: number; next: number }>
+> => {
   const keys = entries.map(getEntryKey)
-  const found = model.currentKey === null ? -1 : keys.indexOf(model.currentKey)
+  const found = Option.match(model.maybeCurrentKey, {
+    onNone: () => -1,
+    onSome: key => keys.indexOf(key),
+  })
   const current = found < 0 ? keys.length : found
   const next = current + (direction === 'up' ? -1 : 1)
-  return next < 0 || next > keys.length ? undefined : { keys, current, next }
+  return next < 0 || next > keys.length
+    ? Option.none()
+    : Option.some({ keys, current, next })
 }
 
 export const canNavigate = (
   model: Model,
   inputs: Inputs,
   direction: Direction,
-): boolean => navigationStep(model, inputs, direction) !== undefined
+): boolean => Option.isSome(navigationStep(model, inputs, direction))
 
 export const navigate = (
   model: Model,
   direction: Direction,
   value: string,
   inputs: Inputs,
-): Readonly<{ model: Model; value: string }> | undefined => {
+): Option.Option<Readonly<{ model: Model; value: string }>> => {
   const step = navigationStep(model, inputs, direction)
-  if (step === undefined) return undefined
-  const { keys, current, next } = step
+  if (Option.isNone(step)) return Option.none()
+  const { keys, current, next } = step.value
   const { entries } = inputs
   const draft = current === entries.length ? value : model.draft
   const edits =
-    current < entries.length && model.currentKey !== null
-      ? { ...model.edits, [model.currentKey]: value }
+    current < entries.length && Option.isSome(model.maybeCurrentKey)
+      ? { ...model.edits, [model.maybeCurrentKey.value]: value }
       : model.edits
-  const key = keys[next] ?? null
-  return {
-    model: { ...model, currentKey: key, draft, edits },
-    value:
-      key === null
-        ? draft
-        : Object.hasOwn(edits, key)
-          ? (edits[key] ?? '')
-          : (entries[next] ?? ''),
-  }
+  const maybeCurrentKey = Option.fromNullishOr(keys[next])
+  return Option.some({
+    model: { ...model, maybeCurrentKey, draft, edits },
+    value: Option.match(maybeCurrentKey, {
+      onNone: () => draft,
+      onSome: key =>
+        Object.hasOwn(edits, key) ? (edits[key] ?? '') : (entries[next] ?? ''),
+    }),
+  })
 }
 
 export const MoveCaretToEnd = Command.define('InputHistoryMoveCaretToEnd', {
@@ -131,29 +135,33 @@ export const update = (
     CompletedMoveCaret: () => ({ model }),
     RequestedNavigation: ({ direction, value }) => {
       const result = navigate(model, direction, value, inputs)
-      return result === undefined
-        ? { model }
-        : {
-            model: result.model,
-            commands: [MoveCaretToEnd({ id: model.id })],
-            outMessage: OutMessage.RestoredValue({ value: result.value }),
-          }
+      return Option.match(result, {
+        onNone: () => ({ model }),
+        onSome: result => ({
+          model: result.model,
+          commands: [MoveCaretToEnd({ id: model.id })],
+          outMessage: OutMessage.RestoredValue({ value: result.value }),
+        }),
+      })
     },
   })
 
 export type EdgeOptions = Readonly<{
   atEdge?: (direction: Direction) => boolean
-  caretLine?: (field: HTMLTextAreaElement, offset: number) => number | undefined
+  caretLine?: (
+    field: HTMLTextAreaElement,
+    offset: number,
+  ) => Option.Option<number>
 }>
 
 export const measureCaretLine = (
   field: HTMLTextAreaElement,
   offset: number,
-): number | undefined => {
-  if (!field.isConnected || field.clientWidth === 0) return undefined
+): Option.Option<number> => {
+  if (!field.isConnected || field.clientWidth === 0) return Option.none()
   const doc = field.ownerDocument
   const computed = doc.defaultView?.getComputedStyle(field)
-  if (computed === undefined) return undefined
+  if (computed === undefined) return Option.none()
   const mirror = doc.createElement('div')
   for (const property of Array.from(computed)) {
     mirror.style.setProperty(property, computed.getPropertyValue(property))
@@ -178,7 +186,7 @@ export const measureCaretLine = (
   mirror.append(field.value.slice(0, offset), marker, field.value.slice(offset))
   doc.body.append(mirror)
   try {
-    return marker.getBoundingClientRect().top
+    return Option.some(marker.getBoundingClientRect().top)
   } finally {
     mirror.remove()
   }
@@ -198,7 +206,7 @@ export const keyDirection = (
   >,
   field: Element,
   { atEdge, caretLine = measureCaretLine }: EdgeOptions = {},
-): Direction | undefined => {
+): Option.Option<Direction> => {
   const direction =
     event.key === 'ArrowUp'
       ? 'up'
@@ -219,31 +227,36 @@ export const keyDirection = (
     field.hasAttribute('readonly') ||
     field.hasAttribute('disabled')
   )
-    return undefined
+    return Option.none()
   if (field.localName === 'input') {
     const type = field.getAttribute('type') ?? 'text'
     if (!['text', 'search', 'url', 'tel'].includes(type.toLowerCase()))
-      return undefined
-    return atEdge === undefined || atEdge(direction) ? direction : undefined
+      return Option.none()
+    return atEdge === undefined || atEdge(direction)
+      ? Option.some(direction)
+      : Option.none()
   }
   const view = field.ownerDocument.defaultView
   if (view !== null && field instanceof view.HTMLTextAreaElement) {
-    if (field.selectionStart !== field.selectionEnd) return undefined
-    if (atEdge !== undefined) return atEdge(direction) ? direction : undefined
+    if (field.selectionStart !== field.selectionEnd) return Option.none()
+    if (atEdge !== undefined)
+      return atEdge(direction) ? Option.some(direction) : Option.none()
     const caret = field.selectionStart
     const end = direction === 'up' ? 0 : field.value.length
-    if (caret === end) return direction
+    if (caret === end) return Option.some(direction)
     const between =
       direction === 'up'
         ? field.value.slice(0, caret)
         : field.value.slice(caret)
-    if (between.includes('\n')) return undefined
+    if (between.includes('\n')) return Option.none()
     const line = caretLine(field, caret)
-    return line !== undefined && line === caretLine(field, end)
-      ? direction
-      : undefined
+    if (Option.isNone(line)) return Option.none()
+    const edgeLine = caretLine(field, end)
+    return Option.isSome(edgeLine) && line.value === edgeLine.value
+      ? Option.some(direction)
+      : Option.none()
   }
-  return atEdge?.(direction) === true ? direction : undefined
+  return atEdge?.(direction) === true ? Option.some(direction) : Option.none()
 }
 
 export const create = (options: EdgeOptions = {}) => {
@@ -264,8 +277,13 @@ export const create = (options: EdgeOptions = {}) => {
                         !(event instanceof view.KeyboardEvent)
                       )
                         return
-                      const direction = keyDirection(event, element, options)
-                      if (direction === undefined) return
+                      const maybeDirection = keyDirection(
+                        event,
+                        element,
+                        options,
+                      )
+                      if (Option.isNone(maybeDirection)) return
+                      const direction = maybeDirection.value
                       if (!element.hasAttribute(`data-history-${direction}`))
                         return
                       const value =

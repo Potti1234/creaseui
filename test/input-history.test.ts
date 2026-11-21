@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { Window } from 'happy-dom'
-import { Effect, Fiber, Stream } from 'effect'
+import { Effect, Fiber, Option, Stream } from 'effect'
 import * as Mount from 'foldkit/mount'
 import * as History from '../src/lib/behaviors/input-history.ts'
 
@@ -20,6 +20,27 @@ const step = (
   )
 
 describe('InputHistory navigation', () => {
+  it('exposes optional navigation state and fallible results as Option', () => {
+    const model = initial()
+    assert.deepEqual(model.maybeCurrentKey, Option.none())
+    const recalled = History.navigate(model, 'up', 'draft', inputs)
+    assert.ok(Option.isSome(recalled))
+    assert.equal(recalled.value.value, 'newest')
+    assert.deepEqual(
+      recalled.value.model.maybeCurrentKey,
+      Option.some(History.defaultEntryKey('newest', 1)),
+    )
+    const draft = History.navigate(
+      recalled.value.model,
+      'down',
+      'newest',
+      inputs,
+    )
+    assert.ok(Option.isSome(draft))
+    assert.equal(draft.value.value, 'draft')
+    assert.deepEqual(draft.value.model.maybeCurrentKey, Option.none())
+  })
+
   it('reports directional availability for drafts, bounds, empty lists and stable keys', () => {
     const model = initial()
     assert.equal(History.canNavigate(model, inputs, 'up'), true)
@@ -72,7 +93,10 @@ describe('InputHistory navigation', () => {
 
   it('does nothing for empty history, downward navigation from draft, and acknowledgments', () => {
     const model = initial()
-    assert.equal(History.navigate(model, 'up', '', { entries: [] }), undefined)
+    assert.deepEqual(
+      History.navigate(model, 'up', '', { entries: [] }),
+      Option.none(),
+    )
     assert.deepEqual(step(model, 'up', '', { entries: [] }), { model })
     assert.deepEqual(step(model, 'down', ''), { model })
     assert.deepEqual(
@@ -115,7 +139,7 @@ describe('InputHistory navigation', () => {
     const duplicates = { entries: ['same', 'same'] }
     const last = step(initial(), 'up', '', duplicates)
     const first = step(last.model, 'up', '', duplicates)
-    assert.notEqual(first.model.currentKey, last.model.currentKey)
+    assert.notDeepEqual(first.model.maybeCurrentKey, last.model.maybeCurrentKey)
     assert.equal(
       step(first.model, 'down', 'first', duplicates).outMessage?.value,
       '',
@@ -158,7 +182,10 @@ describe('InputHistory DOM gating', () => {
     try {
       for (const display of ['flex', 'grid']) {
         field.style.display = display
-        assert.equal(History.measureCaretLine(field, field.value.length), 0)
+        assert.deepEqual(
+          History.measureCaretLine(field, field.value.length),
+          Option.some(0),
+        )
         assert.equal(document.body.childElementCount, childCount)
       }
       assert.deepEqual(measuredDisplays, ['block', 'block'])
@@ -280,11 +307,11 @@ describe('InputHistory DOM gating', () => {
     const field = document.createElement('input')
     for (const type of ['text', 'search', 'url', 'tel']) {
       field.type = type
-      assert.equal(History.keyDirection(key(), field), 'up')
+      assert.deepEqual(History.keyDirection(key(), field), Option.some('up'))
     }
     for (const type of ['number', 'email', 'password', 'date', 'checkbox']) {
       field.type = type
-      assert.equal(History.keyDirection(key(), field), undefined)
+      assert.deepEqual(History.keyDirection(key(), field), Option.none())
     }
   })
 
@@ -297,18 +324,18 @@ describe('InputHistory DOM gating', () => {
       { shiftKey: true },
       { isComposing: true },
     ]) {
-      assert.equal(
+      assert.deepEqual(
         History.keyDirection(key('ArrowUp', extra), field),
-        undefined,
+        Option.none(),
       )
     }
     const composing = key()
     Object.defineProperty(composing, 'keyCode', { value: 229 })
-    assert.equal(History.keyDirection(composing, field), undefined)
+    assert.deepEqual(History.keyDirection(composing, field), Option.none())
     const prevented = key()
     prevented.preventDefault()
-    assert.equal(History.keyDirection(prevented, field), undefined)
-    assert.equal(History.keyDirection(key('Enter'), field), undefined)
+    assert.deepEqual(History.keyDirection(prevented, field), Option.none())
+    assert.deepEqual(History.keyDirection(key('Enter'), field), Option.none())
     for (const [name, value] of [
       ['readonly', ''],
       ['disabled', ''],
@@ -316,23 +343,23 @@ describe('InputHistory DOM gating', () => {
       ['data-open', ''],
     ]) {
       field.setAttribute(name, value)
-      assert.equal(
+      assert.deepEqual(
         History.keyDirection(key(), field, { atEdge: () => true }),
-        undefined,
+        Option.none(),
       )
       field.removeAttribute(name)
     }
     field.setAttribute('aria-expanded', 'false')
-    assert.equal(History.keyDirection(key(), field), 'up')
+    assert.deepEqual(History.keyDirection(key(), field), Option.some('up'))
   })
 
   it('requires collapsed textarea selection even with an override', () => {
     const field = textarea()
     field.value = 'abc'
     field.setSelectionRange(0, 2)
-    assert.equal(
+    assert.deepEqual(
       History.keyDirection(key(), field, { atEdge: () => true }),
-      undefined,
+      Option.none(),
     )
   })
 
@@ -340,65 +367,83 @@ describe('InputHistory DOM gating', () => {
     const field = textarea()
     field.value = 'first\nsecond'
     field.setSelectionRange(7, 7)
-    assert.equal(
-      History.keyDirection(key(), field, { caretLine: () => 0 }),
-      undefined,
+    assert.deepEqual(
+      History.keyDirection(key(), field, { caretLine: () => Option.some(0) }),
+      Option.none(),
     )
     field.setSelectionRange(2, 2)
-    assert.equal(
-      History.keyDirection(key('ArrowDown'), field, { caretLine: () => 0 }),
-      undefined,
+    assert.deepEqual(
+      History.keyDirection(key('ArrowDown'), field, {
+        caretLine: () => Option.some(0),
+      }),
+      Option.none(),
     )
     field.value = 'soft wrapped text'
     field.setSelectionRange(7, 7)
     const caretLine = (_: HTMLTextAreaElement, offset: number) =>
-      offset < 5 ? 0 : offset < 10 ? 20 : 40
-    assert.equal(History.keyDirection(key(), field, { caretLine }), undefined)
-    assert.equal(
+      Option.some(offset < 5 ? 0 : offset < 10 ? 20 : 40)
+    assert.deepEqual(
+      History.keyDirection(key(), field, { caretLine }),
+      Option.none(),
+    )
+    assert.deepEqual(
       History.keyDirection(key('ArrowDown'), field, { caretLine }),
-      undefined,
+      Option.none(),
     )
     field.setSelectionRange(2, 2)
-    assert.equal(History.keyDirection(key(), field, { caretLine }), 'up')
-    field.setSelectionRange(12, 12)
-    assert.equal(
-      History.keyDirection(key('ArrowDown'), field, { caretLine }),
-      'down',
+    assert.deepEqual(
+      History.keyDirection(key(), field, { caretLine }),
+      Option.some('up'),
     )
-    assert.equal(
+    field.setSelectionRange(12, 12)
+    assert.deepEqual(
+      History.keyDirection(key('ArrowDown'), field, { caretLine }),
+      Option.some('down'),
+    )
+    assert.deepEqual(
       History.keyDirection(key('ArrowDown'), field, {
-        caretLine: () => undefined,
+        caretLine: () => Option.none(),
       }),
-      undefined,
+      Option.none(),
+    )
+    assert.deepEqual(
+      History.keyDirection(key('ArrowDown'), field, {
+        caretLine: (_, offset) =>
+          offset === field.value.length ? Option.none() : Option.some(40),
+      }),
+      Option.none(),
     )
     field.setSelectionRange(field.value.length, field.value.length)
-    assert.equal(History.keyDirection(key('ArrowDown'), field), 'down')
+    assert.deepEqual(
+      History.keyDirection(key('ArrowDown'), field),
+      Option.some('down'),
+    )
     field.setSelectionRange(0, 0)
-    assert.equal(History.keyDirection(key(), field), 'up')
+    assert.deepEqual(History.keyDirection(key(), field), Option.some('up'))
   })
 
   it('supports custom editor edge overrides without accepting unknown editors by default', () => {
     const editor = document.createElement('div')
-    assert.equal(History.keyDirection(key(), editor), undefined)
-    assert.equal(
+    assert.deepEqual(History.keyDirection(key(), editor), Option.none())
+    assert.deepEqual(
       History.keyDirection(key(), editor, {
         atEdge: direction => direction === 'up',
       }),
-      'up',
+      Option.some('up'),
     )
-    assert.equal(
+    assert.deepEqual(
       History.keyDirection(key('ArrowDown'), editor, {
         atEdge: direction => direction === 'up',
       }),
-      undefined,
+      Option.none(),
     )
     const field = textarea()
     field.value = 'one\ntwo'
     field.setSelectionRange(5, 5)
-    assert.equal(
+    assert.deepEqual(
       History.keyDirection(key(), field, { atEdge: () => true }),
-      'up',
+      Option.some('up'),
     )
-    assert.equal(History.measureCaretLine(field, 1), undefined)
+    assert.deepEqual(History.measureCaretLine(field, 1), Option.none())
   })
 })
