@@ -403,6 +403,11 @@
           "path": "calendar.ts",
           "type": "registry:lib",
           "target": "@lib/calendar.ts"
+        },
+        {
+          "path": "behaviors/calendar.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/calendar.ts"
         }
       ]
     },
@@ -596,7 +601,9 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/date-parse-behavior"
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/date-picker-behavior"
       ]
     },
     {
@@ -642,7 +649,9 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/date-parse-behavior",
-        "Potti1234/creaseui/time-parse-behavior"
+        "Potti1234/creaseui/time-parse-behavior",
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/date-picker-behavior"
       ]
     },
     {
@@ -1012,7 +1021,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/date-parse-behavior"
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/calendar-range"
       ]
     },
     {
@@ -1077,6 +1087,22 @@
           "path": "sidebar-modal.ts",
           "type": "registry:lib",
           "target": "@lib/sidebar-modal.ts"
+        }
+      ]
+    },
+    {
+      "name": "date-picker-behavior",
+      "type": "registry:lib",
+      "title": "Date Picker Behavior",
+      "description": "Foldkit DatePicker lifecycle with shared Calendar keyboard behavior.",
+      "registryDependencies": [
+        "Potti1234/creaseui/calendar-range"
+      ],
+      "files": [
+        {
+          "path": "behaviors/date-picker.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/date-picker.ts"
         }
       ]
     }

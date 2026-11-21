@@ -1,10 +1,10 @@
+import * as CalendarPrimitive from '@/lib/behaviors/calendar'
 /* Skin-neutral model for the data-grid component (mirrors tablecn's
    use-data-grid state: focused/editing cell, selected ranges, sorting,
    filtering, hidden columns, row height, search overlay, undo/redo).
    Row access is injected via DataGridConfig so the model stays serializable
    and renderer-agnostic. */
 
-import { Calendar as CalendarPrimitive } from '@foldkit/ui'
 import { Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import * as Calendar from 'foldkit/calendar'
 import { defineMessageUnion } from 'foldkit/message'
