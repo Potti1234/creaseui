@@ -5,20 +5,19 @@ import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
 
 import { Dialog, Listbox as ListboxPrimitive, Popover } from '@foldkit/ui'
+import * as Selection from '@/lib/behaviors/selection'
 import * as Drawer from './drawer'
 
 /* Ported from Meta Astryx MultiSelector (packages/core/src/MultiSelector/)
    — examples and visual spec adapted to Crease UI tokens.
 
    foldkit's Multi Listbox supplies the trigger button and anchored option
-   panel; the selection lives HERE (astryx's controlled `value`) and is
-   folded from the primitive's Selected out-message plus the select-all
-   pseudo-option and the trigger's clear-all button. ChangedValues is the
-   onChange out-message. */
+   panel. Its Selected out-message drives the shared Selection behavior;
+   this component owns the scope of select-all and its ChangedValues event. */
 
 export const Model = S.Struct({
   id: S.String,
-  values: S.Array(S.String),
+  ...Selection.Model.fields,
   /** The selectable option values the select-all row toggles; seeded at
    *  init and refreshed via `reflectOptions` when options change. */
   optionValues: S.Array(S.String),
@@ -50,6 +49,8 @@ export type OutMessage = typeof OutMessage.Type
  *  whole visible option set instead of a single item. */
 export const SELECT_ALL_VALUE = '__select_all__'
 
+const selection = Selection.create()
+
 export const init = (
   config: Readonly<{
     id: string
@@ -59,7 +60,7 @@ export const init = (
   }>,
 ): Model => ({
   id: config.id,
-  values: [...(config.values ?? [])],
+  ...selection.init(config.values),
   optionValues: [...(config.optionValues ?? [])],
   query: '',
   popover: Popover.init({
@@ -80,7 +81,7 @@ export const init = (
 export const reflect = (
   model: Model,
   values: ReadonlyArray<string>,
-): Model => ({ ...model, values: [...values] })
+): Model => ({ ...model, ...selection.reflect(model, values) })
 
 /** Refreshes the option set the select-all row toggles (called by views
  *  when the option list changes — e.g. search results). */
@@ -91,31 +92,26 @@ export const reflectOptions = (
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
-const emitChange = (
-  model: Model,
-  values: ReadonlyArray<string>,
-): UpdateReturn => ({
-  model: { ...model, values: [...values] },
-  outMessage: OutMessage.ChangedValues({ values: [...values] }),
-})
+const applySelection = (model: Model, next: Selection.Model): UpdateReturn =>
+  next === model
+    ? { model }
+    : {
+        model: { ...model, ...next },
+        ...(next.values === model.values
+          ? {}
+          : { outMessage: OutMessage.ChangedValues({ values: next.values }) }),
+      }
 
 /** `allValues` is the set the select-all row covers (the currently visible
  *  options — a filtered list toggles only what it shows). */
 const toggleSelectAll = (
   model: Model,
   allValues: ReadonlyArray<string>,
-): UpdateReturn => {
-  const allSelected =
-    allValues.length > 0 &&
-    allValues.every(value => model.values.includes(value))
-  if (allValues.length === 0) return { model }
-  return emitChange(
+): UpdateReturn =>
+  applySelection(
     model,
-    allSelected
-      ? model.values.filter(value => !allValues.includes(value))
-      : [...new Set([...model.values, ...allValues])],
+    selection.toggleAll(model, { multiple: true, order: allValues }),
   )
-}
 
 const toggleValue = (
   model: Model,
@@ -125,12 +121,10 @@ const toggleValue = (
   if (value === SELECT_ALL_VALUE) {
     return toggleSelectAll(model, allValues)
   }
-  return model.values.includes(value)
-    ? emitChange(
-        model,
-        model.values.filter(v => v !== value),
-      )
-    : emitChange(model, [...model.values, value])
+  return applySelection(
+    model,
+    selection.toggle(model, value, { multiple: true }),
+  )
 }
 
 const liftListbox = (
@@ -260,6 +254,6 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       }
     }
     case 'ClickedClearAll':
-      return model.values.length === 0 ? { model } : emitChange(model, [])
+      return applySelection(model, selection.reflect(model, []))
   }
 }
