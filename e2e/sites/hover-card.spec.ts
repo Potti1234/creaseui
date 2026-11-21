@@ -1,5 +1,28 @@
 import { expect, test } from '@playwright/test'
 
+test.describe('touch', () => {
+  test.use({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  })
+
+  test('tapping outside dismisses a touch-opened card', async ({ page }) => {
+    await page.goto('/docs/components/hover-card')
+    const trigger = page.locator('[data-slot="hover-card-trigger"]').first()
+    const panel = page.locator(
+      `[id="${await trigger.getAttribute('aria-controls')}"]`,
+    )
+    await trigger.tap()
+    await expect(panel).toBeVisible()
+    await page
+      .getByRole('heading', { name: 'Hover Card', exact: true, level: 1 })
+      .tap()
+    await expect(trigger).not.toBeFocused()
+    await expect(panel).toHaveCount(0)
+  })
+})
+
 test('the panel stays open while the pointer crosses the gap', async ({
   page,
 }) => {

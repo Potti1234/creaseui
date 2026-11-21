@@ -1,6 +1,7 @@
 import type { Update } from 'foldkit'
-import { Duration, Effect, Queue, Schema as S, Stream } from 'effect'
+import { Duration, Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import * as Command from 'foldkit/command'
+import type { HtmlBuilder } from 'foldkit/html'
 import * as Mount from 'foldkit/mount'
 import { Anchor } from '@foldkit/ui'
 import { defineMessageUnion } from 'foldkit/message'
@@ -29,6 +30,27 @@ export const Message = defineMessageUnion({
   CompletedWaitBeforeClosingHoverCard: { version: S.Number },
 })
 export type Message = typeof Message.Type
+
+export const pointerAttributes = <Msg>(
+  model: Model,
+  toParentMessage: (message: Message) => Msg,
+  h: HtmlBuilder<Msg>,
+) => [
+  h.OnPointerMove((_screenX, _screenY, pointerType) =>
+    pointerType === 'touch' || model.isTriggerHovered
+      ? Option.none()
+      : Option.some(toParentMessage(Message.EnteredHoverCard())),
+  ),
+  ...(model.isOpen
+    ? []
+    : [
+        h.OnPointerLeave(pointerType =>
+          pointerType === 'touch'
+            ? Option.none()
+            : Option.some(toParentMessage(Message.LeftHoverCard())),
+        ),
+      ]),
+]
 
 export type InitConfig = Readonly<{
   id: string

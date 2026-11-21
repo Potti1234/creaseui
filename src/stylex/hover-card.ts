@@ -101,7 +101,6 @@ export const hoverCard = <Msg>(
   const panelId = `${props.model.id}-content`
   const triggerId = `${props.model.id}-trigger`
   const disabled = props.isDisabled ?? false
-  const enter = props.toParentMessage(Entered())
 
   const hasButtonTrigger =
     props.triggerButtonVariant !== undefined ||
@@ -129,10 +128,11 @@ export const hoverCard = <Msg>(
   return h.div(
     [
       h.DataAttribute('slot', 'hover-card'),
-      h.OnMouseEnter(enter),
-      ...(props.model.isOpen
-        ? []
-        : [h.OnMouseLeave(props.toParentMessage(Left()))]),
+      ...HoverCardBehavior.pointerAttributes(
+        props.model,
+        props.toParentMessage,
+        h,
+      ),
       h.Class(className(styles.base)),
     ],
     [
