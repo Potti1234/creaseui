@@ -1,5 +1,33 @@
 import { expect, test } from '@playwright/test'
 
+test('the panel stays open while the pointer crosses the gap', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/hover-card')
+  const trigger = page.locator('[data-slot="hover-card-trigger"]').first()
+  await trigger.hover()
+  const panel = page.locator(
+    `[id="${await trigger.getAttribute('aria-controls')}"]`,
+  )
+  await expect(panel).toBeVisible()
+  const button = (await trigger.boundingBox())!
+  const content = (await panel.boundingBox())!
+  const x = button.x + button.width / 2
+  expect(x).toBeGreaterThan(content.x)
+  expect(x).toBeLessThan(content.x + content.width)
+  expect(content.y).toBeGreaterThan(button.y + button.height)
+
+  await page.mouse.move(x, (button.y + button.height + content.y) / 2)
+  // Pause longer than the example's close delay while in the gap.
+  await page.waitForTimeout(350)
+  await expect(panel).toBeVisible()
+  await page.mouse.move(x, content.y + content.height / 2)
+  await expect(panel).toBeVisible()
+  await page.mouse.move(x, (button.y + button.height + content.y) / 2)
+  await page.mouse.move(0, 0)
+  await expect(panel).toHaveCount(0)
+})
+
 for (const width of [390, 1440]) {
   test(`hover cards float without moving their Button triggers at ${width}px`, async ({
     page,

@@ -72,7 +72,6 @@ export const hoverCard = <Msg>(
   const triggerId = `${props.model.id}-trigger`
   const disabled = props.isDisabled ?? false
   const enter = props.toParentMessage(Entered())
-  const leave = props.toParentMessage(Left())
 
   const hasButtonTrigger =
     props.triggerButtonVariant !== undefined ||
@@ -101,7 +100,9 @@ export const hoverCard = <Msg>(
     [
       h.DataAttribute('slot', 'hover-card'),
       h.OnMouseEnter(enter),
-      h.OnMouseLeave(leave),
+      ...(props.model.isOpen
+        ? []
+        : [h.OnMouseLeave(props.toParentMessage(Left()))]),
       h.Class('relative inline-flex'),
     ],
     [
@@ -148,7 +149,7 @@ export const hoverCard = <Msg>(
                         portal: false,
                       },
                     }),
-                    () => props.toParentMessage(CompletedAnchor()),
+                    props.toParentMessage,
                   ),
                 ),
                 h.Class(cn(CONTENT_CLASS, props.class)),
