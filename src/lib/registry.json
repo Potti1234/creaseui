@@ -221,7 +221,16 @@
           "path": "dropdown-menu-behavior.ts",
           "type": "registry:lib",
           "target": "@lib/dropdown-menu-behavior.ts"
-        },
+        }
+      ],
+      "registryDependencies": ["Potti1234/creaseui/popup-behavior"]
+    },
+    {
+      "name": "popup-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Popup Behavior",
+      "description": "Shared open, close, dismissal, and exit presence for custom overlays.",
+      "files": [
         {
           "path": "behaviors/popup.ts",
           "type": "registry:lib",
@@ -828,6 +837,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/popup-behavior",
         "Potti1234/creaseui/roving-focus-behavior"
       ]
     },

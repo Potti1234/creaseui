@@ -2,12 +2,18 @@ import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import { Option } from 'effect'
 
+import * as Popup from '../src/lib/behaviors/popup'
 import * as RovingFocus from '../src/lib/behaviors/roving-focus'
 import * as NavMenu from '../src/lib/nav-menu'
 
 const init = (
   config: Partial<NavMenu.InitConfig> & { id: string } = { id: 'menu' },
 ): NavMenu.Model => NavMenu.init(config)
+
+const assertPinned = (model: NavMenu.Model): void => {
+  assert.equal(NavMenu.isOpen(model), true)
+  assert.ok(Option.isNone(model.hoverOpenedAtMs))
+}
 
 /** Applies a message then immediately completes any pending show/close timer
     at the given timestamp — the runtime would do this via commands. */
@@ -61,8 +67,10 @@ describe('hover intent', () => {
       NavMenu.Message.RecordedNavMenuEnter({ atMs: 1000 }),
     ).model
     assert.equal(NavMenu.isOpen(model), false)
+    assert.deepEqual(model.popup, Popup.init())
     model = flushShow(model, 1150)
-    assert.equal(model.openMode, 'hover')
+    assert.deepEqual(model.popup, Popup.init({ defaultOpen: true }))
+    assert.deepEqual(model.hoverOpenedAtMs, Option.some(1150))
   })
 
   it('cancels the pending show when the pointer leaves before the delay', () => {
@@ -72,9 +80,16 @@ describe('hover intent', () => {
       model,
       NavMenu.Message.RecordedNavMenuEnter({ atMs: 1000 }),
     ).model
+    const pendingShowVersion = model.showVersion
     model = NavMenu.update(model, NavMenu.Message.LeftNavMenuTrigger()).model
     // a stale completion for the old version must not open
-    model = flushShow(model, 1150)
+    model = NavMenu.update(
+      model,
+      NavMenu.Message.CompletedWaitBeforeShowingNavMenu({
+        version: pendingShowVersion,
+        atMs: 1150,
+      }),
+    ).model
     assert.equal(NavMenu.isOpen(model), false)
   })
 
@@ -86,7 +101,7 @@ describe('hover intent', () => {
       NavMenu.Message.RecordedNavMenuEnter({ atMs: 1000 }),
     ).model
     model = flushShow(model, 1150)
-    assert.equal(model.openMode, 'hover')
+    assert.equal(NavMenu.isOpen(model), true)
     // leave trigger → pending close at this version
     const left = NavMenu.update(model, NavMenu.Message.LeftNavMenuTrigger())
     model = left.model
@@ -100,7 +115,7 @@ describe('hover intent', () => {
         atMs: 99999,
       }),
     ).model
-    assert.equal(model.openMode, 'hover')
+    assert.equal(NavMenu.isOpen(model), true)
   })
 
   it('closes on panel leave', () => {
@@ -114,7 +129,9 @@ describe('hover intent', () => {
     model = NavMenu.update(model, NavMenu.Message.EnteredNavMenuPanel()).model
     model = NavMenu.update(model, NavMenu.Message.LeftNavMenuPanel()).model
     model = flushClose(model)
-    assert.equal(model.openMode, 'closed')
+    assert.equal(Popup.isMounted(model.popup), false)
+    assert.ok(Option.isNone(model.hoverOpenedAtMs))
+    assert.ok(Option.isNone(model.lastClosedAtMs))
   })
 })
 
@@ -125,7 +142,7 @@ describe('click semantics', () => {
       model,
       NavMenu.Message.PressedNavMenuTrigger({ atMs: 5000 }),
     ).model
-    assert.equal(model.openMode, 'pinned')
+    assertPinned(model)
   })
 
   it('pointer click on a hover-opened trigger pins it open', () => {
@@ -136,12 +153,14 @@ describe('click semantics', () => {
       NavMenu.Message.RecordedNavMenuEnter({ atMs: 0 }),
     ).model
     model = flushShow(model, 150)
+    model = NavMenu.update(model, NavMenu.Message.LeftNavMenuPanel()).model
     // click within the 500ms guard of the hover open
     model = NavMenu.update(
       model,
       NavMenu.Message.PressedNavMenuTrigger({ atMs: 400 }),
     ).model
-    assert.equal(model.openMode, 'pinned')
+    assertPinned(model)
+    assertPinned(flushClose(model))
   })
 
   it('pointer click past the guard on a hover-opened trigger closes it', () => {
@@ -156,7 +175,7 @@ describe('click semantics', () => {
       model,
       NavMenu.Message.PressedNavMenuTrigger({ atMs: 900 }),
     ).model
-    assert.equal(model.openMode, 'closed')
+    assert.equal(NavMenu.isOpen(model), false)
   })
 
   it('pointer click on a pinned trigger closes it', () => {
@@ -165,12 +184,12 @@ describe('click semantics', () => {
       model,
       NavMenu.Message.PressedNavMenuTrigger({ atMs: 5000 }),
     ).model
-    assert.equal(model.openMode, 'pinned')
+    assertPinned(model)
     model = NavMenu.update(
       model,
       NavMenu.Message.PressedNavMenuTrigger({ atMs: 6000 }),
     ).model
-    assert.equal(model.openMode, 'closed')
+    assert.equal(NavMenu.isOpen(model), false)
   })
 
   it('keyboard activation always opens and never dismisses', () => {
@@ -179,26 +198,38 @@ describe('click semantics', () => {
       model,
       NavMenu.Message.ActivatedNavMenuTrigger(),
     ).model
-    assert.equal(model.openMode, 'pinned')
+    assertPinned(model)
     model = NavMenu.update(
       model,
       NavMenu.Message.ActivatedNavMenuTrigger(),
     ).model
-    assert.equal(model.openMode, 'pinned')
+    assertPinned(model)
   })
 })
 
 describe('dismissal paths', () => {
-  it('Escape closes and emits the focus-restore command', () => {
-    let model = init()
-    model = NavMenu.update(
-      model,
-      NavMenu.Message.PressedNavMenuTrigger({ atMs: 5000 }),
-    ).model
-    const result = NavMenu.update(model, NavMenu.Message.PressedEscapeNavMenu())
-    assert.equal(result.model.openMode, 'closed')
-    assert.ok((result.commands ?? []).length >= 2)
-  })
+  for (const [label, message, restoresFocus] of [
+    ['Escape', NavMenu.Message.PressedEscapeNavMenu(), true],
+    ['the close button', NavMenu.Message.ClosedNavMenu(), true],
+    ['a backdrop press', NavMenu.Message.PressedNavMenuBackdrop(), false],
+    ['item selection', NavMenu.Message.SelectedNavMenuItem(), false],
+  ] as const) {
+    it(`${label} closes the popup with the expected focus policy`, () => {
+      const opened = NavMenu.update(
+        init(),
+        NavMenu.Message.ActivatedNavMenuTrigger(),
+      ).model
+      const result = NavMenu.update(opened, message)
+      assert.equal(Popup.isMounted(result.model.popup), false)
+      assert.deepEqual(
+        result.commands?.map(command => command.name),
+        [
+          'StampNavMenuClose',
+          ...(restoresFocus ? ['FocusNavMenuTrigger'] : []),
+        ],
+      )
+    })
+  }
 
   it('a deliberate close suppresses hover reopen for 300ms', () => {
     let model = init()
@@ -220,24 +251,12 @@ describe('dismissal paths', () => {
     )
     assert.equal(recorded.commands === undefined, true)
     // 400ms later — allowed
-    model = NavMenu.update(
+    const next = NavMenu.update(
       model,
       NavMenu.Message.RecordedNavMenuEnter({ atMs: 6400 }),
-    ).model
-    assert.equal(model.showVersion > 0, true)
-  })
-
-  it('backdrop press closes without focus restore', () => {
-    let model = init()
-    model = NavMenu.update(
-      model,
-      NavMenu.Message.PressedNavMenuTrigger({ atMs: 5000 }),
-    ).model
-    const result = NavMenu.update(
-      model,
-      NavMenu.Message.PressedNavMenuBackdrop(),
     )
-    assert.equal(result.model.openMode, 'closed')
+    assert.equal(next.commands?.length, 1)
+    assert.equal(NavMenu.isOpen(flushShow(next.model, 6550)), true)
   })
 
   it('leaving a pinned trigger does not close it', () => {
@@ -248,6 +267,6 @@ describe('dismissal paths', () => {
     ).model
     model = NavMenu.update(model, NavMenu.Message.LeftNavMenuTrigger()).model
     model = flushClose(model)
-    assert.equal(model.openMode, 'pinned')
+    assertPinned(model)
   })
 })
