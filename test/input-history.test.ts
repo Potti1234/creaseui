@@ -20,6 +20,30 @@ const step = (
   )
 
 describe('InputHistory navigation', () => {
+  it('reports directional availability for drafts, bounds, empty lists and stable keys', () => {
+    const model = initial()
+    assert.equal(History.canNavigate(model, inputs, 'up'), true)
+    assert.equal(History.canNavigate(model, inputs, 'down'), false)
+    assert.equal(History.canNavigate(model, { entries: [] }, 'up'), false)
+    assert.equal(History.canNavigate(model, { entries: [] }, 'down'), false)
+    const newest = step(model, 'up', '').model
+    assert.equal(History.canNavigate(newest, inputs, 'up'), true)
+    assert.equal(History.canNavigate(newest, inputs, 'down'), true)
+    const oldest = step(newest, 'up', '').model
+    assert.equal(History.canNavigate(oldest, inputs, 'up'), false)
+    assert.equal(History.canNavigate(oldest, inputs, 'down'), true)
+    const keyed = { entries: ['a', 'b'], getEntryKey: (entry: string) => entry }
+    const recalled = step(model, 'up', '', keyed).model
+    assert.equal(
+      History.canNavigate(
+        recalled,
+        { ...keyed, entries: ['a', 'b', 'c'] },
+        'down',
+      ),
+      true,
+    )
+  })
+
   it('recalls oldest-first entries, preserves edits and restores the draft', () => {
     const newest = step(initial(), 'up', 'draft')
     assert.equal(newest.outMessage?.value, 'newest')
@@ -180,17 +204,15 @@ describe('InputHistory DOM gating', () => {
     }
   })
 
-  it('prevents only real recalls, reads fresh view projections, and cleans up its listener', async () => {
+  it('prevents only available recalls, reads fresh availability attributes, and cleans up its listener', async () => {
     const field = textarea()
     field.value = 'draft'
     const render = (model: History.Model, entries = inputs.entries) => {
-      field.setAttribute(
-        'data-input-history',
-        JSON.stringify({
-          currentKey: model.currentKey,
-          keys: entries.map((entry, index) => JSON.stringify([index, entry])),
-        }),
-      )
+      for (const direction of ['up', 'down'] as const)
+        field.toggleAttribute(
+          `data-history-${direction}`,
+          History.canNavigate(model, { entries }, direction),
+        )
     }
     const received: History.Message[] = []
     render(initial())
@@ -219,10 +241,6 @@ describe('InputHistory DOM gating', () => {
     const empty = key()
     field.dispatchEvent(empty)
     assert.equal(empty.defaultPrevented, false)
-    field.setAttribute('data-input-history', 'invalid json')
-    const malformed = key()
-    field.dispatchEvent(malformed)
-    assert.equal(malformed.defaultPrevented, false)
     render(initial())
     await Effect.runPromise(Fiber.interrupt(fiber))
     const removed = key()

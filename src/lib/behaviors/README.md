@@ -23,9 +23,8 @@ InputHistory recalls oldest-first string entries with Up/Down and restores the
 draft after the newest entry. Pass entries to `update` and `attributes`; the
 component writes `RestoredValue.value` and maps returned Commands. Spread
 `attributes(model, inputs, send, h)` on the editor, alongside its ID. The Mount
-reads a serialized view projection on each keydown, so its listener never
-captures stale state; only a successful navigation prevents the browser key.
-State remains in the parent-owned Schema Model (current key, draft, keyed edits).
+reads plain `data-history-up` / `data-history-down` availability attributes,
+computed by the pure `canNavigate` helper. Only recalls prevent the browser key.
 Send `Reset` after submission or when replacing history. A stable `getEntryKey`
 preserves position across rebuilt lists and appended entries without Reset;
 the default identity combines index and string. Keys must be unique.

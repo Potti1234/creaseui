@@ -1,5 +1,6 @@
 import type { HtmlBuilder } from 'foldkit/html'
 import { Option } from 'effect'
+import { defineMessageUnion } from 'foldkit/message'
 import * as InputHistory from '@/lib/behaviors/input-history'
 
 export interface HistoryPreviewShape {
@@ -7,9 +8,12 @@ export interface HistoryPreviewShape {
   readonly entries: ReadonlyArray<string>
 }
 
-export type HistoryPreviewMessage =
-  | Readonly<{ _tag: 'GotTextareaHistory'; message: InputHistory.Message }>
-  | Readonly<{ _tag: 'SentTextareaMessage' }>
+export const HistoryPreviewMessage = defineMessageUnion({
+  GotTextareaHistory: { message: InputHistory.Message },
+  SentTextareaMessage: {},
+})
+
+export type HistoryPreviewMessage = typeof HistoryPreviewMessage.Type
 
 export const historyAttributes = <Msg>(
   model: HistoryPreviewShape,
@@ -19,7 +23,7 @@ export const historyAttributes = <Msg>(
   ...InputHistory.attributes(
     model.history,
     { entries: model.entries },
-    message => send({ _tag: 'GotTextareaHistory', message }),
+    message => send(HistoryPreviewMessage.GotTextareaHistory({ message })),
     h,
   ),
   h.OnKeyDownPreventDefault((key, modifiers) =>
@@ -28,7 +32,7 @@ export const historyAttributes = <Msg>(
     !modifiers.altKey &&
     !modifiers.ctrlKey &&
     !modifiers.metaKey
-      ? Option.some(send({ _tag: 'SentTextareaMessage' }))
+      ? Option.some(send(HistoryPreviewMessage.SentTextareaMessage()))
       : Option.none(),
   ),
 ]

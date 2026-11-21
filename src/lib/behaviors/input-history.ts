@@ -12,18 +12,25 @@ export const Model = Schema.Struct({
   draft: Schema.String,
   edits: Schema.Record(Schema.String, Schema.String),
 })
+
 export type Model = typeof Model.Type
+
 export const Direction = Schema.Literals(['up', 'down'])
+
 export type Direction = typeof Direction.Type
+
 export const Message = defineMessageUnion({
   RequestedNavigation: { direction: Direction, value: Schema.String },
   Reset: {},
   CompletedMoveCaret: {},
 })
+
 export type Message = typeof Message.Type
+
 export const OutMessage = defineMessageUnion({
   RestoredValue: { value: Schema.String },
 })
+
 export type OutMessage = typeof OutMessage.Type
 
 export type Inputs = Readonly<{
@@ -38,31 +45,39 @@ export const init = ({ id }: Readonly<{ id: string }>): Model => ({
   edits: {},
 })
 
-export const navigationIndex = (
-  keys: ReadonlyArray<string>,
-  currentKey: string | null,
+export const defaultEntryKey = (entry: string, index: number): string =>
+  JSON.stringify([index, entry])
+
+const navigationStep = (
+  model: Model,
+  { entries, getEntryKey = defaultEntryKey }: Inputs,
   direction: Direction,
-): number | undefined => {
-  const found = currentKey === null ? -1 : keys.indexOf(currentKey)
+):
+  | Readonly<{ keys: ReadonlyArray<string>; current: number; next: number }>
+  | undefined => {
+  const keys = entries.map(getEntryKey)
+  const found = model.currentKey === null ? -1 : keys.indexOf(model.currentKey)
   const current = found < 0 ? keys.length : found
   const next = current + (direction === 'up' ? -1 : 1)
-  return next < 0 || next > keys.length ? undefined : next
+  return next < 0 || next > keys.length ? undefined : { keys, current, next }
 }
+
+export const canNavigate = (
+  model: Model,
+  inputs: Inputs,
+  direction: Direction,
+): boolean => navigationStep(model, inputs, direction) !== undefined
 
 export const navigate = (
   model: Model,
   direction: Direction,
   value: string,
-  {
-    entries,
-    getEntryKey = (entry, index) => JSON.stringify([index, entry]),
-  }: Inputs,
+  inputs: Inputs,
 ): Readonly<{ model: Model; value: string }> | undefined => {
-  const keys = entries.map(getEntryKey)
-  const found = model.currentKey === null ? -1 : keys.indexOf(model.currentKey)
-  const current = found < 0 ? entries.length : found
-  const next = navigationIndex(keys, model.currentKey, direction)
-  if (next === undefined) return undefined
+  const step = navigationStep(model, inputs, direction)
+  if (step === undefined) return undefined
+  const { keys, current, next } = step
+  const { entries } = inputs
   const draft = current === entries.length ? value : model.draft
   const edits =
     current < entries.length && model.currentKey !== null
@@ -104,18 +119,18 @@ export const MoveCaretToEnd = Command.define('InputHistoryMoveCaretToEnd', {
     ),
 })
 
+type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+
 export const update = (
   model: Model,
   message: Message,
   inputs: Inputs,
-): Update.ReturnWithOutMessage<Model, Message, OutMessage> => {
-  switch (message._tag) {
-    case 'Reset':
-      return { model: init({ id: model.id }) }
-    case 'CompletedMoveCaret':
-      return { model }
-    case 'RequestedNavigation': {
-      const result = navigate(model, message.direction, message.value, inputs)
+): UpdateReturn =>
+  Message.match<UpdateReturn>(message, {
+    Reset: () => ({ model: init({ id: model.id }) }),
+    CompletedMoveCaret: () => ({ model }),
+    RequestedNavigation: ({ direction, value }) => {
+      const result = navigate(model, direction, value, inputs)
       return result === undefined
         ? { model }
         : {
@@ -123,9 +138,8 @@ export const update = (
             commands: [MoveCaretToEnd({ id: model.id })],
             outMessage: OutMessage.RestoredValue({ value: result.value }),
           }
-    }
-  }
-}
+    },
+  })
 
 export type EdgeOptions = Readonly<{
   atEdge?: (direction: Direction) => boolean
@@ -211,7 +225,8 @@ export const keyDirection = (
       return undefined
     return atEdge === undefined || atEdge(direction) ? direction : undefined
   }
-  if (field instanceof field.ownerDocument.defaultView!.HTMLTextAreaElement) {
+  const view = field.ownerDocument.defaultView
+  if (view !== null && field instanceof view.HTMLTextAreaElement) {
     if (field.selectionStart !== field.selectionEnd) return undefined
     if (atEdge !== undefined) return atEdge(direction) ? direction : undefined
     const caret = field.selectionStart
@@ -230,73 +245,49 @@ export const keyDirection = (
   return atEdge?.(direction) === true ? direction : undefined
 }
 
-const Snapshot = Schema.Struct({
-  currentKey: Schema.NullOr(Schema.String),
-  keys: Schema.Array(Schema.String),
-})
-const snapshotAttribute = 'data-input-history'
-
 export const create = (options: EdgeOptions = {}) => {
   const ObserveInputHistory = Mount.defineStream('ObserveInputHistory', {
     messages: [Message.RequestedNavigation],
     execute: ({ element, viewStateChanges }) =>
-      Stream.callback<typeof Message.RequestedNavigation.Type>(queue =>
-        Effect.gen(function* () {
-          let live = false
-          yield* Stream.runForEach(viewStateChanges, state =>
-            Effect.sync(() => {
-              live = state === 'Live'
-            }),
-          ).pipe(Effect.forkScoped)
-          yield* Effect.acquireRelease(
-            Effect.sync(() => {
-              const onKeyDown = (event: Event) => {
-                if (
-                  !(
-                    event instanceof
-                    element.ownerDocument.defaultView!.KeyboardEvent
-                  )
+      Stream.switchMap(viewStateChanges, state =>
+        state === 'Paused'
+          ? Stream.never
+          : Stream.callback<typeof Message.RequestedNavigation.Type>(queue =>
+              Effect.gen(function* () {
+                yield* Effect.acquireRelease(
+                  Effect.sync(() => {
+                    const onKeyDown = (event: Event) => {
+                      const view = element.ownerDocument.defaultView
+                      if (
+                        view === null ||
+                        !(event instanceof view.KeyboardEvent)
+                      )
+                        return
+                      const direction = keyDirection(event, element, options)
+                      if (direction === undefined) return
+                      if (!element.hasAttribute(`data-history-${direction}`))
+                        return
+                      const value =
+                        'value' in element && typeof element.value === 'string'
+                          ? element.value
+                          : (element.textContent ?? '')
+                      event.preventDefault()
+                      Queue.offerUnsafe(
+                        queue,
+                        Message.RequestedNavigation({ direction, value }),
+                      )
+                    }
+                    element.addEventListener('keydown', onKeyDown)
+                    return onKeyDown
+                  }),
+                  onKeyDown =>
+                    Effect.sync(() =>
+                      element.removeEventListener('keydown', onKeyDown),
+                    ),
                 )
-                  return
-                if (!live) return
-                const direction = keyDirection(event, element, options)
-                if (direction === undefined) return
-                const raw = element.getAttribute(snapshotAttribute)
-                if (raw === null) return
-                let snapshot: typeof Snapshot.Type
-                try {
-                  snapshot = Schema.decodeUnknownSync(Snapshot)(JSON.parse(raw))
-                } catch {
-                  return
-                }
-                const value =
-                  'value' in element && typeof element.value === 'string'
-                    ? element.value
-                    : (element.textContent ?? '')
-                if (
-                  navigationIndex(
-                    snapshot.keys,
-                    snapshot.currentKey,
-                    direction,
-                  ) === undefined
-                )
-                  return
-                event.preventDefault()
-                Queue.offerUnsafe(
-                  queue,
-                  Message.RequestedNavigation({ direction, value }),
-                )
-              }
-              element.addEventListener('keydown', onKeyDown)
-              return onKeyDown
-            }),
-            onKeyDown =>
-              Effect.sync(() =>
-                element.removeEventListener('keydown', onKeyDown),
-              ),
-          )
-          return yield* Effect.never
-        }),
+                return yield* Effect.never
+              }),
+            ),
       ),
   })
   return {
@@ -307,16 +298,12 @@ export const create = (options: EdgeOptions = {}) => {
       send: (message: Message) => Msg,
       h: HtmlBuilder<Msg>,
     ) => [
-      h.DataAttribute(
-        'input-history',
-        JSON.stringify({
-          currentKey: model.currentKey,
-          keys: inputs.entries.map(
-            inputs.getEntryKey ??
-              ((entry, index) => JSON.stringify([index, entry])),
-          ),
-        }),
-      ),
+      ...(canNavigate(model, inputs, 'up')
+        ? [h.DataAttribute('history-up', '')]
+        : []),
+      ...(canNavigate(model, inputs, 'down')
+        ? [h.DataAttribute('history-down', '')]
+        : []),
       h.OnMount(Mount.mapMessage(ObserveInputHistory(), send)),
     ],
   }
