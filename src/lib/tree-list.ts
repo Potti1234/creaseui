@@ -49,6 +49,15 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
+const TypeaheadCandidate = S.Struct({
+  id: S.String,
+  label: S.String,
+  isDisabled: S.Boolean,
+  hasChildren: S.Boolean,
+  hasInnerAction: S.Boolean,
+  isExpanded: S.Boolean,
+})
+
 export const Message = defineMessageUnion({
   ToggledTreeListItem: { id: S.String, isExpanded: S.Boolean },
   FocusedTreeListItem: { id: S.String },
@@ -56,8 +65,8 @@ export const Message = defineMessageUnion({
   PressedTreeListItemAction: { id: S.String },
   RequestedTreeListItemActivation: { id: S.String },
   AppliedTreeListTypeahead: {
-    typeahead: Typeahead.Model,
-    matchedId: S.Option(S.String),
+    key: S.String,
+    candidates: S.Array(TypeaheadCandidate),
   },
   CompletedFocusTreeListItem: {},
   CompletedClickTreeListItemAction: {},
@@ -237,8 +246,8 @@ export type TreeKeyIntent =
   | Readonly<{ _tag: 'activate'; id: string }>
   | Readonly<{
       _tag: 'typeahead'
-      typeahead: Typeahead.Model
-      matchedId: Option.Option<string>
+      key: string
+      candidates: ReadonlyArray<typeof TypeaheadCandidate.Type>
     }>
   | Readonly<{ _tag: 'none' }>
 
@@ -275,22 +284,18 @@ export const resolveKey = (
   const currentIndex = visible.findIndex(item => item.id === focused)
   const current = currentIndex >= 0 ? visible[currentIndex] : undefined
 
-  if (
-    Typeahead.isTypeaheadKey(key, modifiers) &&
-    (key !== ' ' || Typeahead.isActive(model.typeahead))
-  ) {
-    const next = Typeahead.search(model.typeahead, {
-      key,
-      labels: visible.map(item => itemText(items, item.id)),
-      currentIndex,
-      isDisabled: index => visible[index]?.isDisabled === true,
-    })
+  if (Typeahead.isTypeaheadKey(key, modifiers)) {
     return {
       _tag: 'typeahead',
-      typeahead: next.model,
-      matchedId: Option.flatMap(next.maybeIndex, index =>
-        Option.fromUndefinedOr(visible[index]?.id),
-      ),
+      key,
+      candidates: visible.map(item => ({
+        id: item.id,
+        label: itemText(items, item.id),
+        isDisabled: item.isDisabled,
+        hasChildren: item.hasChildren,
+        hasInnerAction: item.hasInnerAction,
+        isExpanded: item.isExpanded,
+      })),
     }
   }
   if (!NAVIGATION_KEYS.has(key)) {
@@ -461,26 +466,55 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         ],
       }
     case 'AppliedTreeListTypeahead': {
+      const focusedId = Option.getOrUndefined(model.focusedId)
+      const currentIndex = message.candidates.findIndex(
+        item => item.id === focusedId,
+      )
+      if (message.key === ' ' && !Typeahead.isActive(model.typeahead)) {
+        const current = message.candidates[currentIndex]
+        if (current === undefined || current.isDisabled) return { model }
+        if (current.hasInnerAction) {
+          return update(
+            model,
+            Message.RequestedTreeListItemActivation({ id: current.id }),
+          )
+        }
+        if (current.hasChildren) {
+          return update(
+            model,
+            Message.ToggledTreeListItem({
+              id: current.id,
+              isExpanded: !(
+                model.expandedOverrides[current.id] ?? current.isExpanded
+              ),
+            }),
+          )
+        }
+        return update(model, Message.MovedTreeListFocus({ id: current.id }))
+      }
+      const next = Typeahead.search(model.typeahead, {
+        key: message.key,
+        labels: message.candidates.map(item => item.label),
+        currentIndex,
+        isDisabled: index => message.candidates[index]?.isDisabled === true,
+      })
+      const matchedId = Option.flatMap(next.maybeIndex, index =>
+        Option.fromUndefinedOr(message.candidates[index]?.id),
+      )
       return {
         model: {
           ...model,
-          typeahead: message.typeahead,
-          focusedId: Option.match(message.matchedId, {
+          typeahead: next.model,
+          focusedId: Option.match(matchedId, {
             onNone: () => model.focusedId,
             onSome: id => Option.some(id),
           }),
         },
         commands: [
-          ...Command.mapMessages(
-            [
-              Typeahead.WaitBeforeResettingTypeahead({
-                version: message.typeahead.version,
-                timeoutMs: Typeahead.DEFAULT_TIMEOUT_MS,
-              }),
-            ],
-            child => Message.GotTypeaheadMessage({ message: child }),
+          ...Command.mapMessages(next.commands, child =>
+            Message.GotTypeaheadMessage({ message: child }),
           ),
-          ...Option.match(message.matchedId, {
+          ...Option.match(matchedId, {
             onNone: (): Array<ReturnType<typeof FocusTreeListItem>> => [],
             onSome: id => [
               FocusTreeListItem({ domId: itemDomId(model.id, id) }),

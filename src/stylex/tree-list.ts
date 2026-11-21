@@ -625,8 +625,8 @@ const render = <Msg>(
             return Option.some(
               toMessage(
                 TreeListBehavior.Message.AppliedTreeListTypeahead({
-                  typeahead: intent.typeahead,
-                  matchedId: intent.matchedId,
+                  key: intent.key,
+                  candidates: intent.candidates,
                 }),
               ),
             )

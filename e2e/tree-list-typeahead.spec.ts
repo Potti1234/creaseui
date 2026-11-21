@@ -23,13 +23,23 @@ for (const [renderer, baseUrl] of [
     await page.keyboard.type('ll')
     await expect(llama).toBeFocused()
     await page.waitForTimeout(550)
-    await page.keyboard.type('p')
+    await llama.evaluate(element => {
+      for (const key of ['p', 'p']) {
+        element.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key,
+            bubbles: true,
+            cancelable: true,
+          }),
+        )
+      }
+    })
     await expect(
-      tree.getByRole('treeitem', { name: 'public', exact: true }),
+      tree.getByRole('treeitem', { name: 'package.json', exact: true }),
     ).toBeFocused()
     await page.keyboard.type('p')
     await expect(
-      tree.getByRole('treeitem', { name: 'package.json', exact: true }),
+      tree.getByRole('treeitem', { name: 'public', exact: true }),
     ).toBeFocused()
   })
 }
