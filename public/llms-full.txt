@@ -2623,7 +2623,7 @@ A CreaseUI Collapsible component for Foldkit.
 
 Source: `src/ui/collapsible.ts`
 
-Examples: Demo, Basic, Settings Panel, File Tree, RTL, Disabled
+Examples: Demo, Motion presence, Basic, Settings Panel, File Tree, RTL, Disabled
 
 - `CollapsibleProps<Msg> = Readonly<{ id: string; isOpen: boolean; onToggle: (isOpen: boolean) => Msg; trigger: Html | string; content: Html | string; isDisabled?: boolean; ariaLabel?: string; class?: string; triggerClass?: string; contentClass?: string; }>` (type)
 - `collapsible<Msg>(props: CollapsibleProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)

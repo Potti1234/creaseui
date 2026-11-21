@@ -1,4 +1,5 @@
 import { Schema as S } from 'effect'
+import { Command } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -12,6 +13,8 @@ import * as Button from '@/ui/button'
 import * as Card from '@/ui/card'
 import * as Collapsible from '@/ui/collapsible'
 import * as Input from '@/ui/input'
+import * as Motion from '@/lib/behaviors/motion'
+import { motionDemo } from '@/docs/components/pages/collapsible/motion'
 
 const sides = ['top', 'right', 'bottom', 'left'] as const
 type Side = (typeof sides)[number]
@@ -24,6 +27,7 @@ const PreviewModel = S.Struct({
   bottom: S.String,
   left: S.String,
   open: S.Array(S.String),
+  motion: Motion.Model,
 })
 type PreviewModel = typeof PreviewModel.Type
 
@@ -31,6 +35,7 @@ const PreviewMessages = defineMessageUnion({
   ToggledCollapsiblePreview: { isOpen: S.Boolean },
   ChangedRadius: { side: S.Literals(sides), value: S.String },
   ToggledNode: { id: S.String, isOpen: S.Boolean },
+  GotMotion: { message: Motion.Message },
 })
 type PreviewMessage = typeof PreviewMessages.Type
 
@@ -313,7 +318,7 @@ export const collapsibleTailwindPreviewProgram = definePreviewProgram<
 >({
   Model: PreviewModel,
   Message: PreviewMessages,
-  init: () => ({
+  init: index => ({
     _docsPage: 'collapsible',
     isOpen: false,
     top: '0',
@@ -321,9 +326,21 @@ export const collapsibleTailwindPreviewProgram = definePreviewProgram<
     bottom: '0',
     left: '0',
     open: ['components'],
+    motion: Motion.init({ id: `docs-motion-${String(index)}` }),
   }),
   update: (model, message) => {
     switch (message._tag) {
+      case 'GotMotion': {
+        const result = Motion.update(model.motion, message.message, {
+          returnFocusTo: `${model.motion.id}-trigger`,
+        })
+        return {
+          model: { ...model, motion: result.model },
+          commands: Command.mapMessages(result.commands ?? [], message =>
+            PreviewMessages.GotMotion({ message }),
+          ),
+        }
+      }
       case 'ToggledCollapsiblePreview':
         return { model: { ...model, isOpen: message.isOpen } }
       case 'ChangedRadius':
@@ -340,6 +357,12 @@ export const collapsibleTailwindPreviewProgram = definePreviewProgram<
     }
   },
   view: (index, model, h) => {
+    if (collapsibleFixtures[index]?.kind === 'motion')
+      return motionDemo(
+        model.motion,
+        message => PreviewMessages.GotMotion({ message }),
+        h,
+      )
     const kind = collapsibleFixtures[index]?.kind ?? 'single'
     return kind === 'basic'
       ? basicView(index, model, h)

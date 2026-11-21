@@ -1813,6 +1813,7 @@
       ],
       "examples": [
         "Demo",
+        "Motion presence",
         "Basic",
         "Settings Panel",
         "File Tree",

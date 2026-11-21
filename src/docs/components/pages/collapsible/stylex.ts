@@ -1,5 +1,7 @@
 import { reset } from '@/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import type * as Motion from '@/lib/behaviors/motion'
+import { motionDemo } from '@/docs/components/pages/collapsible/motion'
 
 import * as stylex from '@stylexjs/stylex'
 
@@ -179,6 +181,7 @@ const sides = ['top', 'right', 'bottom', 'left'] as const
 type Side = (typeof sides)[number]
 
 type Preview = Readonly<{
+  motion: Motion.Model
   isOpen: boolean
   top: string
   right: string
@@ -196,6 +199,12 @@ export const collapsibleStyleXPreview: ExamplePreviewProvider = <Msg>(
   const preview = model as Preview
   const fixture = collapsibleFixtures[exampleIndex]
   if (fixture === undefined) return undefined
+  if (fixture.kind === 'motion')
+    return motionDemo(
+      preview.motion,
+      message => onMessageJson(JSON.stringify({ _tag: 'GotMotion', message })),
+      h,
+    )
   const toggle = (isOpen: boolean): Msg =>
     onMessageJson(JSON.stringify({ _tag: 'ToggledCollapsiblePreview', isOpen }))
   const chevron = (open: boolean) =>
