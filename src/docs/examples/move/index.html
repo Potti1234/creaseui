@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Move behavior · CreaseUI</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font: 1rem/1.5 system-ui, sans-serif;
+      }
+      main {
+        max-width: 35rem;
+        margin: 2rem auto;
+        padding-inline: 0.5rem;
+      }
+      .board {
+        position: relative;
+        width: 280px;
+        height: 200px;
+        margin-block: 1rem;
+        border: 1px solid GrayText;
+        border-radius: 0.5rem;
+        background-image: radial-gradient(GrayText 1px, transparent 1px);
+        background-size: 10px 10px;
+      }
+      button {
+        font: inherit;
+      }
+      .tile {
+        box-sizing: border-box;
+        position: absolute;
+        width: 76px;
+        height: 40px;
+        border: 1px solid GrayText;
+        border-radius: 0.35rem;
+        cursor: grab;
+        touch-action: none;
+        user-select: none;
+      }
+      .tile[aria-pressed='true'] {
+        background: Highlight;
+        color: HighlightText;
+      }
+      .tile[data-dragging] {
+        cursor: grabbing;
+      }
+      button:focus-visible {
+        outline: 2px solid CanvasText;
+        outline-offset: 2px;
+      }
+      .announcement {
+        min-height: 1.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
