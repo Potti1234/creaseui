@@ -336,12 +336,6 @@ export const open = DrawerBehavior.open
 export const close = DrawerBehavior.close
 export const snapTo = DrawerBehavior.snapTo
 
-/** Base UI's swipe-ignore surface: interactive controls + explicit ignores
-    (`BASE_UI_SWIPE_IGNORE_SELECTOR` + `DEFAULT_IGNORE_SELECTOR`). */
-const SWIPE_IGNORE_SELECTOR =
-  '[data-base-ui-swipe-ignore], button, a, input, select, textarea, label, [role="button"]'
-const DRAWER_CONTENT_SELECTOR = '[data-drawer-content]'
-
 export type DrawerSlots = Readonly<{
   closeButton: ReadonlyArray<ChildAttribute>
   /** Attributes making an element the initial focus target. When not
@@ -508,66 +502,6 @@ export const drawer = <Msg>(
   const expanded = DrawerBehavior.isExpanded(model)
   const modal = model.modal
 
-  const startSwipe = (
-    pointerType: string,
-    button: number,
-    screenX: number,
-    screenY: number,
-    timeStamp: number,
-    _clientX: number,
-    _clientY: number,
-    _pointerId: number,
-    target: EventTarget | null,
-  ): Option.Option<Msg> => {
-    if (button !== 0) return Option.none()
-    if (target instanceof Element) {
-      // Swipes only start inside the popup (Base UI's canStart requires the
-      // pointer target to be contained in the popup element).
-      if (target.closest('[data-slot="drawer-popup"]') === null) {
-        return Option.none()
-      }
-      if (target.closest(SWIPE_IGNORE_SELECTOR) !== null) return Option.none()
-      // Mouse drags never start inside the scrollable content region; touch
-      // swipes may (Base UI arbitrates against scroll at runtime).
-      if (
-        pointerType !== 'touch' &&
-        target.closest(DRAWER_CONTENT_SELECTOR) !== null
-      ) {
-        return Option.none()
-      }
-    }
-    return Option.some(
-      send(StartedSwipe({ x: screenX, y: screenY, timeStamp })),
-    )
-  }
-
-  const viewportGestureAttributes = (
-    hd: HtmlBuilder<Msg>,
-  ): ReadonlyArray<Attribute<Msg>> => [
-    hd.OnPointerDown(startSwipe),
-    ...(swiping
-      ? [
-          hd.OnPointerMove((screenX, screenY, _pointerType) =>
-            Option.some(
-              send(
-                DraggedSwipe({
-                  x: screenX,
-                  y: screenY,
-                  timeStamp: performance.now(),
-                }),
-              ),
-            ),
-          ),
-          hd.OnPointerUp((screenX, screenY, _pointerType, timeStamp) =>
-            Option.some(
-              send(EndedSwipe({ x: screenX, y: screenY, timeStamp })),
-            ),
-          ),
-          hd.OnPointerLeave(() => Option.some(send(CancelledSwipe()))),
-        ]
-      : []),
-  ]
-
   const directionStyle = {
     down: styles.popupDown,
     up: styles.popupUp,
@@ -691,7 +625,6 @@ export const drawer = <Msg>(
                             message => send(message),
                           ),
                         ),
-                        ...viewportGestureAttributes(hd),
                       ],
                       [
                         hd.div(
