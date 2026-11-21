@@ -146,7 +146,13 @@ test.describe('shared mixed-form fixture', () => {
         root: resolve('e2e/fixtures/reliability', renderer),
         logLevel: 'error',
         plugins: pluginsFor(renderer),
-        resolve: { alias: { '@': resolve('src') } },
+        resolve: {
+          alias: {
+            '@/ui/stylex': resolve('src/stylex'),
+            '@/ui/pleat': resolve('src/pleat'),
+            '@': resolve('src'),
+          },
+        },
         build: { outDir: output },
       }
       await build(config)

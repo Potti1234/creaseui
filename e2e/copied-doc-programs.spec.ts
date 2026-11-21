@@ -39,7 +39,13 @@ test.describe('Copied documentation programs', () => {
       root,
       logLevel: 'error' as const,
       plugins: [stylex.vite(stylexCompilerOptions)],
-      resolve: { alias: { '@': resolve('src') } },
+      resolve: {
+        alias: {
+          '@/ui/stylex': resolve('src/stylex'),
+          '@/ui/pleat': resolve('src/pleat'),
+          '@': resolve('src'),
+        },
+      },
       build: {
         outDir: output,
         emptyOutDir: true,
