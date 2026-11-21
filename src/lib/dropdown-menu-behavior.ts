@@ -1,15 +1,33 @@
-import { Option } from 'effect'
+import { Option, Schema as S } from 'effect'
 
-export type MenuModel = Readonly<{
-  id: string
-  isOpen: boolean
-  isAnimated: boolean
-  activeIndex: number
-  activeSubmenuIndex: number
-  openSubmenuIndex: Option.Option<number>
-  anchorX: Option.Option<number>
-  anchorY: Option.Option<number>
-}>
+import * as Popup from './behaviors/popup'
+
+export const Model = S.Struct({
+  id: S.String,
+  ...Popup.Model.fields,
+  isAnimated: S.Boolean,
+  activeIndex: S.Number,
+  activeSubmenuIndex: S.Number,
+  openSubmenuIndex: S.Option(S.Number),
+  anchorX: S.Option(S.Number),
+  anchorY: S.Option(S.Number),
+})
+export type MenuModel = typeof Model.Type
+
+export const DismissReason = Popup.DismissReason
+
+export const init = (
+  config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean }>,
+): MenuModel => ({
+  id: config.id,
+  ...Popup.init(),
+  isAnimated: config.isAnimated ?? false,
+  activeIndex: 0,
+  activeSubmenuIndex: 0,
+  openSubmenuIndex: Option.none(),
+  anchorX: Option.none(),
+  anchorY: Option.none(),
+})
 
 export type MenuMessage =
   | Readonly<{ _tag: 'Opened' }>
@@ -17,6 +35,7 @@ export type MenuMessage =
   | Readonly<{ _tag: 'OpenedFromContext' }>
   | Readonly<{ _tag: 'OpenedAt'; x: number; y: number }>
   | Readonly<{ _tag: 'Closed' }>
+  | Readonly<{ _tag: 'Dismissed'; reason: Popup.DismissReason }>
   | Readonly<{ _tag: 'ActivatedItem'; index: number }>
   | Readonly<{ _tag: 'OpenedSubmenu'; index: number }>
   | Readonly<{ _tag: 'ActivatedSubmenuItem'; index: number }>
@@ -40,6 +59,18 @@ const noSelection = (model: MenuModel): UpdateResult => ({
   selection: Option.none(),
 })
 
+const updatePopup = (model: MenuModel, message: Popup.Message): MenuModel => ({
+  ...model,
+  ...Popup.update(model, message).model,
+})
+
+const closeMenu = (model: MenuModel, message: Popup.Message): MenuModel => ({
+  ...updatePopup(model, message),
+  openSubmenuIndex: Option.none(),
+  anchorX: Option.none(),
+  anchorY: Option.none(),
+})
+
 export const update = (
   model: MenuModel,
   message: MenuMessage,
@@ -47,8 +78,10 @@ export const update = (
   switch (message._tag) {
     case 'Opened':
       return noSelection({
-        ...model,
-        isOpen: true,
+        ...updatePopup(
+          model,
+          Popup.Message.RequestedOpen({ reason: 'trigger-press' }),
+        ),
         anchorX: Option.none(),
         anchorY: Option.none(),
       })
@@ -59,22 +92,35 @@ export const update = (
         anchorY: Option.some(message.y),
       })
     case 'OpenedFromContext':
-      return noSelection({ ...model, isOpen: true })
+      return noSelection(
+        updatePopup(
+          model,
+          Popup.Message.RequestedOpen({ reason: 'context-menu' }),
+        ),
+      )
     case 'OpenedAt':
       return noSelection({
-        ...model,
-        isOpen: true,
+        ...updatePopup(
+          model,
+          Popup.Message.RequestedOpen({ reason: 'context-menu' }),
+        ),
         anchorX: Option.some(message.x),
         anchorY: Option.some(message.y),
       })
     case 'Closed':
-      return noSelection({
-        ...model,
-        isOpen: false,
-        openSubmenuIndex: Option.none(),
-        anchorX: Option.none(),
-        anchorY: Option.none(),
-      })
+      return noSelection(
+        closeMenu(
+          model,
+          Popup.Message.RequestedClose({ reason: 'programmatic' }),
+        ),
+      )
+    case 'Dismissed':
+      return noSelection(
+        closeMenu(
+          model,
+          Popup.Message.RequestedDismissal({ reason: message.reason }),
+        ),
+      )
     case 'ActivatedItem':
       return noSelection({ ...model, activeIndex: Math.max(0, message.index) })
     case 'OpenedSubmenu':
@@ -96,13 +142,10 @@ export const update = (
         model:
           message.staysOpenOnSelect === true
             ? model
-            : {
-                ...model,
-                isOpen: false,
-                openSubmenuIndex: Option.none(),
-                anchorX: Option.none(),
-                anchorY: Option.none(),
-              },
+            : closeMenu(
+                model,
+                Popup.Message.RequestedClose({ reason: 'selection' }),
+              ),
         selection: Option.some({ item: message.item, index: message.index }),
       }
   }
@@ -196,7 +239,7 @@ export const keyMessage = <Item extends string>(
         _tag: 'ActivatedSubmenuItem',
         index: children.at(-1)?.index ?? 0,
       }
-    if (key === 'Escape') return { _tag: 'Closed' }
+    if (key === 'Escape') return { _tag: 'Dismissed', reason: 'escape-key' }
     if (key === backKey) return { _tag: 'ClosedSubmenu' }
     if (key === 'Enter' || key === ' ') {
       const child = submenu.items[model.activeSubmenuIndex]
@@ -217,7 +260,7 @@ export const keyMessage = <Item extends string>(
   }
 
   const enabled = enabledEntries(items, itemToBehavior)
-  if (key === 'Escape') return { _tag: 'Closed' }
+  if (key === 'Escape') return { _tag: 'Dismissed', reason: 'escape-key' }
   if (key === 'Home')
     return { _tag: 'ActivatedItem', index: enabled[0]?.index ?? 0 }
   if (key === 'End')
