@@ -48,11 +48,7 @@ export const update = (
 })
 
 export const normalize = (text: string): string =>
-  text
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLocaleLowerCase()
-    .trim()
+  text.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase().trim()
 
 export const isTypeaheadKey = (
   key: string,

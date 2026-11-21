@@ -15,6 +15,18 @@ describe('Typeahead', () => {
     assert.deepEqual(search(Typeahead.init(), 'é').maybeIndex, Option.some(3))
   })
 
+  it('preserves standalone punctuation while folding combining accents', () => {
+    for (const key of ['^', '`']) {
+      const next = Typeahead.search(Typeahead.init(), {
+        key,
+        labels: [`${key}notes.md`, 'École'],
+        currentIndex: -1,
+      })
+      assert.deepEqual(next.maybeIndex, Option.some(0))
+      assert.equal(Typeahead.normalize(`${key}École`), `${key}ecole`)
+    }
+  })
+
   it('ignores non-character keys and leading Space without commands or state changes', () => {
     const model = Typeahead.init()
     for (const key of ['', 'Enter', 'ArrowDown', ' ']) {
