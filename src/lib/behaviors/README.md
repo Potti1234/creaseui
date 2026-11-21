@@ -55,6 +55,15 @@ Prefer `Layer.Popover` (Foldkit's submodel) or Foldkit Dialog for full
 overlays: they already coordinate focus entry and return, modal isolation,
 ARIA wiring, and transitions. Neither exposes a standalone dismissal stack.
 Layer does not replace their lifecycle or make an element outside a native
-modal dialog interactive. The
+modal dialog interactive. Use native Dialog when modal input must be blocked
+before handlers on a closed shadow host run. The
 [Action Bar demo](https://creaseui.com/docs/components/action-bar) uses Layer
 for Escape only and retains parent-owned selection and roving focus.
+
+Selection ports the key-based behavior from [ui-sdk.dev](https://ui-sdk.dev/docs/core/behaviors/selection).
+Bind keys with `Selection.create<Key>()` and embed `Selection.Model` in the
+parent Schema. Call its pure transitions from update and commit the returned
+Model only if the parent accepts the change. Use `reflect` for externally
+supplied values; changing the selected keys starts the next range over.
+Pass the current ordered keys for ranges or select-all. MultiSelector passes
+the visible keys for select-all so a filter never clears hidden choices.
