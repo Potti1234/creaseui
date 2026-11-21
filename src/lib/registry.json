@@ -2,6 +2,22 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "items": [
     {
+      "name": "spatial-focus-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Spatial Focus Behavior",
+      "description": "Skin-neutral geometry-based arrow navigation with one enabled tab stop and document-order Home/End.",
+      "registryDependencies": [
+        "Potti1234/creaseui/toggle-group-behavior"
+      ],
+      "files": [
+        {
+          "path": "behaviors/spatial-focus.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/spatial-focus.ts"
+        }
+      ]
+    },
+    {
       "name": "time-input-core",
       "type": "registry:lib",
       "title": "Time Input State",
