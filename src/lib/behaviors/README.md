@@ -9,6 +9,9 @@ Components compose behaviors and own selection policy, semantics, and styling.
 Bind key unions once with `create<Key>()`; pass item collections as view inputs.
 Keep navigation helpers pure and test them independently of rendered views.
 RovingFocus establishes this convention for subsequent behavior modules.
+Use its pure navigation helpers when focus targets belong to another component
+(menubar), are supplied as opaque Html (toolbar), or movement delegates to a
+mounted resource without moving DOM focus (carousel).
 
 Popup is the pure open/close lifecycle for custom overlays. Route trigger or
 explicit requests separately from Escape, outside press, and focus-out dismissal

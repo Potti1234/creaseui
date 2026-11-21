@@ -2,6 +2,7 @@ import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import { Option } from 'effect'
 
+import * as RovingFocus from '../src/lib/behaviors/roving-focus'
 import * as NavMenu from '../src/lib/nav-menu'
 
 const init = (
@@ -27,6 +28,25 @@ const flushClose = (model: NavMenu.Model): NavMenu.Model =>
       atMs: 99999,
     }),
   ).model
+
+describe('panel focus', () => {
+  it('forwards movement to the open panel and ignores it after close', () => {
+    const closed = init()
+    const open = NavMenu.update(
+      closed,
+      NavMenu.Message.ActivatedNavMenuTrigger(),
+    )
+    assert.deepEqual(open.commands?.[0]?.args, { domId: 'menu-panel' })
+    const message = NavMenu.Message.GotNavMenuFocusMessage({
+      message: RovingFocus.Message.MovedFocus({ key: '1' }),
+    })
+    const moved = NavMenu.update(open.model, message)
+    assert.deepEqual(moved.model.rovingFocus.maybeFocusedKey, Option.some('1'))
+    assert.equal(moved.commands?.[0]?.name, RovingFocus.FocusItem.name)
+    assert.deepEqual(moved.commands?.[0]?.args, { id: 'menu-panel', key: '1' })
+    assert.deepEqual(NavMenu.update(closed, message), { model: closed })
+  })
+})
 
 describe('hover intent', () => {
   it('schedules open on enter and completes after the delay', () => {
