@@ -2,10 +2,10 @@ import { Style, When } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
 import { Command, type Update } from 'foldkit'
 import { Effect, Option, Schema as S } from 'effect'
-import { DragAndDrop as Dnd } from '@foldkit/ui'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
+import * as Dnd from '@/lib/behaviors/drag-and-drop'
 import * as Icon from '@/lib/icon'
 import { buttonVisualStyles } from './button'
 import type { ComponentLayoutStyle } from './contracts'
@@ -900,15 +900,9 @@ export const transferList = <Msg>(
     const isReorderDisabled = option.isReorderDisabled === true
     const disabledReason =
       option.disabledMessage ?? `${option.label} cannot be reordered.`
-    /* The handle carries data-draggable-id (FocusItem's focus target) and
-       hand-rolls the primitive's draggable() handlers so the row's other
-       buttons never start a drag. Space/Enter activate keyboard drag;
-       during a drag the document subscription routes arrows, drop, and
-       Escape — nothing is dispatched from here while one is in flight. */
     return h.button(
       [
         h.Type('button'),
-        h.DataAttribute('draggable-id', option.value),
         h.AriaLabel(`Reorder ${option.label}`),
         h.AriaDescribedBy(reorderInstructionsId),
         h.AriaRoleDescription('draggable'),
@@ -923,49 +917,17 @@ export const transferList = <Msg>(
             }),
           ),
         ),
-        h.OnKeyDownPreventDefault(key =>
-          (key === ' ' || key === 'Enter') &&
-          model.dnd.dragState._tag === 'Idle' &&
-          !isReorderDisabled
-            ? Option.some(
-                props.toParentMessage(
-                  Message.GotDndMessage({
-                    message: Dnd.Message.ActivatedKeyboardDrag({
-                      itemId: option.value,
-                      containerId,
-                      index: orderedIndex,
-                    }),
-                  }),
-                ),
-              )
-            : Option.none(),
-        ),
-        h.OnPointerDown(
-          (
-            _pointerType,
-            button,
-            screenX,
-            screenY,
-            _timeStamp,
-            _clientX,
-            _clientY,
-            _pointerId,
-          ) =>
-            button === 0 && !isReorderDisabled
-              ? Option.some(
-                  props.toParentMessage(
-                    Message.GotDndMessage({
-                      message: Dnd.Message.PressedDraggable({
-                        itemId: option.value,
-                        containerId,
-                        index: orderedIndex,
-                        screenX,
-                        screenY,
-                      }),
-                    }),
-                  ),
-                )
-              : Option.none(),
+        ...Dnd.view(
+          {
+            model: model.dnd,
+            itemId: option.value,
+            containerId,
+            index: orderedIndex,
+            isDisabled: isReorderDisabled,
+            toParentMessage: message =>
+              props.toParentMessage(Message.GotDndMessage({ message })),
+          },
+          h,
         ),
         h.Class(
           className(
@@ -1113,7 +1075,7 @@ export const transferList = <Msg>(
                 h.Role('list'),
                 h.Class(className(reset.list, styles.list)),
                 ...(side === 'selected' && isReorderable
-                  ? [h.DataAttribute('droppable-id', containerId)]
+                  ? Dnd.dropTarget(containerId)
                   : []),
               ],
               [...content],
