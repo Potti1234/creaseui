@@ -425,14 +425,27 @@ const reproject = <Row>(
 const cellId = (cell: CellAddress): string =>
   JSON.stringify([cell.row, cell.column])
 
+const cellAddress = (id: string): CellAddress => {
+  const [row, column] = JSON.parse(id) as [number, string]
+  return { row, column }
+}
+
 export const editingCell = (model: Model): CellAddress =>
   Option.match(model.inlineEdit.maybeEditingId, {
     onNone: () => emptyCell,
-    onSome: id => {
-      const [row, column] = JSON.parse(id) as [number, string]
-      return { row, column }
-    },
+    onSome: cellAddress,
   })
+
+const inlineEditOptions = <Row>(
+  model: Model,
+  config: DataGridConfig<Row>,
+): InlineEdit.Options => ({
+  value: id => {
+    const address = cellAddress(id)
+    const row = displayedRows(model, config)[address.row]
+    return row === undefined ? '' : cellText(row, address.column, config)
+  },
+})
 
 export const update = <Row>(
   model: Model,
@@ -447,6 +460,7 @@ const applyMessage = <Row>(
   model: Model,
   message: Message,
   config: DataGridConfig<Row>,
+  startReason: InlineEdit.Reason = 'programmatic',
 ): Model => {
   switch (message._tag) {
     case 'FocusedCell':
@@ -497,16 +511,11 @@ const applyMessage = <Row>(
           model.inlineEdit,
           InlineEdit.Message.RequestedStart({
             id: cellId({ row: message.row, column: message.column }),
-            reason: message.seed === '' ? 'programmatic' : 'type',
+            reason: message.seed === '' ? startReason : 'type',
             maybeText:
               message.seed === '' ? Option.none() : Option.some(message.seed),
           }),
-          {
-            value: () =>
-              target === undefined
-                ? ''
-                : cellText(target, message.column, config),
-          },
+          inlineEditOptions(model, config),
         ).model,
       }
     }
@@ -516,7 +525,7 @@ const applyMessage = <Row>(
         inlineEdit: InlineEdit.update(
           model.inlineEdit,
           InlineEdit.Message.ChangedDraft({ value: message.value }),
-          { value: () => '' },
+          inlineEditOptions(model, config),
         ).model,
       }
     case 'CommittedDraft': {
@@ -531,14 +540,7 @@ const applyMessage = <Row>(
                 ? 'tab-key'
                 : 'focus-out',
         }),
-        {
-          value: () => {
-            const row = displayedRows(model, config)[address.row]
-            return row === undefined
-              ? ''
-              : cellText(row, address.column, config)
-          },
-        },
+        inlineEditOptions(model, config),
       )
       const committed =
         next.outMessage?._tag === 'Committed' &&
@@ -567,7 +569,7 @@ const applyMessage = <Row>(
         inlineEdit: InlineEdit.update(
           model.inlineEdit,
           InlineEdit.Message.RequestedCancel({}),
-          { value: () => '' },
+          inlineEditOptions(model, config),
         ).model,
       }
     case 'CompletedEditorFocus':
@@ -629,10 +631,11 @@ const applyMessage = <Row>(
       if (next.outMessage !== undefined) {
         switch (next.outMessage._tag) {
           case 'SelectedDate': {
+            const address = editingCell(model)
             const committed = commitCell(
               model,
-              editingCell(model).row,
-              editingCell(model).column,
+              address.row,
+              address.column,
               dateToISO(next.outMessage.date),
               config,
             )
@@ -649,9 +652,10 @@ const applyMessage = <Row>(
       return { ...model, cellCalendar: next.model }
     }
     case 'PickedCellFiles': {
-      if (editingCell(model).row === -1) return model
-      const column = columnById(config, editingCell(model).column)
-      const target = displayedRows(model, config)[editingCell(model).row]
+      const address = editingCell(model)
+      if (address.row === -1) return model
+      const column = columnById(config, address.column)
+      const target = displayedRows(model, config)[address.row]
       if (column === undefined || target === undefined) return model
       const next: Array<FileCellData> = message.files.map((file, index) => ({
         id: `${config.rowKey(target)}-upload-${String(Date.now())}-${String(index)}`,
@@ -662,8 +666,8 @@ const applyMessage = <Row>(
       }))
       return commitFiles(
         model,
-        editingCell(model).row,
-        editingCell(model).column,
+        address.row,
+        address.column,
         [...(column.getFiles?.(target) ?? []), ...next],
         config,
       )
@@ -951,13 +955,16 @@ const onGridKey = <Row>(
       isComposing: false,
     })
     if (Option.isNone(message)) return model
-    return applyMessage(
-      model,
-      message.value._tag === 'RequestedCancel'
-        ? Message.CanceledEdit({})
-        : Message.CommittedDraft({ move: key === 'Enter' ? 'down' : 'right' }),
-      config,
-    )
+    if (message.value._tag === 'RequestedCancel')
+      return applyMessage(model, Message.CanceledEdit({}), config)
+    if (message.value._tag !== 'RequestedEnd') return model
+    const move =
+      message.value.reason === 'enter-key'
+        ? 'down'
+        : message.value.reason === 'tab-key'
+          ? 'right'
+          : 'none'
+    return applyMessage(model, Message.CommittedDraft({ move }), config)
   }
   switch (key) {
     case 'Escape':
@@ -994,10 +1001,13 @@ const onGridKey = <Row>(
         config,
       )
     }
-    default:
+    default: {
       const start =
         key === ' '
-          ? Option.some({ reason: 'type', maybeText: Option.some(key) })
+          ? Option.some({
+              reason: 'type' as const,
+              maybeText: Option.some(key),
+            })
           : InlineEdit.startKey({ key, ctrl, meta: false, alt: false })
       if (Option.isSome(start) && model.focusedCell.row !== -1) {
         return applyMessage(
@@ -1008,9 +1018,11 @@ const onGridKey = <Row>(
             seed: Option.getOrElse(start.value.maybeText, () => ''),
           }),
           config,
+          start.value.reason,
         )
       }
       return model
+    }
   }
 }
 

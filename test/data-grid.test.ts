@@ -381,6 +381,32 @@ describe('data grid editor seed', () => {
     assert.equal(model.inlineEdit.draft, '')
   })
 
+  it('an unchanged commit preserves redo history and does not call the setter', () => {
+    const undone = run(
+      Grid.Message.SetCellValue({ row: 0, column: 'name', value: 'Changed' }),
+      Grid.Message.Undo({}),
+      Grid.Message.StartedEditing({ row: 0, column: 'name', seed: '' }),
+    )
+    const guardedConfig: Grid.DataGridConfig<Contact> = {
+      ...contactConfig,
+      columns: contactConfig.columns.map(column => ({
+        ...column,
+        set: () => {
+          throw new Error('unchanged commit must not write')
+        },
+      })),
+    }
+    const committed = Grid.update(
+      undone,
+      Grid.Message.CommittedDraft({ move: 'none' }),
+      guardedConfig,
+    )
+    assert.equal(committed.rows, undone.rows)
+    assert.equal(committed.pastStates, undone.pastStates)
+    assert.equal(committed.futureStates, undone.futureStates)
+    assert.equal(committed.futureStates.length, 1)
+  })
+
   it('typing over a cell starts from the typed key', () => {
     const typed = run(
       Grid.Message.FocusedCell({ row: 0, column: 'name' }),
