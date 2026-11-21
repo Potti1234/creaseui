@@ -39,6 +39,7 @@ export const Action = Schema.Struct({
   action: Schema.String,
   args: Schema.Array(Schema.Unknown),
   confirm: Schema.optionalKey(Schema.String),
+  secret: Schema.optionalKey(Schema.Boolean),
 })
 export type Action = typeof Action.Type
 export const ResolutionError = Schema.Struct({
@@ -256,6 +257,7 @@ export const resolveStep = (
     action: step.action,
     args: step.args ?? [],
     ...(found.confirm === undefined ? {} : { confirm: found.confirm }),
+    ...(found.secret ? { secret: true } : {}),
   }
 }
 
@@ -511,9 +513,9 @@ export const update = (
     CompletedStep: ({ changes, gone, appeared, result }) => {
       if (!model.running || Option.isNone(model.maybeAction)) return { model }
       const action = model.maybeAction.value
-      const secret = components.find(
-        component => component.ref === action.ref,
-      )?.secret
+      const secret =
+        action.secret ||
+        components.find(component => component.ref === action.ref)?.secret
       return advance(
         {
           ...model,
@@ -556,16 +558,18 @@ export const update = (
       model.running && Option.isSome(model.maybeAction)
         ? finish(model, components, {
             step: model.index,
-            message: components.find(
-              component =>
-                component.ref ===
-                model.maybeAction.pipe(
-                  Option.map(action => action.ref),
-                  Option.getOrElse(() => ''),
-                ),
-            )?.secret
-              ? '[redacted]'
-              : message,
+            message:
+              model.maybeAction.value.secret ||
+              components.find(
+                component =>
+                  component.ref ===
+                  model.maybeAction.pipe(
+                    Option.map(action => action.ref),
+                    Option.getOrElse(() => ''),
+                  ),
+              )?.secret
+                ? '[redacted]'
+                : message,
           })
         : { model },
     RequestedTool: () => ({ model }),

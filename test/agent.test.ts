@@ -223,6 +223,48 @@ describe('Agent query and step resolution', () => {
 })
 
 describe('Agent act lifecycle', () => {
+  it('keeps secret step results, changes and failures redacted after the control disappears', () => {
+    const first = update(Agent.init(), requested(), [
+      component({ secret: true }),
+    ])
+    const done = update(
+      first.model,
+      Agent.Message.CompletedStep({
+        result: 'private result',
+        changes: [
+          Agent.agentChange({
+            ref: 'region',
+            component: 'select',
+            key: 'value',
+            value: 'private value',
+            previous: 'private previous',
+            reason: 'imperative',
+            phase: 'Commit',
+          }),
+        ],
+        gone: ['region'],
+      }),
+      [],
+    )
+    if (done.outMessage?._tag !== 'Finished') assert.fail('Expected Finished')
+    assert.equal(done.outMessage.result.steps[0]?.result, '[redacted]')
+    assert.equal(
+      done.outMessage.result.steps[0]?.changes?.[0]?.value,
+      '[redacted]',
+    )
+    assert.equal(
+      done.outMessage.result.steps[0]?.changes?.[0]?.previous,
+      '[redacted]',
+    )
+    const failed = update(
+      first.model,
+      Agent.Message.FailedStep({ message: 'private error' }),
+      [],
+    )
+    if (failed.outMessage?._tag !== 'Finished') assert.fail('Expected Finished')
+    assert.equal(failed.outMessage.result.error?.message, '[redacted]')
+  })
+
   it('runs steps in order against fresh component data and finishes with changes and values', () => {
     const initial = Agent.init()
     assert.equal(Schema.is(Agent.Model)(initial), true)
