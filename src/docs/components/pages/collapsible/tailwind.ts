@@ -362,6 +362,7 @@ export const collapsibleTailwindPreviewProgram = definePreviewProgram<
         model.motion,
         message => PreviewMessages.GotMotion({ message }),
         h,
+        Button.button,
       )
     const kind = collapsibleFixtures[index]?.kind ?? 'single'
     return kind === 'basic'

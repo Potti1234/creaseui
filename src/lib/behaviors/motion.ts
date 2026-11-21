@@ -1,5 +1,6 @@
 import { Effect, Option, Schema } from 'effect'
 import { Command, type Update } from 'foldkit'
+import * as Dom from 'foldkit/dom'
 import { inertHtml, type Attribute } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { Animation } from '@foldkit/ui'
@@ -8,20 +9,24 @@ import * as Popup from './popup'
 
 export const Model = Animation.Model
 export type Model = Animation.Model
-export const Message = Animation.Message
-export type Message = Animation.Message
+export const Message = defineMessageUnion({
+  Showed: {},
+  Hid: {},
+  GotAnimationMessage: { message: Animation.Message },
+  CompletedReturnFocus: {},
+})
+export type Message = typeof Message.Type
 export const view = Animation.view
 
 export const OutMessage = defineMessageUnion({
   Settled: { isOpen: Schema.Boolean },
-  Exited: {},
 })
 export type OutMessage = typeof OutMessage.Type
 
 export type UpdateReturn = Update.ReturnWithOutMessage<
   Model,
   Message,
-  ReadonlyArray<OutMessage>
+  OutMessage
 >
 
 export type Options = Readonly<{ returnFocusTo?: string; instant?: boolean }>
@@ -35,20 +40,17 @@ export const isMounted = (model: Model): boolean =>
 
 export const ReturnFocus = Command.define('ReturnFocus', {
   args: { panelId: Schema.String, triggerId: Schema.String },
-  messages: [Message.CompletedWaitForPaint],
+  messages: [Message.CompletedReturnFocus],
   execute: ({ panelId, triggerId }) =>
-    Effect.sync(() => {
+    Effect.suspend(() => {
       const panel = document.getElementById(panelId)
-      if (panel?.contains(document.activeElement)) {
-        document.getElementById(triggerId)?.focus()
-      }
-    }).pipe(Effect.as(Message.CompletedWaitForPaint({ generation: -1 }))),
+      return panel?.contains(document.activeElement)
+        ? Dom.focus(
+            `[id="${triggerId.replace(/["\\\n\r\f]/gu, character => `\\${character.charCodeAt(0).toString(16)} `)}"]`,
+          )
+        : Effect.void
+    }).pipe(Effect.ignore, Effect.as(Message.CompletedReturnFocus())),
 })
-
-const settled = (isOpen: boolean): ReadonlyArray<OutMessage> =>
-  isOpen
-    ? [OutMessage.Settled({ isOpen })]
-    : [OutMessage.Settled({ isOpen }), OutMessage.Exited()]
 
 const instantly = (model: Model, isOpen: boolean): UpdateReturn =>
   model.isShowing === isOpen && model.transitionState === 'Idle'
@@ -60,7 +62,7 @@ const instantly = (model: Model, isOpen: boolean): UpdateReturn =>
           transitionState: 'Idle',
           transitionGeneration: model.transitionGeneration + 1,
         },
-        outMessage: settled(isOpen),
+        outMessage: OutMessage.Settled({ isOpen }),
       }
 
 export const update = (
@@ -68,12 +70,19 @@ export const update = (
   message: Message,
   options: Options = {},
 ): UpdateReturn => {
+  if (message._tag === 'CompletedReturnFocus') return { model }
+  const animationMessage =
+    message._tag === 'GotAnimationMessage'
+      ? message.message
+      : message._tag === 'Showed'
+        ? Animation.Message.Showed()
+        : Animation.Message.Hid()
   if (
     options.instant &&
-    (message._tag === 'Showed' || message._tag === 'Hid')
+    (animationMessage._tag === 'Showed' || animationMessage._tag === 'Hid')
   ) {
-    const result = instantly(model, message._tag === 'Showed')
-    return message._tag === 'Hid' &&
+    const result = instantly(model, animationMessage._tag === 'Showed')
+    return animationMessage._tag === 'Hid' &&
       model.isShowing &&
       options.returnFocusTo !== undefined
       ? {
@@ -87,19 +96,24 @@ export const update = (
         }
       : result
   }
-  const result = Animation.update(model, message)
-  const commands = [...(result.commands ?? [])]
+  const result = Animation.update(model, animationMessage)
+  const animationCommands = [...(result.commands ?? [])]
+  if (result.outMessage?._tag === 'StartedLeaveAnimating') {
+    animationCommands.push(Animation.defaultLeaveCommand(result.model))
+  }
+  const commands: Array<Command.Command<Message>> = [
+    ...Command.mapMessages(animationCommands, message =>
+      Message.GotAnimationMessage({ message }),
+    ),
+  ]
   if (
-    message._tag === 'Hid' &&
+    animationMessage._tag === 'Hid' &&
     model.isShowing &&
     options.returnFocusTo !== undefined
   ) {
     commands.push(
       ReturnFocus({ panelId: model.id, triggerId: options.returnFocusTo }),
     )
-  }
-  if (result.outMessage?._tag === 'StartedLeaveAnimating') {
-    commands.push(Animation.defaultLeaveCommand(result.model))
   }
   const finished =
     model.transitionState !== 'Idle' &&
@@ -108,7 +122,9 @@ export const update = (
   return {
     model: result.model,
     ...(commands.length === 0 ? {} : { commands }),
-    ...(finished ? { outMessage: settled(result.model.isShowing) } : {}),
+    ...(finished
+      ? { outMessage: OutMessage.Settled({ isOpen: result.model.isShowing }) }
+      : {}),
   }
 }
 
@@ -154,6 +170,7 @@ export const hiddenAttributes = (
 ): ReadonlyArray<Attribute<never>> =>
   isOpen ? [] : [inertHtml.Attribute('hidden', isFindable ? 'until-found' : '')]
 
+// Foldkit's public html entrypoint and HtmlBuilder omit OnCustomEvent's constructor.
 export const reveal = <Msg>(message: Msg): Attribute<Msg> => ({
   _tag: 'OnCustomEvent',
   name: 'beforematch',

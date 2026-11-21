@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { Effect, Option } from 'effect'
 import { Window } from 'happy-dom'
+import { Animation } from '@foldkit/ui'
 
 import * as Motion from '../src/lib/behaviors/motion.ts'
 import * as Popup from '../src/lib/behaviors/popup.ts'
@@ -9,14 +10,20 @@ import * as Popup from '../src/lib/behaviors/popup.ts'
 const paint = (model: Motion.Model) =>
   Motion.update(
     model,
-    Motion.Message.CompletedWaitForPaint({
-      generation: model.transitionGeneration,
+    Motion.Message.GotAnimationMessage({
+      message: Animation.Message.CompletedWaitForPaint({
+        generation: model.transitionGeneration,
+      }),
     }),
   )
 const end = (model: Motion.Model) =>
   Motion.update(
     model,
-    Motion.Message.EndedAnimation({ generation: model.transitionGeneration }),
+    Motion.Message.GotAnimationMessage({
+      message: Animation.Message.EndedAnimation({
+        generation: model.transitionGeneration,
+      }),
+    }),
   )
 
 describe('Motion', () => {
@@ -31,13 +38,13 @@ describe('Motion', () => {
     assert.deepEqual(Motion.show(open), { model: open })
   })
 
-  it('reports settled entry and both settled/exit facts after leave', () => {
+  it('reports one settled fact on entry and exit', () => {
     const opening = Motion.show(Motion.init({ id: 'panel' }))
     assert.equal(opening.model.transitionState, 'EnterStart')
     assert.equal(opening.commands?.[0]?.name, 'WaitForPaint')
     assert.equal(opening.outMessage, undefined)
     const entered = end(paint(opening.model).model)
-    assert.deepEqual(entered.outMessage, [{ _tag: 'Settled', isOpen: true }])
+    assert.deepEqual(entered.outMessage, { _tag: 'Settled', isOpen: true })
     const closing = Motion.hide(entered.model)
     assert.equal(Motion.isMounted(closing.model), true)
     const leaving = paint(closing.model)
@@ -48,10 +55,7 @@ describe('Motion', () => {
     })
     const exited = end(leaving.model)
     assert.equal(Motion.isMounted(exited.model), false)
-    assert.deepEqual(exited.outMessage, [
-      { _tag: 'Settled', isOpen: false },
-      { _tag: 'Exited' },
-    ])
+    assert.deepEqual(exited.outMessage, { _tag: 'Settled', isOpen: false })
     assert.deepEqual(end(exited.model), { model: exited.model })
   })
 
@@ -60,20 +64,28 @@ describe('Motion', () => {
     const closing = Motion.hide(paint(opening).model).model
     const reopened = Motion.show(closing).model
     for (const message of [
-      Motion.Message.CompletedWaitForPaint({
+      Animation.Message.CompletedWaitForPaint({
         generation: opening.transitionGeneration,
       }),
-      Motion.Message.EndedAnimation({
+      Animation.Message.EndedAnimation({
         generation: closing.transitionGeneration,
       }),
     ])
-      assert.deepEqual(Motion.update(reopened, message), { model: reopened })
+      assert.deepEqual(
+        Motion.update(
+          reopened,
+          Motion.Message.GotAnimationMessage({ message }),
+        ),
+        { model: reopened },
+      )
     const instant = Motion.hideInstantly(reopened)
     assert.deepEqual(
       Motion.update(
         instant.model,
-        Motion.Message.EndedAnimation({
-          generation: reopened.transitionGeneration,
+        Motion.Message.GotAnimationMessage({
+          message: Animation.Message.EndedAnimation({
+            generation: reopened.transitionGeneration,
+          }),
         }),
       ),
       { model: instant.model },
@@ -84,20 +96,18 @@ describe('Motion', () => {
     const opened = Motion.showInstantly(Motion.init({ id: 'panel' }))
     assert.equal(opened.commands, undefined)
     assert.equal(opened.model.transitionState, 'Idle')
-    assert.deepEqual(opened.outMessage, [{ _tag: 'Settled', isOpen: true }])
+    assert.deepEqual(opened.outMessage, { _tag: 'Settled', isOpen: true })
     assert.deepEqual(Motion.showInstantly(opened.model), {
       model: opened.model,
     })
     const closed = Motion.hide(opened.model, { instant: true })
     assert.equal(closed.commands, undefined)
-    assert.deepEqual(closed.outMessage, [
-      { _tag: 'Settled', isOpen: false },
-      { _tag: 'Exited' },
-    ])
+    assert.deepEqual(closed.outMessage, { _tag: 'Settled', isOpen: false })
     const entering = Motion.show(closed.model).model
-    assert.deepEqual(Motion.showInstantly(entering).outMessage, [
-      { _tag: 'Settled', isOpen: true },
-    ])
+    assert.deepEqual(Motion.showInstantly(entering).outMessage, {
+      _tag: 'Settled',
+      isOpen: true,
+    })
   })
 
   it('emits focus return only on a real hide request and ignores its acknowledgement', async () => {
@@ -118,16 +128,26 @@ describe('Motion', () => {
       false,
     )
     const browser = new Window()
-    const previous = Object.getOwnPropertyDescriptor(globalThis, 'document')
-    Object.defineProperty(globalThis, 'document', {
-      value: browser.document,
-      configurable: true,
-    })
+    const globals = {
+      document: browser.document,
+      HTMLElement: browser.HTMLElement,
+      requestAnimationFrame: browser.requestAnimationFrame.bind(browser),
+      cancelAnimationFrame: browser.cancelAnimationFrame.bind(browser),
+    }
+    const previous = new Map(
+      Object.keys(globals).map(key => [
+        key,
+        Object.getOwnPropertyDescriptor(globalThis, key),
+      ]),
+    )
+    for (const [key, value] of Object.entries(globals))
+      Object.defineProperty(globalThis, key, { value, configurable: true })
     try {
       browser.document.body.innerHTML =
         '<button id="trigger">Toggle</button><div id="panel"><button id="inside">Inside</button></div><button id="outside">Outside</button>'
       browser.document.getElementById('inside')!.focus()
       const acknowledgement = await Effect.runPromise(command!.effect)
+      assert.deepEqual(acknowledgement, { _tag: 'CompletedReturnFocus' })
       assert.equal(browser.document.activeElement?.id, 'trigger')
       assert.deepEqual(Motion.update(closing.model, acknowledgement), {
         model: closing.model,
@@ -135,11 +155,33 @@ describe('Motion', () => {
       browser.document.getElementById('outside')!.focus()
       await Effect.runPromise(command!.effect)
       assert.equal(browser.document.activeElement?.id, 'outside')
+      browser.document.getElementById('inside')!.focus()
+      browser.document.getElementById('trigger')!.remove()
+      assert.deepEqual(await Effect.runPromise(command!.effect), {
+        _tag: 'CompletedReturnFocus',
+      })
+      assert.equal(browser.document.activeElement?.id, 'inside')
       browser.document.body.innerHTML = ''
       await Effect.runPromise(command!.effect)
+      const opening = Motion.show(Motion.init({ id: 'panel' }))
+      const painted = await Effect.runPromise(opening.commands![0]!.effect)
+      assert.deepEqual(
+        painted,
+        Motion.Message.GotAnimationMessage({
+          message: Animation.Message.CompletedWaitForPaint({
+            generation: opening.model.transitionGeneration,
+          }),
+        }),
+      )
+      assert.equal(
+        Motion.update(opening.model, painted).model.transitionState,
+        'EnterAnimating',
+      )
     } finally {
-      if (previous) Object.defineProperty(globalThis, 'document', previous)
-      else Reflect.deleteProperty(globalThis, 'document')
+      for (const [key, descriptor] of previous) {
+        if (descriptor) Object.defineProperty(globalThis, key, descriptor)
+        else Reflect.deleteProperty(globalThis, key)
+      }
       await browser.happyDOM.close()
     }
   })

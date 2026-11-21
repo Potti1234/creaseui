@@ -222,6 +222,7 @@ export const collapsiblePleatPreview: ExamplePreviewProvider = <Msg>(
       preview.motion,
       message => onMessageJson(JSON.stringify({ _tag: 'GotMotion', message })),
       h,
+      Button.button,
     )
   const toggle = (isOpen: boolean): Msg =>
     onMessageJson(JSON.stringify({ _tag: 'ToggledCollapsiblePreview', isOpen }))
