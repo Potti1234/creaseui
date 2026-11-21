@@ -2466,9 +2466,16 @@ test('command dialogs filter and select items per section', async ({
   await shortcutInput.focus()
   const profile = page.getByRole('option', { name: /Profile/u })
   await expect(profile).toBeVisible()
+  const isApple = await page.evaluate(() =>
+    /Mac|iPhone|iPad|iPod/u.test(navigator.platform || navigator.userAgent),
+  )
+  await expect(profile).toHaveAttribute(
+    'aria-keyshortcuts',
+    isApple ? 'Meta+P' : 'Control+P',
+  )
   await expect(
     page.locator('[data-slot="command-shortcut"]').first(),
-  ).toContainText('⌘P')
+  ).toHaveText(isApple ? '\u2066⌘P\u2069' : '\u2066Ctrl+P\u2069')
   await page.keyboard.press('Escape')
   await page.keyboard.press('Escape')
 
