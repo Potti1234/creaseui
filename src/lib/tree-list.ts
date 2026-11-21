@@ -9,6 +9,8 @@ import * as Command from 'foldkit/command'
 import * as Dom from 'foldkit/dom'
 import { defineMessageUnion } from 'foldkit/message'
 
+import * as Typeahead from '@/lib/behaviors/typeahead'
+
 export type TreeListDensity = 'compact' | 'balanced' | 'spacious'
 export type TreeListVariant = 'lineGuides' | 'noGuides'
 
@@ -43,10 +45,18 @@ export const Model = S.Struct({
       item (first selected, else first enabled) — the same repair the DOM
       hook performs on mount. */
   focusedId: S.Option(S.String),
-  typeahead: S.String,
-  typeaheadVersion: S.Number,
+  typeahead: Typeahead.Model,
 })
 export type Model = typeof Model.Type
+
+const TypeaheadCandidate = S.Struct({
+  id: S.String,
+  label: S.String,
+  isDisabled: S.Boolean,
+  hasChildren: S.Boolean,
+  hasInnerAction: S.Boolean,
+  isExpanded: S.Boolean,
+})
 
 export const Message = defineMessageUnion({
   ToggledTreeListItem: { id: S.String, isExpanded: S.Boolean },
@@ -56,11 +66,11 @@ export const Message = defineMessageUnion({
   RequestedTreeListItemActivation: { id: S.String },
   AppliedTreeListTypeahead: {
     key: S.String,
-    matchedId: S.Option(S.String),
+    candidates: S.Array(TypeaheadCandidate),
   },
   CompletedFocusTreeListItem: {},
   CompletedClickTreeListItemAction: {},
-  CompletedTreeListTypeaheadReset: { version: S.Number },
+  GotTypeaheadMessage: { message: Typeahead.Message },
 })
 export type Message = typeof Message.Type
 
@@ -80,8 +90,7 @@ export const init = (config: InitConfig): Model => ({
     (config.expandedIds ?? []).map(id => [id, true]),
   ),
   focusedId: Option.none(),
-  typeahead: '',
-  typeaheadVersion: 0,
+  typeahead: Typeahead.init(),
 })
 
 // ---------------------------------------------------------------------------
@@ -189,24 +198,6 @@ const NAVIGATION_KEYS: ReadonlySet<string> = new Set([
   ' ',
 ])
 
-export const isTypeaheadKey = (
-  key: string,
-  modifiers: Readonly<{ ctrlKey: boolean; metaKey: boolean; altKey: boolean }>,
-): boolean =>
-  key.length === 1 &&
-  !modifiers.ctrlKey &&
-  !modifiers.metaKey &&
-  !modifiers.altKey &&
-  !NAVIGATION_KEYS.has(key)
-
-/** "aaa" collapses to a single-char query that cycles through matches. */
-export const nextTypeaheadBuffer = (buffer: string, key: string): string => {
-  const char = key.toLowerCase()
-  const isRepeatSameChar =
-    buffer.length > 0 && [...buffer].every(c => c === char)
-  return isRepeatSameChar ? char : buffer + char
-}
-
 const findItem = (
   items: ReadonlyArray<TreeListItemData>,
   id: string,
@@ -233,30 +224,6 @@ const itemText = (
   )
 }
 
-export const typeaheadMatch = (
-  items: ReadonlyArray<TreeListItemData>,
-  model: Model,
-  query: string,
-): string | undefined => {
-  const visible = visibleItems(items, model)
-  const focused = Option.getOrUndefined(model.focusedId)
-  const currentIndex = visible.findIndex(item => item.id === focused)
-  const hasCurrent = currentIndex >= 0
-  const start = hasCurrent ? currentIndex : 0
-  // A single-char query cycles to the next match; a longer one may re-match
-  // the current item.
-  const offset = hasCurrent && query.length === 1 ? 1 : 0
-  const ordered = [
-    ...visible.slice(start + offset),
-    ...visible.slice(0, start + offset),
-  ]
-  return ordered.find(
-    item =>
-      !item.isDisabled &&
-      itemText(items, item.id).trim().toLowerCase().startsWith(query),
-  )?.id
-}
-
 export const itemDomId = (treeId: string, itemId: string): string =>
   `${treeId}-item-${encodeURIComponent(itemId)}`
 
@@ -280,7 +247,7 @@ export type TreeKeyIntent =
   | Readonly<{
       _tag: 'typeahead'
       key: string
-      matchedId: Option.Option<string>
+      candidates: ReadonlyArray<typeof TypeaheadCandidate.Type>
     }>
   | Readonly<{ _tag: 'none' }>
 
@@ -317,13 +284,18 @@ export const resolveKey = (
   const currentIndex = visible.findIndex(item => item.id === focused)
   const current = currentIndex >= 0 ? visible[currentIndex] : undefined
 
-  if (isTypeaheadKey(key, modifiers)) {
-    const query = nextTypeaheadBuffer(model.typeahead, key)
-    const match = typeaheadMatch(items, model, query)
+  if (Typeahead.isTypeaheadKey(key, modifiers)) {
     return {
       _tag: 'typeahead',
       key,
-      matchedId: match === undefined ? Option.none() : Option.some(match),
+      candidates: visible.map(item => ({
+        id: item.id,
+        label: itemText(items, item.id),
+        isDisabled: item.isDisabled,
+        hasChildren: item.hasChildren,
+        hasInnerAction: item.hasInnerAction,
+        isExpanded: item.isExpanded,
+      })),
     }
   }
   if (!NAVIGATION_KEYS.has(key)) {
@@ -446,20 +418,6 @@ export const ClickTreeListItemAction = Command.define(
   },
 )
 
-export const TYPEAHEAD_RESET_MS = 500
-
-export const WaitBeforeResettingTypeahead = Command.define(
-  'WaitBeforeResettingTreeListTypeahead',
-  {
-    args: { version: S.Number, delayMs: S.Number },
-    messages: [Message.CompletedTreeListTypeaheadReset],
-    execute: ({ version, delayMs }) =>
-      Effect.sleep(`${delayMs} millis`).pipe(
-        Effect.as(Message.CompletedTreeListTypeaheadReset({ version })),
-      ),
-  },
-)
-
 // ---------------------------------------------------------------------------
 // Update
 // ---------------------------------------------------------------------------
@@ -508,24 +466,55 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         ],
       }
     case 'AppliedTreeListTypeahead': {
-      const buffer = nextTypeaheadBuffer(model.typeahead, message.key)
-      const version = model.typeaheadVersion + 1
+      const focusedId = Option.getOrUndefined(model.focusedId)
+      const currentIndex = message.candidates.findIndex(
+        item => item.id === focusedId,
+      )
+      if (message.key === ' ' && !Typeahead.isActive(model.typeahead)) {
+        const current = message.candidates[currentIndex]
+        if (current === undefined || current.isDisabled) return { model }
+        if (current.hasInnerAction) {
+          return update(
+            model,
+            Message.RequestedTreeListItemActivation({ id: current.id }),
+          )
+        }
+        if (current.hasChildren) {
+          return update(
+            model,
+            Message.ToggledTreeListItem({
+              id: current.id,
+              isExpanded: !(
+                model.expandedOverrides[current.id] ?? current.isExpanded
+              ),
+            }),
+          )
+        }
+        return update(model, Message.MovedTreeListFocus({ id: current.id }))
+      }
+      const next = Typeahead.search(model.typeahead, {
+        key: message.key,
+        labels: message.candidates.map(item => item.label),
+        currentIndex,
+        isDisabled: index => message.candidates[index]?.isDisabled === true,
+      })
+      const matchedId = Option.flatMap(next.maybeIndex, index =>
+        Option.fromUndefinedOr(message.candidates[index]?.id),
+      )
       return {
         model: {
           ...model,
-          typeahead: buffer,
-          typeaheadVersion: version,
-          focusedId: Option.match(message.matchedId, {
+          typeahead: next.model,
+          focusedId: Option.match(matchedId, {
             onNone: () => model.focusedId,
             onSome: id => Option.some(id),
           }),
         },
         commands: [
-          WaitBeforeResettingTypeahead({
-            version,
-            delayMs: TYPEAHEAD_RESET_MS,
-          }),
-          ...Option.match(message.matchedId, {
+          ...Command.mapMessages(next.commands, child =>
+            Message.GotTypeaheadMessage({ message: child }),
+          ),
+          ...Option.match(matchedId, {
             onNone: (): Array<ReturnType<typeof FocusTreeListItem>> => [],
             onSome: id => [
               FocusTreeListItem({ domId: itemDomId(model.id, id) }),
@@ -534,10 +523,15 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         ],
       }
     }
-    case 'CompletedTreeListTypeaheadReset':
-      return message.version === model.typeaheadVersion
-        ? { model: { ...model, typeahead: '' } }
-        : { model }
+    case 'GotTypeaheadMessage': {
+      const next = Typeahead.update(model.typeahead, message.message)
+      return {
+        model: { ...model, typeahead: next.model },
+        commands: Command.mapMessages(next.commands, child =>
+          Message.GotTypeaheadMessage({ message: child }),
+        ),
+      }
+    }
     case 'CompletedFocusTreeListItem':
     case 'CompletedClickTreeListItemAction':
       return { model }
