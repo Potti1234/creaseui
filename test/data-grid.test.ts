@@ -56,6 +56,36 @@ const displayedIds = (model: Grid.Model) =>
   Grid.displayedRows<Row>(model, config).map(row => row.id)
 
 describe('data grid keyboard navigation', () => {
+  it('uses the shared body height minus its sticky header for page movement', () => {
+    const manyRows = Array.from({ length: 100 }, (_, index) => ({
+      id: String(index),
+      name: String(index),
+      done: false,
+    }))
+    const model = step(
+      Grid.init(config, manyRows),
+      Grid.Message.SetViewportHeight({ height: 900 }),
+      Grid.Message.FocusedCell({ row: 0, column: 'name' }),
+    )
+    assert.equal(Grid.viewportHeightPx(model), 750)
+    const expected = Math.floor(
+      (750 - Grid.headerHeightPx) / Grid.rowHeightPx(model.rowHeight),
+    )
+    assert.equal(Grid.pageSize(model), expected)
+    assert.equal(
+      step(
+        model,
+        Grid.Message.GridKey({
+          key: 'PageDown',
+          ctrl: false,
+          meta: false,
+          shift: false,
+        }),
+      ).focusedCell.row,
+      expected,
+    )
+    assert.equal(Grid.viewportHeightPx({ ...model, viewportHeight: 200 }), 400)
+  })
   it('enters a fresh grid at the first visible cell for arrows and Tab', () => {
     for (const key of [
       'ArrowDown',

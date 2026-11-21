@@ -232,6 +232,19 @@ export const init = <Row>(
 export const rowHeightPx = (id: string): number =>
   ROW_HEIGHTS.find(entry => entry.id === id)?.height ?? 36
 
+export const viewportHeightPx = (model: Model): number =>
+  Math.max(400, model.viewportHeight - 150)
+
+export const headerHeightPx = 33
+
+export const pageSize = (model: Model): number =>
+  Math.max(
+    1,
+    Math.floor(
+      (viewportHeightPx(model) - headerHeightPx) / rowHeightPx(model.rowHeight),
+    ),
+  )
+
 const rowsArray = <Row>(model: Model): Array<Row> => model.rows as Array<Row>
 
 export const cellText = <Row>(
@@ -368,10 +381,7 @@ const moveFocus = <Row>(
           pressedKey,
           ctrl,
           direction,
-          pageSize: Math.max(
-            1,
-            Math.floor(model.viewportHeight / rowHeightPx(model.rowHeight)),
-          ),
+          pageSize: pageSize(model),
         })
   return Option.match(target, {
     onNone: () => model,

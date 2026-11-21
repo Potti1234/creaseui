@@ -1075,9 +1075,6 @@ const contextMenu = (
 
 /* ---------- grid ---------- */
 
-/* reference: height = max(400, window.innerHeight - 150) */
-const viewportHeightPx = (model: DataGrid.Model): number =>
-  Math.max(400, model.viewportHeight - 150)
 const OVERSCAN = 5
 
 export const dataGrid = <Row>(
@@ -1093,7 +1090,7 @@ export const dataGrid = <Row>(
   const columns = visibleCols(model, config)
   const rowH = DataGrid.rowHeightPx(model.rowHeight)
   const totalHeight = people.length * rowH
-  const viewHeight = viewportHeightPx(model)
+  const viewHeight = DataGrid.viewportHeightPx(model)
   const startIndex = Math.max(0, Math.floor(model.scrollTop / rowH) - OVERSCAN)
   const endIndex = Math.min(
     people.length,
