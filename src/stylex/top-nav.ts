@@ -106,8 +106,13 @@ const styles = stylex.create({
     boxSizing: 'border-box',
     color: tokens.foreground,
     display: 'flex',
+    flexWrap: {
+      default: 'nowrap',
+      '@media not all and (min-width: 640px)': 'wrap',
+    },
     outlineStyle: 'none',
     position: 'relative',
+    rowGap: { default: 0, '@media not all and (min-width: 640px)': '0.5rem' },
     width: '100%',
   },
   navGrid: {
@@ -115,17 +120,29 @@ const styles = stylex.create({
     alignItems: 'center',
     boxSizing: 'border-box',
     color: tokens.foreground,
-    display: 'grid',
+    display: {
+      default: 'grid',
+      '@media not all and (min-width: 640px)': 'flex',
+    },
+    flexWrap: {
+      default: 'nowrap',
+      '@media not all and (min-width: 640px)': 'wrap',
+    },
     gridTemplateColumns: '1fr auto 1fr',
     outlineStyle: 'none',
     position: 'relative',
+    rowGap: { default: 0, '@media not all and (min-width: 640px)': '0.5rem' },
     width: '100%',
   },
   leftSection: {
     flex: '1',
     gap: '1rem',
     alignItems: 'center',
-    display: 'flex',
+    // Let heading/actions share the first row, with links on a full-width row.
+    display: {
+      default: 'flex',
+      '@media not all and (min-width: 640px)': 'contents',
+    },
     minWidth: 0,
   },
   headingSlot: {
@@ -137,18 +154,34 @@ const styles = stylex.create({
     gap: '0.25rem',
     alignItems: 'center',
     display: 'flex',
+    flexWrap: {
+      default: 'nowrap',
+      '@media not all and (min-width: 640px)': 'wrap',
+    },
+    order: { default: 0, '@media not all and (min-width: 640px)': 1 },
+    width: { default: 'auto', '@media not all and (min-width: 640px)': '100%' },
   },
   centerContent: {
     gap: '0.25rem',
     alignItems: 'center',
     display: 'flex',
+    flexWrap: {
+      default: 'nowrap',
+      '@media not all and (min-width: 640px)': 'wrap',
+    },
     justifyContent: 'center',
+    order: { default: 0, '@media not all and (min-width: 640px)': 2 },
+    width: { default: 'auto', '@media not all and (min-width: 640px)': '100%' },
   },
   rightSection: {
     gap: '0.25rem',
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'flex-end',
+    marginInlineStart: {
+      default: 0,
+      '@media not all and (min-width: 640px)': 'auto',
+    },
   },
   endContent: {
     gap: '0.25rem',
@@ -794,7 +827,11 @@ const renderDropdown = <Msg>(
                 h.Class(className(styles.menuPanel)),
                 h.Role('menu'),
                 h.AriaLabel(menuData.label),
-                h.Style(anchorPositionStyle(anchorId, 'bottom')),
+                h.Style({
+                  ...anchorPositionStyle(anchorId, 'bottom'),
+                  // Reserve the panel's minimum width when neither inline flip fits.
+                  left: 'clamp(0.5rem, anchor(left), calc(100% - 17.5rem - 0.5rem))',
+                }),
                 h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuPanel())),
                 h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuPanel())),
                 h.OnKeyDownPreventDefault(k =>

@@ -109,7 +109,12 @@ const styles = {
     outlineStyle: 'none',
     position: 'relative',
     width: '100%',
-  }),
+  }).pipe(
+    Style.when(When.media('not all and (min-width: 640px)'), {
+      flexWrap: 'wrap',
+      rowGap: '0.5rem',
+    }),
+  ),
   navGrid: Style.make({
     padding: '0.5rem',
     alignItems: 'center',
@@ -120,14 +125,25 @@ const styles = {
     outlineStyle: 'none',
     position: 'relative',
     width: '100%',
-  }),
+  }).pipe(
+    Style.when(When.media('not all and (min-width: 640px)'), {
+      display: 'flex',
+      flexWrap: 'wrap',
+      rowGap: '0.5rem',
+    }),
+  ),
   leftSection: Style.make({
     flex: '1',
     gap: '1rem',
     alignItems: 'center',
     display: 'flex',
     minWidth: 0,
-  }),
+  }).pipe(
+    // Let heading/actions share the first row, with links on a full-width row.
+    Style.when(When.media('not all and (min-width: 640px)'), {
+      display: 'contents',
+    }),
+  ),
   headingSlot: Style.make({
     alignItems: 'center',
     display: 'flex',
@@ -137,19 +153,35 @@ const styles = {
     gap: '0.25rem',
     alignItems: 'center',
     display: 'flex',
-  }),
+  }).pipe(
+    Style.when(When.media('not all and (min-width: 640px)'), {
+      flexWrap: 'wrap',
+      order: 1,
+      width: '100%',
+    }),
+  ),
   centerContent: Style.make({
     gap: '0.25rem',
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'center',
-  }),
+  }).pipe(
+    Style.when(When.media('not all and (min-width: 640px)'), {
+      flexWrap: 'wrap',
+      order: 2,
+      width: '100%',
+    }),
+  ),
   rightSection: Style.make({
     gap: '0.25rem',
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'flex-end',
-  }),
+  }).pipe(
+    Style.when(When.media('not all and (min-width: 640px)'), {
+      marginInlineStart: 'auto',
+    }),
+  ),
   endContent: Style.make({
     gap: '0.25rem',
     alignItems: 'center',
@@ -773,7 +805,11 @@ const renderDropdown = <Msg>(
                 h.Class(className(styles.menuPanel)),
                 h.Role('menu'),
                 h.AriaLabel(menuData.label),
-                h.Style(anchorPositionStyle(anchorId, 'bottom')),
+                h.Style({
+                  ...anchorPositionStyle(anchorId, 'bottom'),
+                  // Reserve the panel's minimum width when neither inline flip fits.
+                  left: 'clamp(0.5rem, anchor(left), calc(100% - 17.5rem - 0.5rem))',
+                }),
                 h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuPanel())),
                 h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuPanel())),
                 h.OnKeyDownPreventDefault(k =>
