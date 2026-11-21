@@ -15,7 +15,8 @@ Connect tracks a port connection draft; components own ports, policy and saved
 edges. Route `RequestedConnection` upward and send `Connected` only after saving
 an accepted edge, so rejected requests never announce success. `Canceled` is
 emitted only for an existing draft. Pass keys and `canConnect` to update and view;
-self-connections are always rejected. `role` and `keyboardTarget` are pure.
+self-connections are always rejected. `role` and `nearestInDirection` return
+`Option`; they and `keyboardTarget` are pure.
 The view bundles port attributes and a root Mount (document pointer listeners,
 cached drag rectangles, 28px snapping); keyboard measurement and announcements
 are Commands. Supply a unique root id and an `announcementId` for a component-owned

@@ -234,12 +234,14 @@ export const role = (
   model: Model,
   key: string,
   options: Options,
-): 'Source' | 'Target' | 'Candidate' | undefined => {
-  if (Option.isNone(model.draft)) return undefined
+): Option.Option<'Source' | 'Target' | 'Candidate'> => {
+  if (Option.isNone(model.draft)) return Option.none()
   const draft = model.draft.value
-  if (draft.from === key) return 'Source'
-  if (Option.contains(draft.to, key)) return 'Target'
-  return can(options, draft.from, key) ? 'Candidate' : undefined
+  if (draft.from === key) return Option.some('Source')
+  if (Option.contains(draft.to, key)) return Option.some('Target')
+  return can(options, draft.from, key)
+    ? Option.some('Candidate')
+    : Option.none()
 }
 
 export type Rect = Readonly<{
@@ -260,7 +262,7 @@ export const nearestInDirection = <Key extends string>(
   fromRect: Rect,
   candidates: ReadonlyArray<Port<Key>>,
   direction: readonly [number, number],
-): Key | undefined => {
+): Option.Option<Key> => {
   const from = center(fromRect)
   const [dx, dy] = direction
   let best: { key: Key; score: number; cone: boolean } | undefined
@@ -280,7 +282,7 @@ export const nearestInDirection = <Key extends string>(
     )
       best = { key, score, cone }
   }
-  return best?.key
+  return best ? Option.some(best.key) : Option.none()
 }
 const arrows: Readonly<Record<string, readonly [number, number]>> = {
   ArrowUp: [0, -1],
@@ -318,18 +320,18 @@ export const keyboardTarget = (
   const current = ports.find(
     port => port.key === Option.getOrElse(draft.to, () => draft.from),
   )
-  const next =
-    current &&
-    nearestInDirection(
-      current.rect,
-      ports.filter(
-        port =>
-          !Option.contains(draft.to, port.key) &&
-          can(options, draft.from, port.key),
-      ),
-      direction,
-    )
-  const port = ports.find(port => port.key === next)
+  const next = current
+    ? nearestInDirection(
+        current.rect,
+        ports.filter(
+          port =>
+            !Option.contains(draft.to, port.key) &&
+            can(options, draft.from, port.key),
+        ),
+        direction,
+      )
+    : Option.none()
+  const port = ports.find(port => Option.contains(next, port.key))
   return result(
     true,
     port
@@ -533,12 +535,11 @@ export const create = <Key extends string = string>(): Bundle<Key> => ({
                 )
               : Option.none()
           }),
-          ...(() => {
-            const value = role(model, key, inputs)
-            return value === undefined
-              ? []
-              : [h.DataAttribute('connect', value)]
-          })(),
+          ...Option.toArray(
+            Option.map(role(model, key, inputs), value =>
+              h.DataAttribute('connect', value),
+            ),
+          ),
         ]),
       })),
       childAttributes([

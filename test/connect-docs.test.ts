@@ -87,4 +87,13 @@ describe('Connect behavior documentation', () => {
       /Connect\.connect\(|viewConfig/u,
     )
   })
+
+  it('documents Option results for fallible public helpers', () => {
+    for (const name of ['role', 'nearestInDirection']) {
+      const entry = definition.apiEntries?.find(entry => entry.name === name)
+      assert.ok(entry, name)
+      assert.match(entry.signature, /: Option</u)
+      assert.doesNotMatch(entry.signature, /undefined|null/u)
+    }
+  })
 })

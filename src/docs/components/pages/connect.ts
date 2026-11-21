@@ -367,7 +367,7 @@ export const connectPage = authoredPage({
         name: 'role',
         kind: 'function',
         signature:
-          "role(model: Model, key: string, options: Options): 'Source' | 'Target' | 'Candidate' | undefined",
+          "role(model: Model, key: string, options: Options): Option<'Source' | 'Target' | 'Candidate'>",
       },
       {
         name: 'keyboardTarget',
@@ -379,7 +379,7 @@ export const connectPage = authoredPage({
         name: 'nearestInDirection',
         kind: 'function',
         signature:
-          'nearestInDirection<Key extends string>(fromRect: Rect, candidates: ReadonlyArray<Port<Key>>, direction: readonly [number, number]): Key | undefined',
+          'nearestInDirection<Key extends string>(fromRect: Rect, candidates: ReadonlyArray<Port<Key>>, direction: readonly [number, number]): Option<Key>',
       },
       {
         name: 'connectMessage',

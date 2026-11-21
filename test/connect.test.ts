@@ -167,31 +167,37 @@ describe('Connect model', () => {
   })
 
   it('reports source, target and every allowed candidate', () => {
-    assert.equal(Connect.role(Connect.init(), 'a', options), undefined)
+    assert.deepEqual(Connect.role(Connect.init(), 'a', options), Option.none())
     const model = Connect.update(started(), target('b'), options).model
-    assert.equal(Connect.role(model, 'a', options), 'Source')
-    assert.equal(Connect.role(model, 'b', options), 'Target')
-    assert.equal(Connect.role(model, 'c', options), 'Candidate')
-    assert.equal(Connect.role(model, 'missing', options), undefined)
-    assert.equal(
+    assert.deepEqual(Connect.role(model, 'a', options), Option.some('Source'))
+    assert.deepEqual(Connect.role(model, 'b', options), Option.some('Target'))
+    assert.deepEqual(
+      Connect.role(model, 'c', options),
+      Option.some('Candidate'),
+    )
+    assert.deepEqual(Connect.role(model, 'missing', options), Option.none())
+    assert.deepEqual(
       Connect.role(model, 'c', { ...options, canConnect: () => false }),
-      undefined,
+      Option.none(),
     )
   })
 })
 
 describe('Connect spatial navigation', () => {
   it('prefers the directional cone, then weighted distance, with stable ties', () => {
-    assert.equal(Connect.nearestInDirection(rect(0, 0), [], [1, 0]), undefined)
-    assert.equal(
+    assert.deepEqual(
+      Connect.nearestInDirection(rect(0, 0), [], [1, 0]),
+      Option.none(),
+    )
+    assert.deepEqual(
       Connect.nearestInDirection(
         rect(0, 0),
         [{ key: 'behind', rect: rect(-1, 0) }],
         [1, 0],
       ),
-      undefined,
+      Option.none(),
     )
-    assert.equal(
+    assert.deepEqual(
       Connect.nearestInDirection(
         rect(0, 0),
         [
@@ -200,9 +206,9 @@ describe('Connect spatial navigation', () => {
         ],
         [1, 0],
       ),
-      'inside',
+      Option.some('inside'),
     )
-    assert.equal(
+    assert.deepEqual(
       Connect.nearestInDirection(
         rect(0, 0),
         [
@@ -211,9 +217,9 @@ describe('Connect spatial navigation', () => {
         ],
         [1, 0],
       ),
-      'first',
+      Option.some('first'),
     )
-    assert.equal(
+    assert.deepEqual(
       Connect.nearestInDirection(
         rect(0, 0),
         [
@@ -222,7 +228,7 @@ describe('Connect spatial navigation', () => {
         ],
         [1, 0],
       ),
-      'near',
+      Option.some('near'),
     )
     for (const [x, y] of [
       [0, -10],
@@ -230,13 +236,13 @@ describe('Connect spatial navigation', () => {
       [-10, 0],
       [10, 0],
     ] as const)
-      assert.equal(
+      assert.deepEqual(
         Connect.nearestInDirection(
           rect(0, 0),
           [{ key: 'next', rect: rect(x, y) }],
           [Math.sign(x), Math.sign(y)],
         ),
-        'next',
+        Option.some('next'),
       )
   })
 

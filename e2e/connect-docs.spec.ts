@@ -79,5 +79,6 @@ for (const [renderer, port] of [
     await expect(
       page.getByText('Saved connections: 1', { exact: true }),
     ).toBeVisible()
+    await expect(page.locator('[data-connect]')).toHaveCount(0)
   })
 }
