@@ -1,10 +1,10 @@
-import { Schema } from 'effect'
+import { Option, Schema } from 'effect'
 
 export const Model = <A extends Schema.Top>(entry: A) =>
   Schema.Struct({
     past: Schema.Array(entry),
     future: Schema.Array(entry),
-    open: Schema.NullOr(
+    open: Schema.Option(
       Schema.Struct({ group: Schema.String, time: Schema.Number }),
     ),
   })
@@ -12,10 +12,14 @@ export const Model = <A extends Schema.Top>(entry: A) =>
 export type Model<A> = Readonly<{
   past: ReadonlyArray<A>
   future: ReadonlyArray<A>
-  open: Readonly<{ group: string; time: number }> | null
+  open: Option.Option<Readonly<{ group: string; time: number }>>
 }>
 
-export const init = <A>(): Model<A> => ({ past: [], future: [], open: null })
+export const init = <A>(): Model<A> => ({
+  past: [],
+  future: [],
+  open: Option.none(),
+})
 
 export type Options = Readonly<{ limit?: number }>
 export type PushOptions = Options &
@@ -26,7 +30,7 @@ export type PushOptions = Options &
   }>
 
 export const seal = <A>(model: Model<A>): Model<A> =>
-  model.open === null ? model : { ...model, open: null }
+  Option.isNone(model.open) ? model : { ...model, open: Option.none() }
 
 export const push = <A>(
   model: Model<A>,
@@ -43,13 +47,15 @@ export const push = <A>(
   }
   const joins =
     !!group &&
-    model.open?.group === group &&
-    now! - model.open.time < groupDelay
+    Option.isSome(model.open) &&
+    model.open.value.group === group &&
+    now! - model.open.value.time < groupDelay
   const past = joins ? model.past : [...model.past, present]
   return {
     past: past.slice(Math.max(0, past.length - limit)),
     future: [],
-    open: group && limit > 0 ? { group, time: now! } : null,
+    open:
+      group && limit > 0 ? Option.some({ group, time: now! }) : Option.none(),
   }
 }
 
@@ -65,7 +71,7 @@ export const undo = <A>(
         model: {
           past: model.past.slice(0, -1),
           future: [present, ...model.future],
-          open: null,
+          open: Option.none(),
         },
         present: model.past[model.past.length - 1]!,
       }
@@ -80,7 +86,7 @@ export const redo = <A>(
         model: {
           past: [...model.past, present],
           future: model.future.slice(1),
-          open: null,
+          open: Option.none(),
         },
         present: model.future[0]!,
       }

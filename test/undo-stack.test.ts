@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { Schema } from 'effect'
+import { Option, Schema } from 'effect'
 
 import * as UndoStack from '@/lib/behaviors/undo-stack'
 
@@ -20,7 +20,7 @@ describe('UndoStack', () => {
       limit: 0,
     })
     assert.deepEqual(disabled.past, [])
-    assert.equal(disabled.open, null)
+    assert.equal(Option.isNone(disabled.open), true)
     const enabled = UndoStack.push(disabled, 'e', { group: 'typing', now: 3 })
     assert.deepEqual(enabled.past, ['e'])
   })
@@ -41,7 +41,7 @@ describe('UndoStack', () => {
       UndoStack.push(third, 'd', { group: 'typing', now: 1498 }).past,
       ['a', 'd'],
     )
-    assert.deepEqual(first.open, { group: 'typing', time: 0 })
+    assert.deepEqual(first.open, Option.some({ group: 'typing', time: 0 }))
   })
 
   it('starts a new step for another group or an ungrouped push', () => {
@@ -54,7 +54,7 @@ describe('UndoStack', () => {
       ['a', 'b'],
     )
     const ungrouped = UndoStack.push(first, 'b')
-    assert.equal(ungrouped.open, null)
+    assert.equal(Option.isNone(ungrouped.open), true)
     assert.deepEqual(
       UndoStack.push(ungrouped, 'c', { group: 'insert', now: 2 }).past,
       ['a', 'b', 'c'],
@@ -72,7 +72,7 @@ describe('UndoStack', () => {
       UndoStack.seal(first),
       UndoStack.clear(first),
     ]) {
-      assert.equal(model.open, null)
+      assert.equal(Option.isNone(model.open), true)
       assert.equal(
         UndoStack.push(model, 'c', { group: 'typing', now: 1 }).past.length,
         model.past.length + 1,
@@ -83,7 +83,7 @@ describe('UndoStack', () => {
       now: 0,
       limit: 0,
     })
-    assert.equal(UndoStack.undo(zero, 'b').model.open, null)
+    assert.equal(Option.isNone(UndoStack.undo(zero, 'b').model.open), true)
   })
 
   it('supports a configurable window and requires grouped timestamps', () => {
@@ -113,7 +113,7 @@ describe('UndoStack', () => {
     const empty = UndoStack.init<string>()
     const first = UndoStack.push(empty, 'a')
     const second = UndoStack.push(first, 'b')
-    assert.deepEqual(empty, { past: [], future: [], open: null })
+    assert.deepEqual(empty, { past: [], future: [], open: Option.none() })
     assert.deepEqual(first.past, ['a'])
     assert.equal(UndoStack.canUndo(second), true)
     const undone = UndoStack.undo(second, 'c')
@@ -175,9 +175,9 @@ describe('UndoStack', () => {
       Schema.decodeUnknownSync(UndoStack.Model(Schema.String))({
         past: ['a'],
         future: [],
-        open: null,
+        open: Option.none(),
       }),
-      { past: ['a'], future: [], open: null },
+      { past: ['a'], future: [], open: Option.none() },
     )
   })
 })

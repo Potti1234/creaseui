@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
+import { Option, Schema } from 'effect'
 
 import * as Grid from '@/lib/data-grid'
 
@@ -56,6 +57,19 @@ const displayedIds = (model: Grid.Model) =>
   Grid.displayedRows<Row>(model, config).map(row => row.id)
 
 describe('data grid row identity', () => {
+  it('decodes grid history with optional grouping state', () => {
+    const model = Grid.init(config, rows)
+    assert.deepEqual(Schema.decodeUnknownSync(Grid.Model)(model), model)
+    assert.equal(Option.isNone(model.history.open), true)
+    const grouped = {
+      ...model,
+      history: {
+        ...model.history,
+        open: Option.some({ group: 'typing', time: 1 }),
+      },
+    }
+    assert.deepEqual(Schema.decodeUnknownSync(Grid.Model)(grouped), grouped)
+  })
   it('honors the configured undo history limit', () => {
     const limited = { ...config, history: { limit: 1 } }
     const edit = (model: Grid.Model, value: string) =>
