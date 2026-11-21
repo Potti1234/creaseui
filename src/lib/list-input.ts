@@ -2,6 +2,20 @@ import { Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import type { Html } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
+import * as Command from 'foldkit/command'
+import * as FocusRecovery from '@/lib/behaviors/focus-recovery'
+
+export const removeId = (id: string, key: string): string =>
+  `${id}-remove-${key}`
+export const addId = (id: string): string => `${id}-add`
+export const focusMount = <Msg>(send: (message: Message) => Msg) =>
+  FocusRecovery.collectionMount(
+    {
+      keyAttribute: 'data-list-input-row',
+      actionSelector: '[data-list-input-remove]:not(:disabled)',
+    },
+    message => send(Message.GotFocusRecoveryMessage({ message })),
+  )
 
 /* Ported from Meta Astryx ListInput (packages/lab/src/ListInput) — column
    definitions, mutation intents, keyboard reorder state, and live-region
@@ -85,6 +99,7 @@ export const Model = S.Struct({
   id: S.String,
   reorder: S.Option(ReorderState),
   announcement: S.Option(S.String),
+  focusRecovery: FocusRecovery.CollectionModel,
 })
 export type Model = typeof Model.Type
 
@@ -93,9 +108,11 @@ export const init = (config: InitConfig): Model => ({
   id: config.id,
   reorder: Option.none(),
   announcement: Option.none(),
+  focusRecovery: FocusRecovery.initCollection(),
 })
 
 export const Message = defineMessageUnion({
+  GotFocusRecoveryMessage: { message: FocusRecovery.CollectionMessage },
   /* The new item rides the message: messages must be data because previews
      route them through JSON.stringify, which drops function payloads
      (astryx invokes createItem() inside the click handler; the view samples
@@ -143,6 +160,19 @@ export type UpdateReturn = Update.ReturnWithOutMessage<
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
+    case 'GotFocusRecoveryMessage': {
+      const result = FocusRecovery.updateCollection(
+        model.focusRecovery,
+        message.message,
+        { itemId: key => removeId(model.id, key), fallbackId: addId(model.id) },
+      )
+      return {
+        model: { ...model, focusRecovery: result.model },
+        commands: Command.mapMessages(result.commands ?? [], message =>
+          Message.GotFocusRecoveryMessage({ message }),
+        ),
+      }
+    }
     case 'AddRequested':
       return {
         model: {

@@ -1,6 +1,8 @@
 /** Focus ownership and recovery policy adapted from ui-sdk core's focus-recovery. */
-import { Effect, Option, Schema } from 'effect'
+import { Effect, Option, Queue, Schema, Stream } from 'effect'
+import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
+import * as Mount from 'foldkit/mount'
 import { defineMessageUnion } from 'foldkit/message'
 import { afterCommit } from 'foldkit/render'
 
@@ -86,3 +88,162 @@ export const create = <Key extends string = string>() => {
   }
   return { init, focused, blurred, recover }
 }
+
+const recovery = create()
+
+export const CollectionModel = Schema.Struct({
+  keys: Schema.Array(Schema.String),
+  recovery: Model,
+})
+export type CollectionModel = typeof CollectionModel.Type
+
+export const CollectionMessage = defineMessageUnion({
+  FocusedItem: { key: Schema.String },
+  BlurredItems: {},
+  ReconciledItems: {
+    keys: Schema.Array(Schema.String),
+    enabledKeys: Schema.Array(Schema.String),
+  },
+  CompletedRecoverFocus: {},
+})
+export type CollectionMessage = typeof CollectionMessage.Type
+
+export const initCollection = (): CollectionModel => ({
+  keys: [],
+  recovery: recovery.init(),
+})
+
+export const updateCollection = (
+  model: CollectionModel,
+  message: CollectionMessage,
+  config: Readonly<{ itemId: (key: string) => string; fallbackId: string }>,
+): Update.Return<CollectionModel, CollectionMessage> => {
+  switch (message._tag) {
+    case 'FocusedItem':
+      return {
+        model: {
+          ...model,
+          recovery: recovery.focused(model.recovery, message.key),
+        },
+      }
+    case 'BlurredItems':
+      return { model: { ...model, recovery: recovery.blurred(model.recovery) } }
+    case 'CompletedRecoverFocus':
+      return { model }
+    case 'ReconciledItems': {
+      const result = recovery.recover(model.recovery, {
+        previousKeys: model.keys,
+        nextKeys: message.keys,
+        isDisabled: key => !message.enabledKeys.includes(key),
+      })
+      return {
+        model: { keys: message.keys, recovery: result.model },
+        commands: Option.match(result.maybeRecovery, {
+          onNone: () => [],
+          onSome: ({ lostKey, target }) => [
+            RecoverFocus({
+              lostId: config.itemId(lostKey),
+              targetId:
+                target.type === 'Item'
+                  ? config.itemId(target.key)
+                  : config.fallbackId,
+            }),
+          ],
+        }),
+      }
+    }
+  }
+}
+
+const collectionArgs = {
+  keyAttribute: Schema.String,
+  actionSelector: Schema.String,
+}
+
+export const collectionChanges = (
+  element: Element,
+  config: Readonly<{ keyAttribute: string; actionSelector: string }>,
+): Stream.Stream<CollectionMessage> =>
+  Stream.callback(queue =>
+    Effect.gen(function* () {
+      yield* Effect.acquireRelease(
+        Effect.sync(() => {
+          const selector = `[${config.keyAttribute}]`
+          const emit = (message: CollectionMessage) =>
+            Queue.offerUnsafe(queue, message)
+          let signature = ''
+          const reconcile = () => {
+            const items = [...element.querySelectorAll<HTMLElement>(selector)]
+            const keys = items.map(
+              item => item.getAttribute(config.keyAttribute) ?? '',
+            )
+            const enabledKeys = items
+              .filter(item => item.querySelector(config.actionSelector))
+              .map(item => item.getAttribute(config.keyAttribute) ?? '')
+            const nextSignature = JSON.stringify([keys, enabledKeys])
+            if (nextSignature === signature) return
+            signature = nextSignature
+            emit(CollectionMessage.ReconciledItems({ keys, enabledKeys }))
+          }
+          const focus = (event: Event) => {
+            const item =
+              event.target instanceof Element
+                ? event.target.closest(selector)
+                : null
+            const key = item?.getAttribute(config.keyAttribute)
+            emit(
+              key === null || key === undefined
+                ? CollectionMessage.BlurredItems()
+                : CollectionMessage.FocusedItem({ key }),
+            )
+          }
+          const blur = (event: Event) => {
+            const target = event.target
+            queueMicrotask(() => {
+              if (
+                target instanceof Element &&
+                target.isConnected &&
+                !element.contains(element.ownerDocument.activeElement)
+              )
+                emit(CollectionMessage.BlurredItems())
+            })
+          }
+          const observer = new MutationObserver(reconcile)
+          observer.observe(element, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['disabled', 'aria-disabled', 'data-limited'],
+          })
+          element.addEventListener('focusin', focus)
+          element.addEventListener('focusout', blur)
+          reconcile()
+          return () => {
+            observer.disconnect()
+            element.removeEventListener('focusin', focus)
+            element.removeEventListener('focusout', blur)
+          }
+        }),
+        cleanup => Effect.sync(cleanup),
+      )
+      return yield* Effect.never
+    }),
+  )
+
+export const ObserveCollection = Mount.defineStream(
+  'ObserveFocusRecoveryCollection',
+  {
+    args: collectionArgs,
+    messages: [
+      CollectionMessage.FocusedItem,
+      CollectionMessage.BlurredItems,
+      CollectionMessage.ReconciledItems,
+    ],
+    execute: ({ element, ...config }) => collectionChanges(element, config),
+  },
+)
+
+export const collectionMount = <Msg>(
+  config: Readonly<{ keyAttribute: string; actionSelector: string }>,
+  send: (message: CollectionMessage) => Msg,
+) => Mount.mapMessage(ObserveCollection(config), send)

@@ -25,6 +25,9 @@ import {
 import {
   Message,
   resolveColumnTrack,
+  removeId,
+  addId,
+  focusMount,
   type ListInputColumn,
   type ListInputRenderContext,
   type Model,
@@ -624,6 +627,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
               }),
             ),
             h.DataAttribute('list-input-remove', ''),
+            h.Id(removeId(model.id, itemKey)),
             h.Class(
               className(
                 reset.button,
@@ -675,6 +679,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
           ? []
           : [h.AriaDescribedBy(itemStatusId)]),
         h.DataAttribute('slot', 'list-input-item'),
+        h.Key(itemKey),
         h.DataAttribute('list-input-motion-key', `item:${itemKey}`),
         h.Class(className(styles.item)),
       ],
@@ -783,6 +788,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
           button(
             {
               children: [`Add ${itemName}`],
+              id: addId(model.id),
               onClick: Message.AddRequested({
                 item: props.createItem(),
                 itemName,
@@ -829,6 +835,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
   return h.div(
     [
       h.DataAttribute('slot', 'list-input'),
+      h.OnMount(focusMount(message => message)),
       h.Class(className(styles.field, props.layoutStyle)),
     ],
     [

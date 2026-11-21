@@ -17,6 +17,9 @@ enabled key, then the previous, or requests a component-owned fallback.
 Map that result to `RecoverFocus` with target and lost element IDs. The Command
 waits for the render commit and never steals focus from another connected
 element. Components own element IDs, fallback targets, and disabled policy.
+For parent-owned collections, `CollectionModel` and `collectionMount` report
+accepted keyed DOM changes back to update. `updateCollection` applies the same
+pure recovery policy only after reconciliation, never on removal requests.
 
 Popup is the pure open/close lifecycle for custom overlays. Route trigger or
 explicit requests separately from Escape, outside press, and focus-out dismissal

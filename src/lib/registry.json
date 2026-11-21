@@ -708,6 +708,9 @@
           "type": "registry:lib",
           "target": "@lib/list-input.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/focus-recovery-behavior"
       ]
     },
     {
