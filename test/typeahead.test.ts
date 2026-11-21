@@ -27,6 +27,35 @@ describe('Typeahead', () => {
     }
   })
 
+  it('preserves Indic spacing vowel signs', () => {
+    const labels = ['किला', 'कलम']
+    const first = Typeahead.search(Typeahead.init(), {
+      key: 'क',
+      labels,
+      currentIndex: -1,
+    })
+    const next = Typeahead.search(first.model, {
+      key: 'ि',
+      labels,
+      currentIndex: 0,
+    })
+    assert.equal(next.model.query, 'कि')
+    assert.deepEqual(next.maybeIndex, Option.some(0))
+    assert.equal(Typeahead.normalize('École'), 'ecole')
+  })
+
+  it('ignores keys made empty by folding', () => {
+    for (const model of [
+      Typeahead.init(),
+      search(Typeahead.init(), 'e').model,
+    ]) {
+      const next = search(model, '\u0301')
+      assert.equal(next.model, model)
+      assert.deepEqual(next.commands, [])
+      assert.deepEqual(next.maybeIndex, Option.none())
+    }
+  })
+
   it('ignores non-character keys and leading Space without commands or state changes', () => {
     const model = Typeahead.init()
     for (const key of ['', 'Enter', 'ArrowDown', ' ']) {

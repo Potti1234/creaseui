@@ -48,7 +48,11 @@ export const update = (
 })
 
 export const normalize = (text: string): string =>
-  text.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase().trim()
+  text
+    .normalize('NFD')
+    .replace(/\p{Mn}/gu, '')
+    .toLocaleLowerCase()
+    .trim()
 
 export const isTypeaheadKey = (
   key: string,
@@ -83,7 +87,10 @@ export const search = (
   if (key.length !== 1 || (key === ' ' && !isActive(model))) {
     return { model, commands: [], maybeIndex: Option.none() }
   }
-  const char = normalize(key) || key
+  const char = key === ' ' ? key : normalize(key)
+  if (char.length === 0) {
+    return { model, commands: [], maybeIndex: Option.none() }
+  }
   const isStepping =
     char === model.lastKey && (model.isStepping || model.query.length === 1)
   const query = model.query + char

@@ -242,7 +242,7 @@ describe('TreeList.resolveKey', () => {
     const intent = TreeList.resolveKey(items, m, 'p', MOD, 'ltr')
     assert.deepEqual(intent, {
       _tag: 'typeahead',
-      typeahead: { query: 'pp', lastKey: 'p', isStepping: true, version: 2 },
+      typeahead: { query: 'p', lastKey: 'p', isStepping: true, version: 2 },
       matchedId: Option.some('pkg'),
     })
   })
