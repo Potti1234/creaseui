@@ -8,6 +8,51 @@ const recovery = FocusRecovery.create<'a' | 'b' | 'c' | 'd'>()
 const previousKeys = ['a', 'b', 'c', 'd'] as const
 
 describe('FocusRecovery', () => {
+  it('retains pending collection ownership across removals before focus commits', () => {
+    const config = { itemId: (key: string) => key, fallbackId: 'viewport' }
+    const update = (
+      model: FocusRecovery.CollectionModel,
+      message: FocusRecovery.CollectionMessage,
+    ) => FocusRecovery.updateCollection(model, message, config)
+    const reconciled = (keys: readonly string[]) =>
+      FocusRecovery.CollectionMessage.ReconciledItems({
+        keys,
+        enabledKeys: keys,
+      })
+    let model = update(
+      FocusRecovery.initCollection(),
+      reconciled(['a', 'b', 'c']),
+    ).model
+    model = update(
+      model,
+      FocusRecovery.CollectionMessage.FocusedItem({ key: 'b' }),
+    ).model
+    const first = update(model, reconciled(['a', 'c']))
+    assert.deepEqual(first.commands?.[0]?.args, { lostId: 'b', targetId: 'c' })
+    const second = update(first.model, reconciled(['a']))
+    assert.deepEqual(second.commands?.[0]?.args, { lostId: 'c', targetId: 'a' })
+    model = update(
+      second.model,
+      FocusRecovery.CollectionMessage.CompletedRecoverFocus(),
+    ).model
+    const empty = update(model, reconciled([]))
+    assert.deepEqual(empty.commands?.[0]?.args, {
+      lostId: 'a',
+      targetId: 'viewport',
+    })
+    assert.deepEqual(update(empty.model, reconciled([])).commands, [])
+    const blurred = update(
+      first.model,
+      FocusRecovery.CollectionMessage.BlurredItems(),
+    )
+    assert.deepEqual(update(blurred.model, reconciled([])).commands, [])
+    const refocused = update(
+      first.model,
+      FocusRecovery.CollectionMessage.FocusedItem({ key: 'a' }),
+    )
+    assert.deepEqual(update(refocused.model, reconciled(['a'])).commands, [])
+  })
+
   it('chooses the next surviving key, then the previous without wrapping', () => {
     const model = recovery.focused(recovery.init(), 'b')
     assert.equal(Schema.is(FocusRecovery.Model)(model), true)

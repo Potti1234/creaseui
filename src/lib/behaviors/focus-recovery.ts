@@ -137,7 +137,16 @@ export const updateCollection = (
         isDisabled: key => !message.enabledKeys.includes(key),
       })
       return {
-        model: { keys: message.keys, recovery: result.model },
+        model: {
+          keys: message.keys,
+          recovery: Option.match(result.maybeRecovery, {
+            onNone: () => result.model,
+            onSome: ({ target }) =>
+              target.type === 'Item'
+                ? recovery.focused(result.model, target.key)
+                : result.model,
+          }),
+        },
         commands: Option.match(result.maybeRecovery, {
           onNone: () => [],
           onSome: ({ lostKey, target }) => [
