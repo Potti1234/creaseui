@@ -115,8 +115,7 @@ const commit = (
   reason: Reason,
   options: Options,
 ): UpdateReturn => {
-  const first = keys[0]
-  if (first === undefined || !Number.isFinite(by.x) || !Number.isFinite(by.y))
+  if (keys.length === 0 || !Number.isFinite(by.x) || !Number.isFinite(by.y))
     return { model }
 
   const step = reason === 'drag' ? positive(options.step, 1) : 1
@@ -135,24 +134,29 @@ const commit = (
           }
     return [key, point] as const
   })
-  const at = entries[0]?.[1]
   if (
-    at === undefined ||
     entries.some(
       ([, point]) => !Number.isFinite(point.x) || !Number.isFinite(point.y),
-    ) ||
-    entries.every(
-      ([key, point]) =>
-        Object.hasOwn(model.positions, key) &&
-        point.x === model.positions[key]?.x &&
-        point.y === model.positions[key]?.y,
     )
   )
     return { model }
-  const positions = { ...model.positions, ...Object.fromEntries(entries) }
+  const changed = entries.filter(
+    ([key, point]) =>
+      !Object.hasOwn(model.positions, key) ||
+      point.x !== model.positions[key]?.x ||
+      point.y !== model.positions[key]?.y,
+  )
+  const first = changed[0]
+  if (first === undefined) return { model }
+  const [key, at] = first
+  const positions = { ...model.positions, ...Object.fromEntries(changed) }
   if (options.canCommit?.(positions, { keys, reason }) === false)
     return { model }
-  const movement = { keys, label: options.label?.(first) ?? first, at }
+  const movement = {
+    keys: changed.map(([key]) => key),
+    label: options.label?.(key) ?? key,
+    at,
+  }
   return {
     model: { ...model, positions },
     outMessage: OutMessage.MovedItems({

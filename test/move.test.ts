@@ -137,6 +137,33 @@ describe('Move', () => {
     )
   })
 
+  it('announces only the items that moved when a group member is at its bounds', () => {
+    const initial = Move.init({ a: { x: 10, y: 20 }, b: { x: 0, y: 20 } })
+    const nudged = Move.update(
+      initial,
+      Move.Message.NudgedItem({ key: 'a', arrow: 'ArrowRight', large: false }),
+      {
+        group: () => ['a', 'b'],
+        bounds: () => ({ minX: 0, maxX: 10, minY: 0, maxY: 100 }),
+        step: 5,
+      },
+    )
+    assert.deepEqual(nudged.model.positions, {
+      a: { x: 10, y: 20 },
+      b: { x: 5, y: 20 },
+    })
+    assert.deepEqual(
+      nudged.outMessage,
+      Move.OutMessage.MovedItems({
+        keys: ['b'],
+        reason: 'move-key',
+        label: 'b',
+        at: { x: 5, y: 20 },
+        announcement: 'b moved to 5, 20.',
+      }),
+    )
+  })
+
   it('supports explicit offsets and positions but does not emit for no-ops', () => {
     const initial = Move.init(positions)
     const by = Move.moveBy(initial, ['a', 'locked'], { x: 2, y: 3 }, options)
