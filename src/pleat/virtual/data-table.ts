@@ -1,4 +1,4 @@
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import { Checkbox as CheckboxPrimitive, VirtualList } from '@foldkit/ui'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 

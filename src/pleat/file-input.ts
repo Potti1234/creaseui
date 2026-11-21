@@ -1,5 +1,5 @@
 import { Style, When, Global } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 /* Ported from Meta Astryx FileInput (packages/core/src/FileInput) —
    examples and visual spec adapted to Crease UI tokens.
 

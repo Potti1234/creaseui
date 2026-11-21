@@ -29,13 +29,15 @@ describe('Registry dependency graph', () => {
     )
   })
 
-  it('every UI and behavior source declares its owned dependencies', () => {
+  it('every renderer and behavior source declares its owned dependencies', () => {
     const root = process.cwd()
-    const registries = ['src/lib', 'src/ui'].map(directory => ({
-      directory,
-      items: JSON.parse(readFileSync(`${directory}/registry.json`, 'utf8'))
-        .items,
-    }))
+    const registries = ['src/lib', 'src/ui', 'src/stylex', 'src/pleat'].map(
+      directory => ({
+        directory,
+        items: JSON.parse(readFileSync(`${directory}/registry.json`, 'utf8'))
+          .items,
+      }),
+    )
     const owners = fileOwners(root, registries)
     for (const { directory, items } of registries) {
       for (const item of items) {

@@ -1,5 +1,5 @@
 import { Style, When, Global } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import { Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'

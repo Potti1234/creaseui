@@ -1,5 +1,5 @@
 import { Style, When } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
 import { Listbox as ListboxPrimitive } from '@foldkit/ui'
@@ -11,9 +11,9 @@ import {
   optionContent,
   searchablePopover,
 } from '@/lib/multi-selector-view'
-import * as Checkbox from '@/pleat/checkbox'
-import * as Drawer from '@/pleat/drawer'
-import * as Button from '@/pleat/button'
+import * as Checkbox from '@/ui/pleat/checkbox'
+import * as Drawer from '@/ui/pleat/drawer'
+import * as Button from '@/ui/pleat/button'
 import {
   Message,
   Model,

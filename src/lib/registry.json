@@ -208,6 +208,11 @@
           "path": "dropdown-menu-behavior.ts",
           "type": "registry:lib",
           "target": "@lib/dropdown-menu-behavior.ts"
+        },
+        {
+          "path": "behaviors/popup.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/popup.ts"
         }
       ]
     },

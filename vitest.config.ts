@@ -19,6 +19,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      '@/ui/stylex': fileURLToPath(new URL('./src/stylex', import.meta.url)),
+      '@/ui/pleat': fileURLToPath(new URL('./src/pleat', import.meta.url)),
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },

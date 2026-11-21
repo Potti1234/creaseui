@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import { Option } from 'effect'
 import * as Mount from 'foldkit/mount'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'

@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import type { ColumnDef, Table } from '@tanstack/table-core'
 import {
   createTable,

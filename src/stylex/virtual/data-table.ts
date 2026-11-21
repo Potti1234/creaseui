@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import { Checkbox as CheckboxPrimitive, VirtualList } from '@foldkit/ui'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 

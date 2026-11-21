@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import { Option, Schema as S } from 'effect'
 import * as stylex from '@stylexjs/stylex'
 import type { Update } from 'foldkit'

@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 /* Ported from Meta Astryx MobileNav + MobileNavToggle (packages/core/src/MobileNav/) — examples and visual spec adapted to Crease UI tokens. */
 
 import * as stylex from '@stylexjs/stylex'

@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { Dialog as DialogPrimitive } from '@foldkit/ui'

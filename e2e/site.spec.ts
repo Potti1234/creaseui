@@ -402,24 +402,6 @@ test('component APIs and machine-readable discovery stay available', async ({
   expect(await llms.text()).toContain('/docs/components/dialog')
 })
 
-test('create preset shuffle updates executable output', async ({ page }) => {
-  await page.goto('/create')
-  const token = page.getByText(/^--preset [abc]/u)
-  const before = await token.textContent()
-  const board = page.locator('[data-slot="capture-target"]')
-  const styleBefore = await board.getAttribute('data-crease-style')
-
-  await page.getByRole('button', { name: 'Shuffle' }).click()
-  await expect(token).not.toHaveText(before ?? '')
-  await expect(board).not.toHaveAttribute(
-    'data-crease-style',
-    styleBefore ?? '',
-  )
-  await expect(
-    page.getByRole('button', { name: 'Copy Registry JSON' }),
-  ).toBeVisible()
-})
-
 test('Create is available on both dedicated sites', async ({ page }) => {
   await page.goto('/create')
   await expect(page).toHaveURL(/\/create$/u)

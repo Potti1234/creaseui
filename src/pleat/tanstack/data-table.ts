@@ -1,4 +1,4 @@
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import type { ColumnDef, Table } from '@tanstack/table-core'
 import {
   createTable,

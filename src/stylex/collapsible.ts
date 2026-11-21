@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'

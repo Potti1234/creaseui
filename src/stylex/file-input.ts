@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 /* Ported from Meta Astryx FileInput (packages/core/src/FileInput) —
    examples and visual spec adapted to Crease UI tokens.
 

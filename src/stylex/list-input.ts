@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 /* Ported from Meta Astryx ListInput (packages/lab/src/ListInput) —
    examples and visual spec adapted to Crease UI tokens.
 
@@ -14,7 +14,7 @@ import { Option } from 'effect'
 import { defineView } from 'foldkit/submodel'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { button } from '@/stylex/button'
+import { button } from '@/ui/stylex/button'
 import * as Icon from '@/lib/icon'
 import {
   renderAttachedStatus,

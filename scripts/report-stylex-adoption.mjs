@@ -107,8 +107,9 @@ const report = {
   guardrails: {
     boundaryFiles: boundaryFiles.length,
     cssFallbacks: manifest.fallbacks.length,
-    legacyUiImports: (boundarySource.match(/from\s+['"]@\/ui\//gu) ?? [])
-      .length,
+    legacyUiImports: (
+      boundarySource.match(/from\s+['"]@\/ui\/(?!stylex\/|pleat\/)/gu) ?? []
+    ).length,
     suppressions: (
       boundarySource.match(
         /(?:eslint|oxlint)-disable|@ts-(?:expect-error|ignore)/gu,
