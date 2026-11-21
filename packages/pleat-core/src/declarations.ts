@@ -12,10 +12,12 @@ import { type Value, isRef } from './var'
 export type Properties = CSS.Properties<number | (string & {}), string & {}>
 
 /** A declaration block: CSS properties (camelCase) and custom properties (`--name`). Values
- *  are strings, numbers (`px` unless the property is unitless), or tokens and variables. */
+ *  are strings (optionally ending in ` !important`), numbers (`px` unless the property is
+ *  unitless), or tokens and variables. */
 export type Declarations = {
   readonly [Property in keyof Properties]?:
     | Properties[Property]
+    | `${Extract<Properties[Property], string>} !important`
     | Extract<Value, object>
     | undefined
 } & {
@@ -58,10 +60,10 @@ export const entriesOf = (
       throw new Error(`[pleat] ${property} has a non-finite value, ${value}.`)
     }
     const formatted = formatValue(property, value)
-    if (!isSafeValue(formatted)) {
+    if (!isSafeValue(formatted.replace(/\s+!important$/u, ''))) {
       throw new Error(
         `[pleat] ${property}: ${JSON.stringify(formatted)} is not a value Pleat can write ` +
-          'into a rule. It is empty or unbalanced, or contains ; { } < ! or a comment ' +
+          'into a rule. It is empty or unbalanced, or contains ; { } < ! (except a trailing !important) or a comment ' +
           'outside a string. An unquoted url() cannot hold quotes, spaces, or parentheses; ' +
           'quote the URL instead.',
       )
