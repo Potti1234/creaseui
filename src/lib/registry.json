@@ -781,7 +781,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/drawer-behavior"
+        "Potti1234/creaseui/drawer-behavior",
+        "Potti1234/creaseui/selection-behavior"
       ]
     },
     {
@@ -833,6 +834,19 @@
           "path": "project-facts.ts",
           "type": "registry:lib",
           "target": "@lib/project-facts.ts"
+        }
+      ]
+    },
+    {
+      "name": "selection-behavior",
+      "type": "registry:lib",
+      "title": "Selection Behavior",
+      "description": "Pure Foldkit selection transitions for single, multiple, and range selection over keys.",
+      "files": [
+        {
+          "path": "behaviors/selection.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/selection.ts"
         }
       ]
     },
