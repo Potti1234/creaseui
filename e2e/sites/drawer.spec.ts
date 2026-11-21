@@ -123,6 +123,50 @@ test('drawer honors reduced motion', async ({ page }) => {
   await expect(popup).toHaveCount(0)
 })
 
+test('only eligible drawer presses start a swipe', async ({ page }) => {
+  await page.goto('/docs/components/drawer')
+  await page
+    .locator('#nested')
+    .getByRole('button', { name: 'down', exact: true })
+    .click()
+  const popup = page.locator('[data-slot="drawer-popup"]')
+  await settled(popup)
+  const viewport = page.locator('[data-slot="drawer-viewport"]')
+  const handle = popup.locator('[data-slot="drawer-swipe-handle"]')
+  const content = popup.locator('[data-drawer-content]')
+  const button = popup.getByRole('button', { name: 'Close', exact: true })
+  const press = (
+    target: Locator,
+    options: { pointerType?: 'mouse' | 'touch'; button?: number } = {},
+  ) =>
+    target.dispatchEvent('pointerdown', {
+      pointerId: 7,
+      pointerType: 'mouse',
+      isPrimary: true,
+      button: 0,
+      buttons: 1,
+      ...options,
+    })
+
+  await press(handle, { button: 2 })
+  await press(viewport)
+  await press(button)
+  await press(content)
+  await expect(popup).not.toHaveAttribute('data-swiping')
+
+  const cancel = () => viewport.dispatchEvent('pointercancel', { pointerId: 7 })
+  await press(popup)
+  await expect(popup).toHaveAttribute('data-swiping')
+  await cancel()
+  await expect(popup).not.toHaveAttribute('data-swiping')
+
+  await press(content, { pointerType: 'touch' })
+  await expect(popup).toHaveAttribute('data-swiping')
+  await cancel()
+  await expect(popup).not.toHaveAttribute('data-swiping')
+  await expect(popup).toBeVisible()
+})
+
 const dragHandle = async (page: Page, popup: Locator, deltaY: number) => {
   const handle = popup.locator('[data-slot="drawer-swipe-handle"]')
   const box = await handle.boundingBox()
