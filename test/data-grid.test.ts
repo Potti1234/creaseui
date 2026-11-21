@@ -56,6 +56,34 @@ const displayedIds = (model: Grid.Model) =>
   Grid.displayedRows<Row>(model, config).map(row => row.id)
 
 describe('data grid keyboard navigation', () => {
+  it('enters a fresh grid at the first visible cell for arrows and Tab', () => {
+    for (const key of [
+      'ArrowDown',
+      'ArrowUp',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab',
+    ]) {
+      const model = step(
+        Grid.init(config, rows),
+        Grid.Message.GridKey({ key, shift: false, ctrl: false, meta: false }),
+      )
+      assert.deepEqual(model.focusedCell, { row: 0, column: 'name' })
+    }
+    const empty = Grid.init(config, [])
+    assert.deepEqual(
+      step(
+        empty,
+        Grid.Message.GridKey({
+          key: 'ArrowDown',
+          shift: false,
+          ctrl: false,
+          meta: false,
+        }),
+      ).focusedCell,
+      empty.focusedCell,
+    )
+  })
   it('follows RTL for arrows but keeps Tab and commit-right logical', () => {
     let model = step(
       Grid.init(config, rows),

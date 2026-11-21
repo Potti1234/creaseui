@@ -354,18 +354,25 @@ const moveFocus = <Row>(
 ): Model => {
   const columns = visibleColumns(model)
   const columnIndex = columns.indexOf(model.focusedCell.column)
-  const target = GridFocus.navigate({
-    rows: displayedRows(model, config).length,
-    columns: columns.length,
-    currentCell: { row: model.focusedCell.row, column: columnIndex },
-    pressedKey,
-    ctrl,
-    direction,
-    pageSize: Math.max(
-      1,
-      Math.floor(model.viewportHeight / rowHeightPx(model.rowHeight)),
-    ),
-  })
+  const rows = displayedRows(model, config).length
+  const target =
+    model.focusedCell.row < 0 || columnIndex < 0
+      ? GridFocus.tabStop(GridFocus.init({ id: '' }), {
+          rows,
+          columns: columns.length,
+        })
+      : GridFocus.navigate({
+          rows,
+          columns: columns.length,
+          currentCell: { row: model.focusedCell.row, column: columnIndex },
+          pressedKey,
+          ctrl,
+          direction,
+          pageSize: Math.max(
+            1,
+            Math.floor(model.viewportHeight / rowHeightPx(model.rowHeight)),
+          ),
+        })
   return Option.match(target, {
     onNone: () => model,
     onSome: cell => ({
