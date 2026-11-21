@@ -1568,6 +1568,7 @@ const fst = {
     Style.when(When.minWidth('1024px'), { width: '14rem' }),
   ),
   c98: Style.make({
+    containerType: 'inline-size',
     borderColor: tokens.border,
     borderRadius: foundationTokens.radiusMd,
     borderStyle: 'solid',
@@ -1576,15 +1577,19 @@ const fst = {
     overflow: 'auto',
     isolation: 'isolate',
     minHeight: '0',
+    minWidth: '0',
+    width: '100%',
   }),
   c99: Style.make({
     borderCollapse: 'collapse',
     captionSide: 'bottom',
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
-    tableLayout: 'fixed',
+    tableLayout: 'auto',
     width: '100%',
-  }),
+  }).pipe(
+    Style.when(When.container('(min-width: 64rem)'), { tableLayout: 'fixed' }),
+  ),
   c100: Style.make({ opacity: '1' }),
   c101: Style.make({
     transitionDuration: interactionTokens.motionFast,
