@@ -778,7 +778,7 @@ export const tokenizer = <Msg>(
     ],
     [
       labelView,
-      isLayerExpanded
+      props.tokenOverflowBehavior === 'unfocusedLayer'
         ? h.div(
             [
               h.Class(className(styles.layerRoot)),
@@ -787,12 +787,16 @@ export const tokenizer = <Msg>(
             [
               h.div(
                 [
-                  h.Class(
-                    className(
-                      styles.layerPlaceholder,
-                      TRUNCATED_SIZE_STYLE[size],
-                    ),
-                  ),
+                  ...(isLayerExpanded
+                    ? [
+                        h.Class(
+                          className(
+                            styles.layerPlaceholder,
+                            TRUNCATED_SIZE_STYLE[size],
+                          ),
+                        ),
+                      ]
+                    : []),
                   h.AriaHidden(true),
                 ],
                 [],

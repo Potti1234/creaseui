@@ -525,14 +525,19 @@ export const tokenizer = <Msg>(
     ],
     [
       labelView,
-      isLayerExpanded
+      props.tokenOverflowBehavior === 'unfocusedLayer'
         ? h.div(
             [h.Class('relative'), h.DataAttribute('slot', 'tokenizer-layer')],
             [
               // Height placeholder keeps the field's row height while the
               // expanded wrapper overlays it (astryx unfocusedLayer).
               h.div(
-                [h.Class(TRUNCATED_SIZE_CLASS[size]), h.AriaHidden(true)],
+                [
+                  ...(isLayerExpanded
+                    ? [h.Class(TRUNCATED_SIZE_CLASS[size])]
+                    : []),
+                  h.AriaHidden(true),
+                ],
                 [],
               ),
               wrapper,
