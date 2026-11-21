@@ -48,7 +48,7 @@ const scrollAt = (
   const { ownerDocument } = root
   const hit = ownerDocument.elementFromPoint(x, y)
   for (
-    let element = hit && root.contains(hit) ? hit : root;
+    let element: Element | null = hit && root.contains(hit) ? hit : root;
     element && !(scrolledX && scrolledY);
     element = element.parentElement
   ) {
