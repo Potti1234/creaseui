@@ -626,7 +626,7 @@ const render = <Msg>(
               toMessage(
                 TreeListBehavior.Message.AppliedTreeListTypeahead({
                   key: intent.key,
-                  matchedId: intent.matchedId,
+                  candidates: intent.candidates,
                 }),
               ),
             )
