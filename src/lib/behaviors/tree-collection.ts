@@ -231,7 +231,7 @@ const cascade = <Key extends string>(
   leaves: ReadonlySet<Key>,
 ): ReadonlyMap<Key, TreeCheckedState> => {
   const states = new Map<Key, TreeCheckedState>()
-  for (const key of order.toReversed()) {
+  for (const key of order.slice().reverse()) {
     const children = tree.children(key)
     const state =
       children.length === 0
