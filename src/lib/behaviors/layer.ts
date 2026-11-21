@@ -151,7 +151,8 @@ const begin = (doc: Document): Resources => {
 
   const roots = new Map<EventTarget, { count: number; release: () => void }>()
   const pending = new WeakMap<PointerEvent, EventTarget>()
-  const capturePress = (event: PointerEvent) => {
+  const capturePress = (event: Event) => {
+    if (!(event instanceof realm.PointerEvent)) return
     const path = event.composedPath()
     const boundary = event.currentTarget
     if (boundary === null) return
@@ -168,15 +169,19 @@ const begin = (doc: Document): Resources => {
     }
   }
   const retainRoots = (element: HTMLElement) => {
-    const releases = []
+    const releases: Array<() => void> = []
     let root = element.getRootNode()
     while (root instanceof realm.ShadowRoot) {
       const { host } = root
       if (root.mode === 'closed') {
         const shadow = root
-        const fallback = (event: PointerEvent) => {
+        const fallback = (event: Event) => {
           // If the host itself was pressed, no root listener ran.
-          if (pending.get(event) !== host) return
+          if (
+            !(event instanceof realm.PointerEvent) ||
+            pending.get(event) !== host
+          )
+            return
           pending.delete(event)
           onPointerDown(event, event.composedPath())
         }
