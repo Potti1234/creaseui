@@ -5,6 +5,35 @@ import { Effect } from 'effect'
 import * as Storage from '../src/lib/behaviors/storage.ts'
 
 describe('Storage', () => {
+  it('reports silently rejected cookie writes and removals', () => {
+    const original = Object.getOwnPropertyDescriptor(globalThis, 'document')
+    let cookie = ''
+    const document = Object.defineProperty({}, 'cookie', {
+      configurable: true,
+      get: () => cookie,
+      set: () => {},
+    })
+    Object.defineProperty(globalThis, 'document', {
+      configurable: true,
+      value: document,
+    })
+    try {
+      const storage: Storage.Descriptor = {
+        kind: 'cookie',
+        id: 'test',
+        secure: false,
+      }
+      assert.equal(Effect.runSync(Storage.set(storage, 'value')), false)
+      cookie = 'test=value'
+      assert.equal(Effect.runSync(Storage.remove(storage)), false)
+      assert.equal(Effect.runSync(Storage.set(storage, 'value')), true)
+      cookie = ''
+      assert.equal(Effect.runSync(Storage.remove(storage)), true)
+    } finally {
+      if (original) Object.defineProperty(globalThis, 'document', original)
+      else Reflect.deleteProperty(globalThis, 'document')
+    }
+  })
   it('handles unavailable storage and failed writes without throwing', () => {
     const original = Object.getOwnPropertyDescriptor(window, 'localStorage')
     try {

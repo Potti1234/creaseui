@@ -15,19 +15,23 @@ export type Descriptor = typeof Descriptor.Type
 const webStorage = (storage: Descriptor): Storage =>
   storage.kind === 'local' ? window.localStorage : window.sessionStorage
 
+const readCookie = (storage: Descriptor): string | null => {
+  const prefix = `${encodeURIComponent(storage.id)}=`
+  const cookie = document.cookie
+    .split(';')
+    .map(value => value.trim())
+    .find(value => value.startsWith(prefix))
+  return cookie === undefined
+    ? null
+    : decodeURIComponent(cookie.slice(prefix.length))
+}
+
 export const get = (storage: Descriptor): Effect.Effect<string | null> =>
   Effect.sync(() => {
     try {
       if (storage.kind !== 'cookie')
         return webStorage(storage).getItem(storage.id)
-      const prefix = `${encodeURIComponent(storage.id)}=`
-      const cookie = document.cookie
-        .split(';')
-        .map(value => value.trim())
-        .find(value => value.startsWith(prefix))
-      return cookie === undefined
-        ? null
-        : decodeURIComponent(cookie.slice(prefix.length))
+      return readCookie(storage)
     } catch {
       return null
     }
@@ -42,6 +46,7 @@ const write = (
       if (storage.kind === 'cookie') {
         const secure = storage.secure ?? location.protocol === 'https:'
         document.cookie = `${encodeURIComponent(storage.id)}=${encodeURIComponent(value ?? '')}; Max-Age=${value === null ? 0 : (storage.maxAge ?? 31536000)}; Path=${storage.path ?? '/'}; SameSite=${storage.sameSite ?? 'Lax'}${secure ? '; Secure' : ''}`
+        return readCookie(storage) === value
       } else if (value === null) webStorage(storage).removeItem(storage.id)
       else webStorage(storage).setItem(storage.id, value)
       return true
