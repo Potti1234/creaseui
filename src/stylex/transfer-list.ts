@@ -1,12 +1,13 @@
 import { reset } from '@/ui/stylex/reset'
 import { Command, type Update } from 'foldkit'
-import { Effect, Option, Schema as S } from 'effect'
+import { Option, Schema as S } from 'effect'
 import { DragAndDrop as Dnd } from '@foldkit/ui'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as Icon from '@/lib/icon'
+import * as TransferFocus from '@/lib/transfer-list'
 import { buttonVisualStyles } from './button'
 import type { ComponentLayoutStyle } from './contracts'
 import { input } from './input'
@@ -42,6 +43,7 @@ export type TransferListOption = Readonly<{
 
 export const Model = S.Struct({
   id: S.String,
+  focusRecovery: TransferFocus.Model,
   /** Ordered selected values — the single source of truth (astryx `value`). */
   value: S.Array(S.String),
   query: S.String,
@@ -59,6 +61,7 @@ export const init = (config: {
   value?: ReadonlyArray<string>
 }): Model => ({
   id: config.id,
+  focusRecovery: TransferFocus.init(),
   value: [...(config.value ?? [])],
   query: '',
   dnd: Dnd.init({
@@ -88,7 +91,7 @@ export const Message = defineMessageUnion({
       presses, document-level pointer/key events, and command completions
       all arrive through this tag. */
   GotDndMessage: { message: Dnd.Message },
-  CompletedFocusAfterTransfer: {},
+  GotFocusRecoveryMessage: { message: TransferFocus.Message },
 })
 
 export type Message = typeof Message.Type
@@ -103,24 +106,6 @@ export const OutMessage = defineMessageUnion({
   ChangedTransferList: { value: S.Array(S.String) },
 })
 export type OutMessage = typeof OutMessage.Type
-
-/** Focuses the next enabled row action after a transfer (astryx rAF focus). */
-const FocusAfterTransfer = Command.define('FocusAfterTransfer', {
-  args: { rootId: S.String, side: S.String, index: S.Number },
-  messages: [Message.CompletedFocusAfterTransfer],
-  execute: ({ rootId, side, index }) =>
-    Effect.sync(() => {
-      const panel = document.getElementById(`${rootId}-panel-${side}`)
-      const actions = panel?.querySelectorAll<HTMLButtonElement>(
-        `[data-transfer-list-action="${side}"]:not(:disabled):not([aria-disabled="true"])`,
-      )
-      if (actions !== undefined && actions !== null && actions.length > 0) {
-        actions[Math.min(index, actions.length - 1)]?.focus()
-      } else {
-        document.getElementById(`${rootId}-search`)?.focus()
-      }
-    }).pipe(Effect.as(Message.CompletedFocusAfterTransfer())),
-})
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
@@ -398,13 +383,6 @@ export const update = (
         model,
         nextValue,
         announceAdded(message.label, nextValue.length),
-        [
-          FocusAfterTransfer({
-            rootId: model.id,
-            side: 'available',
-            index: message.index,
-          }),
-        ],
       )
     }
     case 'ClickedTransferListRemove': {
@@ -417,13 +395,6 @@ export const update = (
         model,
         nextValue,
         announceRemoved(message.label, nextValue.length),
-        [
-          FocusAfterTransfer({
-            rootId: model.id,
-            side: 'selected',
-            index: message.index,
-          }),
-        ],
       )
     }
     case 'ClickedTransferListAddAll': {
@@ -498,8 +469,19 @@ export const update = (
     }
     case 'GotDndMessage':
       return runDnd(model, optionByValue, message.message, isReorderable)
-    case 'CompletedFocusAfterTransfer':
-      return { model }
+    case 'GotFocusRecoveryMessage': {
+      const result = TransferFocus.update(
+        model.focusRecovery,
+        message.message,
+        model.id,
+      )
+      return {
+        model: { ...model, focusRecovery: result.model },
+        commands: Command.mapMessages(result.commands ?? [], message =>
+          Message.GotFocusRecoveryMessage({ message }),
+        ),
+      }
+    }
   }
 }
 
@@ -870,11 +852,13 @@ export const transferList = <Msg>(
     onClick: Msg
     icon: Html
     dataAction?: string
+    id?: string
   }): Html =>
     h.button(
       [
         h.Type('button'),
         h.AriaLabel(config.ariaLabel),
+        ...(config.id === undefined ? [] : [h.Id(config.id)]),
         h.Disabled(config.isDisabled),
         ...(config.title === undefined ? [] : [h.Title(config.title)]),
         h.OnClick(config.onClick),
@@ -998,6 +982,7 @@ export const transferList = <Msg>(
         isDisabled: isTransferDisabled,
         ...(isTransferDisabled ? { title: disabledReason } : {}),
         dataAction: 'available',
+        id: TransferFocus.actionId(model.id, side, option.value),
         onClick: props.toParentMessage(
           Message.ClickedTransferListAdd({
             value: option.value,
@@ -1013,6 +998,7 @@ export const transferList = <Msg>(
       isDisabled: isTransferDisabled,
       ...(isTransferDisabled ? { title: disabledReason } : {}),
       dataAction: 'selected',
+      id: TransferFocus.actionId(model.id, side, option.value),
       onClick: props.toParentMessage(
         Message.ClickedTransferListRemove({
           value: option.value,
@@ -1045,6 +1031,7 @@ export const transferList = <Msg>(
         h.Role('listitem'),
         h.Key(option.value),
         h.DataAttribute('slot', 'transfer-list-item'),
+        h.DataAttribute('transfer-list-focus-key', option.value),
         h.DataAttribute('side', side),
         h.DataAttribute('state', state),
         /* Every selected row keeps data-sortable-id — locked rows stay in
@@ -1292,6 +1279,13 @@ export const transferList = <Msg>(
           h.div(
             [
               h.Id(`${model.id}-panel-selected`),
+              h.OnMount(
+                TransferFocus.focusMount('selected', message =>
+                  props.toParentMessage(
+                    Message.GotFocusRecoveryMessage({ message }),
+                  ),
+                ),
+              ),
               h.Role('group'),
               h.AriaLabelledBy(selectedHeadingId),
               h.Tabindex(-1),
@@ -1331,6 +1325,13 @@ export const transferList = <Msg>(
           h.div(
             [
               h.Id(`${model.id}-panel-available`),
+              h.OnMount(
+                TransferFocus.focusMount('available', message =>
+                  props.toParentMessage(
+                    Message.GotFocusRecoveryMessage({ message }),
+                  ),
+                ),
+              ),
               h.Role('group'),
               h.AriaLabelledBy(availableHeadingId),
               h.Tabindex(-1),

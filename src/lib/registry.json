@@ -1098,6 +1098,22 @@
           "target": "@lib/sidebar-modal.ts"
         }
       ]
+    },
+    {
+      "name": "transfer-list-behavior",
+      "type": "registry:lib",
+      "title": "Transfer List Behavior",
+      "description": "Shared Foldkit behavior and helpers for Transfer List.",
+      "files": [
+        {
+          "path": "transfer-list.ts",
+          "type": "registry:lib",
+          "target": "@lib/transfer-list.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/focus-recovery-behavior"
+      ]
     }
   ]
 }

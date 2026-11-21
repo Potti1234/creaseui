@@ -8124,7 +8124,8 @@
         "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
         "Potti1234/creaseui/stylex-reset",
         "Potti1234/creaseui/stylex-style",
-        "Potti1234/creaseui/stylex-tokens-stylex"
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/transfer-list-behavior"
       ],
       "devDependencies": [
         "@stylexjs/unplugin@^0.19.0"

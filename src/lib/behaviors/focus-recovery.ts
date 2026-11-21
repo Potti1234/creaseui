@@ -160,16 +160,21 @@ const collectionArgs = {
   actionSelector: Schema.String,
 }
 
+type CollectionEvent = Exclude<
+  CollectionMessage,
+  { _tag: 'CompletedRecoverFocus' }
+>
+
 export const collectionChanges = (
   element: Element,
   config: Readonly<{ keyAttribute: string; actionSelector: string }>,
-): Stream.Stream<CollectionMessage> =>
+): Stream.Stream<CollectionEvent> =>
   Stream.callback(queue =>
     Effect.gen(function* () {
       yield* Effect.acquireRelease(
         Effect.sync(() => {
           const selector = `[${config.keyAttribute}]`
-          const emit = (message: CollectionMessage) =>
+          const emit = (message: CollectionEvent) =>
             Queue.offerUnsafe(queue, message)
           let signature = ''
           const reconcile = () => {
