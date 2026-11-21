@@ -1,3 +1,8 @@
+import {
+  currentPlatform,
+  formatShortcut,
+  toAriaKeyshortcuts,
+} from '@/lib/behaviors/shortcuts'
 import type { Update } from 'foldkit'
 import { Effect, Option, Schema as S } from 'effect'
 import * as Command from 'foldkit/command'
@@ -146,6 +151,7 @@ export type DropdownMenuItemConfig<Item extends string = string> = Readonly<{
   label: Html | string
   icon?: Html
   shortcut?: Html | string
+  keys?: string
   variant?: 'default' | 'destructive'
   kind?: 'item' | 'checkbox' | 'radio'
   isChecked?: boolean
@@ -346,6 +352,11 @@ export const dropdownMenu = <Item extends string, Msg>(
     const active = isSubmenu
       ? props.model.activeSubmenuIndex === index - props.items.length
       : props.model.activeIndex === index
+    const shortcut =
+      config.shortcut ??
+      (config.keys === undefined
+        ? undefined
+        : formatShortcut(config.keys, currentPlatform()))
     const checked = config.isChecked ?? false
     const role =
       config.kind === 'checkbox'
@@ -358,6 +369,13 @@ export const dropdownMenu = <Item extends string, Msg>(
     return h.div(
       [
         h.Role(role),
+        ...(config.keys === undefined
+          ? []
+          : [
+              h.AriaKeyshortcuts(
+                toAriaKeyshortcuts(config.keys, currentPlatform()),
+              ),
+            ]),
         h.Tabindex(active ? 0 : -1),
         h.DataAttribute('active', String(active)),
         ...(config.kind === 'checkbox' || config.kind === 'radio'
@@ -443,16 +461,17 @@ export const dropdownMenu = <Item extends string, Msg>(
           : []),
         ...(config.icon === undefined ? [] : [config.icon]),
         h.span([h.Class('flex-1')], [config.label]),
-        ...(config.shortcut === undefined
+        ...(shortcut === undefined
           ? []
           : [
               h.span(
                 [
+                  h.AriaHidden(true),
                   h.Class(
                     'ml-auto text-xs tracking-widest text-muted-foreground',
                   ),
                 ],
-                [config.shortcut],
+                [shortcut],
               ),
             ]),
         ...(config.submenu === undefined

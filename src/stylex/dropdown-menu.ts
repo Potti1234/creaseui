@@ -79,6 +79,11 @@ import { defineMessageUnion } from 'foldkit/message'
 import * as Icon from '@/lib/icon'
 import * as Behavior from '@/lib/dropdown-menu-behavior'
 import * as stylex from '@stylexjs/stylex'
+import {
+  currentPlatform,
+  formatShortcut,
+  toAriaKeyshortcuts,
+} from '@/lib/behaviors/shortcuts'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
 import * as Button from './button'
@@ -227,6 +232,7 @@ export type DropdownMenuItemConfig<Item extends string = string> = Readonly<{
   label: Html | string
   icon?: Html
   shortcut?: Html | string
+  keys?: string
   variant?: 'default' | 'destructive'
   kind?: 'item' | 'checkbox' | 'radio'
   isChecked?: boolean
@@ -451,6 +457,11 @@ export const dropdownMenu = <Item extends string, Msg>(
     const active = isSubmenu
       ? props.model.activeSubmenuIndex === index - props.items.length
       : props.model.activeIndex === index
+    const shortcut =
+      config.shortcut ??
+      (config.keys === undefined
+        ? undefined
+        : formatShortcut(config.keys, currentPlatform()))
     const checked = config.isChecked ?? false
     const role =
       config.kind === 'checkbox'
@@ -463,6 +474,13 @@ export const dropdownMenu = <Item extends string, Msg>(
     return h.div(
       [
         h.Role(role),
+        ...(config.keys === undefined
+          ? []
+          : [
+              h.AriaKeyshortcuts(
+                toAriaKeyshortcuts(config.keys, currentPlatform()),
+              ),
+            ]),
         h.Tabindex(active ? 0 : -1),
         h.DataAttribute('active', String(active)),
         ...(config.kind === 'checkbox' || config.kind === 'radio'
@@ -544,9 +562,14 @@ export const dropdownMenu = <Item extends string, Msg>(
           : []),
         ...(config.icon === undefined ? [] : [config.icon]),
         h.span([h.Class(className(styles.label))], [config.label]),
-        ...(config.shortcut === undefined
+        ...(shortcut === undefined
           ? []
-          : [h.span([h.Class(className(styles.shortcut))], [config.shortcut])]),
+          : [
+              h.span(
+                [h.AriaHidden(true), h.Class(className(styles.shortcut))],
+                [shortcut],
+              ),
+            ]),
         ...(config.submenu === undefined
           ? []
           : [

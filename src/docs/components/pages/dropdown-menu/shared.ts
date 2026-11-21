@@ -9,6 +9,7 @@ export type DropdownMenuItemSpec = Readonly<{
   value: string
   label: string
   icon?: IconName
+  keys?: string
   shortcut?: string
   kind?: 'checkbox' | 'radio'
   variant?: 'destructive'
@@ -83,31 +84,30 @@ export const dropdownMenuFixtures: Readonly<
   },
   {
     title: 'Shortcuts',
-    description:
-      'The shortcut field renders a right-aligned keyboard hint span.',
+    description: 'The keys field renders a right-aligned keyboard hint span.',
     trigger: { kind: 'button', label: 'Open' },
     items: [
-      { value: 'back', label: 'Back', shortcut: '⌘[', group: 'Browser' },
-      { value: 'forward', label: 'Forward', shortcut: '⌘]' },
-      { value: 'reload', label: 'Reload', shortcut: '⌘R' },
+      { value: 'back', label: 'Back', keys: 'mod+[', group: 'Browser' },
+      { value: 'forward', label: 'Forward', keys: 'mod+]' },
+      { value: 'reload', label: 'Reload', keys: 'mod+R' },
       {
         value: 'more-tools',
         label: 'More tools',
         submenu: [
-          { value: 'save-page', label: 'Save page', shortcut: '⌘S' },
+          { value: 'save-page', label: 'Save page', keys: 'mod+S' },
           { value: 'create-shortcut', label: 'Create shortcut' },
           { value: 'name-window', label: 'Name window', isDisabled: true },
           {
             value: 'developer-tools',
             label: 'Developer tools',
-            shortcut: '⌘I',
+            keys: 'mod+I',
           },
         ],
       },
       {
         value: 'show-bookmarks',
         label: 'Show bookmarks',
-        shortcut: '⌘⇧B',
+        keys: 'mod+shift+B',
         group: 'View',
       },
       { value: 'show-full-urls', label: 'Show full URLs' },
@@ -250,26 +250,26 @@ export const dropdownMenuFixtures: Readonly<
         value: 'profile',
         label: 'Profile',
         icon: 'user',
-        shortcut: '⌘⇧P',
+        keys: 'mod+shift+P',
         group: 'My Account',
       },
       {
         value: 'billing',
         label: 'Billing',
         icon: 'credit-card',
-        shortcut: '⌘B',
+        keys: 'mod+B',
       },
       {
         value: 'settings',
         label: 'Settings',
         icon: 'settings',
-        shortcut: '⌘S',
+        keys: 'mod+S',
       },
       {
         value: 'shortcuts',
         label: 'Keyboard shortcuts',
         icon: 'keyboard',
-        shortcut: '⌘K',
+        keys: 'mod+K',
       },
       { value: 'team', label: 'Team', icon: 'users', group: 'Team' },
       {
@@ -282,12 +282,12 @@ export const dropdownMenuFixtures: Readonly<
           { value: 'invite-more', label: 'More…' },
         ],
       },
-      { value: 'new-team', label: 'New Team', icon: 'plus', shortcut: '⌘T' },
+      { value: 'new-team', label: 'New Team', icon: 'plus', keys: 'mod+T' },
       {
         value: 'logout',
         label: 'Log out',
         icon: 'log-out',
-        shortcut: '⌘⇧Q',
+        keys: 'mod+shift+Q',
         variant: 'destructive',
       },
     ],
@@ -352,6 +352,7 @@ export type CheckableState = Readonly<{
 export type ResolvedItemConfig<IconHtml> = Readonly<{
   label: string
   icon?: IconHtml
+  keys?: string
   shortcut?: string
   kind?: 'checkbox' | 'radio'
   isChecked?: boolean
@@ -374,6 +375,7 @@ export const resolveItemConfig = <IconHtml>(
 ): ResolvedItemConfig<IconHtml> => ({
   label: spec.label,
   ...(spec.icon === undefined ? {} : { icon: makeIcon(spec.icon) }),
+  ...(spec.keys === undefined ? {} : { keys: spec.keys }),
   ...(spec.shortcut === undefined ? {} : { shortcut: spec.shortcut }),
   ...(spec.kind === undefined
     ? {}
@@ -415,6 +417,8 @@ const itemConfigSource = (spec: DropdownMenuItemSpec): string => {
   ]
   if (spec.icon !== undefined)
     fields.push(`icon: Icon.icon({ name: '${spec.icon}', size: 'sm' }, h)`)
+  if (spec.keys !== undefined)
+    fields.push(`keys: '${spec.keys.replaceAll("'", "\\'")}'`)
   if (spec.shortcut !== undefined)
     fields.push(`shortcut: '${spec.shortcut.replaceAll("'", "\\'")}'`)
   if (spec.kind !== undefined) {

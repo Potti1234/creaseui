@@ -18,3 +18,15 @@ requests. Read the reason from the OutMessage. For exit transitions, pass
 Dropdown Menu uses immediate unmount. Roles, event detection, positioning,
 focus and layering belong to the component; keep Foldkit's Dialog and Popover
 for overlays that already use their positioning and focus lifecycle.
+
+Shortcuts provides pure platform-aware ARIA, display, matching, typing-target
+and newest-enabled-binding resolution helpers. ListenShortcuts owns a document
+keydown listener for its Mount lifetime and emits PressedShortcut messages.
+Layer priority and named scopes are intentionally left to the host application;
+item keys metadata does not register application actions automatically.
+
+Announce provides describeList and visually-hidden liveRegionAttributes for
+view-derived status text. Its optional Model clears imperative announcements
+before a delayed, version-checked completion, so repeated text can be announced
+without stale delays overwriting newer requests. Render model.text with the
+attributes for model.priority.

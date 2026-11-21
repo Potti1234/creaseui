@@ -74,7 +74,7 @@ const configFor = (
   ...(item.icon === undefined
     ? {}
     : { icon: Icon.icon({ name: item.icon }, h) }),
-  ...(item.shortcut === undefined ? {} : { shortcut: item.shortcut }),
+  ...(item.keys === undefined ? {} : { keys: item.keys }),
   ...(item.kind === undefined ? {} : { kind: item.kind }),
   ...(item.kind === undefined ? {} : { isChecked: checkedValue(item, model) }),
   ...(item.inset === true ? { isInset: true } : {}),

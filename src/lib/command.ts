@@ -3,6 +3,16 @@ import { Combobox } from '@foldkit/ui'
 import { defineView } from 'foldkit/submodel'
 import type { Html } from 'foldkit/html'
 import type { Update } from 'foldkit'
+import { describeList } from './behaviors/announce'
+
+export const commandAnnouncement = (
+  query: string,
+  count: number,
+  status?: string,
+): string =>
+  query.trim()
+    ? describeList({ type: 'results', count, loading: status === 'loading' })
+    : ''
 
 export const normalizeCommandQuery = (value: string): string =>
   value.trim().toLocaleLowerCase()
@@ -20,11 +30,15 @@ export const filterCommandItems = <Item>(
   )
 }
 
+type CommandViewInputs<Item extends string> = Combobox.ViewInputs<Item> & {
+  itemToKeys?: (item: Item) => string | undefined
+}
+
 /** Command reuses Foldkit's combobox state and typed selection updates, with
  * an always-visible list rendered in document flow. No anchor, portal, toggle,
  * blur dismissal, or dropdown animation participates in this surface. */
 export const createInlineCommandView = <Item extends string>() =>
-  defineView<Combobox.Model, Combobox.Message, Combobox.ViewInputs<Item>>(
+  defineView<Combobox.Model, Combobox.Message, CommandViewInputs<Item>>(
     (model, props, h) => {
       const inputId = Combobox.inputId(model.id)
       const listId = `${model.id}-items`
@@ -98,6 +112,9 @@ export const createInlineCommandView = <Item extends string>() =>
             h.Id(itemId(index)),
             h.Role('option'),
             h.AriaSelected(selected),
+            ...(props.itemToKeys?.(item) === undefined
+              ? []
+              : [h.AriaKeyshortcuts(props.itemToKeys?.(item) ?? '')]),
             ...(active === index ? [h.DataAttribute('active', '')] : []),
             ...(selected ? [h.DataAttribute('selected', '')] : []),
             ...(disabled

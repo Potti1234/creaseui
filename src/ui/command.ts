@@ -5,10 +5,17 @@ import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
 
 import {
   createInlineCommandView,
+  commandAnnouncement,
   filterCommandItems,
   retainCommandQuery,
 } from '@/lib/command'
 import * as Icon from '@/lib/icon'
+import { liveRegionAttributes } from '@/lib/behaviors/announce'
+import {
+  currentPlatform,
+  formatShortcut,
+  toAriaKeyshortcuts,
+} from '@/lib/behaviors/shortcuts'
 import { cn } from '@/lib/utils'
 
 /* Ported from shadcn/ui command.tsx on top of foldkit's config-driven
@@ -63,6 +70,7 @@ export type CommandItemConfig = Readonly<{
   content: Html | string
   searchText?: string
   shortcut?: Html | string
+  keys?: string
   class?: string
   isDisabled?: boolean
 }>
@@ -105,6 +113,7 @@ export const commandShortcut = <Msg>(
   return h.span(
     [
       h.DataAttribute('slot', 'command-shortcut'),
+      h.AriaHidden(true),
       h.Class(cn(SHORTCUT_CLASS, className)),
     ],
     [content],
@@ -165,7 +174,7 @@ const renderCommand = <Item extends string, Msg>(
         ? filteredItems
         : filteredItems.slice(0, Math.max(0, props.maxVisibleItems))
 
-  const control = h.submodel({
+  const commandControl = h.submodel({
     slotId: props.model.id,
     model: props.model,
     view: commandView,
@@ -174,10 +183,21 @@ const renderCommand = <Item extends string, Msg>(
       restingInputValue: props.restingInputValue,
       items: visibleItems,
       itemToValue: item => item,
+      itemToKeys: item => {
+        const keys = props.itemToConfig(item).keys
+        return keys === undefined
+          ? undefined
+          : toAriaKeyshortcuts(keys, currentPlatform())
+      },
       itemToDisplayText: itemToSearchText,
       isItemDisabled: item => props.itemToConfig(item).isDisabled ?? false,
       itemToConfig: item => {
         const config = props.itemToConfig(item)
+        const shortcut =
+          config.shortcut ??
+          (config.keys === undefined
+            ? undefined
+            : formatShortcut(config.keys, currentPlatform()))
 
         return {
           className: cn(ITEM_CLASS, config.class),
@@ -185,9 +205,9 @@ const renderCommand = <Item extends string, Msg>(
             [hc.DataAttribute('slot', 'command-item'), hc.Class('contents')],
             [
               config.content,
-              ...(config.shortcut === undefined
+              ...(shortcut === undefined
                 ? []
-                : [commandShortcut(config.shortcut, '', h)]),
+                : [commandShortcut(shortcut, '', h)]),
             ],
           ),
         }
@@ -237,6 +257,20 @@ const renderCommand = <Item extends string, Msg>(
     },
     toParentMessage: props.toParentMessage,
   })
+
+  const control = h.div(
+    [],
+    [
+      commandControl,
+      h.div(liveRegionAttributes<Msg>('polite'), [
+        commandAnnouncement(
+          props.model.inputValue,
+          filteredItems.length,
+          props.status,
+        ),
+      ]),
+    ],
+  )
 
   const statusContent =
     props.status === 'loading'

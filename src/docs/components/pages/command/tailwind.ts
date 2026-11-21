@@ -107,9 +107,7 @@ export const commandTailwindPreviewProgram = definePreviewProgram<
                 h.span([], [value]),
               ],
             ),
-            ...(item?.shortcut === undefined
-              ? {}
-              : { shortcut: item.shortcut }),
+            ...(item?.keys === undefined ? {} : { keys: item.keys }),
           }
         },
         itemGroupKey: value =>

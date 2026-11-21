@@ -14,7 +14,7 @@ export type MenubarKind =
 export interface MarkerSpecItem {
   readonly id: string
   readonly label: string
-  readonly shortcut?: string
+  readonly keys?: string
   readonly disabled?: boolean
   readonly inset?: boolean
   readonly kind?: 'checkbox' | 'radio'
@@ -100,8 +100,8 @@ const demoSpec = (
     target: 'file',
     label: labels.file,
     items: [
-      { id: 'new-tab', label: labels.newTab, shortcut: '⌘T' },
-      { id: 'new-window', label: labels.newWindow, shortcut: '⌘N' },
+      { id: 'new-tab', label: labels.newTab, keys: 'mod+T' },
+      { id: 'new-window', label: labels.newWindow, keys: 'mod+N' },
       { id: 'new-incognito', label: labels.newIncognitoWindow, disabled: true },
       {
         id: 'share',
@@ -116,7 +116,7 @@ const demoSpec = (
       {
         id: 'print',
         label: labels.print,
-        shortcut: '⌘P',
+        keys: 'mod+P',
         separatorBefore: true,
       },
     ],
@@ -125,8 +125,8 @@ const demoSpec = (
     target: 'edit',
     label: labels.edit,
     items: [
-      { id: 'undo', label: labels.undo, shortcut: '⌘Z' },
-      { id: 'redo', label: labels.redo, shortcut: '⇧⌘Z' },
+      { id: 'undo', label: labels.undo, keys: 'mod+Z' },
+      { id: 'redo', label: labels.redo, keys: 'shift+mod+Z' },
       {
         id: 'find',
         label: labels.find,
@@ -153,14 +153,14 @@ const demoSpec = (
       {
         id: 'reload',
         label: labels.reload,
-        shortcut: '⌘R',
+        keys: 'mod+R',
         inset: true,
         separatorBefore: true,
       },
       {
         id: 'force-reload',
         label: labels.forceReload,
-        shortcut: '⇧⌘R',
+        keys: 'shift+mod+R',
         inset: true,
         disabled: true,
       },
@@ -258,14 +258,14 @@ export const menubarSpecs: Record<
         {
           id: 'reload',
           label: 'Reload',
-          shortcut: '⌘R',
+          keys: 'mod+R',
           inset: true,
           separatorBefore: true,
         },
         {
           id: 'force-reload',
           label: 'Force Reload',
-          shortcut: '⇧⌘R',
+          keys: 'shift+mod+R',
           inset: true,
           disabled: true,
         },
@@ -330,7 +330,7 @@ export const menubarSpecs: Record<
         {
           id: 'print',
           label: 'Print...',
-          shortcut: '⌘P',
+          keys: 'mod+P',
           separatorBefore: true,
         },
       ],
@@ -339,8 +339,8 @@ export const menubarSpecs: Record<
       target: 'edit',
       label: 'Edit',
       items: [
-        { id: 'undo', label: 'Undo', shortcut: '⌘Z' },
-        { id: 'redo', label: 'Redo', shortcut: '⇧⌘Z' },
+        { id: 'undo', label: 'Undo', keys: 'mod+Z' },
+        { id: 'redo', label: 'Redo', keys: 'shift+mod+Z' },
         {
           id: 'find',
           label: 'Find',
@@ -362,13 +362,13 @@ export const menubarSpecs: Record<
       target: 'file',
       label: 'File',
       items: [
-        { id: 'new-file', label: 'New File', icon: 'file', shortcut: '⌘N' },
+        { id: 'new-file', label: 'New File', icon: 'file', keys: 'mod+N' },
         { id: 'open-folder', label: 'Open Folder', icon: 'folder' },
         {
           id: 'save',
           label: 'Save',
           icon: 'save',
-          shortcut: '⌘S',
+          keys: 'mod+S',
           separatorBefore: true,
         },
       ],
@@ -459,7 +459,7 @@ const emitItemConfig = (item: MarkerSpecItem, indent: string): string => {
   const fields: Array<string> = [`label: '${sq(item.label)}'`]
   if (item.icon !== undefined)
     fields.push(`icon: Icon.icon({ name: '${item.icon}' }, h)`)
-  if (item.shortcut !== undefined) fields.push(`shortcut: '${item.shortcut}'`)
+  if (item.keys !== undefined) fields.push(`keys: '${item.keys}'`)
   if (item.kind !== undefined) fields.push(`kind: '${item.kind}'`)
   const checked = checkedExpr(item)
   if (checked !== undefined) fields.push(`isChecked: ${checked}`)

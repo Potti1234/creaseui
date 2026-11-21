@@ -2,11 +2,21 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import {
+  commandAnnouncement,
   filterCommandItems,
   normalizeCommandQuery,
 } from '../src/lib/command.ts'
 
 describe('Command query policy', () => {
+  it('derives result announcements only for nonempty queries', () => {
+    assert.equal(commandAnnouncement('', 4), '')
+    assert.equal(commandAnnouncement('  ', 0, 'loading'), '')
+    assert.equal(commandAnnouncement('a', 0), 'No results')
+    assert.equal(commandAnnouncement('a', 1), '1 result')
+    assert.equal(commandAnnouncement('a', 3), '3 results')
+    assert.equal(commandAnnouncement('a', 3, 'loading'), 'Loading')
+    assert.equal(commandAnnouncement('a', 0, 'error'), 'No results')
+  })
   it('normalizes whitespace and case', () => {
     assert.equal(normalizeCommandQuery('  SeTT  '), 'sett')
   })

@@ -5,10 +5,17 @@ import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
 
 import {
   createInlineCommandView,
+  commandAnnouncement,
   filterCommandItems,
   retainCommandQuery,
 } from '@/lib/command'
 import * as Icon from '@/lib/icon'
+import { liveRegionAttributes } from '@/lib/behaviors/announce'
+import {
+  currentPlatform,
+  formatShortcut,
+  toAriaKeyshortcuts,
+} from '@/lib/behaviors/shortcuts'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
@@ -79,6 +86,7 @@ export type CommandItemConfig = Readonly<{
   content: Html | string
   searchText?: string
   shortcut?: Html | string
+  keys?: string
   layoutStyle?: ComponentLayoutStyle
   isDisabled?: boolean
 }>
@@ -124,6 +132,7 @@ export const commandShortcut = <Msg>(
   return h.span(
     [
       h.DataAttribute('slot', 'command-shortcut'),
+      h.AriaHidden(true),
       h.Class(cn(SHORTCUT_CLASS, layoutStyle)),
     ],
     [content],
@@ -184,7 +193,7 @@ const renderCommand = <Item extends string, Msg>(
         ? filteredItems
         : filteredItems.slice(0, Math.max(0, props.maxVisibleItems))
 
-  const control = h.submodel({
+  const commandControl = h.submodel({
     slotId: props.model.id,
     model: props.model,
     view: commandView,
@@ -193,10 +202,21 @@ const renderCommand = <Item extends string, Msg>(
       restingInputValue: props.restingInputValue,
       items: visibleItems,
       itemToValue: item => item,
+      itemToKeys: item => {
+        const keys = props.itemToConfig(item).keys
+        return keys === undefined
+          ? undefined
+          : toAriaKeyshortcuts(keys, currentPlatform())
+      },
       itemToDisplayText: itemToSearchText,
       isItemDisabled: item => props.itemToConfig(item).isDisabled ?? false,
       itemToConfig: item => {
         const config = props.itemToConfig(item)
+        const shortcut =
+          config.shortcut ??
+          (config.keys === undefined
+            ? undefined
+            : formatShortcut(config.keys, currentPlatform()))
 
         return {
           className: cn(ITEM_CLASS, config.layoutStyle),
@@ -207,9 +227,9 @@ const renderCommand = <Item extends string, Msg>(
             ],
             [
               config.content,
-              ...(config.shortcut === undefined
+              ...(shortcut === undefined
                 ? []
-                : [commandShortcut(config.shortcut, undefined, h)]),
+                : [commandShortcut(shortcut, undefined, h)]),
             ],
           ),
         }
@@ -259,6 +279,20 @@ const renderCommand = <Item extends string, Msg>(
     },
     toParentMessage: props.toParentMessage,
   })
+
+  const control = h.div(
+    [],
+    [
+      commandControl,
+      h.div(liveRegionAttributes<Msg>('polite'), [
+        commandAnnouncement(
+          props.model.inputValue,
+          filteredItems.length,
+          props.status,
+        ),
+      ]),
+    ],
+  )
 
   const statusContent =
     props.status === 'loading'
