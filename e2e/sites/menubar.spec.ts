@@ -1,18 +1,21 @@
 import { expect, test } from '@playwright/test'
 
-test('menubar examples separate hover highlighting from the last clicked menu', async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 1440, height: 1000 })
-  const errors: string[] = []
-  page.on('pageerror', error => errors.push(error.message))
-  await page.goto('/docs/components/menubar')
-  const bars = page.locator('[data-slot="menubar"]')
-  await expect(bars.first()).toBeVisible()
-  await expect(bars.locator('[aria-current="true"]')).toHaveCount(0)
-  const transparent = 'rgba(0, 0, 0, 0)'
+import { menubarFixtures } from '../../src/docs/components/pages/menubar/shared'
 
-  for (const bar of await bars.all()) {
+for (const [index, { title }] of menubarFixtures.entries()) {
+  test(`${title} menubar separates hover highlighting from the last clicked menu`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    const errors: string[] = []
+    page.on('pageerror', error => errors.push(error.message))
+    await page.goto('/docs/components/menubar')
+    const bars = page.locator('[data-slot="menubar"]')
+    await expect(bars).toHaveCount(menubarFixtures.length)
+    const bar = bars.nth(index)
+    await expect(bar.locator('[aria-current="true"]')).toHaveCount(0)
+    const transparent = 'rgba(0, 0, 0, 0)'
+
     await bar.scrollIntoViewIfNeeded()
     await page.mouse.move(1, 1)
     const triggers = bar.locator('[data-slot="dropdown-menu-trigger"]')
@@ -49,9 +52,9 @@ test('menubar examples separate hover highlighting from the last clicked menu', 
     for (const trigger of await triggers.all()) {
       await expect(trigger).toHaveCSS('background-color', transparent)
     }
-  }
-  expect(errors).toEqual([])
-})
+    expect(errors).toEqual([])
+  })
+}
 
 test('keyboard focus moves independently of menubar selection', async ({
   page,
