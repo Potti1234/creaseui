@@ -11,6 +11,16 @@ Keep navigation helpers pure and test them independently of rendered views.
 RovingFocus establishes this convention for subsequent behavior modules.
 Typeahead follows this convention with a version-guarded timeout and pure label search.
 
+[StickToBottom](https://ui-sdk.dev/docs/core/behaviors/lists#stick-to-bottom)
+follows a growing scroll viewport with a configurable bottom threshold (24 px
+by default). Use the Schema model and `update`, and bind `viewportMount` to
+the element with ID `${id}-viewport`. Mount measures the visible row when
+content changes; update decides whether to follow, hold that row in place,
+or flag unseen growth. Use `RequestedScroll` to jump and follow again, or
+`Released` to stop following. Send `RequestedPrepend` immediately before
+adding history above to explicitly preserve the distance from the bottom.
+Message Scroller starts pinned; Log Stream opts out by default.
+
 Move ports ui-sdk's `createMove` for freeform 2D placement. Foldkit
 DragAndDrop remains the better fit for ordering items or transferring them
 between containers: it already handles drop targets, the drag ghost, and
@@ -44,15 +54,21 @@ Dropdown Menu uses immediate unmount. Roles, event detection, positioning,
 focus and layering belong to the component; keep Foldkit's Dialog and Popover
 for overlays that already use their positioning and focus lifecycle.
 
-[StickToBottom](https://ui-sdk.dev/docs/core/behaviors/lists#stick-to-bottom)
-follows a growing scroll viewport with a configurable bottom threshold (24 px
-by default). Use the Schema model and `update`, and bind `viewportMount` to
-the element with ID `${id}-viewport`. Mount measures the visible row when
-content changes; update decides whether to follow, hold that row in place,
-or flag unseen growth. Use `RequestedScroll` to jump and follow again, or
-`Released` to stop following. Send `RequestedPrepend` immediately before
-adding history above to explicitly preserve the distance from the bottom.
-Message Scroller starts pinned; Log Stream opts out by default.
+DragAndDrop wraps Foldkit for single-item pointer sorting in lists and boards.
+Prefer it to ui-sdk's `createReorder` for this path: Foldkit already supplies
+a Schema Model, typed drag Messages and drop OutMessages, and scoped
+subscriptions for thresholded pointer tracking, hit testing, viewport edge
+scrolling, and keyboard fallback. The parent applies drop intents to its own
+order instead of connecting a mutable store and draft.
+
+Spread `view` on the focusable handle, `sortable` on each row, and `dropTarget`
+on its list. Lift `subscriptions` and the Commands from `update` into the
+parent. Supply roles, announcements, and styling (including
+`touch-action: none` on the handle) in the component. Use DOM-unique item and
+container IDs. Transfer List uses a drop indicator rather than a drag ghost.
+This wrapper retains Foldkit's linear hit testing and viewport scrolling; it
+does not implement ui-sdk's grid/group moves, nested-scroller auto-scroll,
+or pointer-capture/loss handling.
 
 Selection ports the key-based behavior from [ui-sdk.dev](https://ui-sdk.dev/docs/core/behaviors/selection).
 Bind keys with `Selection.create<Key>()` and embed `Selection.Model` in the
