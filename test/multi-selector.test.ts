@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
+import { Listbox } from '@foldkit/ui'
 
 import * as MultiSelector from '../src/lib/multi-selector.ts'
 import { filterOptions } from '../src/lib/multi-selector-view.ts'
@@ -97,12 +98,30 @@ describe('MultiSelector submodel', () => {
       _tag: 'ChangedValues',
       values: ['de'],
     })
+    const unchanged = MultiSelector.update(
+      cleared.model,
+      MultiSelector.Message.ClickedSelectAll({ optionValues: [] }),
+    )
+    assert.equal(unchanged.model, cleared.model)
+    assert.equal(unchanged.outMessage, undefined)
+  })
+
+  it('translates a listbox item into a new committed selection on each toggle', () => {
+    const model = MultiSelector.init({ id: 'countries', values: ['de'] })
+    const message = MultiSelector.Message.GotListboxMessage({
+      message: Listbox.Message.SelectedItem({ item: 'us' }),
+    })
+    const added = MultiSelector.update(model, message)
+    assert.deepEqual(added.model.values, ['de', 'us'])
     assert.deepEqual(
-      MultiSelector.update(
-        cleared.model,
-        MultiSelector.Message.ClickedSelectAll({ optionValues: [] }),
-      ).model.values,
-      ['de'],
+      added.outMessage,
+      MultiSelector.OutMessage.ChangedValues({ values: ['de', 'us'] }),
+    )
+    const removed = MultiSelector.update(added.model, message)
+    assert.deepEqual(removed.model.values, ['de'])
+    assert.deepEqual(
+      removed.outMessage,
+      MultiSelector.OutMessage.ChangedValues({ values: ['de'] }),
     )
   })
 
