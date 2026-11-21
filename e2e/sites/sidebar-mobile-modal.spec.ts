@@ -113,15 +113,9 @@ test('Escape in a menu inside the mobile Sidebar closes only the menu', async ({
   await menuTrigger.click()
   const menu = page.locator('[role="menu"]:visible')
   await expect(menu).toHaveCount(1)
+  await expect(menu.getByRole('menuitem', { name: 'Profile' })).toBeFocused()
   await page.keyboard.press('ArrowDown')
-  await page.keyboard.press('Tab')
-  await expect
-    .poll(() =>
-      page.evaluate(
-        () => document.activeElement?.closest('[role="menu"]') !== null,
-      ),
-    )
-    .toBe(true)
+  await expect(menu.getByRole('menuitem', { name: 'Settings' })).toBeFocused()
 
   await page.keyboard.press('Escape')
   await expect(menu).toHaveCount(0)
