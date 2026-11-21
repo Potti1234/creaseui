@@ -15,8 +15,10 @@ const styles = {
     gap: '1rem',
     display: 'grid',
     outlineStyle: 'none',
-    maxWidth: '32rem',
   }),
+  defaultSize: Style.make({
+    maxWidth: 'calc(100% - 2rem)',
+  }).pipe(Style.when(When.minWidth('640px'), { maxWidth: '32rem' })),
   settings: Style.make({
     padding: 0,
     overflow: 'hidden',
@@ -282,7 +284,9 @@ export const dialog = <Msg>(
                         overlayStyles.panel,
                         CONTENT_CLASS,
                         overlayStyles.modal,
-                        props.size === 'settings' && styles.settings,
+                        props.size === 'settings'
+                          ? styles.settings
+                          : styles.defaultSize,
                         props.layoutStyle,
                       ),
                     ),

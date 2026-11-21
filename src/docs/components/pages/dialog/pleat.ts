@@ -1,4 +1,4 @@
-import { Style } from '@pleat/core'
+import { Style, When } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -18,10 +18,14 @@ import * as Form from '@/pleat/form'
 import * as Input from '@/pleat/input'
 import { className } from '@/pleat/style'
 
-import { layoutStyle } from '@/pleat/contracts'
+import { layoutStyle, layoutWhen } from '@/pleat/contracts'
 const styles = {
-  compact: layoutStyle({ maxWidth: '24rem' }),
-  shareWidth: layoutStyle({ maxWidth: '28rem' }),
+  compact: layoutStyle({ maxWidth: 'calc(100% - 2rem)' }).pipe(
+    layoutWhen(When.minWidth('640px'), { maxWidth: '24rem' }),
+  ),
+  shareWidth: layoutStyle({ maxWidth: 'calc(100% - 2rem)' }).pipe(
+    layoutWhen(When.minWidth('640px'), { maxWidth: '28rem' }),
+  ),
   scrollArea: Style.make({
     marginInline: '-1rem',
     paddingInline: '1rem',

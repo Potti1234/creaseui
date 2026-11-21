@@ -20,8 +20,18 @@ import * as Input from '@/stylex/input'
 import { className } from '@/stylex/style'
 
 const styles = stylex.create({
-  compact: { maxWidth: '24rem' },
-  shareWidth: { maxWidth: '28rem' },
+  compact: {
+    maxWidth: {
+      default: 'calc(100% - 2rem)',
+      '@media (min-width: 640px)': '24rem',
+    },
+  },
+  shareWidth: {
+    maxWidth: {
+      default: 'calc(100% - 2rem)',
+      '@media (min-width: 640px)': '28rem',
+    },
+  },
   scrollArea: {
     marginInline: '-1rem',
     paddingInline: '1rem',
