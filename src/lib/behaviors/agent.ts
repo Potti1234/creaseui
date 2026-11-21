@@ -363,7 +363,10 @@ const finish = (
       !component.state.open &&
       ('checked' in component.state || 'value' in component.state),
   )
-  const touched = model.results.map(result => result.ref)
+  const touched = model.results.flatMap(result => [
+    result.ref,
+    ...(result.changes ?? []).map(change => change.ref),
+  ])
   const prioritized = fields.filter(component =>
     touched.includes(component.ref),
   )

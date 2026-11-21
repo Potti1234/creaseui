@@ -223,6 +223,41 @@ describe('Agent query and step resolution', () => {
 })
 
 describe('Agent act lifecycle', () => {
+  it('keeps indirectly changed fields beyond the final values cap', () => {
+    const components = Array.from({ length: 105 }, (_, index) =>
+      component({ ref: `c${index}`, state: { value: index } }),
+    )
+    const first = update(
+      Agent.init(),
+      requested([step({ ref: 'c0' })]),
+      components,
+    )
+    const done = update(
+      first.model,
+      Agent.Message.CompletedStep({
+        changes: [
+          Agent.agentChange({
+            ref: 'c104',
+            component: 'select',
+            key: 'value',
+            value: 999,
+            previous: 104,
+            reason: 'imperative',
+            phase: 'Commit',
+          }),
+        ],
+      }),
+      components.map(item =>
+        item.ref === 'c104' ? { ...item, state: { value: 999 } } : item,
+      ),
+    )
+    if (done.outMessage?._tag !== 'Finished') assert.fail('Expected Finished')
+    assert.equal(done.outMessage.result.values['c104 Région'], 999)
+    assert.equal(done.outMessage.result.values['c0 Région'], 0)
+    assert.equal(done.outMessage.result.values.more, 5)
+    assert.equal(Object.keys(done.outMessage.result.values).length, 101)
+  })
+
   it('keeps secret step results, changes and failures redacted after the control disappears', () => {
     const first = update(Agent.init(), requested(), [
       component({ secret: true }),
