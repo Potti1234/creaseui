@@ -482,6 +482,9 @@
           "type": "registry:lib",
           "target": "@lib/toast.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/focus-recovery-behavior"
       ]
     },
     {
