@@ -2,8 +2,8 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import { Option } from 'effect'
-import { DragAndDrop as Dnd } from '@foldkit/ui'
 
+import * as Dnd from '../src/lib/behaviors/drag-and-drop.ts'
 import * as TransferList from '../src/ui/transfer-list.ts'
 import * as FocusRecovery from '../src/lib/behaviors/focus-recovery.ts'
 import * as TransferFocus from '../src/lib/transfer-list.ts'
@@ -137,6 +137,22 @@ describe('TransferList', () => {
     model = next.model
     assert.equal(model.dnd.dragState._tag, 'Pending')
     assert.equal(model.suppressNextHandleClick, true)
+
+    next = TransferList.update(
+      model,
+      dnd(
+        Dnd.Message.MovedPointer({
+          screenX: 0,
+          screenY: 1,
+          clientX: 0,
+          clientY: 1,
+          maybeDropTarget: Option.none(),
+        }),
+      ),
+      options,
+    )
+    model = next.model
+    assert.equal(model.dnd.dragState._tag, 'Pending')
 
     next = TransferList.update(
       model,

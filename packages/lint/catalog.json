@@ -6354,6 +6354,8 @@
     "--drawer-swipe-movement-y",
     "--drawer-swipe-progress",
     "--drawer-swipe-strength",
+    "--move-x",
+    "--move-y",
     "--nested-drawers",
     "--peek",
     "--sheet-expanded-height",
