@@ -124,11 +124,13 @@ describe('stateful component models', () => {
       DropdownMenuBehavior.keyMessage(model, items, itemToBehavior, 's'),
       { _tag: 'ActivatedItem', index: 2 },
     )
-    const submenuModel = {
-      ...model,
-      activeIndex: 3,
-      openSubmenuIndex: Option.some(3),
-    }
+    const { model: opened } = DropdownMenuBehavior.update(model, {
+      _tag: 'Opened',
+    })
+    const { model: submenuModel } = DropdownMenuBehavior.update(opened, {
+      _tag: 'OpenedSubmenu',
+      index: 3,
+    })
     assert.deepEqual(
       DropdownMenuBehavior.keyMessage(
         submenuModel,
@@ -138,15 +140,20 @@ describe('stateful component models', () => {
       ),
       { _tag: 'ActivatedSubmenuItem', index: 0 },
     )
-    assert.deepEqual(
-      DropdownMenuBehavior.keyMessage(
-        submenuModel,
-        items,
-        itemToBehavior,
-        'Escape',
-      ),
-      { _tag: 'Closed' },
+    const escape = DropdownMenuBehavior.keyMessage(
+      submenuModel,
+      items,
+      itemToBehavior,
+      'Escape',
     )
+    assert.ok(escape?._tag === 'Dismissed')
+    assert.equal(escape.reason, 'escape-key')
+    const { model: dismissed } = DropdownMenuBehavior.update(
+      submenuModel,
+      escape,
+    )
+    assert.equal(dismissed.isOpen, false)
+    assert.equal(Option.isNone(dismissed.openSubmenuIndex), true)
     assert.deepEqual(
       DropdownMenuBehavior.keyMessage(
         submenuModel,
