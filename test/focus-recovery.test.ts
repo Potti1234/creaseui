@@ -164,8 +164,13 @@ describe('FocusRecovery', () => {
     let active: object | null = body
     let available = true
     let calls = 0
+    let scrolls = 0
     let frames = 0
     const target = {
+      scrollIntoView: (options: ScrollIntoViewOptions) => {
+        assert.deepEqual(options, { block: 'nearest' })
+        scrolls++
+      },
       focus: (options: FocusOptions) => {
         assert.deepEqual(options, { preventScroll: true })
         calls++
@@ -211,6 +216,7 @@ describe('FocusRecovery', () => {
             .effect,
         )
         assert.equal(calls, expected)
+        assert.equal(scrolls, expected)
       }
       available = false
       active = body
@@ -219,6 +225,7 @@ describe('FocusRecovery', () => {
           .effect,
       )
       assert.equal(calls, 4)
+      assert.equal(scrolls, 4)
       assert.equal(frames, 6)
     } finally {
       names.forEach((name, index) => {

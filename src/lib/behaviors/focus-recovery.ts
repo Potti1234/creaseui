@@ -31,7 +31,9 @@ export const RecoverFocus = Command.define('RecoverFocus', {
             !lost?.contains(active)
           )
             return
-          document.getElementById(targetId)?.focus({ preventScroll: true })
+          const target = document.getElementById(targetId)
+          target?.focus({ preventScroll: true })
+          target?.scrollIntoView({ block: 'nearest' })
         }),
       ),
       Effect.as(Message.CompletedRecoverFocus()),

@@ -1,5 +1,42 @@
 import { expect, test } from '@playwright/test'
 
+test('recovered action across a group heading stays visible in its panel', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/transfer-list')
+  const field = page.locator('#searchable [data-slot="transfer-list"]').first()
+  const panel = field.locator('[data-transfer-list-panel-body="available"]')
+  const lost = field.getByRole('button', { name: 'Add Field 040', exact: true })
+  const target = field.getByRole('button', {
+    name: 'Add Field 041',
+    exact: true,
+  })
+  await lost.focus()
+  await panel.evaluate(
+    (panel, id) => {
+      const button = document.getElementById(id!)!
+      const rect = button.getBoundingClientRect()
+      const bounds = panel.getBoundingClientRect()
+      panel.scrollTop += rect.bottom - bounds.bottom + 1
+    },
+    await lost.getAttribute('id'),
+  )
+  const pageScroll = await page.evaluate(() => window.scrollY)
+  await page.keyboard.press('Enter')
+  await expect(target).toBeFocused()
+  await expect
+    .poll(async () =>
+      target.evaluate(button => {
+        const panel = button.closest('[data-transfer-list-panel-body]')!
+        const bounds = panel.getBoundingClientRect()
+        const rect = button.getBoundingClientRect()
+        return rect.top >= bounds.top && rect.bottom <= bounds.bottom
+      }),
+    )
+    .toBe(true)
+  expect(await page.evaluate(() => window.scrollY)).toBe(pageScroll)
+})
+
 test('single and bulk transfers recover only the source collection focus', async ({
   page,
 }) => {
