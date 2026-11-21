@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import { Command, type Update } from 'foldkit'
 import { Duration, Effect, Option, Schedule, Schema as S, Stream } from 'effect'
 import { Subscription } from 'foldkit'

@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { Option } from 'effect'
@@ -33,7 +33,7 @@ import {
   formatDisplayTime24h,
   formatISOTime,
 } from '@/lib/time-parse'
-import { calendarView } from '@/stylex/calendar'
+import { calendarView } from '@/ui/stylex/calendar'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'

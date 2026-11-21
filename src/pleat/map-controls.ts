@@ -1,7 +1,7 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { renderMapControls } from '@/lib/map-view'
 import type { MapControlsProps } from '@/lib/map-view'
-import { mapSkin } from '@/pleat/map'
+import { mapSkin } from '@/ui/pleat/map'
 export type { MapControlsProps } from '@/lib/map-view'
 export const mapControls = <Msg>(
   props: MapControlsProps,

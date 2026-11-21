@@ -1,5 +1,5 @@
 import { Style, When } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import type { Option } from 'effect'
 import { Match as M } from 'effect'
 import type * as FoldkitCalendar from 'foldkit/calendar'

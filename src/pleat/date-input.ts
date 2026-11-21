@@ -1,5 +1,5 @@
 import { Style, When, Global } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import { Option } from 'effect'
 
 import type { Html, HtmlBuilder } from 'foldkit/html'
@@ -27,7 +27,7 @@ import {
   reflectConstraints,
   update,
 } from '@/lib/date-input'
-import { calendarView } from '@/pleat/calendar'
+import { calendarView } from '@/ui/pleat/calendar'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens'
 import { interactionTokens } from './interaction-tokens'

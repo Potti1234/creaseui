@@ -6,16 +6,16 @@
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
-import { reset } from '@/stylex/reset'
-import { className } from '@/stylex/style'
-import { tokens } from '@/stylex/tokens.stylex'
-import { foundationTokens } from '@/stylex/foundations-tokens.stylex'
-import { interactionTokens } from '@/stylex/interaction-tokens.stylex.const'
+import { reset } from '@/ui/stylex/reset'
+import { className } from '@/ui/stylex/style'
+import { tokens } from '@/ui/stylex/tokens.stylex'
+import { foundationTokens } from '@/ui/stylex/foundations-tokens.stylex'
+import { interactionTokens } from '@/ui/stylex/interaction-tokens.stylex.const'
 
 import { dateFromISO } from '@/lib/date-parse'
-import { icon } from '@/stylex/composition/icon'
+import { icon } from '@/ui/stylex/composition/icon'
 import * as Icon from '@/lib/icon'
-import * as Calendar from '@/stylex/calendar'
+import * as Calendar from '@/ui/stylex/calendar'
 import * as DataGrid from '@/lib/data-grid'
 import type {
   DataGridColumn,

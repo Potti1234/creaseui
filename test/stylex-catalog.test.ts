@@ -355,7 +355,7 @@ const styleBoundaryViolations = (
       (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) &&
       node.moduleSpecifier !== undefined &&
       ts.isStringLiteral(node.moduleSpecifier) &&
-      (/^@\/ui\//u.test(node.moduleSpecifier.text) ||
+      (/^@\/ui\/(?!stylex\/)/u.test(node.moduleSpecifier.text) ||
         /(?:^|\/)src\/ui(?:\/|$)/u.test(node.moduleSpecifier.text) ||
         /^\.\.\/ui(?:\/|$)/u.test(node.moduleSpecifier.text))
     ) {
@@ -595,6 +595,18 @@ describe('complete StyleX catalog', () => {
       [],
       `StyleX boundary violations found:\n${violations.join('\n')}`,
     )
+  })
+
+  it('distinguishes installed StyleX imports from Tailwind imports', () => {
+    const source = ts.createSourceFile(
+      'boundary.ts',
+      "import * as Button from '@/ui/stylex/button'\nimport * as TailwindButton from '@/ui/button'",
+      ts.ScriptTarget.Latest,
+      true,
+    )
+    assert.deepEqual(styleBoundaryViolations(source), [
+      '2:1 imports @/ui/button',
+    ])
   })
 
   it('does not expose unrestricted visual StyleX overrides', () => {

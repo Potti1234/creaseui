@@ -1,7 +1,7 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { renderMapMarker, renderMapMarkerPart } from '@/lib/map-view'
 import type { MapMarkerProps } from '@/lib/map-view'
-import { mapSkin } from '@/pleat/map'
+import { mapSkin } from '@/ui/pleat/map'
 export type { MapMarkerProps } from '@/lib/map-view'
 export const mapMarker = <Msg>(
   props: MapMarkerProps<Msg>,

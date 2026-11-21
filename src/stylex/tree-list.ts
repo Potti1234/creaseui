@@ -1,4 +1,4 @@
-import { reset } from '@/stylex/reset'
+import { reset } from '@/ui/stylex/reset'
 /* Ported from Meta Astryx TreeList (packages/core/src/TreeList/) — StyleX
    renderer; visual spec adapted to Crease UI tokens. */
 

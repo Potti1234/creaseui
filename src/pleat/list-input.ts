@@ -1,5 +1,5 @@
 import { Style, When } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 /* Ported from Meta Astryx ListInput (packages/lab/src/ListInput) —
    examples and visual spec adapted to Crease UI tokens.
 
@@ -14,7 +14,7 @@ import { Option } from 'effect'
 import { defineView } from 'foldkit/submodel'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { button } from '@/pleat/button'
+import { button } from '@/ui/pleat/button'
 import * as Icon from '@/lib/icon'
 import {
   renderAttachedStatus,

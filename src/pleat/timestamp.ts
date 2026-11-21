@@ -1,5 +1,5 @@
 import { Style } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import { Command, type Update } from 'foldkit'
 import { Duration, Effect, Option, Schedule, Schema as S, Stream } from 'effect'
 import { Subscription } from 'foldkit'

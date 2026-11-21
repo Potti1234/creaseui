@@ -39,7 +39,13 @@ test.describe('StyleX without preflight', () => {
           },
         },
       ],
-      resolve: { alias: { '@': resolve('src') } },
+      resolve: {
+        alias: {
+          '@/ui/stylex': resolve('src/stylex'),
+          '@/ui/pleat': resolve('src/pleat'),
+          '@': resolve('src'),
+        },
+      },
       build: { outDir: output },
     }
     await build(config)

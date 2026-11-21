@@ -1,5 +1,5 @@
 import { Style } from '@pleat/core'
-import { reset } from '@/pleat/reset'
+import { reset } from '@/ui/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens'
