@@ -1,5 +1,26 @@
 import { expect, test } from '@playwright/test'
 
+test('remove then add keeps guest keys unique and recovery working', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/list-input')
+  const field = page.locator('[data-slot="list-input"]').first()
+  const rows = field.locator('[data-list-input-row]')
+  const removes = field.locator('[data-list-input-remove]')
+  await removes.first().click()
+  await expect(rows).toHaveCount(1)
+  await field.getByRole('button', { name: 'Add guest', exact: true }).click()
+  await expect(rows).toHaveCount(2)
+  const keys = await rows.evaluateAll(rows =>
+    rows.map(row => row.getAttribute('data-list-input-row')),
+  )
+  expect(new Set(keys).size).toBe(2)
+  await removes.first().focus()
+  await page.keyboard.press('Enter')
+  await expect(removes).toHaveCount(1)
+  await expect(removes.first()).toBeFocused()
+})
+
 test('keyboard reorder keeps focus on the moved row handle', async ({
   page,
 }) => {
