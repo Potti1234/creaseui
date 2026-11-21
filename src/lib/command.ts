@@ -32,6 +32,8 @@ export const filterCommandItems = <Item>(
 
 type CommandViewInputs<Item extends string> = Combobox.ViewInputs<Item> & {
   announcement: string
+  statusContent?: Html | string
+  statusClassName?: string
   itemToKeys?: (item: Item) => string | undefined
 }
 
@@ -287,6 +289,20 @@ export const createInlineCommandView = <Item extends string>() =>
                 ],
                 [...renderGroups()],
               ),
+              ...(props.statusContent === undefined
+                ? []
+                : [
+                    h.div(
+                      [
+                        h.Role('status'),
+                        h.AriaLive('polite'),
+                        ...(props.statusClassName === undefined
+                          ? []
+                          : [h.Class(props.statusClassName)]),
+                      ],
+                      [props.statusContent],
+                    ),
+                  ]),
             ],
           ),
         ],

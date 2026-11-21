@@ -12,7 +12,20 @@ export const verifyCommandRoot = (
   announcement: string,
 ): void => {
   const command = Command.create<'Alpha'>()
-  const hasStatus = status === 'loading' || query === 'missing'
+  const expectRegion =
+    (text: string) =>
+    <Model, Message, OutMessage>(
+      simulation: Scene.SceneSimulation<Model, Message, OutMessage>,
+    ) => {
+      const root = simulation.html.children?.[0]
+      assert.ok(root && typeof root === 'object')
+      assert.equal(root.data?.attrs?.['data-slot'], 'command')
+      const region = root.children?.[0]
+      assert.ok(region && typeof region === 'object')
+      assert.equal(region.data?.attrs?.['aria-live'], 'polite')
+      assert.equal(Scene.textContent(region), text)
+      return simulation
+    }
   Scene.scene(
     {
       update: command.update,
@@ -50,11 +63,8 @@ export const verifyCommandRoot = (
       const outer = simulation.html.children?.[0]
       if (!outer || typeof outer !== 'object')
         throw new Error('Missing command root')
-      assert.equal(
-        outer.data?.attrs?.['data-slot'],
-        hasStatus ? 'command-state' : 'command',
-      )
-      const root = hasStatus ? outer.children?.[0] : outer
+      assert.equal(outer.data?.attrs?.['data-slot'], 'command')
+      const root = outer
       if (!root || typeof root !== 'object')
         throw new Error('Missing command control')
       assert.equal(root.data?.attrs?.['data-slot'], 'command')
@@ -81,5 +91,15 @@ export const verifyCommandRoot = (
       assert.equal(Scene.textContent(region), announcement)
       return simulation
     },
+    ...(status === 'ready'
+      ? [
+          Scene.type(Scene.role('combobox'), 'missing'),
+          expectRegion('No results'),
+          Scene.type(Scene.role('combobox'), 'a'),
+          expectRegion('1 result'),
+          Scene.type(Scene.role('combobox'), ''),
+          expectRegion(''),
+        ]
+      : []),
   )
 }

@@ -174,11 +174,30 @@ const renderCommand = <Item extends string, Msg>(
         ? filteredItems
         : filteredItems.slice(0, Math.max(0, props.maxVisibleItems))
 
-  const control = h.submodel({
+  const statusContent =
+    props.status === 'loading'
+      ? (props.loadingContent ?? 'Loading commands…')
+      : visibleItems.length === 0
+        ? (props.emptyContent ?? 'No commands found.')
+        : visibleItems.length < filteredItems.length
+          ? (props.moreResultsContent?.(
+              visibleItems.length,
+              filteredItems.length,
+            ) ??
+            `Showing ${String(visibleItems.length)} of ${String(filteredItems.length)} commands. Refine your search for more.`)
+          : undefined
+
+  return h.submodel({
     slotId: props.model.id,
     model: props.model,
     view: commandView,
     viewInputs: {
+      ...(statusContent === undefined
+        ? {}
+        : {
+            statusContent,
+            statusClassName: 'py-6 text-center text-sm',
+          }),
       announcement: commandAnnouncement(
         props.model.inputValue,
         filteredItems.length,
@@ -264,36 +283,6 @@ const renderCommand = <Item extends string, Msg>(
     },
     toParentMessage: props.toParentMessage,
   })
-
-  const statusContent =
-    props.status === 'loading'
-      ? (props.loadingContent ?? 'Loading commands…')
-      : visibleItems.length === 0
-        ? (props.emptyContent ?? 'No commands found.')
-        : visibleItems.length < filteredItems.length
-          ? (props.moreResultsContent?.(
-              visibleItems.length,
-              filteredItems.length,
-            ) ??
-            `Showing ${String(visibleItems.length)} of ${String(filteredItems.length)} commands. Refine your search for more.`)
-          : undefined
-
-  return statusContent === undefined
-    ? control
-    : h.div(
-        [h.DataAttribute('slot', 'command-state')],
-        [
-          control,
-          h.div(
-            [
-              h.Role('status'),
-              h.AriaLive('polite'),
-              h.Class('py-6 text-center text-sm'),
-            ],
-            [statusContent],
-          ),
-        ],
-      )
 }
 
 export type CommandBundle<Item extends string> = Readonly<{
