@@ -55,7 +55,8 @@ describe('Typeahead', () => {
     assert.deepEqual(second.maybeIndex, Option.some(1))
     const third = search(second.model, 'l', 1)
     assert.deepEqual(third.maybeIndex, Option.some(2))
-    assert.deepEqual(search(third.model, 'l', 2).maybeIndex, Option.some(0))
+    assert.equal(third.model.query, 'l')
+    assert.deepEqual(search(third.model, 'l', 2).maybeIndex, Option.some(1))
   })
 
   it('starts single characters after current, longer queries at current, and wraps', () => {
@@ -85,6 +86,22 @@ describe('Typeahead', () => {
     assert.equal(result.model.query, 'pat')
     assert.equal(result.model.isStepping, false)
     assert.equal(result.currentIndex, 2)
+  })
+
+  it('retains a repeated prefix that matched a whole label', () => {
+    const labels = ['Llama', 'Lamp']
+    const result = [...'lla'].reduce(
+      ({ model, currentIndex }, key) => {
+        const next = Typeahead.search(model, { key, labels, currentIndex })
+        return {
+          model: next.model,
+          currentIndex: Option.getOrElse(next.maybeIndex, () => currentIndex),
+        }
+      },
+      { model: Typeahead.init(), currentIndex: -1 },
+    )
+    assert.equal(result.model.query, 'lla')
+    assert.equal(result.currentIndex, 0)
   })
 
   it('continues an active query with Space', () => {

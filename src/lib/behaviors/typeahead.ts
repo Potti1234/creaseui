@@ -86,10 +86,7 @@ export const search = (
   const char = normalize(key) || key
   const isStepping =
     char === model.lastKey && (model.isStepping || model.query.length === 1)
-  const query =
-    (model.isStepping && char !== model.lastKey ? model.lastKey : model.query) +
-    char
-  const next = { query, lastKey: char, isStepping, version: model.version + 1 }
+  const query = model.query + char
   const scan = (prefix: string, start: number): Option.Option<number> => {
     for (let step = 0; step < labels.length; step++) {
       const index =
@@ -102,14 +99,18 @@ export const search = (
     }
     return Option.none()
   }
-  const maybeIndex = isStepping
-    ? Option.orElse(scan(query, Math.max(currentIndex, 0)), () =>
-        scan(char, currentIndex + 1),
-      )
-    : scan(
-        query,
-        query.length === 1 ? currentIndex + 1 : Math.max(currentIndex, 0),
-      )
+  const whole = scan(
+    query,
+    query.length === 1 ? currentIndex + 1 : Math.max(currentIndex, 0),
+  )
+  const isCycling = isStepping && Option.isNone(whole)
+  const maybeIndex = isCycling ? scan(char, currentIndex + 1) : whole
+  const next = {
+    query: isCycling ? char : query,
+    lastKey: char,
+    isStepping,
+    version: model.version + 1,
+  }
   return {
     model: next,
     commands: [
