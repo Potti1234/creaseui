@@ -40,9 +40,27 @@ explicit requests separately from Escape, outside press, and focus-out dismissal
 requests. Read the reason from the OutMessage. For exit transitions, pass
 `waitForExit` to update, render while `isMounted(model)`, and send
 `CompletedExit` with that exit's `model.exitVersion` when it finishes.
-Dropdown Menu uses immediate unmount. Roles, event detection, positioning,
-focus and layering belong to the component; keep Foldkit's Dialog and Popover
-for overlays that already use their positioning and focus lifecycle.
+Dropdown Menu and Nav Menu use immediate unmount. More Menu, Context Menu
+and Menubar's item panels inherit Popup through Dropdown Menu. Nav Menu keeps
+hover intent, pinning and focus commands outside Popup. Roles, event detection,
+positioning, focus and layering belong to the component; keep Foldkit's Dialog
+and Popover for overlays that already use their positioning and focus lifecycle.
+
+DragAndDrop wraps Foldkit for single-item pointer sorting in lists and boards.
+Prefer it to ui-sdk's `createReorder` for this path: Foldkit already supplies
+a Schema Model, typed drag Messages and drop OutMessages, and scoped
+subscriptions for thresholded pointer tracking, hit testing, viewport edge
+scrolling, and keyboard fallback. The parent applies drop intents to its own
+order instead of connecting a mutable store and draft.
+
+Spread `view` on the focusable handle, `sortable` on each row, and `dropTarget`
+on its list. Lift `subscriptions` and the Commands from `update` into the
+parent. Supply roles, announcements, and styling (including
+`touch-action: none` on the handle) in the component. Use DOM-unique item and
+container IDs. Transfer List uses a drop indicator rather than a drag ghost.
+This wrapper retains Foldkit's linear hit testing and viewport scrolling; it
+does not implement ui-sdk's grid/group moves, nested-scroller auto-scroll,
+or pointer-capture/loss handling.
 
 ## Storage, Preference and ColorScheme
 
@@ -73,3 +91,26 @@ Model only if the parent accepts the change. Use `reflect` for externally
 supplied values; changing the selected keys starts the next range over.
 Pass the current ordered keys for ranges or select-all. MultiSelector passes
 the visible keys for select-all so a filter never clears hidden choices.
+
+Spans edits numeric ranges on named tracks, such as room bookings or clips.
+Foldkit Slider edits scalar values and DragAndDrop reorders items; neither
+models drawing a range, resizing either edge, or testing track overlap. Use
+`Spans.create(Booking)` with a Schema extending `Spans.Span.fields`, then
+embed its `Model` and route its `Message` through `update`. Render `spansOn`
+to show the current draft and consume `ChangedSpans` once on release or for
+each keyboard/programmatic edit. A `create` callback returns `Option.none()`
+to decline drawing. `ReflectedSpans` reconciles owner edits
+without committing a draft. `stackSpans` supplies lanes for overlaps when
+allowed.
+
+Use `Pointer` from `spans-pointer.ts` on a stable board element with
+`data-span-track` on tracks, `spanAttrs` on spans, and `data-span-edge` on
+the optional resize handles. Give tracks `touch-action: none` and
+`user-select: none`; the Mount
+supplies live geometry, cancellation and optional edge scrolling. Components
+route unmodified navigation keys, supply ordered track names and direction,
+and own focus, announcements and semantics. `movedTrack` and `spansMessage`
+help with focus restoration and live-region text.
+
+Try the [room-booking demo](../../docs/spans-demo.html) locally:
+`npm run dev -- --open /src/docs/spans-demo.html`.
