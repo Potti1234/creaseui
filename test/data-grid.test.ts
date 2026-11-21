@@ -56,6 +56,30 @@ const displayedIds = (model: Grid.Model) =>
   Grid.displayedRows<Row>(model, config).map(row => row.id)
 
 describe('data grid keyboard navigation', () => {
+  it('follows RTL for arrows but keeps Tab and commit-right logical', () => {
+    let model = step(
+      Grid.init(config, rows),
+      Grid.Message.SetDirection({ direction: 'rtl' }),
+      Grid.Message.FocusedCell({ row: 0, column: 'name' }),
+    )
+    const press = (key: string, shift = false) => {
+      model = step(
+        model,
+        Grid.Message.GridKey({ key, shift, ctrl: false, meta: false }),
+      )
+      return model.focusedCell
+    }
+    assert.deepEqual(press('ArrowLeft'), { row: 0, column: 'done' })
+    assert.deepEqual(press('ArrowRight'), { row: 0, column: 'name' })
+    assert.deepEqual(press('Tab'), { row: 0, column: 'done' })
+    assert.deepEqual(press('Tab', true), { row: 0, column: 'name' })
+    model = step(
+      model,
+      Grid.Message.StartedEditing({ row: 0, column: 'name', seed: '' }),
+      Grid.Message.CommittedDraft({ move: 'right' }),
+    )
+    assert.deepEqual(model.focusedCell, { row: 0, column: 'done' })
+  })
   it('renders offscreen focus before revealing without expanding the virtual window', () => {
     const model = {
       ...Grid.init(config, rows),

@@ -347,17 +347,10 @@ const commitFiles = <Row>(
 
 const moveFocus = <Row>(
   model: Model,
-  dRow: number,
-  dColumn: number,
+  pressedKey: string,
   config: DataGridConfig<Row>,
-  pressedKey = dRow < 0
-    ? 'ArrowUp'
-    : dRow > 0
-      ? 'ArrowDown'
-      : dColumn < 0
-        ? 'ArrowLeft'
-        : 'ArrowRight',
   ctrl = false,
+  direction = model.direction,
 ): Model => {
   const columns = visibleColumns(model)
   const columnIndex = columns.indexOf(model.focusedCell.column)
@@ -367,6 +360,7 @@ const moveFocus = <Row>(
     currentCell: { row: model.focusedCell.row, column: columnIndex },
     pressedKey,
     ctrl,
+    direction,
     pageSize: Math.max(
       1,
       Math.floor(model.viewportHeight / rowHeightPx(model.rowHeight)),
@@ -536,9 +530,9 @@ const applyMessage = <Row>(
         : model
       const moved =
         message.move === 'down'
-          ? moveFocus(committed, 1, 0, config)
+          ? moveFocus(committed, 'ArrowDown', config)
           : message.move === 'right'
-            ? moveFocus(committed, 0, 1, config)
+            ? moveFocus(committed, 'ArrowRight', config, false, 'ltr')
             : committed
       return { ...moved, editingCell: emptyCell }
     }
@@ -900,7 +894,7 @@ const onGridKey = <Row>(
     switch (key.toLowerCase()) {
       case 'home':
       case 'end':
-        return isEditing ? model : moveFocus(model, 0, 0, config, key, true)
+        return isEditing ? model : moveFocus(model, key, config, true)
       case 'f':
         return applyMessage(model, Message.ToggledSearch({}), config)
       case 'z':
@@ -946,7 +940,7 @@ const onGridKey = <Row>(
     case 'End':
     case 'PageUp':
     case 'PageDown':
-      return moveFocus(model, 0, 0, config, key)
+      return moveFocus(model, key, config)
     case 'Escape':
       if (model.searchOpen)
         return applyMessage(model, Message.ToggledSearch({}), config)
@@ -954,15 +948,18 @@ const onGridKey = <Row>(
         return applyMessage(model, Message.ClosedContextMenu({}), config)
       return applyMessage(model, Message.ClearedSelection({}), config)
     case 'ArrowUp':
-      return moveFocus(model, -1, 0, config)
     case 'ArrowDown':
-      return moveFocus(model, 1, 0, config)
     case 'ArrowLeft':
-      return moveFocus(model, 0, -1, config)
     case 'ArrowRight':
-      return moveFocus(model, 0, 1, config)
+      return moveFocus(model, key, config)
     case 'Tab':
-      return moveFocus(model, 0, shift ? -1 : 1, config)
+      return moveFocus(
+        model,
+        shift ? 'ArrowLeft' : 'ArrowRight',
+        config,
+        false,
+        'ltr',
+      )
     case 'Enter':
     case 'F2':
       if (model.focusedCell.row === -1) return model

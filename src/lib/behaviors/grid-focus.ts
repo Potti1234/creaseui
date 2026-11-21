@@ -11,38 +11,50 @@ export const GridCell = Schema.Struct({
   column: Schema.Number,
 })
 export type GridCell = typeof GridCell.Type
+
 export const Model = Schema.Struct({
   id: Schema.String,
   maybeActiveCell: Schema.Option(GridCell),
 })
 export type Model = typeof Model.Type
+
 export const Message = defineMessageUnion({
   MovedFocus: { cell: GridCell },
   FocusedCell: { cell: GridCell },
   CompletedFocusCell: {},
 })
 export type Message = typeof Message.Type
+
 export const init = (config: Readonly<{ id: string }>): Model => ({
   id: config.id,
   maybeActiveCell: Option.none(),
 })
+
 export const cellId = (id: string, cell: GridCell): string =>
   `${id}-cell-${cell.row}-${cell.column}`
+
+const cellSelector = (id: string, cell: GridCell): string =>
+  `[id="${cellId(id, cell).replace(
+    /["\\\n\r\f]/gu,
+    character => `\\${character.charCodeAt(0).toString(16)} `,
+  )}"]`
+
 const sameCell = (a: GridCell, b: GridCell): boolean =>
   a.row === b.row && a.column === b.column
+
 export const isActive = (model: Model, cell: GridCell): boolean =>
   Option.exists(model.maybeActiveCell, active => sameCell(active, cell))
+
 export const FocusCell = Command.define('FocusCell', {
   args: { id: Schema.String, cell: GridCell },
   messages: [Message.CompletedFocusCell],
   execute: ({ id, cell }) =>
-    Dom.focus(
-      `[id="${cellId(id, cell).replace(
-        /["\\\n\r\f]/gu,
-        character => `\\${character.charCodeAt(0).toString(16)} `,
-      )}"]`,
-    ).pipe(Effect.ignore, Effect.as(Message.CompletedFocusCell())),
+    Dom.focus(cellSelector(id, cell)).pipe(
+      Effect.ignore,
+      Effect.as(Message.CompletedFocusCell()),
+    ),
 })
+
 export const focus = (
   model: Model,
   cell: GridCell,
@@ -50,6 +62,7 @@ export const focus = (
   model: { ...model, maybeActiveCell: Option.some(cell) },
   commands: [FocusCell({ id: model.id, cell })],
 })
+
 export const update = (
   model: Model,
   message: Message,
@@ -72,11 +85,14 @@ export type NavigationInput = Readonly<{
   pageSize?: number
   isDisabled?: (cell: GridCell) => boolean
 }>
+
 type GridInput = Pick<NavigationInput, 'rows' | 'columns' | 'isDisabled'>
+
 const cells = ({ rows, columns }: GridInput): ReadonlyArray<GridCell> =>
   Array.from({ length: rows }, (_, row) =>
     Array.from({ length: columns }, (_, column) => ({ row, column })),
   ).flat()
+
 export const tabStop = (
   model: Model,
   input: GridInput,
@@ -86,6 +102,7 @@ export const tabStop = (
     enabled.find(cell => isActive(model, cell)) ?? enabled[0],
   )
 }
+
 export const navigate = ({
   rows,
   columns,
@@ -136,15 +153,18 @@ export type CellInfo = Readonly<{
   isDisabled: boolean
   attributes: ReadonlyArray<ChildAttribute>
 }>
+
 export type ViewInputs = GridInput &
   Pick<NavigationInput, 'direction' | 'pageSize'> &
   Readonly<{
     toView: (cells: ReadonlyArray<CellInfo>) => Html
   }>
+
 export type Bundle = Readonly<{
   view: SubmodelView<Model, Message, ViewInputs>
   update: typeof update
 }>
+
 export const create = (): Bundle => ({
   update,
   view: defineView<Model, Message, ViewInputs>((model, inputs, h) => {
@@ -178,4 +198,5 @@ export const create = (): Bundle => ({
     )
   }),
 })
+
 export const view = create().view
