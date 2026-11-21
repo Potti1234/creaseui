@@ -1,4 +1,4 @@
-import { Effect, Equal, Match as M, Option, Schema as S } from 'effect'
+import { Effect, Equal, Match as M, Option, Schema as S, Stream } from 'effect'
 import type { Runtime, Update } from 'foldkit'
 import { Command, Subscription } from 'foldkit'
 import * as Dom from 'foldkit/dom'
@@ -40,6 +40,9 @@ import * as TutorialDocs from '@/docs/tutorial-view'
 import { tutorialChapter } from '@/docs/tutorial/chapters'
 import * as CopyFeedback from '@/docs/copy-feedback'
 import * as CodeFile from '@/lib/code-file'
+import * as ColorScheme from '@/lib/behaviors/color-scheme'
+import * as Preference from '@/lib/behaviors/preference'
+import * as Storage from '@/lib/behaviors/storage'
 import * as Icon from '@/lib/icon'
 import * as CodeBlock from '@/ui/code-block'
 import * as Page from '@/app/page'
@@ -72,6 +75,7 @@ export const Model = S.Struct({
   route: AppRoute,
   currentUrl: S.String,
   isDark: S.Boolean,
+  colorScheme: ColorScheme.Model,
   tailwindBoard: Board.Model,
   styleXBoard: BoardStyleX.Model,
   pleatBoard: BoardPleat.Model,
@@ -88,6 +92,7 @@ export type Model = typeof Model.Type
 
 export const Flags = S.Struct({
   isDark: S.Boolean,
+  colorScheme: S.optional(ColorScheme.Model),
   themeLab: S.Struct({
     applied: S.Boolean,
     preset: S.NullOr(S.String),
@@ -96,16 +101,23 @@ export const Flags = S.Struct({
 export type Flags = typeof Flags.Type
 
 const THEME_LAB_KEY = 'creaseui-theme-lab'
+const themeStorage: Storage.Descriptor = { kind: 'local', id: 'creaseui-theme' }
+const themeLabStorageDescriptor: Storage.Descriptor = {
+  kind: 'local',
+  id: THEME_LAB_KEY,
+}
+const colorScheme = ColorScheme.create({ storage: themeStorage })
+const ThemeLabStored = S.Struct({
+  applied: S.optional(S.Unknown),
+  preset: S.optional(S.Unknown),
+})
 
 const readThemeLabValue = (
   raw: string | null,
 ): { applied: boolean; preset: string | null } => {
   try {
     if (raw === null) return { applied: false, preset: null }
-    const parsed: unknown = JSON.parse(raw)
-    if (typeof parsed !== 'object' || parsed === null)
-      return { applied: false, preset: null }
-    const record = parsed as Record<string, unknown>
+    const record = S.decodeUnknownSync(ThemeLabStored)(JSON.parse(raw))
     return {
       applied: record['applied'] === true,
       preset: typeof record['preset'] === 'string' ? record['preset'] : null,
@@ -115,10 +127,23 @@ const readThemeLabValue = (
   }
 }
 
-export const flags: Effect.Effect<Flags> = Effect.sync(() => ({
-  isDark: document.documentElement.classList.contains('dark'),
-  themeLab: readThemeLabValue(localStorage.getItem(THEME_LAB_KEY)),
-}))
+export const flags: Effect.Effect<Flags> = Effect.gen(function* () {
+  const raw = yield* Storage.get(themeStorage)
+  const themeLab = readThemeLabValue(
+    yield* Storage.get(themeLabStorageDescriptor),
+  )
+  const scheme = colorScheme.init(
+    raw,
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light',
+  )
+  return {
+    isDark: ColorScheme.resolved(scheme) === 'dark',
+    colorScheme: scheme,
+    themeLab,
+  }
+})
 
 // MESSAGE
 
@@ -131,6 +156,7 @@ export const Message = defineMessageUnion({
   ChangedUrl: { url: Url },
   ClickedThemeToggle: {},
   CompletedApplyTheme: {},
+  GotColorSchemeMessage: { message: ColorScheme.Message },
   IgnoredBlocksPreviewInput: {},
   ChangedBlocksCategory: { category: Page.BlockCategory },
   ToggledBlockCode: { block: S.String },
@@ -235,6 +261,8 @@ export const init: Runtime.RoutingApplicationInit<Model, Message, Flags> = (
       route,
       currentUrl: urlToString(url),
       isDark: flags.isDark,
+      colorScheme:
+        flags.colorScheme ?? colorScheme.init(flags.isDark ? 'dark' : 'light'),
       tailwindBoard: Board.init(storedPreset ?? Preset.DEFAULT_CONFIG),
       styleXBoard: BoardStyleX.init(storedPreset ?? Preset.DEFAULT_CONFIG),
       pleatBoard: BoardPleat.init(storedPreset ?? Preset.DEFAULT_CONFIG),
@@ -267,18 +295,6 @@ const LoadExternal = Command.define('LoadExternal', {
     load(href).pipe(Effect.as(Message.CompletedLoadExternal())),
 })
 
-const ApplyTheme = Command.define('ApplyTheme', {
-  args: { isDark: S.Boolean },
-  messages: [Message.CompletedApplyTheme],
-  execute: ({ isDark }) =>
-    Effect.sync(() => {
-      document.documentElement.classList.toggle('dark', isDark)
-      document.documentElement.style.colorScheme = isDark ? 'dark' : 'light'
-      localStorage.setItem('creaseui-theme', isDark ? 'dark' : 'light')
-      return Message.CompletedApplyTheme()
-    }),
-})
-
 const ScrollToTop = Command.define('ScrollToTop', {
   messages: [Message.CompletedScrollToTop],
   execute: Render.afterPaint.pipe(
@@ -307,10 +323,10 @@ const PersistThemeLab = Command.define('PersistThemeLab', {
   args: { applied: S.Boolean, preset: S.String },
   messages: [Message.CompletedPersistThemeLab],
   execute: ({ applied, preset }) =>
-    Effect.sync(() => {
-      localStorage.setItem(THEME_LAB_KEY, JSON.stringify({ applied, preset }))
-      return Message.CompletedPersistThemeLab()
-    }),
+    Storage.set(
+      themeLabStorageDescriptor,
+      JSON.stringify({ applied, preset }),
+    ).pipe(Effect.as(Message.CompletedPersistThemeLab())),
 })
 
 const LoadBlockCode = Command.define('LoadBlockCode', {
@@ -563,10 +579,39 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         }
       },
       ClickedThemeToggle: () => {
-        const isDark = !model.isDark
+        const result = colorScheme.update(
+          model.colorScheme,
+          ColorScheme.Message.GotPreferenceMessage({
+            message: Preference.Message.RequestedValue({
+              value:
+                ColorScheme.resolved(model.colorScheme) === 'dark'
+                  ? 'light'
+                  : 'dark',
+            }),
+          }),
+        )
         return {
-          model: modifyFields(model, { isDark: () => isDark }),
-          commands: [ApplyTheme({ isDark })],
+          model: {
+            ...model,
+            colorScheme: result.model,
+            isDark: ColorScheme.resolved(result.model) === 'dark',
+          },
+          commands: Command.mapMessages(result.commands ?? [], message =>
+            Message.GotColorSchemeMessage({ message }),
+          ),
+        }
+      },
+      GotColorSchemeMessage: ({ message }) => {
+        const result = colorScheme.update(model.colorScheme, message)
+        return {
+          model: {
+            ...model,
+            colorScheme: result.model,
+            isDark: ColorScheme.resolved(result.model) === 'dark',
+          },
+          commands: Command.mapMessages(result.commands ?? [], child =>
+            Message.GotColorSchemeMessage({ message: child }),
+          ),
         }
       },
 
@@ -986,16 +1031,9 @@ const themeLabStorage = Subscription.make<Model, Message>()(entry => ({
     {
       modelToDependencies: () => ({}),
       dependenciesToStream: () =>
-        Subscription.fromEventFilterMap({
-          target: window,
-          type: 'storage',
-          filterMapEvent: event =>
-            event instanceof StorageEvent && event.key === THEME_LAB_KEY
-              ? Option.some(
-                  Message.StorageThemeChanged({ value: event.newValue }),
-                )
-              : Option.none(),
-        }),
+        Storage.changes(themeLabStorageDescriptor).pipe(
+          Stream.map(value => Message.StorageThemeChanged({ value })),
+        ),
     },
   ),
 }))
@@ -1033,6 +1071,20 @@ const boardPleatSubscriptions = prefixedSubscriptions(
 )
 
 export const subscriptions = Subscription.aggregate<Model, Message>()(
+  Subscription.make<Model, Message>()(entry => ({
+    colorScheme: entry(
+      {},
+      {
+        modelToDependencies: () => ({}),
+        dependenciesToStream: () =>
+          colorScheme
+            .changes()
+            .pipe(
+              Stream.map(message => Message.GotColorSchemeMessage({ message })),
+            ),
+      },
+    ),
+  })),
   Subscription.lift(DocsSearch.subscriptions)<Model, Message>({
     toChildModel: model => model.docsSearch,
     toParentMessage: message => Message.GotDocsSearchMessage({ message }),
