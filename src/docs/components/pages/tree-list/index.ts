@@ -12,7 +12,7 @@ export const treeListPage = authoredPage({
     description:
       'Expandable tree view with roving focus, arrow-key traversal, and typeahead — for file browsers, navigation, and settings hierarchies.',
     architecture:
-      'TreeList owns expanded-state overrides, roving focus, and a typeahead buffer in one child Model, resolves every keyboard intent in the view against the item graph, and reports leaf activation via a SelectedTreeListItem OutMessage for parent domain logic.',
+      'TreeList owns expanded-state overrides, roving focus, and a nested Typeahead Model, resolves navigation in the view against the item graph and typeahead in update against the latest Model, and reports leaf activation via a SelectedTreeListItem OutMessage for parent domain logic.',
     apiHref: 'https://foldkit.dev/ui/tree-list',
     composition:
       'Parent Model\n└── TreeList Model\n    ├── expanded overrides\n    ├── roving focus + typeahead\n    └── per-render item data\n        └── label / startContent / endContent / children',
@@ -35,7 +35,10 @@ export const treeListPage = authoredPage({
         'Enter / Space',
         'Activates the item (link/button) or toggles expansion.',
       ],
-      ['Type characters', 'Typeahead focuses the next matching item.'],
+      [
+        'Type characters',
+        'Typeahead folds accents and case, skips disabled items, and wraps. Repeated letters cycle unless the full prefix matches; Space continues an active query. The query resets after 500ms.',
+      ],
     ],
     examples: treeListExamples('tailwind'),
     stylexExamples: treeListExamples('stylex'),
