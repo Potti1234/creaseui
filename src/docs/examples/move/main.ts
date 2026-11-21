@@ -12,12 +12,14 @@ const start = { A: { x: 20, y: 20 }, B: { x: 120, y: 90 } }
 const Model = Schema.Struct({
   move: Move.Model,
   selected: Schema.Array(Tile),
+  raised: Tile,
   announcement: Schema.String,
 })
 type Model = typeof Model.Type
 const Message = defineMessageUnion({
   GotMove: { message: Move.Message },
   ToggledTile: { key: Tile },
+  RaisedTile: { key: Tile },
   ReturnedTileA: {},
 })
 type Message = typeof Message.Type
@@ -40,6 +42,8 @@ const update = (model: Model, message: Message) => {
       : [...model.selected, key]
     return { model: { ...model, selected } }
   }
+  if (message._tag === 'RaisedTile')
+    return { model: { ...model, raised: message.key } }
   const moved =
     message._tag === 'GotMove'
       ? BoardMove.update(model.move, message.message, options)
@@ -86,6 +90,7 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
                       h.Style({
                         left: `${item.position.x}px`,
                         top: `${item.position.y}px`,
+                        zIndex: item.key === model.raised ? '1' : '0',
                         ...item.style,
                       }),
                       ...(item.isDragging
@@ -100,9 +105,20 @@ const view = (model: Model, h: HtmlBuilder<Message>) =>
             ),
         },
       }),
-      h.button(
-        [h.Type('button'), h.OnClick(Message.ReturnedTileA())],
-        ['Return tile A to start'],
+      h.div(
+        [h.Class('controls')],
+        [
+          ...tiles.map(key =>
+            h.button(
+              [h.Type('button'), h.OnClick(Message.RaisedTile({ key }))],
+              [`Bring tile ${key} to front`],
+            ),
+          ),
+          h.button(
+            [h.Type('button'), h.OnClick(Message.ReturnedTileA())],
+            ['Return tile A to start'],
+          ),
+        ],
       ),
       h.p(
         [h.Class('announcement'), h.AriaLive('assertive'), h.AriaAtomic(true)],
@@ -115,7 +131,12 @@ Runtime.run(
   Runtime.makeElement({
     Model,
     init: () => ({
-      model: { move: Move.init(start), selected: tiles, announcement: '' },
+      model: {
+        move: Move.init(start),
+        selected: tiles,
+        raised: 'B',
+        announcement: '',
+      },
     }),
     update,
     view,

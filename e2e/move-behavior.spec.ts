@@ -90,6 +90,30 @@ test.describe('Move docs example', () => {
     await expect(announcement).toHaveText('2 items moved to 110, 150.')
   })
 
+  test('can bring a covered tile to the front after a corner drop', async ({
+    page,
+  }) => {
+    await page.goto(url)
+    const a = page.getByRole('button', { name: 'Tile A', exact: true })
+    const b = page.getByRole('button', { name: 'Tile B', exact: true })
+    const start = (await a.boundingBox())!
+    const x = Math.round(start.x + 20)
+    const y = Math.round(start.y + 20)
+    await page.mouse.move(x, y)
+    await page.mouse.down()
+    await page.mouse.move(x + 200, y + 150)
+    await page.mouse.up()
+    for (const tile of [a, b]) {
+      await expect(tile).toHaveCSS('left', '200px')
+      await expect(tile).toHaveCSS('top', '150px')
+    }
+
+    await page.getByRole('button', { name: 'Bring tile A to front' }).click()
+    await a.click()
+    await expect(a).toHaveAttribute('aria-pressed', 'false')
+    await expect(b).toHaveAttribute('aria-pressed', 'true')
+  })
+
   test('pointer cancellation discards a touch draft and allows another drag', async ({
     page,
   }) => {
