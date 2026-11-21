@@ -94,16 +94,7 @@ import { reset } from './reset'
 import { tokens } from './tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 
-export const Model = S.Struct({
-  id: S.String,
-  isOpen: S.Boolean,
-  isAnimated: S.Boolean,
-  activeIndex: S.Number,
-  activeSubmenuIndex: S.Number,
-  openSubmenuIndex: S.Option(S.Number),
-  anchorX: S.Option(S.Number),
-  anchorY: S.Option(S.Number),
-})
+export const Model = Behavior.Model
 export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
@@ -112,6 +103,7 @@ export const Message = defineMessageUnion({
   OpenedFromContext: {},
   OpenedAt: { x: S.Number, y: S.Number },
   Closed: {},
+  Dismissed: { reason: Behavior.DismissReason },
   CompletedFocusDropdownMenuTrigger: {},
   CompletedFocusDropdownMenuItem: {},
   ActivatedItem: { index: S.Number },
@@ -163,16 +155,7 @@ export type OutMessage<Item extends string = string> = Readonly<{
 
 export const init = (
   config: Readonly<{ id: string; isAnimated?: boolean; isModal?: boolean }>,
-): Model => ({
-  id: config.id,
-  isOpen: false,
-  isAnimated: config.isAnimated ?? false,
-  activeIndex: 0,
-  activeSubmenuIndex: 0,
-  openSubmenuIndex: Option.none(),
-  anchorX: Option.none(),
-  anchorY: Option.none(),
-})
+): Model => Behavior.init(config)
 
 type UpdateReturn<Item extends string> = Update.ReturnWithOutMessage<
   Model,
@@ -195,10 +178,7 @@ const updateTyped = <Item extends string>(
     ...(result.model.isOpen &&
     (!model.isOpen || result.model.activeIndex !== model.activeIndex)
       ? { commands: [FocusActiveItem({ id: model.id })] }
-      : (message._tag === 'Closed' && model.isOpen) ||
-          (Option.isSome(result.selection) &&
-            model.isOpen &&
-            !result.model.isOpen)
+      : model.isOpen && !result.model.isOpen
         ? { commands: [FocusTrigger({ id: model.id })] }
         : {}),
     ...(Option.isNone(result.selection)
@@ -772,7 +752,11 @@ export const dropdownMenu = <Item extends string, Msg>(
             h.div(
               [
                 h.AriaHidden(true),
-                h.OnClick(props.toParentMessage(Message.Closed())),
+                h.OnClick(
+                  props.toParentMessage(
+                    Message.Dismissed({ reason: 'outside-press' }),
+                  ),
+                ),
                 h.Class(className(styles.backdrop)),
                 h.DataAttribute('slot', 'dropdown-menu-backdrop'),
               ],
