@@ -329,6 +329,10 @@ export const ObserveSurface = Mount.defineStream('ObserveLassoSurface', {
               const up = (event: PointerEvent) => {
                 if (event.pointerId !== pointerId) return
                 if (frame !== undefined) view.cancelAnimationFrame(frame)
+                pending = Message.Moved({
+                  pointerId,
+                  point: { x: event.clientX, y: event.clientY },
+                })
                 flush()
                 stop()
                 emit(Message.Ended({ pointerId }))

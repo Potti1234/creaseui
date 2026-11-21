@@ -385,7 +385,7 @@ describe('Lasso pointer lifecycle', () => {
       pointer('pointermove', { clientX: 70, clientY: 80 })
       pointer('pointerup', { pointerId: 2 })
       assert.equal(frames.size, 1)
-      pointer('pointerup')
+      pointer('pointerup', { clientX: 70, clientY: 80 })
       assert.equal(frames.size, 0)
       pointer('pointermove')
       pointer('pointerup')
@@ -397,6 +397,45 @@ describe('Lasso pointer lifecycle', () => {
       ])
     } finally {
       await observer.close()
+    }
+  })
+
+  it('commits the release position rather than the last move, with and without a pending frame', async () => {
+    for (const flushBeforeRelease of [true, false]) {
+      const observer = await observe()
+      try {
+        observer.down({ clientX: 100, clientY: 200 })
+        observer.pointer('pointermove', { clientX: 145, clientY: 245 })
+        if (flushBeforeRelease) await observer.flush()
+        observer.pointer('pointerup', { clientX: 190, clientY: 250 })
+        assert.equal(observer.frames.size, 0)
+        await observer.flush()
+
+        let model = Lasso.init({ id: 'surface' })
+        let selection: Lasso.OutMessage | undefined
+        for (const message of observer.messages) {
+          const result = Lasso.update(model, message)
+          model = result.model
+          selection = result.outMessage
+          if (message._tag === 'Started') {
+            model = Lasso.update(
+              model,
+              Lasso.Message.Measured({
+                version: model.version,
+                box: Option.some(box),
+                items,
+              }),
+            ).model
+          }
+        }
+        assert.deepEqual(
+          selection,
+          Lasso.OutMessage.Selected({ keys: ['one', 'two'] }),
+        )
+        assert.equal(Option.isNone(model.session), true)
+      } finally {
+        await observer.close()
+      }
     }
   })
 
