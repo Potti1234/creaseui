@@ -368,12 +368,10 @@
           "path": "dropdown-menu-behavior.ts",
           "type": "registry:lib",
           "target": "@lib/dropdown-menu-behavior.ts"
-        },
-        {
-          "path": "behaviors/popup.ts",
-          "type": "registry:lib",
-          "target": "@lib/behaviors/popup.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/popup-behavior"
       ]
     },
     {
@@ -699,6 +697,9 @@
           "type": "registry:lib",
           "target": "@lib/nav-menu.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/popup-behavior"
       ]
     },
     {
@@ -750,6 +751,19 @@
           "path": "pagination.ts",
           "type": "registry:lib",
           "target": "@lib/pagination.ts"
+        }
+      ]
+    },
+    {
+      "name": "popup-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Popup Behavior",
+      "description": "Shared open, close, dismissal, and exit presence for custom overlays.",
+      "files": [
+        {
+          "path": "behaviors/popup.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/popup.ts"
         }
       ]
     },
