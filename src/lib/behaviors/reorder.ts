@@ -1,14 +1,20 @@
 import { Option, Schema } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 
+/* Ports ui-sdk createReorder's keyboard, draft and announcement path.
+   Pointer sorting stays on DragAndDrop. */
+
 const Draft = Schema.Struct({
   key: Schema.String,
   keys: Schema.Array(Schema.String),
   order: Schema.Array(Schema.String),
   moved: Schema.Boolean,
 })
+
 export const Model = Schema.Struct({ maybeDraft: Schema.Option(Draft) })
+
 export type Model = typeof Model.Type
+
 export const init = (): Model => ({ maybeDraft: Option.none() })
 
 export const Message = defineMessageUnion({
@@ -21,21 +27,29 @@ export const Message = defineMessageUnion({
   Reflect: {},
   Swallow: {},
 })
+
 export type Message = typeof Message.Type
-export type Announcement = Readonly<{
-  type: 'grab' | 'move' | 'drop' | 'cancel'
-  key: string
-  count: number
-  position: number
-  total: number
-}>
-export type OutMessage =
-  | Readonly<{
-      type: 'CommittedOrder'
-      order: ReadonlyArray<string>
-      reason: 'move-key' | 'imperative'
-    }>
-  | Readonly<{ type: 'Announcement'; announcement: Announcement }>
+
+export const Announcement = Schema.Struct({
+  type: Schema.Literals(['grab', 'move', 'drop', 'cancel']),
+  key: Schema.String,
+  count: Schema.Number,
+  position: Schema.Number,
+  total: Schema.Number,
+})
+
+export type Announcement = typeof Announcement.Type
+
+export const OutMessage = defineMessageUnion({
+  CommittedOrder: {
+    order: Schema.Array(Schema.String),
+    reason: Schema.Literals(['move-key', 'imperative']),
+  },
+  Announcement: { announcement: Announcement },
+})
+
+export type OutMessage = typeof OutMessage.Type
+
 export const reorderMessage = ({
   type,
   label: name,
@@ -50,6 +64,7 @@ export const reorderMessage = ({
   if (type === 'drop') return `Dropped ${label} at ${at}.`
   return `Moved ${label} back to ${at}.`
 }
+
 export const dropIndex = (
   middles: ReadonlyArray<number>,
   pointer: number,
@@ -57,6 +72,7 @@ export const dropIndex = (
 ): number =>
   middles.filter(middle => (reversed ? middle > pointer : middle < pointer))
     .length
+
 export const gridDropIndex = (
   rects: ReadonlyArray<{
     left: number
@@ -75,11 +91,13 @@ export const gridDropIndex = (
           ? point.x < (rect.left + rect.right) / 2
           : point.x > (rect.left + rect.right) / 2)),
   ).length
+
 export const columnsOf = (tops: ReadonlyArray<number>): number => {
   let count = 0
   while (count < tops.length && Math.abs(tops[count]! - tops[0]!) < 1) count++
   return Math.max(1, count)
 }
+
 export const movedTo = (
   order: ReadonlyArray<string>,
   key: string | ReadonlyArray<string>,
@@ -93,6 +111,7 @@ export const movedTo = (
   rest.splice(to, 0, ...keys)
   return rest
 }
+
 const gathered = (
   value: ReadonlyArray<string>,
   key: string,
@@ -106,6 +125,7 @@ const gathered = (
           .length,
       )
     : [...value]
+
 export const order = (
   model: Model,
   value: ReadonlyArray<string>,
@@ -114,18 +134,22 @@ export const order = (
     onNone: () => value,
     onSome: draft => draft.order,
   })
+
 export const isMoving = (model: Model, key: string): boolean =>
   Option.exists(model.maybeDraft, draft => draft.keys.includes(key))
+
 export type Config = Readonly<{
   value: ReadonlyArray<string>
   isDisabled?: (key: string) => boolean
   group?: (key: string) => ReadonlyArray<string>
 }>
+
 export type Result = Readonly<{
   model: Model
   outMessages: ReadonlyArray<OutMessage>
   maybeFocus: Option.Option<string>
 }>
+
 export const update = (
   model: Model,
   message: Message,
@@ -142,16 +166,16 @@ export const update = (
     type: Announcement['type'],
     current: typeof Draft.Type,
     keys: ReadonlyArray<string>,
-  ): OutMessage => ({
-    type: 'Announcement',
-    announcement: {
-      type,
-      key: current.key,
-      count: current.keys.length,
-      position: keys.indexOf(current.key) + 1,
-      total: keys.length,
-    },
-  })
+  ): OutMessage =>
+    OutMessage.Announcement({
+      announcement: {
+        type,
+        key: current.key,
+        count: current.keys.length,
+        position: keys.indexOf(current.key) + 1,
+        total: keys.length,
+      },
+    })
   switch (message._tag) {
     case 'Grab': {
       if (
@@ -202,11 +226,10 @@ export const update = (
           value.every((key, i) => draft.order[i] === key)
             ? []
             : [
-                {
-                  type: 'CommittedOrder' as const,
+                OutMessage.CommittedOrder({
                   order: draft.order,
-                  reason: 'move-key' as const,
-                },
+                  reason: 'move-key',
+                }),
               ]),
           say('drop', draft, draft.order),
         ],
@@ -225,7 +248,7 @@ export const update = (
       const next = movedTo(value, message.key, message.index)
       if (next === value) return result()
       return result(model, [
-        { type: 'CommittedOrder', order: next, reason: 'imperative' },
+        OutMessage.CommittedOrder({ order: next, reason: 'imperative' }),
         say(
           'drop',
           { key: message.key, keys: [message.key], order: next, moved: false },
@@ -265,6 +288,7 @@ export type Keydown = Readonly<{
   ctrlKey?: boolean
   metaKey?: boolean
 }>
+
 export const keydown = (
   model: Model,
   event: Keydown,

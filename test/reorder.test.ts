@@ -76,7 +76,7 @@ describe('Reorder', () => {
     assert.equal(Reorder.isMoving(initial, 'b'), false)
     assert.deepEqual(grabbed.outMessages, [
       {
-        type: 'Announcement',
+        _tag: 'Announcement',
         announcement: {
           type: 'grab',
           key: 'b',
@@ -90,9 +90,10 @@ describe('Reorder', () => {
     assert.deepEqual(Reorder.order(moved.model, value), ['a', 'c', 'b', 'd'])
     assert.deepEqual(moved.maybeFocus, Option.some('b'))
     const dropped = send(moved.model, Reorder.Message.Drop({}))
+    assert.equal(dropped.outMessages.every(Schema.is(Reorder.OutMessage)), true)
     assert.equal(Option.isNone(dropped.model.maybeDraft), true)
     assert.deepEqual(dropped.outMessages[0], {
-      type: 'CommittedOrder',
+      _tag: 'CommittedOrder',
       order: ['a', 'c', 'b', 'd'],
       reason: 'move-key',
     })
@@ -142,7 +143,7 @@ describe('Reorder', () => {
     assert.equal(Option.isNone(cancelled.model.maybeDraft), true)
     assert.deepEqual(cancelled.outMessages, [
       {
-        type: 'Announcement',
+        _tag: 'Announcement',
         announcement: {
           type: 'cancel',
           key: 'b',
@@ -164,7 +165,7 @@ describe('Reorder', () => {
       send(initial, Reorder.Message.Move({ key: 'b', index: 0 }))
         .outMessages[0],
       {
-        type: 'CommittedOrder',
+        _tag: 'CommittedOrder',
         order: ['b', 'a', 'c', 'd'],
         reason: 'imperative',
       },

@@ -862,6 +862,7 @@ export const kanbanBoard = <Message>(
       {
         attrs: [
           ...Dnd.droppable(laneData.id, laneData.name),
+          h.Role('group'),
           h.Key(laneData.id),
           h.DataAttribute('kanban-lane', laneData.id),
           h.OnKeyDown(key =>
@@ -884,7 +885,26 @@ export const kanbanBoard = <Message>(
                   {
                     align: 'center',
                     children: [
-                      text({ children: [laneData.name], variant: 'label' }, h),
+                      inline(
+                        {
+                          align: 'center',
+                          children: [
+                            text(
+                              { children: [laneData.name], variant: 'label' },
+                              h,
+                            ),
+                            badge(
+                              {
+                                children: [String(laneData.cards.length)],
+                                variant: 'secondary',
+                              },
+                              h,
+                            ),
+                          ],
+                          gap: 'sm',
+                        },
+                        h,
+                      ),
                       button(
                         {
                           id: KanbanReorder.handleId(
@@ -893,7 +913,7 @@ export const kanbanBoard = <Message>(
                           ),
                           ariaLabel: `Reorder ${laneData.name} column`,
                           variant: 'ghost',
-                          size: 'icon',
+                          size: 'icon-sm',
                           buttonAttributes: [
                             h.AriaPressed(
                               Reorder.isMoving(kanban.reorder, laneData.id)
@@ -911,24 +931,21 @@ export const kanbanBoard = <Message>(
                         },
                         h,
                       ),
-                      badge(
-                        {
-                          children: [String(laneData.cards.length)],
-                          variant: 'secondary',
-                        },
-                        h,
-                      ),
                     ],
                     justify: 'between',
                     width: 'full',
                   },
                   h,
                 ),
-                stack(
+                box(
                   {
-                    children: cells,
-                    gap: 'sm',
-                    grow: true,
+                    attrs: [
+                      h.Role('listbox'),
+                      h.AriaLabel(`${laneData.name} cards`),
+                    ],
+                    children: [
+                      stack({ children: cells, gap: 'sm', grow: true }, h),
+                    ],
                   },
                   h,
                 ),

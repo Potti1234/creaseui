@@ -56,7 +56,7 @@ export const update = <Lane extends Readonly<{ id: string; name: string }>>(
   let nextLanes = lanes
   let nextAnnouncement = announcement
   for (const out of result.outMessages) {
-    if (out.type === 'CommittedOrder') {
+    if (out._tag === 'CommittedOrder') {
       nextLanes = out.order.flatMap(key =>
         lanes.filter(lane => lane.id === key),
       )

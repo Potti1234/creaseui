@@ -250,7 +250,7 @@ const updateModel = (model: Model, message: Message): UpdateReturn => {
       let announcement = model.announcement
       let outMessage: OutMessage | undefined
       for (const out of result.outMessages) {
-        if (out.type === 'CommittedOrder') {
+        if (out._tag === 'CommittedOrder') {
           const key = Option.match(reflected.maybeDraft, {
             onNone: () =>
               message.message._tag === 'Move' ? message.message.key : '',
