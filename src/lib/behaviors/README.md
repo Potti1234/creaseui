@@ -1,5 +1,20 @@
 # Behaviors
 
+Area ports ui-sdk's `createArea` as a two-axis point picker. Embed its Model,
+route Messages through `update`, and consume ChangedValue/CommittedValue
+OutMessages. Axis values snap and clamp independently; fractions use y from
+the bottom. `reflect` reconciles owner values without emitting a change.
+Spread `thumbAttrs` and `thumbStyle` on the focusable thumb, route unmodified
+keys with `keyMessage`, and mount `Pointer` on the surface. Set its
+`aria-disabled` and `touch-action: none`; pass the same disabled option to
+update and thumbAttrs. Components own the accessible name and styling.
+Arrows step, Shift multiplies by ten, Page keys move y by a tenth of its
+range, and Home/End select x's ends. Set `rtl` for keyboard direction;
+the pointer Mount reads the surface direction.
+
+Try the saturation/value pad at `/docs/components/color-picker` with
+`npm run dev` (also available on the StyleX and Pleat sites).
+
 Behaviors are headless Foldkit Submodels or pure helpers.
 State lives in a Schema Model, never in a mutable store or the DOM.
 Messages describe facts; update returns the next Model and Commands.
@@ -87,6 +102,17 @@ keyboard pickup/drop. Move has no drop targets; it changes coordinates.
 Run `npm run dev` and open `/src/docs/examples/move/` to try the
 [renderer-neutral Move example](../../docs/examples/move/main.ts).
 
+UndoStack is pure snapshot history adapted from ui-sdk's UndoStack algorithm.
+Keep the present value in the component and push it before an edit; undo and
+redo return the next history and present value. New edits discard the redo
+branch. Pass an optional non-negative integer `limit` to drop the oldest undo
+steps (default 100, matching ui-sdk). Consecutive pushes with the same nonempty
+`group` merge while the gap between caller-supplied `now` times is strictly less
+than `groupDelay` (default 500 ms), preserving the group's original undo state.
+Ungrouped pushes, seal, undo, redo and clear end a group. Data Grid exposes
+`config.history.limit`; its discrete commits remain ungrouped because messages
+do not carry timestamps. Clear history when replacing a value from outside.
+
 Popup is the pure open/close lifecycle for custom overlays. Route trigger or
 explicit requests separately from Escape, outside press, and focus-out dismissal
 requests. Read the reason from the OutMessage. For exit transitions, pass
@@ -95,7 +121,8 @@ requests. Read the reason from the OutMessage. For exit transitions, pass
 Dropdown Menu and Nav Menu use immediate unmount. More Menu, Context Menu
 and Menubar's item panels inherit Popup through Dropdown Menu. Nav Menu keeps
 hover intent, pinning and focus commands outside Popup. Roles, event detection,
-positioning, focus and layering belong to the component.
+positioning, focus and layering belong to the component. Compose Position and
+Layer when a custom popup also needs geometry or dismissal.
 
 Dialog and Popover wrap `@foldkit/ui` instead of porting the UI SDK popup
 controller. Foldkit Dialog manages the native dialog, focus containment and
@@ -116,6 +143,24 @@ geometry and reports a departure only outside the bridge. Acquire it in the
 panel Mount and route departure to the same Message as leaving the common
 hover region. The watcher ignores touch and cleans up on unmount.
 The Hover Card docs use this across Tailwind, StyleX, and Pleat.
+
+## Observe, History and Agent
+
+Components describe agent-visible state as data owned by the application.
+Observe selects Commit changes by default, or Live steps when requested.
+The component supplies the Commit's previous value from before the interaction.
+History records Observe changes and emits Apply with values to restore.
+The app maps those values to its own Messages; History never mutates controls.
+Agent plans and validates steps against the current component descriptions.
+RunStep asks the app to execute; RequestApproval asks a person to approve.
+Report completion or failure back to Agent to advance or finish the run.
+Use agentChange for source 'agent', and explicit secret flags for redaction.
+
+Foldkit DevTools remains the better tool for development-time agent inspection.
+Its MCP bridge offers Schema-typed Message dispatch and model time travel with
+keyframes, and stays as is. It is dev-only and model-level, not the in-app,
+user-facing agent and history these modules port: per-control undo by source,
+confirmation and redaction.
 
 Drag follows one pointer with capture and frame-coalesced samples. Use
 `observeDrag` in a streaming Mount to convert samples to Schema Messages;
@@ -182,6 +227,59 @@ draft and type-over flag, and reports starts, changed commits, unchanged ends,
 cancellation and rejected validation through OutMessages. Use startKey and
 inputKey for keyboard intent. Components own editor focus, selection/caret,
 focus restoration, roles and ARIA; grids retain navigation and editor policy.
+
+## Motion
+
+Motion wraps Foldkit Animation for panel presence instead of ui-sdk DOM callbacks:
+
+- Schema state/generations reject stale Commands.
+- `Dom.waitForAnimationSettled` observes CSS completion, not guessed timers.
+- The optional grid-row `animateSize` view needs no height measurement.
+
+Use `init({ id, isOpen })`, `show`/`hide`, and render while `isMounted(model)`.
+Spread `attributes(model)` onto `id=model.id`; CSS owns reduced motion and
+transitions (collapse grids on `data-closed`). Instant helpers skip animation;
+initial mount emits nothing.
+`Settled({ isOpen: false })` means exit finished and `isMounted` is false (ui-sdk's `exited`).
+Pass `returnFocusTo` when hiding; on closed settlement bridge Popup with
+`completedPopupExit(popupCapturedAtExitStart)`. The upstream `view` remains
+available: wrap its messages with `Message.GotAnimationMessage`; it retains
+content and hardcodes 200ms. For find-in-page, keep content mounted with
+`hiddenAttributes(isOpen, true)` and `reveal(showMessage)` for beforematch.
+Accordion was not migrated: its exact-shape/no-Command contracts would break.
+Demo (all renderers): `/docs/components/collapsible#motion-presence`.
+
+## ScrollPicker
+
+ScrollPicker is a native Foldkit port of `@ui-sdk/core` beta.13's
+`bindScrollPicker`, not a wrapper around its mutable binding. `@foldkit/ui`
+has no equivalent. The Model owns geometry, the fractional cursor, the last
+reported index and the interaction phase. Commands scroll and focus; the
+Mount owns measurements, event listeners, pointer capture, observers, animation
+frames and their cleanup. The DOM adapter is in `scroll-picker-dom.ts`.
+
+Bind `ScrollPicker.create()` once. Render its list and item attribute bundles
+on a listbox and its options. Supply roles, a name, tabindex, `aria-selected`
+and `aria-disabled` in the component. Fold `Selected { index, reason }` into
+parent-owned selection; the behavior never writes selection or ARIA. Send
+`ChangedSelection` for parent-driven changes, or render `aria-selected` and let
+the Mount observe it. Indices include disabled options. The initial selection
+centers instantly; subsequent external selections glide without reporting the
+options passed. Reduced motion disables gliding.
+
+Give the list overflow, a fixed viewport, `scroll-snap-type: y mandatory` and
+enough padding at both ends to center the first and last options. Give options
+`scroll-snap-align: center`. For horizontal wheels use horizontal orientation,
+inline padding and `scroll-snap-type: x mandatory`; RTL is supported. Disable
+any composing listbox's automatic keep-in-view effect. `--picker-offset` is
+painted on each option for fractional wheel styling. Arrow keys, Home/End,
+typeahead and clicks remain the component's responsibility; the Mount handles
+PageUp/PageDown, native scrolling/touch and mouse/pen dragging.
+
+Pure helpers (`pickerPosition`, `nearestEnabled`, `pageSize`, `pageTarget`,
+`projectRelease`) and update transitions are covered in
+`test/scroll-picker.test.ts`. The docs Time Input page demonstrates
+parent-owned hour/minute selection in all three renderers.
 
 DragAndDrop wraps Foldkit for single-item pointer sorting in lists and boards.
 Prefer it to ui-sdk's `createReorder` for this path: Foldkit already supplies
@@ -268,6 +366,48 @@ help with focus restoration and live-region text.
 Try the [room-booking demo](../../docs/spans-demo.html) locally:
 `npm run dev -- --open /src/docs/spans-demo.html`.
 
+## Position
+
+[ui-sdk position](https://ui-sdk.dev/docs/core/behaviors/popups#placing-a-popup)
+is independent of disclosure and dismissal. For an ID-based anchor,
+`Position.view({ buttonId, anchor, ... }, send, h)` supplies a scoped Mount
+around Foldkit Anchor. Prefer it when you want Foldkit's collision handling,
+shadow-root and dialog-aware portals, and focus after first paint. Crease's
+theme-preserving overlay boundary composes `Position.bindAnchor` so the
+[Popover demo](https://creaseui.com/docs/components/popover) keeps its scoped
+theme and focus.
+
+Foldkit Anchor only resolves HTML triggers by ID. For points and live
+rectangles, `Position.mountPoint({ point, options })` accepts Schema inputs,
+and `Position.position(anchorOrGetter, panel, optionsOrGetter)` uses the same
+Floating UI engine without requiring a trigger element. It reports resolved
+`data-side` and `data-align`, available size, arrow offsets, and the transform
+origin. Dispose it at unmount; `cleanup.place()` requests a fresh placement.
+Mount arguments are fixed for the mount lifetime; key the panel anew for a
+different model-owned point, or use the getter API in a custom integration.
+
+## Layer
+
+[ui-sdk bindLayer](https://ui-sdk.dev/docs/core/behaviors/popups#layers-of-your-own)
+is for floating elements whose open state and layout the owner controls.
+`Layer.view({ insideIds: [triggerId], topLayer: true }, send, h)` supplies
+a Mount that emits `RequestedDismissal` with Escape, outside press, or
+window-blur reasons. Blur and the native top layer are opt-in. The last
+mounted layer gets Escape; an outside press can dismiss several layers until
+it reaches one it is inside. Modal layers consume the outside press.
+`Layer.persistentView` exempts a region from the standalone dismissal stack.
+Custom native-layer elements should reset the browser's default popover
+inset, margin, padding, border, and background.
+
+Prefer the Popover or Dialog behavior for full overlays: they already
+coordinate focus entry and return, modal isolation, ARIA wiring, and
+transitions. Neither exposes a standalone dismissal stack.
+Layer does not replace their lifecycle or make an element outside a native
+modal dialog interactive. Use native Dialog when modal input must be blocked
+before handlers on a closed shadow host run. The
+[Action Bar demo](https://creaseui.com/docs/components/action-bar) uses Layer
+for Escape only and retains parent-owned selection and roving focus.
+
 ## RadioGroup
 
 RadioGroup keeps the `@foldkit/ui` primitive. It already models focus as an
@@ -296,3 +436,37 @@ values for RTL and aggregates each thumb's drag Subscriptions.
 Command item configs can expose `label` and optional `leadingContent` for an
 icon/adornment. Renderers highlight the label automatically; `searchText` can
 still extend the searchable text. Legacy rich `content` remains opaque.
+
+## Viewport
+
+Viewport ports ui-sdk.dev's `createViewport`: a pannable, zoomable canvas whose
+`{ x, y, zoom }` lives in `Viewport.Model` (with the measured surface frame,
+the active pointer gesture, and the findable pane's rest offset). `x`/`y` place
+the canvas origin inside the surface in screen pixels.
+
+- `Viewport.view` hands `toView` attribute bundles for the `surface` (clipped,
+  `touch-action: none`, the `Surface` Mount), the `world` (one transform, origin
+  `0 0`, `--canvas-zoom`), and an optional findable `pane`. Elements marked
+  `data-viewport-item` keep their own presses; empty space pans.
+- One pointer drags, two pinch about their center; wheel pans and Ctrl/⌘ wheel
+  (or a trackpad pinch) zooms at the pointer; `+`/`-`/`0` zoom at the center.
+  Opt out with `wheel: false` / `keys: false` when a component maps them itself.
+- Pure operations return `{ model, outMessage }`: `setViewport`, `panBy`,
+  `zoomTo`, `zoomBy`, `fit`, `reveal`; readers are `toCanvas`, `toScreen`,
+  `rectOf` (from a client rect), `visible`, and `style`.
+- Every change emits `ChangedViewport` with ui-sdk's reasons (`wheel`, `drag`,
+  `pinch`, `zoom-key`, `focus-in`, `find-in-page`, `imperative`) plus `resize`,
+  since surface measurement is a Message here. Zoom keys carry an announcement
+  (`message`, default `Zoom 125%`) for the component's live region.
+- `canCommit` replaces ui-sdk's vetoing `set`. `bounds` keeps a canvas box
+  covering the surface and centers it on any axis where it is smaller; each
+  pointer move is applied to the committed viewport, so a bounded drag has no
+  dead zone when it reverses.
+- `Findable` is `bindFindable`: on an `overflow: scroll` pane it rests the
+  scroll far from the origin and turns browser scrolls (find in page, focus,
+  links to an id) into pans.
+
+Lightbox is the component proof: its zoom frame is the surface, the image the
+world, `bounds` the image's 1x box, zoom fixed to 1–2x. `src/docs/examples/viewport`
+demos the full canvas surface. `@foldkit/ui` has no canvas viewport, so this is
+a native port rather than a wrapper.

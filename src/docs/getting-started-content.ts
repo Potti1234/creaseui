@@ -53,6 +53,7 @@ export type DocsGuideStyles = Readonly<{
 
 export type DocsGuideCodeProps<Msg> = Readonly<{
   model: CodeBlock.Model
+  behaviorDemo?: Html
   toParentMessage: (message: CodeBlock.Message) => Msg
   sidebarScrolled: Msg
 }>
@@ -585,6 +586,7 @@ export const view = <Msg>(
         ['configure-the-cli', 'Configure the CLI'],
         ['install-components', 'Install components'],
         ['use-components', 'Use components'],
+        ['agent-history', 'Agent & history'],
         ['next-steps', 'Next steps'],
       ]
     : [
@@ -1011,6 +1013,18 @@ export const view = <Msg>(
             inlineCode('h.submodel'),
             '. Keep durable values in the parent and pass them to the component as controlled props.',
           ]),
+        ]),
+        section('agent-history', 'Agent & history', [
+          paragraph(
+            'Let an in-app agent help without handing it your component state. Describe the controls as data, validate a plan with Agent, and map RunStep back to your own Messages. Observe selects changes; History records them and emits Apply when you seek or undo a source.',
+          ),
+          ...(codeBlock.behaviorDemo ? [codeBlock.behaviorDemo] : []),
+          paragraph(
+            'Try Run agent, then approve publishing. Undo agent restores only agent edits; your own changes stay. Back and Forward seek through the same history. Secret controls redact both their values and previous values and cannot be restored.',
+          ),
+          paragraph(
+            'For development-time inspection, keep Foldkit DevTools and its Schema-typed MCP bridge. These behaviors are for the user-facing experience: confirmation, redaction and per-control history.',
+          ),
         ]),
         section('next-steps', 'Next steps', [
           h.ul(
