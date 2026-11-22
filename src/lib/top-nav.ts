@@ -20,13 +20,13 @@ export const dropdownMenuKey = (index: number): string => `menu-${index}`
 export const HEADING_MENU_KEY = 'heading-menu'
 
 const navMenuConfig = (
-  key: string,
+  id: string,
   kind: TopNavMenuKind,
 ): NavMenu.InitConfig => {
   switch (kind) {
     case 'heading':
       return {
-        id: `topnav-${key}`,
+        id,
         showDelayMs: 0,
         closeDelayMs: 200,
         clickGuardMs: 500,
@@ -34,7 +34,7 @@ const navMenuConfig = (
       }
     case 'mega':
       return {
-        id: `topnav-${key}`,
+        id,
         showDelayMs: 150,
         closeDelayMs: 250,
         clickGuardMs: 500,
@@ -42,7 +42,7 @@ const navMenuConfig = (
       }
     case 'dropdown':
       return {
-        id: `topnav-${key}`,
+        id,
         showDelayMs: 150,
         closeDelayMs: 200,
         clickGuardMs: 500,
@@ -87,7 +87,8 @@ export const menuFor = (
   model: Model,
   key: string,
   kind: TopNavMenuKind,
-): NavMenu.Model => model.menus[key] ?? NavMenu.init(navMenuConfig(key, kind))
+): NavMenu.Model =>
+  model.menus[key] ?? NavMenu.init(navMenuConfig(`${model.id}-${key}`, kind))
 
 export const isMenuOpen = (model: Model, key: string): boolean =>
   model.menus[key] !== undefined && NavMenu.isOpen(model.menus[key])

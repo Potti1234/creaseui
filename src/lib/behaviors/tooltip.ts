@@ -34,6 +34,9 @@ export const OutMessage = defineMessageUnion({
 })
 export type OutMessage = typeof OutMessage.Type
 
+export type AnchorConfig = TooltipPrimitive.AnchorConfig
+export const AnchorTooltip = TooltipPrimitive.AnchorTooltip
+
 export type InitConfig = Readonly<{
   id: string
   showDelay?: Duration.Input

@@ -5,8 +5,6 @@ import * as Mount from 'foldkit/mount'
 
 /** The integrated submodel remains available for full popovers, including
  * focus restoration, scroll lock, positioning and enter/exit transitions. */
-export { Popover } from '@foldkit/ui'
-
 export const DismissReason = S.Literals([
   'escape-key',
   'outside-press',

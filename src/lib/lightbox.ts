@@ -5,6 +5,8 @@ import * as Mount from 'foldkit/mount'
 import { defineMessageUnion } from 'foldkit/message'
 import { Dialog } from '@foldkit/ui'
 
+import * as Drag from '@/lib/behaviors/drag'
+
 /* Renderer-neutral state for the Lightbox port of Meta Astryx's Lightbox:
    gallery index, 1x↔2x zoom, and pointer/keyboard pan while zoomed. */
 
@@ -224,7 +226,45 @@ export const open = (model: Model, index?: number): UpdateReturn =>
 export const close = (model: Model): UpdateReturn =>
   mapDialogResult(restMedia(model), Dialog.close(model.dialog))
 
-/** Measures untransformed media and keeps a drag captured on its zoom frame. */
+const observeMediaSize = (element: HTMLElement) =>
+  Stream.callback<typeof Message.MeasuredMedia.Type>(queue =>
+    Effect.acquireRelease(
+      Effect.sync(() => {
+        const image = element.querySelector('img')
+        if (!image) return undefined
+        const emit = () => {
+          if (image.offsetWidth === 0 || image.offsetHeight === 0) return
+          Queue.offerUnsafe(
+            queue,
+            Message.MeasuredMedia({
+              size: {
+                width: image.offsetWidth,
+                height: image.offsetHeight,
+                frameWidth: element.clientWidth,
+                frameHeight: element.clientHeight,
+              },
+            }),
+          )
+        }
+        const resize = new ResizeObserver(emit)
+        resize.observe(element)
+        resize.observe(image)
+        image.addEventListener('load', emit)
+        emit()
+        return () => {
+          resize.disconnect()
+          image.removeEventListener('load', emit)
+        }
+      }),
+      cleanup => Effect.sync(() => cleanup?.()),
+    ).pipe(Effect.andThen(Effect.never)),
+  )
+
+type PanMessage = Extract<
+  Message,
+  { _tag: 'StartedPan' | 'MovedPan' | 'EndedPan' | 'CancelledPan' }
+>
+
 export const ObserveMedia = Mount.defineStream('ObserveLightboxMedia', {
   messages: [
     Message.MeasuredMedia,
@@ -234,98 +274,25 @@ export const ObserveMedia = Mount.defineStream('ObserveLightboxMedia', {
     Message.CancelledPan,
   ],
   execute: ({ element }) =>
-    Stream.callback<
-      | typeof Message.MeasuredMedia.Type
-      | typeof Message.StartedPan.Type
-      | typeof Message.MovedPan.Type
-      | typeof Message.EndedPan.Type
-      | typeof Message.CancelledPan.Type
-    >(queue =>
-      Effect.gen(function* () {
-        yield* Effect.acquireRelease(
-          Effect.sync(() => {
-            if (!(element instanceof HTMLElement)) return undefined
-            const image = element.querySelector('img')
-            if (!(image instanceof HTMLImageElement)) return undefined
-            const emit = () => {
-              if (image.offsetWidth === 0 || image.offsetHeight === 0) return
-              Queue.offerUnsafe(
-                queue,
-                Message.MeasuredMedia({
-                  size: {
-                    width: image.offsetWidth,
-                    height: image.offsetHeight,
-                    frameWidth: element.clientWidth,
-                    frameHeight: element.clientHeight,
-                  },
-                }),
-              )
-            }
-            let pointerId: number | undefined
-            const onDown = (event: PointerEvent) => {
-              if (
-                event.button !== 0 ||
-                !event.isPrimary ||
-                pointerId !== undefined ||
-                element.getAttribute('aria-pressed') !== 'true'
-              )
-                return
-              pointerId = event.pointerId
-              element.setPointerCapture(pointerId)
-              Queue.offerUnsafe(
-                queue,
-                Message.StartedPan({ x: event.clientX, y: event.clientY }),
-              )
-            }
-            const onMove = (event: PointerEvent) => {
-              if (event.pointerId !== pointerId) return
-              Queue.offerUnsafe(
-                queue,
-                Message.MovedPan({ x: event.clientX, y: event.clientY }),
-              )
-            }
-            const onUp = (event: PointerEvent) => {
-              if (event.pointerId !== pointerId) return
-              onMove(event)
-              pointerId = undefined
-              Queue.offerUnsafe(queue, Message.EndedPan())
-            }
-            const onCancel = (event: PointerEvent) => {
-              if (event.pointerId !== pointerId) return
-              pointerId = undefined
-              Queue.offerUnsafe(queue, Message.CancelledPan())
-            }
-            const resize = new ResizeObserver(emit)
-            resize.observe(element)
-            resize.observe(image)
-            image.addEventListener('load', emit)
-            element.addEventListener('pointerdown', onDown)
-            element.addEventListener('pointermove', onMove)
-            element.addEventListener('pointerup', onUp)
-            element.addEventListener('pointercancel', onCancel)
-            element.addEventListener('lostpointercapture', onCancel)
-            emit()
-            return () => {
-              resize.disconnect()
-              image.removeEventListener('load', emit)
-              element.removeEventListener('pointerdown', onDown)
-              element.removeEventListener('pointermove', onMove)
-              element.removeEventListener('pointerup', onUp)
-              element.removeEventListener('pointercancel', onCancel)
-              element.removeEventListener('lostpointercapture', onCancel)
-              if (
-                pointerId !== undefined &&
-                element.hasPointerCapture(pointerId)
-              ) {
-                element.releasePointerCapture(pointerId)
-              }
+    !(element instanceof HTMLElement)
+      ? Stream.empty
+      : Stream.merge(
+          observeMediaSize(element),
+          Drag.observeDrag<PanMessage>(element, (down, send) => {
+            if (element.getAttribute('aria-pressed') !== 'true') return
+            send(Message.StartedPan({ x: down.clientX, y: down.clientY }))
+            return {
+              onMove: ({ x, y }) => send(Message.MovedPan({ x, y })),
+              onEnd: (event, canceled) => {
+                if (canceled) send(Message.CancelledPan())
+                else {
+                  send(Message.MovedPan({ x: event.clientX, y: event.clientY }))
+                  send(Message.EndedPan())
+                }
+              },
             }
           }),
-          release => Effect.sync(() => release?.()),
-        )
-        return yield* Effect.never
-      }),
-    ),
+        ),
 })
 
 export const mediaMount = <Msg>(toParentMessage: (message: Message) => Msg) =>

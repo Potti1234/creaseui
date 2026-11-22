@@ -68,9 +68,9 @@ export type Orientation = typeof Orientation.Type
 export const Direction = Schema.Literals(['ltr', 'rtl'])
 export type Direction = typeof Direction.Type
 
-export type NavigationInput<Key extends string> = Readonly<{
+export type NavigationInput<Key> = Readonly<{
   keys: ReadonlyArray<Key>
-  currentKey: Key
+  currentKey: Key | undefined
   pressedKey: string
   orientation?: Orientation
   direction?: Direction
@@ -78,18 +78,18 @@ export type NavigationInput<Key extends string> = Readonly<{
   isDisabled?: (key: Key, index: number) => boolean
 }>
 
-export const navigate = <Key extends string>({
-  keys,
-  currentKey,
+type NavigationIntent = 'First' | 'Last' | 'Next' | 'Previous'
+
+export const navigationIntent = ({
   pressedKey,
   orientation = 'Horizontal',
   direction = 'ltr',
-  loop = true,
-  isDisabled = () => false,
-}: NavigationInput<Key>): Option.Option<Key> => {
-  const enabled = keys.filter((key, index) => !isDisabled(key, index))
-  if (pressedKey === 'Home') return Option.fromUndefinedOr(enabled[0])
-  if (pressedKey === 'End') return Option.fromUndefinedOr(enabled.at(-1))
+}: Pick<
+  NavigationInput<never>,
+  'pressedKey' | 'orientation' | 'direction'
+>): Option.Option<NavigationIntent> => {
+  if (pressedKey === 'Home') return Option.some('First')
+  if (pressedKey === 'End') return Option.some('Last')
 
   const horizontal = orientation !== 'Vertical'
   const vertical = orientation !== 'Horizontal'
@@ -101,14 +101,27 @@ export const navigate = <Key extends string>({
     (horizontal &&
       pressedKey === (direction === 'rtl' ? 'ArrowRight' : 'ArrowLeft')) ||
     (vertical && pressedKey === 'ArrowUp')
-  if ((!forward && !backward) || keys.length === 0) return Option.none()
+  if (forward) return Option.some('Next')
+  if (backward) return Option.some('Previous')
+  return Option.none()
+}
 
-  const step = forward ? 1 : -1
-  const currentIndex = keys.indexOf(currentKey)
-  const start = currentIndex < 0 && backward ? keys.length : currentIndex
+export const navigate = <Key>(
+  input: NavigationInput<Key>,
+): Option.Option<Key> => {
+  const { keys, currentKey, loop = true, isDisabled = () => false } = input
+  const maybeIntent = navigationIntent(input)
+  if (Option.isNone(maybeIntent) || keys.length === 0) return Option.none()
+  const intent = maybeIntent.value
+  const step = intent === 'First' || intent === 'Next' ? 1 : -1
+  const boundary = step === 1 ? -1 : keys.length
+  const currentIndex = currentKey === undefined ? -1 : keys.indexOf(currentKey)
+  const edge = intent === 'First' || intent === 'Last'
+  const start = edge || currentIndex < 0 ? boundary : currentIndex
   for (let distance = 1; distance <= keys.length; distance++) {
     const index = start + distance * step
-    if (!loop && (index < 0 || index >= keys.length)) return Option.none()
+    if ((!loop || edge) && (index < 0 || index >= keys.length))
+      return Option.none()
     const wrappedIndex = ((index % keys.length) + keys.length) % keys.length
     const key = keys[wrappedIndex]
     if (key !== undefined && !isDisabled(key, wrappedIndex))
