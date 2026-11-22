@@ -6,6 +6,7 @@ import * as Mount from 'foldkit/mount'
 import { Dialog } from '@foldkit/ui'
 
 import * as Drag from '@/lib/behaviors/drag'
+import * as Velocity from '@/lib/behaviors/velocity'
 
 /* Renderer-neutral state + pure geometry for the Drawer, ported from Base
    UI's drawer (base-ui/packages/react/src/drawer/**): a Dialog submodel plus
@@ -35,12 +36,6 @@ export const MIN_SWIPE_RELEASE_SCALAR = 0.1
 export const MAX_SWIPE_RELEASE_SCALAR = 1
 /** Whole-gesture velocity floor so a tap-release doesn't explode velocity. */
 const MIN_VELOCITY_DURATION_MS = 50
-/** Minimum sample window when deriving release velocity (px/ms). */
-const MIN_RELEASE_VELOCITY_DURATION_MS = 4
-/** A drag sample older than this at release is ignored (stale velocity). */
-const MAX_RELEASE_VELOCITY_AGE_MS = 80
-/** Sub-pixel sample movement is treated as stationary. */
-const MIN_VELOCITY_SAMPLE_DISTANCE = 1
 
 // ——— Public shapes
 
@@ -61,14 +56,6 @@ export type Modal = typeof Modal.Type
 export const SwipePhase = S.Literals(['Idle', 'Swiping'])
 export type SwipePhase = typeof SwipePhase.Type
 
-/** Last moving drag sample — the release-velocity source in Base UI. */
-export const DragSample = S.Struct({
-  x: S.Number,
-  y: S.Number,
-  timeStamp: S.Number,
-})
-export type DragSample = typeof DragSample.Type
-
 /** Ongoing swipe gesture. Positions are pointer client coordinates; the
     stored deltas are the *damped* offsets Base UI renders with. */
 export const SwipeState = S.Struct({
@@ -78,10 +65,8 @@ export const SwipeState = S.Struct({
   deltaX: S.Number,
   deltaY: S.Number,
   startTimeStamp: S.Number,
-  lastSample: S.Option(DragSample),
-  lastVelocityX: S.Number,
-  lastVelocityY: S.Number,
-  hasStationarySample: S.Boolean,
+  velocityX: Velocity.Model,
+  velocityY: Velocity.Model,
 })
 export type SwipeState = typeof SwipeState.Type
 
@@ -92,10 +77,8 @@ const idleSwipe: SwipeState = {
   deltaX: 0,
   deltaY: 0,
   startTimeStamp: 0,
-  lastSample: Option.none(),
-  lastVelocityX: 0,
-  lastVelocityY: 0,
-  hasStationarySample: false,
+  velocityX: Velocity.init(),
+  velocityY: Velocity.init(),
 }
 
 export const Model = S.Struct({
@@ -620,46 +603,16 @@ const computeSwipeProgress = (model: Model): number => {
   return displacement > 0 ? clamp(displacement / size, 0, 1) : 0
 }
 
-/** Record a drag sample and update the last moving velocity — the exact
-    base-ui sample rules (one stationary sample per drag). */
 const recordDragSample = (
   swipe: SwipeState,
   position: { x: number; y: number },
   timeStamp: number | null,
 ): SwipeState => {
   if (timeStamp === null) return swipe
-  const last = Option.isSome(swipe.lastSample)
-    ? swipe.lastSample.value
-    : undefined
-  let lastVelocityX = swipe.lastVelocityX
-  let lastVelocityY = swipe.lastVelocityY
-  let hasStationarySample = swipe.hasStationarySample
-  if (last !== undefined && timeStamp > last.timeStamp) {
-    const stationary =
-      Math.abs(position.x - last.x) < MIN_VELOCITY_SAMPLE_DISTANCE &&
-      Math.abs(position.y - last.y) < MIN_VELOCITY_SAMPLE_DISTANCE
-    const skipSample = stationary && !hasStationarySample
-    hasStationarySample = stationary
-    if (skipSample) {
-      return {
-        ...swipe,
-        hasStationarySample,
-        lastSample: Option.some({ ...position, timeStamp }),
-      }
-    }
-    const durationMs = Math.max(
-      timeStamp - last.timeStamp,
-      MIN_RELEASE_VELOCITY_DURATION_MS,
-    )
-    lastVelocityX = (position.x - last.x) / durationMs
-    lastVelocityY = (position.y - last.y) / durationMs
-  }
   return {
     ...swipe,
-    hasStationarySample,
-    lastSample: Option.some({ ...position, timeStamp }),
-    lastVelocityX,
-    lastVelocityY,
+    velocityX: Velocity.addSample(swipe.velocityX, timeStamp, position.x),
+    velocityY: Velocity.addSample(swipe.velocityY, timeStamp, position.y),
   }
 }
 
@@ -926,34 +879,10 @@ const releaseInputFor = (
     velocityDurationMs > 0 ? swipe.deltaX / velocityDurationMs : 0
   const velocityY =
     velocityDurationMs > 0 ? swipe.deltaY / velocityDurationMs : 0
-  let releaseVelocityX = swipe.lastVelocityX
-  let releaseVelocityY = swipe.lastVelocityY
-  const lastSample = Option.isSome(swipe.lastSample)
-    ? swipe.lastSample.value
-    : undefined
-  if (
-    lastSample !== undefined &&
-    endTime !== null &&
-    endTime >= lastSample.timeStamp
-  ) {
-    const ageMs = endTime - lastSample.timeStamp
-    if (ageMs <= MAX_RELEASE_VELOCITY_AGE_MS) {
-      const sampleDurationMs = Math.max(ageMs, MIN_RELEASE_VELOCITY_DURATION_MS)
-      const deltaFromLastSampleX = swipe.deltaX - lastSample.x
-      const deltaFromLastSampleY = swipe.deltaY - lastSample.y
-      const sampleVelocityX = deltaFromLastSampleX / sampleDurationMs
-      const sampleVelocityY = deltaFromLastSampleY / sampleDurationMs
-      if (Math.abs(deltaFromLastSampleX) >= MIN_VELOCITY_SAMPLE_DISTANCE) {
-        releaseVelocityX = sampleVelocityX
-      }
-      if (Math.abs(deltaFromLastSampleY) >= MIN_VELOCITY_SAMPLE_DISTANCE) {
-        releaseVelocityY = sampleVelocityY
-      }
-    } else {
-      releaseVelocityX = 0
-      releaseVelocityY = 0
-    }
-  }
+  const releaseVelocityX =
+    endTime === null ? 0 : Velocity.velocity(swipe.velocityX, endTime)
+  const releaseVelocityY =
+    endTime === null ? 0 : Velocity.velocity(swipe.velocityY, endTime)
   const dragDelta =
     model.swipeDirection === 'down'
       ? swipe.deltaY
@@ -1038,10 +967,8 @@ export const update = (model: Model, message: Message): UpdateReturn => {
             deltaX: 0,
             deltaY: 0,
             startTimeStamp,
-            lastSample: Option.none(),
-            lastVelocityX: 0,
-            lastVelocityY: 0,
-            hasStationarySample: false,
+            velocityX: Velocity.addSample(Velocity.init(), startTimeStamp, 0),
+            velocityY: Velocity.addSample(Velocity.init(), startTimeStamp, 0),
           },
         },
       }
