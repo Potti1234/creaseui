@@ -1,5 +1,12 @@
 import { Style, When } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as BehaviorDemo from '@/docs/behavior-demo'
+import * as DemoButton from '@/pleat/button'
+import * as DemoText from '@/pleat/text'
+import * as DemoCard from '@/pleat/card'
+import * as DemoInput from '@/pleat/input'
+import * as DemoStack from '@/pleat/stack'
+import * as DemoSwitch from '@/pleat/switch'
 
 import { view as docsGuideView } from '@/docs/getting-started-content'
 import { type LintDocsProps, view as lintDocsView } from '@/docs/lint-content'
@@ -248,6 +255,7 @@ export const classes = {
 
 export type DocsGuideCodeProps<Msg> = Readonly<{
   model: CodeBlock.Model
+  behaviorDemo?: Html
   toParentMessage: (message: CodeBlock.Message) => Msg
   sidebarScrolled: Msg
 }>
@@ -256,6 +264,25 @@ export const view = <Msg>(
   codeBlock: DocsGuideCodeProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => docsGuideView('getting-started', h, classes, codeBlock)
+
+export const behaviorDemo = <Msg>(
+  model: BehaviorDemo.Model,
+  toParent: (message: BehaviorDemo.Message) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  BehaviorDemo.view(
+    model,
+    toParent,
+    {
+      button: DemoButton.button,
+      text: DemoText.text,
+      ...DemoCard,
+      input: DemoInput.input,
+      stack: DemoStack.stack,
+      switchControl: DemoSwitch.switchControl,
+    },
+    h,
+  )
 
 export const themingView = <Msg>(
   codeBlock: DocsGuideCodeProps<Msg>,
