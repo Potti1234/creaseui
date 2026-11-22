@@ -2,11 +2,30 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import {
+  commandLabelSegments,
   filterCommandItems,
   normalizeCommandQuery,
 } from '../src/lib/command.ts'
 
 describe('Command query policy', () => {
+  it('segments fuzzy label matches and leaves resting, empty and unmatched queries plain', () => {
+    assert.deepEqual(commandLabelSegments('Calendar', 'cl', ''), [
+      { text: 'C', match: true },
+      { text: 'a', match: false },
+      { text: 'l', match: true },
+      { text: 'endar', match: false },
+    ])
+    for (const [label, input, resting] of [
+      ['Calendar', 'Calendar', 'Calendar'],
+      ['Calendar', '', ''],
+      ['Calendar', 'zz', ''],
+      ['', 'x', ''],
+    ] as const) {
+      assert.deepEqual(commandLabelSegments(label, input, resting), [
+        { text: label, match: false },
+      ])
+    }
+  })
   it('normalizes whitespace and case', () => {
     assert.equal(normalizeCommandQuery('  SeTT  '), 'sett')
   })

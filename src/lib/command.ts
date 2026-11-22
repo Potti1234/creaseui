@@ -3,11 +3,31 @@ import { Combobox } from '@foldkit/ui'
 import { defineView } from 'foldkit/submodel'
 import type { Html } from 'foldkit/html'
 import type { Update } from 'foldkit'
-import { foldText, fuzzyScore } from './behaviors/text-match'
+import {
+  foldText,
+  fuzzyScore,
+  matchRanges,
+  matchSegments,
+  type MatchSegment,
+} from './behaviors/text-match'
 import * as Listbox from './behaviors/listbox'
 
 export const normalizeCommandQuery = (value: string): string =>
   foldText(value).trim()
+
+export const commandLabelSegments = (
+  label: string,
+  inputValue: string,
+  restingInputValue: string,
+): ReadonlyArray<MatchSegment> =>
+  matchSegments(
+    label,
+    matchRanges(
+      label,
+      inputValue === restingInputValue ? '' : inputValue,
+      'fuzzy',
+    ),
+  )
 
 export const filterCommandItems = <Item>(
   items: ReadonlyArray<Item>,

@@ -1,10 +1,10 @@
-import { matchRanges, matchSegments } from '@/lib/behaviors/text-match'
 import type { Option } from 'effect'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
 
 import {
+  commandLabelSegments,
   createInlineCommandView,
   filterCommandItems,
   retainCommandQuery,
@@ -207,15 +207,10 @@ const renderCommand = <Item extends string, Msg>(
           (typeof config.content === 'string' ? config.content : item)
         const labelContent = hc.span(
           [],
-          matchSegments(
+          commandLabelSegments(
             label,
-            matchRanges(
-              label,
-              props.model.inputValue === props.restingInputValue
-                ? ''
-                : props.model.inputValue,
-              'fuzzy',
-            ),
+            props.model.inputValue,
+            props.restingInputValue,
           ).map(segment =>
             segment.match
               ? hc.strong(
