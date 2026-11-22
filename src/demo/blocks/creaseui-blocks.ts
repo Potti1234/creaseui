@@ -949,6 +949,11 @@ export const kanbanBoard = <Message>(
                             laneData.id,
                           ),
                           ariaLabel: `Reorder ${laneData.name} column`,
+                          onClick: kanban.toReorderMessage(
+                            Reorder.isMoving(kanban.reorder, laneData.id)
+                              ? Reorder.Message.Drop({})
+                              : Reorder.Message.Grab({ key: laneData.id }),
+                          ),
                           variant: 'ghost',
                           size: 'icon-sm',
                           buttonAttributes: [

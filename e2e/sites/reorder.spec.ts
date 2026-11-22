@@ -28,6 +28,30 @@ test.beforeEach(async ({ page }) => {
   })
 })
 
+test('lane grips activate by click and keyboard exactly once', async ({
+  page,
+}, testInfo) => {
+  await page.goto(
+    `/blocks/preview/${testInfo.project.name}--creaseui-kanban-board`,
+  )
+  const handle = page.getByRole('button', {
+    name: 'Reorder Backlog column',
+    exact: true,
+  })
+  await handle.dispatchEvent('click')
+  await expect(handle).toHaveAttribute('aria-pressed', 'true')
+  await handle.dispatchEvent('click')
+  await expect(handle).toHaveAttribute('aria-pressed', 'false')
+  await handle.press('Space')
+  await expect(handle).toHaveAttribute('aria-pressed', 'true')
+  await handle.press('Enter')
+  await expect(handle).toHaveAttribute('aria-pressed', 'false')
+  await handle.click()
+  await expect(handle).toHaveAttribute('aria-pressed', 'true')
+  await handle.click()
+  await expect(handle).toHaveAttribute('aria-pressed', 'false')
+})
+
 test('list-input keyboard draft announces, cancels, commits and restores focus', async ({
   page,
 }) => {
