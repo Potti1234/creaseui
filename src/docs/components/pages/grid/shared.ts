@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { source as lassoSource } from '@/docs/components/pages/grid/lasso-demo'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import {
   foldkitApplication,
@@ -24,6 +25,7 @@ export type GridFixture = Readonly<{
     | 'spanColumns'
     | 'spanShowcase'
     | 'metrics'
+    | 'lasso'
 }>
 
 export const gridFixtures: Readonly<[GridFixture, ...Array<GridFixture>]> = [
@@ -64,6 +66,12 @@ export const gridFixtures: Readonly<[GridFixture, ...Array<GridFixture>]> = [
     description:
       'GridSpan lets a grid item span multiple columns or rows within an Grid, enabling masonry-style and asymmetric layouts.',
     kind: 'spanShowcase',
+  },
+  {
+    title: 'Grid — Lasso Selection',
+    description:
+      'Draw a rectangle from empty space. Shift adds to the selection; Escape cancels. The headless Lasso behavior measures tiles once per drag.',
+    kind: 'lasso',
   },
   {
     title: 'Grid — Adaptive Metric Cards',
@@ -555,6 +563,8 @@ const emitBody = (
       return emitMetrics(renderer)
     case 'autoFit':
       return '' // handled by emitAutoFit
+    case 'lasso':
+      return ''
   }
 }
 
@@ -617,6 +627,7 @@ const source = (
   renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const fixture = gridFixtures[index] ?? gridFixtures[0]
+  if (fixture.kind === 'lasso') return lassoSource(renderer)
   if (fixture.kind === 'autoFit') return emitAutoFit(renderer)
   const mod = renderer !== 'tailwind' ? 'stylex' : 'ui'
   const componentImports = [
