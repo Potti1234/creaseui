@@ -299,6 +299,7 @@ export const colorPickerArea = <Msg>(
         Picker.channelElementId(props.model.id, 'area'),
       ),
       h.DataAttribute('slot', 'color-picker-area'),
+      h.Dir('ltr'),
       h.AriaDisabled(props.model.disabled),
       h.OnMount(Picker.channelMount('area', props.toParentMessage)),
     ],

@@ -1,5 +1,37 @@
 import { expect, test } from '@playwright/test'
 
+test('the color pad keeps physical saturation direction on an RTL page', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/color-picker')
+  await page.evaluate(() => {
+    document.documentElement.dir = 'rtl'
+  })
+  const surface = page.locator('#inline [data-slot="color-picker-area"]')
+  const thumb = surface.getByRole('slider', {
+    name: 'Color saturation and value',
+  })
+  await surface.scrollIntoViewIfNeeded()
+  await expect(surface).toHaveCSS('direction', 'ltr')
+  const box = (await surface.boundingBox())!
+  await page.mouse.click(box.x + box.width * 0.1, box.y + box.height / 2)
+  await expect(thumb).toHaveAttribute(
+    'aria-valuetext',
+    'saturation 10%, value 50%',
+  )
+  const before = (await thumb.boundingBox())!
+  expect(
+    Math.abs(before.x + before.width / 2 - (box.x + box.width * 0.1)),
+  ).toBeLessThan(1.1)
+  await page.keyboard.press('ArrowRight')
+  await expect(thumb).toHaveAttribute(
+    'aria-valuetext',
+    'saturation 11%, value 50%',
+  )
+  const after = (await thumb.boundingBox())!
+  expect(after.x).toBeGreaterThan(before.x)
+})
+
 test('the color pad captures a drag outside the track and settles on release', async ({
   page,
 }) => {
