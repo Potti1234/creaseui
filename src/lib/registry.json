@@ -331,6 +331,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior",
         "Potti1234/creaseui/toggle-group-behavior",
         "Potti1234/creaseui/tree-list-behavior"
       ]
@@ -1113,7 +1114,9 @@
           "target": "@lib/behaviors/typeahead.ts"
         }
       ],
-      "registryDependencies": ["Potti1234/creaseui/tree-collection-behavior"]
+      "registryDependencies": [
+        "Potti1234/creaseui/tree-collection-behavior"
+      ]
     },
     {
       "name": "tree-collection-behavior",
