@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
-import { COMPONENTS } from '../src/docs/component-metadata'
+import { authoredPages } from '../src/docs/components/pages'
 import { LINT_RULE_GROUPS } from '../src/docs/lint/rules'
 import { TUTORIAL_CHAPTERS } from '../src/docs/tutorial/chapter-meta'
 
 const SEARCH_ENTRIES =
-  COMPONENTS.length +
+  Object.keys(authoredPages).length +
   LINT_RULE_GROUPS.reduce((total, group) => total + group.rules.length, 0) +
   TUTORIAL_CHAPTERS.length
 
@@ -33,6 +33,9 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
     })
     await expect(query).toBeFocused()
     await expect(page.getByRole('option')).toHaveCount(SEARCH_ENTRIES)
+    await expect(page.getByRole('option', { name: /^Connect\b/ })).toHaveCount(
+      1,
+    )
     const list = dialog.getByRole('listbox')
     await expect
       .poll(() => list.evaluate(node => getComputedStyle(node).position))
