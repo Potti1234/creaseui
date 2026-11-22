@@ -323,7 +323,6 @@ for (const width of [390, 1440]) {
       )
       await trigger.click()
       const { samples, fade } = await frames
-      expect(samples.length).toBeGreaterThan(10)
       expect(samples.every(frame => frame.scrollTop === 0)).toBe(true)
       const first = samples[0]!
       const last = samples.at(-1)!

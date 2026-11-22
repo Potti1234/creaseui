@@ -8,4 +8,5 @@ requests. Read the reason from the OutMessage. For exit transitions, pass
 Dropdown Menu and Nav Menu use immediate unmount. More Menu, Context Menu
 and Menubar's item panels inherit Popup through Dropdown Menu. Nav Menu keeps
 hover intent, pinning and focus commands outside Popup. Roles, event detection,
-positioning, focus and layering belong to the component.
+positioning, focus and layering belong to the component. Compose Position and
+Layer when a custom popup also needs geometry or dismissal.
