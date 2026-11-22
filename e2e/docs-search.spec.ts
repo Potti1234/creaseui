@@ -103,6 +103,7 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
       await expect(
         page.getByRole('option', { name: /^Carousel/ }),
       ).toBeVisible()
+      await expect(dialog.getByRole('option')).toHaveCount(1)
       const result = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
         .analyze()

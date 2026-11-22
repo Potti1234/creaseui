@@ -6,6 +6,7 @@ import {
   filterCommandItems,
   normalizeCommandQuery,
 } from '../src/lib/command.ts'
+import { docsSearchFields } from '../src/site/docs-search-fields.ts'
 
 describe('Command query policy', () => {
   it('keeps groups contiguous in best-match order and ranks within each group', () => {
@@ -54,20 +55,25 @@ describe('Command query policy', () => {
         description:
           'OpenFreeMap presets, custom style URLs or JSON, and Crease UI palette tokens.',
       },
+      {
+        title: 'Carousel',
+        slug: 'carousel',
+        description: 'Touch-friendly slides.',
+      },
+      { title: 'Example', slug: 'example', description: 'c-a-r-o-u-s-e-l' },
     ]
     const search = (query: string) =>
       filterCommandItems(pages, query, '', page => page.title, {
-        itemToKeywords: page => [
-          page.slug.replaceAll('-', ' '),
-          page.description,
-        ],
-        itemToFallbackKeywords: page => [
-          `${page.title} ${page.slug.replaceAll('-', ' ')} ${page.description}`,
-        ],
+        itemToKeywords: page => docsSearchFields(page, query).keywords,
+        itemToFallbackKeywords: page =>
+          docsSearchFields(page, query).fallbackKeywords,
       })
     assert.equal(search('stat')[0], pages[1])
     assert.deepEqual(search('kpi'), [pages[1]])
     assert.deepEqual(search('map styles openfreemap'), [pages[2]])
+    assert.deepEqual(search('carousel'), [pages[3]])
+    assert.deepEqual(search('crsl'), [pages[3]])
+    assert.deepEqual(search('tóuch-friendly'), [pages[3]])
     assert.deepEqual(search(''), pages)
     assert.deepEqual(search('missing'), [])
   })

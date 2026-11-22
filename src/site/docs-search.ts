@@ -10,6 +10,7 @@ import { TUTORIAL_CHAPTERS } from '@/docs/tutorial/chapter-meta'
 import * as Icon from '@/lib/icon'
 import { CommandMenu, Dialog } from '@/site/docs-search-ui'
 import { skin } from '@/site/skin'
+import { docsSearchFields } from '@/site/docs-search-fields'
 
 // Search the same registry that supplies the actual documentation routes.
 export const DOC_PAGES = Object.values(authoredPages)
@@ -156,14 +157,10 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                 itemToConfig: slug => {
                   const page = pagesBySlug.get(slug)
                   return {
-                    searchText: page?.title ?? slug,
-                    keywords: [
-                      slug.replaceAll('-', ' '),
-                      page?.description ?? '',
-                    ],
-                    fallbackKeywords: [
-                      `${page?.title ?? slug} ${slug.replaceAll('-', ' ')} ${page?.description ?? ''}`,
-                    ],
+                    ...docsSearchFields(
+                      page ?? { title: slug, slug, description: '' },
+                      model.command.inputValue,
+                    ),
                     content: h.div(
                       [h.Class(skin.searchResult)],
                       [
