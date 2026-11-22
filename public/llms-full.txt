@@ -2712,7 +2712,7 @@ Examples: Demo, Basic, Shortcuts, Groups, Scrollable, RTL
 - `OutMessage: value` (value)
 - `OutMessage<Item extends string = string> = ComboboxPrimitive.OutMessage<Item>` (type)
 - `init: value` (value)
-- `CommandItemConfig = Readonly<{ content: Html | string; searchText?: string; shortcut?: Html | string; keys?: string; class?: string; isDisabled?: boolean; }>` (type)
+- `CommandItemConfig = Readonly<{ content?: Html | string; label?: string; leadingContent?: Html; searchText?: string; keywords?: ReadonlyArray<string>; fallbackKeywords?: ReadonlyArray<string>; shortcut?: Html | string; keys?: string; class?: string; isDisabled…` (type)
 - `CommandProps<Item extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Item>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => CommandItemConfig; plac…` (type)
 - `commandGroupHeading<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html` (function)
 - `commandShortcut<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>, isAriaHidden = false): Html` (function)
@@ -3090,7 +3090,7 @@ A CreaseUI Grid component for Foldkit.
 
 Source: `src/ui/grid.ts`
 
-Examples: Grid, Grid — Column Spanning, Grid — Responsive Auto-Fit, Grid — Dashboard Layout, Grid — Card Gallery, GridSpan — Columns, Grid Span, Grid — Adaptive Metric Cards
+Examples: Grid, Grid — Column Spanning, Grid — Responsive Auto-Fit, Grid — Dashboard Layout, Grid — Card Gallery, GridSpan — Columns, Grid Span, Grid — Lasso Selection, Grid — Adaptive Metric Cards
 
 - `GridAlignment = 'start' | 'center' | 'end' | 'stretch'` (type)
 - `GridSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10` (type)
@@ -3871,20 +3871,16 @@ Source: `src/ui/resizable.ts`
 
 Examples: Basic, Vertical, Handle, RTL
 
-- `Model: value` (value)
-- `Model = typeof Model.Type` (type)
-- `Message: value` (value)
-- `Message = typeof Message.Type` (type)
-- `init(id: string, firstSize = 50): Model` (function)
-- `update(model: Model, message: Message): Model` (function)
+- `export { GroupMessage } from '@/lib/resizable'` (re-export)
+- `export { GroupModel } from '@/lib/resizable'` (re-export)
+- `export { Message } from '@/lib/resizable'` (re-export)
+- `export { Model } from '@/lib/resizable'` (re-export)
+- `export { init } from '@/lib/resizable'` (re-export)
+- `export { initGroup } from '@/lib/resizable'` (re-export)
+- `export { update } from '@/lib/resizable'` (re-export)
+- `export { updateGroup } from '@/lib/resizable'` (re-export)
 - `ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html | string; second: Html | string; direction?: 'horizontal' | 'vertical'; rtl?: boolean; withHandle?: boolean; minSize?: number; maxSize?: number; extent?: nu…` (type)
 - `resizable<Msg>(props: ResizableProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `GroupModel: value` (value)
-- `GroupModel = typeof GroupModel.Type` (type)
-- `GroupMessage: value` (value)
-- `GroupMessage = typeof GroupMessage.Type` (type)
-- `initGroup(id: string, panelCount: number, sizes?: ReadonlyArray<number>): GroupModel` (function)
-- `updateGroup(model: GroupModel, message: GroupMessage): GroupModel` (function)
 - `ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html | string>; direction?: 'horizontal' | 'vertical'; rtl?: boolean; minSize?: number; extent: number; withHandles?: boolean; disa…` (type)
 - `resizableGroup<Msg>(props: ResizableGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 

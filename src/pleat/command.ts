@@ -5,6 +5,7 @@ import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
 
 import {
+  commandLabelSegments,
   createInlineCommandView,
   commandAnnouncement,
   filterCommandItems,
@@ -81,8 +82,12 @@ const SEPARATOR_CLASS = overlayStyles.separator
 const SHORTCUT_CLASS = overlayStyles.shortcut
 
 export type CommandItemConfig = Readonly<{
-  content: Html | string
+  content?: Html | string
+  label?: string
+  leadingContent?: Html
   searchText?: string
+  keywords?: ReadonlyArray<string>
+  fallbackKeywords?: ReadonlyArray<string>
   shortcut?: Html | string
   keys?: string
   layoutStyle?: ComponentLayoutStyle | undefined
@@ -176,14 +181,26 @@ const renderCommand = <Item extends string, Msg>(
     const config = props.itemToConfig(item)
     return (
       config.searchText ??
+      config.label ??
       (typeof config.content === 'string' ? config.content : item)
     )
   }
+  const itemGroupKey = props.itemGroupKey
+  const groupKey =
+    itemGroupKey === undefined
+      ? undefined
+      : (item: Item): string => itemGroupKey(item, props.items.indexOf(item))
   const filteredItems = filterCommandItems(
     props.items,
     props.model.inputValue,
     props.restingInputValue,
     itemToSearchText,
+    {
+      itemToKeywords: item => props.itemToConfig(item).keywords ?? [],
+      itemToFallbackKeywords: item =>
+        props.itemToConfig(item).fallbackKeywords ?? [],
+      ...(groupKey === undefined ? {} : { itemGroupKey: groupKey }),
+    },
   )
   const visibleItems =
     props.status === 'loading'
@@ -241,6 +258,24 @@ const renderCommand = <Item extends string, Msg>(
             ? undefined
             : formatShortcut(config.keys, currentPlatform()))
 
+        const label =
+          config.label ??
+          (typeof config.content === 'string' ? config.content : item)
+        const labelContent = hc.span(
+          [],
+          commandLabelSegments(
+            label,
+            props.model.inputValue,
+            props.restingInputValue,
+          ).map(segment =>
+            segment.match
+              ? hc.strong(
+                  [hc.DataAttribute('slot', 'command-match')],
+                  [segment.text],
+                )
+              : segment.text,
+          ),
+        )
         return {
           className: cn(ITEM_CLASS, config.layoutStyle),
           content: hc.span(
@@ -249,7 +284,14 @@ const renderCommand = <Item extends string, Msg>(
               hc.Class(className(styles.contents)),
             ],
             [
-              config.content,
+              ...(config.leadingContent === undefined
+                ? []
+                : [config.leadingContent]),
+              config.label !== undefined ||
+              typeof config.content === 'string' ||
+              config.content === undefined
+                ? labelContent
+                : config.content,
               ...(shortcut === undefined
                 ? []
                 : [
@@ -284,10 +326,10 @@ const renderCommand = <Item extends string, Msg>(
       itemsScrollClassName: className(reset.list, LIST_CLASS),
       className: cn(ROOT_CLASS, props.layoutStyle),
       attributes: childAttributes([hc.DataAttribute('slot', 'command')]),
-      ...(props.itemGroupKey === undefined
+      ...(groupKey === undefined
         ? {}
         : {
-            itemGroupKey: props.itemGroupKey,
+            itemGroupKey: groupKey,
             groupToHeading: (groupKey: string) => {
               const heading = props.groupToHeading?.(groupKey)
               return heading === undefined

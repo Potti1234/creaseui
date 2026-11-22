@@ -7,13 +7,12 @@
    sends FocusedTooltipTrigger for an immediate open (matching tap), and the
    pointer-focus suppression is skipped. */
 
-import { Tooltip as TooltipPrimitive } from '@foldkit/ui'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Mount from 'foldkit/mount'
 
 import * as Icon from '@/lib/icon'
-import * as TooltipBehavior from '@/lib/tooltip'
+import * as TooltipBehavior from '@/lib/behaviors/tooltip'
 import { cn } from '@/lib/utils'
 
 export const Model = TooltipBehavior.Model
@@ -43,7 +42,7 @@ export type InfoTipSize = 'xsm' | 'sm' | 'md' | 'lg'
 export type InfoTipSide = 'top' | 'right' | 'bottom' | 'left'
 export type InfoTipAlign = 'start' | 'center' | 'end'
 
-type Placement = NonNullable<TooltipPrimitive.AnchorConfig['placement']>
+type Placement = NonNullable<TooltipBehavior.AnchorConfig['placement']>
 
 const PLACEMENTS: Readonly<
   Record<InfoTipSide, Readonly<Record<InfoTipAlign, Placement>>>
@@ -130,7 +129,7 @@ export const infoTip = <Msg>(
                 }),
                 h.OnMount(
                   Mount.mapMessage(
-                    TooltipPrimitive.AnchorTooltip({
+                    TooltipBehavior.AnchorTooltip({
                       buttonId: triggerId,
                       anchor,
                     }),

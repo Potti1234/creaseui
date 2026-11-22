@@ -17,7 +17,6 @@ const styles = {
   stack: Style.make({ gap: '1rem', display: 'flex', flexDirection: 'column' }),
   fit: layoutStyle({ width: 'fit-content' }),
   icon: Style.make({ height: '1rem', width: '1rem' }),
-  itemRow: Style.make({ gap: '0.5rem', alignItems: 'center', display: 'flex' }),
 }
 
 type Preview = Readonly<{
@@ -48,15 +47,12 @@ export const commandPleatPreview: ExamplePreviewProvider = <Msg>(
       itemToConfig: value => {
         const item = items.find(entry => entry.value === value)
         return {
-          content: h.span(
-            [h.Class(className(styles.itemRow))],
-            [
-              ...(item?.icon === undefined
-                ? []
-                : [Icon.icon({ name: item.icon, size: 'sm' }, h)]),
-              h.span([], [value]),
-            ],
-          ),
+          label: value,
+          ...(item?.icon === undefined
+            ? {}
+            : {
+                leadingContent: Icon.icon({ name: item.icon, size: 'sm' }, h),
+              }),
           ...(item?.keys === undefined ? {} : { keys: item.keys }),
         }
       },

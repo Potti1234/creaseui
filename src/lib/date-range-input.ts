@@ -1,3 +1,4 @@
+import * as CalendarPrimitive from '@/lib/behaviors/calendar'
 import { Effect, Option, Schema as S, pipe } from 'effect'
 
 import type { Update } from 'foldkit'
@@ -6,10 +7,7 @@ import * as Dom from 'foldkit/dom'
 import * as Calendar from 'foldkit/calendar'
 import { defineMessageUnion } from 'foldkit/message'
 
-import {
-  Calendar as CalendarPrimitive,
-  Popover as PopoverPrimitive,
-} from '@foldkit/ui'
+import { Popover as PopoverPrimitive } from '@foldkit/ui'
 
 import { normalizeRange } from '@/lib/calendar'
 

@@ -98,15 +98,12 @@ export const commandTailwindPreviewProgram = definePreviewProgram<
         itemToConfig: value => {
           const item = items.find(entry => entry.value === value)
           return {
-            content: h.span(
-              [h.Class('flex items-center gap-2')],
-              [
-                ...(item?.icon === undefined
-                  ? []
-                  : [Icon.icon({ name: item.icon, size: 'sm' }, h)]),
-                h.span([], [value]),
-              ],
-            ),
+            label: value,
+            ...(item?.icon === undefined
+              ? {}
+              : {
+                  leadingContent: Icon.icon({ name: item.icon, size: 'sm' }, h),
+                }),
             ...(item?.keys === undefined ? {} : { keys: item.keys }),
           }
         },

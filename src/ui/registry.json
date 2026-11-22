@@ -1323,7 +1323,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/overlay-boundary-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/text-match-behavior"
       ],
       "files": [
         {
@@ -1380,7 +1381,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/shortcuts-behavior"
+        "Potti1234/creaseui/shortcuts-behavior",
+        "Potti1234/creaseui/text-match-behavior"
       ],
       "files": [
         {
@@ -1585,7 +1587,9 @@
         "Potti1234/creaseui/date-input-behavior",
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/date-picker-behavior"
       ],
       "files": [
         {
@@ -1649,7 +1653,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/overlay-boundary-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/date-picker-behavior"
       ],
       "files": [
         {
@@ -1707,7 +1712,8 @@
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-range-input-behavior",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/calendar-range"
       ],
       "files": [
         {
@@ -1767,7 +1773,9 @@
         "Potti1234/creaseui/date-time-input-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/time-parse-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/date-picker-behavior"
       ],
       "files": [
         {
@@ -1832,6 +1840,7 @@
       },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/dialog-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -1958,6 +1967,7 @@
             "update"
           ],
           "publicExports": [
+            "FocusActiveItem",
             "FocusTrigger",
             "Message",
             "Model",
@@ -4210,6 +4220,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/overlay-boundary-behavior",
+        "Potti1234/creaseui/popover-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -4353,6 +4364,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/resizable-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [

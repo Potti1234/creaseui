@@ -3,9 +3,11 @@ import { describe, it } from 'node:test'
 
 import {
   commandAnnouncement,
+  commandLabelSegments,
   filterCommandItems,
   normalizeCommandQuery,
 } from '../src/lib/command.ts'
+import { docsSearchFields } from '../src/site/docs-search-fields.ts'
 
 describe('Command query policy', () => {
   it('derives result announcements only for nonempty queries', () => {
@@ -17,8 +19,123 @@ describe('Command query policy', () => {
     assert.equal(commandAnnouncement('a', 3, 'loading'), 'Loading')
     assert.equal(commandAnnouncement('a', 0, 'error'), 'No results')
   })
+  it('keeps groups contiguous in best-match order and ranks within each group', () => {
+    const items = [
+      'Calendar',
+      'Search Emoji',
+      'Calculator',
+      'Profile',
+      'Billing',
+      'Settings',
+    ]
+    const itemGroupKey = (item: string) =>
+      items.indexOf(item) < 3 ? 'Suggestions' : 'Settings'
+    const search = (query: string, resting = '') =>
+      filterCommandItems(items, query, resting, item => item, { itemGroupKey })
+    assert.deepEqual(search('e'), [
+      'Search Emoji',
+      'Calendar',
+      'Profile',
+      'Settings',
+    ])
+    assert.deepEqual(search('s'), ['Settings', 'Search Emoji'])
+    assert.deepEqual(search(''), items)
+    assert.deepEqual(search('Profile', 'Profile'), items)
+    assert.deepEqual(search('missing'), [])
+    assert.deepEqual(
+      filterCommandItems([], 'e', '', String, { itemGroupKey }),
+      [],
+    )
+  })
+  it('ranks exact documentation titles first and retains lower-weight cross-field matches', () => {
+    const pages = [
+      {
+        title: 'Status Dot',
+        slug: 'status-dot',
+        description: 'A small colored dot that signals status.',
+      },
+      {
+        title: 'Stat',
+        slug: 'stat',
+        description: 'A single KPI: a muted label and a prominent value.',
+      },
+      {
+        title: 'Map Styles',
+        slug: 'map-styles',
+        description:
+          'OpenFreeMap presets, custom style URLs or JSON, and Crease UI palette tokens.',
+      },
+      {
+        title: 'Carousel',
+        slug: 'carousel',
+        description: 'Touch-friendly slides.',
+      },
+      { title: 'Example', slug: 'example', description: 'c-a-r-o-u-s-e-l' },
+    ]
+    const search = (query: string) =>
+      filterCommandItems(pages, query, '', page => page.title, {
+        itemToKeywords: page => docsSearchFields(page, query).keywords,
+        itemToFallbackKeywords: page =>
+          docsSearchFields(page, query).fallbackKeywords,
+      })
+    assert.equal(search('stat')[0], pages[1])
+    assert.deepEqual(search('kpi'), [pages[1]])
+    assert.deepEqual(search('map styles openfreemap'), [pages[2]])
+    assert.deepEqual(search('carousel'), [pages[3]])
+    assert.deepEqual(search('crsl'), [pages[3]])
+    assert.deepEqual(search('tóuch-friendly'), [pages[3]])
+    assert.deepEqual(search(''), pages)
+    assert.deepEqual(search('missing'), [])
+  })
+  it('weights fallback keywords below individual keywords', () => {
+    const items = [
+      { label: 'Other', keywords: [], fallback: ['cat'] },
+      { label: 'Example', keywords: ['cat'], fallback: [] },
+      { label: 'cat', keywords: [], fallback: [] },
+    ]
+    assert.deepEqual(
+      filterCommandItems(items, 'cat', '', item => item.label, {
+        itemToKeywords: item => item.keywords,
+        itemToFallbackKeywords: item => item.fallback,
+      }),
+      [items[2], items[1], items[0]],
+    )
+  })
+  it('segments fuzzy label matches and leaves resting, empty and unmatched queries plain', () => {
+    assert.deepEqual(commandLabelSegments('Calendar', 'cl', ''), [
+      { text: 'C', match: true },
+      { text: 'a', match: false },
+      { text: 'l', match: true },
+      { text: 'endar', match: false },
+    ])
+    for (const [label, input, resting] of [
+      ['Calendar', 'Calendar', 'Calendar'],
+      ['Calendar', '', ''],
+      ['Calendar', 'zz', ''],
+      ['', 'x', ''],
+    ] as const) {
+      assert.deepEqual(commandLabelSegments(label, input, resting), [
+        { text: label, match: false },
+      ])
+    }
+  })
   it('normalizes whitespace and case', () => {
     assert.equal(normalizeCommandQuery('  SeTT  '), 'sett')
+  })
+
+  it('folds accents and preserves empty query behavior', () => {
+    const items = ['École', 'Ecole', 'apple']
+    assert.deepEqual(filterCommandItems(items, 'ecole', '', String), [
+      'École',
+      'Ecole',
+    ])
+    assert.deepEqual(filterCommandItems(items, 'école', '', String), [
+      'École',
+      'Ecole',
+    ])
+    assert.equal(filterCommandItems(items, '  ', '', String), items)
+    assert.deepEqual(filterCommandItems([], 'x', '', String), [])
+    assert.deepEqual(filterCommandItems(items, 'missing', '', String), [])
   })
 
   it('filters by application-provided search text', () => {
@@ -45,7 +162,8 @@ describe('Command query policy', () => {
       (_, index) => `command-${String(index)}`,
     )
     const result = filterCommandItems(items, 'command-999', '', item => item)
-    assert.deepEqual(result, [
+    assert.equal(result.length, 37)
+    assert.deepEqual(result.slice(0, 11), [
       'command-999',
       'command-9990',
       'command-9991',

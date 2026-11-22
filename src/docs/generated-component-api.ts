@@ -1516,7 +1516,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CommandItemConfig",
       "kind": "type",
-      "signature": "CommandItemConfig = Readonly<{ content: Html | string; searchText?: string; shortcut?: Html | string; keys?: string; class?: string; isDisabled?: boolean; }>"
+      "signature": "CommandItemConfig = Readonly<{ content?: Html | string; label?: string; leadingContent?: Html; searchText?: string; keywords?: ReadonlyArray<string>; fallbackKeywords?: ReadonlyArray<string>; shortcut?: Html | string; keys?: string; class?: string; isDisabled…"
     },
     {
       "name": "CommandProps",
@@ -4686,34 +4686,44 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
   ],
   "resizable": [
     {
-      "name": "Model",
-      "kind": "value",
-      "signature": "Model: value"
+      "name": "GroupMessage",
+      "kind": "re-export",
+      "signature": "export { GroupMessage } from '@/lib/resizable'"
     },
     {
-      "name": "Model",
-      "kind": "type",
-      "signature": "Model = typeof Model.Type"
-    },
-    {
-      "name": "Message",
-      "kind": "value",
-      "signature": "Message: value"
+      "name": "GroupModel",
+      "kind": "re-export",
+      "signature": "export { GroupModel } from '@/lib/resizable'"
     },
     {
       "name": "Message",
-      "kind": "type",
-      "signature": "Message = typeof Message.Type"
+      "kind": "re-export",
+      "signature": "export { Message } from '@/lib/resizable'"
+    },
+    {
+      "name": "Model",
+      "kind": "re-export",
+      "signature": "export { Model } from '@/lib/resizable'"
     },
     {
       "name": "init",
-      "kind": "function",
-      "signature": "init(id: string, firstSize = 50): Model"
+      "kind": "re-export",
+      "signature": "export { init } from '@/lib/resizable'"
+    },
+    {
+      "name": "initGroup",
+      "kind": "re-export",
+      "signature": "export { initGroup } from '@/lib/resizable'"
     },
     {
       "name": "update",
-      "kind": "function",
-      "signature": "update(model: Model, message: Message): Model"
+      "kind": "re-export",
+      "signature": "export { update } from '@/lib/resizable'"
+    },
+    {
+      "name": "updateGroup",
+      "kind": "re-export",
+      "signature": "export { updateGroup } from '@/lib/resizable'"
     },
     {
       "name": "ResizableProps",
@@ -4724,36 +4734,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "resizable",
       "kind": "function",
       "signature": "resizable<Msg>(props: ResizableProps<Msg>, h: HtmlBuilder<Msg>): Html"
-    },
-    {
-      "name": "GroupModel",
-      "kind": "value",
-      "signature": "GroupModel: value"
-    },
-    {
-      "name": "GroupModel",
-      "kind": "type",
-      "signature": "GroupModel = typeof GroupModel.Type"
-    },
-    {
-      "name": "GroupMessage",
-      "kind": "value",
-      "signature": "GroupMessage: value"
-    },
-    {
-      "name": "GroupMessage",
-      "kind": "type",
-      "signature": "GroupMessage = typeof GroupMessage.Type"
-    },
-    {
-      "name": "initGroup",
-      "kind": "function",
-      "signature": "initGroup(id: string, panelCount: number, sizes?: ReadonlyArray<number>): GroupModel"
-    },
-    {
-      "name": "updateGroup",
-      "kind": "function",
-      "signature": "updateGroup(model: GroupModel, message: GroupMessage): GroupModel"
     },
     {
       "name": "ResizableGroupProps",
