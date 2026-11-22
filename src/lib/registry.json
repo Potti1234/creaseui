@@ -296,10 +296,30 @@
       ]
     },
     {
+      "name": "listbox-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Listbox Behavior",
+      "description": "Headless highlight, filtering, navigation, and Real or Virtual focus for option lists.",
+      "files": [
+        {
+          "path": "behaviors/listbox.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/listbox.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/toggle-group-behavior",
+        "Potti1234/creaseui/tree-list-behavior"
+      ]
+    },
+    {
       "name": "command-behavior",
       "type": "registry:lib",
       "title": "Foldkit Command Query Policy",
       "description": "Skin-neutral command query normalization and application-provided search-text filtering.",
+      "registryDependencies": [
+        "Potti1234/creaseui/listbox-behavior"
+      ],
       "files": [
         {
           "path": "command.ts",
