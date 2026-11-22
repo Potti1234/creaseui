@@ -16,9 +16,12 @@ MIT licensed.
 | Apache ECharts         | Chart rendering                                                   | Apache-2.0 |
 | Vercel ui-sdk          | Native ScrollPicker behavior port from @ui-sdk/core 0.1.0-beta.13 | Apache-2.0 |
 | Vercel UI SDK          | Tree collection and checked-state algorithms                      | Apache-2.0 |
+| Vercel UI SDK          | StickToBottom viewport algorithm                                  | Apache-2.0 |
 
 The adapted TreeCollection module is distributed with the
 [UI SDK license](src/lib/behaviors/tree-collection.LICENSE.txt).
+The adapted StickToBottom module is distributed with the
+[UI SDK license](src/lib/behaviors/ui-sdk-LICENSE.txt).
 
 Exact source packages for icon adapters are recorded in
 [`docs/create-presets.md`](docs/create-presets.md). Upstream repositories and

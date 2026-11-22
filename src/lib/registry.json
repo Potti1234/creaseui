@@ -773,13 +773,16 @@
       "name": "message-scroller-behavior",
       "type": "registry:lib",
       "title": "Foldkit Message Scroller Behavior",
-      "description": "Mount-scoped viewport observation with follow mode, new-message state, reduced-motion scrolling, and observer cleanup.",
+      "description": "Compatibility entry point for the shared StickToBottom behavior.",
       "files": [
         {
           "path": "message-scroller.ts",
           "type": "registry:lib",
           "target": "@lib/message-scroller.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/stick-to-bottom"
       ]
     },
     {
@@ -1138,6 +1141,24 @@
           "path": "stepper.ts",
           "type": "registry:lib",
           "target": "@lib/stepper.ts"
+        }
+      ]
+    },
+    {
+      "name": "stick-to-bottom",
+      "type": "registry:lib",
+      "title": "Foldkit StickToBottom Behavior",
+      "description": "Follow growing content, preserve the reader’s viewport, and track unseen content.",
+      "files": [
+        {
+          "path": "behaviors/stick-to-bottom.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/stick-to-bottom.ts"
+        },
+        {
+          "path": "behaviors/ui-sdk-LICENSE.txt",
+          "type": "registry:file",
+          "target": "@lib/behaviors/ui-sdk-LICENSE.txt"
         }
       ]
     },
