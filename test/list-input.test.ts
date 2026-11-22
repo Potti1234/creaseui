@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { Option } from 'effect'
+import * as Reorder from '../src/lib/behaviors/reorder.ts'
+import * as Announce from '../src/lib/behaviors/announce.ts'
 
 import {
   resolveColumnTrack,
@@ -10,6 +12,10 @@ import {
   Message,
   OutMessage,
 } from '../src/lib/list-input.ts'
+
+const keys = ['g-1', 'g-2', 'g-3']
+const reorder = (message: Reorder.Message) =>
+  Message.ReorderRequested({ message, keys, itemName: 'guest' })
 
 test('column tracks resolve to pixel or proportional grid tracks', () => {
   assert.equal(resolveColumnTrack({ type: 'pixel', value: 120 }), '120px')
@@ -83,16 +89,8 @@ test('immediate move announces the destination; boundary announces in place', ()
 
 test('grab lifecycle: preview moves, commit reorders, cancel restores', () => {
   const model = init({ id: 'li' })
-  const grabbed = update(
-    model,
-    Message.GrabStarted({
-      index: 0,
-      key: 'g-1',
-      itemName: 'guest',
-      position: 1,
-    }),
-  )
-  assert.equal(Option.isSome(grabbed.model.reorder), true)
+  const grabbed = update(model, reorder(Reorder.Message.Grab({ key: 'g-1' })))
+  assert.equal(Option.isSome(grabbed.model.reorder.maybeDraft), true)
   assert.equal(
     Option.getOrElse(grabbed.model.announcement, () => ''),
     'guest 1 grabbed. Use arrow keys to move, Space or Enter to drop, and Escape to cancel.',
@@ -100,29 +98,29 @@ test('grab lifecycle: preview moves, commit reorders, cancel restores', () => {
 
   const previewed = update(
     grabbed.model,
-    Message.GrabPreviewed({ toIndex: 2, itemName: 'guest', total: 3 }),
+    reorder(Reorder.Message.MoveTo({ index: 2 })),
   )
   assert.equal(
-    Option.match(previewed.model.reorder, {
+    Option.match(previewed.model.reorder.maybeDraft, {
       onNone: () => -1,
-      onSome: r => r.previewIndex,
+      onSome: r => r.order.indexOf(r.key),
     }),
     2,
   )
 
-  const committed = update(
-    previewed.model,
-    Message.GrabCommitted({ itemName: 'guest', total: 3 }),
-  )
-  assert.equal(Option.isNone(committed.model.reorder), true)
+  const committed = update(previewed.model, reorder(Reorder.Message.Drop({})))
+  assert.equal(Option.isNone(committed.model.reorder.maybeDraft), true)
   assert.equal(committed.outMessage?._tag, 'ItemReordered')
   assert.equal(
     Option.getOrElse(committed.model.announcement, () => ''),
     'guest dropped at position 3 of 3.',
   )
 
-  const cancelled = update(grabbed.model, Message.GrabCancelled())
-  assert.equal(Option.isNone(cancelled.model.reorder), true)
+  const cancelled = update(
+    grabbed.model,
+    reorder(Reorder.Message.Cancel({ restoreFocus: true })),
+  )
+  assert.equal(Option.isNone(cancelled.model.reorder.maybeDraft), true)
   assert.equal(
     Option.getOrElse(cancelled.model.announcement, () => ''),
     'Reordering cancelled.',
@@ -131,19 +129,8 @@ test('grab lifecycle: preview moves, commit reorders, cancel restores', () => {
 
 test('committing a grab with no move returns the row without an out message', () => {
   const model = init({ id: 'li' })
-  const grabbed = update(
-    model,
-    Message.GrabStarted({
-      index: 1,
-      key: 'g-2',
-      itemName: 'guest',
-      position: 2,
-    }),
-  )
-  const committed = update(
-    grabbed.model,
-    Message.GrabCommitted({ itemName: 'guest', total: 3 }),
-  )
+  const grabbed = update(model, reorder(Reorder.Message.Grab({ key: 'g-2' })))
+  const committed = update(grabbed.model, reorder(Reorder.Message.Drop({})))
   assert.equal(committed.outMessage, undefined)
   assert.equal(
     Option.getOrElse(committed.model.announcement, () => ''),
@@ -162,4 +149,43 @@ test('field edits lift into ItemUpdated out messages', () => {
     }),
   )
   assert.equal(edited.outMessage?._tag, 'ItemUpdated')
+})
+
+test('announcements use assertive Announce timing and reject stale completions', () => {
+  const model = init({ id: 'li' })
+  const grabbed = update(model, reorder(Reorder.Message.Grab({ key: 'g-1' })))
+  assert.equal(grabbed.model.announcer.priority, 'assertive')
+  assert.equal(grabbed.model.announcer.text, '')
+  assert.equal(
+    grabbed.model.announcer.pendingText,
+    Option.getOrThrow(grabbed.model.announcement),
+  )
+  const moved = update(
+    grabbed.model,
+    reorder(Reorder.Message.Step({ delta: 1 })),
+  )
+  const stale = update(
+    moved.model,
+    Message.GotAnnouncementMessage({
+      message: Announce.Message.CompletedDelay({
+        version: grabbed.model.announcer.version,
+      }),
+    }),
+  )
+  assert.equal(stale.model.announcer.text, '')
+  const completed = update(
+    stale.model,
+    Message.GotAnnouncementMessage({
+      message: Announce.Message.CompletedDelay({
+        version: moved.model.announcer.version,
+      }),
+    }),
+  )
+  assert.equal(
+    completed.model.announcer.text,
+    'guest moved to position 2 of 3.',
+  )
+  const idle = update(model, reorder(Reorder.Message.Swallow({})))
+  assert.equal(idle.model.announcer, model.announcer)
+  assert.deepEqual(idle.commands, [])
 })

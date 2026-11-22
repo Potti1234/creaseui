@@ -1,7 +1,12 @@
-import { Option, Schema as S } from 'effect'
+import { Effect, Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
+import * as Command from 'foldkit/command'
+import * as Dom from 'foldkit/dom'
 import type { Html } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
+
+import * as Reorder from '@/lib/behaviors/reorder'
+import * as Announce from '@/lib/behaviors/announce'
 
 /* Ported from Meta Astryx ListInput (packages/lab/src/ListInput) — column
    definitions, mutation intents, keyboard reorder state, and live-region
@@ -73,26 +78,20 @@ export const moveItem = <T>(
 
 /* --- Submodel ----------------------------------------------------------- */
 
-export const ReorderState = S.Struct({
-  /* getItemKey of the grabbed row — survives row insertion/removal. */
-  key: S.String,
-  fromIndex: S.Number,
-  previewIndex: S.Number,
-})
-export type ReorderState = typeof ReorderState.Type
-
 export const Model = S.Struct({
   id: S.String,
-  reorder: S.Option(ReorderState),
+  reorder: Reorder.Model,
   announcement: S.Option(S.String),
+  announcer: Announce.Model,
 })
 export type Model = typeof Model.Type
 
 export type InitConfig = Readonly<{ id: string }>
 export const init = (config: InitConfig): Model => ({
   id: config.id,
-  reorder: Option.none(),
+  reorder: Reorder.init(),
   announcement: Option.none(),
+  announcer: Announce.init(),
 })
 
 export const Message = defineMessageUnion({
@@ -115,15 +114,13 @@ export const Message = defineMessageUnion({
     total: S.Number,
   },
   AlreadyAtBoundary: { itemName: S.String, boundary: S.String },
-  GrabStarted: {
-    index: S.Number,
-    key: S.String,
+  ReorderRequested: {
+    message: Reorder.Message,
+    keys: S.Array(S.String),
     itemName: S.String,
-    position: S.Number,
   },
-  GrabPreviewed: { toIndex: S.Number, itemName: S.String, total: S.Number },
-  GrabCommitted: { itemName: S.String, total: S.Number },
-  GrabCancelled: {},
+  CompletedFocus: {},
+  GotAnnouncementMessage: { message: Announce.Message },
 })
 export type Message = typeof Message.Type
 
@@ -141,8 +138,55 @@ export type UpdateReturn = Update.ReturnWithOutMessage<
   OutMessage
 >
 
+export const reorderHandleId = (id: string, key: string): string =>
+  `${id}-reorder-${encodeURIComponent(key)}`
+const FocusReorderHandle = Command.define('FocusReorderHandle', {
+  args: { id: S.String, key: S.String },
+  messages: [Message.CompletedFocus],
+  execute: ({ id, key }) =>
+    Dom.focus(`[id="${reorderHandleId(id, key)}"]`).pipe(
+      Effect.ignore,
+      Effect.as(Message.CompletedFocus({})),
+    ),
+})
+
 export const update = (model: Model, message: Message): UpdateReturn => {
+  const result = updateModel(model, message)
+  if (
+    result.model.announcement === model.announcement ||
+    Option.isNone(result.model.announcement)
+  )
+    return result
+  const announced = Announce.update(
+    result.model.announcer,
+    Announce.Message.RequestedAnnouncement({
+      text: result.model.announcement.value,
+      priority: 'assertive',
+    }),
+  )
+  return {
+    ...result,
+    model: { ...result.model, announcer: announced.model },
+    commands: [
+      ...(result.commands ?? []),
+      ...Command.mapMessages(announced.commands ?? [], message =>
+        Message.GotAnnouncementMessage({ message }),
+      ),
+    ],
+  }
+}
+
+const updateModel = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
+    case 'GotAnnouncementMessage': {
+      const result = Announce.update(model.announcer, message.message)
+      return {
+        model: { ...model, announcer: result.model },
+        commands: Command.mapMessages(result.commands ?? [], message =>
+          Message.GotAnnouncementMessage({ message }),
+        ),
+      }
+    }
     case 'AddRequested':
       return {
         model: {
@@ -194,64 +238,57 @@ export const update = (model: Model, message: Message): UpdateReturn => {
           ),
         },
       }
-    case 'GrabStarted':
-      return {
-        model: {
-          ...model,
-          reorder: Option.some({
-            key: message.key,
-            fromIndex: message.index,
-            previewIndex: message.index,
-          }),
-          announcement: Option.some(
-            `${message.itemName} ${message.position} grabbed. Use arrow keys to move, Space or Enter to drop, and Escape to cancel.`,
-          ),
-        },
-      }
-    case 'GrabPreviewed':
-      return Option.match(model.reorder, {
-        onNone: () => ({ model }),
-        onSome: reorder => ({
-          model: {
-            ...model,
-            reorder: Option.some({ ...reorder, previewIndex: message.toIndex }),
-            announcement: Option.some(
-              `${message.itemName} moved to position ${message.toIndex + 1} of ${message.total}.`,
-            ),
-          },
-        }),
+    case 'ReorderRequested': {
+      const reflected = Reorder.update(
+        model.reorder,
+        Reorder.Message.Reflect({}),
+        { value: message.keys },
+      ).model
+      const result = Reorder.update(reflected, message.message, {
+        value: message.keys,
       })
-    case 'GrabCommitted': {
-      const reorder = Option.getOrUndefined(model.reorder)
-      if (reorder === undefined) return { model }
-      const didMove = reorder.fromIndex !== reorder.previewIndex
+      let announcement = model.announcement
+      let outMessage: OutMessage | undefined
+      for (const out of result.outMessages) {
+        if (out.type === 'CommittedOrder') {
+          const key = Option.match(reflected.maybeDraft, {
+            onNone: () =>
+              message.message._tag === 'Move' ? message.message.key : '',
+            onSome: draft => draft.key,
+          })
+          outMessage = OutMessage.ItemReordered({
+            fromIndex: message.keys.indexOf(key),
+            toIndex: out.order.indexOf(key),
+          })
+        } else {
+          const { type, position, total } = out.announcement
+          announcement = Option.some(
+            type === 'grab'
+              ? `${message.itemName} ${position} grabbed. Use arrow keys to move, Space or Enter to drop, and Escape to cancel.`
+              : type === 'cancel'
+                ? 'Reordering cancelled.'
+                : type === 'move' || message.message._tag === 'Move'
+                  ? `${message.itemName} moved to position ${position} of ${total}.`
+                  : outMessage
+                    ? `${message.itemName} dropped at position ${position} of ${total}.`
+                    : `${message.itemName} returned to position ${position}.`,
+          )
+        }
+      }
+      const maybeFocus =
+        message.message._tag === 'Move' && outMessage
+          ? Option.some(message.message.key)
+          : result.maybeFocus
       return {
-        model: {
-          ...model,
-          reorder: Option.none(),
-          announcement: Option.some(
-            didMove
-              ? `${message.itemName} dropped at position ${reorder.previewIndex + 1} of ${message.total}.`
-              : `${message.itemName} returned to position ${reorder.fromIndex + 1}.`,
-          ),
-        },
-        ...(didMove
-          ? {
-              outMessage: OutMessage.ItemReordered({
-                fromIndex: reorder.fromIndex,
-                toIndex: reorder.previewIndex,
-              }),
-            }
-          : {}),
+        model: { ...model, reorder: result.model, announcement },
+        ...(outMessage ? { outMessage } : {}),
+        commands: Option.match(maybeFocus, {
+          onNone: () => [],
+          onSome: key => [FocusReorderHandle({ id: model.id, key })],
+        }),
       }
     }
-    case 'GrabCancelled':
-      return {
-        model: {
-          ...model,
-          reorder: Option.none(),
-          announcement: Option.some('Reordering cancelled.'),
-        },
-      }
+    case 'CompletedFocus':
+      return { model }
   }
 }

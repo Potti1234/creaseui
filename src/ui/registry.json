@@ -1380,8 +1380,8 @@
         "Potti1234/creaseui/command-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/shortcuts-behavior"
+        "Potti1234/creaseui/shortcuts-behavior",
+        "Potti1234/creaseui/utils"
       ],
       "files": [
         {
@@ -1992,8 +1992,8 @@
         "Potti1234/creaseui/dropdown-menu-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/separator",
-        "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/shortcuts-behavior"
+        "Potti1234/creaseui/shortcuts-behavior",
+        "Potti1234/creaseui/utils"
       ],
       "files": [
         {
@@ -2969,6 +2969,7 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input-status",
         "Potti1234/creaseui/list-input-behavior",
+        "Potti1234/creaseui/reorder-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [

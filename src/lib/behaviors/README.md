@@ -349,8 +349,9 @@ DragAndDrop wraps Foldkit for single-item pointer sorting in lists and boards.
 Prefer it to ui-sdk's `createReorder` for this path: Foldkit already supplies
 a Schema Model, typed drag Messages and drop OutMessages, and scoped
 subscriptions for thresholded pointer tracking, hit testing, viewport edge
-scrolling, and keyboard fallback. The parent applies drop intents to its own
-order instead of connecting a mutable store and draft.
+scrolling. Pointer sorting stays with Foldkit; Reorder owns keyboard drafts
+and announcement data. The parent applies drop intents to its own order
+instead of connecting a mutable store and draft.
 
 Spread `view` on the focusable handle, `sortable` on each row, and `dropTarget`
 on its list. Lift `subscriptions` and the Commands from `update` into the
@@ -360,6 +361,30 @@ container IDs. Transfer List uses a drop indicator rather than a drag ghost.
 This wrapper retains Foldkit's linear hit testing and viewport scrolling; it
 does not implement ui-sdk's grid/group moves, nested-scroller auto-scroll,
 or pointer-capture/loss handling.
+
+## Reorder
+
+Reorder ports ui-sdk's keyboard reordering without a mutable store. Embed
+`Reorder.Model`, pass the owner's committed keys to `update`, and render
+`order(model, value)`. `Grab` gathers enabled group keys in list order;
+`MoveTo` and `Step` change only the draft. `Drop` emits `CommittedOrder`
+only when the order changed. `Move` commits immediately with the
+`imperative` reason. Route owner changes through `Reflect` to rebase a
+draft, or clear it when its grabbed key disappears.
+
+`keydown(model, event)` resolves Space/Enter, arrows, Home/End, Escape and
+Tab for vertical, horizontal and grid layouts, including RTL. An active
+draft swallows unrelated keys. Do not prevent Tab's default focus move:
+its Cancel message has `restoreFocus: false`. Ignore disabled handles
+before resolving a grab. Restore focus from `maybeFocus` after keyed DOM
+reordering, not before rendering the new order.
+
+Consume `outMessages` in order: apply committed orders and format
+`Announcement` data with the item's label using `reorderMessage` (or a
+component-specific formatter), then send the text to Announce with
+assertive priority. Components retain ownership of labels, handles,
+focus and ARIA semantics. Geometry helpers `dropIndex`, `gridDropIndex`
+and `columnsOf` are pure; this module does not track pointer gestures.
 
 ## Storage, Preference and ColorScheme
 

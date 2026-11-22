@@ -892,6 +892,10 @@
       "type": "registry:lib",
       "title": "List Input Behavior",
       "description": "Shared Foldkit behavior and helpers for List Input.",
+      "registryDependencies": [
+        "Potti1234/creaseui/command-behavior",
+        "Potti1234/creaseui/reorder-behavior"
+      ],
       "files": [
         {
           "path": "list-input.ts",
@@ -1042,6 +1046,19 @@
           "path": "project-facts.ts",
           "type": "registry:lib",
           "target": "@lib/project-facts.ts"
+        }
+      ]
+    },
+    {
+      "name": "reorder-behavior",
+      "type": "registry:lib",
+      "title": "Reorder Behavior",
+      "description": "Immutable keyboard reorder drafts, grouped moves and announcement data.",
+      "files": [
+        {
+          "path": "behaviors/reorder.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/reorder.ts"
         }
       ]
     },

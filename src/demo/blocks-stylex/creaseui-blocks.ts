@@ -2,6 +2,8 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import { DragAndDrop as Dnd } from '@foldkit/ui'
 import * as Mount from 'foldkit/mount'
+import * as Reorder from '@/lib/behaviors/reorder'
+import * as KanbanReorder from '@/demo/kanban-reorder'
 
 import { badge } from '@/stylex/badge'
 import { bubble, bubbleContent, bubbleGroup } from '@/stylex/bubble'
@@ -596,6 +598,8 @@ export const initialKanbanLanes: ReadonlyArray<KanbanLaneData> = [
 export type KanbanBoardState<Message> = Readonly<{
   announcement: string
   dnd: Dnd.Model
+  reorder: Reorder.Model
+  toReorderMessage: (message: Reorder.Message) => Message
   lanes: ReadonlyArray<KanbanLaneData>
   toDndMessage: (message: Dnd.Message) => Message
 }>
@@ -858,7 +862,19 @@ export const kanbanBoard = <Message>(
       {
         attrs: [
           ...Dnd.droppable(laneData.id, laneData.name),
-          kanbanLaneTargetAttr(isTarget, h),
+          h.Key(laneData.id),
+          h.DataAttribute('kanban-lane', laneData.id),
+          h.OnKeyDown(key =>
+            kanban.toReorderMessage(
+              key === 'Tab'
+                ? Reorder.Message.Cancel({ restoreFocus: false })
+                : Reorder.Message.Swallow({}),
+            ),
+          ),
+          kanbanLaneTargetAttr(
+            isTarget || Reorder.isMoving(kanban.reorder, laneData.id),
+            h,
+          ),
         ],
         children: [
           stack(
@@ -869,6 +885,32 @@ export const kanbanBoard = <Message>(
                     align: 'center',
                     children: [
                       text({ children: [laneData.name], variant: 'label' }, h),
+                      button(
+                        {
+                          id: KanbanReorder.handleId(
+                            kanban.dnd.id,
+                            laneData.id,
+                          ),
+                          ariaLabel: `Reorder ${laneData.name} column`,
+                          variant: 'ghost',
+                          size: 'icon',
+                          buttonAttributes: [
+                            h.AriaPressed(
+                              Reorder.isMoving(kanban.reorder, laneData.id)
+                                ? 'true'
+                                : 'false',
+                            ),
+                            h.DataAttribute('kanban-lane-reorder', laneData.id),
+                            KanbanReorder.keydownAttribute(
+                              kanban.reorder,
+                              laneData.id,
+                              kanban.toReorderMessage,
+                            ),
+                          ],
+                          children: [icon({ name: 'grip-vertical' }, h)],
+                        },
+                        h,
+                      ),
                       badge(
                         {
                           children: [String(laneData.cards.length)],
@@ -952,8 +994,13 @@ export const kanbanBoard = <Message>(
                     ),
                     grid(
                       {
-                        children: kanban.lanes.map(
-                          laneData => laneData && lane(laneData),
+                        children: Reorder.order(
+                          kanban.reorder,
+                          kanban.lanes.map(lane => lane.id),
+                        ).flatMap(key =>
+                          kanban.lanes
+                            .filter(lane => lane.id === key)
+                            .map(lane),
                         ),
                         columns: 'four',
                         gap: 'md',

@@ -11,6 +11,7 @@ import { reset } from '@/ui/pleat/reset'
    @container list-input (max-width: 640px). */
 
 import { Option } from 'effect'
+import * as Reorder from '@/lib/behaviors/reorder'
 import { defineView } from 'foldkit/submodel'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -25,6 +26,7 @@ import {
 import {
   Message,
   resolveColumnTrack,
+  reorderHandleId,
   type ListInputColumn,
   type ListInputRenderContext,
   type Model,
@@ -401,7 +403,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
     : 'minmax(0, 1fr) 2rem'
   const contentColumn = showReorderColumn ? '1 / -3' : '1 / -2'
 
-  const reorder = Option.getOrUndefined(model.reorder)
+  const reorder = Option.getOrUndefined(model.reorder.maybeDraft)
 
   const fieldLabel = h.span(
     [
@@ -442,66 +444,36 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
     ],
   )
 
+  const keys = props.value.map(item => String(props.getItemKey(item)))
+  const requestReorder = (message: Reorder.Message) =>
+    Message.ReorderRequested({ message, keys, itemName })
   const handleKeyDown = (itemKey: string, index: number) =>
     h.OnKeyDownPreventDefault((key, modifiers) => {
-      if (modifiers.altKey || modifiers.ctrlKey || modifiers.metaKey) {
-        return Option.none()
-      }
-      const isGrabbed = reorder !== undefined && reorder.key === itemKey
-      if (key === 'ArrowUp' || key === 'ArrowDown') {
+      if (key === 'Tab' || mutationsDisabled) return Option.none()
+      if (
+        reorder === undefined &&
+        !modifiers.altKey &&
+        !modifiers.ctrlKey &&
+        !modifiers.metaKey &&
+        (key === 'ArrowUp' || key === 'ArrowDown')
+      ) {
         const delta = key === 'ArrowUp' ? -1 : 1
-        if (!isGrabbed) {
-          const toIndex = Math.max(0, Math.min(index + delta, total - 1))
-          return Option.some(
-            toIndex === index
-              ? Message.AlreadyAtBoundary({
-                  itemName,
-                  boundary: delta < 0 ? 'first' : 'last',
-                })
-              : Message.MoveRequested({
-                  fromIndex: index,
-                  toIndex,
-                  itemName,
-                  total,
-                }),
-          )
-        }
-        if (reorder === undefined) return Option.none()
-        const toIndex = Math.max(
-          0,
-          Math.min(reorder.previewIndex + delta, total - 1),
-        )
-        if (toIndex === reorder.previewIndex) return Option.none()
-        return Option.some(Message.GrabPreviewed({ toIndex, itemName, total }))
-      }
-      if (key === ' ' || key === 'Enter') {
+        const toIndex = Math.max(0, Math.min(index + delta, total - 1))
         return Option.some(
-          isGrabbed
-            ? Message.GrabCommitted({ itemName, total })
-            : Message.GrabStarted({
-                index,
-                key: itemKey,
+          toIndex === index
+            ? Message.AlreadyAtBoundary({
                 itemName,
-                position: index + 1,
-              }),
+                boundary: delta < 0 ? 'first' : 'last',
+              })
+            : requestReorder(
+                Reorder.Message.Move({ key: itemKey, index: toIndex }),
+              ),
         )
       }
-      if (isGrabbed && key === 'Escape') {
-        return Option.some(Message.GrabCancelled())
-      }
-      if (isGrabbed && reorder !== undefined && key === 'Home') {
-        return reorder.previewIndex === 0
-          ? Option.none()
-          : Option.some(Message.GrabPreviewed({ toIndex: 0, itemName, total }))
-      }
-      if (isGrabbed && reorder !== undefined && key === 'End') {
-        return reorder.previewIndex === total - 1
-          ? Option.none()
-          : Option.some(
-              Message.GrabPreviewed({ toIndex: total - 1, itemName, total }),
-            )
-      }
-      return Option.none()
+      return Option.map(
+        Reorder.keydown(model.reorder, { key, ...modifiers, itemKey }),
+        requestReorder,
+      )
     })
 
   const rows = props.value.map((item, index) => {
@@ -614,6 +586,7 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
                 h.AriaPressed(isActiveReorder ? 'true' : 'false'),
                 h.Disabled(mutationsDisabled),
                 h.DataAttribute('list-input-reorder', ''),
+                h.Id(reorderHandleId(model.id, itemKey)),
                 h.Class(
                   className(
                     reset.button,
@@ -623,7 +596,15 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
                   ),
                 ),
                 handleKeyDown(itemKey, index),
-                ...(isActiveReorder ? [h.OnBlur(Message.GrabCancelled())] : []),
+                ...(isActiveReorder
+                  ? [
+                      h.OnBlur(
+                        requestReorder(
+                          Reorder.Message.Cancel({ restoreFocus: false }),
+                        ),
+                      ),
+                    ]
+                  : []),
               ],
               [Icon.gripVertical({ class: className(styles.iconMd) }, h)],
             ),
@@ -851,10 +832,10 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
         [
           h.Id(fieldIds.announcement),
           h.Class(className(styles.srOnly)),
-          h.AriaLive('polite'),
-          h.Attribute('role', 'status'),
+          h.AriaLive('assertive'),
+          h.Attribute('role', 'alert'),
         ],
-        [Option.getOrElse(model.announcement, () => '')],
+        [model.announcer.text],
       ),
     ],
   )

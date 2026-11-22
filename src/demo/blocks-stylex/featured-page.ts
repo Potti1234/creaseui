@@ -6,6 +6,9 @@ import type { Update } from 'foldkit'
 import { Command, Subscription } from 'foldkit'
 
 import { DragAndDrop as Dnd } from '@foldkit/ui'
+import * as Reorder from '@/lib/behaviors/reorder'
+import * as Announce from '@/lib/behaviors/announce'
+import * as KanbanReorder from '@/demo/kanban-reorder'
 import { loginArtwork } from '@/stylex/composition/login-artwork'
 import { badge } from '@/stylex/badge'
 import { button } from '@/stylex/button'
@@ -82,7 +85,9 @@ export const Model = S.Struct({
   query: S.String,
   radioGroup: RadioGroup.Model,
   kanbanAnnouncement: S.String,
+  kanbanAnnouncer: Announce.Model,
   kanbanDnd: Dnd.Model,
+  kanbanReorder: Reorder.Model,
   kanbanLanes: S.Array(KanbanLaneData),
   sidebarCollapsed: S.Boolean,
   sidebarMobileOpen: S.Boolean,
@@ -130,6 +135,15 @@ export const GotTablecnGridMessage = taggedStruct(
 export const GotKanbanDndMessage = taggedStruct('GotKanbanDndMessage', {
   message: Dnd.Message,
 })
+export const GotKanbanReorderMessage = taggedStruct('GotKanbanReorderMessage', {
+  message: Reorder.Message,
+})
+export const GotKanbanAnnouncementMessage = taggedStruct(
+  'GotKanbanAnnouncementMessage',
+  {
+    message: Announce.Message,
+  },
+)
 export const ToggledBlockSidebar = taggedStruct('ToggledBlockSidebar')
 export const ToggledBlockMobileSidebar = taggedStruct(
   'ToggledBlockMobileSidebar',
@@ -151,6 +165,8 @@ export const Message = S.Union([
   GotTablecnMessage,
   GotTablecnGridMessage,
   GotKanbanDndMessage,
+  GotKanbanReorderMessage,
+  GotKanbanAnnouncementMessage,
 ])
 export type Message = typeof Message.Type
 export const init = (): Model => ({
@@ -158,7 +174,9 @@ export const init = (): Model => ({
   delivery: 'standard',
   email: '',
   kanbanAnnouncement: '',
+  kanbanAnnouncer: Announce.init(),
   kanbanDnd: Dnd.init({ id: 'featured-kanban' }),
+  kanbanReorder: Reorder.init(),
   kanbanLanes: initialKanbanLanes,
   kind: 'all',
   mail: 'nora',
@@ -200,6 +218,61 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
 )
 
 export const update = (model: Model, message: Message): UpdateReturn => {
+  if (message._tag === 'GotKanbanAnnouncementMessage') {
+    const result = Announce.update(model.kanbanAnnouncer, message.message)
+    return {
+      model: { ...model, kanbanAnnouncer: result.model },
+      commands: Command.mapMessages(result.commands ?? [], message =>
+        GotKanbanAnnouncementMessage({ message }),
+      ),
+    }
+  }
+  const result = updateModel(model, message)
+  if (result.model.kanbanAnnouncement === model.kanbanAnnouncement)
+    return result
+  const announced = Announce.update(
+    result.model.kanbanAnnouncer,
+    Announce.Message.RequestedAnnouncement({
+      text: result.model.kanbanAnnouncement,
+      priority: 'assertive',
+    }),
+  )
+  return {
+    ...result,
+    model: { ...result.model, kanbanAnnouncer: announced.model },
+    commands: [
+      ...(result.commands ?? []),
+      ...Command.mapMessages(announced.commands ?? [], message =>
+        GotKanbanAnnouncementMessage({ message }),
+      ),
+    ],
+  }
+}
+
+const updateModel = (
+  model: Model,
+  message: Exclude<Message, typeof GotKanbanAnnouncementMessage.Type>,
+): UpdateReturn => {
+  if (message._tag === 'GotKanbanReorderMessage') {
+    const result = KanbanReorder.update(
+      model.kanbanReorder,
+      message.message,
+      model.kanbanLanes,
+      model.kanbanAnnouncement,
+      model.kanbanDnd.id,
+    )
+    return {
+      model: {
+        ...model,
+        kanbanReorder: result.model,
+        kanbanLanes: result.lanes,
+        kanbanAnnouncement: result.announcement,
+      },
+      commands: Command.mapMessages(result.commands, message =>
+        GotKanbanReorderMessage({ message }),
+      ),
+    }
+  }
   if (message._tag === 'GotBlocksStyleXEChartMessage') return { model: model }
   if (message._tag === 'GotKanbanDndMessage') {
     const result = Dnd.update(model.kanbanDnd, message.message)
@@ -1168,8 +1241,10 @@ const blocks: ReadonlyArray<Block> = [
       kanbanBoard(
         chromeState(model),
         {
-          announcement: model.kanbanAnnouncement,
+          announcement: model.kanbanAnnouncer.text,
           dnd: model.kanbanDnd,
+          reorder: model.kanbanReorder,
+          toReorderMessage: message => GotKanbanReorderMessage({ message }),
           lanes: model.kanbanLanes,
           toDndMessage: message => GotKanbanDndMessage({ message }),
         },
