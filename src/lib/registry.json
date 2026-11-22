@@ -324,6 +324,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior",
         "Potti1234/creaseui/toggle-group-behavior",
         "Potti1234/creaseui/tree-list-behavior"
       ]
@@ -1136,6 +1137,11 @@
           "path": "virtual-data-table-state.ts",
           "type": "registry:lib",
           "target": "@lib/virtual-data-table-state.ts"
+        },
+        {
+          "path": "behaviors/virtualizer.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/virtualizer.ts"
         }
       ]
     },
