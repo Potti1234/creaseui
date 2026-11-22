@@ -1,10 +1,10 @@
+import * as CalendarPrimitive from '@/lib/behaviors/calendar'
 import { Style, When } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
 import type { Option } from 'effect'
 import { Match as M } from 'effect'
 import type * as FoldkitCalendar from 'foldkit/calendar'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
-import { Calendar as CalendarPrimitive } from '@foldkit/ui'
 
 import * as CalendarBehavior from '@/lib/calendar'
 import * as Icon from '@/lib/icon'

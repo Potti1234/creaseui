@@ -11,6 +11,34 @@ const step = (
 ): DataTable.Model => DataTable.update(model, message).model
 
 describe('data table interaction model', () => {
+  it('folds accents in state filtering while retaining contains semantics', () => {
+    const rows = [{ name: 'Łódź' }, { name: 'Paris' }]
+    const config: DataTable.DataTableConfig<{ name: string }> = {
+      columns: [{ id: 'name', header: 'Name', get: row => row.name }],
+      rowKey: row => row.name,
+    }
+    const model = { ...DataTable.init(), filter: 'LOD' }
+    assert.deepEqual(DataTable.filteredRows(model, config, rows), [rows[0]])
+    assert.deepEqual(
+      DataTable.filteredRows({ ...model, filter: '' }, config, rows),
+      rows,
+    )
+    assert.deepEqual(
+      DataTable.filteredRows({ ...model, filter: 'ldz' }, config, rows),
+      [],
+    )
+    assert.deepEqual(DataTable.filteredRows(model, config, []), [])
+  })
+  it('folds accents in client search', () => {
+    const projection = projectDataTable({
+      columns: [{ key: 'name' }],
+      filterText: (row: { name: string }) => row.name,
+      model: { ...DataTable.init(), filter: 'lodz' },
+      rowKey: row => row.name,
+      rows: [{ name: 'Łódź' }, { name: 'Paris' }],
+    })
+    assert.deepEqual(projection.rows, [{ name: 'Łódź' }])
+  })
   it('keeps controlled selection stable by row key', () => {
     const first = step(
       DataTable.init(10),
