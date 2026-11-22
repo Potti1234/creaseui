@@ -2,6 +2,7 @@ import { Style, When } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as SpatialDemo from '@/docs/components/pages/grid/spatial-focus-demo'
+import * as LassoDemo from '@/docs/components/pages/grid/lasso-demo'
 
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
@@ -99,6 +100,7 @@ const styles = {
 type PreviewModel = Readonly<{
   resizable: Resizable.Model
   spatialDemo: SpatialDemo.Model
+  lassoDemo: LassoDemo.Model
 }>
 
 const msg = <Msg>(
@@ -517,6 +519,15 @@ const viewFor = <Msg>(
               h,
             ),
         },
+      )
+    case 'lasso':
+      return LassoDemo.preview(
+        model.lassoDemo,
+        message =>
+          onMessageJson(
+            JSON.stringify({ _tag: 'GotLassoPreviewMessage', message }),
+          ),
+        h,
       )
     case 'showcase':
       return showcaseView(h)
