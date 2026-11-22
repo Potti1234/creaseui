@@ -333,7 +333,8 @@
       "registryDependencies": [
         "Potti1234/creaseui/roving-focus-behavior",
         "Potti1234/creaseui/toggle-group-behavior",
-        "Potti1234/creaseui/tree-list-behavior"
+        "Potti1234/creaseui/tree-list-behavior",
+        "Potti1234/creaseui/roving-focus-behavior"
       ]
     },
     {
@@ -342,7 +343,8 @@
       "title": "Foldkit Command Query Policy",
       "description": "Skin-neutral command query normalization and application-provided search-text filtering.",
       "registryDependencies": [
-        "Potti1234/creaseui/listbox-behavior"
+        "Potti1234/creaseui/listbox-behavior",
+        "Potti1234/creaseui/text-match-behavior"
       ],
       "files": [
         {
@@ -456,7 +458,8 @@
       "registryDependencies": [
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-range-input-behavior",
-        "Potti1234/creaseui/slider-behavior"
+        "Potti1234/creaseui/slider-behavior",
+        "Potti1234/creaseui/text-match-behavior"
       ]
     },
     {
@@ -907,7 +910,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/multi-selector-behavior"
+        "Potti1234/creaseui/multi-selector-behavior",
+        "Potti1234/creaseui/text-match-behavior"
       ]
     },
     {
@@ -1313,6 +1317,19 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/drag-behavior"
+      ]
+    },
+    {
+      "name": "text-match-behavior",
+      "type": "registry:lib",
+      "title": "Text Match",
+      "description": "Pure locale-aware folding, fuzzy scoring and match highlighting.",
+      "files": [
+        {
+          "path": "behaviors/text-match.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/text-match.ts"
+        }
       ]
     }
   ]

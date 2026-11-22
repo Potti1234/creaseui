@@ -50,7 +50,16 @@ printable keys to the view's keydown callback for typeahead.
 Pointer highlight does not choose. Pair Listbox with `Selection.create<Key>()`
 for choosing, or keep the component's existing selection policy. Roles and
 aria-selected belong to that component. Command reuses the pure helpers while
-retaining Foldkit Combobox state and its existing accent-sensitive search.
+retaining Foldkit Combobox state with folded fuzzy ranking.
+
+## Text Match
+
+`text-match.ts` provides pure fuzzy scoring, match ranges and display segments.
+Length-preserving, collator-based folding respects the runtime locale; pass a
+locale or a folder explicitly for deterministic language-specific matching.
+Unlike ui-sdk, folding unifies Greek final sigma `ς` with `σ`.
+Scoring folds and trims both inputs, while display ranges preserve label offsets.
+Command ranks through Listbox’s score callback and highlights matched letters.
 Select stays on @foldkit/ui Listbox for its button/anchor/top-layer/focus
 lifecycle; this behavior does not replace that lifecycle.
 
@@ -259,3 +268,6 @@ seam components import: the primitive's API, the range policy ui-sdk keeps in
 the multi-thumb submodel the primitive does not ship. Multi-thumb keeps one
 primitive Model per thumb, routes track presses to a thumb index, mirrors
 values for RTL and aggregates each thumb's drag Subscriptions.
+Command item configs can expose `label` and optional `leadingContent` for an
+icon/adornment. Renderers highlight the label automatically; `searchText` can
+still extend the searchable text. Legacy rich `content` remains opaque.
