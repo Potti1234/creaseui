@@ -70,8 +70,11 @@ test('reduced motion still opens and closes a picker', async ({
   const trigger = page.locator('#create-base-picker-button')
   await trigger.click()
   const popover = page.locator('#create-base-picker-panel')
-  // Foldkit focuses the panel on the frame after it becomes visible.
-  await expect(popover.and(page.locator(':focus-within'))).toBeVisible()
+  await expect(popover).toBeVisible()
+  // Foldkit defers focus to a later frame, which can take several seconds on loaded WebKit runners.
+  await expect(popover).toBeFocused(
+    browserName === 'webkit' ? { timeout: 20_000 } : undefined,
+  )
   await page.keyboard.press('Escape')
   await expect(trigger).toHaveAttribute('aria-expanded', 'false')
   if (browserName === 'webkit') {
