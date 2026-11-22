@@ -85,6 +85,15 @@ test.describe('Swipe actions docs example', () => {
     await expect(row).toHaveAttribute('data-swipe-open', 'end')
     await expect(endActions).not.toHaveAttribute('inert')
     await expect(row.getByRole('button', { name: 'Delete' })).toBeFocused()
+    await expect(content).toHaveCSS('transform', 'matrix(1, 0, 0, 1, -100, 0)')
+    await expect(row.getByRole('button', { name: 'Delete' })).toHaveCSS(
+      'outline-offset',
+      '-3px',
+    )
+    await page.screenshot({
+      path: '/home/ubuntu/evidence/swipe-action-focus.png',
+      fullPage: true,
+    })
     await page.keyboard.press('Escape')
     await expect(row).toBeFocused()
     await expect(endActions).toHaveAttribute('inert', '')
