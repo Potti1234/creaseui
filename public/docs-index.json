@@ -1817,7 +1817,8 @@
         "Settings Panel",
         "File Tree",
         "RTL",
-        "Disabled"
+        "Disabled",
+        "Motion presence"
       ],
       "api": [
         {
@@ -2019,8 +2020,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/overlay-boundary-behavior",
-        "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/text-match-behavior"
+        "Potti1234/creaseui/text-match-behavior",
+        "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Demo",
@@ -2155,8 +2156,7 @@
         "Potti1234/creaseui/command-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/text-match-behavior"
+        "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Demo",
@@ -2447,13 +2447,13 @@
       "install": "npx creaseui add date-input",
       "dependencies": [
         "Potti1234/creaseui/calendar",
+        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/date-input-behavior",
         "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-picker-behavior",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/calendar-range",
-        "Potti1234/creaseui/date-picker-behavior"
+        "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Date Input",
@@ -2548,10 +2548,10 @@
         "Potti1234/creaseui/calendar",
         "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/date-picker-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/overlay-boundary-behavior",
-        "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/date-picker-behavior"
+        "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Pick a date",
@@ -2680,12 +2680,12 @@
       "install": "npx creaseui add date-range-input",
       "dependencies": [
         "Potti1234/creaseui/calendar",
+        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-range-input-behavior",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/calendar-range"
+        "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Date Range Input",
@@ -2784,14 +2784,14 @@
       "install": "npx creaseui add date-time-input",
       "dependencies": [
         "Potti1234/creaseui/calendar",
+        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-picker-behavior",
         "Potti1234/creaseui/date-time-input-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/time-parse-behavior",
-        "Potti1234/creaseui/utils",
-        "Potti1234/creaseui/calendar-range",
-        "Potti1234/creaseui/date-picker-behavior"
+        "Potti1234/creaseui/utils"
       ],
       "examples": [
         "Date Time Input",
