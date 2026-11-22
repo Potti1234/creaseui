@@ -333,6 +333,18 @@ Pure helpers (`pickerPosition`, `nearestEnabled`, `pageSize`, `pageTarget`,
 `test/scroll-picker.test.ts`. The docs Time Input page demonstrates
 parent-owned hour/minute selection in all three renderers.
 
+Shortcuts provides pure platform-aware ARIA, display, matching, typing-target
+and newest-enabled-binding resolution helpers. ListenShortcuts owns a document
+keydown listener for its Mount lifetime and emits PressedShortcut messages.
+Layer priority and named scopes are intentionally left to the host application;
+item keys metadata does not register application actions automatically.
+
+Announce provides describeList and visually-hidden liveRegionAttributes for
+view-derived status text. Its optional Model clears imperative announcements
+before a delayed, version-checked completion, so repeated text can be announced
+without stale delays overwriting newer requests. Render model.text with the
+attributes for model.priority.
+
 DragAndDrop wraps Foldkit for single-item pointer sorting in lists and boards.
 Prefer it to ui-sdk's `createReorder` for this path: Foldkit already supplies
 a Schema Model, typed drag Messages and drop OutMessages, and scoped
