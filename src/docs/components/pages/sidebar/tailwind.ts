@@ -10,7 +10,9 @@ import { ObserveDocumentationHover } from './hover'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
+  documentationItems,
   sidebarFixtures,
+  visibleDocumentationItems,
   type SidebarFixtureKind,
 } from '@/docs/components/pages/sidebar/shared'
 import * as DropdownMenu from '@/ui/dropdown-menu'
@@ -48,7 +50,6 @@ type Model = typeof Model.Type
 const ActionMenu = DropdownMenu.create<string>()
 const actionItems = ['open', 'rename', 'delete'] as const
 const accountItems = ['profile', 'settings', 'sign out'] as const
-const documentationItems = ['Introduction', 'Components', 'Changelog'] as const
 const FocusDocumentation = Command.define('FocusSidebarDocumentation', {
   args: { id: S.String, isOpen: S.Boolean },
   messages: [Message.CompletedSidebarPreviewLearnFocus],
@@ -346,6 +347,7 @@ const nestedNavigation = (
       h,
     )
   }
+  const sections = visibleDocumentationItems(model.learnOpen)
   return Sidebar.sidebarMenu(
     {
       children: [
@@ -371,22 +373,18 @@ const nestedNavigation = (
                 },
                 h,
               ),
-              ...(model.learnOpen
+              ...(sections.length > 0
                 ? [
                     Sidebar.sidebarMenuSub(
                       {
-                        children: [
-                          'Introduction',
-                          'Components',
-                          'Changelog',
-                        ].map((label, index) =>
+                        children: sections.map(label =>
                           Sidebar.sidebarMenuSubItem(
                             {
                               children: [
                                 Sidebar.sidebarMenuSubButton(
                                   {
                                     href: '#',
-                                    isActive: index === 1,
+                                    isActive: label === 'Components',
                                     children: [label],
                                   },
                                   h,

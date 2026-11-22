@@ -18,6 +18,19 @@
       ]
     },
     {
+      "name": "drag-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Drag Behavior",
+      "description": "Pointer capture, drag thresholds, and edge autoscroll for Foldkit mounts.",
+      "files": [
+        {
+          "path": "behaviors/drag.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/drag.ts"
+        }
+      ]
+    },
+    {
       "name": "time-input-core",
       "type": "registry:lib",
       "title": "Time Input State",
@@ -27,6 +40,19 @@
           "path": "time-input.ts",
           "type": "registry:lib",
           "target": "@lib/time-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "drag-and-drop-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Drag and Drop Behavior",
+      "description": "Headless pointer and keyboard drag-and-drop Submodel and attribute bundles for sortable lists.",
+      "files": [
+        {
+          "path": "behaviors/drag-and-drop.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/drag-and-drop.ts"
         }
       ]
     },
@@ -224,7 +250,16 @@
           "path": "dropdown-menu-behavior.ts",
           "type": "registry:lib",
           "target": "@lib/dropdown-menu-behavior.ts"
-        },
+        }
+      ],
+      "registryDependencies": ["Potti1234/creaseui/popup-behavior"]
+    },
+    {
+      "name": "popup-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Popup Behavior",
+      "description": "Shared open, close, dismissal, and exit presence for custom overlays.",
+      "files": [
         {
           "path": "behaviors/popup.ts",
           "type": "registry:lib",
@@ -433,6 +468,9 @@
           "type": "registry:lib",
           "target": "@lib/drawer.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior"
       ]
     },
     {
@@ -698,6 +736,9 @@
           "type": "registry:lib",
           "target": "@lib/lightbox.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior"
       ]
     },
     {
@@ -797,7 +838,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/drawer-behavior"
+        "Potti1234/creaseui/drawer-behavior",
+        "Potti1234/creaseui/selection-behavior"
       ]
     },
     {
@@ -811,7 +853,8 @@
           "type": "registry:lib",
           "target": "@lib/nav-menu.ts"
         }
-      ]
+      ],
+      "registryDependencies": ["Potti1234/creaseui/popup-behavior"]
     },
     {
       "name": "number-input-behavior",
@@ -849,6 +892,19 @@
           "path": "project-facts.ts",
           "type": "registry:lib",
           "target": "@lib/project-facts.ts"
+        }
+      ]
+    },
+    {
+      "name": "selection-behavior",
+      "type": "registry:lib",
+      "title": "Selection Behavior",
+      "description": "Pure Foldkit selection transitions for single, multiple, and range selection over keys.",
+      "files": [
+        {
+          "path": "behaviors/selection.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/selection.ts"
         }
       ]
     },
@@ -969,6 +1025,30 @@
           "path": "tree-list.ts",
           "type": "registry:lib",
           "target": "@lib/tree-list.ts"
+        },
+        {
+          "path": "behaviors/typeahead.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/typeahead.ts"
+        }
+      ],
+      "registryDependencies": ["Potti1234/creaseui/tree-collection-behavior"]
+    },
+    {
+      "name": "tree-collection-behavior",
+      "type": "registry:lib",
+      "title": "Tree Collection Behavior",
+      "description": "Pure tree structure, visible row, and checked state helpers.",
+      "files": [
+        {
+          "path": "behaviors/tree-collection.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/tree-collection.ts"
+        },
+        {
+          "path": "behaviors/tree-collection.LICENSE.txt",
+          "type": "registry:file",
+          "target": "@lib/behaviors/tree-collection.LICENSE.txt"
         }
       ]
     },
@@ -1081,6 +1161,9 @@
           "type": "registry:lib",
           "target": "@lib/color-picker.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior"
       ]
     },
     {
@@ -1094,6 +1177,22 @@
           "type": "registry:lib",
           "target": "@lib/sidebar-modal.ts"
         }
+      ]
+    },
+    {
+      "name": "resizable-behavior",
+      "type": "registry:lib",
+      "title": "Resizable Behavior",
+      "description": "Shared Foldkit behavior and helpers for Resizable.",
+      "files": [
+        {
+          "path": "resizable.ts",
+          "type": "registry:lib",
+          "target": "@lib/resizable.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior"
       ]
     }
   ]
