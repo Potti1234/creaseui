@@ -2,8 +2,10 @@ import EmblaCarousel, {
   type EmblaOptionsType,
   type EmblaPluginType,
 } from 'embla-carousel'
-import { Effect, Queue, Schema as S, Stream } from 'effect'
+import { Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
+
+import { navigationIntent } from '@/lib/behaviors/roving-focus'
 
 export const Model = S.Struct({
   id: S.String,
@@ -91,17 +93,28 @@ export const mountCarousel = <Msg>(
         const previous = () => api.scrollPrev()
         const next = () => api.scrollNext()
         const onKeyDown = (event: KeyboardEvent) => {
-          if (!props.keyboardNavigation) return
-          const previousKey =
-            props.orientation === 'vertical' ? 'ArrowUp' : 'ArrowLeft'
-          const nextKey =
-            props.orientation === 'vertical' ? 'ArrowDown' : 'ArrowRight'
-          if (event.key === previousKey) api.scrollPrev()
-          else if (event.key === nextKey) api.scrollNext()
-          else if (event.key === 'Home') api.scrollTo(0)
-          else if (event.key === 'End')
-            api.scrollTo(api.scrollSnapList().length - 1)
-          else return
+          if (!props.keyboardNavigation || event.defaultPrevented) return
+          const maybeIntent = navigationIntent({
+            pressedKey: event.key,
+            orientation:
+              props.orientation === 'vertical' ? 'Vertical' : 'Horizontal',
+            direction: props.direction,
+          })
+          if (Option.isNone(maybeIntent)) return
+          switch (maybeIntent.value) {
+            case 'Previous':
+              api.scrollPrev()
+              break
+            case 'Next':
+              api.scrollNext()
+              break
+            case 'First':
+              api.scrollTo(0)
+              break
+            case 'Last':
+              api.scrollTo(api.scrollSnapList().length - 1)
+              break
+          }
           event.preventDefault()
         }
 

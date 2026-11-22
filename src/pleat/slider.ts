@@ -2,7 +2,7 @@ import { Style, When } from '@pleat/core'
 import { Option } from 'effect'
 import { reset } from '@/ui/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { Slider as SliderPrimitive } from '@foldkit/ui'
+import * as SliderPrimitive from '@/lib/behaviors/slider'
 
 import {
   initMulti,
@@ -15,7 +15,7 @@ import {
   toThumbValue,
   updateMulti,
   updateMultiValue,
-} from '@/lib/slider'
+} from '@/lib/behaviors/slider'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { foundationTokens } from './foundations-tokens'
