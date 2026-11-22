@@ -1,3 +1,4 @@
+import { currentPlatform, formatShortcut } from '@/lib/behaviors/shortcuts'
 import type { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as stylex from '@stylexjs/stylex'
@@ -52,7 +53,9 @@ export const commandStyleXPreview: ExamplePreviewProvider = <Msg>(
             : {
                 leadingContent: Icon.icon({ name: item.icon, size: 'sm' }, h),
               }),
-          ...(item?.shortcut === undefined ? {} : { shortcut: item.shortcut }),
+          ...(item?.keys === undefined
+            ? {}
+            : { shortcut: formatShortcut(item.keys, currentPlatform()) }),
         }
       },
       itemGroupKey: value =>
