@@ -9,7 +9,30 @@ Components compose behaviors and own selection policy, semantics, and styling.
 Bind key unions once with `create<Key>()`; pass item collections as view inputs.
 Keep navigation helpers pure and test them independently of rendered views.
 RovingFocus establishes this convention for subsequent behavior modules.
+Use its pure navigation helpers when focus targets belong to another component
+(menubar), are supplied as opaque Html (toolbar), or movement delegates to a
+mounted resource without moving DOM focus (carousel).
+
 Typeahead follows this convention with a version-guarded timeout and pure label search.
+
+Listbox is the headless highlight/filter/navigation layer from ui-sdk.dev.
+Bind keys with `Listbox.create<Key>()`, embed its Model (initial highlight is
+None), and pass ordered keys and labels as view inputs. `filter` and `count`
+accept contains (default), startsWith, or a boolean/score callback; higher
+positive scores rank first, zero hides. Empty queries keep the original order.
+Real focus uses RovingFocus's item ids and FocusItem Command. Virtual focus
+only changes the highlight; point the input's aria-activedescendant at
+`activeId(model)`. Home/End and Typeahead apply to Real focus by default;
+Virtual consumers can explicitly set `homeEnd: true`. Page navigation uses
+`pageSize` enabled options (default 10); components measuring a viewport can
+supply its size. `first`/`last` work in either focus mode. Pass only unmodified
+printable keys to the view's keydown callback for typeahead.
+Pointer highlight does not choose. Pair Listbox with `Selection.create<Key>()`
+for choosing, or keep the component's existing selection policy. Roles and
+aria-selected belong to that component. Command reuses the pure helpers while
+retaining Foldkit Combobox state and its existing accent-sensitive search.
+Select stays on @foldkit/ui Listbox for its button/anchor/top-layer/focus
+lifecycle; this behavior does not replace that lifecycle.
 
 Move ports ui-sdk's `createMove` for freeform 2D placement. Foldkit
 DragAndDrop remains the better fit for ordering items or transferring them
@@ -43,8 +66,27 @@ requests. Read the reason from the OutMessage. For exit transitions, pass
 Dropdown Menu and Nav Menu use immediate unmount. More Menu, Context Menu
 and Menubar's item panels inherit Popup through Dropdown Menu. Nav Menu keeps
 hover intent, pinning and focus commands outside Popup. Roles, event detection,
-positioning, focus and layering belong to the component; keep Foldkit's Dialog
-and Popover for overlays that already use their positioning and focus lifecycle.
+positioning, focus and layering belong to the component.
+
+Dialog and Popover wrap `@foldkit/ui` instead of porting the UI SDK popup
+controller. Foldkit Dialog manages the native dialog, focus containment and
+restoration, inert background, and scroll locking for the dialog lifetime.
+Foldkit Popover already combines collision-aware anchoring, optional modal
+resources, and focus restoration with its exit lifecycle. The wrappers keep
+these Commands and Mounts intact; each renderer supplies only the skin.
+
+Tooltip wraps Foldkit's focus and Escape handling, versioned show wait, and
+anchoring instead of replicating them around a mutable store. The adapter
+keeps CreaseUI's close wait and focus-visible policy; the renderers still
+own the trigger and tooltip markup.
+
+HoverIntent keeps Foldkit's Schema Model, cancellable waits, focus ownership,
+and Escape behavior. UI SDK also keeps the panel open while the pointer
+crosses the gap from trigger to panel; `watchPointerDeparture` adds that
+geometry and reports a departure only outside the bridge. Acquire it in the
+panel Mount and route departure to the same Message as leaving the common
+hover region. The watcher ignores touch and cleans up on unmount.
+The Hover Card docs use this across Tailwind, StyleX, and Pleat.
 
 Drag follows one pointer with capture and frame-coalesced samples. Use
 `observeDrag` in a streaming Mount to convert samples to Schema Messages;
@@ -80,6 +122,12 @@ Selection stays parent-owned. Compose CalendarRange, normalizeRange and
 rangePosition for range highlighting and policy; use isDisabled for the reflected
 calendar constraints. Convert instants at the boundary with dateInTimeZone.
 The legacy lib/calendar module re-exports the calendar behavior.
+
+InlineEdit is the pure in-place editing lifecycle. It owns the editing id,
+draft and type-over flag, and reports starts, changed commits, unchanged ends,
+cancellation and rejected validation through OutMessages. Use startKey and
+inputKey for keyboard intent. Components own editor focus, selection/caret,
+focus restoration, roles and ARIA; grids retain navigation and editor policy.
 
 DragAndDrop wraps Foldkit for single-item pointer sorting in lists and boards.
 Prefer it to ui-sdk's `createReorder` for this path: Foldkit already supplies
@@ -140,3 +188,29 @@ help with focus restoration and live-region text.
 
 Try the [room-booking demo](../../docs/spans-demo.html) locally:
 `npm run dev -- --open /src/docs/spans-demo.html`.
+
+## RadioGroup
+
+RadioGroup keeps the `@foldkit/ui` primitive. It already models focus as an
+immutable Schema submodel, leaves the selected value with the parent, and
+ships the APG-complete parts ui-sdk's radio would need porting for: disabled
+and read-only options, Home/End/Page keys, focus Commands, label and
+description ids, and the hidden form input. `behaviors/radio-group.ts` is the
+seam components import: the primitive's Model, Message, OutMessage and
+`init`, plus `create<Value>()`, whose view also accepts `direction` and maps
+both arrow axes onto the group's orientation as the APG pattern requires.
+The pure `toOrientationKey` holds that key policy. Components still own the
+rendered markup, labels, indicator and styling.
+
+## Slider
+
+Slider keeps the `@foldkit/ui` primitive. Its pointer drag is a tagged,
+Schema-modelled lifecycle driven by Subscriptions, with Escape cancel,
+keyboard steps, pointer-to-value mapping and the hidden form input, which
+matches ui-sdk's slider without a mutable store. `behaviors/slider.ts` is the
+seam components import: the primitive's API, the range policy ui-sdk keeps in
+`@ui-sdk/core/number` (`normalizeRange` and `snapRangeValue` cover its
+`scrubTo` ordering, clamping, step grid from `min` and float rounding), and
+the multi-thumb submodel the primitive does not ship. Multi-thumb keeps one
+primitive Model per thumb, routes track presses to a thumb index, mirrors
+values for RTL and aggregates each thumb's drag Subscriptions.

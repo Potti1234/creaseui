@@ -3,7 +3,7 @@ import test from 'node:test'
 
 import { Option } from 'effect'
 
-import * as Tooltip from '../src/lib/tooltip.ts'
+import * as Tooltip from '../src/lib/behaviors/tooltip.ts'
 
 test('stale show completion cannot reopen a tooltip after pointer leave', () => {
   const initial = Tooltip.init({ id: 'tip', showDelay: 400 })

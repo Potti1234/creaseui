@@ -5,6 +5,27 @@ import { Option } from 'effect'
 import * as Menubar from '../src/lib/menubar.ts'
 
 describe('Menubar focus behavior', () => {
+  it('resolves existing trigger IDs with wrap, Home/End and RTL', () => {
+    const triggers = ['file-trigger', 'edit-trigger', 'view-trigger']
+    assert.deepEqual(
+      Menubar.moveTopLevel(triggers, 0, 'ArrowLeft'),
+      Option.some({ index: 2, triggerId: 'view-trigger' }),
+    )
+    assert.deepEqual(
+      Menubar.moveTopLevel(triggers, 2, 'ArrowRight', 'rtl'),
+      Option.some({ index: 1, triggerId: 'edit-trigger' }),
+    )
+    assert.deepEqual(
+      Menubar.moveTopLevel(triggers, 2, 'Home'),
+      Option.some({ index: 0, triggerId: 'file-trigger' }),
+    )
+    assert.deepEqual(
+      Menubar.moveTopLevel(triggers, 0, 'End'),
+      Option.some({ index: 2, triggerId: 'view-trigger' }),
+    )
+    assert.deepEqual(Menubar.moveTopLevel(triggers, 0, 'Tab'), Option.none())
+  })
+
   it('stores only the active top-level index', () => {
     assert.deepEqual(Menubar.init({ id: 'app-menu' }), {
       id: 'app-menu',

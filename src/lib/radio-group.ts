@@ -1,6 +1,6 @@
 import type { Option } from 'effect'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
-import { RadioGroup as RadioGroupPrimitive } from '@foldkit/ui'
+import * as RadioGroupBehavior from '@/lib/behaviors/radio-group'
 
 export type RadioGroupOption = Readonly<{
   value: string
@@ -10,13 +10,13 @@ export type RadioGroupOption = Readonly<{
   isInvalid?: boolean
 }>
 
-export const Model = RadioGroupPrimitive.Model
-export type Model = typeof Model.Type
-export const Message = RadioGroupPrimitive.Message
-export type Message = typeof Message.Type
-export type OutMessage = RadioGroupPrimitive.OutMessage<string>
-export const init = RadioGroupPrimitive.init
-const StringRadioGroup = RadioGroupPrimitive.create<string>()
+export const Model = RadioGroupBehavior.Model
+export type Model = RadioGroupBehavior.Model
+export const Message = RadioGroupBehavior.Message
+export type Message = RadioGroupBehavior.Message
+export type OutMessage = RadioGroupBehavior.OutMessage
+export const init = RadioGroupBehavior.init
+const StringRadioGroup = RadioGroupBehavior.create<string>()
 export const update = StringRadioGroup.update
 
 export type RadioGroupBehaviorProps<Msg> = Readonly<{
@@ -28,8 +28,8 @@ export type RadioGroupBehaviorProps<Msg> = Readonly<{
   isDisabled?: boolean
   isReadOnly?: boolean
   name?: string
-  orientation?: RadioGroupPrimitive.Orientation
-  direction?: 'ltr' | 'rtl'
+  orientation?: RadioGroupBehavior.Orientation
+  direction?: RadioGroupBehavior.Direction
 }>
 
 type OptionState = Readonly<{
@@ -49,50 +49,6 @@ const childAttributeTag = (attribute: ChildAttribute): string | undefined => {
     : undefined
 }
 
-type KeyDownHandler = (key: string, modifiers: unknown) => unknown
-
-const isKeyDownAttribute = (
-  value: unknown,
-): value is Readonly<{ _tag: 'OnKeyDownPreventDefault'; f: KeyDownHandler }> =>
-  typeof value === 'object' &&
-  value !== null &&
-  '_tag' in value &&
-  value._tag === 'OnKeyDownPreventDefault' &&
-  'f' in value &&
-  typeof value.f === 'function'
-
-/* APG radio groups move with both arrow axes; the primitive only handles
-   its orientation's axis, so cross-axis arrows are mapped onto it. */
-const toOrientationKey = (
-  orientation: RadioGroupPrimitive.Orientation,
-  direction: 'ltr' | 'rtl',
-): ((key: string) => string) => {
-  const [next, previous] =
-    orientation === 'Horizontal'
-      ? ['ArrowRight', 'ArrowLeft']
-      : ['ArrowDown', 'ArrowUp']
-  const [forward, back] =
-    direction === 'rtl'
-      ? ['ArrowLeft', 'ArrowRight']
-      : ['ArrowRight', 'ArrowLeft']
-  return key =>
-    key === 'ArrowDown' || key === forward
-      ? next
-      : key === 'ArrowUp' || key === back
-        ? previous
-        : key
-}
-
-const withBothArrowAxes = (
-  attribute: ChildAttribute,
-  toKey: (key: string) => string,
-): ChildAttribute => {
-  const value = attribute.attribute
-  if (!isKeyDownAttribute(value)) return attribute
-  const f: KeyDownHandler = (key, modifiers) => value.f(toKey(key), modifiers)
-  return { ...attribute, attribute: { ...value, f } }
-}
-
 export type RadioGroupVisualAttributes<Msg> = Readonly<{
   group: ReadonlyArray<Attribute<Msg>>
   row: ReadonlyArray<Attribute<Msg>>
@@ -109,10 +65,6 @@ export const renderRadioGroup = <Msg>(
   toIndicator: (isSelected: boolean, h: HtmlBuilder<Msg>) => Html,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const toKey = toOrientationKey(
-    props.orientation ?? 'Vertical',
-    props.direction ?? 'ltr',
-  )
   return h.submodel({
     slotId: props.model.id,
     model: props.model,
@@ -131,6 +83,7 @@ export const renderRadioGroup = <Msg>(
       ...(props.orientation === undefined
         ? {}
         : { orientation: props.orientation }),
+      ...(props.direction === undefined ? {} : { direction: props.direction }),
       toView: ({ group, options, hiddenInput }) =>
         h.div(
           [
@@ -148,13 +101,11 @@ export const renderRadioGroup = <Msg>(
                 [
                   h.button(
                     [
-                      ...option.option
-                        .filter(
-                          attribute =>
-                            content.description !== undefined ||
-                            childAttributeTag(attribute) !== 'AriaDescribedBy',
-                        )
-                        .map(attribute => withBothArrowAxes(attribute, toKey)),
+                      ...option.option.filter(
+                        attribute =>
+                          content.description !== undefined ||
+                          childAttributeTag(attribute) !== 'AriaDescribedBy',
+                      ),
                       h.Type('button'),
                       h.DataAttribute('slot', 'radio-group-item'),
                       ...(content.isInvalid === true
