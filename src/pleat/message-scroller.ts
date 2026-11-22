@@ -3,7 +3,7 @@ import { reset } from '@/ui/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as Icon from '@/lib/icon'
-import * as MessageScrollerBehavior from '@/lib/message-scroller'
+import * as MessageScrollerBehavior from '@/lib/behaviors/stick-to-bottom'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
 import { tokens } from './tokens'
@@ -120,21 +120,13 @@ export const messageScrollerViewport = <Msg>(
     [
       h.Id(`${props.model.id}-viewport`),
       h.DataAttribute('slot', 'message-scroller-viewport'),
-      h.DataAttribute(
-        'pending-scroll',
-        String(
-          !props.model.isReady ||
-            props.model.pendingScrollVersion._tag === 'Some',
-        ),
-      ),
+      h.DataAttribute('pending-scroll', String(!props.model.isReady)),
       h.DataAttribute('following', String(props.model.isFollowing)),
       h.DataAttribute('new-messages', String(props.model.hasNewMessages)),
       h.Class(
         className(
           styles.viewport,
-          (!props.model.isReady ||
-            props.model.pendingScrollVersion._tag === 'Some') &&
-            styles.viewportPending,
+          !props.model.isReady && styles.viewportPending,
           props.layoutStyle,
         ),
       ),
@@ -166,7 +158,10 @@ export const messageScrollerItem = <Msg>(
         : []),
       ...(props.messageId === undefined
         ? []
-        : [h.DataAttribute('message-id', props.messageId)]),
+        : [
+            h.Key(props.messageId),
+            h.DataAttribute('message-id', props.messageId),
+          ]),
       h.Class(className(styles.item, props.layoutStyle)),
     ],
     [...props.children],
@@ -182,10 +177,7 @@ export const messageScrollerButton = <Msg>(
 ): Html => {
   const direction = props.direction ?? 'end'
   const isAtStart = props.model.scrollTop <= 1
-  const isAtEnd =
-    props.model.scrollHeight === 0 ||
-    props.model.scrollTop + props.model.clientHeight >=
-      props.model.scrollHeight - 1
+  const isAtEnd = MessageScrollerBehavior.isAtBottom(props.model)
   const isActive = direction === 'start' ? !isAtStart : !isAtEnd
   return h.button(
     [
