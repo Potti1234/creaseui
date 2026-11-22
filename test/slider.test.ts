@@ -2,13 +2,18 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import {
+  initMulti,
+  MultiMessage,
+  MultiOutMessage,
   normalizeRange,
   normalizeMultiValues,
   normalizeRangeValues,
   snapRangeValue,
+  toThumbValue,
+  updateMulti,
   updateRangeValue,
   updateMultiValue,
-} from '../src/lib/slider.ts'
+} from '../src/lib/behaviors/slider.ts'
 
 describe('Slider range policy', () => {
   it('orders bounds and replaces invalid steps', () => {
@@ -46,5 +51,32 @@ describe('Slider range policy', () => {
     assert.deepEqual(updateMultiValue([1, 2, 3], 1, 5, range), [1, 5, 3])
     assert.deepEqual(updateMultiValue([1, 2, 3], 2, 0, range), [1, 2, 0])
     assert.deepEqual(updateMultiValue([1, 2, 3], 1, -5, range), [1, 0, 3])
+  })
+})
+
+describe('Slider behavior multi-thumb submodel', () => {
+  it('routes a track press to its thumb and reports the mirrored value', () => {
+    const model = initMulti({
+      id: 'price',
+      thumbs: 2,
+      min: 0,
+      max: 100,
+      step: 10,
+      mirrored: true,
+    })
+    const { model: next, outMessage } = updateMulti(
+      model,
+      MultiMessage.PressedTrack({
+        index: 1,
+        value: toThumbValue(model, 70),
+        originValue: toThumbValue(model, 100),
+      }),
+    )
+    assert.deepEqual(
+      outMessage,
+      MultiOutMessage.ChangedThumbValue({ index: 1, value: 70 }),
+    )
+    assert.equal(next.thumbs[0], model.thumbs[0])
+    assert.notEqual(next.thumbs[1], model.thumbs[1])
   })
 })
