@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import {
+  commandAnnouncement,
   commandLabelSegments,
   filterCommandItems,
   normalizeCommandQuery,
@@ -9,6 +10,15 @@ import {
 import { docsSearchFields } from '../src/site/docs-search-fields.ts'
 
 describe('Command query policy', () => {
+  it('derives result announcements only for nonempty queries', () => {
+    assert.equal(commandAnnouncement('', 4), '')
+    assert.equal(commandAnnouncement('  ', 0, 'loading'), '')
+    assert.equal(commandAnnouncement('a', 0), 'No results')
+    assert.equal(commandAnnouncement('a', 1), '1 result')
+    assert.equal(commandAnnouncement('a', 3), '3 results')
+    assert.equal(commandAnnouncement('a', 3, 'loading'), 'Loading')
+    assert.equal(commandAnnouncement('a', 0, 'error'), 'No results')
+  })
   it('keeps groups contiguous in best-match order and ranks within each group', () => {
     const items = [
       'Calendar',

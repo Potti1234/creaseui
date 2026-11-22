@@ -313,6 +313,71 @@ describe('update: swipe lifecycle', () => {
     assert.equal(isOpen(released), false)
   })
 
+  it('preserves a fast flick when a closely spaced final sample barely moves', () => {
+    const released = swipe(measured(init()), [
+      { x: 200, y: 400, t: 1 },
+      { x: 200, y: 420, t: 600 },
+      { x: 200, y: 440, t: 620 },
+      { x: 200, y: 441, t: 624 },
+    ])
+    // The last 1px/4ms interval alone is only 0.25px/ms, but the recent
+    // 21px/24ms flick is well above 0.5px/ms and below the distance threshold.
+    assert.equal(isOpen(released), false)
+  })
+
+  it('keeps immutable timestamped velocity histories and resets on cancellation', () => {
+    const started = Drawer.update(
+      measured(init()),
+      Drawer.Message.StartedSwipe({
+        x: 200,
+        y: 400,
+        timeStamp: 1,
+      }),
+    ).model
+    const dragged = Drawer.update(
+      started,
+      Drawer.Message.DraggedSwipe({
+        x: 200,
+        y: 420,
+        timeStamp: 20,
+      }),
+    ).model
+    assert.deepEqual(started.swipe.velocityY.samples, [
+      { time: 1, position: 0 },
+    ])
+    assert.deepEqual(dragged.swipe.velocityY.samples, [
+      { time: 1, position: 0 },
+      { time: 20, position: 20 },
+    ])
+    for (const timeStamp of [20, 19, Number.NaN]) {
+      const ignored = Drawer.update(
+        dragged,
+        Drawer.Message.DraggedSwipe({
+          x: 200,
+          y: 421,
+          timeStamp,
+        }),
+      ).model
+      assert.equal(ignored.swipe.velocityY, dragged.swipe.velocityY)
+    }
+    const cancelled = Drawer.update(
+      dragged,
+      Drawer.Message.CancelledSwipe(),
+    ).model
+    assert.deepEqual(cancelled.swipe.velocityY.samples, [])
+    const restarted = Drawer.update(
+      cancelled,
+      Drawer.Message.StartedSwipe({
+        x: 200,
+        y: 400,
+        timeStamp: 100,
+      }),
+    ).model
+    assert.deepEqual(restarted.swipe.velocityY.samples, [
+      { time: 100, position: 0 },
+    ])
+  })
+
   it('settles when the release flicks back toward open', () => {
     const model = measured(init())
     const released = swipe(model, [
