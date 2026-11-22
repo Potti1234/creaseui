@@ -8,6 +8,34 @@ import {
 } from '../src/lib/command.ts'
 
 describe('Command query policy', () => {
+  it('keeps groups contiguous in best-match order and ranks within each group', () => {
+    const items = [
+      'Calendar',
+      'Search Emoji',
+      'Calculator',
+      'Profile',
+      'Billing',
+      'Settings',
+    ]
+    const itemGroupKey = (item: string) =>
+      items.indexOf(item) < 3 ? 'Suggestions' : 'Settings'
+    const search = (query: string, resting = '') =>
+      filterCommandItems(items, query, resting, item => item, { itemGroupKey })
+    assert.deepEqual(search('e'), [
+      'Search Emoji',
+      'Calendar',
+      'Profile',
+      'Settings',
+    ])
+    assert.deepEqual(search('s'), ['Settings', 'Search Emoji'])
+    assert.deepEqual(search(''), items)
+    assert.deepEqual(search('Profile', 'Profile'), items)
+    assert.deepEqual(search('missing'), [])
+    assert.deepEqual(
+      filterCommandItems([], 'e', '', String, { itemGroupKey }),
+      [],
+    )
+  })
   it('ranks an exact documentation title above matches in other fields', () => {
     const pages = [
       {

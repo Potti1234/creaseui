@@ -1,5 +1,55 @@
 import { expect, test } from '@playwright/test'
 
+test('grouped Command navigates in visible group order after ranking', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      'foldkit-devtools',
+      '{"isOpen":false,"isFlattened":false}',
+    )
+  })
+  await page.goto('/docs/components/command')
+  const example = page
+    .locator('section')
+    .filter({ has: page.getByRole('heading', { name: 'Groups', exact: true }) })
+  await example.getByRole('button', { name: 'Open Menu', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'Command menu', exact: true })
+  const input = dialog.getByRole('combobox')
+  await input.fill('e')
+  const options = dialog.getByRole('option')
+  const label = '[data-slot="command-item"] > span:not([data-slot])'
+  await expect(options.locator(label)).toHaveText([
+    'Search Emoji',
+    'Calendar',
+    'Profile',
+    'Settings',
+  ])
+  for (let index = 0; index < 4; index++) {
+    if (index > 0) await input.press('ArrowDown')
+    await expect(input).toHaveAttribute(
+      'aria-activedescendant',
+      (await options.nth(index).getAttribute('id')) ?? '',
+    )
+  }
+  await input.press('ArrowUp')
+  await expect(input).toHaveAttribute(
+    'aria-activedescendant',
+    (await options.nth(2).getAttribute('id')) ?? '',
+  )
+  await input.fill('missing')
+  await expect(options).toHaveCount(0)
+  await input.fill('')
+  await expect(options.locator(label)).toHaveText([
+    'Calendar',
+    'Search Emoji',
+    'Calculator',
+    'Profile',
+    'Billing',
+    'Settings',
+  ])
+})
+
 test('documentation search ranks an exact title before secondary field matches', async ({
   page,
 }) => {

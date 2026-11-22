@@ -36,19 +36,31 @@ export const filterCommandItems = <Item>(
   itemToSearchText: (item: Item) => string,
   options: Readonly<{
     itemToKeywords?: (item: Item) => ReadonlyArray<string>
+    itemGroupKey?: (item: Item) => string
   }> = {},
 ): ReadonlyArray<Item> => {
   const query = normalizeCommandQuery(queryValue)
-  if (query === '' || queryValue === restingInputValue) return items
-  return Listbox.filter(items, query, itemToSearchText, item =>
-    fuzzyFilter(
-      {
-        label: itemToSearchText(item),
-        keywords: options.itemToKeywords?.(item) ?? [],
-      },
-      query,
-    ),
-  )
+  const filtered =
+    query === '' || queryValue === restingInputValue
+      ? items
+      : Listbox.filter(items, query, itemToSearchText, item =>
+          fuzzyFilter(
+            {
+              label: itemToSearchText(item),
+              keywords: options.itemToKeywords?.(item) ?? [],
+            },
+            query,
+          ),
+        )
+  if (options.itemGroupKey === undefined) return filtered
+  const groups = new Map<string, Array<Item>>()
+  filtered.forEach(item => {
+    const key = options.itemGroupKey?.(item) ?? ''
+    const group = groups.get(key)
+    if (group === undefined) groups.set(key, [item])
+    else group.push(item)
+  })
+  return Array.from(groups.values()).flat()
 }
 
 /** Command reuses Foldkit's combobox state and typed selection updates, with

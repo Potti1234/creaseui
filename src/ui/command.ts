@@ -157,12 +157,20 @@ const renderCommand = <Item extends string, Msg>(
       (typeof config.content === 'string' ? config.content : item)
     )
   }
+  const itemGroupKey = props.itemGroupKey
+  const groupKey =
+    itemGroupKey === undefined
+      ? undefined
+      : (item: Item): string => itemGroupKey(item, props.items.indexOf(item))
   const filteredItems = filterCommandItems(
     props.items,
     props.model.inputValue,
     props.restingInputValue,
     itemToSearchText,
-    { itemToKeywords: item => props.itemToConfig(item).keywords ?? [] },
+    {
+      itemToKeywords: item => props.itemToConfig(item).keywords ?? [],
+      ...(groupKey === undefined ? {} : { itemGroupKey: groupKey }),
+    },
   )
   const visibleItems =
     props.status === 'loading'
@@ -243,10 +251,10 @@ const renderCommand = <Item extends string, Msg>(
       itemsScrollClassName: LIST_CLASS,
       className: cn(ROOT_CLASS, props.class),
       attributes: childAttributes([hc.DataAttribute('slot', 'command')]),
-      ...(props.itemGroupKey === undefined
+      ...(groupKey === undefined
         ? {}
         : {
-            itemGroupKey: props.itemGroupKey,
+            itemGroupKey: groupKey,
             groupToHeading: (groupKey: string) => {
               const heading = props.groupToHeading?.(groupKey)
               return heading === undefined
