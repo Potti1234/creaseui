@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 test('grouped Command navigates in visible group order after ranking', async ({
   page,
-}) => {
+}, testInfo) => {
   await page.addInitScript(() => {
     localStorage.setItem(
       'foldkit-devtools',
@@ -10,9 +10,7 @@ test('grouped Command navigates in visible group order after ranking', async ({
     )
   })
   await page.goto('/docs/components/command')
-  const example = page
-    .locator('section')
-    .filter({ has: page.getByRole('heading', { name: 'Groups', exact: true }) })
+  const example = page.locator('#groups')
   await example.getByRole('button', { name: 'Open Menu', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Command menu', exact: true })
   const input = dialog.getByRole('combobox')
@@ -37,6 +35,9 @@ test('grouped Command navigates in visible group order after ranking', async ({
     'aria-activedescendant',
     (await options.nth(2).getAttribute('id')) ?? '',
   )
+  await page.screenshot({
+    path: `/home/ubuntu/attachments/text-match/grouped-${testInfo.project.name}.png`,
+  })
   await input.fill('missing')
   await expect(options).toHaveCount(0)
   await input.fill('')
