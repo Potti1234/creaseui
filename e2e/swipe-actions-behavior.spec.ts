@@ -37,6 +37,41 @@ test.describe('Swipe actions docs example', () => {
     await expect(button).toHaveAttribute('data-clicked', 'true')
   })
 
+  test('skips disabled and inert actions when revealing and navigating', async ({
+    page,
+  }) => {
+    await page.goto(url)
+    const row = page.locator('[data-swipe-key="design"]')
+    await row.locator('[data-side="start"]').evaluate(element => {
+      const disabled = document.createElement('button')
+      disabled.textContent = 'Disabled first'
+      disabled.disabled = true
+      element.prepend(disabled)
+      const inert = document.createElement('div')
+      inert.inert = true
+      const inertButton = document.createElement('button')
+      inertButton.textContent = 'Inert action'
+      inert.append(inertButton)
+      const ariaDisabled = document.createElement('button')
+      ariaDisabled.textContent = 'Unavailable action'
+      ariaDisabled.setAttribute('aria-disabled', 'true')
+      const last = document.createElement('button')
+      last.textContent = 'Last action'
+      element.append(inert, ariaDisabled, disabled.cloneNode(true), last)
+    })
+    const archive = row.getByRole('button', { name: 'Archive', exact: true })
+    const last = row.getByRole('button', { name: 'Last action', exact: true })
+    await row.focus()
+    await row.press('ArrowRight')
+    await expect(archive).toBeFocused()
+    await page.keyboard.press('ArrowRight')
+    await expect(last).toBeFocused()
+    await page.keyboard.press('ArrowLeft')
+    await expect(archive).toBeFocused()
+    await page.keyboard.press('Escape')
+    await expect(row).toBeFocused()
+  })
+
   test('reveals at half, focuses actions with arrows, closes with Escape, flicks and full-swipes to delete', async ({
     page,
   }) => {

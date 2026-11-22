@@ -167,9 +167,7 @@ const Focus = Command.define('FocusSwipeAction', {
             const actions = row?.querySelector<HTMLElement>(
               `[data-side="${side.value}"]`,
             )
-            actions
-              ?.querySelectorAll<HTMLElement>('button, [href], [tabindex]')
-              [index]?.focus()
+            focusableActions(actions)[index]?.focus()
           }
           return Message.CompletedFocus()
         }),
@@ -417,6 +415,15 @@ const interactiveSelector =
 
 const actionsSelector = 'button, [href], [tabindex]'
 
+const focusableActions = (actions: Element | null | undefined): HTMLElement[] =>
+  Array.from(
+    actions?.querySelectorAll<HTMLElement>(actionsSelector) ?? [],
+  ).filter(
+    action =>
+      !action.matches(':disabled') &&
+      !action.closest('[inert], [aria-disabled="true"]'),
+  )
+
 type InputMessage = Exclude<
   Message,
   { _tag: 'CancelledSwipe' | 'ResolvedFullSwipe' | 'CompletedFocus' }
@@ -551,15 +558,15 @@ const Track = Mount.defineStream('TrackSwipeActions', {
                       return
                     event.preventDefault()
                     const actions = row.querySelector(`[data-side="${shown}"]`)
-                    const buttons = Array.from(
-                      actions?.querySelectorAll(actionsSelector) ?? [],
-                    )
+                    const buttons = focusableActions(actions)
                     send(Message.MeasuredRow({ key, geometry: measured }))
                     send(
                       Message.PressedKey({
                         key,
                         pressedKey: event.key,
-                        index: buttons.indexOf(event.target),
+                        index: buttons.findIndex(button =>
+                          button.contains(event.target as Node),
+                        ),
                         count: buttons.length,
                       }),
                     )
