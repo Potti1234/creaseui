@@ -7,7 +7,7 @@
       "title": "Foldkit Spatial Focus Behavior",
       "description": "Skin-neutral geometry-based arrow navigation with one enabled tab stop and document-order Home/End.",
       "registryDependencies": [
-        "Potti1234/creaseui/toggle-group-behavior"
+        "Potti1234/creaseui/roving-focus-behavior"
       ],
       "files": [
         {
