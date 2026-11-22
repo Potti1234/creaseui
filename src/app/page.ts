@@ -21,6 +21,7 @@ import * as ChartsStyleX from '@/demo/charts-stylex/page'
 import * as ChartsPleat from '@/demo/charts-pleat/page'
 import * as ComponentCatalog from '@/docs/components/catalog'
 import * as CopyFeedback from '@/docs/copy-feedback'
+import * as BehaviorDemo from '@/docs/behavior-demo'
 import { tutorialChapter } from '@/docs/tutorial/chapters'
 import * as CodeBlock from '@/ui/code-block'
 import type { AppRoute } from '@/route'
@@ -82,6 +83,7 @@ export const CatalogDocs = taggedStruct('CatalogDocsPage', {
 })
 export const GettingStarted = taggedStruct('GettingStartedPage', {
   codeBlock: CodeBlock.Model,
+  behaviorDemo: BehaviorDemo.Model,
 })
 export const Theming = taggedStruct('ThemingPage', {
   codeBlock: CodeBlock.Model,
@@ -166,7 +168,11 @@ export const init = (route: AppRoute): Page =>
         ComponentCatalog.hasCatalogPage(component)
           ? CatalogDocs({ docs: ComponentCatalog.init(component) })
           : NotFound(),
-      GettingStarted: () => GettingStarted({ codeBlock: CodeBlock.init() }),
+      GettingStarted: () =>
+        GettingStarted({
+          codeBlock: CodeBlock.init(),
+          behaviorDemo: BehaviorDemo.init(),
+        }),
       Theming: () => Theming({ codeBlock: CodeBlock.init() }),
       LintRules: () => LintDocs({ codeBlock: CodeBlock.init(), rule: '' }),
       LintRule: ({ rule }) => LintDocs({ codeBlock: CodeBlock.init(), rule }),
