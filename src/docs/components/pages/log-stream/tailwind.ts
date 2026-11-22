@@ -170,13 +170,6 @@ export const logStreamTailwindPreviewProgram = definePreviewProgram<Model, Got>(
                 ...model.entries,
                 { ...nextLine, id: `live-${String(nextIndex)}` },
               ],
-              stream: {
-                ...model.stream,
-                scroller: {
-                  ...model.stream.scroller,
-                  isFollowing: true,
-                },
-              },
             },
           }
         }
