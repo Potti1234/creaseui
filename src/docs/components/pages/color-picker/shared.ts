@@ -213,13 +213,6 @@ export type Message = typeof Message.Type`,
     }
   }
 }`,
-    subscriptions: `export const subscriptions = Subscription.aggregate<Model, Message>()(
-  ColorPicker.subscriptions<Model, Message>({
-    id: 'color-picker',
-    toChildModel: model => model.picker,
-    toParentMessage: message => GotColorPickerMessage({ message }),
-  }),
-)`,
     view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
   title: 'Color Picker — ${fixture.title}',
   body: h.main([h.Class(${styled ? 'className(styles.shell)' : "'flex min-h-screen items-center justify-center p-8'"})], [

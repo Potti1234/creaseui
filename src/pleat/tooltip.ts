@@ -2,11 +2,10 @@ import { Style } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Tooltip as TooltipPrimitive } from '@foldkit/ui'
 import { Option } from 'effect'
 import * as Mount from 'foldkit/mount'
 
-import * as TooltipBehavior from '@/lib/tooltip'
+import * as TooltipBehavior from '@/lib/behaviors/tooltip'
 import { overlayStyles } from './overlay-tokens'
 import type {
   ButtonSize,
@@ -57,7 +56,7 @@ const CONTENT_CLASS = styles.content
 export type TooltipSide = 'top' | 'right' | 'bottom' | 'left'
 export type TooltipAlign = 'start' | 'center' | 'end'
 
-type Placement = NonNullable<TooltipPrimitive.AnchorConfig['placement']>
+type Placement = NonNullable<TooltipBehavior.AnchorConfig['placement']>
 
 const PLACEMENTS: Readonly<
   Record<TooltipSide, Readonly<Record<TooltipAlign, Placement>>>
@@ -254,7 +253,7 @@ export const tooltip = <Msg>(
                 }),
                 h.OnMount(
                   Mount.mapMessage(
-                    TooltipPrimitive.AnchorTooltip({
+                    TooltipBehavior.AnchorTooltip({
                       buttonId: triggerId,
                       anchor,
                     }),

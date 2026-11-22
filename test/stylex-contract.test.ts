@@ -148,8 +148,16 @@ describe('StyleX component authoring contract', () => {
     const tailwind = readFileSync('src/ui/dialog.ts', 'utf8')
     const stylex = readFileSync('src/stylex/dialog.ts', 'utf8')
 
-    assert.match(tailwind, /Dialog as DialogPrimitive/u)
-    assert.match(stylex, /Dialog as DialogPrimitive/u)
+    const behavior = readFileSync('src/lib/behaviors/dialog.ts', 'utf8')
+    assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
+    assert.match(
+      tailwind,
+      /import \* as DialogPrimitive from '@\/lib\/behaviors\/dialog'/u,
+    )
+    assert.match(
+      stylex,
+      /import \* as DialogPrimitive from '@\/lib\/behaviors\/dialog'/u,
+    )
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/dialog['"]/u)
     assert.match(tailwind, /view: DialogPrimitive\.view/u)
     assert.match(stylex, /view: DialogPrimitive\.view/u)
@@ -272,8 +280,16 @@ describe('StyleX component authoring contract', () => {
     const tailwind = readFileSync('src/ui/popover.ts', 'utf8')
     const stylex = readFileSync('src/stylex/popover.ts', 'utf8')
 
-    assert.match(tailwind, /Popover as PopoverPrimitive/u)
-    assert.match(stylex, /Popover as PopoverPrimitive/u)
+    const behavior = readFileSync('src/lib/behaviors/popover.ts', 'utf8')
+    assert.match(behavior, /import \{ Popover \} from '@foldkit\/ui'/u)
+    assert.match(
+      tailwind,
+      /import \* as PopoverPrimitive from '@\/lib\/behaviors\/popover'/u,
+    )
+    assert.match(
+      stylex,
+      /import \* as PopoverPrimitive from '@\/lib\/behaviors\/popover'/u,
+    )
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/popover['"]/u)
     assert.match(tailwind, /view: PopoverPrimitive\.view/u)
     assert.match(stylex, /view: PopoverPrimitive\.view/u)
@@ -381,17 +397,23 @@ describe('StyleX component authoring contract', () => {
   })
 
   it('shares Slider range normalization across both skins', () => {
-    const behavior = readFileSync('src/lib/slider.ts', 'utf8')
+    const behavior = readFileSync('src/lib/behaviors/slider.ts', 'utf8')
     const tailwind = readFileSync('src/ui/slider.ts', 'utf8')
     const stylex = readFileSync('src/stylex/slider.ts', 'utf8')
 
     assert.match(behavior, /export const normalizeRange/u)
     assert.match(behavior, /export const normalizeRangeValues/u)
-    assert.match(tailwind, /@\/lib\/slider/u)
-    assert.match(stylex, /@\/lib\/slider/u)
+    assert.match(tailwind, /@\/lib\/behaviors\/slider/u)
+    assert.match(stylex, /@\/lib\/behaviors\/slider/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/slider['"]/u)
-    assert.match(tailwind, /Slider as SliderPrimitive/u)
-    assert.match(stylex, /Slider as SliderPrimitive/u)
+    assert.match(
+      tailwind,
+      /\* as SliderPrimitive from '@\/lib\/behaviors\/slider'/u,
+    )
+    assert.match(
+      stylex,
+      /\* as SliderPrimitive from '@\/lib\/behaviors\/slider'/u,
+    )
   })
 
   it('binds Command actions once and shares query policy', () => {
@@ -529,7 +551,7 @@ describe('StyleX component authoring contract', () => {
   })
 
   it('shares Tooltip ownership and versioned delay behavior across skins', () => {
-    const behavior = readFileSync('src/lib/tooltip.ts', 'utf8')
+    const behavior = readFileSync('src/lib/behaviors/tooltip.ts', 'utf8')
     const tailwind = readFileSync('src/ui/tooltip.ts', 'utf8')
     const stylex = readFileSync('src/stylex/tooltip.ts', 'utf8')
 
@@ -537,8 +559,8 @@ describe('StyleX component authoring contract', () => {
     assert.match(behavior, /WaitBeforeClosingTooltip/u)
     assert.match(behavior, /TooltipPrimitive/u)
     assert.match(behavior, /version/u)
-    assert.match(tailwind, /@\/lib\/tooltip/u)
-    assert.match(stylex, /@\/lib\/tooltip/u)
+    assert.match(tailwind, /@\/lib\/behaviors\/tooltip/u)
+    assert.match(stylex, /@\/lib\/behaviors\/tooltip/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/tooltip['"]/u)
   })
 

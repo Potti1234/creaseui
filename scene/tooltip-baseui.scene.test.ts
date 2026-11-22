@@ -4,7 +4,7 @@ import * as Scene from 'foldkit/scene'
 import { Tooltip as TooltipPrimitive } from '@foldkit/ui'
 import { describe, it } from 'vitest'
 
-import * as TooltipBehavior from '@/lib/tooltip'
+import * as TooltipBehavior from '@/lib/behaviors/tooltip'
 import * as StyleXTooltip from '@/stylex/tooltip'
 import * as TailwindTooltip from '@/ui/tooltip'
 

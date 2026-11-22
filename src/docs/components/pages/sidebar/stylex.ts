@@ -8,7 +8,9 @@ import { ObserveDocumentationHover } from './hover'
 
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
+  documentationItems,
   sidebarFixtures,
+  visibleDocumentationItems,
   type SidebarFixtureKind,
 } from '@/docs/components/pages/sidebar/shared'
 import * as DropdownMenu from '@/stylex/dropdown-menu'
@@ -317,7 +319,6 @@ const iconLabel = <Msg>(
 
 const actionItems = ['open', 'rename', 'delete'] as const
 const accountItems = ['profile', 'settings', 'sign out'] as const
-const documentationItems = ['Introduction', 'Components', 'Changelog'] as const
 const actionLabel = (action: string): string =>
   action[0]?.toUpperCase() + action.slice(1)
 const actionMenu = <Msg>(
@@ -524,6 +525,7 @@ const nestedNavigation = <Msg>(
       h,
     )
   }
+  const sections = visibleDocumentationItems(model.learnOpen)
   return Sidebar.sidebarMenu(
     {
       children: [
@@ -551,22 +553,18 @@ const nestedNavigation = <Msg>(
                 },
                 h,
               ),
-              ...(model.learnOpen
+              ...(sections.length > 0
                 ? [
                     Sidebar.sidebarMenuSub(
                       {
-                        children: [
-                          'Introduction',
-                          'Components',
-                          'Changelog',
-                        ].map((label, index) =>
+                        children: sections.map(label =>
                           Sidebar.sidebarMenuSubItem(
                             {
                               children: [
                                 Sidebar.sidebarMenuSubButton(
                                   {
                                     href: '#',
-                                    isActive: index === 1,
+                                    isActive: label === 'Components',
                                     children: [label],
                                   },
                                   h,
