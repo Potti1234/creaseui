@@ -9655,6 +9655,71 @@
       ]
     },
     {
+      "slug": "avoid-keyboard",
+      "title": "Avoid Keyboard",
+      "description": "Keeps a footer above the on-screen keyboard with a scoped Foldkit Mount.",
+      "docs": "/docs/components/avoid-keyboard",
+      "source": "src/lib/behaviors/avoid-keyboard.ts",
+      "install": "npx creaseui add avoid-keyboard",
+      "dependencies": [],
+      "examples": [
+        "Keyboard-aware footer",
+        "A little breathing room"
+      ],
+      "api": [
+        {
+          "name": "Length",
+          "kind": "type",
+          "signature": "Length = Readonly<{ percent: number; px: number; }>"
+        },
+        {
+          "name": "lengthOf",
+          "kind": "function",
+          "signature": "lengthOf(value: string): Length"
+        },
+        {
+          "name": "cssLength",
+          "kind": "function",
+          "signature": "cssLength({ percent, px }: Length): string"
+        },
+        {
+          "name": "parseTranslate",
+          "kind": "function",
+          "signature": "parseTranslate(value: string): Readonly<{ x: string; y: Length; z: string | undefined; }>"
+        },
+        {
+          "name": "Coverage",
+          "kind": "type",
+          "signature": "Coverage = Readonly<{ box: Readonly<{ top: number; bottom: number; height: number; }>; rest: Length; now: Length; originTop: number; innerHeight: number; offsetTop: number; height: number; }>"
+        },
+        {
+          "name": "coveredPixels",
+          "kind": "function",
+          "signature": "coveredPixels({ box, rest, now, originTop, innerHeight, offsetTop, height, }: Coverage): number"
+        },
+        {
+          "name": "avoidKeyboard",
+          "kind": "function",
+          "signature": "avoidKeyboard(element: HTMLElement): (() => void)"
+        },
+        {
+          "name": "Message",
+          "kind": "value",
+          "signature": "Message: value"
+        },
+        {
+          "name": "Message",
+          "kind": "type",
+          "signature": "Message = typeof Message.Type"
+        },
+        {
+          "name": "AvoidKeyboard",
+          "kind": "value",
+          "signature": "AvoidKeyboard: value"
+        }
+      ]
+    },
+    {
       "slug": "pointer-kind",
       "title": "Pointer Kind",
       "description": "Tracks pointer precision and hover support with Foldkit state and subscriptions.",
@@ -9746,71 +9811,6 @@
           "name": "subscriptions",
           "kind": "value",
           "signature": "subscriptions: value"
-        }
-      ]
-    },
-    {
-      "slug": "avoid-keyboard",
-      "title": "Avoid Keyboard",
-      "description": "Keeps a footer above the on-screen keyboard with a scoped Foldkit Mount.",
-      "docs": "/docs/components/avoid-keyboard",
-      "source": "src/lib/behaviors/avoid-keyboard.ts",
-      "install": "npx creaseui add avoid-keyboard",
-      "dependencies": [],
-      "examples": [
-        "Keyboard-aware footer",
-        "A little breathing room"
-      ],
-      "api": [
-        {
-          "name": "Length",
-          "kind": "type",
-          "signature": "Length = Readonly<{ percent: number; px: number; }>"
-        },
-        {
-          "name": "lengthOf",
-          "kind": "function",
-          "signature": "lengthOf(value: string): Length"
-        },
-        {
-          "name": "cssLength",
-          "kind": "function",
-          "signature": "cssLength({ percent, px }: Length): string"
-        },
-        {
-          "name": "parseTranslate",
-          "kind": "function",
-          "signature": "parseTranslate(value: string): Readonly<{ x: string; y: Length; z: string | undefined; }>"
-        },
-        {
-          "name": "Coverage",
-          "kind": "type",
-          "signature": "Coverage = Readonly<{ box: Readonly<{ top: number; bottom: number; height: number; }>; rest: Length; now: Length; originTop: number; innerHeight: number; offsetTop: number; height: number; }>"
-        },
-        {
-          "name": "coveredPixels",
-          "kind": "function",
-          "signature": "coveredPixels({ box, rest, now, originTop, innerHeight, offsetTop, height, }: Coverage): number"
-        },
-        {
-          "name": "avoidKeyboard",
-          "kind": "function",
-          "signature": "avoidKeyboard(element: HTMLElement): (() => void)"
-        },
-        {
-          "name": "Message",
-          "kind": "value",
-          "signature": "Message: value"
-        },
-        {
-          "name": "Message",
-          "kind": "type",
-          "signature": "Message = typeof Message.Type"
-        },
-        {
-          "name": "AvoidKeyboard",
-          "kind": "value",
-          "signature": "AvoidKeyboard: value"
         }
       ]
     }

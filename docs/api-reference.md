@@ -2196,6 +2196,23 @@ Source: [`src/ui/visually-hidden.ts`](../src/ui/visually-hidden.ts)
 | `VisuallyHiddenProps` | type | `VisuallyHiddenProps = Readonly<{ as?: VisuallyHiddenElement; ariaLive?: 'polite' \| 'assertive' \| 'off'; role?: string; id?: string; children: ReadonlyArray<Html \| string>; }>` |
 | `visuallyHidden` | function | `visuallyHidden<Msg>(props: VisuallyHiddenProps, h: HtmlBuilder<Msg>): Html` |
 
+## Avoid Keyboard
+
+Source: [`src/lib/behaviors/avoid-keyboard.ts`](../src/lib/behaviors/avoid-keyboard.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `Length` | type | `Length = Readonly<{ percent: number; px: number; }>` |
+| `lengthOf` | function | `lengthOf(value: string): Length` |
+| `cssLength` | function | `cssLength({ percent, px }: Length): string` |
+| `parseTranslate` | function | `parseTranslate(value: string): Readonly<{ x: string; y: Length; z: string \| undefined; }>` |
+| `Coverage` | type | `Coverage = Readonly<{ box: Readonly<{ top: number; bottom: number; height: number; }>; rest: Length; now: Length; originTop: number; innerHeight: number; offsetTop: number; height: number; }>` |
+| `coveredPixels` | function | `coveredPixels({ box, rest, now, originTop, innerHeight, offsetTop, height, }: Coverage): number` |
+| `avoidKeyboard` | function | `avoidKeyboard(element: HTMLElement): (() => void)` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `AvoidKeyboard` | value | `AvoidKeyboard: value` |
+
 ## Pointer Kind
 
 Source: [`src/lib/behaviors/pointer-kind.ts`](../src/lib/behaviors/pointer-kind.ts)
@@ -2218,20 +2235,3 @@ Source: [`src/lib/behaviors/pointer-kind.ts`](../src/lib/behaviors/pointer-kind.
 | `ReadPointerKind` | value | `ReadPointerKind: value` |
 | `changes` | function | `changes(): Stream.Stream<Message>` |
 | `subscriptions` | value | `subscriptions: value` |
-
-## Avoid Keyboard
-
-Source: [`src/lib/behaviors/avoid-keyboard.ts`](../src/lib/behaviors/avoid-keyboard.ts)
-
-| Export | Kind | Signature |
-| --- | --- | --- |
-| `Length` | type | `Length = Readonly<{ percent: number; px: number; }>` |
-| `lengthOf` | function | `lengthOf(value: string): Length` |
-| `cssLength` | function | `cssLength({ percent, px }: Length): string` |
-| `parseTranslate` | function | `parseTranslate(value: string): Readonly<{ x: string; y: Length; z: string \| undefined; }>` |
-| `Coverage` | type | `Coverage = Readonly<{ box: Readonly<{ top: number; bottom: number; height: number; }>; rest: Length; now: Length; originTop: number; innerHeight: number; offsetTop: number; height: number; }>` |
-| `coveredPixels` | function | `coveredPixels({ box, rest, now, originTop, innerHeight, offsetTop, height, }: Coverage): number` |
-| `avoidKeyboard` | function | `avoidKeyboard(element: HTMLElement): (() => void)` |
-| `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `AvoidKeyboard` | value | `AvoidKeyboard: value` |

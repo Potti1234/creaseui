@@ -146,5 +146,5 @@
 - Tree List: /docs/components/tree-list — install with `npx creaseui add tree-list`
 - Typography: /docs/components/typography — install with `npx creaseui add typography`
 - Visually Hidden: /docs/components/visually-hidden — install with `npx creaseui add visually-hidden`
-- Pointer Kind: /docs/components/pointer-kind — install with `npx creaseui add pointer-kind`
 - Avoid Keyboard: /docs/components/avoid-keyboard — install with `npx creaseui add avoid-keyboard`
+- Pointer Kind: /docs/components/pointer-kind — install with `npx creaseui add pointer-kind`

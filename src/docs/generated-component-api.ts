@@ -6846,6 +6846,58 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "signature": "visuallyHidden<Msg>(props: VisuallyHiddenProps, h: HtmlBuilder<Msg>): Html"
     }
   ],
+  "avoid-keyboard": [
+    {
+      "name": "Length",
+      "kind": "type",
+      "signature": "Length = Readonly<{ percent: number; px: number; }>"
+    },
+    {
+      "name": "lengthOf",
+      "kind": "function",
+      "signature": "lengthOf(value: string): Length"
+    },
+    {
+      "name": "cssLength",
+      "kind": "function",
+      "signature": "cssLength({ percent, px }: Length): string"
+    },
+    {
+      "name": "parseTranslate",
+      "kind": "function",
+      "signature": "parseTranslate(value: string): Readonly<{ x: string; y: Length; z: string | undefined; }>"
+    },
+    {
+      "name": "Coverage",
+      "kind": "type",
+      "signature": "Coverage = Readonly<{ box: Readonly<{ top: number; bottom: number; height: number; }>; rest: Length; now: Length; originTop: number; innerHeight: number; offsetTop: number; height: number; }>"
+    },
+    {
+      "name": "coveredPixels",
+      "kind": "function",
+      "signature": "coveredPixels({ box, rest, now, originTop, innerHeight, offsetTop, height, }: Coverage): number"
+    },
+    {
+      "name": "avoidKeyboard",
+      "kind": "function",
+      "signature": "avoidKeyboard(element: HTMLElement): (() => void)"
+    },
+    {
+      "name": "Message",
+      "kind": "value",
+      "signature": "Message: value"
+    },
+    {
+      "name": "Message",
+      "kind": "type",
+      "signature": "Message = typeof Message.Type"
+    },
+    {
+      "name": "AvoidKeyboard",
+      "kind": "value",
+      "signature": "AvoidKeyboard: value"
+    }
+  ],
   "pointer-kind": [
     {
       "name": "PointerPrecision",
@@ -6926,58 +6978,6 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "subscriptions",
       "kind": "value",
       "signature": "subscriptions: value"
-    }
-  ],
-  "avoid-keyboard": [
-    {
-      "name": "Length",
-      "kind": "type",
-      "signature": "Length = Readonly<{ percent: number; px: number; }>"
-    },
-    {
-      "name": "lengthOf",
-      "kind": "function",
-      "signature": "lengthOf(value: string): Length"
-    },
-    {
-      "name": "cssLength",
-      "kind": "function",
-      "signature": "cssLength({ percent, px }: Length): string"
-    },
-    {
-      "name": "parseTranslate",
-      "kind": "function",
-      "signature": "parseTranslate(value: string): Readonly<{ x: string; y: Length; z: string | undefined; }>"
-    },
-    {
-      "name": "Coverage",
-      "kind": "type",
-      "signature": "Coverage = Readonly<{ box: Readonly<{ top: number; bottom: number; height: number; }>; rest: Length; now: Length; originTop: number; innerHeight: number; offsetTop: number; height: number; }>"
-    },
-    {
-      "name": "coveredPixels",
-      "kind": "function",
-      "signature": "coveredPixels({ box, rest, now, originTop, innerHeight, offsetTop, height, }: Coverage): number"
-    },
-    {
-      "name": "avoidKeyboard",
-      "kind": "function",
-      "signature": "avoidKeyboard(element: HTMLElement): (() => void)"
-    },
-    {
-      "name": "Message",
-      "kind": "value",
-      "signature": "Message: value"
-    },
-    {
-      "name": "Message",
-      "kind": "type",
-      "signature": "Message = typeof Message.Type"
-    },
-    {
-      "name": "AvoidKeyboard",
-      "kind": "value",
-      "signature": "AvoidKeyboard: value"
     }
   ]
 };

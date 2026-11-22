@@ -149,7 +149,9 @@ export const ScrollTo = Command.define('ScrollPickerScrollTo', {
         : list.scrollWidth - list.clientWidth
       const to = clamp(offset, 0, Math.max(0, max))
       list.dispatchEvent(
-        new CustomEvent('scroll-picker-scroll', { detail: { animate } }),
+        new CustomEvent('scroll-picker-scroll', {
+          detail: { animate, offset: to },
+        }),
       )
       list.scrollTo({
         ...(vertical ? { top: to } : { left: rtl ? -to : to }),
