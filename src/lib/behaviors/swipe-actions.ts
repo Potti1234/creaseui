@@ -410,6 +410,9 @@ export const update = (
 
 const rowSelector = '[data-swipe-key]'
 
+const interactiveSelector =
+  'button, a[href], input, select, textarea, [contenteditable]:not([contenteditable="false"]), [role="button"]'
+
 const actionsSelector = 'button, [href], [tabindex]'
 
 type InputMessage = Exclude<
@@ -449,7 +452,8 @@ const Track = Mount.defineStream('TrackSwipeActions', {
               !row ||
               row.closest('[data-swipe-surface]') !== element ||
               row.hasAttribute('data-swipe-disabled') ||
-              target.closest('[data-side]')
+              target.closest('[data-side]') ||
+              target.closest(interactiveSelector)
             )
               return
             const key = row.dataset.swipeKey ?? ''

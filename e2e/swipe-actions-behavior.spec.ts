@@ -21,6 +21,22 @@ test.describe('Swipe actions docs example', () => {
     await server?.close()
   })
 
+  test('preserves clicks on interactive row content', async ({ page }) => {
+    await page.goto(url)
+    const content = page.locator('[data-swipe-key="design"] .content')
+    await content.evaluate(element => {
+      const button = document.createElement('button')
+      button.textContent = 'Read message'
+      button.addEventListener('click', () =>
+        button.setAttribute('data-clicked', 'true'),
+      )
+      element.append(button)
+    })
+    const button = content.getByRole('button', { name: 'Read message' })
+    await button.click()
+    await expect(button).toHaveAttribute('data-clicked', 'true')
+  })
+
   test('reveals at half, focuses actions with arrows, closes with Escape, flicks and full-swipes to delete', async ({
     page,
   }) => {
