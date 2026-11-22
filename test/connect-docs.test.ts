@@ -5,9 +5,30 @@ import { describe, it } from 'node:test'
 import * as Connect from '../src/lib/behaviors/connect.ts'
 import { componentKind } from '../src/docs/components/catalog.ts'
 import { connectPage } from '../src/docs/components/pages/connect.ts'
+import { authoredPages } from '../src/docs/components/pages/index.ts'
 
 describe('Connect behavior documentation', () => {
   const definition = connectPage.definition
+
+  it('uses the authored pages index and renderer provider manifests', () => {
+    assert.deepEqual(authoredPages.connect, connectPage)
+    assert.doesNotMatch(
+      readFileSync('src/docs/components/catalog.ts', 'utf8'),
+      /connectPage|connectPreviewProgram|['"]connect['"]/u,
+    )
+    for (const [renderer, install] of [
+      ['stylex', 'installStyleXPreviewView'],
+      ['pleat', 'installPleatPreviewView'],
+    ]) {
+      assert.ok(
+        readFileSync(
+          `src/docs/components/${renderer}-provider-manifest.ts`,
+          'utf8',
+        ).includes(`${install}('connect', connectPreviewProgram.view)`),
+        renderer,
+      )
+    }
+  })
 
   it('documents a copied behavior Submodel, not a registry renderer', () => {
     assert.equal(definition.kind, 'submodel')

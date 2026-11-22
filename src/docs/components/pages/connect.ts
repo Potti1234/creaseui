@@ -6,6 +6,7 @@ import * as Connect from '@/lib/behaviors/connect'
 import {
   authoredPage,
   definePreviewProgram,
+  foldkitApplication,
 } from '@/docs/components/pages/authored-page'
 
 const points: Readonly<Record<string, Readonly<{ x: number; y: number }>>> = {
@@ -224,9 +225,11 @@ export const connectPreviewProgram = definePreviewProgram({
     ),
 })
 
-const usage = `import { Schema } from 'effect'
-import { Command, type Update } from 'foldkit'
-import type { HtmlBuilder } from 'foldkit/html'
+const usage = foldkitApplication({
+  title: 'Connect ports',
+  imports: `import { Schema } from 'effect'
+import { Command, Runtime, Subscription, type Update } from 'foldkit'
+import type { Document, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Connect from '@/lib/behaviors/connect'
 
@@ -237,18 +240,16 @@ const options: Connect.Options = {
   keys: portKeys,
   canConnect: (from, to) => from.endsWith(':out') && to.endsWith(':in'),
   announcementId: 'connections-live',
-}
-
-export const Model = Schema.Struct({
+}`,
+  model: `export const Model = Schema.Struct({
   connect: Connect.Model,
   edges: Schema.Array(Schema.Struct({ from: Schema.String, to: Schema.String })),
 })
-type Model = typeof Model.Type
-export const Message = defineMessageUnion({ GotConnect: { message: Connect.Message } })
-type Message = typeof Message.Type
-export const init = (): Model => ({ connect: Connect.init(), edges: [] })
-
-export const update = (model: Model, { message }: Message): Update.Return<Model, Message> => {
+type Model = typeof Model.Type`,
+  messages: `export const Message = defineMessageUnion({ GotConnect: { message: Connect.Message } })
+type Message = typeof Message.Type`,
+  init: `export const init = (): Update.Return<Model, Message> => ({ model: { connect: Connect.init(), edges: [] } })`,
+  update: `export const update = (model: Model, { message }: Message): Update.Return<Model, Message> => {
   const next = Connect.update(model.connect, message, options)
   const request = next.outMessage
   if (request?._tag === 'RequestedConnection' &&
@@ -266,9 +267,10 @@ export const update = (model: Model, { message }: Message): Update.Return<Model,
     model: { ...model, connect: next.model },
     commands: Command.mapMessages(next.commands ?? [], message => Message.GotConnect({ message })),
   }
-}
-
-export const view = (model: Model, h: HtmlBuilder<Message>) => h.div([], [
+}`,
+  view: `export const view = (model: Model, h: HtmlBuilder<Message>): Document => ({
+  title: 'Connect ports',
+  body: h.div([], [
   h.submodel({
     slotId: 'connections',
     model: model.connect,
@@ -282,7 +284,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>) => h.div([], [
     },
   }),
   h.p([h.Id('connections-live'), h.AriaLive('assertive'), h.AriaAtomic(true)], []),
-])`
+  ]),
+})`,
+})
 
 const examples = [
   {

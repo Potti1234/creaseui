@@ -88,6 +88,7 @@ import { menubarStyleXPreview } from '@/docs/components/pages/menubar/stylex'
 import { navigationMenuStyleXPreview } from '@/docs/components/pages/navigation-menu/stylex'
 import { selectStyleXPreview } from '@/docs/components/pages/select/stylex'
 import { comboboxStyleXPreview } from '@/docs/components/pages/combobox/stylex'
+import { connectPreviewProgram } from '@/docs/components/pages/connect'
 import { commandStyleXPreview } from '@/docs/components/pages/command/stylex'
 import { attachmentStyleXPreview } from '@/docs/components/pages/attachment/stylex'
 import { bubbleStyleXPreview } from '@/docs/components/pages/bubble/stylex'
@@ -197,6 +198,7 @@ installExamplePreviewProvider('navigation-menu', navigationMenuStyleXPreview)
 installExamplePreviewProvider('select', selectStyleXPreview)
 installExamplePreviewProvider('combobox', comboboxStyleXPreview)
 installExamplePreviewProvider('command', commandStyleXPreview)
+installStyleXPreviewView('connect', connectPreviewProgram.view)
 installExamplePreviewProvider('attachment', attachmentStyleXPreview)
 installExamplePreviewProvider('bubble', bubbleStyleXPreview)
 installExamplePreviewProvider('card', cardStyleXPreview)
