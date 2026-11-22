@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
+import { Option, Schema } from 'effect'
 
 import * as Grid from '@/lib/data-grid'
 
@@ -183,6 +184,34 @@ describe('data grid keyboard navigation', () => {
 })
 
 describe('data grid row identity', () => {
+  it('decodes grid history with optional grouping state', () => {
+    const model = Grid.init(config, rows)
+    assert.deepEqual(Schema.decodeUnknownSync(Grid.Model)(model), model)
+    assert.equal(Option.isNone(model.history.open), true)
+    const grouped = {
+      ...model,
+      history: {
+        ...model.history,
+        open: Option.some({ group: 'typing', time: 1 }),
+      },
+    }
+    assert.deepEqual(Schema.decodeUnknownSync(Grid.Model)(grouped), grouped)
+  })
+  it('honors the configured undo history limit', () => {
+    const limited = { ...config, history: { limit: 1 } }
+    const edit = (model: Grid.Model, value: string) =>
+      Grid.update(
+        model,
+        Grid.Message.SetCellValue({ row: 0, column: 'name', value }),
+        limited,
+      )
+    const edited = edit(edit(Grid.init(limited, rows), 'First'), 'Second')
+    const undone = Grid.update(edited, Grid.Message.Undo(), limited)
+    assert.equal(byId(undone, 'z')?.name, 'First')
+    assert.equal(undone.history.past.length, 0)
+    const redone = Grid.update(undone, Grid.Message.Redo(), limited)
+    assert.equal(byId(redone, 'z')?.name, 'Second')
+  })
   it('edits the displayed row when the grid is sorted', () => {
     const sorted = sortedByName()
     assert.deepEqual(displayedIds(sorted), ['a', 'm', 'z'])
@@ -493,7 +522,7 @@ describe('data grid editor seed', () => {
     assert.equal(contact(model, 'ada')?.name, 'Ada')
     assert.equal(Grid.editingCell(model).row, -1)
     assert.deepEqual(model.focusedCell, { row: 1, column: 'name' })
-    assert.equal(model.pastStates.length, 0)
+    assert.equal(model.history.past.length, 0)
   })
 
   it('Escape leaves the value untouched', () => {
@@ -529,9 +558,9 @@ describe('data grid editor seed', () => {
       guardedConfig,
     )
     assert.equal(committed.rows, undone.rows)
-    assert.equal(committed.pastStates, undone.pastStates)
-    assert.equal(committed.futureStates, undone.futureStates)
-    assert.equal(committed.futureStates.length, 1)
+    assert.equal(committed.history.past, undone.history.past)
+    assert.equal(committed.history.future, undone.history.future)
+    assert.equal(committed.history.future.length, 1)
   })
 
   it('typing over a cell starts from the typed key', () => {

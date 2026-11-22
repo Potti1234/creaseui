@@ -1,0 +1,95 @@
+import { Option, Schema } from 'effect'
+
+export const Model = <A extends Schema.Top>(entry: A) =>
+  Schema.Struct({
+    past: Schema.Array(entry),
+    future: Schema.Array(entry),
+    open: Schema.Option(
+      Schema.Struct({ group: Schema.String, time: Schema.Number }),
+    ),
+  })
+
+export type Model<A> = Readonly<{
+  past: ReadonlyArray<A>
+  future: ReadonlyArray<A>
+  open: Option.Option<Readonly<{ group: string; time: number }>>
+}>
+
+export const init = <A>(): Model<A> => ({
+  past: [],
+  future: [],
+  open: Option.none(),
+})
+
+export type Options = Readonly<{ limit?: number }>
+export type PushOptions = Options &
+  Readonly<{
+    group?: string
+    now?: number
+    groupDelay?: number
+  }>
+
+export const seal = <A>(model: Model<A>): Model<A> =>
+  Option.isNone(model.open) ? model : { ...model, open: Option.none() }
+
+export const push = <A>(
+  model: Model<A>,
+  present: A,
+  options: PushOptions = {},
+): Model<A> => {
+  const limit = options.limit ?? 100
+  if (limit !== Infinity && (!Number.isInteger(limit) || limit < 0)) {
+    throw new RangeError('Undo stack limit must be a non-negative integer')
+  }
+  const { group, now, groupDelay = 500 } = options
+  if (group && (now === undefined || !Number.isFinite(now))) {
+    throw new RangeError('Grouped pushes require a finite caller-supplied time')
+  }
+  const joins =
+    !!group &&
+    Option.isSome(model.open) &&
+    model.open.value.group === group &&
+    now! - model.open.value.time < groupDelay
+  const past = joins ? model.past : [...model.past, present]
+  return {
+    past: past.slice(Math.max(0, past.length - limit)),
+    future: [],
+    open:
+      group && limit > 0 ? Option.some({ group, time: now! }) : Option.none(),
+  }
+}
+
+export const canUndo = <A>(model: Model<A>): boolean => model.past.length > 0
+export const canRedo = <A>(model: Model<A>): boolean => model.future.length > 0
+
+export const undo = <A>(
+  model: Model<A>,
+  present: A,
+): Readonly<{ model: Model<A>; present: A }> =>
+  canUndo(model)
+    ? {
+        model: {
+          past: model.past.slice(0, -1),
+          future: [present, ...model.future],
+          open: Option.none(),
+        },
+        present: model.past[model.past.length - 1]!,
+      }
+    : { model: seal(model), present }
+
+export const redo = <A>(
+  model: Model<A>,
+  present: A,
+): Readonly<{ model: Model<A>; present: A }> =>
+  canRedo(model)
+    ? {
+        model: {
+          past: [...model.past, present],
+          future: model.future.slice(1),
+          open: Option.none(),
+        },
+        present: model.future[0]!,
+      }
+    : { model: seal(model), present }
+
+export const clear = <A>(_model: Model<A>): Model<A> => init()
