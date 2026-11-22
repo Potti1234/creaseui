@@ -5,6 +5,8 @@ import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 import { Dialog } from '@foldkit/ui'
 
+import * as Drag from '@/lib/behaviors/drag'
+
 /* Renderer-neutral state + pure geometry for the Drawer, ported from Base
    UI's drawer (base-ui/packages/react/src/drawer/**): a Dialog submodel plus
    a swipe engine with direction-aware displacement, square-root edge
@@ -1271,76 +1273,104 @@ const hoistNestedDialog = (element: HTMLElement): (() => void) | undefined => {
     Also relocates a nested drawer's dialog out of the parent's styled
     subtree so it escapes the parent's fade/stack transforms (see
     hoistNestedDialog). */
+const observeViewportSize = (element: Element) =>
+  Stream.callback<typeof Message.MeasuredViewport.Type>(queue =>
+    Effect.gen(function* () {
+      yield* Effect.acquireRelease(
+        Effect.sync(() =>
+          element instanceof HTMLElement
+            ? hoistNestedDialog(element)
+            : undefined,
+        ),
+        release => Effect.sync(() => release?.()),
+      )
+      yield* Effect.acquireRelease(
+        Effect.sync(() => {
+          if (!(element instanceof HTMLElement)) return undefined
+          const emit = () =>
+            Queue.offerUnsafe(
+              queue,
+              Message.MeasuredViewport({
+                width: element.offsetWidth,
+                height: element.offsetHeight,
+                rootFontSize:
+                  Number.parseFloat(
+                    element.ownerDocument.defaultView?.getComputedStyle(
+                      element.ownerDocument.documentElement,
+                    ).fontSize ?? '',
+                  ) || 16,
+              }),
+            )
+          const resize = new ResizeObserver(emit)
+          resize.observe(element)
+          emit()
+          return resize
+        }),
+        resize => Effect.sync(() => resize?.disconnect()),
+      )
+      return yield* Effect.never
+    }),
+  )
+
+type SwipeMessage = Extract<
+  Message,
+  { _tag: 'StartedSwipe' | 'DraggedSwipe' | 'EndedSwipe' | 'CancelledSwipe' }
+>
+
+const SWIPE_IGNORE_SELECTOR =
+  '[data-base-ui-swipe-ignore], button, a, input, select, textarea, label, [role="button"]'
+
+const swipePosition = (event: PointerEvent) => ({
+  x: event.clientX,
+  y: event.clientY,
+  timeStamp: event.timeStamp,
+})
+
 export const ObserveViewport = Mount.defineStream('ObserveDrawerViewport', {
-  messages: [Message.MeasuredViewport, Message.CancelledSwipe],
+  messages: [
+    Message.MeasuredViewport,
+    Message.StartedSwipe,
+    Message.DraggedSwipe,
+    Message.EndedSwipe,
+    Message.CancelledSwipe,
+  ],
   execute: ({ element }) =>
-    Stream.callback<
-      typeof Message.MeasuredViewport.Type | typeof Message.CancelledSwipe.Type
-    >(queue =>
-      Effect.gen(function* () {
-        yield* Effect.acquireRelease(
-          Effect.sync(() =>
-            element instanceof HTMLElement
-              ? hoistNestedDialog(element)
-              : undefined,
-          ),
-          release => Effect.sync(() => release?.()),
-        )
-        yield* Effect.acquireRelease(
-          Effect.sync(() => {
-            if (!(element instanceof HTMLElement)) return undefined
-            let captured: { handle: HTMLElement; pointerId: number } | undefined
-            const onPointerDown = (event: PointerEvent) => {
-              if (event.button !== 0 || !(event.target instanceof Element))
-                return
-              const handle = event.target.closest(
-                '[data-slot="drawer-swipe-handle"]',
-              )
-              if (!(handle instanceof HTMLElement)) return
-              handle.setPointerCapture(event.pointerId)
-              captured = { handle, pointerId: event.pointerId }
-            }
-            const onPointerCancel = () =>
-              Queue.offerUnsafe(queue, Message.CancelledSwipe())
-            element.addEventListener('pointerdown', onPointerDown)
-            element.addEventListener('pointercancel', onPointerCancel)
-            return () => {
-              element.removeEventListener('pointerdown', onPointerDown)
-              element.removeEventListener('pointercancel', onPointerCancel)
-              if (captured?.handle.hasPointerCapture(captured.pointerId)) {
-                captured.handle.releasePointerCapture(captured.pointerId)
-              }
+    !(element instanceof HTMLElement)
+      ? Stream.empty
+      : Stream.merge(
+          observeViewportSize(element),
+          Drag.observeDrag<SwipeMessage>(element, (down, send) => {
+            const { target } = down
+            if (!(target instanceof Element)) return
+            const popup = target.closest(NESTED_POPUP_SELECTOR)
+            if (
+              !popup ||
+              popup.parentElement !== element ||
+              target.closest(SWIPE_IGNORE_SELECTOR) ||
+              (down.pointerType !== 'touch' &&
+                target.closest('[data-drawer-content]'))
+            )
+              return
+
+            const handle = target.closest('[data-slot="drawer-swipe-handle"]')
+            send(Message.StartedSwipe(swipePosition(down)))
+            return {
+              // Only the dedicated handle takes capture; native scrolling can
+              // still cancel swipes in the content with pointercancel.
+              ...(handle instanceof HTMLElement
+                ? { captureElement: handle }
+                : { capture: false }),
+              onMove: ({ event }) =>
+                send(Message.DraggedSwipe(swipePosition(event))),
+              onEnd: (event, canceled) =>
+                send(
+                  canceled
+                    ? Message.CancelledSwipe()
+                    : Message.EndedSwipe(swipePosition(event)),
+                ),
             }
           }),
-          release => Effect.sync(() => release?.()),
-        )
-        yield* Effect.acquireRelease(
-          Effect.sync(() => {
-            if (!(element instanceof HTMLElement)) return undefined
-            const emit = () =>
-              Queue.offerUnsafe(
-                queue,
-                Message.MeasuredViewport({
-                  width: element.offsetWidth,
-                  height: element.offsetHeight,
-                  rootFontSize:
-                    Number.parseFloat(
-                      element.ownerDocument.defaultView?.getComputedStyle(
-                        element.ownerDocument.documentElement,
-                      ).fontSize ?? '',
-                    ) || 16,
-                }),
-              )
-            const resize = new ResizeObserver(emit)
-            resize.observe(element)
-            emit()
-            return resize
-          }),
-          resize => Effect.sync(() => resize?.disconnect()),
-        )
-        return yield* Effect.never
-      }),
-    ),
+        ),
 })
 
 /** Watches nested drawer popups inside this dialog subtree and reports the
