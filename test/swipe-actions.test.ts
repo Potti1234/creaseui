@@ -48,6 +48,34 @@ const key = (model: Swipe.Model, pressedKey: string, index = -1, count = 2) =>
   )
 
 describe('SwipeActions', () => {
+  it('does not swipe or reveal an unmeasured or zero-width row', () => {
+    const unmeasured = Swipe.init('test')
+    const zeroWidth = Swipe.update(
+      initial(),
+      Swipe.Message.MeasuredRow({
+        key: 'a',
+        geometry: { width: 0, start: 100, end: 100, rtl: false },
+      }),
+    ).model
+    for (const model of [unmeasured, zeroWidth]) {
+      assert.equal(press(model), model)
+      assert.equal(Swipe.show(model, 'a', 'start').model, model)
+      assert.equal(key(model, 'ArrowRight').model, model)
+      assert.equal(Swipe.offset(model, 'a'), 0)
+    }
+    const active = move(press(initial()), 60)
+    const lostMeasurement = Swipe.update(
+      active,
+      Swipe.Message.MeasuredRow({
+        key: 'a',
+        geometry: { width: 0, start: 100, end: 100, rtl: false },
+      }),
+    ).model
+    assert.equal(Swipe.offset(lostMeasurement, 'a'), 0)
+    assert.ok(Option.isNone(move(lostMeasurement, 80).pointer))
+    assert.ok(Option.isNone(release(lostMeasurement).model.open))
+  })
+
   it('has Schema state and leaves taps, short and vertical gestures unpromoted', () => {
     assert.equal(Schema.is(Swipe.Model)(initial()), true)
     assert.ok(Option.isNone(release(move(press(initial()), 7)).model.open))

@@ -4,15 +4,27 @@ import * as Command from 'foldkit/command'
 import { childAttributes, type ChildAttribute, type Html } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
+import * as Render from 'foldkit/render'
 import { defineView, type View } from 'foldkit/submodel'
 
 import * as Drag from './drag'
 import { rubberBand } from './rubber-band'
 import * as Velocity from './velocity'
 
+/** Euclidean pointer travel in CSS pixels before a swipe can begin. */
+export const SWIPE_PROMOTION_SLOP = 8
+
+/** Release speed magnitude in pixels per millisecond that counts as a flick. */
+export const SWIPE_FLICK_VELOCITY = 0.3
+
+/** Fraction of the row width that arms an enabled full-swipe action. */
+export const DEFAULT_FULL_SWIPE_FRACTION = 0.6
+
 export const Side = Schema.Literals(['start', 'end'])
 export type Side = typeof Side.Type
+
 export const Open = Schema.Struct({ key: Schema.String, side: Side })
+
 export const Geometry = Schema.Struct({
   width: Schema.Finite,
   start: Schema.Finite,
@@ -20,6 +32,7 @@ export const Geometry = Schema.Struct({
   rtl: Schema.Boolean,
 })
 export type Geometry = typeof Geometry.Type
+
 const Pointer = Schema.Struct({
   id: Schema.Int,
   key: Schema.String,
@@ -29,6 +42,7 @@ const Pointer = Schema.Struct({
   rejected: Schema.Boolean,
   velocity: Velocity.Model,
 })
+
 export const Model = Schema.Struct({
   id: Schema.String,
   open: Schema.Option(Open),
@@ -81,15 +95,18 @@ export const Message = defineMessageUnion({
   CompletedFocus: {},
 })
 export type Message = typeof Message.Type
+
 export const OutMessage = defineMessageUnion({
   RequestedFullSwipe: { ...Open.fields, version: Schema.Int },
 })
 export type OutMessage = typeof OutMessage.Type
+
 export type Options = Readonly<{
   disabled?: (key: string) => boolean
   fullSwipeEnabled?: (key: string, side: Side) => boolean
   fullSwipe?: number
 }>
+
 type Result = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
 export const init = (id: string): Model => ({
@@ -101,17 +118,29 @@ export const init = (id: string): Model => ({
   version: 0,
   pending: Option.none(),
 })
-const emptyGeometry: Geometry = { width: 1, start: 0, end: 0, rtl: false }
-const geometry = (model: Model, key: string) => model.rows[key] ?? emptyGeometry
+
+const emptyGeometry: Geometry = { width: 0, start: 0, end: 0, rtl: false }
+
+const geometry = (model: Model, key: string): Geometry =>
+  Object.hasOwn(model.rows, key)
+    ? (model.rows[key] ?? emptyGeometry)
+    : emptyGeometry
+
+const isMeasured = (row: Geometry): boolean =>
+  Number.isFinite(row.width) && row.width > 0
+
 const sign = (row: Geometry, side: Side) =>
   (side === 'start') !== row.rtl ? 1 : -1
+
 const sideOf = (row: Geometry, x: number): Side =>
   x > 0 !== row.rtl ? 'start' : 'end'
+
 export const offset = (model: Model, key: string): number => {
+  const row = geometry(model, key)
+  if (!isMeasured(row)) return 0
   if (Option.isSome(model.draft) && model.draft.value.key === key)
     return model.draft.value.x
   if (Option.isSome(model.open) && model.open.value.key === key) {
-    const row = geometry(model, key)
     return sign(row, model.open.value.side) * row[model.open.value.side]
   }
   return 0
@@ -126,23 +155,26 @@ const Focus = Command.define('FocusSwipeAction', {
   },
   messages: [Message.CompletedFocus],
   execute: ({ id, key, side, index }) =>
-    Effect.sync(() => {
-      const surface = document.getElementById(id)
-      const row = Array.from(
-        surface?.querySelectorAll<HTMLElement>('[data-swipe-key]') ?? [],
-      ).find(element => element.dataset.swipeKey === key)
-      if (Option.isNone(side)) row?.focus()
-      else {
-        const actions = row?.querySelector<HTMLElement>(
-          `[data-side="${side.value}"]`,
-        )
-        if (actions) actions.inert = false
-        actions
-          ?.querySelectorAll<HTMLElement>('button, [href], [tabindex]')
-          [index]?.focus()
-      }
-      return Message.CompletedFocus()
-    }),
+    Render.afterCommit.pipe(
+      Effect.andThen(
+        Effect.sync(() => {
+          const surface = document.getElementById(id)
+          const row = Array.from(
+            surface?.querySelectorAll<HTMLElement>('[data-swipe-key]') ?? [],
+          ).find(element => element.dataset.swipeKey === key)
+          if (Option.isNone(side)) row?.focus()
+          else {
+            const actions = row?.querySelector<HTMLElement>(
+              `[data-side="${side.value}"]`,
+            )
+            actions
+              ?.querySelectorAll<HTMLElement>('button, [href], [tabindex]')
+              [index]?.focus()
+          }
+          return Message.CompletedFocus()
+        }),
+      ),
+    ),
 })
 
 export const close = (model: Model, focus = false): Result => ({
@@ -166,6 +198,7 @@ export const close = (model: Model, focus = false): Result => ({
       }
     : {}),
 })
+
 export const show = (
   model: Model,
   key: string,
@@ -173,7 +206,9 @@ export const show = (
   options: Options = {},
   focus = false,
 ): Result =>
-  options.disabled?.(key) || geometry(model, key)[side] <= 0
+  options.disabled?.(key) ||
+  !isMeasured(geometry(model, key)) ||
+  geometry(model, key)[side] <= 0
     ? { model }
     : {
         model: { ...close(model).model, open: Option.some({ key, side }) },
@@ -201,15 +236,17 @@ export const update = (
     const pointer = model.pointer.value
     if (options.disabled?.(pointer.key)) return close(model)
     if (Option.isNone(model.draft)) {
-      if (!canceled && pointer.from && !pointer.rejected) return close(model)
+      if (!canceled && pointer.from !== 0 && !pointer.rejected)
+        return close(model)
       return { model: { ...model, pointer: Option.none() } }
     }
     const draft = model.draft.value
     const row = geometry(model, draft.key)
+    if (!isMeasured(row)) return close(model)
     const side = sideOf(row, draft.x)
     const speed = canceled ? 0 : Velocity.velocity(pointer.velocity, time)
     const opening =
-      Math.abs(speed) >= 0.3
+      Math.abs(speed) >= SWIPE_FLICK_VELOCITY
         ? Math.sign(speed) === Math.sign(draft.x)
         : Math.abs(draft.x) >= row[side] / 2
     const settle =
@@ -255,6 +292,7 @@ export const update = (
         Option.isSome(model.pointer) ||
         Option.isSome(model.pending) ||
         options.disabled?.(key) ||
+        !isMeasured(row) ||
         (!row.start && !row.end)
       )
         return { model }
@@ -278,10 +316,12 @@ export const update = (
         return { model }
       const pointer = model.pointer.value
       if (pointer.rejected) return { model }
+      const row = geometry(model, pointer.key)
+      if (!isMeasured(row)) return close(model)
       const dx = x - pointer.x
       const dy = y - pointer.y
       if (Option.isNone(model.draft)) {
-        if (Math.hypot(dx, dy) < 8) return { model }
+        if (Math.hypot(dx, dy) < SWIPE_PROMOTION_SLOP) return { model }
         if (Math.abs(dy) >= Math.abs(dx))
           return {
             model: {
@@ -290,7 +330,6 @@ export const update = (
             },
           }
       }
-      const row = geometry(model, pointer.key)
       const raw = pointer.from + dx
       const side = sideOf(row, raw)
       const full =
@@ -298,9 +337,7 @@ export const update = (
       const limit = full ? row.width : row[side]
       const past = Math.abs(raw) - limit
       const shown =
-        past > 0
-          ? Math.sign(raw) * (limit + rubberBand(past, row.width || 1))
-          : raw
+        past > 0 ? Math.sign(raw) * (limit + rubberBand(past, row.width)) : raw
       return {
         model: {
           ...model,
@@ -313,7 +350,8 @@ export const update = (
             x: shown,
             full:
               full &&
-              Math.abs(raw) >= (row.width || 1) * (options.fullSwipe ?? 0.6),
+              Math.abs(raw) >=
+                row.width * (options.fullSwipe ?? DEFAULT_FULL_SWIPE_FRACTION),
           }),
         },
       }
@@ -348,6 +386,7 @@ export const update = (
         return Option.isSome(shown) ? close(model, true) : { model }
       if (
         options.disabled?.(key) ||
+        !isMeasured(row) ||
         (pressedKey !== 'ArrowLeft' && pressedKey !== 'ArrowRight')
       )
         return { model }
@@ -370,13 +409,16 @@ export const update = (
 }
 
 const rowSelector = '[data-swipe-key]'
+
 const actionsSelector = 'button, [href], [tabindex]'
+
 type InputMessage = Exclude<
   Message,
   { _tag: 'CancelledSwipe' | 'ResolvedFullSwipe' | 'CompletedFocus' }
 >
+
 const measure = (row: HTMLElement): Geometry => ({
-  width: row.getBoundingClientRect().width || 1,
+  width: row.getBoundingClientRect().width,
   start:
     row.querySelector('[data-side="start"]')?.getBoundingClientRect().width ??
     0,
@@ -384,6 +426,7 @@ const measure = (row: HTMLElement): Geometry => ({
     row.querySelector('[data-side="end"]')?.getBoundingClientRect().width ?? 0,
   rtl: row.ownerDocument.defaultView?.getComputedStyle(row).direction === 'rtl',
 })
+
 const Track = Mount.defineStream('TrackSwipeActions', {
   messages: [
     Message.MeasuredRow,
@@ -410,7 +453,9 @@ const Track = Mount.defineStream('TrackSwipeActions', {
             )
               return
             const key = row.dataset.swipeKey ?? ''
-            send(Message.MeasuredRow({ key, geometry: measure(row) }))
+            const measured = measure(row)
+            if (!isMeasured(measured)) return
+            send(Message.MeasuredRow({ key, geometry: measured }))
             send(
               Message.PressedRow({
                 key,
@@ -484,6 +529,7 @@ const Track = Mount.defineStream('TrackSwipeActions', {
                       return
                     const key = row.dataset.swipeKey ?? ''
                     const measured = measure(row)
+                    if (!isMeasured(measured)) return
                     const shown = row.getAttribute('data-swipe-open')
                     if (
                       event.key === 'Escape'
@@ -528,6 +574,7 @@ export type RowInfo<Key extends string> = Readonly<{
   content: ReadonlyArray<ChildAttribute>
   actions: (side: Side) => ReadonlyArray<ChildAttribute>
 }>
+
 export type ViewInputs<Key extends string> = Readonly<{
   keys: ReadonlyArray<Key>
   disabled?: (key: Key) => boolean
@@ -536,10 +583,12 @@ export type ViewInputs<Key extends string> = Readonly<{
     rows: ReadonlyArray<RowInfo<Key>>,
   ) => Html
 }>
+
 export type Bundle<Key extends string> = Readonly<{
   update: typeof update
   view: View<Model, Message, ViewInputs<Key>>
 }>
+
 export const create = <Key extends string = string>(): Bundle<Key> => ({
   update,
   view: defineView<Model, Message, ViewInputs<Key>>((model, inputs, h) =>
@@ -595,4 +644,5 @@ export const create = <Key extends string = string>(): Bundle<Key> => ({
     ),
   ),
 })
+
 export const view = create().view

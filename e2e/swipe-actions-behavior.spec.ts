@@ -27,6 +27,17 @@ test.describe('Swipe actions docs example', () => {
     await page.goto(url)
     const row = page.locator('[data-swipe-key="design"]')
     const content = row.locator('.content')
+    const endActions = row.locator('[data-side="end"]')
+    await expect(endActions).toHaveAttribute('inert', '')
+    await row.focus()
+    await row.press('ArrowLeft')
+    await expect(row).toHaveAttribute('data-swipe-open', 'end')
+    await expect(endActions).not.toHaveAttribute('inert')
+    await expect(row.getByRole('button', { name: 'Delete' })).toBeFocused()
+    await page.keyboard.press('Escape')
+    await expect(row).toBeFocused()
+    await expect(endActions).toHaveAttribute('inert', '')
+    await expect(content).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)')
     const box = (await row.boundingBox())!
     const x = box.x + box.width / 2
     const y = box.y + box.height / 2
