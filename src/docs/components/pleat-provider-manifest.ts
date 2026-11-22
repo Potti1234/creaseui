@@ -3,8 +3,7 @@ import {
   installPleatPreviewView,
 } from '@/docs/components/catalog'
 import { mapPleatPreview } from '@/docs/components/pages/map/pleat'
-import { connectPreviewProgram } from '@/docs/components/pages/connect'
-installPleatPreviewView('connect', connectPreviewProgram.view)
+import { scrollPickerPleatPreviewProgram } from '@/docs/components/pages/scroll-picker/pleat'
 installPleatExamplePreviewProvider('map', mapPleatPreview('map'))
 installPleatExamplePreviewProvider(
   'map-controls',
@@ -67,6 +66,8 @@ import { fileInputPleatPreviewProgram } from '@/docs/components/pages/file-input
 import { listInputPleatPreview } from '@/docs/components/pages/list-input/pleat'
 import { numberInputPleatPreview } from '@/docs/components/pages/number-input/pleat'
 import { timeInputPleatPreview } from '@/docs/components/pages/time-input/pleat'
+import { timeInputPleatPreviewProgram } from '@/docs/components/pages/time-input/pleat'
+import { withScrollPicker } from '@/docs/components/pages/scroll-picker/shared'
 import { switchPleatPreview } from '@/docs/components/pages/switch/pleat'
 import { radioGroupPleatPreview } from '@/docs/components/pages/radio-group/pleat'
 import { multiSelectorPleatPreview } from '@/docs/components/pages/multi-selector/pleat'
@@ -265,6 +266,13 @@ installPleatExamplePreviewProvider(
 )
 installPleatExamplePreviewProvider('stepper', stepperPleatPreview)
 installPleatExamplePreviewProvider('time-input', timeInputPleatPreview)
+installPleatPreviewView(
+  'time-input',
+  withScrollPicker(
+    timeInputPleatPreviewProgram,
+    scrollPickerPleatPreviewProgram,
+  ).view,
+)
 installPleatExamplePreviewProvider('timer', timerPleatPreview)
 installPleatExamplePreviewProvider('timestamp', timestampPleatPreview)
 installPleatExamplePreviewProvider('token', tokenPleatPreview)

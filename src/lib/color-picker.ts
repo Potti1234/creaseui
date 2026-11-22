@@ -14,6 +14,7 @@ import type { Subscriptions } from 'foldkit/subscription'
 import { Popover } from '@foldkit/ui'
 
 import * as Drag from '@/lib/behaviors/drag'
+import * as Area from '@/lib/behaviors/area'
 
 // ---------------------------------------------------------------------------
 // Color math (diceui parity)
@@ -303,10 +304,12 @@ export const Model = S.Struct({
   draft: S.String,
   drag: S.Union([DragChannel, S.Literal('idle')]),
   popover: Popover.Model,
+  area: Area.Model,
 })
 export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
+  GotAreaMessage: { message: Area.Message },
   GotPopoverMessage: { message: Popover.Message },
   PressedChannel: { channel: DragChannel, x: S.Number, y: S.Number },
   MovedDragPointer: {
@@ -371,6 +374,7 @@ export const init = (
     disabled: config.disabled ?? false,
     draft: colorToString(hsvToRgb(color), format),
     drag: 'idle',
+    area: Area.reflect(Area.init(), { x: color.s, y: color.v }),
     popover: Popover.init({ id: `${config.id}-popover`, isAnimated: true }),
   }
 }
@@ -381,7 +385,12 @@ export const reflectValue = (model: Model, value: string): Model =>
     onNone: () => model,
     onSome: rgb => {
       const color = rgbToHsv(rgb)
-      return { ...model, color, draft: colorToString(rgb, model.format) }
+      return {
+        ...model,
+        color,
+        area: Area.reflect(model.area, { x: color.s, y: color.v }),
+        draft: colorToString(rgb, model.format),
+      }
     },
   })
 
@@ -398,10 +407,52 @@ export const pureHue = (model: Model): string =>
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
+export const areaOptions: Area.Options = {
+  x: { min: 0, max: 100, step: 1, label: 'saturation' },
+  y: { min: 0, max: 100, step: 1, label: 'value' },
+}
+
+export const areaThumbAttrs = (model: Model) =>
+  Area.thumbAttrs(model.area, { ...areaOptions, disabled: model.disabled })
+export const areaThumbStyle = (model: Model) =>
+  Area.thumbStyle(model.area, areaOptions)
+export const areaKeyMessage = (
+  key: string,
+  modifiers: Parameters<typeof Area.keyMessage>[1],
+) =>
+  Option.map(Area.keyMessage(key, modifiers), message =>
+    Message.GotAreaMessage({ message }),
+  )
+
+const updateArea = (model: Model, message: Area.Message): UpdateReturn => {
+  const next = Area.update(
+    Area.reflect(model.area, { x: model.color.s, y: model.color.v }),
+    message,
+    { ...areaOptions, disabled: model.disabled },
+  )
+  const updated = {
+    ...model,
+    area: next.model,
+    drag: Option.isSome(next.model.pressReason)
+      ? ('area' as const)
+      : model.drag === 'area'
+        ? ('idle' as const)
+        : model.drag,
+  }
+  return next.outMessage === undefined
+    ? { model: updated }
+    : changedValue(updated, {
+        ...model.color,
+        s: next.model.value.x,
+        v: next.model.value.y,
+      })
+}
+
 const changedValue = (model: Model, color: HsvColor): UpdateReturn => ({
   model: {
     ...model,
     color,
+    area: Area.reflect(model.area, { x: color.s, y: color.v }),
     draft: colorToString(hsvToRgb(color), model.format),
   },
   outMessage: OutMessage.ChangedValue({
@@ -458,6 +509,10 @@ const liftPopover = (model: Model, message: Popover.Message): UpdateReturn => {
       ...model,
       popover: next.model,
       drag: model.popover.isOpen && !next.model.isOpen ? 'idle' : model.drag,
+      area:
+        model.popover.isOpen && !next.model.isOpen
+          ? { ...model.area, pressReason: Option.none() }
+          : model.area,
     },
     ...(next.commands === undefined
       ? {}
@@ -473,6 +528,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      GotAreaMessage: ({ message }) => updateArea(model, message),
       GotPopoverMessage: ({ message }) =>
         model.disabled ? { model } : liftPopover(model, message),
       PressedChannel: ({ channel, x, y }) =>
@@ -612,7 +668,12 @@ const ObserveChannel = Mount.defineStream('ObserveColorPickerChannel', {
 export const channelMount = <Msg>(
   channel: DragChannel,
   toParentMessage: (message: Message) => Msg,
-) => Mount.mapMessage(ObserveChannel({ channel }), toParentMessage)
+) =>
+  channel === 'area'
+    ? Mount.mapMessage(Area.Pointer({}), message =>
+        toParentMessage(Message.GotAreaMessage({ message })),
+      )
+    : Mount.mapMessage(ObserveChannel({ channel }), toParentMessage)
 
 /** @deprecated Channel mounts now track drags without parent subscriptions. */
 export const subscriptions = <ParentModel, Msg>(

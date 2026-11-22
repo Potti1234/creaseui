@@ -22,7 +22,10 @@ import type {
 } from '@/docs/components/page-definition'
 import { componentApi } from '@/docs/generated-component-api'
 import { authoredPages } from '@/docs/components/pages'
-import { connectPage } from '@/docs/components/pages/connect'
+import {
+  connectPage,
+  connectPreviewProgram,
+} from '@/docs/components/pages/connect'
 import { RoutedDocsPreviewMessage } from '@/docs/components/pages/authored-page'
 import type { ErasedPreviewProgram } from '@/docs/components/pages/authored-page'
 import { renderer } from '@/site/config'
@@ -36,7 +39,9 @@ export const installExamplePreviewProvider = (
   stylexExamplePreviewProviders.set(slug, provider)
 }
 
-const stylexPreviewViews = new Map<string, ErasedPreviewProgram['view']>()
+const stylexPreviewViews = new Map<string, ErasedPreviewProgram['view']>([
+  ['connect', connectPreviewProgram.view],
+])
 
 /** Typed views preserve native payloads while sharing the page's update logic. */
 export const installStyleXPreviewView = (
@@ -55,7 +60,9 @@ export const installPleatExamplePreviewProvider = (
   pleatExamplePreviewProviders.set(slug, provider)
 }
 
-const pleatPreviewViews = new Map<string, ErasedPreviewProgram['view']>()
+const pleatPreviewViews = new Map<string, ErasedPreviewProgram['view']>([
+  ['connect', connectPreviewProgram.view],
+])
 
 export const installPleatPreviewView = (
   slug: string,

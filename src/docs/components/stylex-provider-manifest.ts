@@ -3,8 +3,7 @@ import {
   installStyleXPreviewView,
 } from '@/docs/components/catalog'
 import { mapStyleXPreview } from '@/docs/components/pages/map/stylex'
-import { connectPreviewProgram } from '@/docs/components/pages/connect'
-installStyleXPreviewView('connect', connectPreviewProgram.view)
+import { scrollPickerStylexPreviewProgram } from '@/docs/components/pages/scroll-picker/stylex'
 installExamplePreviewProvider('map', mapStyleXPreview('map'))
 installExamplePreviewProvider('map-controls', mapStyleXPreview('map-controls'))
 installExamplePreviewProvider('map-marker', mapStyleXPreview('map-marker'))
@@ -59,6 +58,8 @@ import { fileInputStylexPreviewProgram } from '@/docs/components/pages/file-inpu
 import { listInputStyleXPreview } from '@/docs/components/pages/list-input/stylex'
 import { numberInputStyleXPreview } from '@/docs/components/pages/number-input/stylex'
 import { timeInputStyleXPreview } from '@/docs/components/pages/time-input/stylex'
+import { timeInputStylexPreviewProgram } from '@/docs/components/pages/time-input/stylex'
+import { withScrollPicker } from '@/docs/components/pages/scroll-picker/shared'
 import { switchStyleXPreview } from '@/docs/components/pages/switch/stylex'
 import { radioGroupStyleXPreview } from '@/docs/components/pages/radio-group/stylex'
 import { multiSelectorStyleXPreview } from '@/docs/components/pages/multi-selector/stylex'
@@ -244,6 +245,13 @@ installExamplePreviewProvider('overflow-list', overflowListStyleXPreview)
 installExamplePreviewProvider('selectable-card', selectableCardStyleXPreview)
 installExamplePreviewProvider('stepper', stepperStyleXPreview)
 installExamplePreviewProvider('time-input', timeInputStyleXPreview)
+installStyleXPreviewView(
+  'time-input',
+  withScrollPicker(
+    timeInputStylexPreviewProgram,
+    scrollPickerStylexPreviewProgram,
+  ).view,
+)
 installExamplePreviewProvider('timer', timerStyleXPreview)
 installExamplePreviewProvider('timestamp', timestampStyleXPreview)
 installExamplePreviewProvider('token', tokenStyleXPreview)
