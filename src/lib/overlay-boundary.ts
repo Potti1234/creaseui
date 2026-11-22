@@ -2,6 +2,8 @@ import { Effect, Schema as S } from 'effect'
 import * as Mount from 'foldkit/mount'
 import { Anchor, Combobox, Listbox, Popover } from '@foldkit/ui'
 
+import * as Position from './behaviors/position'
+
 /**
  * Crease themes may be scoped below the document root (all renderers). Foldkit's
  * default portal moves anchored content to `document.body`, where inherited
@@ -112,7 +114,7 @@ export const AnchorThemedCombobox = Mount.define('AnchorThemedCombobox', {
           element.addEventListener('pointerdown', preventBlur, {
             capture: true,
           })
-          const releaseAnchor = Anchor.anchorSetup(element, {
+          const releaseAnchor = Position.bindAnchor(element, {
             buttonId,
             anchor: { ...anchor, portal: true },
             interceptTab: false,
@@ -148,7 +150,7 @@ export const AnchorThemedListbox = Mount.define('AnchorThemedListbox', {
         Effect.sync(() => {
           if (!(element instanceof HTMLElement)) return () => {}
           const releaseTheme = inheritPortalTheme(element)
-          const releaseAnchor = Anchor.anchorSetup(element, {
+          const releaseAnchor = Position.bindAnchor(element, {
             buttonId,
             anchor: { ...anchor, portal: true },
             focusAfterPosition: true,
@@ -186,7 +188,7 @@ export const AnchorThemedPopover = Mount.define('AnchorThemedPopover', {
         Effect.sync(() => {
           if (!(element instanceof HTMLElement)) return () => {}
           const releaseTheme = inheritPortalTheme(element)
-          const releaseAnchor = Anchor.anchorSetup(element, {
+          const releaseAnchor = Position.bindAnchor(element, {
             buttonId,
             anchor: { ...anchor, portal: true },
             interceptTab: false,

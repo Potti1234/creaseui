@@ -69,20 +69,17 @@ test('reduced motion still opens and closes a picker', async ({
     .click()
   const trigger = page.locator('#create-base-picker-button')
   await trigger.click()
-  await expect(page.locator('[data-slot="popover-content"]')).toBeVisible()
+  const popover = page.locator('#create-base-picker-panel')
+  // Foldkit focuses the panel on the frame after it becomes visible.
+  await expect(popover.and(page.locator(':focus-within'))).toBeVisible()
   await page.keyboard.press('Escape')
-  const popover = page.locator('[data-slot="popover-content"]')
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
   if (browserName === 'webkit') {
-    // WebKit can stall the leave transition under reduced motion — the
-    // element carries data-closed + data-leave but stays painted. The
-    // model's closed state is the cross-browser-stable signal.
-    await expect(popover).toHaveAttribute('data-closed', '')
+    // The panel may unmount immediately or remain painted with data-closed.
+    await expect(popover.and(page.locator(':not([data-closed])'))).toBeHidden()
   } else {
     await expect(popover).toBeHidden()
   }
-  // WebKit leaves focus on body after Escape; only the close itself is
-  // cross-browser stable.
-  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
   expect(errors).toEqual([])
 })
 

@@ -6,9 +6,8 @@ import { Style, When, Global } from '@pleat/core'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { Message } from '@/lib/action-bar'
-import { escapeActionBarMount } from '@/lib/action-bar'
+import { actionBarMount } from '@/lib/action-bar'
 import type { Message as ToolbarMessage } from '@/lib/toolbar'
-import { focusToolbarItemsMount } from '@/lib/toolbar'
 import type { ActionBarAlign, ActionBarSide } from '@/lib/action-bar'
 export type { ActionBarAlign, ActionBarSide }
 import { reset } from '@/ui/pleat/reset'
@@ -120,12 +119,7 @@ export const actionBar = <Msg>(
       h.DataAttribute('orientation', 'horizontal'),
       ...(props.toParentMessage === undefined
         ? []
-        : [
-            h.OnMount(escapeActionBarMount(props.toParentMessage)),
-            h.OnMount(
-              focusToolbarItemsMount(props.toParentMessage, 'horizontal'),
-            ),
-          ]),
+        : [h.OnMount(actionBarMount(props.toParentMessage))]),
       h.Class(
         className(
           styles.root,

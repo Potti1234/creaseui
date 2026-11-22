@@ -1,6 +1,8 @@
 import { Schema as S } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
+import { Command } from 'foldkit'
+import * as LassoDemo from '@/docs/components/pages/grid/lasso-demo'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
@@ -20,11 +22,13 @@ import * as Stat from '@/ui/stat'
 
 const GridPreviewMessageUnion = defineMessageUnion({
   GotResizablePreviewMessage: { message: Resizable.Message },
+  GotLassoPreviewMessage: { message: LassoDemo.Message },
 })
 type GridPreviewMessage = typeof GridPreviewMessageUnion.Type
 const GridPreviewModel = S.Struct({
   _docsPage: S.Literal('grid'),
   resizable: Resizable.Model,
+  lassoDemo: LassoDemo.Model,
 })
 type GridPreviewModel = typeof GridPreviewModel.Type
 
@@ -390,6 +394,12 @@ const viewFor = (
   h: HtmlBuilder<GridPreviewMessage>,
 ): Html => {
   switch (fixture.kind) {
+    case 'lasso':
+      return LassoDemo.preview(
+        model.lassoDemo,
+        message => GridPreviewMessageUnion.GotLassoPreviewMessage({ message }),
+        h,
+      )
     case 'showcase':
       return showcaseView(h)
     case 'spanning':
@@ -418,9 +428,19 @@ export const gridTailwindPreviewProgram = definePreviewProgram<
   init: () => ({
     _docsPage: 'grid',
     resizable: Resizable.init('grid-auto-fit', 96),
+    lassoDemo: LassoDemo.init(),
   }),
   update: (model, message) => {
     switch (message._tag) {
+      case 'GotLassoPreviewMessage': {
+        const next = LassoDemo.update(model.lassoDemo, message.message)
+        return {
+          model: { ...model, lassoDemo: next.model },
+          commands: Command.mapMessages(next.commands, message =>
+            GridPreviewMessageUnion.GotLassoPreviewMessage({ message }),
+          ),
+        }
+      }
       case 'GotResizablePreviewMessage':
         return {
           model: {

@@ -12,7 +12,7 @@ export const actionBarPage = authoredPage({
     description:
       'Floats a contextual toolbar for multi-selection actions — select rows in a table, then act on the batch.',
     architecture:
-      'Action Bar is presentation plus two mounts: Escape dismissal and roving-tabindex arrow navigation inside the group. Selection state stays in the parent Model; open/close and item clicks are plain messages.',
+      'Action Bar composes Layer dismissal and roving-tabindex arrow navigation in one mount. Escape requests dismissal of the frontmost layer; selection and whether the bar stays open belong to the parent Model.',
     apiHref: 'https://foldkit.dev/ui/overview',
     accessibility:
       'The bar exposes a toolbar landmark with its orientation. Arrow keys move between items and Escape clears the selection.',
