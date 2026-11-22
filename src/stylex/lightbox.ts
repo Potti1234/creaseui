@@ -160,6 +160,7 @@ const styles = stylex.create({
     display: 'flex',
     justifyContent: 'center',
     outlineStyle: 'none',
+    position: 'relative',
     maxHeight: '100%',
     maxWidth: '100%',
   },
@@ -220,8 +221,8 @@ const mediaView = <Msg>(
   const model = props.model
   const send = props.toParentMessage
   const zoomable = (props.hasZoom ?? false) && item.type !== 'video'
-  const isZoomed = model.zoom > 1
-  const isPanning = Option.isSome(model.panAnchor)
+  const isZoomed = LightboxBehavior.isZoomed(model)
+  const isPanning = LightboxBehavior.isPanning(model)
 
   if (item.type === 'video') {
     return h.video(
@@ -244,8 +245,6 @@ const mediaView = <Msg>(
     )
   }
 
-  const transform = `translate(${String(model.panX)}px, ${String(model.panY)}px) scale(${String(model.zoom)})`
-
   return h.div(
     [
       h.DataAttribute('slot', 'lightbox-zoom-frame'),
@@ -265,7 +264,7 @@ const mediaView = <Msg>(
                 ? Option.some(send(Message.ToggledZoom()))
                 : Option.none(),
             ),
-            h.OnMount(LightboxBehavior.mediaMount(send)),
+            h.OnMount(LightboxBehavior.frameMount(send)),
             h.Style({
               cursor: isPanning ? 'grabbing' : isZoomed ? 'grab' : 'zoom-in',
             }),
@@ -284,8 +283,9 @@ const mediaView = <Msg>(
         h.Alt(item.alt),
         h.Draggable(false),
         h.DataAttribute('slot', 'lightbox-media'),
+        ...(zoomable ? [h.OnMount(LightboxBehavior.mediaMount(send))] : []),
         h.Style({
-          transform,
+          ...LightboxBehavior.mediaStyle(model),
           transitionProperty: isPanning ? 'none' : 'transform',
           transitionDuration: '200ms',
           transitionTimingFunction: 'ease-out',
@@ -310,7 +310,7 @@ export const lightbox = <Msg>(
   const item = items[index] ?? items[0]
   const zoomable =
     (props.hasZoom ?? false) && item !== undefined && item.type !== 'video'
-  const isZoomed = model.zoom > 1 && zoomable
+  const isZoomed = LightboxBehavior.isZoomed(model) && zoomable
 
   return h.submodel({
     slotId: model.dialog.id,

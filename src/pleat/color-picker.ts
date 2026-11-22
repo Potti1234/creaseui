@@ -104,7 +104,7 @@ const styles = {
     height: '1rem',
     pointerEvents: 'none',
     position: 'absolute',
-    transform: 'translate(-50%, 50%)',
+    transform: 'translate(-50%, -50%)',
     width: '1rem',
   }),
   track: Style.make({
@@ -285,30 +285,43 @@ export const colorPickerArea = <Msg>(
   props: ChannelProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const { s, v } = props.model.color
   return h.div(
     [
       h.Class(className(styles.area, props.layoutStyle)),
-      h.AriaLabel('Color saturation and value'),
-      h.AriaValuetext(
-        `saturation ${String(Math.round(s))}%, value ${String(Math.round(v))}%`,
-      ),
       h.Style({
         backgroundColor: Picker.pureHue(props.model),
         backgroundImage:
           'linear-gradient(to top, rgb(0,0,0), transparent), linear-gradient(to right, rgb(255,255,255), transparent)',
         cursor: props.model.disabled ? 'not-allowed' : 'crosshair',
       }),
-      ...channelAttrs(props, 'area', h),
+      h.Attribute(
+        CHANNEL_ATTR,
+        Picker.channelElementId(props.model.id, 'area'),
+      ),
+      h.DataAttribute('slot', 'color-picker-area'),
+      h.Dir('ltr'),
+      h.AriaDisabled(props.model.disabled),
+      h.OnMount(Picker.channelMount('area', props.toParentMessage)),
     ],
     [
       h.span(
         [
           h.DataAttribute('slot', 'color-picker-area-thumb'),
+          ...Object.entries(Picker.areaThumbAttrs(props.model)).map(
+            ([name, value]) => h.Attribute(name, value),
+          ),
+          h.AriaLabel('Color saturation and value'),
+          h.OnKeyDownPreventDefault((key, modifiers) =>
+            props.model.disabled
+              ? Option.none()
+              : Option.map(
+                  Picker.areaKeyMessage(key, modifiers),
+                  props.toParentMessage,
+                ),
+          ),
           h.Class(className(styles.areaThumb)),
           h.Style({
-            left: `${String(s)}%`,
-            bottom: `${String(v)}%`,
+            ...Picker.areaThumbStyle(props.model),
             backgroundColor: Picker.hex(props.model),
             boxShadow: THUMB_RING,
           }),
