@@ -1,10 +1,9 @@
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Tooltip as TooltipPrimitive } from '@foldkit/ui'
 import { Option } from 'effect'
 import * as Mount from 'foldkit/mount'
 
-import * as TooltipBehavior from '@/lib/tooltip'
+import * as TooltipBehavior from '@/lib/behaviors/tooltip'
 import { cn } from '@/lib/utils'
 
 /* Ported from shadcn/ui tooltip.tsx on top of foldkit Tooltip.
@@ -30,7 +29,7 @@ const CONTENT_CLASS =
 export type TooltipSide = 'top' | 'right' | 'bottom' | 'left'
 export type TooltipAlign = 'start' | 'center' | 'end'
 
-type Placement = NonNullable<TooltipPrimitive.AnchorConfig['placement']>
+type Placement = NonNullable<TooltipBehavior.AnchorConfig['placement']>
 
 const PLACEMENTS: Readonly<
   Record<TooltipSide, Readonly<Record<TooltipAlign, Placement>>>
@@ -208,7 +207,7 @@ export const tooltip = <Msg>(
                 }),
                 h.OnMount(
                   Mount.mapMessage(
-                    TooltipPrimitive.AnchorTooltip({
+                    TooltipBehavior.AnchorTooltip({
                       buttonId: triggerId,
                       anchor,
                     }),

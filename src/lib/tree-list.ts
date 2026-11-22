@@ -9,6 +9,7 @@ import * as Command from 'foldkit/command'
 import * as Dom from 'foldkit/dom'
 import { defineMessageUnion } from 'foldkit/message'
 
+import * as TreeCollection from '@/lib/behaviors/tree-collection'
 import * as Typeahead from '@/lib/behaviors/typeahead'
 
 export type TreeListDensity = 'compact' | 'balanced' | 'spacious'
@@ -115,34 +116,33 @@ export type VisibleItem = Readonly<{
   hasInnerAction: boolean
 }>
 
+const visibleRows = (items: ReadonlyArray<TreeListItemData>, model: Model) =>
+  TreeCollection.visibleTreeRowsBy(
+    items,
+    item => item.id,
+    item => isItemExpanded(item, model),
+  )
+
+const toVisibleItem = (
+  { item, level }: TreeCollection.TreeRow<string, TreeListItemData>,
+  model: Model,
+): VisibleItem => ({
+  id: item.id,
+  level,
+  isDisabled: item.isDisabled === true,
+  isExpanded: hasChildren(item) && isItemExpanded(item, model),
+  hasChildren: hasChildren(item),
+  hasInnerAction: isItemActionable(item),
+})
+
 /** Items in rendered (visible) order: a parent's children appear only while
     it is expanded — the same list the DOM hook queries via
     `[role="treeitem"]`. */
 export const visibleItems = (
   items: ReadonlyArray<TreeListItemData>,
   model: Model,
-): ReadonlyArray<VisibleItem> => {
-  const out: Array<VisibleItem> = []
-  const walk = (list: ReadonlyArray<TreeListItemData>, level: number): void => {
-    for (const item of list) {
-      const children = hasChildren(item)
-      const expanded = children && isItemExpanded(item, model)
-      out.push({
-        id: item.id,
-        level,
-        isDisabled: item.isDisabled === true,
-        isExpanded: expanded,
-        hasChildren: children,
-        hasInnerAction: isItemActionable(item),
-      })
-      if (expanded) {
-        walk(item.children ?? [], level + 1)
-      }
-    }
-  }
-  walk(items, 1)
-  return out
-}
+): ReadonlyArray<VisibleItem> =>
+  visibleRows(items, model).map(row => toVisibleItem(row, model))
 
 /** astryx's seed: first selected enabled item in document order, else first
     enabled, else first item. Children walk unconditionally — the seed is
@@ -198,31 +198,8 @@ const NAVIGATION_KEYS: ReadonlySet<string> = new Set([
   ' ',
 ])
 
-const findItem = (
-  items: ReadonlyArray<TreeListItemData>,
-  id: string,
-): TreeListItemData | undefined => {
-  for (const item of items) {
-    if (item.id === id) {
-      return item
-    }
-    const found = findItem(item.children ?? [], id)
-    if (found !== undefined) {
-      return found
-    }
-  }
-  return undefined
-}
-
-const itemText = (
-  items: ReadonlyArray<TreeListItemData>,
-  id: string,
-): string => {
-  const item = findItem(items, id)
-  return (
-    item?.typeaheadText ?? (typeof item?.label === 'string' ? item.label : '')
-  )
-}
+const itemText = (item: TreeListItemData): string =>
+  item.typeaheadText ?? (typeof item.label === 'string' ? item.label : '')
 
 export const itemDomId = (treeId: string, itemId: string): string =>
   `${treeId}-item-${encodeURIComponent(itemId)}`
@@ -276,7 +253,11 @@ export const resolveKey = (
   modifiers: Readonly<{ ctrlKey: boolean; metaKey: boolean; altKey: boolean }>,
   direction: 'ltr' | 'rtl',
 ): TreeKeyIntent => {
-  const visible = visibleItems(items, model)
+  const visible = visibleRows(items, model).map(row => ({
+    ...toVisibleItem(row, model),
+    parent: row.parent,
+    item: row.item,
+  }))
   if (visible.length === 0) {
     return { _tag: 'none' }
   }
@@ -290,7 +271,7 @@ export const resolveKey = (
       key,
       candidates: visible.map(item => ({
         id: item.id,
-        label: itemText(items, item.id),
+        label: itemText(item.item),
         isDisabled: item.isDisabled,
         hasChildren: item.hasChildren,
         hasInnerAction: item.hasInnerAction,
@@ -338,7 +319,7 @@ export const resolveKey = (
       }
       if (current.isExpanded) {
         const next = visible[currentIndex + 1]
-        if (next !== undefined && next.level > current.level) {
+        if (next !== undefined && next.parent === current.id) {
           return { _tag: 'move', id: next.id }
         }
       }
@@ -352,13 +333,7 @@ export const resolveKey = (
       if (current.isExpanded) {
         return { _tag: 'toggle', id: current.id }
       }
-      for (let i = currentIndex - 1; i >= 0; i--) {
-        const candidate = visible[i]
-        if (candidate !== undefined && candidate.level < current.level) {
-          return { _tag: 'move', id: candidate.id }
-        }
-      }
-      return { _tag: 'move', id: current.id }
+      return { _tag: 'move', id: current.parent ?? current.id }
     }
     case 'Home': {
       const target = enabledFrom(visible, 0, 1)

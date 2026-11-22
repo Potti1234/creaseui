@@ -1,7 +1,7 @@
 import { Style, When } from '@pleat/core'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Dialog as DialogPrimitive } from '@foldkit/ui'
+import * as DialogPrimitive from '@/lib/behaviors/dialog'
 
 import { overlayStyles } from './overlay-tokens'
 import type { ComponentLayoutStyle } from './contracts'
