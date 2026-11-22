@@ -10,6 +10,16 @@ import { authoredPages } from '../src/docs/components/pages/index.ts'
 describe('Connect behavior documentation', () => {
   const definition = connectPage.definition
 
+  it('keeps its behavior guide beside the module', () => {
+    const guide = readFileSync('src/lib/behaviors/connect.md', 'utf8')
+    assert.match(guide, /^# Connect\n/u)
+    assert.ok(guide.includes('RequestedConnection'))
+    assert.doesNotMatch(
+      readFileSync('src/lib/behaviors/README.md', 'utf8'),
+      /Connect tracks/u,
+    )
+  })
+
   it('uses the authored pages index and renderer provider manifests', () => {
     assert.deepEqual(authoredPages.connect, connectPage)
     assert.doesNotMatch(
