@@ -12,7 +12,7 @@ export const dataGridPage = authoredPage({
     description:
       'A dense, editable spreadsheet-style grid with virtualized rows, cell focus and range selection, keyboard navigation, sorting, filtering, column visibility, and a per-variant cell editor.',
     architecture:
-      'The application owns rows and typed column definitions. DataGrid.Model stores interaction state—focused and editing cells, draft values, selection ranges, sorting, filters, hidden columns, and viewport metrics—and its pure update is delegated by the parent with the same column config.',
+      'The application owns rows and typed column definitions. DataGrid.Model stores interaction state—focused and editing cells, draft values, selection ranges, sorting, filters, hidden columns, and viewport metrics—and its pure update is delegated by the parent with the same column config. Undo history defaults to 100 commits; set config.history.limit to customize capacity (0 disables history). Grid commits are ungrouped.',
     apiHref: 'https://foldkit.dev/guide/state',
     composition:
       'Parent Model\n├── domain rows\n└── DataGrid interaction Model\n    ├── focused / editing cell + draft value\n    ├── selection anchor + end\n    ├── sorting + filters\n    ├── hidden columns + row height\n    └── viewport scroll state\nView inputs\n└── typed columns (variant, width, accessors), row key, createRow',

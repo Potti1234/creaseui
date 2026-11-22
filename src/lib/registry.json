@@ -1239,6 +1239,11 @@
           "target": "@lib/data-grid.ts"
         },
         {
+          "path": "behaviors/undo-stack.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/undo-stack.ts"
+        },
+        {
           "path": "behaviors/inline-edit.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/inline-edit.ts"
