@@ -8,6 +8,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
+  createGuest,
   listInputFixtures,
   type Guest,
 } from '@/docs/components/pages/list-input/shared'
@@ -130,11 +131,7 @@ export const listInputStylexPreviewProgram = definePreviewProgram<
             itemName: 'guest',
             value: model.guests,
             getItemKey: guest => guest.id,
-            createItem: () => ({
-              id: `g-${String(model.guests.length + 1)}`,
-              name: '',
-              email: '',
-            }),
+            createItem: () => createGuest(model.guests),
             columns: guestColumns(h),
             ...(fixture.isReorderable === true ? { isReorderable: true } : {}),
             ...(fixture.maxItems === undefined
@@ -193,11 +190,7 @@ export const listInputStyleXPreview: ExamplePreviewProvider = <Msg>(
           itemName: 'guest',
           value: previewModel.guests,
           getItemKey: guest => guest.id,
-          createItem: () => ({
-            id: `g-${String(previewModel.guests.length + 1)}`,
-            name: '',
-            email: '',
-          }),
+          createItem: () => createGuest(previewModel.guests),
           columns: guestColumns(h),
           ...(fixture.isReorderable === true ? { isReorderable: true } : {}),
           ...(fixture.maxItems === undefined

@@ -1,5 +1,22 @@
 import { expect, test } from '@playwright/test'
 
+test('replacement guests keep unique reorder identities', async ({ page }) => {
+  await page.goto('/docs/components/list-input')
+  const preview = page
+    .locator('[data-slot="list-input"]')
+    .filter({ has: page.locator('#docs-list-input-2') })
+  await preview
+    .getByRole('button', { name: 'Remove guest 1', exact: true })
+    .click()
+  await preview.getByRole('button', { name: 'Add guest', exact: true }).click()
+  const replacement = preview.locator('input').nth(4)
+  await replacement.fill('Replacement')
+  await preview
+    .getByRole('button', { name: 'Reorder guest 3', exact: true })
+    .press('ArrowUp')
+  await expect(preview.locator('input').nth(2)).toHaveValue('Replacement')
+})
+
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.addInitScript(() => {

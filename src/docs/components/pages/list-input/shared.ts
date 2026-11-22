@@ -6,6 +6,13 @@ const emitShellStyles =
 
 export type Guest = Readonly<{ id: string; name: string; email: string }>
 
+export const createGuest = (guests: ReadonlyArray<Guest>): Guest => {
+  const ids = new Set(guests.map(guest => guest.id))
+  let next = 1
+  while (ids.has(`g-${String(next)}`)) next++
+  return { id: `g-${String(next)}`, name: '', email: '' }
+}
+
 export type ListInputFixture = Readonly<{
   title: string
   description: string
@@ -192,7 +199,11 @@ ${renderer !== 'tailwind' ? emitShellStyles + '\n\n' : ''}export const view = (m
         itemName: 'guest',
         value: model.guests,
         getItemKey: guest => guest.id,
-        createItem: () => ({ id: \`g-\${String(model.guests.length + 1)}\`, name: '', email: '' }),
+        createItem: () => {
+          let next = 1
+          while (model.guests.some(guest => guest.id === \`g-\${String(next)}\`)) next++
+          return { id: \`g-\${String(next)}\`, name: '', email: '' }
+        },
         columns: guestColumns(h),${extraProps}
       },
       h,
