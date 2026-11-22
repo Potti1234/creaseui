@@ -15,6 +15,15 @@ mounted resource without moving DOM focus (carousel).
 
 Typeahead follows this convention with a version-guarded timeout and pure label search.
 
+Velocity ports ui-sdk's tracker with immutable bounded samples in a Schema
+Model. Use `init`, `addSample`, `velocity`, and `reset` in the owner's update.
+Pass event timestamps in milliseconds and positions in CSS pixels; reads return
+pixels per millisecond, or zero for stale samples. Invalid samples are ignored
+and invalid configuration falls back to defaults. RubberBand exports the pure
+`rubberBand`, `rubberBandInverse`, and `rubberBandSlope` helpers. Non-finite
+inputs, nonpositive dimensions, and nonpositive coefficients return zero.
+These helpers leave dismissal and snapping policy to components.
+
 Listbox is the headless highlight/filter/navigation layer from ui-sdk.dev.
 Bind keys with `Listbox.create<Key>()`, embed its Model (initial highlight is
 None), and pass ordered keys and labels as view inputs. `filter` and `count`
