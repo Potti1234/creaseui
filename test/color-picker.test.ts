@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import { Option } from 'effect'
+import * as Area from '../src/lib/behaviors/area.ts'
 
 import {
   colorToString,
@@ -99,6 +100,39 @@ describe('colorToString', () => {
 
 describe('update', () => {
   const base = init({ id: 'picker', value: '#3b82f6' })
+
+  it('routes Area press, drag, commit and keys while keeping the public change message', () => {
+    const route = (model: typeof base, message: Area.Message) =>
+      update(model, Message.GotAreaMessage({ message }))
+    const pressed = route(
+      base,
+      Area.Message.PressedTrack({ fractions: { x: 0.333, y: 0.755 } }),
+    )
+    assert.equal(pressed.model.color.s, 33)
+    assert.equal(pressed.model.color.v, 76)
+    assert.equal(pressed.model.color.h, base.color.h)
+    assert.equal(pressed.model.color.a, base.color.a)
+    assert.equal(pressed.outMessage?._tag, 'ChangedValue')
+    const moved = route(
+      pressed.model,
+      Area.Message.MovedPointer({ fractions: { x: 0.8, y: 0.2 } }),
+    )
+    assert.equal(moved.model.color.v, 20)
+    const released = route(moved.model, Area.Message.ReleasedPointer({}))
+    assert.equal(released.model.drag, 'idle')
+    assert.equal(released.outMessage?._tag, 'ChangedValue')
+    const key = route(
+      released.model,
+      Area.Message.PressedKey({ key: 'Home', shift: false }),
+    )
+    assert.equal(key.model.color.s, 0)
+    assert.deepEqual(key.model.area.value, { x: 0, y: 20 })
+    const disabled = { ...key.model, disabled: true }
+    assert.deepEqual(
+      route(disabled, Area.Message.PressedKey({ key: 'End', shift: false })),
+      { model: disabled },
+    )
+  })
 
   it('moves the area thumb and emits the formatted value', () => {
     const pressed = update(
