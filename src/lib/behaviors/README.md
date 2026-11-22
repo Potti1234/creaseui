@@ -1,5 +1,20 @@
 # Behaviors
 
+Area ports ui-sdk's `createArea` as a two-axis point picker. Embed its Model,
+route Messages through `update`, and consume ChangedValue/CommittedValue
+OutMessages. Axis values snap and clamp independently; fractions use y from
+the bottom. `reflect` reconciles owner values without emitting a change.
+Spread `thumbAttrs` and `thumbStyle` on the focusable thumb, route unmodified
+keys with `keyMessage`, and mount `Pointer` on the surface. Set its
+`aria-disabled` and `touch-action: none`; pass the same disabled option to
+update and thumbAttrs. Components own the accessible name and styling.
+Arrows step, Shift multiplies by ten, Page keys move y by a tenth of its
+range, and Home/End select x's ends. Set `rtl` for keyboard direction;
+the pointer Mount reads the surface direction.
+
+Try the saturation/value pad at `/docs/components/color-picker` with
+`npm run dev` (also available on the StyleX and Pleat sites).
+
 Behaviors are headless Foldkit Submodels or pure helpers.
 State lives in a Schema Model, never in a mutable store or the DOM.
 Messages describe facts; update returns the next Model and Commands.
@@ -127,6 +142,16 @@ feed client coordinates to `createAutoScroll` and stop it on release,
 cancellation, and unmount. Resizable, Drawer, Color Picker, and Lightbox
 keep their own sizing, dismissal, channel, and pan policies.
 
+Lasso draws a surface-relative selection rectangle after a three-pixel drag.
+Spread its surface, item, and rectangle attribute bundles onto component parts.
+Pass current `selected` keys and optional `selectable` to update; Shift keeps
+the base selection. The parent applies `Selected({ keys })`; `Canceled` clears
+only the draft. A Mount tracks document pointer and Escape events, and a Command
+measures owned items once per drag. Keep the surface positioned and disable
+touch panning in component styles. Roles and keyboard selection belong to the
+component. Announce `selectionMessage(count, override)` in its live region;
+the behavior does not announce. See Grid's Lasso Selection demo on all renderers.
+
 ## Calendar and DatePicker
 
 Keep @foldkit/ui rather than porting ui-sdk.dev's Calendar/DatePicker and
@@ -170,6 +195,38 @@ the default identity combines index and string. Keys must be unique.
 Textarea edges use a layout mirror, including soft wrapping. Custom editors can
 use `create({ atEdge })`; they own value rendering and caret placement when the
 native input/textarea caret Command does not apply.
+
+## ScrollPicker
+
+ScrollPicker is a native Foldkit port of `@ui-sdk/core` beta.13's
+`bindScrollPicker`, not a wrapper around its mutable binding. `@foldkit/ui`
+has no equivalent. The Model owns geometry, the fractional cursor, the last
+reported index and the interaction phase. Commands scroll and focus; the
+Mount owns measurements, event listeners, pointer capture, observers, animation
+frames and their cleanup. The DOM adapter is in `scroll-picker-dom.ts`.
+
+Bind `ScrollPicker.create()` once. Render its list and item attribute bundles
+on a listbox and its options. Supply roles, a name, tabindex, `aria-selected`
+and `aria-disabled` in the component. Fold `Selected { index, reason }` into
+parent-owned selection; the behavior never writes selection or ARIA. Send
+`ChangedSelection` for parent-driven changes, or render `aria-selected` and let
+the Mount observe it. Indices include disabled options. The initial selection
+centers instantly; subsequent external selections glide without reporting the
+options passed. Reduced motion disables gliding.
+
+Give the list overflow, a fixed viewport, `scroll-snap-type: y mandatory` and
+enough padding at both ends to center the first and last options. Give options
+`scroll-snap-align: center`. For horizontal wheels use horizontal orientation,
+inline padding and `scroll-snap-type: x mandatory`; RTL is supported. Disable
+any composing listbox's automatic keep-in-view effect. `--picker-offset` is
+painted on each option for fractional wheel styling. Arrow keys, Home/End,
+typeahead and clicks remain the component's responsibility; the Mount handles
+PageUp/PageDown, native scrolling/touch and mouse/pen dragging.
+
+Pure helpers (`pickerPosition`, `nearestEnabled`, `pageSize`, `pageTarget`,
+`projectRelease`) and update transitions are covered in
+`test/scroll-picker.test.ts`. The docs Time Input page demonstrates
+parent-owned hour/minute selection in all three renderers.
 
 DragAndDrop wraps Foldkit for single-item pointer sorting in lists and boards.
 Prefer it to ui-sdk's `createReorder` for this path: Foldkit already supplies
@@ -284,3 +341,37 @@ values for RTL and aggregates each thumb's drag Subscriptions.
 Command item configs can expose `label` and optional `leadingContent` for an
 icon/adornment. Renderers highlight the label automatically; `searchText` can
 still extend the searchable text. Legacy rich `content` remains opaque.
+
+## Viewport
+
+Viewport ports ui-sdk.dev's `createViewport`: a pannable, zoomable canvas whose
+`{ x, y, zoom }` lives in `Viewport.Model` (with the measured surface frame,
+the active pointer gesture, and the findable pane's rest offset). `x`/`y` place
+the canvas origin inside the surface in screen pixels.
+
+- `Viewport.view` hands `toView` attribute bundles for the `surface` (clipped,
+  `touch-action: none`, the `Surface` Mount), the `world` (one transform, origin
+  `0 0`, `--canvas-zoom`), and an optional findable `pane`. Elements marked
+  `data-viewport-item` keep their own presses; empty space pans.
+- One pointer drags, two pinch about their center; wheel pans and Ctrl/⌘ wheel
+  (or a trackpad pinch) zooms at the pointer; `+`/`-`/`0` zoom at the center.
+  Opt out with `wheel: false` / `keys: false` when a component maps them itself.
+- Pure operations return `{ model, outMessage }`: `setViewport`, `panBy`,
+  `zoomTo`, `zoomBy`, `fit`, `reveal`; readers are `toCanvas`, `toScreen`,
+  `rectOf` (from a client rect), `visible`, and `style`.
+- Every change emits `ChangedViewport` with ui-sdk's reasons (`wheel`, `drag`,
+  `pinch`, `zoom-key`, `focus-in`, `find-in-page`, `imperative`) plus `resize`,
+  since surface measurement is a Message here. Zoom keys carry an announcement
+  (`message`, default `Zoom 125%`) for the component's live region.
+- `canCommit` replaces ui-sdk's vetoing `set`. `bounds` keeps a canvas box
+  covering the surface and centers it on any axis where it is smaller; each
+  pointer move is applied to the committed viewport, so a bounded drag has no
+  dead zone when it reverses.
+- `Findable` is `bindFindable`: on an `overflow: scroll` pane it rests the
+  scroll far from the origin and turns browser scrolls (find in page, focus,
+  links to an id) into pans.
+
+Lightbox is the component proof: its zoom frame is the surface, the image the
+world, `bounds` the image's 1x box, zoom fixed to 1–2x. `src/docs/examples/viewport`
+demos the full canvas surface. `@foldkit/ui` has no canvas viewport, so this is
+a native port rather than a wrapper.

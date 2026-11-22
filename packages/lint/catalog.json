@@ -6339,6 +6339,8 @@
   "runtimeProperties": [
     "--_item-inset-inline",
     "--_tree-indent",
+    "--area-x",
+    "--area-y",
     "--avatar-group-overlap",
     "--bleed",
     "--card-spacing",

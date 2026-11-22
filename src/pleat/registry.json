@@ -1620,8 +1620,7 @@
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
-        "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/text-match-behavior"
+        "Potti1234/creaseui/pleat-style"
       ]
     },
     {
@@ -2352,9 +2351,11 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/date-input-behavior",
         "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-picker-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-calendar",
         "Potti1234/creaseui/pleat-contracts",
@@ -2365,9 +2366,7 @@
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/calendar-range",
-        "Potti1234/creaseui/date-picker-behavior"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2427,6 +2426,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme-css",
+        "Potti1234/creaseui/date-picker-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-calendar",
         "Potti1234/creaseui/pleat-contracts",
@@ -2435,8 +2435,7 @@
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/date-picker-behavior"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2489,6 +2488,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-range-input-behavior",
@@ -2502,8 +2502,7 @@
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/calendar-range"
+        "Potti1234/creaseui/pleat-tokens"
       ]
     },
     {
@@ -2557,8 +2556,10 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-picker-behavior",
         "Potti1234/creaseui/date-time-input-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/pleat-calendar",
@@ -2571,9 +2572,7 @@
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/time-parse-behavior",
-        "Potti1234/creaseui/calendar-range",
-        "Potti1234/creaseui/date-picker-behavior"
+        "Potti1234/creaseui/time-parse-behavior"
       ]
     },
     {
