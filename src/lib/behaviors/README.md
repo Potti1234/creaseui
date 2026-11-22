@@ -64,6 +64,16 @@ keyframes, and stays as is. It is dev-only and model-level, not the in-app,
 user-facing agent and history these modules port: per-control undo by source,
 confirmation and redaction.
 
+Drag follows one pointer with capture and frame-coalesced samples. Use
+`observeDrag` in a streaming Mount to convert samples to Schema Messages;
+`bindDrag` is the lower-level resource for an already accepted press.
+The binding owns listeners and animation frames, not UI state. Consumers
+decide whether to react on press, wait for `dragThreshold` (3 CSS pixels
+on either axis), or roll back on cancellation. A drop-target surface can
+feed client coordinates to `createAutoScroll` and stop it on release,
+cancellation, and unmount. Resizable, Drawer, Color Picker, and Lightbox
+keep their own sizing, dismissal, channel, and pan policies.
+
 DragAndDrop wraps Foldkit for single-item pointer sorting in lists and boards.
 Prefer it to ui-sdk's `createReorder` for this path: Foldkit already supplies
 a Schema Model, typed drag Messages and drop OutMessages, and scoped
@@ -87,6 +97,19 @@ Model only if the parent accepts the change. Use `reflect` for externally
 supplied values; changing the selected keys starts the next range over.
 Pass the current ordered keys for ranges or select-all. MultiSelector passes
 the visible keys for select-all so a filter never clears hidden choices.
+
+TreeCollection ports [ui-sdk.dev's tree helpers](https://ui-sdk.dev/docs/core/behaviors/trees).
+Foldkit UI does not expose a tree collection. Use `createTreeCollection` for
+parent, sibling, and descendant lookups and `visibleTreeRows` for flat render
+order. Use `visibleTreeRowsBy` with an existing item's key and expansion policy,
+as Tree List does. Sidebar navigation uses the same row projection without
+adopting tree ARIA or keyboard semantics.
+
+Store expanded and checked values in the parent Schema. Use
+`treeCheckedStates` in view and `toggleTreeChecked` in update with the same
+strategy (`leaf`, `trunk`, `branch`, or `independent`). Supply `checkable`
+to protect locked nodes and their descendants from ancestor toggles. The
+collection indexes input data but does not retain the last expansion value.
 
 Spans edits numeric ranges on named tracks, such as room bookings or clips.
 Foldkit Slider edits scalar values and DragAndDrop reorders items; neither
