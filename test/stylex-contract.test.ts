@@ -397,17 +397,23 @@ describe('StyleX component authoring contract', () => {
   })
 
   it('shares Slider range normalization across both skins', () => {
-    const behavior = readFileSync('src/lib/slider.ts', 'utf8')
+    const behavior = readFileSync('src/lib/behaviors/slider.ts', 'utf8')
     const tailwind = readFileSync('src/ui/slider.ts', 'utf8')
     const stylex = readFileSync('src/stylex/slider.ts', 'utf8')
 
     assert.match(behavior, /export const normalizeRange/u)
     assert.match(behavior, /export const normalizeRangeValues/u)
-    assert.match(tailwind, /@\/lib\/slider/u)
-    assert.match(stylex, /@\/lib\/slider/u)
+    assert.match(tailwind, /@\/lib\/behaviors\/slider/u)
+    assert.match(stylex, /@\/lib\/behaviors\/slider/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/slider['"]/u)
-    assert.match(tailwind, /Slider as SliderPrimitive/u)
-    assert.match(stylex, /Slider as SliderPrimitive/u)
+    assert.match(
+      tailwind,
+      /\* as SliderPrimitive from '@\/lib\/behaviors\/slider'/u,
+    )
+    assert.match(
+      stylex,
+      /\* as SliderPrimitive from '@\/lib\/behaviors\/slider'/u,
+    )
   })
 
   it('binds Command actions once and shares query policy', () => {

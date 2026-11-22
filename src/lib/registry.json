@@ -261,6 +261,11 @@
           "path": "radio-group.ts",
           "type": "registry:lib",
           "target": "@lib/radio-group.ts"
+        },
+        {
+          "path": "behaviors/radio-group.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/radio-group.ts"
         }
       ]
     },
@@ -296,13 +301,13 @@
     {
       "name": "slider-behavior",
       "type": "registry:lib",
-      "title": "Foldkit Slider Range Policy",
-      "description": "Skin-neutral bound, step, two-thumb ordering, and range update normalization.",
+      "title": "Foldkit Slider Behavior",
+      "description": "Skin-neutral @foldkit/ui slider seam with bound, step, and range update normalization and a multi-thumb submodel.",
       "files": [
         {
-          "path": "slider.ts",
+          "path": "behaviors/slider.ts",
           "type": "registry:lib",
-          "target": "@lib/slider.ts"
+          "target": "@lib/behaviors/slider.ts"
         }
       ]
     },
