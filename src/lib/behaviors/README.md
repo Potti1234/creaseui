@@ -15,6 +15,8 @@ mounted resource without moving DOM focus (carousel).
 
 Typeahead follows this convention with a version-guarded timeout and pure label search.
 
+## Swipe
+
 Velocity ports ui-sdk's tracker with immutable bounded samples in a Schema
 Model. Use `init`, `addSample`, `velocity`, and `reset` in the owner's update.
 Pass event timestamps in milliseconds and positions in CSS pixels; reads return
@@ -49,6 +51,23 @@ arrows reveal/focus actions and Escape restores row focus.
 
 Try `/src/docs/examples/swipe-actions/` with `npm run dev` for a renderer-neutral
 inbox example.
+
+Drawer (`src/lib/drawer.ts`) and Sheet (`src/lib/sheet.ts`) consume Velocity for
+release estimates, sampling rendered drag offsets with pointer-event timestamps.
+Drawer retains square-root damping, distance thresholds, fast-swipe dismissal,
+snap projection and nested-dialog behavior. Sheet retains body arming and 8px
+promotion, detents and magnets, dismissal overshoot, upward resistance and
+switcher retention. Neither consumer replaces its existing damping with
+rubberBand; the shared helpers leave those feel and dismissal policies local.
+
+Toast deliberately retains Foldkit's swipe engine; `src/lib/toast.ts` is the
+wrapper around `@foldkit/ui/toast`. Its `Idle` / `Dragging` / `Settling` /
+`Dismissing` swipe states are coupled to its queue, timer pause/resume, and
+version-guarded settle/dismiss lifecycle. A local engine would duplicate that
+state. Its distance-only release (40px by default), without velocity-based
+dismissal, is the known gap rather than a reason to fork lifecycle ownership.
+
+## Other behaviors
 
 Listbox is the headless highlight/filter/navigation layer from ui-sdk.dev.
 Bind keys with `Listbox.create<Key>()`, embed its Model (initial highlight is
