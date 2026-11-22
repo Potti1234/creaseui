@@ -4283,7 +4283,7 @@ A CreaseUI Textarea component for Foldkit.
 
 Source: `src/ui/textarea.ts`
 
-Examples: Basic, Field, Disabled, Invalid, Button, RTL, Form And Resize
+Examples: Basic, Field, Disabled, Invalid, Chat History, RTL, Form And Resize
 
 - `TextareaProps<Msg> = TextareaBehaviorProps<Msg> & Readonly<{ class?: string; }>` (type)
 - `textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)

@@ -1,5 +1,6 @@
 import { Schema as S } from 'effect'
 import type { Update } from 'foldkit'
+import * as Command from 'foldkit/command'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
@@ -8,10 +9,14 @@ import { taggedStruct } from 'foldkit/schema'
 import * as Button from '@/ui/button'
 import * as Field from '@/ui/field'
 import * as Textarea from '@/ui/textarea'
+import * as InputHistory from '@/lib/behaviors/input-history'
+import { historyAttributes } from '@/docs/components/pages/textarea/history'
 
 const PreviewModel = S.Struct({
   _docsPage: S.Literal('textarea'),
   values: S.Record(S.String, S.String),
+  history: InputHistory.Model,
+  entries: S.Array(S.String),
 })
 type PreviewModel = typeof PreviewModel.Type
 
@@ -19,7 +24,11 @@ const ChangedPreview = taggedStruct('ChangedTextareaPreview', {
   id: S.String,
   value: S.String,
 })
-const PreviewMessage = S.Union([ChangedPreview])
+const GotHistory = taggedStruct('GotTextareaHistory', {
+  message: InputHistory.Message,
+})
+const SentMessage = taggedStruct('SentTextareaMessage', {})
+const PreviewMessage = S.Union([ChangedPreview, GotHistory, SentMessage])
 type PreviewMessage = typeof PreviewMessage.Type
 
 const ta = (
@@ -48,6 +57,8 @@ export const textareaTailwindPreviewProgram = definePreviewProgram<
     const fixture = textareaFixtures[index] ?? textareaFixtures[0]
     return {
       _docsPage: 'textarea',
+      history: InputHistory.init({ id: 'textarea-button' }),
+      entries: ['Hello there!', 'Can you help me with my order?'],
       values: Object.fromEntries(
         fixture.textareaIds.map(id => [
           id,
@@ -58,6 +69,43 @@ export const textareaTailwindPreviewProgram = definePreviewProgram<
   },
   update: (model, message): Update.Return<PreviewModel, PreviewMessage> => {
     switch (message._tag) {
+      case 'GotTextareaHistory': {
+        const result = InputHistory.update(model.history, message.message, {
+          entries: model.entries,
+        })
+        return {
+          model: {
+            ...model,
+            history: result.model,
+            values:
+              result.outMessage === undefined
+                ? model.values
+                : {
+                    ...model.values,
+                    'textarea-button': result.outMessage.value,
+                  },
+          },
+          commands: Command.mapMessages(result.commands ?? [], message =>
+            GotHistory({ message }),
+          ),
+        }
+      }
+      case 'SentTextareaMessage': {
+        const value = model.values['textarea-button'] ?? ''
+        if (value.trim() === '') return { model }
+        return {
+          model: {
+            ...model,
+            entries: [...model.entries, value],
+            values: { ...model.values, 'textarea-button': '' },
+            history: InputHistory.update(
+              model.history,
+              InputHistory.Message.Reset(),
+              { entries: model.entries },
+            ).model,
+          },
+        }
+      }
       case 'ChangedTextareaPreview':
         return {
           model: {
@@ -136,9 +184,16 @@ export const textareaTailwindPreviewProgram = definePreviewProgram<
           [h.Class('grid w-full gap-2')],
           [
             ta('textarea-button', model, h, {
-              placeholder: 'Type your message here.',
+              label: 'Chat message',
+              description:
+                'Up/Down recalls messages at the first/last visual line. Enter sends; Shift+Enter adds a line.',
+              placeholder: 'Type a message or press ArrowUp…',
+              attributes: historyAttributes(model, message => message, h),
             }),
-            Button.button({ children: ['Send message'] }, h),
+            Button.button(
+              { children: ['Send message'], onClick: SentMessage() },
+              h,
+            ),
           ],
         )
       case 'rtl':

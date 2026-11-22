@@ -48,8 +48,9 @@ export const textareaFixtures: Readonly<
     textareaIds: ['textarea-invalid'],
   },
   {
-    title: 'Button',
-    description: 'Submit the message with a Button below the control.',
+    title: 'Chat History',
+    description:
+      'Recall earlier messages with Up/Down. Enter sends and resets navigation; Shift+Enter adds a line.',
     kind: 'button',
     textareaIds: ['textarea-button'],
   },
@@ -124,8 +125,18 @@ const emitBody = (fixture: TextareaFixture, isStyleX: boolean): string => {
   }, h)`
     case 'button':
       return `  h.div([h.Class(${stack})], [
-    ${ta('textarea-button', "\n      placeholder: 'Type your message here.',")},
-    Button.button({ children: ['Send message'] }, h),
+    ${ta(
+      'textarea-button',
+      `
+      label: 'Chat message',
+      placeholder: 'Type a message or press ArrowUp…',
+      attributes: [
+        ...InputHistory.attributes(model.history, { entries: model.entries }, message => GotHistory({ message }), h),
+        h.OnKeyDownPreventDefault((key, modifiers) => key === 'Enter' && !modifiers.shiftKey
+          ? Option.some(SentMessage()) : Option.none()),
+      ],`,
+    )},
+    Button.button({ children: ['Send message'], onClick: SentMessage() }, h),
   ])`
     case 'rtl':
       return `  Field.field({
@@ -163,6 +174,8 @@ const emitImports = (fixture: TextareaFixture, isStyleX: boolean): string => {
   }
   if (fixture.kind === 'button') {
     parts.push(`import * as Button from '@/${base}/button'`)
+    parts.push(`import * as InputHistory from '@/lib/behaviors/input-history'`)
+    parts.push(`import { Option } from 'effect'`)
   }
   if (
     fixture.kind === 'field' ||
@@ -204,7 +217,11 @@ const emitInit = (fixture: TextareaFixture): string => {
         `'${id}': ${fixture.kind === 'formResize' ? "'First line\\nSecond line'" : "''"}`,
     )
     .join(', ')
-  return `export const init = (): Update.Return<Model, Message> => ({ model: { values: { ${entries} } } })`
+  const history =
+    fixture.kind === 'button'
+      ? ", history: InputHistory.init({ id: 'textarea-button' }), entries: ['Hello there!', 'Can you help me with my order?']"
+      : ''
+  return `export const init = (): Update.Return<Model, Message> => ({ model: { values: { ${entries} }${history} } })`
 }
 
 const emitApplication = (
@@ -218,10 +235,16 @@ const emitApplication = (
   return foldkitApplication({
     title: `Textarea — ${fixture.title}`,
     imports: `${emitImports(fixture, isStyleX)}${stylesBlock}`,
-    model: `export const Model = S.Struct({ values: S.Record(S.String, S.String) })
+    model: `export const Model = S.Struct({ values: S.Record(S.String, S.String)${fixture.kind === 'button' ? ', history: InputHistory.Model, entries: S.Array(S.String)' : ''} })
 export type Model = typeof Model.Type`,
     messages: `export const Changed = taggedStruct('Changed', { id: S.String, value: S.String })
-export const Message = S.Union([Changed])
+${
+  fixture.kind === 'button'
+    ? `export const GotHistory = taggedStruct('GotHistory', { message: InputHistory.Message })
+export const SentMessage = taggedStruct('SentMessage', {})
+`
+    : ''
+}export const Message = S.Union([Changed${fixture.kind === 'button' ? ', GotHistory, SentMessage' : ''}])
 export type Message = typeof Message.Type`,
     init: emitInit(fixture),
     update: `export const update = (
@@ -229,9 +252,27 @@ export type Message = typeof Message.Type`,
   message: Message,
 ): Update.Return<Model, Message> => {
   switch (message._tag) {
+${
+  fixture.kind === 'button'
+    ? `    case 'GotHistory': {
+      const result = InputHistory.update(model.history, message.message, { entries: model.entries })
+      return {
+        model: { ...model, history: result.model, values: result.outMessage === undefined ? model.values : { ...model.values, 'textarea-button': result.outMessage.value } },
+        commands: Command.mapMessages(result.commands ?? [], message => GotHistory({ message })),
+      }
+    }
+    case 'SentMessage': {
+      const value = model.values['textarea-button'] ?? ''
+      if (value.trim() === '') return { model }
+      return { model: { ...model, entries: [...model.entries, value], values: { ...model.values, 'textarea-button': '' }, history: InputHistory.update(model.history, InputHistory.Message.Reset(), { entries: model.entries }).model } }
+    }
+`
+    : ''
+}
     case 'Changed':
       return {
         model: {
+          ...model,
           values: { ...model.values, [message.id]: message.value },
         },
       }
