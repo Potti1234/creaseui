@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Swipe actions · CreaseUI</title>
+    <style>
+      :root { font: 16px/1.5 system-ui, sans-serif; color: #17233a; background: #f3f5fa; }
+      main { max-width: 640px; margin: 64px auto; padding: 24px; }
+      h1 { margin-bottom: 8px; letter-spacing: -0.04em; font-size: 36px; }
+      .intro { color: #54627a; margin-bottom: 32px; }
+      .inbox { display: grid; gap: 12px; }
+      .row { position: relative; overflow: hidden; border-radius: 12px; background: #e3e8f1; touch-action: pan-y; }
+      .content { position: relative; background: white; padding: 24px; transform: translateX(var(--swipe-x, 0px)); transition: transform 180ms ease; user-select: none; cursor: grab; }
+      .content[data-swiping] { transition: none; cursor: grabbing; }
+      .content[data-full] { background: #fff1f1; }
+      .content strong, .content span { display: block; }
+      .content span { color: #66758c; margin-top: 4px; }
+      .actions { position: absolute; inset-block: 0; width: 100px; display: flex; }
+      .actions[data-side='start'] { left: 0; }
+      .actions[data-side='end'] { right: 0; }
+      button { font: inherit; cursor: pointer; border: 0; padding: 12px; }
+      .actions button { width: 100%; background: #256351; color: white; font-weight: 600; }
+      .actions[data-side='end'] button { background: #b93c48; }
+      .row:focus-visible, button:focus-visible { outline: 3px solid #527be8; outline-offset: 3px; }
+      .status { min-height: 24px; margin-top: 24px; color: #54627a; }
+      @media (prefers-reduced-motion: reduce) { .content { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
