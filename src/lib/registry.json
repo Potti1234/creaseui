@@ -1185,18 +1185,27 @@
           "target": "@lib/data-grid.ts"
         },
         {
-          "path": "behaviors/grid-focus.ts",
-          "type": "registry:lib",
-          "target": "@lib/behaviors/grid-focus.ts"
-        },
-        {
           "path": "behaviors/inline-edit.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/inline-edit.ts"
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/date-parse-behavior"
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/grid-focus-behavior"
+      ]
+    },
+    {
+      "name": "grid-focus-behavior",
+      "type": "registry:lib",
+      "title": "Grid Focus Behavior",
+      "description": "Shared Foldkit behavior for two-dimensional grid focus.",
+      "files": [
+        {
+          "path": "behaviors/grid-focus.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/grid-focus.ts"
+        }
       ]
     },
     {
