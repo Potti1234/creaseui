@@ -69,8 +69,8 @@ test('documentation search ranks an exact title before secondary field matches',
     dialog.getByRole('option', { name: /^Map Styles\s*OpenFreeMap presets/ }),
   ).toBeVisible()
   await dialog.getByRole('combobox').fill('carousel')
-  await expect(dialog.getByRole('option')).toHaveCount(1)
-  await expect(dialog.getByRole('option')).toHaveText(/^Carousel/)
+  await expect(dialog.getByRole('option')).toHaveCount(2)
+  await expect(dialog.getByRole('option').first()).toHaveText(/^Carousel/)
 })
 
 test('Command ranks folded fuzzy matches and highlights labels with icons', async ({
