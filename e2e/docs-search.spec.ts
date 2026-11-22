@@ -47,9 +47,14 @@ for (const renderer of ['tailwind', 'stylex'] as const) {
     await expect(list).toBeVisible()
     await expect(page.getByRole('option')).toHaveCount(SEARCH_ENTRIES)
     await query.fill('no-such-doc-page-xyz')
-    await expect(dialog.getByRole('status')).toHaveText(
-      'No documentation pages found. Try another search.',
-    )
+    await expect(
+      dialog.getByRole('status').filter({
+        hasText: 'No documentation pages found. Try another search.',
+      }),
+    ).toHaveText('No documentation pages found. Try another search.')
+    await expect(
+      dialog.locator('[aria-atomic="true"][aria-live="polite"]'),
+    ).toHaveText('No results')
     await expect(page.getByRole('option')).toHaveCount(0)
     await query.fill('Date Range Input')
     await expect(page.getByRole('option')).toHaveCount(1)
