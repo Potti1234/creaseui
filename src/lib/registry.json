@@ -274,7 +274,18 @@
           "path": "toggle-group.ts",
           "type": "registry:lib",
           "target": "@lib/toggle-group.ts"
-        },
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior"
+      ]
+    },
+    {
+      "name": "roving-focus-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Roving Focus",
+      "description": "Shared focus state, tab stops, and directional keyboard navigation.",
+      "files": [
         {
           "path": "behaviors/roving-focus.ts",
           "type": "registry:lib",
@@ -339,6 +350,9 @@
           "type": "registry:lib",
           "target": "@lib/menubar.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior"
       ]
     },
     {
@@ -446,6 +460,9 @@
           "type": "registry:lib",
           "target": "@lib/carousel.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior"
       ]
     },
     {
@@ -858,7 +875,10 @@
           "target": "@lib/nav-menu.ts"
         }
       ],
-      "registryDependencies": ["Potti1234/creaseui/popup-behavior"]
+      "registryDependencies": [
+        "Potti1234/creaseui/popup-behavior",
+        "Potti1234/creaseui/roving-focus-behavior"
+      ]
     },
     {
       "name": "number-input-behavior",
@@ -1001,6 +1021,9 @@
           "type": "registry:lib",
           "target": "@lib/toolbar.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior"
       ]
     },
     {

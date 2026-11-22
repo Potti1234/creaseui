@@ -9,6 +9,10 @@ Components compose behaviors and own selection policy, semantics, and styling.
 Bind key unions once with `create<Key>()`; pass item collections as view inputs.
 Keep navigation helpers pure and test them independently of rendered views.
 RovingFocus establishes this convention for subsequent behavior modules.
+Use its pure navigation helpers when focus targets belong to another component
+(menubar), are supplied as opaque Html (toolbar), or movement delegates to a
+mounted resource without moving DOM focus (carousel).
+
 Typeahead follows this convention with a version-guarded timeout and pure label search.
 
 Listbox is the headless highlight/filter/navigation layer from ui-sdk.dev.
