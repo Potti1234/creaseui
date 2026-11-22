@@ -2916,6 +2916,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme-css",
+        "Potti1234/creaseui/dialog-behavior",
         "Potti1234/creaseui/stylex-contracts",
         "Potti1234/creaseui/stylex-overlay-tokens-stylex",
         "Potti1234/creaseui/stylex-reset",
@@ -5929,6 +5930,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme-css",
+        "Potti1234/creaseui/popover-behavior",
         "Potti1234/creaseui/stylex-button",
         "Potti1234/creaseui/stylex-complex-tokens-stylex",
         "Potti1234/creaseui/stylex-contracts",
@@ -6146,6 +6148,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/resizable-behavior",
         "Potti1234/creaseui/stylex-complex-tokens-stylex",
         "Potti1234/creaseui/stylex-contracts",
         "Potti1234/creaseui/stylex-interaction-tokens-stylex-const",
@@ -8126,6 +8129,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme-css",
+        "Potti1234/creaseui/drag-and-drop-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/stylex-button",
         "Potti1234/creaseui/stylex-contracts",

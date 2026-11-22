@@ -6,6 +6,8 @@ import { childAttributes, type ChildAttribute, type Html } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import { defineView, type View as SubmodelView } from 'foldkit/submodel'
 
+import { navigate } from '@/lib/behaviors/roving-focus'
+
 export const Model = S.Struct({ id: S.String, activeIndex: S.Number })
 export type Model = typeof Model.Type
 
@@ -71,33 +73,34 @@ export type ViewInputs = Readonly<{
   toView: (menus: ReadonlyArray<MenuFocusInfo>) => Html
 }>
 
+export const moveTopLevel = (
+  triggerIds: ReadonlyArray<string>,
+  index: number,
+  pressedKey: string,
+  direction?: 'ltr' | 'rtl',
+) =>
+  navigate({
+    keys: triggerIds,
+    currentKey: triggerIds[index],
+    pressedKey,
+    ...(direction === undefined ? {} : { direction }),
+  }).pipe(
+    Option.map(triggerId => ({
+      triggerId,
+      index: triggerIds.indexOf(triggerId),
+    })),
+  )
+
 const view: SubmodelView<Model, Message, ViewInputs> = defineView(
   (model, inputs, h) => {
     const count = inputs.triggerIds.length
     const activeIndex = count === 0 ? 0 : Math.min(model.activeIndex, count - 1)
     const move = (index: number, key: string) => {
-      if (count === 0) return Option.none<Message>()
       if (inputs.shouldMoveTopLevel?.(index, key) === false)
         return Option.none<Message>()
-      const forward = inputs.direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
-      const backward = inputs.direction === 'rtl' ? 'ArrowRight' : 'ArrowLeft'
-      const target =
-        key === 'Home'
-          ? 0
-          : key === 'End'
-            ? count - 1
-            : key === forward
-              ? (index + 1) % count
-              : key === backward
-                ? (index - 1 + count) % count
-                : undefined
-      const triggerId =
-        target === undefined ? undefined : inputs.triggerIds[target]
-      return target === undefined || triggerId === undefined
-        ? Option.none<Message>()
-        : Option.some(
-            Message['MovedMenubarFocus']({ index: target, triggerId }),
-          )
+      return moveTopLevel(inputs.triggerIds, index, key, inputs.direction).pipe(
+        Option.map(Message['MovedMenubarFocus']),
+      )
     }
     return inputs.toView(
       inputs.triggerIds.map((_id, index) => ({

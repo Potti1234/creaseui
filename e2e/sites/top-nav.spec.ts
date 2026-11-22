@@ -96,11 +96,15 @@ for (const width of [390, 1440]) {
       const hoverNav = page
         .locator('[id="topnav-—-hover-menu"]')
         .getByRole('navigation', { name: 'Main navigation', exact: true })
-      await hoverNav
-        .getByRole('button', { name: 'Products', exact: true })
-        .hover()
+      const trigger = hoverNav.getByRole('button', {
+        name: 'Products',
+        exact: true,
+      })
+      await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+      await trigger.hover()
       const menu = hoverNav.getByRole('menu', { name: 'Products', exact: true })
       await expect(menu).toBeVisible()
+      await expect(trigger).toHaveAttribute('aria-expanded', 'true')
       const menuBounds = await menu.boundingBox()
       expect(menuBounds).not.toBeNull()
       expect(menuBounds!.x).toBeGreaterThanOrEqual(0)
@@ -110,6 +114,25 @@ for (const width of [390, 1440]) {
       await menu.getByRole('menuitem').first().focus()
       await page.keyboard.press('Escape')
       await expect(menu).toHaveCount(0)
+      await expect(trigger).toHaveAttribute('aria-expanded', 'false')
     })
   }
 }
+
+test('nav flyout can reopen by keyboard after hover leave closes it', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/top-nav')
+  const example = page.locator('[id="topnav-—-hover-menu"]')
+  const trigger = example.getByRole('button', { name: 'Products', exact: true })
+  const menu = example.getByRole('menu', { name: 'Products', exact: true })
+
+  await trigger.hover()
+  await expect(menu).toBeVisible()
+  await page.mouse.move(1, 1)
+  await expect(menu).toHaveCount(0)
+
+  await trigger.press('Enter')
+  await expect(menu).toBeVisible()
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+})

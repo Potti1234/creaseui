@@ -17,9 +17,8 @@ import * as TailwindHoverCard from '@/ui/hover-card'
  * - The delay timers are Commands. `Scene.Command.resolve` fires the pending
  *   wait's completion Message, standing in for `tick(OPEN_DELAY)` /
  *   `tick(CLOSE_DELAY)`. The version is read off the pending command's args.
- * - The DSL has no mouseleave step, so `LeftHoverCard` is delivered through
- *   `Scene.Subscription.emit` — the message's real cause is pointer leaving
- *   the card region, which the DSL cannot reach.
+ * - The DSL cannot drive pointer movement or departure. These scenes send
+ *   the intent Messages directly; the renderer-site tests drive real pointers.
  * - The content's HoverCardAnchor mount is resolved with the parent-level
  *   `CompletedHoverCardAnchor`, matching what `Mount.mapMessage` dispatches.
  *
@@ -51,10 +50,12 @@ const init = (overrides?: Partial<Model>): Model => ({
   ...overrides,
 })
 
-const card = Scene.selector('[data-slot="hover-card"]')
 const trigger = Scene.selector('#hc-trigger')
 const panel = Scene.selector('#hc-content')
 const anchorMount = { name: 'HoverCardAnchor' }
+const entered = Scene.Subscription.emit(
+  HoverCardBehavior.Message.EnteredHoverCard(),
+)
 
 const pendingWaitVersion = (
   commands: ReadonlyArray<
@@ -142,8 +143,7 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
           { update, view },
           Scene.given(init()),
           Scene.expect(panel).toBeAbsent(),
-          Scene.hover(card),
-          Scene.expectHandled(),
+          entered,
           Scene.Command.expectHas(HoverCardBehavior.WaitBeforeShowing),
           showTimerFires,
           Scene.expect(panel).toExist(),
@@ -155,7 +155,7 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
         Scene.scene(
           { update, view },
           Scene.given(init()),
-          Scene.hover(card),
+          entered,
           showTimerFires,
           anchorResolved(),
           Scene.expect(panel).toExist(),
@@ -209,8 +209,7 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
         Scene.scene(
           { update, view },
           Scene.given(init()),
-          Scene.hover(card),
-          Scene.expectHandled(),
+          entered,
           showTimerFires,
           anchorResolved(),
           Scene.expect(panel).toExist(),
@@ -225,7 +224,7 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
         Scene.scene(
           { update, view },
           Scene.given(init()),
-          Scene.hover(card),
+          entered,
           showTimerFires,
           anchorResolved(),
           Scene.expect(panel).toExist(),
@@ -240,11 +239,10 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
         Scene.scene(
           { update, view },
           Scene.given(init()),
-          Scene.hover(card),
+          entered,
           showTimerFires,
           anchorResolved(),
-          Scene.hover(card),
-          Scene.expectHandled(),
+          entered,
           // Already open: the re-enter bumps versions but issues no Command.
           Scene.Command.expectNone(),
           Scene.expect(panel).toExist(),
@@ -262,8 +260,7 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
           { update, view },
           Scene.given(init({ isOpen: true })),
           anchorResolved(),
-          Scene.hover(card),
-          Scene.expectHandled(),
+          entered,
           Scene.Subscription.emit(HoverCardBehavior.Message.LeftHoverCard()),
           closeTimerFires,
           Scene.expect(panel).toExist(),
@@ -306,8 +303,7 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
           { update, view },
           Scene.given(init({ isOpen: true })),
           anchorResolved(),
-          Scene.hover(card),
-          Scene.expectHandled(),
+          entered,
           Scene.Subscription.emit(HoverCardBehavior.Message.LeftHoverCard()),
           closeTimerFires,
           Scene.expect(panel).toExist(),
@@ -320,8 +316,7 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
         Scene.scene(
           { update, view },
           Scene.given(init()),
-          Scene.hover(card),
-          Scene.expectHandled(),
+          entered,
           Scene.Command.expectHas(HoverCardBehavior.WaitBeforeShowing),
           // Before the delay fires, the popup stays closed.
           Scene.expect(panel).toBeAbsent(),
@@ -381,15 +376,14 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
         Scene.scene(
           { update, view },
           Scene.given(init()),
-          Scene.hover(card),
+          entered,
           showTimerFires,
           anchorResolved(),
           Scene.keydown(trigger, 'Escape'),
           Scene.expectHandled(),
           anchorEnded(),
           Scene.expect(panel).toBeAbsent(),
-          Scene.hover(card),
-          Scene.expectHandled(),
+          entered,
           Scene.Command.expectNone(),
           Scene.expect(panel).toExist(),
         )
@@ -496,10 +490,6 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
       const parentPanel = Scene.selector('#parent-content')
       const childPanel = Scene.selector('#child-content')
       const childTrigger = Scene.selector('#child-trigger')
-      const childCard = Scene.within(
-        Scene.selector('#parent-content'),
-        Scene.selector('[data-slot="hover-card"]'),
-      )
 
       it('keeps the parent preview card open when clicking nested trigger', () => {
         Scene.scene(
@@ -565,8 +555,10 @@ const verifyRenderer = (name: string, HoverCard: HoverCardModule) => {
             _tag: 'Parent',
             message: HoverCardBehavior.Message.CompletedHoverCardAnchor(),
           }),
-          Scene.hover(childCard),
-          Scene.expectHandled(),
+          Scene.Subscription.emit({
+            _tag: 'Child',
+            message: HoverCardBehavior.Message.EnteredHoverCard(),
+          }),
           Scene.expect(parentPanel).toExist(),
         )
       })

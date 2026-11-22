@@ -140,7 +140,7 @@ const renderMenubar = <Item extends string, Msg>(
       toView: menus =>
         menuView(
           props,
-          props.model.activeIndex,
+          menus.find(menu => menu.isActive)?.index ?? 0,
           index => menus[index]?.attributes ?? [],
           h,
         ),
@@ -151,27 +151,27 @@ const renderMenubar = <Item extends string, Msg>(
 const renderLegacy = <Item extends string, Msg>(
   props: LegacyMenubarProps<Item, Msg>,
   h: HtmlBuilder<Msg>,
-): Html =>
-  menuView(
+): Html => {
+  const triggerIds = props.menus.map(menu => `${menu.model.id}-trigger`)
+  const { onMove } = props
+  return menuView(
     props,
     props.activeIndex ?? 0,
     index => [
       h.OnKeyDownPreventDefault(key => {
-        if (props.onMove === undefined || props.menus.length === 0)
+        if (onMove === undefined || key === 'Home' || key === 'End')
           return Option.none()
-        const forward = props.direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
-        const backward = props.direction === 'rtl' ? 'ArrowRight' : 'ArrowLeft'
-        if (key !== forward && key !== backward) return Option.none()
-        return Option.some(
-          props.onMove(
-            (index + (key === forward ? 1 : -1) + props.menus.length) %
-              props.menus.length,
-          ),
-        )
+        return MenubarBehavior.moveTopLevel(
+          triggerIds,
+          index,
+          key,
+          props.direction,
+        ).pipe(Option.map(target => onMove(target.index)))
       }),
     ],
     h,
   )
+}
 
 export function menubar<Item extends string, Msg>(
   props: MenubarProps<Item, Msg>,

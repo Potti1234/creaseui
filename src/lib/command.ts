@@ -3,6 +3,7 @@ import { Combobox } from '@foldkit/ui'
 import { defineView } from 'foldkit/submodel'
 import type { Html } from 'foldkit/html'
 import type { Update } from 'foldkit'
+import * as Listbox from './behaviors/listbox'
 
 export const normalizeCommandQuery = (value: string): string =>
   value.trim().toLocaleLowerCase()
@@ -15,7 +16,7 @@ export const filterCommandItems = <Item>(
 ): ReadonlyArray<Item> => {
   const query = normalizeCommandQuery(queryValue)
   if (query === '' || queryValue === restingInputValue) return items
-  return items.filter(item =>
+  return Listbox.filter(items, query, itemToSearchText, item =>
     normalizeCommandQuery(itemToSearchText(item)).includes(query),
   )
 }
@@ -58,18 +59,16 @@ export const createInlineCommandView = <Item extends string>() =>
           return Option.none()
         if (enabledIndices.length === 0)
           return Option.some(Combobox.Message.SuppressedEmptyItemNavigation())
-        const current =
-          active === undefined ? -1 : enabledIndices.indexOf(active)
-        const position =
-          key === 'Home'
-            ? 0
-            : key === 'End'
-              ? enabledIndices.length - 1
-              : (current +
-                  (key === 'ArrowDown' ? 1 : -1) +
-                  enabledIndices.length) %
-                enabledIndices.length
-        const index = enabledIndices[position]
+        const index = Option.getOrUndefined(
+          Listbox.navigate({
+            keys: props.items.map((_, index) => String(index)),
+            currentKey: active === undefined ? undefined : String(active),
+            pressedKey: key,
+            focus: 'Virtual',
+            homeEnd: true,
+            isDisabled: key => isDisabled(Number(key)),
+          }).pipe(Option.map(Number)),
+        )
         return index === undefined
           ? Option.none()
           : Option.some(

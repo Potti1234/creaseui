@@ -10,6 +10,7 @@ import * as Calendar from 'foldkit/calendar'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 
+import * as InlineEdit from '@/lib/behaviors/inline-edit'
 import { dateFromISO, dateToISO } from '@/lib/date-parse'
 import * as GridFocus from '@/lib/behaviors/grid-focus'
 
@@ -95,8 +96,7 @@ export const Model = S.Struct({
   filters: S.Array(S.Struct({ column: S.String, value: S.String })),
   rowHeight: S.String,
   focusedCell: S.Struct({ row: S.Number, column: S.String }),
-  editingCell: S.Struct({ row: S.Number, column: S.String }),
-  draftValue: S.String,
+  inlineEdit: InlineEdit.Model,
   selectionAnchor: S.Struct({ row: S.Number, column: S.String }),
   selectionEnd: S.Struct({ row: S.Number, column: S.String }),
   selectedRanges: S.Array(CellRange),
@@ -210,8 +210,7 @@ export const init = <Row>(
   filters: [],
   rowHeight: 'short',
   focusedCell: { row: -1, column: '' },
-  editingCell: { row: -1, column: '' },
-  draftValue: '',
+  inlineEdit: InlineEdit.init(),
   selectionAnchor: { row: -1, column: '' },
   selectionEnd: { row: -1, column: '' },
   selectedRanges: [],
@@ -267,7 +266,7 @@ export const filteredRows = <Row>(
   )
 }
 
-/* variants whose editor edits the draftValue text field */
+/* variants whose editor edits the InlineEdit draft */
 const draftEditedVariants: ReadonlySet<CellVariant> = new Set([
   'text',
   'number',
@@ -439,7 +438,7 @@ const reproject = <Row>(
     const row = move(current.row)
     return row === -1 ? emptyCell : { row, column: current.column }
   }
-  const editingCell = cell(after.editingCell)
+  const remappedEdit = cell(editingCell(after))
   const contextRow = move(after.contextMenu.row)
   return {
     ...after,
@@ -447,8 +446,13 @@ const reproject = <Row>(
     selectionAnchor: cell(after.selectionAnchor),
     selectionEnd: cell(after.selectionEnd),
     selectedRanges: [],
-    editingCell,
-    draftValue: editingCell.row === -1 ? '' : after.draftValue,
+    inlineEdit:
+      remappedEdit.row === -1
+        ? InlineEdit.init()
+        : {
+            ...after.inlineEdit,
+            maybeEditingId: Option.some(cellId(remappedEdit)),
+          },
     selectedRowIndexes: after.selectedRowIndexes
       .map(move)
       .filter(index => index !== -1),
@@ -459,6 +463,31 @@ const reproject = <Row>(
         : { ...after.contextMenu, row: contextRow },
   }
 }
+
+const cellId = (cell: CellAddress): string =>
+  JSON.stringify([cell.row, cell.column])
+
+const cellAddress = (id: string): CellAddress => {
+  const [row, column] = JSON.parse(id) as [number, string]
+  return { row, column }
+}
+
+export const editingCell = (model: Model): CellAddress =>
+  Option.match(model.inlineEdit.maybeEditingId, {
+    onNone: () => emptyCell,
+    onSome: cellAddress,
+  })
+
+const inlineEditOptions = <Row>(
+  model: Model,
+  config: DataGridConfig<Row>,
+): InlineEdit.Options => ({
+  value: id => {
+    const address = cellAddress(id)
+    const row = displayedRows(model, config)[address.row]
+    return row === undefined ? '' : cellText(row, address.column, config)
+  },
+})
 
 export const update = <Row>(
   model: Model,
@@ -473,6 +502,7 @@ const applyMessage = <Row>(
   model: Model,
   message: Message,
   config: DataGridConfig<Row>,
+  startReason: InlineEdit.Reason = 'programmatic',
 ): Model => {
   switch (message._tag) {
     case 'FocusedCell':
@@ -519,42 +549,71 @@ const applyMessage = <Row>(
       return {
         ...model,
         cellCalendar,
-        editingCell: { row: message.row, column: message.column },
-        /* an empty seed (Enter, F2, double-click) edits the current value;
-           type-over passes the typed key and replaces it */
-        draftValue:
-          message.seed === '' && target !== undefined
-            ? cellText(target, message.column, config)
-            : message.seed,
+        inlineEdit: InlineEdit.update(
+          model.inlineEdit,
+          InlineEdit.Message.RequestedStart({
+            id: cellId({ row: message.row, column: message.column }),
+            reason: message.seed === '' ? startReason : 'type',
+            maybeText:
+              message.seed === '' ? Option.none() : Option.some(message.seed),
+          }),
+          inlineEditOptions(model, config),
+        ).model,
       }
     }
     case 'ChangedDraft':
-      return { ...model, draftValue: message.value }
+      return {
+        ...model,
+        inlineEdit: InlineEdit.update(
+          model.inlineEdit,
+          InlineEdit.Message.ChangedDraft({ value: message.value }),
+          inlineEditOptions(model, config),
+        ).model,
+      }
     case 'CommittedDraft': {
-      /* draftValue only backs the text-style editors (text, number, url,
-         long-text); option/date/file editors commit through their own
-         messages, so committing the draft would overwrite with '' */
-      const committed = draftEditedVariants.has(
-        columnById(config, model.editingCell.column)?.variant ?? 'text',
+      const address = editingCell(model)
+      const next = InlineEdit.update(
+        model.inlineEdit,
+        InlineEdit.Message.RequestedEnd({
+          reason:
+            message.move === 'down'
+              ? 'enter-key'
+              : message.move === 'right'
+                ? 'tab-key'
+                : 'focus-out',
+        }),
+        inlineEditOptions(model, config),
       )
-        ? commitCell(
-            model,
-            model.editingCell.row,
-            model.editingCell.column,
-            model.draftValue,
-            config,
-          )
-        : model
+      const committed =
+        next.outMessage?._tag === 'Committed' &&
+        draftEditedVariants.has(
+          columnById(config, address.column)?.variant ?? 'text',
+        )
+          ? commitCell(
+              model,
+              address.row,
+              address.column,
+              next.outMessage.text,
+              config,
+            )
+          : model
       const moved =
         message.move === 'down'
           ? moveFocus(committed, 'ArrowDown', config)
           : message.move === 'right'
             ? moveFocus(committed, 'ArrowRight', config, false, 'ltr')
             : committed
-      return { ...moved, editingCell: emptyCell }
+      return { ...moved, inlineEdit: next.model }
     }
     case 'CanceledEdit':
-      return { ...model, editingCell: emptyCell, draftValue: '' }
+      return {
+        ...model,
+        inlineEdit: InlineEdit.update(
+          model.inlineEdit,
+          InlineEdit.Message.RequestedCancel({}),
+          inlineEditOptions(model, config),
+        ).model,
+      }
     case 'CompletedEditorFocus':
       return model
     case 'SetCellValue':
@@ -586,7 +645,7 @@ const applyMessage = <Row>(
         message.value,
         config,
       )
-      return { ...committed, editingCell: emptyCell, draftValue: '' }
+      return { ...committed, inlineEdit: InlineEdit.init() }
     }
     case 'ToggledCellOption': {
       const column = columnById(config, message.column)
@@ -614,18 +673,18 @@ const applyMessage = <Row>(
       if (next.outMessage !== undefined) {
         switch (next.outMessage._tag) {
           case 'SelectedDate': {
+            const address = editingCell(model)
             const committed = commitCell(
               model,
-              model.editingCell.row,
-              model.editingCell.column,
+              address.row,
+              address.column,
               dateToISO(next.outMessage.date),
               config,
             )
             return {
               ...committed,
               cellCalendar: next.model,
-              editingCell: emptyCell,
-              draftValue: '',
+              inlineEdit: InlineEdit.init(),
             }
           }
           default:
@@ -635,9 +694,10 @@ const applyMessage = <Row>(
       return { ...model, cellCalendar: next.model }
     }
     case 'PickedCellFiles': {
-      if (model.editingCell.row === -1) return model
-      const column = columnById(config, model.editingCell.column)
-      const target = displayedRows(model, config)[model.editingCell.row]
+      const address = editingCell(model)
+      if (address.row === -1) return model
+      const column = columnById(config, address.column)
+      const target = displayedRows(model, config)[address.row]
       if (column === undefined || target === undefined) return model
       const next: Array<FileCellData> = message.files.map((file, index) => ({
         id: `${config.rowKey(target)}-upload-${String(Date.now())}-${String(index)}`,
@@ -648,8 +708,8 @@ const applyMessage = <Row>(
       }))
       return commitFiles(
         model,
-        model.editingCell.row,
-        model.editingCell.column,
+        address.row,
+        address.column,
         [...(column.getFiles?.(target) ?? []), ...next],
         config,
       )
@@ -906,7 +966,7 @@ const onGridKey = <Row>(
   shift: boolean,
   config: DataGridConfig<Row>,
 ): Model => {
-  const isEditing = model.editingCell.row !== -1
+  const isEditing = editingCell(model).row !== -1
   if (ctrl) {
     switch (key.toLowerCase()) {
       case 'home':
@@ -933,24 +993,23 @@ const onGridKey = <Row>(
     }
   }
   if (isEditing) {
-    switch (key) {
-      case 'Escape':
-        return applyMessage(model, Message.CanceledEdit({}), config)
-      case 'Enter':
-        return applyMessage(
-          model,
-          Message.CommittedDraft({ move: 'down' }),
-          config,
-        )
-      case 'Tab':
-        return applyMessage(
-          model,
-          Message.CommittedDraft({ move: 'right' }),
-          config,
-        )
-      default:
-        return model
-    }
+    const message = InlineEdit.inputKey({
+      key,
+      shift,
+      isMultiline: false,
+      isComposing: false,
+    })
+    if (Option.isNone(message)) return model
+    if (message.value._tag === 'RequestedCancel')
+      return applyMessage(model, Message.CanceledEdit({}), config)
+    if (message.value._tag !== 'RequestedEnd') return model
+    const move =
+      message.value.reason === 'enter-key'
+        ? 'down'
+        : message.value.reason === 'tab-key'
+          ? 'right'
+          : 'none'
+    return applyMessage(model, Message.CommittedDraft({ move }), config)
   }
   switch (key) {
     case 'Home':
@@ -977,18 +1036,6 @@ const onGridKey = <Row>(
         false,
         'ltr',
       )
-    case 'Enter':
-    case 'F2':
-      if (model.focusedCell.row === -1) return model
-      return applyMessage(
-        model,
-        Message.StartedEditing({
-          row: model.focusedCell.row,
-          column: model.focusedCell.column,
-          seed: '',
-        }),
-        config,
-      )
     case 'Delete':
     case 'Backspace': {
       if (model.focusedCell.row === -1) return model
@@ -1007,20 +1054,28 @@ const onGridKey = <Row>(
         config,
       )
     }
-    default:
-      /* type-over: printable char opens editor seeded with the key */
-      if (key.length === 1 && model.focusedCell.row !== -1) {
+    default: {
+      const start =
+        key === ' '
+          ? Option.some({
+              reason: 'type' as const,
+              maybeText: Option.some(key),
+            })
+          : InlineEdit.startKey({ key, ctrl, meta: false, alt: false })
+      if (Option.isSome(start) && model.focusedCell.row !== -1) {
         return applyMessage(
           model,
           Message.StartedEditing({
             row: model.focusedCell.row,
             column: model.focusedCell.column,
-            seed: key,
+            seed: Option.getOrElse(start.value.maybeText, () => ''),
           }),
           config,
+          start.value.reason,
         )
       }
       return model
+    }
   }
 }
 

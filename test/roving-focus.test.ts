@@ -15,6 +15,20 @@ const move = (input: Partial<RovingFocus.NavigationInput<string>> = {}) =>
   })
 
 describe('RovingFocus navigation', () => {
+  it('returns None for a key that has no navigation intent', () => {
+    assert.deepEqual(
+      RovingFocus.navigationIntent({ pressedKey: 'Enter' }),
+      Option.none(),
+    )
+    assert.deepEqual(
+      RovingFocus.navigationIntent({
+        pressedKey: 'ArrowLeft',
+        direction: 'rtl',
+      }),
+      Option.some('Next'),
+    )
+  })
+
   it('exposes orientation and direction as literal schemas', () => {
     for (const orientation of ['Horizontal', 'Vertical', 'Both'])
       assert.equal(Schema.is(RovingFocus.Orientation)(orientation), true)

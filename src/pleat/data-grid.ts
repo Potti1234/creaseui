@@ -1082,7 +1082,7 @@ const textInputEditor = (
 ): Html =>
   h.input([
     h.Type('text'),
-    h.Value(model.draftValue),
+    h.Value(model.inlineEdit.draft),
     h.OnInput(value => DataGrid.Message.ChangedDraft({ value })),
     h.Class(className(reset.input, st.c157)),
     h.OnMount(
@@ -1108,7 +1108,7 @@ const numberInputEditor = <Row>(
     ...(column.numberStep === undefined
       ? []
       : [h.Step(String(column.numberStep))]),
-    h.Value(model.draftValue),
+    h.Value(model.inlineEdit.draft),
     h.OnInput(value => DataGrid.Message.ChangedDraft({ value })),
     h.Class(className(reset.input, st.c157, st.numberEditor)),
     h.OnMount(
@@ -1145,7 +1145,7 @@ const cellEditor = <Row>(
             [
               h.textarea([
                 h.Attribute('placeholder', 'Enter text...'),
-                h.Value(model.draftValue),
+                h.Value(model.inlineEdit.draft),
                 h.OnInput(value => DataGrid.Message.ChangedDraft({ value })),
                 h.Class(className(reset.input, st.longTextArea)),
                 h.OnMount(
@@ -1208,7 +1208,7 @@ const cellEditor = <Row>(
       )
     case 'multi-select': {
       const selected = column.getOptions?.(row) ?? []
-      const query = model.draftValue.toLowerCase()
+      const query = model.inlineEdit.draft.toLowerCase()
       const options = (column.options ?? []).filter(option =>
         option.toLowerCase().includes(query),
       )
@@ -1262,7 +1262,7 @@ const cellEditor = <Row>(
                   ),
                   h.input([
                     h.Type('text'),
-                    h.Value(model.draftValue),
+                    h.Value(model.inlineEdit.draft),
                     h.Attribute('placeholder', 'Search...'),
                     h.OnInput(value =>
                       DataGrid.Message.ChangedDraft({ value }),
@@ -2175,8 +2175,8 @@ export const dataGrid = <Row>(
                       model.focusedCell.row === rowIndex &&
                       model.focusedCell.column === column.id
                     const isEditing =
-                      model.editingCell.row === rowIndex &&
-                      model.editingCell.column === column.id
+                      DataGrid.editingCell(model).row === rowIndex &&
+                      DataGrid.editingCell(model).column === column.id
                     const inSelection = isSelected(rowIndex, column.id)
                     return h.div(
                       [

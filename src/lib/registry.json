@@ -2,6 +2,19 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "items": [
     {
+      "name": "drag-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Drag Behavior",
+      "description": "Pointer capture, drag thresholds, and edge autoscroll for Foldkit mounts.",
+      "files": [
+        {
+          "path": "behaviors/drag.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/drag.ts"
+        }
+      ]
+    },
+    {
       "name": "time-input-core",
       "type": "registry:lib",
       "title": "Time Input State",
@@ -11,6 +24,19 @@
           "path": "time-input.ts",
           "type": "registry:lib",
           "target": "@lib/time-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "drag-and-drop-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Drag and Drop Behavior",
+      "description": "Headless pointer and keyboard drag-and-drop Submodel and attribute bundles for sortable lists.",
+      "files": [
+        {
+          "path": "behaviors/drag-and-drop.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/drag-and-drop.ts"
         }
       ]
     },
@@ -208,7 +234,18 @@
           "path": "dropdown-menu-behavior.ts",
           "type": "registry:lib",
           "target": "@lib/dropdown-menu-behavior.ts"
-        },
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/popup-behavior"
+      ]
+    },
+    {
+      "name": "popup-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Popup Behavior",
+      "description": "Shared open, close, dismissal, and exit presence for custom overlays.",
+      "files": [
         {
           "path": "behaviors/popup.ts",
           "type": "registry:lib",
@@ -226,6 +263,11 @@
           "path": "radio-group.ts",
           "type": "registry:lib",
           "target": "@lib/radio-group.ts"
+        },
+        {
+          "path": "behaviors/radio-group.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/radio-group.ts"
         }
       ]
     },
@@ -239,7 +281,18 @@
           "path": "toggle-group.ts",
           "type": "registry:lib",
           "target": "@lib/toggle-group.ts"
-        },
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior"
+      ]
+    },
+    {
+      "name": "roving-focus-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Roving Focus",
+      "description": "Shared focus state, tab stops, and directional keyboard navigation.",
+      "files": [
         {
           "path": "behaviors/roving-focus.ts",
           "type": "registry:lib",
@@ -250,14 +303,31 @@
     {
       "name": "slider-behavior",
       "type": "registry:lib",
-      "title": "Foldkit Slider Range Policy",
-      "description": "Skin-neutral bound, step, two-thumb ordering, and range update normalization.",
+      "title": "Foldkit Slider Behavior",
+      "description": "Skin-neutral @foldkit/ui slider seam with bound, step, and range update normalization and a multi-thumb submodel.",
       "files": [
         {
-          "path": "slider.ts",
+          "path": "behaviors/slider.ts",
           "type": "registry:lib",
-          "target": "@lib/slider.ts"
+          "target": "@lib/behaviors/slider.ts"
         }
+      ]
+    },
+    {
+      "name": "listbox-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Listbox Behavior",
+      "description": "Headless highlight, filtering, navigation, and Real or Virtual focus for option lists.",
+      "files": [
+        {
+          "path": "behaviors/listbox.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/listbox.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior",
+        "Potti1234/creaseui/tree-list-behavior"
       ]
     },
     {
@@ -265,6 +335,9 @@
       "type": "registry:lib",
       "title": "Foldkit Command Query Policy",
       "description": "Skin-neutral command query normalization and application-provided search-text filtering.",
+      "registryDependencies": [
+        "Potti1234/creaseui/listbox-behavior"
+      ],
       "files": [
         {
           "path": "command.ts",
@@ -284,6 +357,9 @@
           "type": "registry:lib",
           "target": "@lib/menubar.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior"
       ]
     },
     {
@@ -391,6 +467,9 @@
           "type": "registry:lib",
           "target": "@lib/carousel.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior"
       ]
     },
     {
@@ -417,6 +496,9 @@
           "type": "registry:lib",
           "target": "@lib/drawer.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior"
       ]
     },
     {
@@ -430,6 +512,48 @@
           "type": "registry:lib",
           "target": "@lib/hover-card.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/hover-intent-behavior"
+      ]
+    },
+    {
+      "name": "dialog-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Dialog Behavior",
+      "description": "Native dialog lifecycle and focus management.",
+      "files": [
+        {
+          "path": "behaviors/dialog.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/dialog.ts"
+        }
+      ]
+    },
+    {
+      "name": "popover-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Popover Behavior",
+      "description": "Anchored popup lifecycle, dismissal and focus management.",
+      "files": [
+        {
+          "path": "behaviors/popover.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/popover.ts"
+        }
+      ]
+    },
+    {
+      "name": "hover-intent-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Hover Intent Behavior",
+      "description": "Hover and focus lifecycle with cancelable waits and a pointer bridge.",
+      "files": [
+        {
+          "path": "behaviors/hover-intent.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/hover-intent.ts"
+        }
       ]
     },
     {
@@ -439,9 +563,9 @@
       "description": "Shared hover and focus ownership with command-based open and close delays and stale-timer protection.",
       "files": [
         {
-          "path": "tooltip.ts",
+          "path": "behaviors/tooltip.ts",
           "type": "registry:lib",
-          "target": "@lib/tooltip.ts"
+          "target": "@lib/behaviors/tooltip.ts"
         }
       ]
     },
@@ -682,6 +806,9 @@
           "type": "registry:lib",
           "target": "@lib/lightbox.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior"
       ]
     },
     {
@@ -796,6 +923,10 @@
           "type": "registry:lib",
           "target": "@lib/nav-menu.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/popup-behavior",
+        "Potti1234/creaseui/roving-focus-behavior"
       ]
     },
     {
@@ -939,6 +1070,9 @@
           "type": "registry:lib",
           "target": "@lib/toolbar.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior"
       ]
     },
     {
@@ -972,6 +1106,27 @@
           "path": "behaviors/typeahead.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/typeahead.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/tree-collection-behavior"
+      ]
+    },
+    {
+      "name": "tree-collection-behavior",
+      "type": "registry:lib",
+      "title": "Tree Collection Behavior",
+      "description": "Pure tree structure, visible row, and checked state helpers.",
+      "files": [
+        {
+          "path": "behaviors/tree-collection.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/tree-collection.ts"
+        },
+        {
+          "path": "behaviors/tree-collection.LICENSE.txt",
+          "type": "registry:file",
+          "target": "@lib/behaviors/tree-collection.LICENSE.txt"
         }
       ]
     },
@@ -1033,6 +1188,11 @@
           "path": "behaviors/grid-focus.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/grid-focus.ts"
+        },
+        {
+          "path": "behaviors/inline-edit.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/inline-edit.ts"
         }
       ],
       "registryDependencies": [
@@ -1089,6 +1249,9 @@
           "type": "registry:lib",
           "target": "@lib/color-picker.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior"
       ]
     },
     {
@@ -1102,6 +1265,22 @@
           "type": "registry:lib",
           "target": "@lib/sidebar-modal.ts"
         }
+      ]
+    },
+    {
+      "name": "resizable-behavior",
+      "type": "registry:lib",
+      "title": "Resizable Behavior",
+      "description": "Shared Foldkit behavior and helpers for Resizable.",
+      "files": [
+        {
+          "path": "resizable.ts",
+          "type": "registry:lib",
+          "target": "@lib/resizable.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior"
       ]
     }
   ]
