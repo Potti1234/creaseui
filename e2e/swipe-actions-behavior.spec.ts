@@ -1,0 +1,193 @@
+import { expect, test } from '@playwright/test'
+import { createServer, type ViteDevServer } from 'vite'
+
+test.describe('Swipe actions docs example', () => {
+  let server: ViteDevServer
+  let url: string
+  test.beforeAll(async () => {
+    server = await createServer({
+      configFile: false,
+      logLevel: 'error',
+      optimizeDeps: { entries: ['src/docs/examples/swipe-actions/index.html'] },
+      server: { host: '127.0.0.1', port: 0, watch: null },
+    })
+    await server.listen()
+    url = new URL(
+      '/src/docs/examples/swipe-actions/',
+      server.resolvedUrls?.local[0],
+    ).href
+  })
+  test.afterAll(async () => {
+    await server?.close()
+  })
+
+  test('preserves clicks on interactive row content', async ({ page }) => {
+    await page.goto(url)
+    const content = page.locator('[data-swipe-key="design"] .content')
+    await content.evaluate(element => {
+      const button = document.createElement('button')
+      button.textContent = 'Read message'
+      button.addEventListener('click', () =>
+        button.setAttribute('data-clicked', 'true'),
+      )
+      element.append(button)
+    })
+    const button = content.getByRole('button', { name: 'Read message' })
+    await button.click()
+    await expect(button).toHaveAttribute('data-clicked', 'true')
+  })
+
+  test('skips disabled and inert actions when revealing and navigating', async ({
+    page,
+  }) => {
+    await page.goto(url)
+    const row = page.locator('[data-swipe-key="design"]')
+    await row.locator('[data-side="start"]').evaluate(element => {
+      const disabled = document.createElement('button')
+      disabled.textContent = 'Disabled first'
+      disabled.disabled = true
+      element.prepend(disabled)
+      const inert = document.createElement('div')
+      inert.inert = true
+      const inertButton = document.createElement('button')
+      inertButton.textContent = 'Inert action'
+      inert.append(inertButton)
+      const ariaDisabled = document.createElement('button')
+      ariaDisabled.textContent = 'Unavailable action'
+      ariaDisabled.setAttribute('aria-disabled', 'true')
+      const last = document.createElement('button')
+      last.textContent = 'Last action'
+      element.append(inert, ariaDisabled, disabled.cloneNode(true), last)
+    })
+    const archive = row.getByRole('button', { name: 'Archive', exact: true })
+    const last = row.getByRole('button', { name: 'Last action', exact: true })
+    await row.focus()
+    await row.press('ArrowRight')
+    await expect(archive).toBeFocused()
+    await page.keyboard.press('ArrowRight')
+    await expect(last).toBeFocused()
+    await page.keyboard.press('ArrowLeft')
+    await expect(archive).toBeFocused()
+    await page.keyboard.press('Escape')
+    await expect(row).toBeFocused()
+  })
+
+  test('navigates actions without counting their focusable wrappers twice', async ({
+    page,
+  }) => {
+    await page.goto(url)
+    const row = page.locator('[data-swipe-key="design"]')
+    await row.locator('[data-side="start"]').evaluate(element => {
+      const archive = element.querySelector('button')!
+      const outer = document.createElement('div')
+      outer.tabIndex = 0
+      const inner = document.createElement('div')
+      inner.tabIndex = 0
+      inner.append(archive)
+      outer.append(inner)
+      const next = document.createElement('button')
+      next.textContent = 'Next action'
+      element.append(outer, next)
+    })
+    const archive = row.getByRole('button', { name: 'Archive', exact: true })
+    const next = row.getByRole('button', { name: 'Next action', exact: true })
+    await row.focus()
+    await row.press('ArrowRight')
+    await expect(row).toHaveAttribute('data-swipe-open', 'start')
+    await archive.focus()
+    await page.keyboard.press('ArrowRight')
+    await expect(next).toBeFocused()
+    await page.keyboard.press('ArrowLeft')
+    await expect(archive).toBeFocused()
+    await page.keyboard.press('Escape')
+    await row.press('ArrowRight')
+    await expect(archive).toBeFocused()
+  })
+
+  test('reveals at half, focuses actions with arrows, closes with Escape, flicks and full-swipes to delete', async ({
+    page,
+  }) => {
+    await page.goto(url)
+    const row = page.locator('[data-swipe-key="design"]')
+    const content = row.locator('.content')
+    const endActions = row.locator('[data-side="end"]')
+    await expect(endActions).toHaveAttribute('inert', '')
+    await row.focus()
+    await row.press('ArrowLeft')
+    await expect(row).toHaveAttribute('data-swipe-open', 'end')
+    await expect(endActions).not.toHaveAttribute('inert')
+    await expect(row.getByRole('button', { name: 'Delete' })).toBeFocused()
+    await expect(content).toHaveCSS('transform', 'matrix(1, 0, 0, 1, -100, 0)')
+    await expect(row.getByRole('button', { name: 'Delete' })).toHaveCSS(
+      'outline-offset',
+      '-3px',
+    )
+    await page.screenshot({
+      path: test.info().outputPath('swipe-action-focus.png'),
+      fullPage: true,
+    })
+    await page.keyboard.press('Escape')
+    await expect(row).toBeFocused()
+    await expect(endActions).toHaveAttribute('inert', '')
+    await expect(content).toHaveCSS('transform', 'matrix(1, 0, 0, 1, 0, 0)')
+    const box = (await row.boundingBox())!
+    const x = box.x + box.width / 2
+    const y = box.y + box.height / 2
+    const device = await page.context().newCDPSession(page)
+    const swipe = async (dx: number, duration: number, pause: number) => {
+      const timestamp = Date.now() / 1000
+      await device.send('Input.dispatchMouseEvent', {
+        type: 'mouseMoved',
+        x,
+        y,
+        timestamp,
+      })
+      await device.send('Input.dispatchMouseEvent', {
+        type: 'mousePressed',
+        x,
+        y,
+        button: 'left',
+        buttons: 1,
+        clickCount: 1,
+        timestamp,
+      })
+      await device.send('Input.dispatchMouseEvent', {
+        type: 'mouseMoved',
+        x: x + dx,
+        y,
+        button: 'left',
+        buttons: 1,
+        timestamp: timestamp + duration,
+      })
+      await device.send('Input.dispatchMouseEvent', {
+        type: 'mouseReleased',
+        x: x + dx,
+        y,
+        button: 'left',
+        buttons: 0,
+        clickCount: 1,
+        timestamp: timestamp + duration + pause,
+      })
+    }
+    await swipe(-60, 0.2, 0.1)
+    await expect(row).toHaveAttribute('data-swipe-open', 'end')
+    await expect(content).toHaveCSS('transform', 'matrix(1, 0, 0, 1, -100, 0)')
+    await expect(row.getByRole('button', { name: 'Delete' })).toBeVisible()
+    await page.screenshot({
+      path: test.info().outputPath('swipe-demo.png'),
+      fullPage: true,
+    })
+    await row.focus()
+    await row.press('ArrowRight')
+    await expect(row.getByRole('button', { name: 'Delete' })).toBeFocused()
+    await page.keyboard.press('Escape')
+    await expect(row).toBeFocused()
+    await expect(row).not.toHaveAttribute('data-swipe-open')
+    await swipe(20, 0.01, 0.001)
+    await expect(row).toHaveAttribute('data-swipe-open', 'start')
+    await row.press('Escape')
+    await swipe(-box.width * 0.7, 0.2, 0.1)
+    await expect(row).toHaveCount(0)
+    await expect(page.locator('[aria-live]')).toHaveText('Message deleted.')
+  })
+})

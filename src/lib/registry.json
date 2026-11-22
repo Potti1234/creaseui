@@ -2,6 +2,19 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "items": [
     {
+      "name": "velocity-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Velocity Behavior",
+      "description": "Immutable bounded pointer samples and least-squares release velocity for Foldkit gestures.",
+      "files": [
+        {
+          "path": "behaviors/velocity.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/velocity.ts"
+        }
+      ]
+    },
+    {
       "name": "area-behavior",
       "type": "registry:lib",
       "title": "Area Behavior",
@@ -539,7 +552,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/drag-behavior"
+        "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/velocity-behavior"
       ]
     },
     {
@@ -1037,6 +1051,9 @@
           "type": "registry:lib",
           "target": "@lib/sheet.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/velocity-behavior"
       ]
     },
     {
@@ -1198,6 +1215,10 @@
       "type": "registry:lib",
       "title": "Action Bar Behavior",
       "description": "Shared Foldkit behavior and helpers for Action Bar.",
+      "registryDependencies": [
+        "Potti1234/creaseui/layer-behavior",
+        "Potti1234/creaseui/toolbar-behavior"
+      ],
       "files": [
         {
           "path": "action-bar.ts",
@@ -1235,6 +1256,11 @@
           "target": "@lib/data-grid.ts"
         },
         {
+          "path": "behaviors/undo-stack.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/undo-stack.ts"
+        },
+        {
           "path": "behaviors/inline-edit.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/inline-edit.ts"
@@ -1263,11 +1289,43 @@
       "type": "registry:lib",
       "title": "Overlay Boundary Behavior",
       "description": "Shared Foldkit behavior and helpers for Overlay Boundary.",
+      "registryDependencies": [
+        "Potti1234/creaseui/position-behavior"
+      ],
       "files": [
         {
           "path": "overlay-boundary.ts",
           "type": "registry:lib",
           "target": "@lib/overlay-boundary.ts"
+        }
+      ]
+    },
+    {
+      "name": "position-behavior",
+      "type": "registry:lib",
+      "title": "Position Behavior",
+      "description": "Foldkit Anchor mount and floating positioning for elements, points and live rectangles.",
+      "dependencies": [
+        "@floating-ui/dom@1.8.0"
+      ],
+      "files": [
+        {
+          "path": "behaviors/position.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/position.ts"
+        }
+      ]
+    },
+    {
+      "name": "layer-behavior",
+      "type": "registry:lib",
+      "title": "Layer Behavior",
+      "description": "Standalone scoped mount for Escape, outside-press, and window-blur dismissal.",
+      "files": [
+        {
+          "path": "behaviors/layer.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/layer.ts"
         }
       ]
     },

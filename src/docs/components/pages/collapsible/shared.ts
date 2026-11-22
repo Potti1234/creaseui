@@ -1,5 +1,6 @@
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
+import { motionSource } from '@/docs/components/pages/collapsible/motion'
 import {
   controlledBooleanApplication,
   foldkitApplication,
@@ -9,7 +10,7 @@ export type CollapsibleFixture = Readonly<{
   title: string
   description?: string
   heroOnly?: boolean
-  kind: 'basic' | 'settings' | 'tree' | 'rtl' | 'single'
+  kind: 'basic' | 'settings' | 'tree' | 'rtl' | 'single' | 'motion'
   config?: string
 }>
 
@@ -45,6 +46,12 @@ export const collapsibleFixtures: ReadonlyArray<CollapsibleFixture> = [
     config: 'isDisabled: true,',
     description:
       'A disabled trigger exposes the panel state but does not dispatch Messages.',
+  },
+  {
+    title: 'Motion presence',
+    kind: 'motion',
+    description:
+      'A standalone Motion behavior keeps a custom panel mounted through exit. The caller owns CSS and reduced motion.',
   },
 ]
 
@@ -337,15 +344,17 @@ const collapsibleExamplesFor = (
       : { description: fixture.description }),
     ...(fixture.heroOnly === true ? { heroOnly: true } : {}),
     code:
-      fixture.kind === 'basic'
-        ? basicSource(renderer)
-        : fixture.kind === 'settings'
-          ? settingsSource(renderer)
-          : fixture.kind === 'tree'
-            ? treeSource(renderer)
-            : fixture.kind === 'rtl'
-              ? rtlSource(renderer)
-              : singleSource(fixture, renderer),
+      fixture.kind === 'motion'
+        ? motionSource(renderer)
+        : fixture.kind === 'basic'
+          ? basicSource(renderer)
+          : fixture.kind === 'settings'
+            ? settingsSource(renderer)
+            : fixture.kind === 'tree'
+              ? treeSource(renderer)
+              : fixture.kind === 'rtl'
+                ? rtlSource(renderer)
+                : singleSource(fixture, renderer),
   }))
 
 export const collapsibleExamples = (

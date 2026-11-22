@@ -1,4 +1,11 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as BehaviorDemo from '@/docs/behavior-demo'
+import * as DemoButton from '@/ui/button'
+import * as DemoText from '@/ui/text'
+import * as DemoCard from '@/ui/card'
+import * as DemoInput from '@/ui/input'
+import * as DemoStack from '@/ui/stack'
+import * as DemoSwitch from '@/ui/switch'
 
 import { view as docsGuideView } from '@/docs/getting-started-content'
 import { type LintDocsProps, view as lintDocsView } from '@/docs/lint-content'
@@ -43,6 +50,7 @@ export const styles = {
 
 export type DocsGuideCodeProps<Msg> = Readonly<{
   model: CodeBlock.Model
+  behaviorDemo?: Html
   toParentMessage: (message: CodeBlock.Message) => Msg
   sidebarScrolled: Msg
 }>
@@ -51,6 +59,25 @@ export const view = <Msg>(
   codeBlock: DocsGuideCodeProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => docsGuideView('getting-started', h, styles, codeBlock)
+
+export const behaviorDemo = <Msg>(
+  model: BehaviorDemo.Model,
+  toParent: (message: BehaviorDemo.Message) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  BehaviorDemo.view(
+    model,
+    toParent,
+    {
+      button: DemoButton.button,
+      text: DemoText.text,
+      ...DemoCard,
+      input: DemoInput.input,
+      stack: DemoStack.stack,
+      switchControl: DemoSwitch.switchControl,
+    },
+    h,
+  )
 
 export const themingView = <Msg>(
   codeBlock: DocsGuideCodeProps<Msg>,
