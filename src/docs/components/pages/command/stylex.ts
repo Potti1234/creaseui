@@ -16,7 +16,6 @@ import { className } from '@/stylex/style'
 const styles = stylex.create({
   stack: { gap: '1rem', display: 'flex', flexDirection: 'column' },
   fit: { width: 'fit-content' },
-  itemRow: { gap: '0.5rem', alignItems: 'center', display: 'flex' },
 })
 
 type Preview = Readonly<{
@@ -47,15 +46,12 @@ export const commandStyleXPreview: ExamplePreviewProvider = <Msg>(
       itemToConfig: value => {
         const item = items.find(entry => entry.value === value)
         return {
-          content: h.span(
-            [h.Class(className(styles.itemRow))],
-            [
-              ...(item?.icon === undefined
-                ? []
-                : [Icon.icon({ name: item.icon, size: 'sm' }, h)]),
-              h.span([], [value]),
-            ],
-          ),
+          label: value,
+          ...(item?.icon === undefined
+            ? {}
+            : {
+                leadingContent: Icon.icon({ name: item.icon, size: 'sm' }, h),
+              }),
           ...(item?.shortcut === undefined ? {} : { shortcut: item.shortcut }),
         }
       },

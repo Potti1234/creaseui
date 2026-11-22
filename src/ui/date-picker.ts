@@ -1,8 +1,7 @@
+import * as DatePickerPrimitive from '@/lib/behaviors/date-picker'
 import { Option } from 'effect'
 import * as FoldkitCalendar from 'foldkit/calendar'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
-
-import { DatePicker as DatePickerPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
 import { mirrorNavigationKeyForRtl } from '@/lib/calendar'
