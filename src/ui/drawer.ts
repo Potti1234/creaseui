@@ -99,13 +99,6 @@ const FOOTER_CLASS = 'mt-auto flex shrink-0 flex-col gap-2 p-4 pt-0'
 const TITLE_CLASS = 'text-base font-medium text-foreground'
 const DESCRIPTION_CLASS = 'text-sm text-balance text-muted-foreground'
 
-/** Base UI's swipe-ignore surface: interactive controls + explicit ignores
-    + the content region (mouse pointer only — touch swipes start on content
-    after scroll arbitration, which the model cannot see). */
-const SWIPE_IGNORE_SELECTOR =
-  '[data-base-ui-swipe-ignore], button, a, input, select, textarea, label, [role="button"]'
-const DRAWER_CONTENT_SELECTOR = '[data-drawer-content]'
-
 /** foldkit animation data attributes for elements that skip the dialog's
     `backdrop`/`panel` attr groups (e.g. a non-dismissible overlay). */
 const animationAttributes = <Msg>(
@@ -220,66 +213,6 @@ export const drawer = <Msg>(
   const expanded = DrawerBehavior.isExpanded(model)
   const modal = model.modal
 
-  const startSwipe = (
-    pointerType: string,
-    button: number,
-    screenX: number,
-    screenY: number,
-    timeStamp: number,
-    _clientX: number,
-    _clientY: number,
-    _pointerId: number,
-    target: EventTarget | null,
-  ): Option.Option<Msg> => {
-    if (button !== 0) return Option.none()
-    if (target instanceof Element) {
-      // Swipes only start inside the popup (Base UI's canStart requires the
-      // pointer target to be contained in the popup element).
-      if (target.closest('[data-slot="drawer-popup"]') === null) {
-        return Option.none()
-      }
-      if (target.closest(SWIPE_IGNORE_SELECTOR) !== null) return Option.none()
-      // Mouse drags never start inside the scrollable content region; touch
-      // swipes may (Base UI arbitrates against scroll at runtime).
-      if (
-        pointerType !== 'touch' &&
-        target.closest(DRAWER_CONTENT_SELECTOR) !== null
-      ) {
-        return Option.none()
-      }
-    }
-    return Option.some(
-      send(StartedSwipe({ x: screenX, y: screenY, timeStamp })),
-    )
-  }
-
-  const viewportGestureAttributes = (
-    hd: HtmlBuilder<Msg>,
-  ): ReadonlyArray<Attribute<Msg>> => [
-    hd.OnPointerDown(startSwipe),
-    ...(swiping
-      ? [
-          hd.OnPointerMove((_screenX, screenY, _pointerType) =>
-            Option.some(
-              send(
-                DraggedSwipe({
-                  x: _screenX,
-                  y: screenY,
-                  timeStamp: performance.now(),
-                }),
-              ),
-            ),
-          ),
-          hd.OnPointerUp((screenX, screenY, _pointerType, timeStamp) =>
-            Option.some(
-              send(EndedSwipe({ x: screenX, y: screenY, timeStamp })),
-            ),
-          ),
-          hd.OnPointerLeave(() => Option.some(send(CancelledSwipe()))),
-        ]
-      : []),
-  ]
-
   return h.div(
     [h.DataAttribute('slot', 'drawer-root')],
     [
@@ -380,7 +313,6 @@ export const drawer = <Msg>(
                             message => send(message),
                           ),
                         ),
-                        ...viewportGestureAttributes(hd),
                       ],
                       [
                         hd.div(
