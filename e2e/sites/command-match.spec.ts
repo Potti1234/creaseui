@@ -36,7 +36,7 @@ test('grouped Command navigates in visible group order after ranking', async ({
     (await options.nth(2).getAttribute('id')) ?? '',
   )
   await page.screenshot({
-    path: `/home/ubuntu/attachments/text-match/grouped-${testInfo.project.name}.png`,
+    path: testInfo.outputPath('grouped.png'),
   })
   await input.fill('missing')
   await expect(options).toHaveCount(0)
