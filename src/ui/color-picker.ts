@@ -46,7 +46,7 @@ const AREA_CLASS =
   'relative h-44 w-full cursor-crosshair touch-none overflow-hidden rounded-md border select-none data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
 
 const AREA_THUMB_CLASS =
-  'pointer-events-none absolute size-4 -translate-x-1/2 translate-y-1/2 rounded-full border-2 border-white shadow-sm'
+  'pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm'
 
 const TRACK_CLASS =
   'relative h-4 w-full cursor-pointer touch-none overflow-hidden rounded-full border select-none data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50'
@@ -137,29 +137,41 @@ export const colorPickerArea = <Msg>(
   props: ChannelProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const { s, v } = props.model.color
   return h.div(
     [
       h.Class(cn(AREA_CLASS, props.class)),
-      h.AriaLabel('Color saturation and value'),
-      h.AriaValuetext(
-        `saturation ${String(Math.round(s))}%, value ${String(Math.round(v))}%`,
-      ),
       h.Style({
         backgroundColor: Picker.pureHue(props.model),
         backgroundImage:
           'linear-gradient(to top, rgb(0,0,0), transparent), linear-gradient(to right, rgb(255,255,255), transparent)',
       }),
-      ...channelAttrs(props, 'area', h),
+      h.Attribute(
+        CHANNEL_ATTR,
+        Picker.channelElementId(props.model.id, 'area'),
+      ),
+      h.DataAttribute('slot', 'color-picker-area'),
+      h.AriaDisabled(props.model.disabled),
+      h.OnMount(Picker.channelMount('area', props.toParentMessage)),
     ],
     [
       h.span(
         [
           h.DataAttribute('slot', 'color-picker-area-thumb'),
+          ...Object.entries(Picker.areaThumbAttrs(props.model)).map(
+            ([name, value]) => h.Attribute(name, value),
+          ),
+          h.AriaLabel('Color saturation and value'),
+          h.OnKeyDownPreventDefault((key, modifiers) =>
+            props.model.disabled
+              ? Option.none()
+              : Option.map(
+                  Picker.areaKeyMessage(key, modifiers),
+                  props.toParentMessage,
+                ),
+          ),
           h.Class(AREA_THUMB_CLASS),
           h.Style({
-            left: `${String(s)}%`,
-            bottom: `${String(v)}%`,
+            ...Picker.areaThumbStyle(props.model),
             backgroundColor: Picker.hex(props.model),
             boxShadow: THUMB_RING,
           }),

@@ -707,6 +707,7 @@
       "component": "dropdown-menu",
       "description": "A CreaseUI Dropdown Menu component for Foldkit.",
       "exports": [
+        "FocusActiveItem",
         "FocusTrigger",
         "Message",
         "Model",
@@ -2828,6 +2829,7 @@
       "component": "dropdown-menu",
       "description": "The StyleX Dropdown Menu component for Foldkit.",
       "exports": [
+        "FocusActiveItem",
         "FocusTrigger",
         "Message",
         "Model",
@@ -4916,6 +4918,7 @@
       "component": "dropdown-menu",
       "description": "The Pleat Dropdown Menu component for Foldkit.",
       "exports": [
+        "FocusActiveItem",
         "FocusTrigger",
         "Message",
         "Model",
@@ -6336,6 +6339,8 @@
   "runtimeProperties": [
     "--_item-inset-inline",
     "--_tree-indent",
+    "--area-x",
+    "--area-y",
     "--avatar-group-overlap",
     "--bleed",
     "--card-spacing",
@@ -6354,6 +6359,8 @@
     "--drawer-swipe-movement-y",
     "--drawer-swipe-progress",
     "--drawer-swipe-strength",
+    "--move-x",
+    "--move-y",
     "--nested-drawers",
     "--peek",
     "--sheet-expanded-height",

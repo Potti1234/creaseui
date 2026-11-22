@@ -2,6 +2,22 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "items": [
     {
+      "name": "area-behavior",
+      "type": "registry:lib",
+      "title": "Area Behavior",
+      "description": "Foldkit-native two-axis point picker with pointer and keyboard input.",
+      "files": [
+        {
+          "path": "behaviors/area.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/area.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior"
+      ]
+    },
+    {
       "name": "drag-behavior",
       "type": "registry:lib",
       "title": "Foldkit Drag Behavior",
@@ -236,7 +252,9 @@
           "target": "@lib/dropdown-menu-behavior.ts"
         }
       ],
-      "registryDependencies": ["Potti1234/creaseui/popup-behavior"]
+      "registryDependencies": [
+        "Potti1234/creaseui/popup-behavior"
+      ]
     },
     {
       "name": "popup-behavior",
@@ -324,7 +342,7 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/toggle-group-behavior",
+        "Potti1234/creaseui/roving-focus-behavior",
         "Potti1234/creaseui/tree-list-behavior"
       ]
     },
@@ -1106,7 +1124,9 @@
           "target": "@lib/behaviors/typeahead.ts"
         }
       ],
-      "registryDependencies": ["Potti1234/creaseui/tree-collection-behavior"]
+      "registryDependencies": [
+        "Potti1234/creaseui/tree-collection-behavior"
+      ]
     },
     {
       "name": "tree-collection-behavior",
@@ -1242,6 +1262,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/area-behavior",
         "Potti1234/creaseui/drag-behavior"
       ]
     },
