@@ -1,6 +1,31 @@
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
+import * as TreeCollection from '@/lib/behaviors/tree-collection'
+
+export const documentationItems = [
+  'Introduction',
+  'Components',
+  'Changelog',
+] as const
+
+const documentationTree = [
+  {
+    value: 'documentation',
+    label: 'Documentation',
+    children: documentationItems.map(label => ({ value: label, label })),
+  },
+] satisfies ReadonlyArray<TreeCollection.TreeItemData>
+
+export const visibleDocumentationItems = (
+  isExpanded: boolean,
+): ReadonlyArray<string> =>
+  TreeCollection.visibleTreeRows(
+    documentationTree,
+    isExpanded ? ['documentation'] : [],
+  )
+    .filter(row => row.parent === 'documentation')
+    .map(row => row.item.label)
 
 export const sidebarFixtures = [
   {
