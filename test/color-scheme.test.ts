@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { runInNewContext } from 'node:vm'
 import { describe, it } from 'node:test'
-import { Schema } from 'effect'
+import { Option, Schema } from 'effect'
 import * as ColorScheme from '../src/lib/behaviors/color-scheme.ts'
 import * as Preference from '../src/lib/behaviors/preference.ts'
 
@@ -18,10 +18,19 @@ describe('ColorScheme', () => {
   })
   it('resolves explicit choices and defaults to system with a light unknown fallback', () => {
     assert.equal(ColorScheme.resolved(scheme.init()), 'light')
-    assert.equal(ColorScheme.resolved(scheme.init(null, 'dark')), 'dark')
-    assert.equal(ColorScheme.resolved(scheme.init('light', 'dark')), 'light')
-    assert.equal(ColorScheme.resolved(scheme.init('dark', 'light')), 'dark')
-    assert.equal(scheme.init('invalid').value, 'system')
+    assert.equal(
+      ColorScheme.resolved(scheme.init(Option.none(), 'dark')),
+      'dark',
+    )
+    assert.equal(
+      ColorScheme.resolved(scheme.init(Option.some('light'), 'dark')),
+      'light',
+    )
+    assert.equal(
+      ColorScheme.resolved(scheme.init(Option.some('dark'), 'light')),
+      'dark',
+    )
+    assert.equal(scheme.init(Option.some('invalid')).value, 'system')
   })
   it('applies live system changes only when the resolved choice changes', () => {
     const changed = scheme.update(
@@ -31,7 +40,7 @@ describe('ColorScheme', () => {
     assert.equal(ColorScheme.resolved(changed.model), 'dark')
     assert.equal(changed.commands?.length, 1)
     const explicit = scheme.update(
-      scheme.init('light'),
+      scheme.init(Option.some('light')),
       ColorScheme.Message.ChangedSystem({ system: 'dark' }),
     )
     assert.equal(explicit.model.system, 'dark')
@@ -75,7 +84,10 @@ describe('ColorScheme', () => {
           },
         })
         const expected = ColorScheme.resolved(
-          scheme.init(raw === 'blocked' ? null : raw, system),
+          scheme.init(
+            Option.fromNullishOr(raw === 'blocked' ? null : raw),
+            system,
+          ),
         )
         assert.equal(dark, expected === 'dark')
         assert.equal(style.colorScheme, expected)

@@ -1,4 +1,4 @@
-import { Effect, Schema, Stream } from 'effect'
+import { Effect, Option, Schema, Stream } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
@@ -41,10 +41,16 @@ export const create = <Value extends string>(
 
   type Model = typeof Model.Type
 
-  const decode = (raw: string | null | undefined): Value =>
-    config.values.find(value => value === raw) ?? config.defaultValue
+  const decode = (raw: Option.Option<string>): Value =>
+    Option.match(raw, {
+      onNone: () => config.defaultValue,
+      onSome: raw =>
+        config.values.find(value => value === raw) ?? config.defaultValue,
+    })
 
-  const init = (raw?: string | null): Model => ({ value: decode(raw) })
+  const init = (raw: Option.Option<string> = Option.none()): Model => ({
+    value: decode(raw),
+  })
 
   const update = (
     model: Model,
@@ -69,11 +75,11 @@ export const create = <Value extends string>(
       case 'RequestedValue':
         if (!config.values.some(value => value === message.value))
           return { model }
-        return change(decode(message.value), 'set')
+        return change(decode(Option.some(message.value)), 'set')
       case 'RestoredValue':
-        return change(decode(message.raw), 'restore')
+        return change(decode(Option.fromNullishOr(message.raw)), 'restore')
       case 'ReceivedStoredValue':
-        return change(decode(message.raw), 'storage-sync')
+        return change(decode(Option.fromNullishOr(message.raw)), 'storage-sync')
       case 'CompletedPersist':
         return { model }
     }
@@ -85,7 +91,7 @@ export const create = <Value extends string>(
     init,
     update,
     attributes: (model: Model): Readonly<Record<string, string>> => ({
-      [config.attribute]: decode(model.value),
+      [config.attribute]: decode(Option.some(model.value)),
     }),
     changes: (): Stream.Stream<Message> =>
       config.storage

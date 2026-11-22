@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { Schema } from 'effect'
+import { Option, Schema } from 'effect'
 import * as Preference from '../src/lib/behaviors/preference.ts'
 
 const preference = Preference.create<'a' | 'b'>({
@@ -21,9 +21,11 @@ describe('Preference', () => {
   })
   it('decodes missing and invalid storage to the default', () => {
     for (const raw of [null, undefined, '', 'invalid'])
-      assert.deepEqual(preference.init(raw), { value: 'a' })
-    assert.equal(preference.decode('b'), 'b')
-    assert.deepEqual(preference.attributes(preference.init('b')), {
+      assert.deepEqual(preference.init(Option.fromNullishOr(raw)), {
+        value: 'a',
+      })
+    assert.equal(preference.decode(Option.some('b')), 'b')
+    assert.deepEqual(preference.attributes(preference.init(Option.some('b'))), {
       'data-choice': 'b',
     })
   })

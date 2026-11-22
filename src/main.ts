@@ -128,7 +128,7 @@ const readThemeLabValue = (
 export const flags: Effect.Effect<Flags> = Effect.gen(function* () {
   const raw = yield* Storage.get(themeStorage)
   const themeLab = readThemeLabValue(
-    yield* Storage.get(themeLabStorageDescriptor),
+    Option.getOrNull(yield* Storage.get(themeLabStorageDescriptor)),
   )
   const scheme = colorScheme.init(
     raw,

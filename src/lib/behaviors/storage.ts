@@ -26,14 +26,16 @@ const readCookie = (storage: Descriptor): string | null => {
     : decodeURIComponent(cookie.slice(prefix.length))
 }
 
-export const get = (storage: Descriptor): Effect.Effect<string | null> =>
+export const get = (
+  storage: Descriptor,
+): Effect.Effect<Option.Option<string>> =>
   Effect.sync(() => {
     try {
       if (storage.kind !== 'cookie')
-        return webStorage(storage).getItem(storage.id)
-      return readCookie(storage)
+        return Option.fromNullishOr(webStorage(storage).getItem(storage.id))
+      return Option.fromNullishOr(readCookie(storage))
     } catch {
-      return null
+      return Option.none()
     }
   })
 
@@ -101,11 +103,13 @@ export const script = (
     attribute: `data-${string}`
     values: ReadonlyArray<string>
   }>,
-): string | undefined => {
-  if (storage.kind === 'cookie') return undefined
+): Option.Option<string> => {
+  if (storage.kind === 'cookie') return Option.none()
   if (!/^data-[\w-]+$/u.test(options.attribute))
     throw new Error('Expected a data-* attribute')
   const literal = (value: unknown): string =>
     JSON.stringify(value).replace(/</gu, '\\u003c')
-  return `(()=>{try{const v=${storage.kind === 'local' ? 'localStorage' : 'sessionStorage'}.getItem(${literal(storage.id)});if(${literal(options.values)}.includes(v))document.currentScript.previousElementSibling.setAttribute(${literal(options.attribute)},v)}catch{}})()`
+  return Option.some(
+    `(()=>{try{const v=${storage.kind === 'local' ? 'localStorage' : 'sessionStorage'}.getItem(${literal(storage.id)});if(${literal(options.values)}.includes(v))document.currentScript.previousElementSibling.setAttribute(${literal(options.attribute)},v)}catch{}})()`,
+  )
 }

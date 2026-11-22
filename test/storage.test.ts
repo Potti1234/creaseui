@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { runInNewContext } from 'node:vm'
 import { describe, it } from 'node:test'
-import { Effect } from 'effect'
+import { Effect, Option } from 'effect'
 import * as Storage from '../src/lib/behaviors/storage.ts'
 
 describe('Storage', () => {
@@ -44,7 +44,7 @@ describe('Storage', () => {
         },
       })
       const storage: Storage.Descriptor = { kind: 'local', id: 'test' }
-      assert.equal(Effect.runSync(Storage.get(storage)), null)
+      assert.deepEqual(Effect.runSync(Storage.get(storage)), Option.none())
       assert.equal(Effect.runSync(Storage.available(storage)), false)
       assert.equal(Effect.runSync(Storage.set(storage, 'a')), false)
       assert.equal(Effect.runSync(Storage.remove(storage)), false)
@@ -82,29 +82,34 @@ describe('Storage', () => {
       })
       try {
         const storage = { kind, id: 'test' }
-        assert.equal(Effect.runSync(Storage.get(storage)), null)
+        assert.deepEqual(Effect.runSync(Storage.get(storage)), Option.none())
         assert.equal(Effect.runSync(Storage.set(storage, 'value')), true)
-        assert.equal(Effect.runSync(Storage.get(storage)), 'value')
+        assert.deepEqual(
+          Effect.runSync(Storage.get(storage)),
+          Option.some('value'),
+        )
         assert.equal(Effect.runSync(Storage.remove(storage)), true)
-        assert.equal(Effect.runSync(Storage.get(storage)), null)
+        assert.deepEqual(Effect.runSync(Storage.get(storage)), Option.none())
       } finally {
         Reflect.deleteProperty(window, key)
       }
     }
   })
   it('generates a safe pre-paint script which ignores invalid values and blocked storage', () => {
-    assert.equal(
+    assert.deepEqual(
       Storage.script(
         { kind: 'cookie', id: 'test' },
         { attribute: 'data-test', values: ['a'] },
       ),
-      undefined,
+      Option.none(),
     )
     for (const raw of [null, 'invalid', 'a']) {
       let value = 'default'
-      const script = Storage.script(
-        { kind: 'local', id: '</script>' },
-        { attribute: 'data-test', values: ['a'] },
+      const script = Option.getOrThrow(
+        Storage.script(
+          { kind: 'local', id: '</script>' },
+          { attribute: 'data-test', values: ['a'] },
+        ),
       )
       assert.ok(script)
       assert.equal(script.includes('</script>'), false)

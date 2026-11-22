@@ -1,4 +1,4 @@
-import { Effect, Schema, Stream } from 'effect'
+import { Effect, Option, Schema, Stream } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import * as Subscription from 'foldkit/subscription'
@@ -56,7 +56,7 @@ export const create = (
   })
 
   const init = (
-    raw?: string | null,
+    raw: Option.Option<string> = Option.none(),
     system: Model['system'] = 'unknown',
   ): Model => ({ ...preference.init(raw), system })
 
