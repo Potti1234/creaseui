@@ -18,10 +18,10 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script>
       (() => {
-        const savedTheme = localStorage.getItem('creaseui-theme')
-        const isDark = savedTheme
-          ? savedTheme === 'dark'
-          : window.matchMedia('(prefers-color-scheme: dark)').matches
+        let savedTheme
+        try { savedTheme = localStorage.getItem('creaseui-theme') } catch {}
+        const isDark = savedTheme === 'dark' ||
+          (savedTheme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
         document.documentElement.classList.toggle('dark', isDark)
         document.documentElement.style.colorScheme = isDark ? 'dark' : 'light'
       })()
