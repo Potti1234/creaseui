@@ -10,6 +10,7 @@ import { TUTORIAL_CHAPTERS } from '@/docs/tutorial/chapter-meta'
 import * as Icon from '@/lib/icon'
 import { CommandMenu, Dialog } from '@/site/docs-search-ui'
 import { skin } from '@/site/skin'
+import { docsSearchFields } from '@/site/docs-search-fields'
 
 // Search the same registry that supplies the actual documentation routes.
 export const DOC_PAGES = Object.values(authoredPages)
@@ -134,17 +135,6 @@ export const subscriptions = Subscription.make<Model, Message>()(() => ({
   ),
 }))
 
-const rankedSlugs = (query: string): ReadonlyArray<string> => {
-  const normalized = query.trim().toLocaleLowerCase()
-  const rank = (title: string): number => {
-    const label = title.toLocaleLowerCase()
-    return label === normalized ? 0 : label.startsWith(normalized) ? 1 : 2
-  }
-  return [...DOC_PAGES]
-    .sort((left, right) => rank(left.title) - rank(right.title))
-    .map(page => page.slug)
-}
-
 export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
   Dialog.dialog(
     {
@@ -163,11 +153,14 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                 restingInputValue: '',
                 toParentMessage: message =>
                   Message.GotCommandMessage({ message }),
-                items: rankedSlugs(model.command.inputValue),
+                items: DOC_PAGES.map(page => page.slug),
                 itemToConfig: slug => {
                   const page = pagesBySlug.get(slug)
                   return {
-                    searchText: `${page?.title ?? slug} ${slug.replaceAll('-', ' ')} ${page?.description ?? ''}`,
+                    ...docsSearchFields(
+                      page ?? { title: slug, slug, description: '' },
+                      model.command.inputValue,
+                    ),
                     content: h.div(
                       [h.Class(skin.searchResult)],
                       [
