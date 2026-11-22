@@ -1,3 +1,4 @@
+import { currentPlatform, formatShortcut } from '@/lib/behaviors/shortcuts'
 import type { Style } from '@pleat/core'
 import { previewLayout } from '@/docs/components/preview-layout.pleat'
 import { Option } from 'effect'
@@ -74,7 +75,9 @@ const configFor = <Msg>(
   ...(item.icon === undefined
     ? {}
     : { icon: Icon.icon({ name: item.icon }, h) }),
-  ...(item.keys === undefined ? {} : { keys: item.keys }),
+  ...(item.keys === undefined
+    ? {}
+    : { shortcut: formatShortcut(item.keys, currentPlatform()) }),
   ...(item.kind === undefined ? {} : { kind: item.kind }),
   ...(item.kind === undefined ? {} : { isChecked: checkedValue(item, model) }),
   ...(item.inset === true ? { isInset: true } : {}),

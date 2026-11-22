@@ -22,7 +22,7 @@ export const commandFixtures: ReadonlyArray<CommandFixture> = [
     title: 'Shortcuts',
     kind: 'shortcuts',
     description:
-      'Item configs carry icon content and a trailing shortcut hint.',
+      'Platform-aware hints are display-only; applications must register their own shortcut actions.',
   },
   {
     title: 'Groups',
@@ -139,6 +139,7 @@ const commandSource = (
 import { Command as FoldkitCommand, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
+import { currentPlatform, formatShortcut } from '@/lib/behaviors/shortcuts'
 import * as Button from '@/${dir}/button'
 import * as CommandMenu from '@/${dir}/command'
 import * as Dialog from '@/${dir}/dialog'
@@ -217,7 +218,7 @@ export type Message = typeof Message.Type`,
                   ...(item?.icon === undefined ? [] : [Icon.icon({ name: item.icon, size: 'sm' }, h)]),
                   h.span([], [value]),
                 ]),
-                ...(item?.keys === undefined ? {} : { keys: item.keys }),
+                ...(item?.keys === undefined ? {} : { shortcut: formatShortcut(item.keys, currentPlatform()) }),
               }
             },
             itemGroupKey: value => commandItems.find(entry => entry.value === value)?.group ?? 'Other',

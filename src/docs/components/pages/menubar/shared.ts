@@ -459,7 +459,8 @@ const emitItemConfig = (item: MarkerSpecItem, indent: string): string => {
   const fields: Array<string> = [`label: '${sq(item.label)}'`]
   if (item.icon !== undefined)
     fields.push(`icon: Icon.icon({ name: '${item.icon}' }, h)`)
-  if (item.keys !== undefined) fields.push(`keys: '${item.keys}'`)
+  if (item.keys !== undefined)
+    fields.push(`shortcut: formatShortcut('${item.keys}', currentPlatform())`)
   if (item.kind !== undefined) fields.push(`kind: '${item.kind}'`)
   const checked = checkedExpr(item)
   if (checked !== undefined) fields.push(`isChecked: ${checked}`)
@@ -529,6 +530,7 @@ const emitImports = (fixture: MenubarFixture, isStyleX: boolean): string => {
     "import { Command, Runtime, Subscription, Update } from 'foldkit'",
     "import { type Document, type HtmlBuilder } from 'foldkit/html'",
     "import { defineMessageUnion } from 'foldkit/message'",
+    "import { currentPlatform, formatShortcut } from '@/lib/behaviors/shortcuts'",
   ]
   if (isStyleX) {
     parts.push(

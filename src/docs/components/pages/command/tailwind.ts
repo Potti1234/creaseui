@@ -1,3 +1,4 @@
+import { currentPlatform, formatShortcut } from '@/lib/behaviors/shortcuts'
 import { Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
@@ -104,7 +105,9 @@ export const commandTailwindPreviewProgram = definePreviewProgram<
               : {
                   leadingContent: Icon.icon({ name: item.icon, size: 'sm' }, h),
                 }),
-            ...(item?.keys === undefined ? {} : { keys: item.keys }),
+            ...(item?.keys === undefined
+              ? {}
+              : { shortcut: formatShortcut(item.keys, currentPlatform()) }),
           }
         },
         itemGroupKey: value =>

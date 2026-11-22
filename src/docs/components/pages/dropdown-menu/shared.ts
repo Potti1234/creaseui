@@ -1,3 +1,4 @@
+import { currentPlatform, formatShortcut } from '@/lib/behaviors/shortcuts'
 import type { IconName } from '@/lib/icon'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
@@ -84,7 +85,8 @@ export const dropdownMenuFixtures: Readonly<
   },
   {
     title: 'Shortcuts',
-    description: 'The keys field renders a right-aligned keyboard hint span.',
+    description:
+      'Display-only keyboard hints; applications register shortcut actions separately.',
     trigger: { kind: 'button', label: 'Open' },
     items: [
       { value: 'back', label: 'Back', keys: 'mod+[', group: 'Browser' },
@@ -375,7 +377,9 @@ export const resolveItemConfig = <IconHtml>(
 ): ResolvedItemConfig<IconHtml> => ({
   label: spec.label,
   ...(spec.icon === undefined ? {} : { icon: makeIcon(spec.icon) }),
-  ...(spec.keys === undefined ? {} : { keys: spec.keys }),
+  ...(spec.keys === undefined
+    ? {}
+    : { shortcut: formatShortcut(spec.keys, currentPlatform()) }),
   ...(spec.shortcut === undefined ? {} : { shortcut: spec.shortcut }),
   ...(spec.kind === undefined
     ? {}
@@ -418,7 +422,9 @@ const itemConfigSource = (spec: DropdownMenuItemSpec): string => {
   if (spec.icon !== undefined)
     fields.push(`icon: Icon.icon({ name: '${spec.icon}', size: 'sm' }, h)`)
   if (spec.keys !== undefined)
-    fields.push(`keys: '${spec.keys.replaceAll("'", "\\'")}'`)
+    fields.push(
+      `shortcut: formatShortcut('${spec.keys.replaceAll("'", "\\'")}', currentPlatform())`,
+    )
   if (spec.shortcut !== undefined)
     fields.push(`shortcut: '${spec.shortcut.replaceAll("'", "\\'")}'`)
   if (spec.kind !== undefined) {
@@ -462,6 +468,7 @@ const source = (
   const imports = [
     `import { Option, Schema as S } from 'effect'`,
     `import { Command, Runtime, Subscription, Update } from 'foldkit'`,
+    `import { currentPlatform, formatShortcut } from '@/lib/behaviors/shortcuts'`,
     `import { type Document, type HtmlBuilder } from 'foldkit/html'`,
     ``,
     ...(usesAvatar ? [`import * as Avatar from '@/${uiDir}/avatar'`] : []),
