@@ -27,8 +27,8 @@ for (const width of [390, 1440]) {
         const media = image.getBoundingClientRect()
         return {
           scale: transform.a,
-          x: transform.e,
-          y: transform.f,
+          x: (media.left + media.right - frame.left - frame.right) / 2,
+          y: (media.top + media.bottom - frame.top - frame.bottom) / 2,
           maxX: (image.offsetWidth * 2 - element.clientWidth) / 2,
           maxY: (image.offsetHeight * 2 - element.clientHeight) / 2,
           coversFrame:
@@ -92,11 +92,11 @@ for (const width of [390, 1440]) {
     await expect.poll(async () => (await geometry()).coversFrame).toBe(true)
     await page.keyboard.press('-')
     await expect(frame).toHaveAttribute('aria-pressed', 'false')
-    await expect.poll(async () => (await geometry()).x).toBe(0)
+    await expect.poll(async () => (await geometry()).x).toBeCloseTo(0, 0)
     await page.keyboard.press('+')
     await expect(frame).toHaveAttribute('aria-pressed', 'true')
     await page.keyboard.press('ArrowRight')
-    await expect.poll(async () => (await geometry()).x).toBe(-50)
+    await expect.poll(async () => (await geometry()).x).toBeCloseTo(-50, 0)
     await page.keyboard.press('Escape')
     await expect(frame).toHaveCount(0)
     expect(errors).toEqual([])

@@ -31,6 +31,19 @@
       ]
     },
     {
+      "name": "viewport-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Viewport Behavior",
+      "description": "Pannable, zoomable canvas state with drag, pinch, wheel, zoom keys, fit, reveal and find-in-page.",
+      "files": [
+        {
+          "path": "behaviors/viewport.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/viewport.ts"
+        }
+      ]
+    },
+    {
       "name": "time-input-core",
       "type": "registry:lib",
       "title": "Time Input State",
@@ -839,7 +852,7 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/drag-behavior"
+        "Potti1234/creaseui/viewport-behavior"
       ]
     },
     {
