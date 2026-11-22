@@ -324,7 +324,7 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/toggle-group-behavior",
+        "Potti1234/creaseui/roving-focus-behavior",
         "Potti1234/creaseui/tree-list-behavior"
       ]
     },
