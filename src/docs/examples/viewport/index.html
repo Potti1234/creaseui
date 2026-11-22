@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Viewport behavior · CreaseUI</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font: 1rem/1.5 system-ui, sans-serif;
+      }
+      main {
+        max-width: 35rem;
+        margin: 2rem auto;
+        padding-inline: 0.5rem;
+      }
+      .board {
+        width: 320px;
+        height: 220px;
+        margin-block: 1rem;
+        border: 1px solid GrayText;
+        border-radius: 0.5rem;
+        cursor: grab;
+      }
+      .board[data-gesturing] {
+        cursor: grabbing;
+      }
+      .board:focus-visible,
+      button:focus-visible {
+        outline: 2px solid CanvasText;
+        outline-offset: 2px;
+      }
+      .world {
+        width: 600px;
+        height: 400px;
+        background-image: radial-gradient(GrayText 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+      .node {
+        position: absolute;
+        box-sizing: border-box;
+        width: 100px;
+        height: 48px;
+        padding: 0.5rem;
+        border: 1px solid GrayText;
+        border-radius: 0.35rem;
+        background: Canvas;
+      }
+      button {
+        font: inherit;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .announcement {
+        min-height: 1.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
