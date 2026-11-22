@@ -3026,20 +3026,4 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
     toChildModel: model => model.blocksKanbanDnd,
     toParentMessage: message => Message.GotBlocksKanbanDndMessage({ message }),
   }),
-  ...Preset.OVERRIDABLE_TOKENS.map(token =>
-    ColorPicker.subscriptions<Model, Message>({
-      id: `create-token-${token}-picker`,
-      toChildModel: model => model.tokenPickers[token] ?? FALLBACK_PICKER,
-      toParentMessage: message =>
-        Message.GotCreateTokenPickerMessage({ token, message }),
-    }),
-  ),
-  ...COLOR_PICKER_TARGETS.map(target =>
-    ColorPicker.subscriptions<Model, Message>({
-      id: `create-${target === 'surfaceLight' ? 'surface-light' : target === 'surfaceDark' ? 'surface-dark' : target}-picker`,
-      toChildModel: model => model.colorPickers[target],
-      toParentMessage: message =>
-        Message.GotCreateColorPickerMessage({ target, message }),
-    }),
-  ),
 )

@@ -11,6 +11,15 @@ describe('Command query policy', () => {
     assert.equal(normalizeCommandQuery('  SeTT  '), 'sett')
   })
 
+  it('preserves accent-sensitive search and empty query behavior', () => {
+    const items = ['École', 'Ecole', 'apple']
+    assert.deepEqual(filterCommandItems(items, 'ecole', '', String), ['Ecole'])
+    assert.deepEqual(filterCommandItems(items, 'école', '', String), ['École'])
+    assert.equal(filterCommandItems(items, '  ', '', String), items)
+    assert.deepEqual(filterCommandItems([], 'x', '', String), [])
+    assert.deepEqual(filterCommandItems(items, 'missing', '', String), [])
+  })
+
   it('filters by application-provided search text', () => {
     const items = ['calendar', 'settings', 'search'] as const
     assert.deepEqual(

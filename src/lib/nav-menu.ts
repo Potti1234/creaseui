@@ -2,7 +2,11 @@
 
 import { Command, Dom, type Update } from 'foldkit'
 import { Effect, Option, Schema as S } from 'effect'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
+
+import * as Popup from './behaviors/popup'
+import * as RovingFocus from './behaviors/roving-focus'
 
 /** Shared open/close state machine for nav flyouts (TopNavMenu, TopNavMegaMenu,
     SideNav collapsed-item flyouts, SideNav/TopNav heading menus). Mirrors
@@ -12,8 +16,9 @@ import { defineMessageUnion } from 'foldkit/message'
     hover re-open for REOPEN_SUPPRESS_MS (the panel can cover the trigger). */
 export const Model = S.Struct({
   id: S.String,
-  openMode: S.Literals(['closed', 'hover', 'pinned']),
-  hoverOpenedAtMs: S.Number,
+  popup: Popup.Model,
+  rovingFocus: RovingFocus.Model,
+  hoverOpenedAtMs: S.Option(S.Number),
   isTriggerHovered: S.Boolean,
   lastClosedAtMs: S.Option(S.Number),
   showDelayMs: S.Number,
@@ -28,6 +33,7 @@ export type Model = typeof Model.Type
 export const REOPEN_SUPPRESS_MS = 300
 
 export const Message = defineMessageUnion({
+  GotNavMenuFocusMessage: { message: RovingFocus.Message },
   EnteredNavMenuTrigger: {},
   RecordedNavMenuEnter: { atMs: S.Number },
   LeftNavMenuTrigger: {},
@@ -61,8 +67,9 @@ export type InitConfig = Readonly<{
 
 export const init = (config: InitConfig): Model => ({
   id: config.id,
-  openMode: 'closed',
-  hoverOpenedAtMs: 0,
+  popup: Popup.init(),
+  rovingFocus: RovingFocus.init({ id: panelDomId(config.id) }),
+  hoverOpenedAtMs: Option.none(),
   isTriggerHovered: false,
   lastClosedAtMs: Option.none(),
   showDelayMs: config.showDelayMs ?? 150,
@@ -73,10 +80,39 @@ export const init = (config: InitConfig): Model => ({
   closeVersion: 0,
 })
 
-export const isOpen = (model: Model): boolean => model.openMode !== 'closed'
+export const isOpen = (model: Model): boolean => model.popup.isOpen
 
 export const triggerDomId = (menuId: string): string => `${menuId}-trigger`
 export const panelDomId = (menuId: string): string => `${menuId}-panel`
+
+export const renderMenu = <Item, Msg>(
+  props: Readonly<{
+    model: Model
+    items: ReadonlyArray<Item>
+    toParentMessage: (message: Message) => Msg
+    toItem: (item: Item, attributes: ReadonlyArray<ChildAttribute>) => Html
+    attributes: ReadonlyArray<Attribute<Msg>>
+  }>,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.submodel({
+    slotId: props.model.rovingFocus.id,
+    model: props.model.rovingFocus,
+    view: RovingFocus.view,
+    viewInputs: {
+      keys: props.items.map((_, index) => String(index)),
+      orientation: 'Vertical',
+      toView: focusItems =>
+        h.div(
+          [h.Role('menu'), ...props.attributes],
+          props.items.map((item, index) =>
+            props.toItem(item, focusItems[index]?.attributes ?? []),
+          ),
+        ),
+    },
+    toParentMessage: message =>
+      props.toParentMessage(Message.GotNavMenuFocusMessage({ message })),
+  })
 
 const FIRST_ITEM_SELECTOR = (panelId: string): string =>
   `[id="${panelId}"] :is(a[href],button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),[tabindex]:not([tabindex="-1"]))`
@@ -148,7 +184,8 @@ export const FocusFirstNavMenuItem = Command.define('FocusFirstNavMenuItem', {
   args: { domId: S.String },
   messages: [Message.CompletedNavMenuFocusFirstItem],
   execute: ({ domId }) =>
-    Dom.focus(FIRST_ITEM_SELECTOR(domId)).pipe(
+    Dom.focus(`[id="${domId}"] [role="menuitem"]`).pipe(
+      Effect.catch(() => Dom.focus(FIRST_ITEM_SELECTOR(domId))),
       Effect.catch(() => Dom.focus(`[id="${domId}"]`, { makeFocusable: true })),
       Effect.ignore,
       Effect.as(Message.CompletedNavMenuFocusFirstItem()),
@@ -157,25 +194,52 @@ export const FocusFirstNavMenuItem = Command.define('FocusFirstNavMenuItem', {
 
 type UpdateReturn = Update.Return<Model, Message>
 
-const close = (model: Model): Model => ({
+const close = (model: Model, message: Popup.Message): Model => ({
   ...model,
-  openMode: 'closed',
-  hoverOpenedAtMs: 0,
+  popup: Popup.update(model.popup, message).model,
+  hoverOpenedAtMs: Option.none(),
   isTriggerHovered: false,
   showVersion: model.showVersion + 1,
   closeVersion: model.closeVersion + 1,
 })
 
+const closeDeliberately = (
+  model: Model,
+  message: Popup.Message,
+  restoreFocus = false,
+): UpdateReturn => ({
+  model: close(model, message),
+  commands: [
+    StampNavMenuClose({}),
+    ...(restoreFocus
+      ? [FocusNavMenuTrigger({ domId: triggerDomId(model.id) })]
+      : []),
+  ],
+})
+
 const openPinned = (model: Model): Model => ({
   ...model,
-  openMode: 'pinned',
-  hoverOpenedAtMs: 0,
+  popup: Popup.update(
+    model.popup,
+    Popup.Message.RequestedOpen({ reason: 'trigger-press' }),
+  ).model,
+  hoverOpenedAtMs: Option.none(),
   showVersion: model.showVersion + 1,
   closeVersion: model.closeVersion + 1,
 })
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
+    case 'GotNavMenuFocusMessage': {
+      if (!isOpen(model)) return { model }
+      const next = RovingFocus.update(model.rovingFocus, message.message)
+      return {
+        model: { ...model, rovingFocus: next.model },
+        commands: Command.mapMessages(next.commands, message =>
+          Message.GotNavMenuFocusMessage({ message }),
+        ),
+      }
+    }
     case 'EnteredNavMenuTrigger': {
       const next = {
         ...model,
@@ -214,7 +278,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         isTriggerHovered: false,
         showVersion: model.showVersion + 1,
       }
-      if (model.openMode !== 'hover') {
+      if (Option.isNone(model.hoverOpenedAtMs)) {
         return { model: next }
       }
       const closeVersion = model.closeVersion + 1
@@ -234,7 +298,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         model: { ...model, closeVersion: model.closeVersion + 1 },
       }
     case 'LeftNavMenuPanel': {
-      if (model.openMode !== 'hover') {
+      if (Option.isNone(model.hoverOpenedAtMs)) {
         return { model }
       }
       const closeVersion = model.closeVersion + 1
@@ -259,15 +323,14 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         }
       }
       const withinGuard =
-        model.openMode === 'hover' &&
+        Option.isSome(model.hoverOpenedAtMs) &&
         model.clickGuardMs > 0 &&
-        message.atMs - model.hoverOpenedAtMs < model.clickGuardMs
+        message.atMs - model.hoverOpenedAtMs.value < model.clickGuardMs
       if (withinGuard) {
         // Confirm the hover-open into a pinned one.
         const next = {
           ...model,
-          openMode: 'pinned' as const,
-          hoverOpenedAtMs: 0,
+          hoverOpenedAtMs: Option.none(),
         }
         return {
           model: next,
@@ -278,10 +341,10 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       }
       // Deliberate click on an open trigger dismisses; the click itself keeps
       // focus on the trigger so no restore is needed.
-      return {
-        model: close(model),
-        commands: [StampNavMenuClose({})],
-      }
+      return closeDeliberately(
+        model,
+        Popup.Message.RequestedClose({ reason: 'trigger-press' }),
+      )
     }
     case 'ActivatedNavMenuTrigger': {
       // Keyboard activation always opens (or refocuses) — never dismisses.
@@ -301,18 +364,27 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       }
     }
     case 'PressedNavMenuBackdrop':
-      return { model: close(model), commands: [StampNavMenuClose({})] }
+      return closeDeliberately(
+        model,
+        Popup.Message.RequestedDismissal({ reason: 'outside-press' }),
+      )
     case 'PressedEscapeNavMenu':
+      return closeDeliberately(
+        model,
+        Popup.Message.RequestedDismissal({ reason: 'escape-key' }),
+        true,
+      )
     case 'ClosedNavMenu':
-      return {
-        model: close(model),
-        commands: [
-          StampNavMenuClose({}),
-          FocusNavMenuTrigger({ domId: triggerDomId(model.id) }),
-        ],
-      }
+      return closeDeliberately(
+        model,
+        Popup.Message.RequestedClose({ reason: 'close-press' }),
+        true,
+      )
     case 'SelectedNavMenuItem':
-      return { model: close(model), commands: [StampNavMenuClose({})] }
+      return closeDeliberately(
+        model,
+        Popup.Message.RequestedClose({ reason: 'selection' }),
+      )
     case 'RecordedNavMenuClose':
       return {
         model: { ...model, lastClosedAtMs: Option.some(message.atMs) },
@@ -320,23 +392,29 @@ export const update = (model: Model, message: Message): UpdateReturn => {
     case 'CompletedWaitBeforeShowingNavMenu':
       return message.version === model.showVersion &&
         model.isTriggerHovered &&
-        model.openMode === 'closed'
+        !isOpen(model)
         ? {
             model: {
               ...model,
-              openMode: 'hover',
-              hoverOpenedAtMs: message.atMs,
+              popup: Popup.update(
+                model.popup,
+                Popup.Message.RequestedOpen({ reason: 'hover' }),
+              ).model,
+              hoverOpenedAtMs: Option.some(message.atMs),
             },
           }
         : { model }
     case 'CompletedWaitBeforeClosingNavMenu':
       return message.version === model.closeVersion &&
-        model.openMode === 'hover'
+        Option.isSome(model.hoverOpenedAtMs)
         ? {
             model: {
               ...model,
-              openMode: 'closed',
-              hoverOpenedAtMs: 0,
+              popup: Popup.update(
+                model.popup,
+                Popup.Message.RequestedClose({ reason: 'programmatic' }),
+              ).model,
+              hoverOpenedAtMs: Option.none(),
               isTriggerHovered: false,
             },
           }
