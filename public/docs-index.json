@@ -1817,7 +1817,8 @@
         "Settings Panel",
         "File Tree",
         "RTL",
-        "Disabled"
+        "Disabled",
+        "Motion presence"
       ],
       "api": [
         {
