@@ -1,10 +1,10 @@
 import { expect, type Page } from '@playwright/test'
 
-const RENDERER_PORTS = { StyleX: 4174, Tailwind: 4173 } as const
+const RENDERER_PORTS = { StyleX: 4174, Tailwind: 4173, Pleat: 4175 } as const
 
 export const visitRenderer = async (
   page: Page,
-  renderer: 'StyleX' | 'Tailwind',
+  renderer: keyof typeof RENDERER_PORTS,
 ) => {
   const value = renderer.toLowerCase()
   if ((await page.locator('html').getAttribute('data-renderer')) === value)
