@@ -546,6 +546,13 @@ const wheelUnit = (event: WheelEvent, surface: Element): number =>
       ? surface.clientHeight
       : 1
 
+const isEditable = (target: EventTarget | null): boolean =>
+  target instanceof HTMLElement &&
+  (target.isContentEditable ||
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target instanceof HTMLSelectElement)
+
 const bindSurface = (
   surface: Element,
   send: (message: SurfaceMessage) => void,
@@ -665,7 +672,12 @@ const bindSurface = (
     surface.addEventListener(
       'keydown',
       event => {
-        if (!(event instanceof KeyboardEvent) || event.defaultPrevented) return
+        if (
+          !(event instanceof KeyboardEvent) ||
+          event.defaultPrevented ||
+          isEditable(event.target)
+        )
+          return
         Option.map(zoomKey(event.key, event), key => {
           event.preventDefault()
           measure()
