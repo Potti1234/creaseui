@@ -123,7 +123,7 @@ test.describe('Swipe actions docs example', () => {
       '-3px',
     )
     await page.screenshot({
-      path: '/home/ubuntu/evidence/swipe-action-focus.png',
+      path: test.info().outputPath('swipe-action-focus.png'),
       fullPage: true,
     })
     await page.keyboard.press('Escape')
@@ -174,7 +174,7 @@ test.describe('Swipe actions docs example', () => {
     await expect(content).toHaveCSS('transform', 'matrix(1, 0, 0, 1, -100, 0)')
     await expect(row.getByRole('button', { name: 'Delete' })).toBeVisible()
     await page.screenshot({
-      path: '/home/ubuntu/swipe-demo.png',
+      path: test.info().outputPath('swipe-demo.png'),
       fullPage: true,
     })
     await row.focus()
