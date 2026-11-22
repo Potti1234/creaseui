@@ -2,6 +2,22 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "items": [
     {
+      "name": "area-behavior",
+      "type": "registry:lib",
+      "title": "Area Behavior",
+      "description": "Foldkit-native two-axis point picker with pointer and keyboard input.",
+      "files": [
+        {
+          "path": "behaviors/area.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/area.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior"
+      ]
+    },
+    {
       "name": "drag-behavior",
       "type": "registry:lib",
       "title": "Foldkit Drag Behavior",
@@ -332,9 +348,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/roving-focus-behavior",
-        "Potti1234/creaseui/toggle-group-behavior",
-        "Potti1234/creaseui/tree-list-behavior",
-        "Potti1234/creaseui/roving-focus-behavior"
+        "Potti1234/creaseui/tree-list-behavior"
       ]
     },
     {
@@ -735,7 +749,6 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/date-parse-behavior",
-        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/date-picker-behavior"
       ]
     },
@@ -781,10 +794,10 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/date-parse-behavior",
-        "Potti1234/creaseui/time-parse-behavior",
         "Potti1234/creaseui/calendar-range",
-        "Potti1234/creaseui/date-picker-behavior"
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-picker-behavior",
+        "Potti1234/creaseui/time-parse-behavior"
       ]
     },
     {
@@ -1215,8 +1228,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/date-parse-behavior",
-        "Potti1234/creaseui/calendar-range"
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/date-parse-behavior"
       ]
     },
     {
@@ -1271,6 +1284,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/area-behavior",
         "Potti1234/creaseui/drag-behavior"
       ]
     },
