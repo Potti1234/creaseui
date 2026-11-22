@@ -24,7 +24,8 @@ export const keydownAttribute = <Message>(
     const message = Reorder.keydown(model, {
       key,
       itemKey,
-      orientation: 'horizontal',
+      orientation:
+        key === 'ArrowUp' || key === 'ArrowDown' ? 'vertical' : 'horizontal',
       rtl,
       ...modifiers,
     })

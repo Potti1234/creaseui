@@ -229,3 +229,31 @@ test('list-input drafts cancel when another row gains focus', async ({
   await expect(handle).toHaveAttribute('aria-pressed', 'false')
   await expect(preview.locator('input').first()).toHaveValue('Ada Lovelace')
 })
+
+test('stacked lanes accept vertical reorder keys', async ({
+  page,
+}, testInfo) => {
+  await page.setViewportSize({ width: 390, height: 900 })
+  await page.goto(
+    `/blocks/preview/${testInfo.project.name}--creaseui-kanban-board`,
+  )
+  const lanes = page.locator('[data-kanban-lane]')
+  const first = await lanes.nth(0).boundingBox()
+  const second = await lanes.nth(1).boundingBox()
+  expect(first?.x).toBe(second?.x)
+  const handle = page.getByRole('button', {
+    name: 'Reorder Backlog column',
+    exact: true,
+  })
+  await handle.press('Space')
+  await page.keyboard.press('ArrowDown')
+  await expect(lanes.nth(1)).toHaveAttribute('data-kanban-lane', 'lane-backlog')
+  await expect(handle).toBeFocused()
+  await page.keyboard.press('ArrowUp')
+  await expect(lanes.first()).toHaveAttribute(
+    'data-kanban-lane',
+    'lane-backlog',
+  )
+  await page.keyboard.press('Enter')
+  await expect(handle).toHaveAttribute('aria-pressed', 'false')
+})
