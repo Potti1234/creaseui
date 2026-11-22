@@ -12,7 +12,13 @@ import { Message, init, update, view } from '@/main'
 
 const modelAt = (path: string) => {
   const url = Option.getOrThrow(fromString(`https://creaseui.com${path}`))
-  const model = init({ isDark: false, renderer: 'tailwind' }, url).model
+  const model = init(
+    {
+      colorScheme: { value: 'system', system: 'light' },
+      themeLab: { applied: false, preset: null },
+    },
+    url,
+  ).model
   return model
 }
 
