@@ -30,6 +30,60 @@ mounted resource without moving DOM focus (carousel).
 
 Typeahead follows this convention with a version-guarded timeout and pure label search.
 
+## Swipe
+
+Velocity ports ui-sdk's tracker with immutable bounded samples in a Schema
+Model. Use `init`, `addSample`, `velocity`, and `reset` in the owner's update.
+Pass event timestamps in milliseconds and positions in CSS pixels; reads return
+pixels per millisecond, or zero for stale samples. Invalid samples are ignored
+and invalid configuration falls back to defaults. RubberBand exports the pure
+`rubberBand`, `rubberBandInverse`, and `rubberBandSlope` helpers. Non-finite
+inputs, nonpositive dimensions, and nonpositive coefficients return zero.
+These helpers leave dismissal and snapping policy to components.
+
+SwipeActions ports ui-sdk's horizontal row action reveals. Embed `Model`, route
+Messages through `update`, and render `create<Key>().view` with a unique surface
+id from `init(id)`. Spread surface, row, content, and `actions(side)` attributes;
+make rows focusable and use `touch-action: pan-y`. The Mount measures row/action
+widths and RTL direction on press and keyboard input. Actions must remain in
+layout when inert so their widths can be measured. Supply the same disabled
+predicate to view and update. Hidden actions are inert; components own roles,
+labels, transitions, and explicit action buttons.
+
+Exported thresholds are `SWIPE_PROMOTION_SLOP` (8 CSS pixels of Euclidean travel),
+`SWIPE_FLICK_VELOCITY` (0.3 pixels/ms), and `DEFAULT_FULL_SWIPE_FRACTION` (0.6).
+Unmeasured or zero-width rows cannot swipe or reveal actions. The open-side
+model owns action inertness; focus Commands wait for Foldkit's `Render.afterCommit`
+before focusing the actions made interactive by that render.
+
+Set `fullSwipeEnabled` to opt a side into full swipes (`fullSwipe` defaults to
+0.6 of the row width). Handle `RequestedFullSwipe` in the parent and reply with
+`ResolvedFullSwipe` using its version: accept closes, reject settles to the
+normal reveal. Stale replies are ignored. Use `show`/`close` for programmatic
+control; measure via `MeasuredRow` before showing an unvisited row. Cancel on
+row removal with `CancelledSwipe`. Outside presses and taps close the open row;
+arrows reveal/focus actions and Escape restores row focus.
+
+Try `/src/docs/examples/swipe-actions/` with `npm run dev` for a renderer-neutral
+inbox example.
+
+Drawer (`src/lib/drawer.ts`) and Sheet (`src/lib/sheet.ts`) consume Velocity for
+release estimates, sampling rendered drag offsets with pointer-event timestamps.
+Drawer retains square-root damping, distance thresholds, fast-swipe dismissal,
+snap projection and nested-dialog behavior. Sheet retains body arming and 8px
+promotion, detents and magnets, dismissal overshoot, upward resistance and
+switcher retention. Neither consumer replaces its existing damping with
+rubberBand; the shared helpers leave those feel and dismissal policies local.
+
+Toast deliberately retains Foldkit's swipe engine; `src/lib/toast.ts` is the
+wrapper around `@foldkit/ui/toast`. Its `Idle` / `Dragging` / `Settling` /
+`Dismissing` swipe states are coupled to its queue, timer pause/resume, and
+version-guarded settle/dismiss lifecycle. A local engine would duplicate that
+state. Its distance-only release (40px by default), without velocity-based
+dismissal, is the known gap rather than a reason to fork lifecycle ownership.
+
+## Other behaviors
+
 Virtualizer wraps Foldkit VirtualList rather than porting ui-sdk's
 `createVirtualizer`: it keeps a Schema Model instead of a mutable store and
 subscribe, scroll/resize via a scoped Subscription with MutationObserver
