@@ -1,7 +1,7 @@
 import { reset } from '@/ui/stylex/reset'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Popover as PopoverPrimitive } from '@foldkit/ui'
+import * as PopoverPrimitive from '@/lib/behaviors/popover'
 
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
