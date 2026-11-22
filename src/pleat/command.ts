@@ -80,6 +80,7 @@ export type CommandItemConfig = Readonly<{
   label?: string
   leadingContent?: Html
   searchText?: string
+  keywords?: ReadonlyArray<string>
   shortcut?: Html | string
   layoutStyle?: ComponentLayoutStyle | undefined
   isDisabled?: boolean
@@ -179,6 +180,7 @@ const renderCommand = <Item extends string, Msg>(
     props.model.inputValue,
     props.restingInputValue,
     itemToSearchText,
+    { itemToKeywords: item => props.itemToConfig(item).keywords ?? [] },
   )
   const visibleItems =
     props.status === 'loading'

@@ -5,7 +5,7 @@ import type { Html } from 'foldkit/html'
 import type { Update } from 'foldkit'
 import {
   foldText,
-  fuzzyScore,
+  fuzzyFilter,
   matchRanges,
   matchSegments,
   type MatchSegment,
@@ -34,11 +34,20 @@ export const filterCommandItems = <Item>(
   queryValue: string,
   restingInputValue: string,
   itemToSearchText: (item: Item) => string,
+  options: Readonly<{
+    itemToKeywords?: (item: Item) => ReadonlyArray<string>
+  }> = {},
 ): ReadonlyArray<Item> => {
   const query = normalizeCommandQuery(queryValue)
   if (query === '' || queryValue === restingInputValue) return items
   return Listbox.filter(items, query, itemToSearchText, item =>
-    fuzzyScore(itemToSearchText(item), query),
+    fuzzyFilter(
+      {
+        label: itemToSearchText(item),
+        keywords: options.itemToKeywords?.(item) ?? [],
+      },
+      query,
+    ),
   )
 }
 

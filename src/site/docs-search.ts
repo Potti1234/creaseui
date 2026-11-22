@@ -134,17 +134,6 @@ export const subscriptions = Subscription.make<Model, Message>()(() => ({
   ),
 }))
 
-const rankedSlugs = (query: string): ReadonlyArray<string> => {
-  const normalized = query.trim().toLocaleLowerCase()
-  const rank = (title: string): number => {
-    const label = title.toLocaleLowerCase()
-    return label === normalized ? 0 : label.startsWith(normalized) ? 1 : 2
-  }
-  return [...DOC_PAGES]
-    .sort((left, right) => rank(left.title) - rank(right.title))
-    .map(page => page.slug)
-}
-
 export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
   Dialog.dialog(
     {
@@ -163,11 +152,15 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                 restingInputValue: '',
                 toParentMessage: message =>
                   Message.GotCommandMessage({ message }),
-                items: rankedSlugs(model.command.inputValue),
+                items: DOC_PAGES.map(page => page.slug),
                 itemToConfig: slug => {
                   const page = pagesBySlug.get(slug)
                   return {
-                    searchText: `${page?.title ?? slug} ${slug.replaceAll('-', ' ')} ${page?.description ?? ''}`,
+                    searchText: page?.title ?? slug,
+                    keywords: [
+                      slug.replaceAll('-', ' '),
+                      page?.description ?? '',
+                    ],
                     content: h.div(
                       [h.Class(skin.searchResult)],
                       [

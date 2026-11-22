@@ -1,5 +1,20 @@
 import { expect, test } from '@playwright/test'
 
+test('documentation search ranks an exact title before secondary field matches', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/command')
+  await page.keyboard.press('Control+k')
+  const dialog = page.getByRole('dialog', {
+    name: 'Search documentation',
+    exact: true,
+  })
+  await dialog.getByRole('combobox').fill('stat')
+  await expect(dialog.getByRole('option').first()).toHaveText(
+    /^StatA single KPI:/,
+  )
+})
+
 test('Command ranks folded fuzzy matches and highlights labels with icons', async ({
   page,
 }) => {

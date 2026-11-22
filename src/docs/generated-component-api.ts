@@ -1516,7 +1516,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CommandItemConfig",
       "kind": "type",
-      "signature": "CommandItemConfig = Readonly<{ content?: Html | string; label?: string; leadingContent?: Html; searchText?: string; shortcut?: Html | string; class?: string; isDisabled?: boolean; }>"
+      "signature": "CommandItemConfig = Readonly<{ content?: Html | string; label?: string; leadingContent?: Html; searchText?: string; keywords?: ReadonlyArray<string>; shortcut?: Html | string; class?: string; isDisabled?: boolean; }>"
     },
     {
       "name": "CommandProps",

@@ -8,6 +8,31 @@ import {
 } from '../src/lib/command.ts'
 
 describe('Command query policy', () => {
+  it('ranks an exact documentation title above matches in other fields', () => {
+    const pages = [
+      {
+        title: 'Status Dot',
+        slug: 'status-dot',
+        description: 'A small colored dot that signals status.',
+      },
+      {
+        title: 'Stat',
+        slug: 'stat',
+        description: 'A single KPI: a muted label and a prominent value.',
+      },
+    ]
+    const search = (query: string) =>
+      filterCommandItems(pages, query, '', page => page.title, {
+        itemToKeywords: page => [
+          page.slug.replaceAll('-', ' '),
+          page.description,
+        ],
+      })
+    assert.equal(search('stat')[0], pages[1])
+    assert.deepEqual(search('kpi'), [pages[1]])
+    assert.deepEqual(search(''), pages)
+    assert.deepEqual(search('missing'), [])
+  })
   it('segments fuzzy label matches and leaves resting, empty and unmatched queries plain', () => {
     assert.deepEqual(commandLabelSegments('Calendar', 'cl', ''), [
       { text: 'C', match: true },
