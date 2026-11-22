@@ -15,6 +15,6 @@ printable keys to the view's keydown callback for typeahead.
 Pointer highlight does not choose. Pair Listbox with `Selection.create<Key>()`
 for choosing, or keep the component's existing selection policy. Roles and
 aria-selected belong to that component. Command reuses the pure helpers while
-retaining Foldkit Combobox state and its existing accent-sensitive search.
+retaining Foldkit Combobox state with folded fuzzy ranking.
 Select stays on @foldkit/ui Listbox for its button/anchor/top-layer/focus
 lifecycle; this behavior does not replace that lifecycle.

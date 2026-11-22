@@ -1,3 +1,4 @@
+import { foldText } from '@/lib/behaviors/text-match'
 import { Style, When } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
 import { Option } from 'effect'
@@ -150,7 +151,7 @@ const renderCombobox = <Item, Value extends string, Msg>(
     const item = itemForValue(value)
     return item === undefined ? value : props.itemToLabel(item)
   }
-  const query = props.model.inputValue.trim().toLocaleLowerCase()
+  const query = foldText(props.model.inputValue).trim()
   const isShowingSelectedLabel =
     props.restingInputValue === props.model.inputValue
   const values = props.items
@@ -158,9 +159,9 @@ const renderCombobox = <Item, Value extends string, Msg>(
       item =>
         query === '' ||
         isShowingSelectedLabel ||
-        (props.itemToConfig?.(item).searchText ?? props.itemToLabel(item))
-          .toLocaleLowerCase()
-          .includes(query),
+        foldText(
+          props.itemToConfig?.(item).searchText ?? props.itemToLabel(item),
+        ).includes(query),
     )
     .map(props.itemToValue)
 
@@ -387,14 +388,14 @@ export const createMulti = <Value extends string = string>(
     h: HtmlBuilder<Msg>,
   ): Html => {
     const hc = h
-    const query = props.model.inputValue.trim().toLocaleLowerCase()
+    const query = foldText(props.model.inputValue).trim()
     const values = props.items
       .filter(
         item =>
           query === '' ||
-          (props.itemToConfig?.(item).searchText ?? props.itemToLabel(item))
-            .toLocaleLowerCase()
-            .includes(query),
+          foldText(
+            props.itemToConfig?.(item).searchText ?? props.itemToLabel(item),
+          ).includes(query),
       )
       .map(props.itemToValue)
     const viewInputs: ComboboxPrimitive.Multi.ViewInputs<Value> = {
