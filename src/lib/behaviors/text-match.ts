@@ -18,9 +18,10 @@ export const createFolder = (locale?: string): Folder => {
     sensitivity: 'base',
     usage: 'search',
   })
-  const lower = /^(tr|az|lt)\b/i.test(locale ?? '')
+  const lowerCase = /^(tr|az|lt)\b/i.test(locale ?? '')
     ? (text: string) => text.toLocaleLowerCase(locale)
     : (text: string) => text.toLowerCase()
+  const lower = (text: string): string => lowerCase(text).replaceAll('ς', 'σ')
   const chars = new Map<string, string>()
   const foldChar = (char: string): string => {
     const cached = chars.get(char)

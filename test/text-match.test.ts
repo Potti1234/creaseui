@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import {
   createFolder,
+  foldText,
   fuzzyScore,
   fuzzyFilter,
   matchRanges,
@@ -15,6 +16,24 @@ import {
 } from '../node_modules/@ui-sdk/core/dist/foundation/text/match.js'
 
 describe('Text Match', () => {
+  it('unifies Greek final sigma without changing display offsets', () => {
+    for (const folder of [createFolder('en'), createFolder('el')]) {
+      assert.equal(folder.fold('ΦΩΣ'), 'φωσ')
+      assert.equal(folder.fold('φως'), 'φωσ')
+      assert.equal(folder.fold('φως').length, 'φως'.length)
+    }
+    assert.equal(foldText('ΦΩΣ'), foldText('φως'))
+    assert.equal(fuzzyScore('ΦΩΣ', 'φως'), 1)
+    assert.equal(fuzzyScore('φως', 'ΦΩΣ'), 1)
+    for (const mode of ['contains', 'startsWith', 'fuzzy'] as const) {
+      assert.deepEqual(matchRanges('ΦΩΣ', 'φως', mode), [{ start: 0, end: 3 }])
+      assert.deepEqual(matchRanges('φως', 'ΦΩΣ', mode), [{ start: 0, end: 3 }])
+    }
+    assert.deepEqual(matchSegments('φως', matchRanges('φως', 'Σ', 'fuzzy')), [
+      { text: 'φω', match: false },
+      { text: 'ς', match: true },
+    ])
+  })
   it('folds without changing offsets and respects language', () => {
     assert.equal(createFolder('en').fold('Łódź'), 'lodz')
     assert.equal(createFolder('sv').fold('ä'), 'ä')
