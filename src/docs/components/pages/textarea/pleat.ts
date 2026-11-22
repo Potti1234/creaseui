@@ -7,6 +7,10 @@ import * as Button from '@/pleat/button'
 import * as Field from '@/pleat/field'
 import { className } from '@/pleat/style'
 import * as Textarea from '@/pleat/textarea'
+import {
+  historyAttributes,
+  type HistoryPreviewShape,
+} from '@/docs/components/pages/textarea/history'
 
 import { layoutStyle } from '@/pleat/contracts'
 const styles = {
@@ -20,7 +24,7 @@ const styles = {
   }),
 }
 
-interface TextareaPreviewShape {
+interface TextareaPreviewShape extends HistoryPreviewShape {
   readonly values: Readonly<Record<string, string>>
 }
 
@@ -119,9 +123,25 @@ export const textareaPleatPreview: ExamplePreviewProvider = <Msg>(
         [h.Class(className(styles.stack))],
         [
           ta('textarea-button', shape, onMessageJson, h, {
-            placeholder: 'Type your message here.',
+            label: 'Chat message',
+            description:
+              'Up/Down recalls messages at the first/last visual line. Enter sends; Shift+Enter adds a line.',
+            placeholder: 'Type a message or press ArrowUp…',
+            attributes: historyAttributes(
+              shape,
+              message => onMessageJson(JSON.stringify(message)),
+              h,
+            ),
           }),
-          Button.button({ children: ['Send message'] }, h),
+          Button.button(
+            {
+              children: ['Send message'],
+              onClick: onMessageJson(
+                JSON.stringify({ _tag: 'SentTextareaMessage' }),
+              ),
+            },
+            h,
+          ),
         ],
       )
     case 'rtl':
