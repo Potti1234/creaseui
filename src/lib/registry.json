@@ -261,6 +261,11 @@
           "path": "command.ts",
           "type": "registry:lib",
           "target": "@lib/command.ts"
+        },
+        {
+          "path": "behaviors/announce.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/announce.ts"
         }
       ]
     },
@@ -1050,6 +1055,19 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/velocity-behavior"
+      ]
+    },
+    {
+      "name": "shortcuts-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Shortcuts Behavior",
+      "description": "Platform-aware keyboard shortcut formatting, matching, and document keydown Mount.",
+      "files": [
+        {
+          "path": "behaviors/shortcuts.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/shortcuts.ts"
+        }
       ]
     },
     {

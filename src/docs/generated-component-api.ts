@@ -1516,7 +1516,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CommandItemConfig",
       "kind": "type",
-      "signature": "CommandItemConfig = Readonly<{ content?: Html | string; label?: string; leadingContent?: Html; searchText?: string; keywords?: ReadonlyArray<string>; fallbackKeywords?: ReadonlyArray<string>; shortcut?: Html | string; class?: string; isDisabled?: boolean; }>"
+      "signature": "CommandItemConfig = Readonly<{ content?: Html | string; label?: string; leadingContent?: Html; searchText?: string; keywords?: ReadonlyArray<string>; fallbackKeywords?: ReadonlyArray<string>; shortcut?: Html | string; keys?: string; class?: string; isDisabled…"
     },
     {
       "name": "CommandProps",
@@ -1531,7 +1531,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "commandShortcut",
       "kind": "function",
-      "signature": "commandShortcut<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html"
+      "signature": "commandShortcut<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>, isAriaHidden = false): Html"
     },
     {
       "name": "commandSeparator",
@@ -2323,7 +2323,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "DropdownMenuItemConfig",
       "kind": "type",
-      "signature": "DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html | string; icon?: Html; shortcut?: Html | string; variant?: 'default' | 'destructive'; kind?: 'item' | 'checkbox' | 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: bool…"
+      "signature": "DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html | string; icon?: Html; shortcut?: Html | string; keys?: string; variant?: 'default' | 'destructive'; kind?: 'item' | 'checkbox' | 'radio'; isChecked?: boolean; isInset?: boolean; is…"
     },
     {
       "name": "DropdownMenuSide",
