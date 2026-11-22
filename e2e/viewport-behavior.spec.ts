@@ -57,7 +57,8 @@ test.describe('Viewport docs example', () => {
     await page.keyboard.up('Control')
     await expect(announcement).toContainText('wheel: zoom 165%')
 
-    await board.focus()
+    // Pressing empty canvas focused the board, so zoom keys reach it.
+    await expect(board).toBeFocused()
     await page.keyboard.press('0')
     await expect(announcement).toHaveText('Zoom 100%')
     await page.keyboard.press('+')

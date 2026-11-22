@@ -606,6 +606,7 @@ const bindSurface = (
       )
         return
       event.preventDefault()
+      if (surface instanceof HTMLElement) surface.focus({ preventScroll: true })
       try {
         surface.setPointerCapture(event.pointerId)
       } catch {
