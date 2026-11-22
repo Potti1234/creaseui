@@ -2,6 +2,7 @@ import { Option } from 'effect'
 import { Listbox, Popover } from '@foldkit/ui'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
+import { foldText } from './behaviors/text-match'
 import { Message, SELECT_ALL_VALUE, type Model } from './multi-selector'
 
 type OptionEntry = Readonly<{ value: string; label: string }>
@@ -9,10 +10,8 @@ export const filterOptions = (
   options: ReadonlyArray<OptionEntry>,
   query: string,
 ): ReadonlyArray<OptionEntry> => {
-  const normalized = query.trim().toLocaleLowerCase()
-  return options.filter(option =>
-    option.label.toLocaleLowerCase().includes(normalized),
-  )
+  const normalized = foldText(query).trim()
+  return options.filter(option => foldText(option.label).includes(normalized))
 }
 
 type ContentProps<Msg> = Readonly<{
