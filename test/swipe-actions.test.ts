@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { Option, Schema } from 'effect'
+import { Effect, Option, Schema } from 'effect'
+import { Window } from 'happy-dom'
 
 import * as Swipe from '../src/lib/behaviors/swipe-actions.ts'
 
@@ -48,6 +49,49 @@ const key = (model: Swipe.Model, pressedKey: string, index = -1, count = 2) =>
   )
 
 describe('SwipeActions', () => {
+  it('focuses icon buttons rather than SVG href elements or their tabindex wrappers', async () => {
+    const window = new Window()
+    const overrides = {
+      document: window.document,
+      requestAnimationFrame: window.requestAnimationFrame.bind(window),
+      cancelAnimationFrame: window.cancelAnimationFrame.bind(window),
+    }
+    const previous = Object.keys(overrides).map(name => ({
+      name,
+      descriptor: Object.getOwnPropertyDescriptor(globalThis, name),
+    }))
+    for (const [name, value] of Object.entries(overrides))
+      Object.defineProperty(globalThis, name, { value, configurable: true })
+    try {
+      window.document.body.innerHTML = `
+        <div id="test">
+          <div data-swipe-key="a" tabindex="0">
+            <div data-side="start">
+              <div tabindex="0"><div tabindex="0">
+                <button id="archive"><svg><use href="#i" /></svg>Archive</button>
+              </div></div>
+              <button id="next">Next action</button>
+            </div>
+          </div>
+        </div>`
+      const reveal = key(initial(), 'ArrowRight')
+      const focus = reveal.commands?.[0]
+      assert.ok(focus)
+      await Effect.runPromise(focus.effect)
+      assert.equal(window.document.activeElement?.id, 'archive')
+      const next = key(reveal.model, 'ArrowRight', 0, 2).commands?.[0]
+      assert.ok(next)
+      await Effect.runPromise(next.effect)
+      assert.equal(window.document.activeElement?.id, 'next')
+    } finally {
+      for (const { name, descriptor } of previous) {
+        if (descriptor) Object.defineProperty(globalThis, name, descriptor)
+        else Reflect.deleteProperty(globalThis, name)
+      }
+      await window.happyDOM.abort()
+    }
+  })
+
   it('does not swipe or reveal an unmeasured or zero-width row', () => {
     const unmeasured = Swipe.init('test')
     const zeroWidth = Swipe.update(

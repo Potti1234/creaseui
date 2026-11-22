@@ -413,7 +413,7 @@ const rowSelector = '[data-swipe-key]'
 const interactiveSelector =
   'button, a[href], input, select, textarea, [contenteditable]:not([contenteditable="false"]), [role="button"]'
 
-const actionsSelector = 'button, [href], [tabindex]'
+const actionsSelector = 'button, a[href], area[href], [tabindex]'
 
 const focusableActions = (
   actions: Element | null | undefined,
