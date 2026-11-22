@@ -258,8 +258,19 @@ describe('InputHistory DOM gating', () => {
     }
   })
 
-  it('prevents only available recalls, reads fresh availability attributes, and cleans up its listener', async () => {
+  it('prevents only available recalls, reads fresh availability attributes, and cleans up its listener', async context => {
     const field = textarea()
+    const registered = Promise.withResolvers<void>()
+    const delivered = Promise.withResolvers<void>()
+    const addEventListener = field.addEventListener.bind(field)
+    context.mock.method(
+      field,
+      'addEventListener',
+      (...args: Parameters<typeof field.addEventListener>) => {
+        addEventListener(...args)
+        if (args[0] === 'keydown') registered.resolve()
+      },
+    )
     field.value = 'draft'
     const render = (model: History.Model, entries = inputs.entries) => {
       for (const direction of ['up', 'down'] as const)
@@ -275,18 +286,19 @@ describe('InputHistory DOM gating', () => {
       Stream.runForEach(action.f(field, Mount.liveViewStateChanges), message =>
         Effect.sync(() => {
           received.push(message)
+          delivered.resolve()
         }),
       ),
     )
-    await new Promise(resolve => setTimeout(resolve, 20))
+    await registered.promise
     const down = key('ArrowDown')
     field.dispatchEvent(down)
     assert.equal(down.defaultPrevented, false)
     field.setSelectionRange(0, 0)
     const up = key()
     field.dispatchEvent(up)
-    await new Promise(resolve => setTimeout(resolve, 20))
     assert.equal(up.defaultPrevented, true)
+    await delivered.promise
     assert.deepEqual(received, [
       History.Message.RequestedNavigation({ direction: 'up', value: 'draft' }),
     ])

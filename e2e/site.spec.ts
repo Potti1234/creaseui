@@ -5157,7 +5157,7 @@ test('controlled helper pages own and update compact local preview state', async
     'field',
     'disabled',
     'invalid',
-    'button',
+    'chat-history',
     'rtl',
     'form-and-resize',
   ]
@@ -5185,7 +5185,7 @@ test('controlled helper pages own and update compact local preview state', async
     'Please enter a valid message.',
   )
   await expect(
-    page.locator('#button').getByRole('button', { name: 'Send message' }),
+    page.locator('#chat-history').getByRole('button', { name: 'Send message' }),
   ).toBeVisible()
   await expect(page.locator("#rtl [dir='rtl']").first()).toBeVisible()
   await expect(page.locator('#rtl textarea')).toHaveAttribute('rows', '4')
