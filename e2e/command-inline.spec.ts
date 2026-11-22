@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
-for (const renderer of ['tailwind', 'stylex'] as const) {
-  const origin = `http://127.0.0.1:${renderer === 'stylex' ? '4174' : '4173'}`
+for (const renderer of ['tailwind', 'stylex', 'pleat'] as const) {
+  const origin = `http://127.0.0.1:${renderer === 'stylex' ? '4174' : renderer === 'pleat' ? '4175' : '4173'}`
   test(`${renderer} command dialogs keep results inline through focus and selection`, async ({
     page,
   }) => {

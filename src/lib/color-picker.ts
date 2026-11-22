@@ -3,16 +3,17 @@
 // HSV + alpha because the 2D area maps directly onto saturation/value) plus
 // the display format, the input draft, the open state of the trigger
 // popover, and which channel (area | hue | alpha) currently owns a pointer
-// drag. All three channels share one pointer subscription: while a drag is
-// active it streams window pointermove positions normalized to fractions of
-// the dragged channel's track rect, so the update stays DOM-free.
+// drag. Channel mounts emit track-relative fractions; update stays DOM-free.
 
 import { Effect, Match as M, Option, Schema as S, Stream } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
-import * as Subscription from 'foldkit/subscription'
+import * as Mount from 'foldkit/mount'
+import type { Subscriptions } from 'foldkit/subscription'
 import { Popover } from '@foldkit/ui'
+
+import * as Drag from '@/lib/behaviors/drag'
 
 // ---------------------------------------------------------------------------
 // Color math (diceui parity)
@@ -308,8 +309,12 @@ export type Model = typeof Model.Type
 export const Message = defineMessageUnion({
   GotPopoverMessage: { message: Popover.Message },
   PressedChannel: { channel: DragChannel, x: S.Number, y: S.Number },
-  MovedDragPointer: { x: S.Number, y: S.Number },
-  ReleasedDragPointer: {},
+  MovedDragPointer: {
+    x: S.Number,
+    y: S.Number,
+    channel: S.optionalKey(DragChannel),
+  },
+  ReleasedDragPointer: { channel: S.optionalKey(DragChannel) },
   NudgedChannel: { channel: DragChannel, x: S.Number, y: S.Number },
   ChangedFormat: { format: S.Literals(['hex', 'rgb', 'hsl', 'hsb']) },
   ChangedInput: { text: S.String },
@@ -449,7 +454,11 @@ const nudge = (
 const liftPopover = (model: Model, message: Popover.Message): UpdateReturn => {
   const next = Popover.update(model.popover, message)
   return {
-    model: { ...model, popover: next.model },
+    model: {
+      ...model,
+      popover: next.model,
+      drag: model.popover.isOpen && !next.model.isOpen ? 'idle' : model.drag,
+    },
     ...(next.commands === undefined
       ? {}
       : {
@@ -473,20 +482,26 @@ export const update = (model: Model, message: Message): UpdateReturn =>
               { ...model, drag: channel },
               applyFraction(model, channel, x, y),
             ),
-      MovedDragPointer: ({ x, y }) =>
-        model.drag === 'idle' || model.disabled
+      MovedDragPointer: ({ x, y, channel }) =>
+        model.drag === 'idle' ||
+        model.disabled ||
+        (channel !== undefined && model.drag !== channel)
           ? { model }
           : changedValue(model, applyFraction(model, model.drag, x, y)),
-      /* Emits the settled value too: drag moves are throttled to ~30fps, so
-           the last accepted position can lag the release point. The release
-           out-message guarantees parents apply the final color. */
-      ReleasedDragPointer: () => ({
-        model: { ...model, drag: 'idle' },
-        outMessage: OutMessage.ChangedValue({
-          value: colorToString(hsvToRgb(model.color), model.format),
-          format: model.format,
-        }),
-      }),
+      ReleasedDragPointer: ({ channel }) => {
+        if (
+          model.drag === 'idle' ||
+          (channel !== undefined && model.drag !== channel)
+        )
+          return { model }
+        return {
+          model: { ...model, drag: 'idle' },
+          outMessage: OutMessage.ChangedValue({
+            value: colorToString(hsvToRgb(model.color), model.format),
+            format: model.format,
+          }),
+        }
+      },
       NudgedChannel: ({ channel, x, y }) =>
         model.disabled
           ? { model }
@@ -531,96 +546,79 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   )
 
 // ---------------------------------------------------------------------------
-// Subscriptions
+// Pointer binding
 // ---------------------------------------------------------------------------
-
-const CHANNEL_ATTR = 'data-color-picker-channel'
 
 /** DOM id the skin marks each channel track with: `<id>-<channel>`. */
 export const channelElementId = (id: string, channel: DragChannel): string =>
   `${id}-${channel}`
 
-const findChannelElement = (id: string, channel: DragChannel) =>
-  document.querySelector(`[${CHANNEL_ATTR}="${channelElementId(id, channel)}"]`)
-
 const pointerFractions = (
   element: Element,
-  event: PointerEvent,
-): { x: number; y: number } => {
+  { clientX, clientY }: PointerEvent,
+): Drag.Point => {
   const rect = element.getBoundingClientRect()
   return {
-    x:
-      rect.width === 0
-        ? 0
-        : clamp((event.clientX - rect.left) / rect.width, 0, 1),
-    y:
-      rect.height === 0
-        ? 0
-        : clamp((event.clientY - rect.top) / rect.height, 0, 1),
+    x: rect.width ? clampFraction((clientX - rect.left) / rect.width) : 0,
+    y: rect.height ? clampFraction((clientY - rect.top) / rect.height) : 0,
   }
 }
 
-const dragPointer = (key: string) =>
-  Subscription.make<{ id: string; drag: DragChannel | 'idle' }, Message>()(
-    entry => ({
-      [key]: entry(
-        {
-          id: S.String,
-          drag: S.Union([DragChannel, S.Literal('idle')]),
-        },
-        {
-          modelToDependencies: model => ({ id: model.id, drag: model.drag }),
-          dependenciesToStream: ({ id, drag }) =>
-            drag === 'idle'
-              ? Stream.empty
-              : Stream.merge(
-                  /* Raw pointermove can fire well above frame rate and every
-                     position triggers a full model update + re-render in the
-                     host — throttle to ~30fps so drags stay smooth. */
-                  Stream.throttle(
-                    Subscription.fromEventFilterMap({
-                      target: window,
-                      type: 'pointermove',
-                      filterMapEvent: event => {
-                        const element = findChannelElement(id, drag)
-                        return element === null
-                          ? Option.none()
-                          : Option.some(
-                              Message.MovedDragPointer(
-                                pointerFractions(element, event),
-                              ),
-                            )
-                      },
-                    }),
-                    {
-                      cost: () => 1,
-                      units: 1,
-                      duration: '33 millis',
-                    },
-                  ),
-                  Subscription.fromEvent({
-                    target: window,
-                    type: 'pointerup',
-                    mapEvent: () => Message.ReleasedDragPointer(),
-                  }),
-                ),
-        },
-      ),
-    }),
-  )
+type ChannelMessage = Extract<
+  Message,
+  { _tag: 'PressedChannel' | 'MovedDragPointer' | 'ReleasedDragPointer' }
+>
 
-/** Aggregates the picker's drag subscriptions under a parent model. `id`
-    namespaces the record key so a parent can host several pickers. */
+const ObserveChannel = Mount.defineStream('ObserveColorPickerChannel', {
+  args: { channel: DragChannel },
+  messages: [
+    Message.PressedChannel,
+    Message.MovedDragPointer,
+    Message.ReleasedDragPointer,
+  ],
+  execute: ({ channel, element }) =>
+    !(element instanceof HTMLElement)
+      ? Stream.empty
+      : Drag.observeDrag<ChannelMessage>(element, (down, send) => {
+          if (element.getAttribute('aria-disabled') === 'true') return
+          send(
+            Message.PressedChannel({
+              channel,
+              ...pointerFractions(element, down),
+            }),
+          )
+          return {
+            onMove: ({ event }) =>
+              send(
+                Message.MovedDragPointer({
+                  channel,
+                  ...pointerFractions(element, event),
+                }),
+              ),
+            onEnd: (event, canceled) => {
+              if (!canceled)
+                send(
+                  Message.MovedDragPointer({
+                    channel,
+                    ...pointerFractions(element, event),
+                  }),
+                )
+              send(Message.ReleasedDragPointer({ channel }))
+            },
+          }
+        }),
+})
+
+export const channelMount = <Msg>(
+  channel: DragChannel,
+  toParentMessage: (message: Message) => Msg,
+) => Mount.mapMessage(ObserveChannel({ channel }), toParentMessage)
+
+/** @deprecated Channel mounts now track drags without parent subscriptions. */
 export const subscriptions = <ParentModel, Msg>(
-  config: Readonly<{
+  _config: Readonly<{
     id: string
     toChildModel: (model: ParentModel) => Model
     toParentMessage: (message: Message) => Msg
   }>,
-): Subscription.Subscriptions<ParentModel, Msg> =>
-  Subscription.aggregate<ParentModel, Msg>()(
-    Subscription.lift(dragPointer(`${config.id}Drag`))<ParentModel, Msg>({
-      toChildModel: config.toChildModel,
-      toParentMessage: config.toParentMessage,
-    }),
-  )
+): Subscriptions<ParentModel, Msg> => ({})

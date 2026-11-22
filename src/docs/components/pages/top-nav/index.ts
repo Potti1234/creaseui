@@ -25,8 +25,16 @@ export const topNavPage = authoredPage({
         'Enter / Space',
         'Opens the focused menu and moves focus to its first item.',
       ],
+      [
+        'Arrow Up / Arrow Down',
+        'Moves focus within a dropdown or heading menu.',
+      ],
+      ['Home / End', 'Focuses the first or last item in these menus.'],
       ['Escape', 'Closes the open menu and refocuses its trigger.'],
-      ['Tab', 'Moves through menu items in document order.'],
+      [
+        'Tab',
+        'Leaves dropdown and heading menus after one tab stop; moves through mega menu links in document order.',
+      ],
     ],
     examples: topNavExamples('tailwind'),
     stylexExamples: topNavExamples('stylex'),
