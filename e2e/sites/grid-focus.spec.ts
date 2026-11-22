@@ -46,7 +46,7 @@ test('tablecn grid supports row, grid and page navigation', async ({
   await expectInGrid()
   if (info.project.name === 'tailwind')
     await page.screenshot({
-      path: `/home/ubuntu/grid-focus-ctrl-end-${info.repeatEachIndex}.png`,
+      path: info.outputPath('grid-focus-ctrl-end.png'),
     })
   await page.keyboard.press('Control+Home')
   await expect(active).toHaveAttribute('data-row-index', '0')
