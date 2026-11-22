@@ -30,6 +30,60 @@ mounted resource without moving DOM focus (carousel).
 
 Typeahead follows this convention with a version-guarded timeout and pure label search.
 
+## Swipe
+
+Velocity ports ui-sdk's tracker with immutable bounded samples in a Schema
+Model. Use `init`, `addSample`, `velocity`, and `reset` in the owner's update.
+Pass event timestamps in milliseconds and positions in CSS pixels; reads return
+pixels per millisecond, or zero for stale samples. Invalid samples are ignored
+and invalid configuration falls back to defaults. RubberBand exports the pure
+`rubberBand`, `rubberBandInverse`, and `rubberBandSlope` helpers. Non-finite
+inputs, nonpositive dimensions, and nonpositive coefficients return zero.
+These helpers leave dismissal and snapping policy to components.
+
+SwipeActions ports ui-sdk's horizontal row action reveals. Embed `Model`, route
+Messages through `update`, and render `create<Key>().view` with a unique surface
+id from `init(id)`. Spread surface, row, content, and `actions(side)` attributes;
+make rows focusable and use `touch-action: pan-y`. The Mount measures row/action
+widths and RTL direction on press and keyboard input. Actions must remain in
+layout when inert so their widths can be measured. Supply the same disabled
+predicate to view and update. Hidden actions are inert; components own roles,
+labels, transitions, and explicit action buttons.
+
+Exported thresholds are `SWIPE_PROMOTION_SLOP` (8 CSS pixels of Euclidean travel),
+`SWIPE_FLICK_VELOCITY` (0.3 pixels/ms), and `DEFAULT_FULL_SWIPE_FRACTION` (0.6).
+Unmeasured or zero-width rows cannot swipe or reveal actions. The open-side
+model owns action inertness; focus Commands wait for Foldkit's `Render.afterCommit`
+before focusing the actions made interactive by that render.
+
+Set `fullSwipeEnabled` to opt a side into full swipes (`fullSwipe` defaults to
+0.6 of the row width). Handle `RequestedFullSwipe` in the parent and reply with
+`ResolvedFullSwipe` using its version: accept closes, reject settles to the
+normal reveal. Stale replies are ignored. Use `show`/`close` for programmatic
+control; measure via `MeasuredRow` before showing an unvisited row. Cancel on
+row removal with `CancelledSwipe`. Outside presses and taps close the open row;
+arrows reveal/focus actions and Escape restores row focus.
+
+Try `/src/docs/examples/swipe-actions/` with `npm run dev` for a renderer-neutral
+inbox example.
+
+Drawer (`src/lib/drawer.ts`) and Sheet (`src/lib/sheet.ts`) consume Velocity for
+release estimates, sampling rendered drag offsets with pointer-event timestamps.
+Drawer retains square-root damping, distance thresholds, fast-swipe dismissal,
+snap projection and nested-dialog behavior. Sheet retains body arming and 8px
+promotion, detents and magnets, dismissal overshoot, upward resistance and
+switcher retention. Neither consumer replaces its existing damping with
+rubberBand; the shared helpers leave those feel and dismissal policies local.
+
+Toast deliberately retains Foldkit's swipe engine; `src/lib/toast.ts` is the
+wrapper around `@foldkit/ui/toast`. Its `Idle` / `Dragging` / `Settling` /
+`Dismissing` swipe states are coupled to its queue, timer pause/resume, and
+version-guarded settle/dismiss lifecycle. A local engine would duplicate that
+state. Its distance-only release (40px by default), without velocity-based
+dismissal, is the known gap rather than a reason to fork lifecycle ownership.
+
+## Other behaviors
+
 [StickToBottom](https://ui-sdk.dev/docs/core/behaviors/lists#stick-to-bottom)
 follows a growing scroll viewport with a configurable bottom threshold (24 px
 by default). Use the Schema model and `update`, and bind `viewportMount` to
@@ -112,6 +166,17 @@ keyboard pickup/drop. Move has no drop targets; it changes coordinates.
 Run `npm run dev` and open `/src/docs/examples/move/` to try the
 [renderer-neutral Move example](../../docs/examples/move/main.ts).
 
+UndoStack is pure snapshot history adapted from ui-sdk's UndoStack algorithm.
+Keep the present value in the component and push it before an edit; undo and
+redo return the next history and present value. New edits discard the redo
+branch. Pass an optional non-negative integer `limit` to drop the oldest undo
+steps (default 100, matching ui-sdk). Consecutive pushes with the same nonempty
+`group` merge while the gap between caller-supplied `now` times is strictly less
+than `groupDelay` (default 500 ms), preserving the group's original undo state.
+Ungrouped pushes, seal, undo, redo and clear end a group. Data Grid exposes
+`config.history.limit`; its discrete commits remain ungrouped because messages
+do not carry timestamps. Clear history when replacing a value from outside.
+
 Popup is the pure open/close lifecycle for custom overlays. Route trigger or
 explicit requests separately from Escape, outside press, and focus-out dismissal
 requests. Read the reason from the OutMessage. For exit transitions, pass
@@ -142,6 +207,24 @@ geometry and reports a departure only outside the bridge. Acquire it in the
 panel Mount and route departure to the same Message as leaving the common
 hover region. The watcher ignores touch and cleans up on unmount.
 The Hover Card docs use this across Tailwind, StyleX, and Pleat.
+
+## Observe, History and Agent
+
+Components describe agent-visible state as data owned by the application.
+Observe selects Commit changes by default, or Live steps when requested.
+The component supplies the Commit's previous value from before the interaction.
+History records Observe changes and emits Apply with values to restore.
+The app maps those values to its own Messages; History never mutates controls.
+Agent plans and validates steps against the current component descriptions.
+RunStep asks the app to execute; RequestApproval asks a person to approve.
+Report completion or failure back to Agent to advance or finish the run.
+Use agentChange for source 'agent', and explicit secret flags for redaction.
+
+Foldkit DevTools remains the better tool for development-time agent inspection.
+Its MCP bridge offers Schema-typed Message dispatch and model time travel with
+keyframes, and stays as is. It is dev-only and model-level, not the in-app,
+user-facing agent and history these modules port: per-control undo by source,
+confirmation and redaction.
 
 Drag follows one pointer with capture and frame-coalesced samples. Use
 `observeDrag` in a streaming Mount to convert samples to Schema Messages;
@@ -193,6 +276,27 @@ draft and type-over flag, and reports starts, changed commits, unchanged ends,
 cancellation and rejected validation through OutMessages. Use startKey and
 inputKey for keyboard intent. Components own editor focus, selection/caret,
 focus restoration, roles and ARIA; grids retain navigation and editor policy.
+
+## Motion
+
+Motion wraps Foldkit Animation for panel presence instead of ui-sdk DOM callbacks:
+
+- Schema state/generations reject stale Commands.
+- `Dom.waitForAnimationSettled` observes CSS completion, not guessed timers.
+- The optional grid-row `animateSize` view needs no height measurement.
+
+Use `init({ id, isOpen })`, `show`/`hide`, and render while `isMounted(model)`.
+Spread `attributes(model)` onto `id=model.id`; CSS owns reduced motion and
+transitions (collapse grids on `data-closed`). Instant helpers skip animation;
+initial mount emits nothing.
+`Settled({ isOpen: false })` means exit finished and `isMounted` is false (ui-sdk's `exited`).
+Pass `returnFocusTo` when hiding; on closed settlement bridge Popup with
+`completedPopupExit(popupCapturedAtExitStart)`. The upstream `view` remains
+available: wrap its messages with `Message.GotAnimationMessage`; it retains
+content and hardcodes 200ms. For find-in-page, keep content mounted with
+`hiddenAttributes(isOpen, true)` and `reveal(showMessage)` for beforematch.
+Accordion was not migrated: its exact-shape/no-Command contracts would break.
+Demo (all renderers): `/docs/components/collapsible#motion-presence`.
 
 ## ScrollPicker
 
