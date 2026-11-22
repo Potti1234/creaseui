@@ -298,9 +298,6 @@ export const createInlineCommandView = <Item extends string>() =>
           ),
           h.div(
             [
-              h.Id(listId),
-              h.Role('listbox'),
-              h.AriaLabelledBy(inputId),
               h.OnMount(Combobox.AttachComboboxPreventBlur()),
               ...(props.itemsClassName === undefined
                 ? []
@@ -310,6 +307,10 @@ export const createInlineCommandView = <Item extends string>() =>
             [
               h.div(
                 [
+                  h.Id(listId),
+                  h.Role('listbox'),
+                  h.AriaLabelledBy(inputId),
+                  h.Tabindex(0),
                   ...(props.itemsScrollClassName === undefined
                     ? []
                     : [h.Class(props.itemsScrollClassName)]),
