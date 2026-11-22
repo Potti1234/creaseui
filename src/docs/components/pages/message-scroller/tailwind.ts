@@ -85,14 +85,12 @@ const Message = defineMessageUnion({
   PressedAddMember: {},
   PressedStartStream: {},
   PressedLoadHistory: {},
-  CapturedViewportAnchor: { messageId: S.String, offset: S.Number },
   PressedJumpTo: { id: S.Int },
   StreamedChunk: { step: S.Int },
   FinishedEntryAnimation: { id: S.Int },
   ObservedVisibility: { ids: S.Array(S.Int) },
   CompletedAnchorScroll: {},
   CompletedJump: {},
-  CompletedLoadHistory: {},
 })
 type Message = typeof Message.Type
 
@@ -185,64 +183,6 @@ const ScrollToMessage = Command.define('ScrollChatToMessagePreview', {
           })
         }),
     ).pipe(Effect.as(Message.CompletedJump())),
-})
-
-const CaptureViewportAnchor = Command.define('CaptureViewportAnchorPreview', {
-  args: { viewportId: S.String },
-  messages: [Message.CapturedViewportAnchor],
-  execute: ({ viewportId }) =>
-    Effect.promise(
-      () =>
-        new Promise<typeof Message.CapturedViewportAnchor.Type>(resolve => {
-          requestAnimationFrame(() => {
-            const viewport = document.getElementById(viewportId)
-            let messageId = ''
-            let offset = 0
-            if (viewport instanceof HTMLElement) {
-              const items = viewport.querySelectorAll('[data-message-id]')
-              for (const item of items) {
-                if (!(item instanceof HTMLElement)) continue
-                const rect = item.getBoundingClientRect()
-                if (rect.bottom > viewport.getBoundingClientRect().top) {
-                  messageId = item.dataset.messageId ?? ''
-                  offset = rect.top - viewport.getBoundingClientRect().top
-                  break
-                }
-              }
-            }
-            resolve(Message.CapturedViewportAnchor({ messageId, offset }))
-          })
-        }),
-    ),
-})
-
-const RestoreViewportAnchor = Command.define('RestoreViewportAnchorPreview', {
-  args: { viewportId: S.String, messageId: S.String, offset: S.Number },
-  messages: [Message.CompletedLoadHistory],
-  execute: ({ viewportId, messageId, offset }) =>
-    Effect.promise(
-      () =>
-        new Promise<void>(resolve => {
-          requestAnimationFrame(() => {
-            const viewport = document.getElementById(viewportId)
-            const target = viewport?.querySelector(
-              `[data-message-id="${messageId}"]`,
-            )
-            if (
-              viewport instanceof HTMLElement &&
-              target instanceof HTMLElement
-            ) {
-              const top =
-                viewport.scrollTop +
-                target.getBoundingClientRect().top -
-                viewport.getBoundingClientRect().top -
-                offset
-              viewport.scrollTo({ top, behavior: 'auto' })
-            }
-            resolve()
-          })
-        }),
-    ).pipe(Effect.as(Message.CompletedLoadHistory())),
 })
 
 const NextStreamChunk = Command.define('NextStreamChunkPreview', {
@@ -713,23 +653,14 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
       }
       case 'PressedLoadHistory':
         return {
-          model,
-          commands: [
-            CaptureViewportAnchor({
-              viewportId: `${model.scroller.id}-viewport`,
-            }),
-          ],
-        }
-      case 'CapturedViewportAnchor':
-        return {
-          model: { ...model, chat: [...HISTORY_CHAT, ...model.chat] },
-          commands: [
-            RestoreViewportAnchor({
-              viewportId: `${model.scroller.id}-viewport`,
-              messageId: message.messageId,
-              offset: message.offset,
-            }),
-          ],
+          model: {
+            ...model,
+            scroller: MessageScroller.update(
+              model.scroller,
+              MessageScroller.Message.RequestedPrepend(),
+            ).model,
+            chat: [...HISTORY_CHAT, ...model.chat],
+          },
         }
       case 'PressedJumpTo':
         return {
@@ -752,7 +683,6 @@ export const messageScrollerTailwindPreviewProgram = definePreviewProgram<
         return { model: { ...model, visibleIds: message.ids } }
       case 'CompletedAnchorScroll':
       case 'CompletedJump':
-      case 'CompletedLoadHistory':
         return { model }
     }
   },
