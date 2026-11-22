@@ -478,60 +478,6 @@ const COMMANDS: Partial<Record<MessageScrollerKind, string>> = {
         }),
     ).pipe(Effect.as(Message.CompletedJump())),
 })`,
-  'load-history': `const CaptureViewportAnchor = Command.define('CaptureViewportAnchor', {
-  args: { viewportId: S.String },
-  messages: [Message.CapturedViewportAnchor],
-  execute: ({ viewportId }) =>
-    Effect.promise(
-      () =>
-        new Promise<typeof Message.CapturedViewportAnchor.Type>(resolve => {
-          requestAnimationFrame(() => {
-            const viewport = document.getElementById(viewportId)
-            let messageId = ''
-            let offset = 0
-            if (viewport instanceof HTMLElement) {
-              const items = viewport.querySelectorAll('[data-message-id]')
-              for (const item of items) {
-                if (!(item instanceof HTMLElement)) continue
-                const rect = item.getBoundingClientRect()
-                if (rect.bottom > viewport.getBoundingClientRect().top) {
-                  messageId = item.dataset.messageId ?? ''
-                  offset = rect.top - viewport.getBoundingClientRect().top
-                  break
-                }
-              }
-            }
-            resolve(Message.CapturedViewportAnchor({ messageId, offset }))
-          })
-        }),
-    ),
-})
-
-const RestoreViewportAnchor = Command.define('RestoreViewportAnchor', {
-  args: { viewportId: S.String, messageId: S.String, offset: S.Number },
-  messages: [Message.CompletedLoadHistory],
-  execute: ({ viewportId, messageId, offset }) =>
-    Effect.promise(
-      () =>
-        new Promise<void>(resolve => {
-          requestAnimationFrame(() => {
-            const viewport = document.getElementById(viewportId)
-            const target = viewport?.querySelector(
-              \`[data-message-id="\${messageId}"]\`,
-            )
-            if (viewport instanceof HTMLElement && target instanceof HTMLElement) {
-              const top =
-                viewport.scrollTop +
-                target.getBoundingClientRect().top -
-                viewport.getBoundingClientRect().top -
-                offset
-              viewport.scrollTo({ top, behavior: 'auto' })
-            }
-            resolve()
-          })
-        }),
-    ).pipe(Effect.as(Message.CompletedLoadHistory())),
-})`,
   animation: `const FinishEntryAnimation = Command.define('FinishEntryAnimation', {
   args: { id: S.Int },
   messages: [Message.FinishedEntryAnimation],
@@ -753,26 +699,15 @@ const UPDATE_CASES: Record<MessageScrollerKind, string> = {
       return { model }`,
   'load-history': `    case 'PressedLoadHistory':
       return {
-        model,
-        commands: [
-          CaptureViewportAnchor({
-            viewportId: \`\${model.scroller.id}-viewport\`,
-          }),
-        ],
-      }
-    case 'CapturedViewportAnchor':
-      return {
-        model: { ...model, chat: [...HISTORY_CHAT, ...model.chat] },
-        commands: [
-          RestoreViewportAnchor({
-            viewportId: \`\${model.scroller.id}-viewport\`,
-            messageId: message.messageId,
-            offset: message.offset,
-          }),
-        ],
-      }
-    case 'CompletedLoadHistory':
-      return { model }`,
+        model: {
+          ...model,
+          scroller: MessageScroller.update(
+            model.scroller,
+            MessageScroller.Message.RequestedPrepend(),
+          ).model,
+          chat: [...HISTORY_CHAT, ...model.chat],
+        },
+      }`,
   animation: `    case 'PressedSend': {
       const nextId = model.chat.length + 1
       const appended = SEND_CHAT.map((row, index) => ({
@@ -853,8 +788,6 @@ const MESSAGE_FIELDS: Partial<Record<MessageScrollerKind, string>> = {
   'opening-position': `  CompletedJump: {},
 `,
   'load-history': `  PressedLoadHistory: {},
-  CapturedViewportAnchor: { messageId: S.String, offset: S.Number },
-  CompletedLoadHistory: {},
 `,
   animation: `  PressedSend: {},
   FinishedEntryAnimation: { id: S.Int },

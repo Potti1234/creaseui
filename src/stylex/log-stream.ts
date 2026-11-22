@@ -5,7 +5,7 @@ import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
-import * as MessageScrollerBehavior from '@/lib/message-scroller'
+import * as StickToBottom from '@/lib/behaviors/stick-to-bottom'
 import { icon } from '@/ui/stylex/composition/icon'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens.stylex'
@@ -42,7 +42,7 @@ export type LogEntry = Readonly<{
 
 export const Model = S.Struct({
   id: S.String,
-  scroller: MessageScrollerBehavior.Model,
+  scroller: StickToBottom.Model,
   expandedIds: S.Array(S.String),
 })
 export type Model = typeof Model.Type
@@ -53,15 +53,14 @@ export const init = (config: {
   isFollowing?: boolean
 }): Model => ({
   id: config.id,
-  scroller: {
-    ...MessageScrollerBehavior.init(`${config.id}-stream`),
-    isFollowing: config.isFollowing ?? false,
-  },
+  scroller: StickToBottom.init(`${config.id}-stream`, {
+    initial: config.isFollowing ?? false,
+  }),
   expandedIds: [],
 })
 
 export const Message = defineMessageUnion({
-  GotLogStreamScrollerMessage: { message: MessageScrollerBehavior.Message },
+  GotLogStreamScrollerMessage: { message: StickToBottom.Message },
   ToggledLogStreamEntry: { id: S.String },
   ClickedJumpToLatest: {},
 })
@@ -94,10 +93,7 @@ const withFollowOutMessage = (
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
     case 'GotLogStreamScrollerMessage': {
-      const next = MessageScrollerBehavior.update(
-        model.scroller,
-        message.message,
-      )
+      const next = StickToBottom.update(model.scroller, message.message)
       return withFollowOutMessage(
         model,
         { ...model, scroller: next.model },
@@ -113,9 +109,9 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       return { model: { ...model, expandedIds } }
     }
     case 'ClickedJumpToLatest': {
-      const next = MessageScrollerBehavior.update(
+      const next = StickToBottom.update(
         model.scroller,
-        MessageScrollerBehavior.Message.RequestedScroll({ direction: 'end' }),
+        StickToBottom.Message.RequestedScroll({ direction: 'end' }),
       )
       return withFollowOutMessage(
         model,
@@ -131,9 +127,6 @@ export const update = (model: Model, message: Message): UpdateReturn => {
 // =============================================================================
 // View
 // =============================================================================
-
-/** User counts as "scrolled away" beyond this distance from the bottom. */
-const FOLLOW_THRESHOLD_PX = 24
 
 const styles = stylex.create({
   root: {
@@ -394,10 +387,7 @@ export const logStream = <Msg>(
   const hasSource = props.entries.some(entry => entry.source !== undefined)
 
   const scroller = model.scroller
-  const distanceFromBottom =
-    scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight
-  const isAtBottom =
-    scroller.scrollHeight === 0 || distanceFromBottom <= FOLLOW_THRESHOLD_PX
+  const isAtBottom = StickToBottom.isAtBottom(scroller)
 
   const colsStyle = hasTimestamps
     ? hasSource
@@ -561,7 +551,7 @@ export const logStream = <Msg>(
                 }),
               ]),
           h.OnMount(
-            MessageScrollerBehavior.viewportMount(message =>
+            StickToBottom.viewportMount(message =>
               props.toParentMessage(
                 Message.GotLogStreamScrollerMessage({ message }),
               ),

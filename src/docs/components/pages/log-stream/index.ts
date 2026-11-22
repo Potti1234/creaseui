@@ -12,7 +12,7 @@ export const logStreamPage = authoredPage({
     description:
       'A mono grid of log rows (timestamp | level | source | message) with level accents, expandable per-row detail panels, and follow-scroll live tailing with a Jump to latest affordance.',
     architecture:
-      'Log Stream is a submodel component. Its Model wraps the shared message-scroller model (scroll position, follow pinning) plus expandedIds for open detail rows. Scrolling away from the tail reveals a jump button that re-pins the stream; ChangedLogStreamFollowing reports pin transitions as an out message.',
+      'Log Stream composes StickToBottom for follow state and keeps expandedIds for open detail rows. Scrolling away from the tail reveals a jump button that re-pins the stream; ChangedLogStreamFollowing reports pin transitions as an out message.',
     apiHref:
       'https://github.com/Potti1234/creaseui/blob/main/src/ui/log-stream.ts',
     styling:
