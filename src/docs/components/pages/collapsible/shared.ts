@@ -17,12 +17,6 @@ export type CollapsibleFixture = Readonly<{
 export const collapsibleFixtures: ReadonlyArray<CollapsibleFixture> = [
   { title: 'Demo', heroOnly: true, kind: 'basic' },
   {
-    title: 'Motion presence',
-    kind: 'motion',
-    description:
-      'A standalone Motion behavior keeps a custom panel mounted through exit. The caller owns CSS and reduced motion.',
-  },
-  {
     title: 'Basic',
     kind: 'basic',
     description:
@@ -52,6 +46,12 @@ export const collapsibleFixtures: ReadonlyArray<CollapsibleFixture> = [
     config: 'isDisabled: true,',
     description:
       'A disabled trigger exposes the panel state but does not dispatch Messages.',
+  },
+  {
+    title: 'Motion presence',
+    kind: 'motion',
+    description:
+      'A standalone Motion behavior keeps a custom panel mounted through exit. The caller owns CSS and reduced motion.',
   },
 ]
 
