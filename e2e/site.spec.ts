@@ -1,4 +1,5 @@
 import { COMPONENT_COUNT } from '../src/lib/project-facts'
+import { COMPONENTS } from '../src/docs/component-metadata'
 import { openThemesPane } from './sites/create-helpers'
 import { visitRenderer } from './site-navigation'
 import AxeBuilder from '@axe-core/playwright'
@@ -25,7 +26,7 @@ test('tour is removed from component navigation and discovery in both renderers'
     const index = await (
       await page.request.get(`http://127.0.0.1:${String(port)}/docs-index.json`)
     ).json()
-    expect(index.componentCount).toBe(COMPONENT_COUNT)
+    expect(index.componentCount).toBe(COMPONENTS.length)
     expect(
       index.components.some((item: { slug: string }) => item.slug === 'tour'),
     ).toBe(false)
@@ -395,8 +396,14 @@ test('component APIs and machine-readable discovery stay available', async ({
 
   const index = await page.request.get('/docs-index.json')
   expect(index.ok()).toBe(true)
-  const metadata = (await index.json()) as { componentCount: number }
-  expect(metadata.componentCount).toBe(COMPONENT_COUNT)
+  const metadata = (await index.json()) as {
+    componentCount: number
+    components: ReadonlyArray<{ slug: string }>
+  }
+  expect(metadata.componentCount).toBe(COMPONENTS.length)
+  expect(metadata.components.map(component => component.slug)).toEqual(
+    expect.arrayContaining(['pointer-kind', 'avoid-keyboard']),
+  )
 
   const llms = await page.request.get('/llms.txt')
   expect(await llms.text()).toContain('/docs/components/dialog')

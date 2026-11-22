@@ -8,6 +8,9 @@ const write = process.argv.includes('--write')
 const registry = JSON.parse(
   fs.readFileSync(path.join(root, 'src/ui/registry.json'), 'utf8'),
 )
+const libraryRegistry = JSON.parse(
+  fs.readFileSync(path.join(root, 'src/lib/registry.json'), 'utf8'),
+)
 const authoredPagesDirectory = path.join(root, 'src/docs/components/pages')
 
 const normalize = value => value.replace(/\s+/g, ' ').trim()
@@ -175,14 +178,20 @@ const authoredExamples = new Map(
     ]
   }),
 )
-const components = registry.items.map(item => {
-  const file = path.join(root, 'src/ui', item.files[0].path)
+const documentedItems = [
+  ...registry.items.map(item => ({ item, directory: 'src/ui' })),
+  ...libraryRegistry.items
+    .filter(item => item.docs?.startsWith('/docs/components/'))
+    .map(item => ({ item, directory: 'src/lib' })),
+]
+const components = documentedItems.map(({ item, directory }) => {
+  const file = path.join(root, directory, item.files[0].path)
   return {
     slug: item.name,
     title: item.title,
     description: item.description,
     docs: `/docs/components/${item.name}`,
-    source: `src/ui/${item.files[0].path}`,
+    source: `${directory}/${item.files[0].path}`,
     install: `npx creaseui add ${item.name}`,
     dependencies: [
       ...(item.dependencies ?? []),
@@ -195,7 +204,12 @@ const components = registry.items.map(item => {
 
 const metadata = {
   $schema: './docs-index.schema.json',
-  generatedFrom: ['src/ui/registry.json', 'src/ui/*.ts'],
+  generatedFrom: [
+    'src/ui/registry.json',
+    'src/ui/*.ts',
+    'src/lib/registry.json',
+    'src/lib/behaviors/*.ts',
+  ],
   componentCount: components.length,
   components,
 }

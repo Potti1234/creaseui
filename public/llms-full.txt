@@ -138,6 +138,8 @@
 - Tree List: /docs/components/tree-list — install with `npx creaseui add tree-list`
 - Typography: /docs/components/typography — install with `npx creaseui add typography`
 - Visually Hidden: /docs/components/visually-hidden — install with `npx creaseui add visually-hidden`
+- Avoid Keyboard: /docs/components/avoid-keyboard — install with `npx creaseui add avoid-keyboard`
+- Pointer Kind: /docs/components/pointer-kind — install with `npx creaseui add pointer-kind`
 
 ## Application recipes and icon discovery
 
@@ -4604,3 +4606,47 @@ Examples: VisuallyHidden, VisuallyHidden — Live Region, VisuallyHidden — Str
 - `VisuallyHiddenElement = 'article' | 'aside' | 'code' | 'div' | 'em' | 'footer' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'header' | 'label' | 'li' | 'main' | 'nav' | 'p' | 'section' | 'small' | 'span' | 'strong' | 'ul' | 'ol'` (type)
 - `VisuallyHiddenProps = Readonly<{ as?: VisuallyHiddenElement; ariaLive?: 'polite' | 'assertive' | 'off'; role?: string; id?: string; children: ReadonlyArray<Html | string>; }>` (type)
 - `visuallyHidden<Msg>(props: VisuallyHiddenProps, h: HtmlBuilder<Msg>): Html` (function)
+
+### Avoid Keyboard
+
+Keeps a footer above the on-screen keyboard with a scoped Foldkit Mount.
+
+Source: `src/lib/behaviors/avoid-keyboard.ts`
+
+Examples: Keyboard-aware footer, A little breathing room
+
+- `Length = Readonly<{ percent: number; px: number; }>` (type)
+- `lengthOf(value: string): Length` (function)
+- `cssLength({ percent, px }: Length): string` (function)
+- `parseTranslate(value: string): Readonly<{ x: string; y: Length; z: string | undefined; }>` (function)
+- `Coverage = Readonly<{ box: Readonly<{ top: number; bottom: number; height: number; }>; rest: Length; now: Length; originTop: number; innerHeight: number; offsetTop: number; height: number; }>` (type)
+- `coveredPixels({ box, rest, now, originTop, innerHeight, offsetTop, height, }: Coverage): number` (function)
+- `avoidKeyboard(element: HTMLElement): (() => void)` (function)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `AvoidKeyboard: value` (value)
+
+### Pointer Kind
+
+Tracks pointer precision and hover support with Foldkit state and subscriptions.
+
+Source: `src/lib/behaviors/pointer-kind.ts`
+
+Examples: Live capabilities, Server hints
+
+- `PointerPrecision: value` (value)
+- `PointerPrecision = typeof PointerPrecision.Type` (type)
+- `PointerHover: value` (value)
+- `PointerHover = typeof PointerHover.Type` (type)
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `init(initial: Partial<Model> = {}): Model` (function)
+- `update(model: Model, message: Message): Update.Return<Model, Message>` (function)
+- `read(matchMedia: (query: string) => { matches: boolean; }): Model` (function)
+- `pointerKindOf(mobileHint?: string | null): Partial<Model>` (function)
+- `canHover(model: Model): boolean` (function)
+- `ReadPointerKind: value` (value)
+- `changes(): Stream.Stream<Message>` (function)
+- `subscriptions: value` (value)
