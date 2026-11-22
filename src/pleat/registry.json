@@ -1620,7 +1620,8 @@
         "Potti1234/creaseui/pleat-core",
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
-        "Potti1234/creaseui/pleat-style"
+        "Potti1234/creaseui/pleat-style",
+        "Potti1234/creaseui/shortcuts-behavior"
       ]
     },
     {
@@ -2810,7 +2811,8 @@
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-separator",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens"
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/shortcuts-behavior"
       ]
     },
     {

@@ -1823,7 +1823,8 @@
         "Potti1234/creaseui/stylex-contracts",
         "Potti1234/creaseui/stylex-overlay-tokens-stylex",
         "Potti1234/creaseui/stylex-reset",
-        "Potti1234/creaseui/stylex-style"
+        "Potti1234/creaseui/stylex-style",
+        "Potti1234/creaseui/shortcuts-behavior"
       ],
       "devDependencies": [
         "@stylexjs/unplugin@^0.19.0"
@@ -3100,7 +3101,8 @@
         "Potti1234/creaseui/stylex-reset",
         "Potti1234/creaseui/stylex-separator",
         "Potti1234/creaseui/stylex-style",
-        "Potti1234/creaseui/stylex-tokens-stylex"
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/shortcuts-behavior"
       ],
       "devDependencies": [
         "@stylexjs/unplugin@^0.19.0"
