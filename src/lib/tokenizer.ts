@@ -6,8 +6,10 @@ import * as Mount from 'foldkit/mount'
 import { defineMessageUnion } from 'foldkit/message'
 
 import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
+import * as FocusRecovery from '@/lib/behaviors/focus-recovery'
 
 const combobox = ComboboxPrimitive.Multi.create<string>()
+const focusRecovery = FocusRecovery.create<string>()
 
 /* Ported from Meta Astryx Tokenizer (packages/core/src/Tokenizer/)
    — examples and visual spec adapted to Crease UI tokens.
@@ -36,12 +38,16 @@ export const Model = S.Struct({
   itemLabels: S.Record(S.String, S.String),
   maxEntries: S.Option(S.Number),
   combobox: ComboboxPrimitive.Multi.Model,
+  focusRecovery: FocusRecovery.Model,
 })
 export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
   GotComboboxMessage: { message: ComboboxPrimitive.Message },
   RemovedToken: { index: S.Number },
+  FocusedToken: { key: S.String },
+  BlurredToken: {},
+  GotFocusRecoveryMessage: { message: FocusRecovery.Message },
   ClickedClearAll: {},
   /** Expands a collapsed overflow view (inline/layer modes). */
   ClickedOverflow: {},
@@ -88,6 +94,7 @@ export const init = (
     ]),
   ),
   maxEntries: Option.fromNullishOr(config.maxEntries),
+  focusRecovery: focusRecovery.init(),
   combobox: ComboboxPrimitive.Multi.init({
     id: `${config.id}-combobox`,
     isAnimated: config.isAnimated ?? true,
@@ -130,13 +137,44 @@ const addToken = (model: Model, token: Token): UpdateReturn =>
         }),
       }
 
-const removeTokenAt = (model: Model, index: number): UpdateReturn => {
-  const tokens = model.tokens.filter((_, i) => i !== index)
+export const tokenRemoveId = (id: string, key: string): string =>
+  `${id}-token-remove-${key}`
+
+const commitTokens = (
+  model: Model,
+  tokens: ReadonlyArray<Token>,
+): UpdateReturn => {
+  const recovered = focusRecovery.recover(model.focusRecovery, {
+    previousKeys: model.tokens.map(token => token.id),
+    nextKeys: tokens.map(token => token.id),
+  })
   return {
-    model: { ...model, tokens },
+    model: { ...model, tokens, focusRecovery: recovered.model },
+    commands: Option.match(recovered.maybeRecovery, {
+      onNone: () => [],
+      onSome: ({ lostKey, target }) =>
+        Command.mapMessages(
+          [
+            FocusRecovery.RecoverFocus({
+              lostId: tokenRemoveId(model.id, lostKey),
+              targetId:
+                target.type === 'Item'
+                  ? tokenRemoveId(model.id, target.key)
+                  : ComboboxPrimitive.inputId(model.combobox.id),
+            }),
+          ],
+          message => Message.GotFocusRecoveryMessage({ message }),
+        ),
+    }),
     outMessage: OutMessage.ChangedTokens({ tokens }),
   }
 }
+
+const removeTokenAt = (model: Model, index: number): UpdateReturn =>
+  commitTokens(
+    model,
+    model.tokens.filter((_, i) => i !== index),
+  )
 
 const toggleValue = (model: Model, value: string): UpdateReturn => {
   const existing = model.tokens.findIndex(t => t.id === value)
@@ -196,17 +234,31 @@ const liftCombobox = (
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
+    case 'FocusedToken':
+      return {
+        model: {
+          ...model,
+          focusRecovery: focusRecovery.focused(
+            model.focusRecovery,
+            message.key,
+          ),
+        },
+      }
+    case 'BlurredToken':
+      return {
+        model: {
+          ...model,
+          focusRecovery: focusRecovery.blurred(model.focusRecovery),
+        },
+      }
+    case 'GotFocusRecoveryMessage':
+      return { model }
     case 'GotComboboxMessage':
       return liftCombobox(model, message.message)
     case 'RemovedToken':
       return removeTokenAt(model, message.index)
     case 'ClickedClearAll':
-      return model.tokens.length === 0
-        ? { model }
-        : {
-            model: { ...model, tokens: [] },
-            outMessage: OutMessage.ChangedTokens({ tokens: [] }),
-          }
+      return model.tokens.length === 0 ? { model } : commitTokens(model, [])
     case 'ClickedOverflow':
       return { model }
   }

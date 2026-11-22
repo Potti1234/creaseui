@@ -88,6 +88,7 @@ import * as ListInput from '@/${ui(renderer)}/list-input'`,
 export const Model = S.Struct({
   input: ListInput.Model,
   guests: S.Array(S.Struct({ id: S.String, name: S.String, email: S.String })),
+  nextGuestId: S.Number,
 })
 export type Model = typeof Model.Type`,
     messages: `import { taggedStruct } from 'foldkit/schema'
@@ -97,6 +98,7 @@ export const Message = S.Union([GotListInputMessage, ChangedGuests])
 export type Message = typeof Message.Type`,
     init: `export const init = (): Update.Return<Model, Message> => ({ model: {
     input: ListInput.init({ id: 'docs-list-input' }),
+    nextGuestId: ${fixture.initialGuests.length + 1},
     guests: [
 ${guestLines}
     ],
@@ -125,7 +127,12 @@ ${guestLines}
         }
       })()
       return {
-        model: { ...model, input: next.model, guests },
+        model: {
+          ...model,
+          input: next.model,
+          guests,
+          nextGuestId: model.nextGuestId + (next.outMessage?._tag === 'ItemAdded' ? 1 : 0),
+        },
         commands: Command.mapMessages(commands, next2 =>
           GotListInputMessage({ message: next2 }),
         ),
@@ -181,7 +188,7 @@ ${renderer !== 'tailwind' ? emitShellStyles + '\n\n' : ''}export const view = (m
         itemName: 'guest',
         value: model.guests,
         getItemKey: guest => guest.id,
-        createItem: () => ({ id: \`g-\${String(model.guests.length + 1)}\`, name: '', email: '' }),
+        createItem: () => ({ id: \`g-\${String(model.nextGuestId)}\`, name: '', email: '' }),
         columns: guestColumns(h),${extraProps}
       },
       h,

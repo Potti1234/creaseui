@@ -2,6 +2,22 @@ import { Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import type { Html } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
+import * as Command from 'foldkit/command'
+import * as FocusRecovery from '@/lib/behaviors/focus-recovery'
+
+export const removeId = (id: string, key: string): string =>
+  `${id}-remove-${key}`
+export const addId = (id: string): string => `${id}-add`
+export const reorderId = (id: string, key: string): string =>
+  `${id}-reorder-${key}`
+export const focusMount = <Msg>(send: (message: Message) => Msg) =>
+  FocusRecovery.collectionMount(
+    {
+      keyAttribute: 'data-list-input-row',
+      actionSelector: '[data-list-input-remove]:not(:disabled)',
+    },
+    message => send(Message.GotFocusRecoveryMessage({ message })),
+  )
 
 /* Ported from Meta Astryx ListInput (packages/lab/src/ListInput) — column
    definitions, mutation intents, keyboard reorder state, and live-region
@@ -85,6 +101,7 @@ export const Model = S.Struct({
   id: S.String,
   reorder: S.Option(ReorderState),
   announcement: S.Option(S.String),
+  focusRecovery: FocusRecovery.CollectionModel,
 })
 export type Model = typeof Model.Type
 
@@ -93,9 +110,11 @@ export const init = (config: InitConfig): Model => ({
   id: config.id,
   reorder: Option.none(),
   announcement: Option.none(),
+  focusRecovery: FocusRecovery.initCollection(),
 })
 
 export const Message = defineMessageUnion({
+  GotFocusRecoveryMessage: { message: FocusRecovery.CollectionMessage },
   /* The new item rides the message: messages must be data because previews
      route them through JSON.stringify, which drops function payloads
      (astryx invokes createItem() inside the click handler; the view samples
@@ -109,6 +128,7 @@ export const Message = defineMessageUnion({
   FieldEdited: { index: S.Number, nextItem: S.Unknown, columnKey: S.String },
   /* Arrow keys on the handle while not grabbed: immediate one-position move. */
   MoveRequested: {
+    key: S.String,
     fromIndex: S.Number,
     toIndex: S.Number,
     itemName: S.String,
@@ -141,8 +161,32 @@ export type UpdateReturn = Update.ReturnWithOutMessage<
   OutMessage
 >
 
+const keepReorderFocus = (id: string, key: string) =>
+  Command.mapMessages(
+    [
+      FocusRecovery.RecoverFocus({
+        targetId: reorderId(id, key),
+        lostId: reorderId(id, key),
+      }),
+    ],
+    message => Message.GotFocusRecoveryMessage({ message }),
+  )
+
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
+    case 'GotFocusRecoveryMessage': {
+      const result = FocusRecovery.updateCollection(
+        model.focusRecovery,
+        message.message,
+        { itemId: key => removeId(model.id, key), fallbackId: addId(model.id) },
+      )
+      return {
+        model: { ...model, focusRecovery: result.model },
+        commands: Command.mapMessages(result.commands ?? [], message =>
+          Message.GotFocusRecoveryMessage({ message }),
+        ),
+      }
+    }
     case 'AddRequested':
       return {
         model: {
@@ -174,6 +218,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       }
     case 'MoveRequested':
       return {
+        commands: keepReorderFocus(model.id, message.key),
         model: {
           ...model,
           announcement: Option.some(
@@ -237,6 +282,7 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         },
         ...(didMove
           ? {
+              commands: keepReorderFocus(model.id, reorder.key),
               outMessage: OutMessage.ItemReordered({
                 fromIndex: reorder.fromIndex,
                 toIndex: reorder.previewIndex,

@@ -26,6 +26,7 @@ const ListInputPreviewModel = S.Struct({
   _docsPage: S.Literal('list-input'),
   input: ListInput.Model,
   guests: S.Array(GuestSchema),
+  nextGuestId: S.Number,
 })
 type ListInputPreviewModel = typeof ListInputPreviewModel.Type
 
@@ -79,6 +80,7 @@ export const listInputPleatPreviewProgram = definePreviewProgram<
       _docsPage: 'list-input',
       input: ListInput.init({ id: `docs-list-input-${String(index)}` }),
       guests: [...fixture.initialGuests],
+      nextGuestId: fixture.initialGuests.length + 1,
     }
   },
   update: (model, message) => {
@@ -107,7 +109,13 @@ export const listInputPleatPreviewProgram = definePreviewProgram<
           }
         })()
         return {
-          model: { ...model, input: next.model, guests },
+          model: {
+            ...model,
+            input: next.model,
+            guests,
+            nextGuestId:
+              model.nextGuestId + (out?._tag === 'ItemAdded' ? 1 : 0),
+          },
           commands: Command.mapMessages(commands, next2 =>
             GotListInputMessage.GotListInputMessage({ message: next2 }),
           ),
@@ -131,7 +139,7 @@ export const listInputPleatPreviewProgram = definePreviewProgram<
             value: model.guests,
             getItemKey: guest => guest.id,
             createItem: () => ({
-              id: `g-${String(model.guests.length + 1)}`,
+              id: `g-${String(model.nextGuestId)}`,
               name: '',
               email: '',
             }),
@@ -177,6 +185,7 @@ export const listInputPleatPreview: ExamplePreviewProvider = <Msg>(
   const previewModel = model as {
     input: ListInput.Model
     guests: ReadonlyArray<Guest>
+    nextGuestId: number
   }
   return h.div(
     [h.Class(className(previewLayout.wider))],
@@ -194,7 +203,7 @@ export const listInputPleatPreview: ExamplePreviewProvider = <Msg>(
           value: previewModel.guests,
           getItemKey: guest => guest.id,
           createItem: () => ({
-            id: `g-${String(previewModel.guests.length + 1)}`,
+            id: `g-${String(previewModel.nextGuestId)}`,
             name: '',
             email: '',
           }),

@@ -14,6 +14,8 @@ import {
   stackLayout,
   contentMount,
   viewportMount,
+  viewportId,
+  focusTargetId,
 } from '@/lib/toast'
 import { buttonVariants } from '@/ui/button'
 
@@ -123,6 +125,7 @@ const entryView = <Msg>(
       h.Id(entry.id),
       h.Role(entry.payload.variant === 'Error' ? 'alert' : 'status'),
       h.DataAttribute('slot', 'toast-entry'),
+      h.DataAttribute('toast-focus-key', entry.id),
       h.DataAttribute('variant', entry.payload.variant.toLowerCase()),
       h.DataAttribute('paused', String(entry.isHovered)),
       h.Inert(limited),
@@ -190,6 +193,7 @@ const entryView = <Msg>(
                 h.button(
                   [
                     h.Type('button'),
+                    h.Id(focusTargetId(entry.id)),
                     h.OnClick(
                       props.toParentMessage(
                         ActivatedToastAction({ id: entry.id }),
@@ -209,6 +213,11 @@ const entryView = <Msg>(
             [
               h.Type('button'),
               h.AriaLabel('Dismiss notification'),
+              h.Id(
+                entry.payload.actionLabel === undefined
+                  ? focusTargetId(entry.id)
+                  : `${entry.id}-dismiss`,
+              ),
               h.OnClick(
                 props.toParentMessage(
                   ToastMessages.Dismissed({ entryId: entry.id }),
@@ -236,8 +245,10 @@ export const toast = <Msg>(
   const fallback = props.position ?? props.model.position
   const entryPosition = (entry: Entry): Position =>
     entry.payload.position ?? fallback
-  const positions = POSITION_ORDER.filter(position =>
-    props.model.entries.some(entry => entryPosition(entry) === position),
+  const positions = POSITION_ORDER.filter(
+    position =>
+      Object.hasOwn(props.model.focusRecovery, position) ||
+      props.model.entries.some(entry => entryPosition(entry) === position),
   )
   return h.div(
     [h.DataAttribute('slot', 'toast-root')],
@@ -251,6 +262,7 @@ export const toast = <Msg>(
       return h.section(
         [
           h.AriaLabel(props.ariaLabel ?? 'Notifications'),
+          h.Id(viewportId(props.model.id, position)),
           h.AriaLive('polite'),
           h.Key(position),
           h.Tabindex(-1),
