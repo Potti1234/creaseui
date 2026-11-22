@@ -130,6 +130,11 @@
           "path": "sidebar-state.ts",
           "type": "registry:lib",
           "target": "@lib/sidebar-state.ts"
+        },
+        {
+          "path": "behaviors/storage.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/storage.ts"
         }
       ]
     },
@@ -236,7 +241,9 @@
           "target": "@lib/dropdown-menu-behavior.ts"
         }
       ],
-      "registryDependencies": ["Potti1234/creaseui/popup-behavior"]
+      "registryDependencies": [
+        "Potti1234/creaseui/popup-behavior"
+      ]
     },
     {
       "name": "popup-behavior",
@@ -324,8 +331,10 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior",
         "Potti1234/creaseui/toggle-group-behavior",
-        "Potti1234/creaseui/tree-list-behavior"
+        "Potti1234/creaseui/tree-list-behavior",
+        "Potti1234/creaseui/roving-focus-behavior"
       ]
     },
     {
@@ -334,7 +343,8 @@
       "title": "Foldkit Command Query Policy",
       "description": "Skin-neutral command query normalization and application-provided search-text filtering.",
       "registryDependencies": [
-        "Potti1234/creaseui/listbox-behavior"
+        "Potti1234/creaseui/listbox-behavior",
+        "Potti1234/creaseui/text-match-behavior"
       ],
       "files": [
         {
@@ -448,7 +458,8 @@
       "registryDependencies": [
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-range-input-behavior",
-        "Potti1234/creaseui/slider-behavior"
+        "Potti1234/creaseui/slider-behavior",
+        "Potti1234/creaseui/text-match-behavior"
       ]
     },
     {
@@ -480,6 +491,11 @@
           "path": "calendar.ts",
           "type": "registry:lib",
           "target": "@lib/calendar.ts"
+        },
+        {
+          "path": "behaviors/calendar.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/calendar.ts"
         }
       ]
     },
@@ -718,7 +734,9 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/date-parse-behavior"
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/date-picker-behavior"
       ]
     },
     {
@@ -764,7 +782,9 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/date-parse-behavior",
-        "Potti1234/creaseui/time-parse-behavior"
+        "Potti1234/creaseui/time-parse-behavior",
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/date-picker-behavior"
       ]
     },
     {
@@ -890,7 +910,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/multi-selector-behavior"
+        "Potti1234/creaseui/multi-selector-behavior",
+        "Potti1234/creaseui/text-match-behavior"
       ]
     },
     {
@@ -1111,7 +1132,9 @@
           "target": "@lib/behaviors/typeahead.ts"
         }
       ],
-      "registryDependencies": ["Potti1234/creaseui/tree-collection-behavior"]
+      "registryDependencies": [
+        "Potti1234/creaseui/tree-collection-behavior"
+      ]
     },
     {
       "name": "tree-collection-behavior",
@@ -1141,6 +1164,11 @@
           "path": "virtual-data-table-state.ts",
           "type": "registry:lib",
           "target": "@lib/virtual-data-table-state.ts"
+        },
+        {
+          "path": "behaviors/virtualizer.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/virtualizer.ts"
         }
       ]
     },
@@ -1192,7 +1220,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/date-parse-behavior"
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/calendar-range"
       ]
     },
     {
@@ -1264,6 +1293,22 @@
       ]
     },
     {
+      "name": "date-picker-behavior",
+      "type": "registry:lib",
+      "title": "Date Picker Behavior",
+      "description": "Foldkit DatePicker lifecycle with shared Calendar keyboard behavior.",
+      "registryDependencies": [
+        "Potti1234/creaseui/calendar-range"
+      ],
+      "files": [
+        {
+          "path": "behaviors/date-picker.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/date-picker.ts"
+        }
+      ]
+    },
+    {
       "name": "resizable-behavior",
       "type": "registry:lib",
       "title": "Resizable Behavior",
@@ -1277,6 +1322,19 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/drag-behavior"
+      ]
+    },
+    {
+      "name": "text-match-behavior",
+      "type": "registry:lib",
+      "title": "Text Match",
+      "description": "Pure locale-aware folding, fuzzy scoring and match highlighting.",
+      "files": [
+        {
+          "path": "behaviors/text-match.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/text-match.ts"
+        }
       ]
     }
   ]
