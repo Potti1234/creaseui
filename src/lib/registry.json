@@ -1013,6 +1013,11 @@
           "path": "behaviors/reorder.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/reorder.ts"
+        },
+        {
+          "path": "behaviors/reorder-dom.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/reorder-dom.ts"
         }
       ]
     },

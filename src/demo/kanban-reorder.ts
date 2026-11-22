@@ -4,6 +4,7 @@ import * as Dom from 'foldkit/dom'
 import type { Attribute } from 'foldkit/html'
 
 import * as Reorder from '@/lib/behaviors/reorder'
+import { CheckHandleFocus } from '@/lib/behaviors/reorder-dom'
 
 export const handleId = (id: string, key: string): string =>
   `${id}-lane-${encodeURIComponent(key)}`
@@ -73,9 +74,15 @@ export const update = <Lane extends Readonly<{ id: string; name: string }>>(
     model: result.model,
     lanes: nextLanes,
     announcement: nextAnnouncement,
-    commands: Option.match(result.maybeFocus, {
-      onNone: () => [],
-      onSome: key => [FocusLane({ id, key })],
-    }),
+    commands: [
+      ...Option.match(result.maybeFocus, {
+        onNone: () => [],
+        onSome: key => [FocusLane({ id, key })],
+      }),
+      ...Option.match(result.maybeFocusCheck, {
+        onNone: () => [],
+        onSome: key => [CheckHandleFocus({ id: handleId(id, key), key })],
+      }),
+    ],
   }
 }

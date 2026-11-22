@@ -25,6 +25,9 @@ export const Message = defineMessageUnion({
   Cancel: { restoreFocus: Schema.Boolean },
   Move: { key: Schema.String, index: Schema.Number },
   Reflect: {},
+  Focused: { key: Schema.String },
+  Blurred: { key: Schema.String },
+  CompletedFocusCheck: { key: Schema.String, isFocused: Schema.Boolean },
   Swallow: {},
 })
 
@@ -148,6 +151,7 @@ export type Result = Readonly<{
   model: Model
   outMessages: ReadonlyArray<OutMessage>
   maybeFocus: Option.Option<string>
+  maybeFocusCheck: Option.Option<string>
 }>
 
 export const update = (
@@ -161,7 +165,12 @@ export const update = (
     next: Model = model,
     outMessages: ReadonlyArray<OutMessage> = [],
     maybeFocus: Option.Option<string> = Option.none(),
-  ): Result => ({ model: next, outMessages, maybeFocus })
+  ): Result => ({
+    model: next,
+    outMessages,
+    maybeFocus,
+    maybeFocusCheck: Option.none(),
+  })
   const say = (
     type: Announcement['type'],
     current: typeof Draft.Type,
@@ -177,6 +186,20 @@ export const update = (
       },
     })
   switch (message._tag) {
+    case 'Focused':
+      return draft && draft.key !== message.key
+        ? update(model, Message.Cancel({ restoreFocus: false }), config)
+        : result()
+    case 'Blurred':
+      return {
+        ...result(),
+        maybeFocusCheck:
+          draft?.key === message.key ? Option.some(message.key) : Option.none(),
+      }
+    case 'CompletedFocusCheck':
+      return draft?.key === message.key && !message.isFocused
+        ? update(model, Message.Cancel({ restoreFocus: false }), config)
+        : result()
     case 'Grab': {
       if (
         draft ||
@@ -299,6 +322,7 @@ export const keydown = (
     return !modified && (event.key === ' ' || event.key === 'Enter')
       ? Option.some(Message.Grab({ key: event.itemKey }))
       : Option.none()
+  if (draft.key !== event.itemKey) return Option.none()
   if (event.key === 'Tab' || event.key === 'Escape')
     return Option.some(Message.Cancel({ restoreFocus: event.key !== 'Tab' }))
   if (event.key === ' ' || event.key === 'Enter')

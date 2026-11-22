@@ -167,3 +167,65 @@ test('kanban columns respect RTL and Tab cancels without trapping focus', async 
   )
   await expect(handle).not.toBeFocused()
 })
+
+test('lane drafts cancel on focus departure but survive keyed moves', async ({
+  page,
+}, testInfo) => {
+  await page.goto(
+    `/blocks/preview/${testInfo.project.name}--creaseui-kanban-board`,
+  )
+  const handle = page.getByRole('button', {
+    name: 'Reorder Backlog column',
+    exact: true,
+  })
+  const other = page.getByRole('button', {
+    name: 'Reorder Review column',
+    exact: true,
+  })
+  await handle.press('Space')
+  await page.keyboard.press('ArrowRight')
+  await expect(handle).toBeFocused()
+  await expect(handle).toHaveAttribute('aria-pressed', 'true')
+  await other.focus()
+  await expect(handle).toHaveAttribute('aria-pressed', 'false')
+  await expect(page.locator('[data-kanban-lane]').first()).toHaveAttribute(
+    'data-kanban-lane',
+    'lane-backlog',
+  )
+  await other.press('Enter')
+  await expect(other).toHaveAttribute('aria-pressed', 'true')
+  await other.blur()
+  await expect(other).toHaveAttribute('aria-pressed', 'false')
+  await handle.press('Space')
+  await page.keyboard.press('ArrowRight')
+  await expect(handle).toBeFocused()
+  await other.click()
+  await expect(handle).toHaveAttribute('aria-pressed', 'false')
+  await expect(other).toHaveAttribute('aria-pressed', 'true')
+  await other.press('Enter')
+  await expect(other).toHaveAttribute('aria-pressed', 'false')
+  await expect(page.locator('[data-kanban-lane]').first()).toHaveAttribute(
+    'data-kanban-lane',
+    'lane-backlog',
+  )
+})
+
+test('list-input drafts cancel when another row gains focus', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/list-input')
+  const preview = page
+    .locator('[data-slot="list-input"]')
+    .filter({ has: page.locator('#docs-list-input-2') })
+  const handle = preview.getByRole('button', {
+    name: 'Reorder guest 1',
+    exact: true,
+  })
+  await handle.press('Space')
+  await page.keyboard.press('ArrowDown')
+  await preview
+    .getByRole('button', { name: 'Reorder guest 2', exact: true })
+    .focus()
+  await expect(handle).toHaveAttribute('aria-pressed', 'false')
+  await expect(preview.locator('input').first()).toHaveValue('Ada Lovelace')
+})

@@ -15,6 +15,10 @@ its Cancel message has `restoreFocus: false`. Ignore disabled handles
 before resolving a grab. Restore focus from `maybeFocus` after keyed DOM
 reordering, not before rendering the new order.
 
+Route handle focus and blur through `Focused` and `Blurred`. Run
+`reorder-dom.ts`'s `CheckHandleFocus` for `maybeFocusCheck`: it waits for the
+render commit so keyed moves can restore focus before departure cancels a draft.
+
 Consume `outMessages` in order: apply committed orders and format
 `Announcement` data with the item's label using `reorderMessage` (or a
 component-specific formatter), then send the text to Announce with

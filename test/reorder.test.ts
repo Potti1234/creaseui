@@ -16,6 +16,54 @@ const resolved = (model: Reorder.Model, event: Reorder.Keydown) =>
   Option.getOrThrow(Reorder.keydown(model, event))
 
 describe('Reorder', () => {
+  it('checks blur after focus recovery and ignores stale or unrelated handles', () => {
+    const model = grab()
+    assert.deepEqual(
+      send(model, Reorder.Message.Blurred({ key: 'b' })).maybeFocusCheck,
+      Option.some('b'),
+    )
+    assert.deepEqual(
+      send(model, Reorder.Message.Blurred({ key: 'c' })).maybeFocusCheck,
+      Option.none(),
+    )
+    assert.equal(
+      send(
+        model,
+        Reorder.Message.CompletedFocusCheck({ key: 'b', isFocused: true }),
+      ).model,
+      model,
+    )
+    assert.equal(
+      send(
+        model,
+        Reorder.Message.CompletedFocusCheck({ key: 'c', isFocused: false }),
+      ).model,
+      model,
+    )
+    const cancelled = send(
+      model,
+      Reorder.Message.CompletedFocusCheck({ key: 'b', isFocused: false }),
+    )
+    assert.equal(Option.isNone(cancelled.model.maybeDraft), true)
+    assert.equal(Option.isNone(cancelled.maybeFocus), true)
+    assert.equal(
+      Option.isNone(
+        send(model, Reorder.Message.Focused({ key: 'c' })).model.maybeDraft,
+      ),
+      true,
+    )
+    assert.equal(
+      Option.isNone(Reorder.keydown(model, { key: 'Enter', itemKey: 'c' })),
+      true,
+    )
+    assert.equal(
+      Option.isNone(
+        send(Reorder.init(), Reorder.Message.Blurred({ key: 'b' }))
+          .maybeFocusCheck,
+      ),
+      true,
+    )
+  })
   it('ports English announcements', () => {
     const details = { label: 'Book', count: 1, position: 2, total: 4 }
     assert.equal(

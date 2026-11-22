@@ -920,6 +920,16 @@ export const kanbanBoard = <Message>(
                           variant: 'ghost',
                           size: 'icon-sm',
                           buttonAttributes: [
+                            h.OnFocus(
+                              kanban.toReorderMessage(
+                                Reorder.Message.Focused({ key: laneData.id }),
+                              ),
+                            ),
+                            h.OnBlur(
+                              kanban.toReorderMessage(
+                                Reorder.Message.Blurred({ key: laneData.id }),
+                              ),
+                            ),
                             h.AriaPressed(
                               Reorder.isMoving(kanban.reorder, laneData.id)
                                 ? 'true'
