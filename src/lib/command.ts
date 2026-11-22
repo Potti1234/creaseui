@@ -3,22 +3,71 @@ import { Combobox } from '@foldkit/ui'
 import { defineView } from 'foldkit/submodel'
 import type { Html } from 'foldkit/html'
 import type { Update } from 'foldkit'
+import {
+  foldText,
+  fuzzyFilter,
+  fuzzyScore,
+  matchRanges,
+  matchSegments,
+  type MatchSegment,
+} from './behaviors/text-match'
 import * as Listbox from './behaviors/listbox'
 
 export const normalizeCommandQuery = (value: string): string =>
-  value.trim().toLocaleLowerCase()
+  foldText(value).trim()
+
+export const commandLabelSegments = (
+  label: string,
+  inputValue: string,
+  restingInputValue: string,
+): ReadonlyArray<MatchSegment> =>
+  matchSegments(
+    label,
+    matchRanges(
+      label,
+      inputValue === restingInputValue ? '' : inputValue,
+      'fuzzy',
+    ),
+  )
 
 export const filterCommandItems = <Item>(
   items: ReadonlyArray<Item>,
   queryValue: string,
   restingInputValue: string,
   itemToSearchText: (item: Item) => string,
+  options: Readonly<{
+    itemToKeywords?: (item: Item) => ReadonlyArray<string>
+    itemToFallbackKeywords?: (item: Item) => ReadonlyArray<string>
+    itemGroupKey?: (item: Item) => string
+  }> = {},
 ): ReadonlyArray<Item> => {
   const query = normalizeCommandQuery(queryValue)
-  if (query === '' || queryValue === restingInputValue) return items
-  return Listbox.filter(items, query, itemToSearchText, item =>
-    normalizeCommandQuery(itemToSearchText(item)).includes(query),
-  )
+  const filtered =
+    query === '' || queryValue === restingInputValue
+      ? items
+      : Listbox.filter(items, query, itemToSearchText, item =>
+          Math.max(
+            fuzzyFilter(
+              {
+                label: itemToSearchText(item),
+                keywords: options.itemToKeywords?.(item) ?? [],
+              },
+              query,
+            ),
+            ...(options.itemToFallbackKeywords?.(item) ?? []).map(
+              keyword => fuzzyScore(keyword, query) * 0.9,
+            ),
+          ),
+        )
+  if (options.itemGroupKey === undefined) return filtered
+  const groups = new Map<string, Array<Item>>()
+  filtered.forEach(item => {
+    const key = options.itemGroupKey?.(item) ?? ''
+    const group = groups.get(key)
+    if (group === undefined) groups.set(key, [item])
+    else group.push(item)
+  })
+  return Array.from(groups.values()).flat()
 }
 
 /** Command reuses Foldkit's combobox state and typed selection updates, with

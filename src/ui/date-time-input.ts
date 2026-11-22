@@ -1,12 +1,10 @@
+import * as DatePickerPrimitive from '@/lib/behaviors/date-picker'
+import * as CalendarPrimitive from '@/lib/behaviors/calendar'
 import { Option } from 'effect'
 
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import {
-  Calendar as CalendarPrimitive,
-  DatePicker as DatePickerPrimitive,
-  Popover as PopoverPrimitive,
-} from '@foldkit/ui'
+import { Popover as PopoverPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
 import {

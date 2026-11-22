@@ -1,3 +1,4 @@
+import * as CalendarPrimitive from '@/lib/behaviors/calendar'
 import { Style, When, Global } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
 import { Option } from 'effect'
@@ -5,10 +6,7 @@ import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as FoldkitCalendar from 'foldkit/calendar'
 
-import {
-  Calendar as CalendarPrimitive,
-  Popover as PopoverPrimitive,
-} from '@foldkit/ui'
+import { Popover as PopoverPrimitive } from '@foldkit/ui'
 
 import * as Icon from '@/lib/icon'
 import {
