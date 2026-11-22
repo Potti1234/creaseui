@@ -7,10 +7,16 @@ import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
 import {
   commandLabelSegments,
   createInlineCommandView,
+  commandAnnouncement,
   filterCommandItems,
   retainCommandQuery,
 } from '@/lib/command'
 import * as Icon from '@/lib/icon'
+import {
+  currentPlatform,
+  formatShortcut,
+  toAriaKeyshortcuts,
+} from '@/lib/behaviors/shortcuts'
 import { overlayStyles } from './overlay-tokens'
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
@@ -83,6 +89,7 @@ export type CommandItemConfig = Readonly<{
   keywords?: ReadonlyArray<string>
   fallbackKeywords?: ReadonlyArray<string>
   shortcut?: Html | string
+  keys?: string
   layoutStyle?: ComponentLayoutStyle | undefined
   isDisabled?: boolean
 }>
@@ -124,10 +131,12 @@ export const commandShortcut = <Msg>(
   content: Html | string,
   layoutStyle: ComponentLayoutStyle | undefined,
   h: HtmlBuilder<Msg>,
+  isAriaHidden = false,
 ): Html => {
   return h.span(
     [
       h.DataAttribute('slot', 'command-shortcut'),
+      ...(isAriaHidden ? [h.AriaHidden(true)] : []),
       h.Class(cn(SHORTCUT_CLASS, layoutStyle)),
     ],
     [content],
@@ -200,19 +209,54 @@ const renderCommand = <Item extends string, Msg>(
         ? filteredItems
         : filteredItems.slice(0, Math.max(0, props.maxVisibleItems))
 
-  const control = h.submodel({
+  const statusContent =
+    props.status === 'loading'
+      ? (props.loadingContent ?? 'Loading commands…')
+      : visibleItems.length === 0
+        ? (props.emptyContent ?? 'No commands found.')
+        : visibleItems.length < filteredItems.length
+          ? (props.moreResultsContent?.(
+              visibleItems.length,
+              filteredItems.length,
+            ) ??
+            `Showing ${String(visibleItems.length)} of ${String(filteredItems.length)} commands. Refine your search for more.`)
+          : undefined
+
+  return h.submodel({
     slotId: props.model.id,
     model: props.model,
     view: commandView,
     viewInputs: {
+      ...(statusContent === undefined
+        ? {}
+        : {
+            statusContent,
+            statusClassName: className(styles.empty),
+          }),
+      announcement: commandAnnouncement(
+        props.model.inputValue,
+        filteredItems.length,
+        props.status,
+      ),
       maybeSelectedValue: props.maybeSelectedValue,
       restingInputValue: props.restingInputValue,
       items: visibleItems,
       itemToValue: item => item,
+      itemToKeys: item => {
+        const keys = props.itemToConfig(item).keys
+        return keys === undefined
+          ? undefined
+          : toAriaKeyshortcuts(keys, currentPlatform())
+      },
       itemToDisplayText: itemToSearchText,
       isItemDisabled: item => props.itemToConfig(item).isDisabled ?? false,
       itemToConfig: item => {
         const config = props.itemToConfig(item)
+        const shortcut =
+          config.shortcut ??
+          (config.keys === undefined
+            ? undefined
+            : formatShortcut(config.keys, currentPlatform()))
 
         const label =
           config.label ??
@@ -248,9 +292,16 @@ const renderCommand = <Item extends string, Msg>(
               config.content === undefined
                 ? labelContent
                 : config.content,
-              ...(config.shortcut === undefined
+              ...(shortcut === undefined
                 ? []
-                : [commandShortcut(config.shortcut, undefined, h)]),
+                : [
+                    commandShortcut(
+                      shortcut,
+                      undefined,
+                      h,
+                      config.keys !== undefined,
+                    ),
+                  ]),
             ],
           ),
         }
@@ -300,35 +351,6 @@ const renderCommand = <Item extends string, Msg>(
     },
     toParentMessage: props.toParentMessage,
   })
-
-  const statusContent =
-    props.status === 'loading'
-      ? (props.loadingContent ?? 'Loading commands…')
-      : visibleItems.length === 0
-        ? (props.emptyContent ?? 'No commands found.')
-        : visibleItems.length < filteredItems.length
-          ? (props.moreResultsContent?.(
-              visibleItems.length,
-              filteredItems.length,
-            ) ??
-            `Showing ${String(visibleItems.length)} of ${String(filteredItems.length)} commands. Refine your search for more.`)
-          : undefined
-  return statusContent === undefined
-    ? control
-    : h.div(
-        [h.DataAttribute('slot', 'command-state')],
-        [
-          control,
-          h.div(
-            [
-              h.Role('status'),
-              h.AriaLive('polite'),
-              h.Class(className(styles.empty)),
-            ],
-            [statusContent],
-          ),
-        ],
-      )
 }
 
 export type CommandBundle<Item extends string> = Readonly<{
