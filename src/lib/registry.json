@@ -130,6 +130,11 @@
           "path": "sidebar-state.ts",
           "type": "registry:lib",
           "target": "@lib/sidebar-state.ts"
+        },
+        {
+          "path": "behaviors/storage.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/storage.ts"
         }
       ]
     },
@@ -236,7 +241,9 @@
           "target": "@lib/dropdown-menu-behavior.ts"
         }
       ],
-      "registryDependencies": ["Potti1234/creaseui/popup-behavior"]
+      "registryDependencies": [
+        "Potti1234/creaseui/popup-behavior"
+      ]
     },
     {
       "name": "popup-behavior",
@@ -1116,7 +1123,9 @@
           "target": "@lib/behaviors/typeahead.ts"
         }
       ],
-      "registryDependencies": ["Potti1234/creaseui/tree-collection-behavior"]
+      "registryDependencies": [
+        "Potti1234/creaseui/tree-collection-behavior"
+      ]
     },
     {
       "name": "tree-collection-behavior",

@@ -165,6 +165,31 @@ This wrapper retains Foldkit's linear hit testing and viewport scrolling; it
 does not implement ui-sdk's grid/group moves, nested-scroller auto-scroll,
 or pointer-capture/loss handling.
 
+## Storage, Preference and ColorScheme
+
+Storage descriptors are Schema data: choose local, session or cookie and an id.
+Run get, set, remove and available inside Effects or Commands. Failures return
+Option.none() or false, never prevent an in-memory preference change. get returns
+Option<string>; set and remove return boolean success (cookies are read back
+to verify writes). Cookie defaults
+are one year, path /, SameSite=Lax and Secure on HTTPS. The changes stream owns
+cross-document storage listeners (including clear); cookies have no change stream.
+script returns an Option<string> containing a validated data-* attribute pre-paint
+script for web storage, or Option.none() for cookies.
+
+Bind allowed strings with Preference.create<Value>({ values, defaultValue,
+attribute, storage }). init and decode accept Option<string> from storage, falling back to the
+default. RequestedValue persists only actual changes; RestoredValue and
+ReceivedStoredValue report restore/storage-sync without writing back. Updates
+return ChangedValue OutMessages. attributes exposes a pure data-attribute bundle;
+compose changes into the parent's subscriptions and lift command messages.
+
+ColorScheme composes Preference for system, light and dark, defaulting to system.
+Its Schema model also tracks the OS scheme (unknown resolves to light). Compose
+changes to follow live OS and storage changes. Apply owns the documentElement
+dark class and style.colorScheme; updates apply only resolved changes. Initialize
+from Storage.get and the OS inside an Effect, never by reading DOM from update.
+
 Selection ports the key-based behavior from [ui-sdk.dev](https://ui-sdk.dev/docs/core/behaviors/selection).
 Bind keys with `Selection.create<Key>()` and embed `Selection.Model` in the
 parent Schema. Call its pure transitions from update and commit the returned

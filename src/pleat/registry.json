@@ -2768,6 +2768,7 @@
             "update"
           ],
           "publicExports": [
+            "FocusActiveItem",
             "FocusTrigger",
             "Message",
             "Model",
