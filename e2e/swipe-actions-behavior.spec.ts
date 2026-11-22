@@ -72,6 +72,38 @@ test.describe('Swipe actions docs example', () => {
     await expect(row).toBeFocused()
   })
 
+  test('navigates actions without counting their focusable wrappers twice', async ({
+    page,
+  }) => {
+    await page.goto(url)
+    const row = page.locator('[data-swipe-key="design"]')
+    await row.locator('[data-side="start"]').evaluate(element => {
+      const archive = element.querySelector('button')!
+      const outer = document.createElement('div')
+      outer.tabIndex = 0
+      const inner = document.createElement('div')
+      inner.tabIndex = 0
+      inner.append(archive)
+      outer.append(inner)
+      const next = document.createElement('button')
+      next.textContent = 'Next action'
+      element.append(outer, next)
+    })
+    const archive = row.getByRole('button', { name: 'Archive', exact: true })
+    const next = row.getByRole('button', { name: 'Next action', exact: true })
+    await row.focus()
+    await row.press('ArrowRight')
+    await expect(row).toHaveAttribute('data-swipe-open', 'start')
+    await archive.focus()
+    await page.keyboard.press('ArrowRight')
+    await expect(next).toBeFocused()
+    await page.keyboard.press('ArrowLeft')
+    await expect(archive).toBeFocused()
+    await page.keyboard.press('Escape')
+    await row.press('ArrowRight')
+    await expect(archive).toBeFocused()
+  })
+
   test('reveals at half, focuses actions with arrows, closes with Escape, flicks and full-swipes to delete', async ({
     page,
   }) => {

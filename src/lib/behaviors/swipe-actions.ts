@@ -415,14 +415,21 @@ const interactiveSelector =
 
 const actionsSelector = 'button, [href], [tabindex]'
 
-const focusableActions = (actions: Element | null | undefined): HTMLElement[] =>
-  Array.from(
+const focusableActions = (
+  actions: Element | null | undefined,
+): HTMLElement[] => {
+  const candidates = Array.from(
     actions?.querySelectorAll<HTMLElement>(actionsSelector) ?? [],
   ).filter(
     action =>
       !action.matches(':disabled') &&
       !action.closest('[inert], [aria-disabled="true"]'),
   )
+  return candidates.filter(
+    action =>
+      !candidates.some(other => other !== action && action.contains(other)),
+  )
+}
 
 type InputMessage = Exclude<
   Message,
