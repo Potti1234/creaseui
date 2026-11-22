@@ -2469,9 +2469,13 @@ test('command dialogs filter and select items per section', async ({
   await shortcutInput.focus()
   const profile = page.getByRole('option', { name: /Profile/u })
   await expect(profile).toBeVisible()
+  const isApple = await page.evaluate(() =>
+    /Mac|iPhone|iPad|iPod/u.test(navigator.platform || navigator.userAgent),
+  )
+  await expect(profile).not.toHaveAttribute('aria-keyshortcuts')
   await expect(
     page.locator('[data-slot="command-shortcut"]').first(),
-  ).toContainText('⌘P')
+  ).toHaveText(isApple ? '\u2066⌘P\u2069' : '\u2066Ctrl+P\u2069')
   await page.keyboard.press('Escape')
   await page.keyboard.press('Escape')
 
@@ -5157,7 +5161,7 @@ test('controlled helper pages own and update compact local preview state', async
     'field',
     'disabled',
     'invalid',
-    'button',
+    'chat-history',
     'rtl',
     'form-and-resize',
   ]
@@ -5185,7 +5189,7 @@ test('controlled helper pages own and update compact local preview state', async
     'Please enter a valid message.',
   )
   await expect(
-    page.locator('#button').getByRole('button', { name: 'Send message' }),
+    page.locator('#chat-history').getByRole('button', { name: 'Send message' }),
   ).toBeVisible()
   await expect(page.locator("#rtl [dir='rtl']").first()).toBeVisible()
   await expect(page.locator('#rtl textarea')).toHaveAttribute('rows', '4')

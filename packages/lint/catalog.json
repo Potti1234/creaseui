@@ -6390,6 +6390,7 @@
     "--stepper-clip",
     "--stepper-seg-delay",
     "--stepper-seg-duration",
+    "--swipe-x",
     "--thumbnail-overlay",
     "--thumbnail-overlay-hover",
     "--toast-frontmost-height",

@@ -3,6 +3,7 @@ import { Combobox } from '@foldkit/ui'
 import { defineView } from 'foldkit/submodel'
 import type { Html } from 'foldkit/html'
 import type { Update } from 'foldkit'
+import { describeList, liveRegionAttributes } from './behaviors/announce'
 import {
   foldText,
   fuzzyFilter,
@@ -12,6 +13,15 @@ import {
   type MatchSegment,
 } from './behaviors/text-match'
 import * as Listbox from './behaviors/listbox'
+
+export const commandAnnouncement = (
+  query: string,
+  count: number,
+  status?: string,
+): string =>
+  query.trim()
+    ? describeList({ type: 'results', count, loading: status === 'loading' })
+    : ''
 
 export const normalizeCommandQuery = (value: string): string =>
   foldText(value).trim()
@@ -70,11 +80,18 @@ export const filterCommandItems = <Item>(
   return Array.from(groups.values()).flat()
 }
 
+type CommandViewInputs<Item extends string> = Combobox.ViewInputs<Item> & {
+  announcement: string
+  statusContent?: Html | string
+  statusClassName?: string
+  itemToKeys?: (item: Item) => string | undefined
+}
+
 /** Command reuses Foldkit's combobox state and typed selection updates, with
  * an always-visible list rendered in document flow. No anchor, portal, toggle,
  * blur dismissal, or dropdown animation participates in this surface. */
 export const createInlineCommandView = <Item extends string>() =>
-  defineView<Combobox.Model, Combobox.Message, Combobox.ViewInputs<Item>>(
+  defineView<Combobox.Model, Combobox.Message, CommandViewInputs<Item>>(
     (model, props, h) => {
       const inputId = Combobox.inputId(model.id)
       const listId = `${model.id}-items`
@@ -134,6 +151,7 @@ export const createInlineCommandView = <Item extends string>() =>
           props.maybeSelectedValue,
           value => value === valueAt(item, index),
         )
+        const keys = props.itemToKeys?.(item)
         const config = props.itemToConfig(item, {
           isActive: active === index,
           isDisabled: disabled,
@@ -146,6 +164,7 @@ export const createInlineCommandView = <Item extends string>() =>
             h.Id(itemId(index)),
             h.Role('option'),
             h.AriaSelected(selected),
+            ...(keys === undefined ? [] : [h.AriaKeyshortcuts(keys)]),
             ...(active === index ? [h.DataAttribute('active', '')] : []),
             ...(selected ? [h.DataAttribute('selected', '')] : []),
             ...(disabled
@@ -241,6 +260,7 @@ export const createInlineCommandView = <Item extends string>() =>
           ...(props.attributes ?? []),
         ],
         [
+          h.div(liveRegionAttributes('polite', h), [props.announcement]),
           h.div(
             [
               ...(props.inputWrapperClassName === undefined
@@ -317,6 +337,20 @@ export const createInlineCommandView = <Item extends string>() =>
                 ],
                 [...renderGroups()],
               ),
+              ...(props.statusContent === undefined
+                ? []
+                : [
+                    h.div(
+                      [
+                        h.Role('status'),
+                        h.AriaLive('polite'),
+                        ...(props.statusClassName === undefined
+                          ? []
+                          : [h.Class(props.statusClassName)]),
+                      ],
+                      [props.statusContent],
+                    ),
+                  ]),
             ],
           ),
         ],

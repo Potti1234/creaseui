@@ -2,6 +2,19 @@
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "items": [
     {
+      "name": "velocity-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Velocity Behavior",
+      "description": "Immutable bounded pointer samples and least-squares release velocity for Foldkit gestures.",
+      "files": [
+        {
+          "path": "behaviors/velocity.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/velocity.ts"
+        }
+      ]
+    },
+    {
       "name": "area-behavior",
       "type": "registry:lib",
       "title": "Area Behavior",
@@ -378,6 +391,24 @@
           "path": "command.ts",
           "type": "registry:lib",
           "target": "@lib/command.ts"
+        },
+        {
+          "path": "behaviors/announce.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/announce.ts"
+        }
+      ]
+    },
+    {
+      "name": "shortcuts-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Shortcuts Behavior",
+      "description": "Platform-aware keyboard shortcut formatting, matching, and document keydown Mount.",
+      "files": [
+        {
+          "path": "behaviors/shortcuts.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/shortcuts.ts"
         }
       ]
     },
@@ -539,7 +570,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/drag-behavior"
+        "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/velocity-behavior"
       ]
     },
     {
@@ -1037,6 +1069,9 @@
           "type": "registry:lib",
           "target": "@lib/sheet.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/velocity-behavior"
       ]
     },
     {
