@@ -64,6 +64,96 @@ test('magnetize pulls within range and leaves far values alone', () => {
   assert.equal(Sheet.magnetize(400, detents), 400)
 })
 
+test('a closely spaced final sample does not erase a fast dismissal flick', () => {
+  const detents = [0, 400, 704]
+  const started = Sheet.startDrag(
+    { ...Sheet.initGesture(), sheetHeight: 800 },
+    { y: 100, timeStamp: 1 },
+    false,
+  )
+  const dragged = [
+    { y: 150, timeStamp: 600 },
+    { y: 190, timeStamp: 620 },
+    { y: 191, timeStamp: 624 },
+  ].reduce(
+    (gesture, frame) => Sheet.applyDrag(gesture, frame, detents),
+    started,
+  )
+  // All offsets are outside magnet ranges and far short of dismissal overshoot.
+  // The final 1px/4ms interval understates the preceding 40px/20ms flick.
+  assert.equal(
+    Sheet.settleDrag(dragged, { y: 191, timeStamp: 624 }, detents, true, 704)
+      .dismiss,
+    true,
+  )
+  const required = Sheet.settleDrag(
+    dragged,
+    { y: 191, timeStamp: 624 },
+    detents,
+    false,
+    704,
+  )
+  assert.equal(required.dismiss, false)
+  assert.equal(required.gesture.settledOffset, 704)
+  const stale = Sheet.settleDrag(
+    dragged,
+    { y: 191, timeStamp: 665 },
+    detents,
+    true,
+    704,
+  )
+  assert.equal(stale.dismiss, false)
+  assert.equal(stale.gesture.settledOffset, 0)
+  assert.deepEqual(stale.gesture.velocity.samples, [])
+})
+
+test('velocity history begins at promotion, ignores invalid times and clears on cancel', () => {
+  const detents = [0, 400, 704]
+  const started = Sheet.startDrag(
+    { ...Sheet.initGesture(), sheetHeight: 800 },
+    { y: 100, timeStamp: 0 },
+    true,
+  )
+  const armed = Sheet.applyDrag(started, { y: 108, timeStamp: 10 }, detents)
+  assert.equal(armed, started)
+  const promoted = Sheet.applyDrag(armed, { y: 109, timeStamp: 20 }, detents)
+  assert.equal(promoted.dragPhase, 'Dragging')
+  assert.equal(promoted.dragOffset, 0)
+  assert.deepEqual(promoted.velocity.samples, [{ time: 20, position: 0 }])
+  const dragged = Sheet.applyDrag(promoted, { y: 160, timeStamp: 40 }, detents)
+  assert.deepEqual(dragged.velocity.samples, [
+    { time: 20, position: 0 },
+    { time: 40, position: 60 },
+  ])
+  assert.deepEqual(promoted.velocity.samples, [{ time: 20, position: 0 }])
+  for (const timeStamp of [40, 39, Number.NaN]) {
+    assert.equal(
+      Sheet.applyDrag(dragged, { y: 161, timeStamp }, detents).velocity,
+      dragged.velocity,
+    )
+  }
+  assert.deepEqual(Sheet.cancelDrag(dragged, detents, 704).velocity.samples, [])
+})
+
+test('upward overscroll preserves its resistance, cap and zero release velocity', () => {
+  const started = Sheet.startDrag(
+    { ...Sheet.initGesture(), sheetHeight: 800 },
+    { y: 200, timeStamp: 0 },
+    false,
+  )
+  const resisted = Sheet.applyDrag(started, { y: 180, timeStamp: 20 }, [0, 400])
+  assert.equal(resisted.dragOffset, 0)
+  assert.equal(resisted.dragLift, 20 * Sheet.OVERSCROLL_RESISTANCE)
+  assert.deepEqual(resisted.velocity.samples, [{ time: 20, position: 0 }])
+  const capped = Sheet.applyDrag(resisted, { y: 0, timeStamp: 40 }, [0, 400])
+  assert.equal(capped.dragLift, Sheet.OVERSCROLL_MAX)
+  assert.equal(
+    Sheet.settleDrag(capped, { y: 0, timeStamp: 40 }, [0, 400], true, null)
+      .dismiss,
+    false,
+  )
+})
+
 test('openSheet marks the requested sheet active and keeps the previous', () => {
   const switcher = Sheet.initSwitcher({
     id: 'sw',

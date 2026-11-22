@@ -15,6 +15,19 @@
       ]
     },
     {
+      "name": "velocity-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Velocity Behavior",
+      "description": "Immutable bounded pointer samples and least-squares release velocity for Foldkit gestures.",
+      "files": [
+        {
+          "path": "behaviors/velocity.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/velocity.ts"
+        }
+      ]
+    },
+    {
       "name": "area-behavior",
       "type": "registry:lib",
       "title": "Area Behavior",
@@ -552,7 +565,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/drag-behavior"
+        "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/velocity-behavior"
       ]
     },
     {
@@ -1056,6 +1070,9 @@
           "type": "registry:lib",
           "target": "@lib/sheet.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/velocity-behavior"
       ]
     },
     {
@@ -1259,6 +1276,11 @@
           "path": "data-grid.ts",
           "type": "registry:lib",
           "target": "@lib/data-grid.ts"
+        },
+        {
+          "path": "behaviors/undo-stack.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/undo-stack.ts"
         },
         {
           "path": "behaviors/inline-edit.ts",

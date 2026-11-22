@@ -15,6 +15,8 @@ import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 import { Dialog } from '@foldkit/ui'
 
+import * as Velocity from '@/lib/behaviors/velocity'
+
 /* Renderer-neutral state + pure geometry for the Sheet port: the foldkit
    Dialog submodel drives every edge panel, and Meta Astryx's BottomSheet
    gesture engine layers on top when the sheet sits on the bottom edge —
@@ -235,9 +237,7 @@ export const GestureState = S.Struct({
   dragBaseOffset: S.Number,
   dragOffset: S.Number,
   dragLift: S.Number,
-  dragVelocity: S.Number,
-  lastOffset: S.Number,
-  lastTimeStamp: S.Number,
+  velocity: Velocity.Model,
   settledOffset: S.Number,
   settledLayoutOffset: S.Number,
   sheetHeight: S.Number,
@@ -250,9 +250,7 @@ export const initGesture = (): GestureState => ({
   dragBaseOffset: 0,
   dragOffset: 0,
   dragLift: 0,
-  dragVelocity: 0,
-  lastOffset: 0,
-  lastTimeStamp: 0,
+  velocity: Velocity.init(),
   settledOffset: 0,
   settledLayoutOffset: 0,
   sheetHeight: 0,
@@ -274,9 +272,11 @@ export const startDrag = (
   dragPhase: armOnly ? 'Arming' : 'Dragging',
   dragStartY: Option.some(frame.y),
   dragBaseOffset: gesture.settledOffset,
-  dragVelocity: 0,
-  lastOffset: gesture.settledOffset,
-  lastTimeStamp: frame.timeStamp,
+  velocity: Velocity.addSample(
+    Velocity.init(),
+    frame.timeStamp,
+    gesture.settledOffset,
+  ),
   dragOffset: gesture.settledOffset,
 })
 
@@ -296,7 +296,11 @@ export const applyDrag = (
         ...gesture,
         dragPhase: 'Dragging',
         dragStartY: Option.some(startY),
-        lastTimeStamp: frame.timeStamp,
+        velocity: Velocity.addSample(
+          Velocity.init(),
+          frame.timeStamp,
+          gesture.dragBaseOffset,
+        ),
       }
     }
     if (delta < -DRAG_PROMOTION_SLOP) {
@@ -311,23 +315,18 @@ export const applyDrag = (
       ...gesture,
       dragOffset: 0,
       dragLift: lift,
-      dragVelocity: 0,
-      lastOffset: 0,
-      lastTimeStamp: frame.timeStamp,
+      velocity: Velocity.addSample(Velocity.init(), frame.timeStamp, 0),
     }
   }
   const maxOffset = detents[detents.length - 1] ?? 0
   const shortestVisible = visibleHeightForOffset(gesture.sheetHeight, maxOffset)
   const dismissBoundary = maxOffset + shortestVisible * DISMISS_OVERSHOOT_RATIO
   const offset = raw > dismissBoundary ? raw : magnetize(raw, detents)
-  const elapsed = Math.max(1, frame.timeStamp - gesture.lastTimeStamp)
   return {
     ...gesture,
     dragOffset: offset,
     dragLift: 0,
-    dragVelocity: (offset - gesture.lastOffset) / elapsed,
-    lastOffset: offset,
-    lastTimeStamp: frame.timeStamp,
+    velocity: Velocity.addSample(gesture.velocity, frame.timeStamp, offset),
   }
 }
 
@@ -351,7 +350,7 @@ export const settleDrag = (
   const delta = frame.y - startY
   const travel = Math.abs(delta)
   const dir = delta === 0 ? 0 : delta > 0 ? 1 : -1
-  const velocity = gesture.dragVelocity
+  const velocity = Velocity.velocity(gesture.velocity, frame.timeStamp)
   const offset = gesture.dragOffset
   const maxOffset = detents[detents.length - 1] ?? 0
   const shortestVisible = visibleHeightForOffset(gesture.sheetHeight, maxOffset)
