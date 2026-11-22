@@ -29,6 +29,16 @@ describe('Registry dependency graph', () => {
     )
   })
 
+  it('keeps behavior items in name order so additions do not collide', () => {
+    const names = JSON.parse(
+      readFileSync('src/lib/registry.json', 'utf8'),
+    ).items.map((item: { name: string }) => item.name)
+    assert.deepEqual(
+      names,
+      [...names].sort((a, b) => a.localeCompare(b)),
+    )
+  })
+
   it('every renderer and behavior source declares its owned dependencies', () => {
     const root = process.cwd()
     const registries = ['src/lib', 'src/ui', 'src/stylex', 'src/pleat'].map(
