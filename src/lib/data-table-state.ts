@@ -1,3 +1,4 @@
+import { foldText } from './behaviors/text-match'
 /* Model for the tablecn tasks table block (mirrors the nuqs URL state +
    tanstack table state from tablecn/src/app/components/tasks-table.tsx).
    Single open-popover id replaces React's per-component useState. */
@@ -185,7 +186,7 @@ export const filteredRows = <Row>(
   config: DataTableConfig<Row>,
   rows: ReadonlyArray<Row>,
 ): Array<Row> => {
-  const filter = model.filter.trim().toLowerCase()
+  const filter = foldText(model.filter).trim()
   const searchColumns =
     config.searchColumnId === undefined
       ? config.columns
@@ -193,9 +194,7 @@ export const filteredRows = <Row>(
   return rows.filter(row => {
     if (
       filter !== '' &&
-      !searchColumns.some(column =>
-        column.get(row).toLowerCase().includes(filter),
-      )
+      !searchColumns.some(column => foldText(column.get(row)).includes(filter))
     )
       return false
     for (const [columnId, values] of Object.entries(model.optionFilters)) {

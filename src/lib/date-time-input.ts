@@ -1,3 +1,5 @@
+import * as DatePickerPrimitive from '@/lib/behaviors/date-picker'
+import * as CalendarPrimitive from '@/lib/behaviors/calendar'
 import { Effect, Option, Schema as S } from 'effect'
 
 import type { Update } from 'foldkit'
@@ -6,11 +8,7 @@ import * as Dom from 'foldkit/dom'
 import * as Calendar from 'foldkit/calendar'
 import { defineMessageUnion } from 'foldkit/message'
 
-import {
-  Calendar as CalendarPrimitive,
-  DatePicker as DatePickerPrimitive,
-  Popover as PopoverPrimitive,
-} from '@foldkit/ui'
+import { Popover as PopoverPrimitive } from '@foldkit/ui'
 
 import { parseDateInput } from '@/lib/date-parse'
 import {
