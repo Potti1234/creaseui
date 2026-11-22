@@ -184,6 +184,9 @@ for (const item of libraryRegistry.items) {
   if (registry.size) item.registryDependencies = [...registry].sort()
   else delete item.registryDependencies
 }
+// Name order gives each new item its own insertion point, so independent
+// behavior changes do not conflict at the start or end of the list.
+libraryRegistry.items.sort((a, b) => a.name.localeCompare(b.name))
 writeFileSync(
   join(root, 'src/lib/registry.json'),
   `${JSON.stringify(libraryRegistry, null, 2)}\n`,
