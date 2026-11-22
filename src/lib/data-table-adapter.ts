@@ -1,3 +1,4 @@
+import { foldText } from './behaviors/text-match'
 import {
   createTable,
   getCoreRowModel,
@@ -59,10 +60,10 @@ export const projectDataTable = <Row>(
     getSortedRowModel: getSortedRowModel(),
     getRowId: props.rowKey,
     globalFilterFn: (row, _columnId, value) =>
-      props
-        .filterText?.(row.original)
-        .toLocaleLowerCase()
-        .includes(String(value).trim().toLocaleLowerCase()) ?? true,
+      props.filterText === undefined ||
+      foldText(props.filterText(row.original)).includes(
+        foldText(String(value)).trim(),
+      ),
     manualFiltering: isServer,
     manualPagination: isServer,
     manualSorting: isServer,

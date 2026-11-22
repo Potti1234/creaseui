@@ -1,4 +1,4 @@
-import { VirtualList } from '@foldkit/ui'
+import * as VirtualList from './behaviors/virtualizer'
 import { Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import { Command, Subscription } from 'foldkit'
