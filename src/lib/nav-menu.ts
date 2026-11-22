@@ -2,9 +2,11 @@
 
 import { Command, Dom, type Update } from 'foldkit'
 import { Effect, Option, Schema as S } from 'effect'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as Popup from './behaviors/popup'
+import * as RovingFocus from './behaviors/roving-focus'
 
 /** Shared open/close state machine for nav flyouts (TopNavMenu, TopNavMegaMenu,
     SideNav collapsed-item flyouts, SideNav/TopNav heading menus). Mirrors
@@ -15,6 +17,7 @@ import * as Popup from './behaviors/popup'
 export const Model = S.Struct({
   id: S.String,
   popup: Popup.Model,
+  rovingFocus: RovingFocus.Model,
   hoverOpenedAtMs: S.Option(S.Number),
   isTriggerHovered: S.Boolean,
   lastClosedAtMs: S.Option(S.Number),
@@ -30,6 +33,7 @@ export type Model = typeof Model.Type
 export const REOPEN_SUPPRESS_MS = 300
 
 export const Message = defineMessageUnion({
+  GotNavMenuFocusMessage: { message: RovingFocus.Message },
   EnteredNavMenuTrigger: {},
   RecordedNavMenuEnter: { atMs: S.Number },
   LeftNavMenuTrigger: {},
@@ -64,6 +68,7 @@ export type InitConfig = Readonly<{
 export const init = (config: InitConfig): Model => ({
   id: config.id,
   popup: Popup.init(),
+  rovingFocus: RovingFocus.init({ id: panelDomId(config.id) }),
   hoverOpenedAtMs: Option.none(),
   isTriggerHovered: false,
   lastClosedAtMs: Option.none(),
@@ -79,6 +84,35 @@ export const isOpen = (model: Model): boolean => model.popup.isOpen
 
 export const triggerDomId = (menuId: string): string => `${menuId}-trigger`
 export const panelDomId = (menuId: string): string => `${menuId}-panel`
+
+export const renderMenu = <Item, Msg>(
+  props: Readonly<{
+    model: Model
+    items: ReadonlyArray<Item>
+    toParentMessage: (message: Message) => Msg
+    toItem: (item: Item, attributes: ReadonlyArray<ChildAttribute>) => Html
+    attributes: ReadonlyArray<Attribute<Msg>>
+  }>,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.submodel({
+    slotId: props.model.rovingFocus.id,
+    model: props.model.rovingFocus,
+    view: RovingFocus.view,
+    viewInputs: {
+      keys: props.items.map((_, index) => String(index)),
+      orientation: 'Vertical',
+      toView: focusItems =>
+        h.div(
+          [h.Role('menu'), ...props.attributes],
+          props.items.map((item, index) =>
+            props.toItem(item, focusItems[index]?.attributes ?? []),
+          ),
+        ),
+    },
+    toParentMessage: message =>
+      props.toParentMessage(Message.GotNavMenuFocusMessage({ message })),
+  })
 
 const FIRST_ITEM_SELECTOR = (panelId: string): string =>
   `[id="${panelId}"] :is(a[href],button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),[tabindex]:not([tabindex="-1"]))`
@@ -150,7 +184,8 @@ export const FocusFirstNavMenuItem = Command.define('FocusFirstNavMenuItem', {
   args: { domId: S.String },
   messages: [Message.CompletedNavMenuFocusFirstItem],
   execute: ({ domId }) =>
-    Dom.focus(FIRST_ITEM_SELECTOR(domId)).pipe(
+    Dom.focus(`[id="${domId}"] [role="menuitem"]`).pipe(
+      Effect.catch(() => Dom.focus(FIRST_ITEM_SELECTOR(domId))),
       Effect.catch(() => Dom.focus(`[id="${domId}"]`, { makeFocusable: true })),
       Effect.ignore,
       Effect.as(Message.CompletedNavMenuFocusFirstItem()),
@@ -195,6 +230,16 @@ const openPinned = (model: Model): Model => ({
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
+    case 'GotNavMenuFocusMessage': {
+      if (!isOpen(model)) return { model }
+      const next = RovingFocus.update(model.rovingFocus, message.message)
+      return {
+        model: { ...model, rovingFocus: next.model },
+        commands: Command.mapMessages(next.commands, message =>
+          Message.GotNavMenuFocusMessage({ message }),
+        ),
+      }
+    }
     case 'EnteredNavMenuTrigger': {
       const next = {
         ...model,
