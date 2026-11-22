@@ -167,7 +167,7 @@ describe('data grid row identity', () => {
     )
     assert.deepEqual(sorted.selectedRowIndexes, [2])
     assert.deepEqual(sorted.focusedCell, { row: 2, column: 'name' })
-    assert.deepEqual(sorted.editingCell, { row: 2, column: 'name' })
+    assert.deepEqual(Grid.editingCell(sorted), { row: 2, column: 'name' })
     const committed = step(
       sorted,
       Grid.Message.CommittedDraft({ move: 'none' }),
@@ -189,8 +189,8 @@ describe('data grid row identity', () => {
     )
     assert.deepEqual(displayedIds(filtered), ['z'])
     assert.deepEqual(filtered.selectedRowIndexes, [])
-    assert.equal(filtered.editingCell.row, -1)
-    assert.equal(filtered.draftValue, '')
+    assert.equal(Grid.editingCell(filtered).row, -1)
+    assert.equal(filtered.inlineEdit.draft, '')
   })
 })
 
@@ -259,7 +259,7 @@ describe('data grid identity through data changes', () => {
     )
     assert.deepEqual(displayedIds(selected), ['z'])
     assert.deepEqual(selectedIds(selected), ['z'])
-    assert.equal(selected.editingCell.row, -1)
+    assert.equal(Grid.editingCell(selected).row, -1)
   })
 
   it('undo and redo keep the selection on the same records', () => {
@@ -374,8 +374,8 @@ describe('data grid editor seed', () => {
         [Grid.Message.StartedEditing({ row: 0, column, seed: '' })],
       ]) {
         const editing = run(...open)
-        assert.deepEqual(editing.editingCell, { row: 0, column })
-        assert.equal(editing.draftValue, expected)
+        assert.deepEqual(Grid.editingCell(editing), { row: 0, column })
+        assert.equal(editing.inlineEdit.draft, expected)
         const committed = Grid.update(
           editing,
           Grid.Message.CommittedDraft({ move: 'none' }),
@@ -393,7 +393,7 @@ describe('data grid editor seed', () => {
       key('Enter'),
     )
     assert.equal(contact(model, 'ada')?.name, 'Ada')
-    assert.equal(model.editingCell.row, -1)
+    assert.equal(Grid.editingCell(model).row, -1)
     assert.deepEqual(model.focusedCell, { row: 1, column: 'name' })
     assert.equal(model.history.past.length, 0)
   })
@@ -406,8 +406,34 @@ describe('data grid editor seed', () => {
       key('Escape'),
     )
     assert.equal(contact(model, 'bob')?.age, 41)
-    assert.equal(model.editingCell.row, -1)
-    assert.equal(model.draftValue, '')
+    assert.equal(Grid.editingCell(model).row, -1)
+    assert.equal(model.inlineEdit.draft, '')
+  })
+
+  it('an unchanged commit preserves redo history and does not call the setter', () => {
+    const undone = run(
+      Grid.Message.SetCellValue({ row: 0, column: 'name', value: 'Changed' }),
+      Grid.Message.Undo({}),
+      Grid.Message.StartedEditing({ row: 0, column: 'name', seed: '' }),
+    )
+    const guardedConfig: Grid.DataGridConfig<Contact> = {
+      ...contactConfig,
+      columns: contactConfig.columns.map(column => ({
+        ...column,
+        set: () => {
+          throw new Error('unchanged commit must not write')
+        },
+      })),
+    }
+    const committed = Grid.update(
+      undone,
+      Grid.Message.CommittedDraft({ move: 'none' }),
+      guardedConfig,
+    )
+    assert.equal(committed.rows, undone.rows)
+    assert.equal(committed.history.past, undone.history.past)
+    assert.equal(committed.history.future, undone.history.future)
+    assert.equal(committed.history.future.length, 1)
   })
 
   it('typing over a cell starts from the typed key', () => {
@@ -415,7 +441,7 @@ describe('data grid editor seed', () => {
       Grid.Message.FocusedCell({ row: 0, column: 'name' }),
       key('Z'),
     )
-    assert.equal(typed.draftValue, 'Z')
+    assert.equal(typed.inlineEdit.draft, 'Z')
     const committed = Grid.update(
       typed,
       Grid.Message.CommittedDraft({ move: 'none' }),

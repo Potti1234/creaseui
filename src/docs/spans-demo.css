@@ -1,0 +1,123 @@
+:root {
+  color: #17252b;
+  background: #edf3f3;
+  font:
+    16px/1.5 system-ui,
+    sans-serif;
+}
+
+main {
+  max-width: 54rem;
+  margin: 4rem auto;
+  padding: 0 1.25rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 3rem);
+  letter-spacing: -0.04em;
+}
+
+.eyebrow {
+  color: #26675f;
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.instructions {
+  max-width: 62ch;
+  margin-bottom: 2rem;
+  color: #445b62;
+}
+
+.board {
+  padding: 1.25rem;
+  border: 1px solid #c8d7d8;
+  border-radius: 0.9rem;
+  background: #fff;
+}
+
+.room {
+  margin-top: 0.85rem;
+}
+
+.room:first-child {
+  margin-top: 0;
+}
+
+.hours {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  color: #445b62;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  position: relative;
+  height: 3.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid #c8d7d8;
+  border-radius: 0.45rem;
+  background: repeating-linear-gradient(
+    to right,
+    #f3f7f7 0 calc(12.5% - 1px),
+    #d9e4e4 calc(12.5% - 1px) 12.5%
+  );
+  touch-action: none;
+  user-select: none;
+}
+
+.booking {
+  top: 0.35rem;
+  bottom: 0.35rem;
+  overflow: hidden;
+  border: 1px solid #47988a;
+  border-radius: 0.35rem;
+  padding-inline: 0.65rem;
+  background: #d1ebe4;
+  color: #103e37;
+  font:
+    650 0.78rem/1.2 system-ui,
+    sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: grab;
+}
+
+.booking:focus-visible {
+  z-index: 1;
+  outline: 2px solid #163e87;
+  outline-offset: 2px;
+}
+
+.booking:is([data-drawing], [data-dragging], [data-resizing]) {
+  z-index: 1;
+  border-color: #20675a;
+  background: #a8dace;
+}
+
+.booking [data-span-edge] {
+  position: absolute;
+  inset-block: 0;
+  width: 0.45rem;
+  background: #22635532;
+  cursor: ew-resize;
+}
+
+.booking [data-span-edge='start'] {
+  inset-inline-start: 0;
+}
+
+.booking [data-span-edge='end'] {
+  inset-inline-end: 0;
+}
+
+.status {
+  margin-bottom: 0;
+  color: #26675f;
+  font-size: 0.875rem;
+}

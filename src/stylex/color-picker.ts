@@ -193,29 +193,6 @@ const styles = stylex.create({
   },
 })
 
-const fractionFromPointer = (
-  clientX: number,
-  clientY: number,
-  target: EventTarget | null,
-): Option.Option<Readonly<{ x: number; y: number }>> =>
-  target instanceof Element
-    ? Option.some(
-        (() => {
-          const rect = target.getBoundingClientRect()
-          return {
-            x:
-              rect.width === 0
-                ? 0
-                : Math.min(1, Math.max(0, (clientX - rect.left) / rect.width)),
-            y:
-              rect.height === 0
-                ? 0
-                : Math.min(1, Math.max(0, (clientY - rect.top) / rect.height)),
-          }
-        })(),
-      )
-    : Option.none()
-
 const ARROW_KEYS = new Set([
   'ArrowLeft',
   'ArrowRight',
@@ -279,16 +256,7 @@ const channelAttrs = <Msg>(
   h.Tabindex(props.model.disabled ? -1 : 0),
   h.Role('slider'),
   h.AriaDisabled(props.model.disabled),
-  h.OnPointerDown(
-    (_pointerType, button, _sx, _sy, _ts, clientX, clientY, _pid, target) =>
-      button !== 0
-        ? Option.none()
-        : Option.map(
-            fractionFromPointer(clientX, clientY, target),
-            ({ x, y }) =>
-              props.toParentMessage(Message.PressedChannel({ channel, x, y })),
-          ),
-  ),
+  h.OnMount(Picker.channelMount(channel, props.toParentMessage)),
   h.OnKeyDownPreventDefault((key, modifiers) =>
     Option.map(nudgeForKey(channel, key, modifiers), ({ x, y }) =>
       props.toParentMessage(Message.NudgedChannel({ channel, x, y })),

@@ -11,7 +11,7 @@ import { defineMessageUnion } from 'foldkit/message'
 
 import { dateToISO } from '@/lib/date-parse'
 import * as DateRangeInput from '@/lib/date-range-input'
-import * as MultiSlider from '@/lib/slider'
+import * as MultiSlider from '@/lib/behaviors/slider'
 
 export const SortEntry = S.Struct({ id: S.String, desc: S.Boolean })
 

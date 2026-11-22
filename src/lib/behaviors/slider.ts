@@ -1,3 +1,38 @@
+import { Slider as SliderPrimitive } from '@foldkit/ui'
+import { Schema as S } from 'effect'
+import type { Update } from 'foldkit'
+import * as Command from 'foldkit/command'
+import { defineMessageUnion } from 'foldkit/message'
+import * as Subscription from 'foldkit/subscription'
+
+/* Slider keeps the @foldkit/ui primitive (see README). This module is the
+   seam components consume it through, plus the range policy and the
+   multi-thumb composition the primitive does not ship. */
+export const Model = SliderPrimitive.Model
+export type Model = typeof Model.Type
+export const Message = SliderPrimitive.Message
+export type Message = typeof Message.Type
+export const OutMessage = SliderPrimitive.OutMessage
+export type OutMessage = typeof OutMessage.Type
+export const Orientation = SliderPrimitive.Orientation
+export type Orientation = typeof Orientation.Type
+export const ThumbAlignment = SliderPrimitive.ThumbAlignment
+export type ThumbAlignment = typeof ThumbAlignment.Type
+export type InitConfig = SliderPrimitive.InitConfig
+export type ViewInputs = SliderPrimitive.ViewInputs
+export type SliderAttributes = SliderPrimitive.SliderAttributes
+export const {
+  init,
+  update,
+  view,
+  reflectRange,
+  snapAndClamp,
+  fractionOfValue,
+  valueFromPointer,
+  subscriptions,
+  subscriptionsForRoot,
+} = SliderPrimitive
+
 export type NormalizedRange = Readonly<{
   min: number
   max: number
@@ -80,13 +115,6 @@ export const updateMultiValue = (
 // track part would emit. `mirrored` maps values across the range at this
 // boundary so the horizontal-only primitive renders flipped for RTL.
 // ---------------------------------------------------------------------------
-
-import { Schema as S } from 'effect'
-import type { Update } from 'foldkit'
-import * as Command from 'foldkit/command'
-import { defineMessageUnion } from 'foldkit/message'
-import * as Subscription from 'foldkit/subscription'
-import { Slider as SliderPrimitive } from '@foldkit/ui'
 
 export const MultiMessage = defineMessageUnion({
   GotThumbMessage: { index: S.Number, message: SliderPrimitive.Message },

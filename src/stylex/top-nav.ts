@@ -4,7 +4,7 @@ import { reset } from '@/ui/stylex/reset'
 
 import { Option } from 'effect'
 import * as stylex from '@stylexjs/stylex'
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import { defineView } from 'foldkit/submodel'
 
 import * as Icon from '@/lib/icon'
@@ -610,21 +610,16 @@ const anchorPositionStyle = (
   }
 }
 
-const menuDomBase = (model: TopNavLib.Model, key: string): string =>
-  `${model.id}-${key}`
-
 // ---------------------------------------------------------------------------
 // Trigger wiring shared by dropdown + mega menu triggers
 // ---------------------------------------------------------------------------
 
 const triggerAttrs = <Msg>(
-  model: TopNavLib.Model,
-  key: string,
   menu: NavMenu.Model,
   emitMenu: (message: NavMenu.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Array<Attribute<Msg>> => {
-  const domBase = menuDomBase(model, key)
+  const domBase = menu.id
   return [
     h.Id(NavMenu.triggerDomId(domBase)),
     h.Style({ anchorName: `--${domBase}-anchor` }),
@@ -748,6 +743,7 @@ export const topNavItem = <Msg>(
 const renderMenuItem = <Msg>(
   key: string,
   item: TopNavMenuItemData,
+  focusAttributes: ReadonlyArray<ChildAttribute>,
   emit: (message: TopNavLib.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
@@ -778,14 +774,19 @@ const renderMenuItem = <Msg>(
     ),
   ]
   const attrs = [
-    h.Class(className(styles.menuItem)),
+    h.Class(
+      className(
+        item.href === undefined ? reset.button : reset.link,
+        styles.menuItem,
+      ),
+    ),
     h.Role('menuitem'),
-    h.Tabindex(-1),
+    ...focusAttributes,
     h.OnClick(activate),
   ]
   return item.href === undefined
-    ? h.div(attrs, inner)
-    : h.a([h.Class(className(reset.link)), ...attrs, h.Href(item.href)], inner)
+    ? h.button([h.Type('button'), ...attrs], inner)
+    : h.a([...attrs, h.Href(item.href)], inner)
 }
 
 const renderDropdown = <Msg>(
@@ -796,7 +797,7 @@ const renderDropdown = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const menu = TopNavLib.menuFor(model, key, 'dropdown')
-  const domBase = menuDomBase(model, key)
+  const domBase = menu.id
   const anchorId = `--${domBase}-anchor`
   const emitMenu = (message: NavMenu.Message): Msg =>
     emit(TopNavLib.Message.GotTopNavMenuMessage({ key, message }))
@@ -815,34 +816,42 @@ const renderDropdown = <Msg>(
               open && styles.triggerOpen,
             ),
           ),
-          ...triggerAttrs(model, key, menu, emitMenu, h),
+          ...triggerAttrs(menu, emitMenu, h),
         ],
         [menuData.label, chevronIcon(open, h)],
       ),
       ...(open
         ? [
-            h.div(
-              [
-                h.Id(NavMenu.panelDomId(domBase)),
-                h.Class(className(styles.menuPanel)),
-                h.Role('menu'),
-                h.AriaLabel(menuData.label),
-                h.Style({
-                  ...anchorPositionStyle(anchorId, 'bottom'),
-                  // Reserve the panel's minimum width when neither inline flip fits.
-                  left: 'clamp(0.5rem, anchor(left), calc(100% - 17.5rem - 0.5rem))',
-                }),
-                h.OnMouseEnter(emitMenu(NavMenu.Message.EnteredNavMenuPanel())),
-                h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuPanel())),
-                h.OnKeyDownPreventDefault(k =>
-                  k === 'Escape'
-                    ? Option.some(
-                        emitMenu(NavMenu.Message.PressedEscapeNavMenu()),
-                      )
-                    : Option.none(),
-                ),
-              ],
-              menuData.items.map(item => renderMenuItem(key, item, emit, h)),
+            NavMenu.renderMenu(
+              {
+                model: menu,
+                items: menuData.items,
+                toParentMessage: emitMenu,
+                toItem: (item, attributes) =>
+                  renderMenuItem(key, item, attributes, emit, h),
+                attributes: [
+                  h.Id(NavMenu.panelDomId(domBase)),
+                  h.Class(className(styles.menuPanel)),
+                  h.AriaLabel(menuData.label),
+                  h.Style({
+                    ...anchorPositionStyle(anchorId, 'bottom'),
+                    // Reserve the panel's minimum width when neither inline flip fits.
+                    left: 'clamp(0.5rem, anchor(left), calc(100% - 17.5rem - 0.5rem))',
+                  }),
+                  h.OnMouseEnter(
+                    emitMenu(NavMenu.Message.EnteredNavMenuPanel()),
+                  ),
+                  h.OnMouseLeave(emitMenu(NavMenu.Message.LeftNavMenuPanel())),
+                  h.OnKeyDownPreventDefault(k =>
+                    k === 'Escape'
+                      ? Option.some(
+                          emitMenu(NavMenu.Message.PressedEscapeNavMenu()),
+                        )
+                      : Option.none(),
+                  ),
+                ],
+              },
+              h,
             ),
           ]
         : []),
@@ -953,7 +962,7 @@ const renderMegaMenu = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   const menu = TopNavLib.menuFor(model, key, 'mega')
-  const domBase = menuDomBase(model, key)
+  const domBase = menu.id
   const emitMenu = (message: NavMenu.Message): Msg =>
     emit(TopNavLib.Message.GotTopNavMenuMessage({ key, message }))
   const open = NavMenu.isOpen(menu)
@@ -971,7 +980,7 @@ const renderMegaMenu = <Msg>(
               open && styles.triggerOpen,
             ),
           ),
-          ...triggerAttrs(model, key, menu, emitMenu, h),
+          ...triggerAttrs(menu, emitMenu, h),
         ],
         [menuData.label, chevronIcon(open, h)],
       ),
@@ -1111,7 +1120,7 @@ const renderHeading = <Msg>(
   const key = TopNavLib.HEADING_MENU_KEY
   const hasMenu = heading.menu !== undefined && heading.menu.length > 0
   const menu = TopNavLib.menuFor(model, key, 'heading')
-  const domBase = menuDomBase(model, key)
+  const domBase = menu.id
   const anchorId = `--${domBase}-anchor`
   const emitMenu = (message: NavMenu.Message): Msg =>
     emit(TopNavLib.Message.GotTopNavMenuMessage({ key, message }))
@@ -1221,32 +1230,36 @@ const renderHeading = <Msg>(
                   ),
                 ],
               ),
-              h.div(
-                [h.Role('menu'), h.AriaLabel(heading.heading ?? 'Menu')],
-                items.map(item => {
-                  const activate = emit(
-                    TopNavLib.Message.PressedTopNavMenuItem({
-                      menuKey: key,
-                      itemTitle: item.label,
-                    }),
-                  )
-                  const attrs = [
-                    h.Class(className(styles.headingMenuItem)),
-                    h.Role('menuitem'),
-                    h.Tabindex(-1),
-                    h.OnClick(activate),
-                  ]
-                  return item.href === undefined
-                    ? h.div(attrs, [item.label])
-                    : h.a(
-                        [
-                          h.Class(className(reset.link)),
-                          ...attrs,
-                          h.Href(item.href),
-                        ],
-                        [item.label],
-                      )
-                }),
+              NavMenu.renderMenu(
+                {
+                  model: menu,
+                  items,
+                  toParentMessage: emitMenu,
+                  attributes: [h.AriaLabel(heading.heading ?? 'Menu')],
+                  toItem: (item, focusAttributes) => {
+                    const activate = emit(
+                      TopNavLib.Message.PressedTopNavMenuItem({
+                        menuKey: key,
+                        itemTitle: item.label,
+                      }),
+                    )
+                    const attrs = [
+                      h.Class(
+                        className(
+                          item.href === undefined ? reset.button : reset.link,
+                          styles.headingMenuItem,
+                        ),
+                      ),
+                      h.Role('menuitem'),
+                      ...focusAttributes,
+                      h.OnClick(activate),
+                    ]
+                    return item.href === undefined
+                      ? h.button([h.Type('button'), ...attrs], [item.label])
+                      : h.a([...attrs, h.Href(item.href)], [item.label])
+                  },
+                },
+                h,
               ),
             ],
           ),
