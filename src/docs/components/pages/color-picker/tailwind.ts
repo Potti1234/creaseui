@@ -1,5 +1,5 @@
 import { Option, Schema as S } from 'effect'
-import { Command, Subscription } from 'foldkit'
+import { Command } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
@@ -133,16 +133,6 @@ export const colorPickerTailwindPreviewProgram = definePreviewProgram<
       }
     }
   },
-  subscriptions: Subscription.aggregate<Model, Got>()(
-    ...colorPickerFixtures.map(fixture =>
-      ColorPicker.subscriptions<Model, Got>({
-        id: fixture.id,
-        toChildModel: model => model.pickers[fixture.id] ?? FALLBACK,
-        toParentMessage: message =>
-          Got.GotColorPickerMessage({ id: fixture.id, message }),
-      }),
-    ),
-  ),
   view: (index, model, h) => {
     const fixture = colorPickerFixtures[index] ?? colorPickerFixtures[0]
     const picker = model.pickers[fixture.id] ?? FALLBACK

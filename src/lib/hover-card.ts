@@ -1,9 +1,12 @@
 import type { Update } from 'foldkit'
-import { Duration, Effect, Schema as S } from 'effect'
+import { Duration, Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import * as Command from 'foldkit/command'
+import type { HtmlBuilder } from 'foldkit/html'
 import * as Mount from 'foldkit/mount'
-import { Anchor, HoverIntent as HoverIntentPrimitive } from '@foldkit/ui'
+import { Anchor } from '@foldkit/ui'
 import { defineMessageUnion } from 'foldkit/message'
+
+import * as HoverIntentPrimitive from '@/lib/behaviors/hover-intent'
 
 /* The open/close intent state machine is the foldkit HoverIntent primitive;
    this module keeps crease's model (with its caller-facing `id`) and message
@@ -27,6 +30,27 @@ export const Message = defineMessageUnion({
   CompletedWaitBeforeClosingHoverCard: { version: S.Number },
 })
 export type Message = typeof Message.Type
+
+export const pointerAttributes = <Msg>(
+  model: Model,
+  toParentMessage: (message: Message) => Msg,
+  h: HtmlBuilder<Msg>,
+) => [
+  h.OnPointerMove((_screenX, _screenY, pointerType) =>
+    pointerType === 'touch' || model.isTriggerHovered
+      ? Option.none()
+      : Option.some(toParentMessage(Message.EnteredHoverCard())),
+  ),
+  ...(model.isOpen
+    ? []
+    : [
+        h.OnPointerLeave(pointerType =>
+          pointerType === 'touch'
+            ? Option.none()
+            : Option.some(toParentMessage(Message.LeftHoverCard())),
+        ),
+      ]),
+]
 
 export type InitConfig = Readonly<{
   id: string
@@ -65,81 +89,98 @@ export const WaitBeforeClosing = Command.define('WaitBeforeClosingHoverCard', {
    with inline max-height + overflow-y: auto, which puts a scrollbar inside
    the card. A hover card should size to its content and never scroll, so the
    observer strips the clamp properties whenever the middleware writes them. */
-export const AnchorHoverCard = Mount.define('HoverCardAnchor', {
+export const AnchorHoverCard = Mount.defineStream('HoverCardAnchor', {
   args: { buttonId: S.String, anchor: Anchor.AnchorConfig },
-  messages: [Message.CompletedHoverCardAnchor],
+  messages: [Message.CompletedHoverCardAnchor, Message.LeftHoverCard],
   execute: ({ element, buttonId, anchor }) =>
-    Effect.gen(function* () {
-      yield* Effect.acquireRelease(
-        Effect.sync(() => {
-          const owner = element.getRootNode() as Document | ShadowRoot
-          const viewport = element.ownerDocument.defaultView
-          let cleanup = () => {}
-          const position = () => {
-            cleanup()
-            const button = owner.getElementById(buttonId)
-            const rect = button?.getBoundingClientRect()
-            const placement = anchor.placement ?? 'bottom'
-            const isHorizontal =
-              placement.startsWith('left') || placement.startsWith('right')
-            const padding = anchor.padding
-            const horizontalPadding =
-              typeof padding === 'number'
-                ? padding
-                : Math.max(padding?.left ?? 0, padding?.right ?? 0)
-            const availableWidth =
-              rect === undefined || viewport === null
-                ? Infinity
-                : Math.max(rect.left, viewport.innerWidth - rect.right) -
-                  (anchor.gap ?? 0) -
-                  horizontalPadding
-            // Flip handles opposite sides, but cannot switch axes when neither
-            // horizontal side has room for a readable card.
-            const resolvedPlacement: Anchor.AnchorConfig['placement'] =
-              isHorizontal &&
-              availableWidth < element.getBoundingClientRect().width
-                ? placement.endsWith('-start')
-                  ? 'bottom-start'
-                  : placement.endsWith('-end')
-                    ? 'bottom-end'
-                    : 'bottom'
-                : placement
-            cleanup = Anchor.anchorSetup(element, {
-              buttonId,
-              anchor: { ...anchor, placement: resolvedPlacement },
-              interceptTab: false,
-            })
-          }
-          position()
-          viewport?.addEventListener('resize', position)
-          return () => {
-            viewport?.removeEventListener('resize', position)
-            cleanup()
-          }
-        }),
-        cleanup => Effect.sync(cleanup),
-      )
-      const unclamp = () => {
-        if (element instanceof HTMLElement) {
-          element.style.removeProperty('max-height')
-          element.style.removeProperty('overflow-y')
-          element.style.removeProperty('overscroll-behavior')
+    Stream.callback<
+      | typeof Message.CompletedHoverCardAnchor.Type
+      | typeof Message.LeftHoverCard.Type
+    >(queue =>
+      Effect.gen(function* () {
+        const owner = element.getRootNode() as Document | ShadowRoot
+        const region = element.parentElement
+        if (region !== null) {
+          yield* HoverIntentPrimitive.watchPointerDeparture(
+            region,
+            owner.getElementById(buttonId),
+            element,
+            () => {
+              Queue.offerUnsafe(queue, Message.LeftHoverCard())
+            },
+          )
         }
-      }
-      yield* Effect.acquireRelease(
-        Effect.sync(() => {
-          unclamp()
-          const observer = new MutationObserver(unclamp)
-          observer.observe(element, {
-            attributes: true,
-            attributeFilter: ['style'],
-          })
-          return () => observer.disconnect()
-        }),
-        cleanup => Effect.sync(cleanup),
-      )
-      return Message.CompletedHoverCardAnchor()
-    }),
+        yield* Effect.acquireRelease(
+          Effect.sync(() => {
+            const viewport = element.ownerDocument.defaultView
+            let cleanup = () => {}
+            const position = () => {
+              cleanup()
+              const button = owner.getElementById(buttonId)
+              const rect = button?.getBoundingClientRect()
+              const placement = anchor.placement ?? 'bottom'
+              const isHorizontal =
+                placement.startsWith('left') || placement.startsWith('right')
+              const padding = anchor.padding
+              const horizontalPadding =
+                typeof padding === 'number'
+                  ? padding
+                  : Math.max(padding?.left ?? 0, padding?.right ?? 0)
+              const availableWidth =
+                rect === undefined || viewport === null
+                  ? Infinity
+                  : Math.max(rect.left, viewport.innerWidth - rect.right) -
+                    (anchor.gap ?? 0) -
+                    horizontalPadding
+              // Flip handles opposite sides, but cannot switch axes when neither
+              // horizontal side has room for a readable card.
+              const resolvedPlacement: Anchor.AnchorConfig['placement'] =
+                isHorizontal &&
+                availableWidth < element.getBoundingClientRect().width
+                  ? placement.endsWith('-start')
+                    ? 'bottom-start'
+                    : placement.endsWith('-end')
+                      ? 'bottom-end'
+                      : 'bottom'
+                  : placement
+              cleanup = Anchor.anchorSetup(element, {
+                buttonId,
+                anchor: { ...anchor, placement: resolvedPlacement },
+                interceptTab: false,
+              })
+            }
+            position()
+            viewport?.addEventListener('resize', position)
+            return () => {
+              viewport?.removeEventListener('resize', position)
+              cleanup()
+            }
+          }),
+          cleanup => Effect.sync(cleanup),
+        )
+        const unclamp = () => {
+          if (element instanceof HTMLElement) {
+            element.style.removeProperty('max-height')
+            element.style.removeProperty('overflow-y')
+            element.style.removeProperty('overscroll-behavior')
+          }
+        }
+        yield* Effect.acquireRelease(
+          Effect.sync(() => {
+            unclamp()
+            const observer = new MutationObserver(unclamp)
+            observer.observe(element, {
+              attributes: true,
+              attributeFilter: ['style'],
+            })
+            return () => observer.disconnect()
+          }),
+          cleanup => Effect.sync(cleanup),
+        )
+        Queue.offerUnsafe(queue, Message.CompletedHoverCardAnchor())
+        return yield* Effect.never
+      }),
+    ),
 })
 
 type UpdateReturn = Update.Return<Model, Message>
