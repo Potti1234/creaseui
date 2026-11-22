@@ -495,7 +495,7 @@ Source: [`src/ui/command.ts`](../src/ui/command.ts)
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage<Item extends string = string> = ComboboxPrimitive.OutMessage<Item>` |
 | `init` | value | `init: value` |
-| `CommandItemConfig` | type | `CommandItemConfig = Readonly<{ content: Html \| string; searchText?: string; shortcut?: Html \| string; class?: string; isDisabled?: boolean; }>` |
+| `CommandItemConfig` | type | `CommandItemConfig = Readonly<{ content?: Html \| string; label?: string; leadingContent?: Html; searchText?: string; shortcut?: Html \| string; class?: string; isDisabled?: boolean; }>` |
 | `CommandProps` | type | `CommandProps<Item extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Item>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => CommandItemConfig; plac…` |
 | `commandGroupHeading` | function | `commandGroupHeading<Msg>(content: Html \| string, className: string \| undefined, h: HtmlBuilder<Msg>): Html` |
 | `commandShortcut` | function | `commandShortcut<Msg>(content: Html \| string, className: string \| undefined, h: HtmlBuilder<Msg>): Html` |

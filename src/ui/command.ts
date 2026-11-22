@@ -1,3 +1,4 @@
+import { matchRanges, matchSegments } from '@/lib/behaviors/text-match'
 import type { Option } from 'effect'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
@@ -60,7 +61,9 @@ const SEPARATOR_CLASS = '-mx-1 h-px bg-border'
 const SHORTCUT_CLASS = 'ml-auto text-xs tracking-widest text-muted-foreground'
 
 export type CommandItemConfig = Readonly<{
-  content: Html | string
+  content?: Html | string
+  label?: string
+  leadingContent?: Html
   searchText?: string
   shortcut?: Html | string
   class?: string
@@ -149,6 +152,7 @@ const renderCommand = <Item extends string, Msg>(
     const config = props.itemToConfig(item)
     return (
       config.searchText ??
+      config.label ??
       (typeof config.content === 'string' ? config.content : item)
     )
   }
@@ -179,12 +183,42 @@ const renderCommand = <Item extends string, Msg>(
       itemToConfig: item => {
         const config = props.itemToConfig(item)
 
+        const label =
+          config.label ??
+          (typeof config.content === 'string' ? config.content : item)
+        const labelContent = hc.span(
+          [],
+          matchSegments(
+            label,
+            matchRanges(
+              label,
+              props.model.inputValue === props.restingInputValue
+                ? ''
+                : props.model.inputValue,
+              'fuzzy',
+            ),
+          ).map(segment =>
+            segment.match
+              ? hc.strong(
+                  [hc.DataAttribute('slot', 'command-match')],
+                  [segment.text],
+                )
+              : segment.text,
+          ),
+        )
         return {
           className: cn(ITEM_CLASS, config.class),
           content: hc.span(
             [hc.DataAttribute('slot', 'command-item'), hc.Class('contents')],
             [
-              config.content,
+              ...(config.leadingContent === undefined
+                ? []
+                : [config.leadingContent]),
+              config.label !== undefined ||
+              typeof config.content === 'string' ||
+              config.content === undefined
+                ? labelContent
+                : config.content,
               ...(config.shortcut === undefined
                 ? []
                 : [commandShortcut(config.shortcut, '', h)]),

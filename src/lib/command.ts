@@ -3,10 +3,11 @@ import { Combobox } from '@foldkit/ui'
 import { defineView } from 'foldkit/submodel'
 import type { Html } from 'foldkit/html'
 import type { Update } from 'foldkit'
+import { foldText, fuzzyScore } from './behaviors/text-match'
 import * as Listbox from './behaviors/listbox'
 
 export const normalizeCommandQuery = (value: string): string =>
-  value.trim().toLocaleLowerCase()
+  foldText(value).trim()
 
 export const filterCommandItems = <Item>(
   items: ReadonlyArray<Item>,
@@ -17,7 +18,7 @@ export const filterCommandItems = <Item>(
   const query = normalizeCommandQuery(queryValue)
   if (query === '' || queryValue === restingInputValue) return items
   return Listbox.filter(items, query, itemToSearchText, item =>
-    normalizeCommandQuery(itemToSearchText(item)).includes(query),
+    fuzzyScore(itemToSearchText(item), query),
   )
 }
 

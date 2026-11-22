@@ -11,10 +11,16 @@ describe('Command query policy', () => {
     assert.equal(normalizeCommandQuery('  SeTT  '), 'sett')
   })
 
-  it('preserves accent-sensitive search and empty query behavior', () => {
+  it('folds accents and preserves empty query behavior', () => {
     const items = ['École', 'Ecole', 'apple']
-    assert.deepEqual(filterCommandItems(items, 'ecole', '', String), ['Ecole'])
-    assert.deepEqual(filterCommandItems(items, 'école', '', String), ['École'])
+    assert.deepEqual(filterCommandItems(items, 'ecole', '', String), [
+      'École',
+      'Ecole',
+    ])
+    assert.deepEqual(filterCommandItems(items, 'école', '', String), [
+      'École',
+      'Ecole',
+    ])
     assert.equal(filterCommandItems(items, '  ', '', String), items)
     assert.deepEqual(filterCommandItems([], 'x', '', String), [])
     assert.deepEqual(filterCommandItems(items, 'missing', '', String), [])
@@ -44,7 +50,8 @@ describe('Command query policy', () => {
       (_, index) => `command-${String(index)}`,
     )
     const result = filterCommandItems(items, 'command-999', '', item => item)
-    assert.deepEqual(result, [
+    assert.equal(result.length, 37)
+    assert.deepEqual(result.slice(0, 11), [
       'command-999',
       'command-9990',
       'command-9991',
