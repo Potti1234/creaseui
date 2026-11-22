@@ -109,6 +109,17 @@ describe('SwipeActions', () => {
     assert.ok(Option.isNone(release(reversed, 111).model.open))
   })
 
+  it('retains sub-slop samples for a short flick after a held press', () => {
+    const held = move(press(initial()), 0, 1000)
+    const unpromoted = move(held, 5, 1010)
+    assert.ok(Option.isNone(unpromoted.draft))
+    const flick = move(unpromoted, 15, 1020)
+    assert.deepEqual(opened(release(flick, 1021).model), {
+      key: 'a',
+      side: 'start',
+    })
+  })
+
   it('ignores stale flicks and wrong pointer releases', () => {
     const draft = move(press(initial()), 15, 10)
     assert.ok(Option.isNone(release(draft, 51).model.open))

@@ -314,14 +314,19 @@ export const update = (
     MovedPointer: ({ pointerId, x, y, time }) => {
       if (Option.isNone(model.pointer) || model.pointer.value.id !== pointerId)
         return { model }
-      const pointer = model.pointer.value
-      if (pointer.rejected) return { model }
+      const current = model.pointer.value
+      if (current.rejected) return { model }
+      const pointer = {
+        ...current,
+        velocity: Velocity.addSample(current.velocity, time, x),
+      }
       const row = geometry(model, pointer.key)
       if (!isMeasured(row)) return close(model)
       const dx = x - pointer.x
       const dy = y - pointer.y
       if (Option.isNone(model.draft)) {
-        if (Math.hypot(dx, dy) < SWIPE_PROMOTION_SLOP) return { model }
+        if (Math.hypot(dx, dy) < SWIPE_PROMOTION_SLOP)
+          return { model: { ...model, pointer: Option.some(pointer) } }
         if (Math.abs(dy) >= Math.abs(dx))
           return {
             model: {
@@ -341,10 +346,7 @@ export const update = (
       return {
         model: {
           ...model,
-          pointer: Option.some({
-            ...pointer,
-            velocity: Velocity.addSample(pointer.velocity, time, x),
-          }),
+          pointer: Option.some(pointer),
           draft: Option.some({
             key: pointer.key,
             x: shown,
