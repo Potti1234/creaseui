@@ -110,7 +110,8 @@ requests. Read the reason from the OutMessage. For exit transitions, pass
 Dropdown Menu and Nav Menu use immediate unmount. More Menu, Context Menu
 and Menubar's item panels inherit Popup through Dropdown Menu. Nav Menu keeps
 hover intent, pinning and focus commands outside Popup. Roles, event detection,
-positioning, focus and layering belong to the component.
+positioning, focus and layering belong to the component. Compose Position and
+Layer when a custom popup also needs geometry or dismissal.
 
 Dialog and Popover wrap `@foldkit/ui` instead of porting the UI SDK popup
 controller. Foldkit Dialog manages the native dialog, focus containment and
@@ -299,6 +300,48 @@ help with focus restoration and live-region text.
 
 Try the [room-booking demo](../../docs/spans-demo.html) locally:
 `npm run dev -- --open /src/docs/spans-demo.html`.
+
+## Position
+
+[ui-sdk position](https://ui-sdk.dev/docs/core/behaviors/popups#placing-a-popup)
+is independent of disclosure and dismissal. For an ID-based anchor,
+`Position.view({ buttonId, anchor, ... }, send, h)` supplies a scoped Mount
+around Foldkit Anchor. Prefer it when you want Foldkit's collision handling,
+shadow-root and dialog-aware portals, and focus after first paint. Crease's
+theme-preserving overlay boundary composes `Position.bindAnchor` so the
+[Popover demo](https://creaseui.com/docs/components/popover) keeps its scoped
+theme and focus.
+
+Foldkit Anchor only resolves HTML triggers by ID. For points and live
+rectangles, `Position.mountPoint({ point, options })` accepts Schema inputs,
+and `Position.position(anchorOrGetter, panel, optionsOrGetter)` uses the same
+Floating UI engine without requiring a trigger element. It reports resolved
+`data-side` and `data-align`, available size, arrow offsets, and the transform
+origin. Dispose it at unmount; `cleanup.place()` requests a fresh placement.
+Mount arguments are fixed for the mount lifetime; key the panel anew for a
+different model-owned point, or use the getter API in a custom integration.
+
+## Layer
+
+[ui-sdk bindLayer](https://ui-sdk.dev/docs/core/behaviors/popups#layers-of-your-own)
+is for floating elements whose open state and layout the owner controls.
+`Layer.view({ insideIds: [triggerId], topLayer: true }, send, h)` supplies
+a Mount that emits `RequestedDismissal` with Escape, outside press, or
+window-blur reasons. Blur and the native top layer are opt-in. The last
+mounted layer gets Escape; an outside press can dismiss several layers until
+it reaches one it is inside. Modal layers consume the outside press.
+`Layer.persistentView` exempts a region from the standalone dismissal stack.
+Custom native-layer elements should reset the browser's default popover
+inset, margin, padding, border, and background.
+
+Prefer the Popover or Dialog behavior for full overlays: they already
+coordinate focus entry and return, modal isolation, ARIA wiring, and
+transitions. Neither exposes a standalone dismissal stack.
+Layer does not replace their lifecycle or make an element outside a native
+modal dialog interactive. Use native Dialog when modal input must be blocked
+before handlers on a closed shadow host run. The
+[Action Bar demo](https://creaseui.com/docs/components/action-bar) uses Layer
+for Escape only and retains parent-owned selection and roving focus.
 
 ## RadioGroup
 
