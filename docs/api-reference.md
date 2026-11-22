@@ -495,10 +495,10 @@ Source: [`src/ui/command.ts`](../src/ui/command.ts)
 | `OutMessage` | value | `OutMessage: value` |
 | `OutMessage` | type | `OutMessage<Item extends string = string> = ComboboxPrimitive.OutMessage<Item>` |
 | `init` | value | `init: value` |
-| `CommandItemConfig` | type | `CommandItemConfig = Readonly<{ content?: Html \| string; label?: string; leadingContent?: Html; searchText?: string; keywords?: ReadonlyArray<string>; fallbackKeywords?: ReadonlyArray<string>; shortcut?: Html \| string; class?: string; isDisabled?: boolean; }>` |
+| `CommandItemConfig` | type | `CommandItemConfig = Readonly<{ content?: Html \| string; label?: string; leadingContent?: Html; searchText?: string; keywords?: ReadonlyArray<string>; fallbackKeywords?: ReadonlyArray<string>; shortcut?: Html \| string; keys?: string; class?: string; isDisabled…` |
 | `CommandProps` | type | `CommandProps<Item extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Item>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => CommandItemConfig; plac…` |
 | `commandGroupHeading` | function | `commandGroupHeading<Msg>(content: Html \| string, className: string \| undefined, h: HtmlBuilder<Msg>): Html` |
-| `commandShortcut` | function | `commandShortcut<Msg>(content: Html \| string, className: string \| undefined, h: HtmlBuilder<Msg>): Html` |
+| `commandShortcut` | function | `commandShortcut<Msg>(content: Html \| string, className: string \| undefined, h: HtmlBuilder<Msg>, isAriaHidden = false): Html` |
 | `commandSeparator` | function | `commandSeparator<Msg>(className: string \| undefined, h: HtmlBuilder<Msg>): Html` |
 | `commandEmpty` | function | `commandEmpty<Msg>(content: Html \| string, className: string \| undefined, h: HtmlBuilder<Msg>): Html` |
 | `CommandBundle` | type | `CommandBundle<Item extends string> = Readonly<{ update: ComboboxPrimitive.Bundle<Item>['update']; selectItem: ComboboxPrimitive.Bundle<Item>['selectItem']; open: ComboboxPrimitive.Bundle<Item>['open']; close: ComboboxPrimitive.Bundle<Item>['close']; command: …` |
@@ -729,7 +729,7 @@ Source: [`src/ui/dropdown-menu.ts`](../src/ui/dropdown-menu.ts)
 | `openAt` | value | `openAt: value` |
 | `close` | value | `close: value` |
 | `selectItem` | value | `selectItem: value` |
-| `DropdownMenuItemConfig` | type | `DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html \| string; icon?: Html; shortcut?: Html \| string; variant?: 'default' \| 'destructive'; kind?: 'item' \| 'checkbox' \| 'radio'; isChecked?: boolean; isInset?: boolean; isDisabled?: bool…` |
+| `DropdownMenuItemConfig` | type | `DropdownMenuItemConfig<Item extends string = string> = Readonly<{ label: Html \| string; icon?: Html; shortcut?: Html \| string; keys?: string; variant?: 'default' \| 'destructive'; kind?: 'item' \| 'checkbox' \| 'radio'; isChecked?: boolean; isInset?: boolean; is…` |
 | `DropdownMenuSide` | type | `DropdownMenuSide = 'top' \| 'right' \| 'bottom' \| 'left'` |
 | `DropdownMenuAlign` | type | `DropdownMenuAlign = 'start' \| 'center' \| 'end'` |
 | `DropdownMenuProps` | type | `DropdownMenuProps<Item extends string, Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger: Html \| string; triggerClass?: string; placement?: 'inline' \| 'sidebarAction'; triggerTabindex?: number; triggerRole?: string; triggerAr…` |

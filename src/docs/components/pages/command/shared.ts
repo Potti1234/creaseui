@@ -22,7 +22,7 @@ export const commandFixtures: ReadonlyArray<CommandFixture> = [
     title: 'Shortcuts',
     kind: 'shortcuts',
     description:
-      'Item configs carry icon content and a trailing shortcut hint.',
+      'Platform-aware hints are display-only; applications must register their own shortcut actions.',
   },
   {
     title: 'Groups',
@@ -47,7 +47,7 @@ export const commandFixtures: ReadonlyArray<CommandFixture> = [
 export type CommandItem = Readonly<{
   value: string
   icon?: IconName
-  shortcut?: string
+  keys?: string
   group: string
 }>
 
@@ -58,9 +58,9 @@ export const commandBasicItems: ReadonlyArray<CommandItem> = [
 ]
 
 export const commandShortcutItems: ReadonlyArray<CommandItem> = [
-  { value: 'Profile', icon: 'user', shortcut: '⌘P', group: 'Settings' },
-  { value: 'Billing', icon: 'credit-card', shortcut: '⌘B', group: 'Settings' },
-  { value: 'Settings', icon: 'settings', shortcut: '⌘S', group: 'Settings' },
+  { value: 'Profile', icon: 'user', keys: 'mod+P', group: 'Settings' },
+  { value: 'Billing', icon: 'credit-card', keys: 'mod+B', group: 'Settings' },
+  { value: 'Settings', icon: 'settings', keys: 'mod+S', group: 'Settings' },
 ]
 
 export const commandGroupItems: ReadonlyArray<CommandItem> = [
@@ -69,9 +69,9 @@ export const commandGroupItems: ReadonlyArray<CommandItem> = [
 ]
 
 export const commandScrollableItems: ReadonlyArray<CommandItem> = [
-  { value: 'Home', icon: 'house', shortcut: '⌘H', group: 'Navigation' },
+  { value: 'Home', icon: 'house', keys: 'mod+H', group: 'Navigation' },
   { value: 'Inbox', icon: 'inbox', group: 'Navigation' },
-  { value: 'Search', icon: 'search', shortcut: '⌘F', group: 'Navigation' },
+  { value: 'Search', icon: 'search', keys: 'mod+F', group: 'Navigation' },
   { value: 'Files', icon: 'folder', group: 'Navigation' },
   { value: 'Images', icon: 'image', group: 'Navigation' },
   { value: 'Music', icon: 'music', group: 'Navigation' },
@@ -82,11 +82,16 @@ export const commandScrollableItems: ReadonlyArray<CommandItem> = [
   {
     value: 'New Folder',
     icon: 'folder-plus',
-    shortcut: '⌘⇧N',
+    keys: 'mod+shift+N',
     group: 'Actions',
   },
-  { value: 'Copy Path', icon: 'clipboard', shortcut: '⌘⇧C', group: 'Actions' },
-  { value: 'Paste', icon: 'clipboard-paste', shortcut: '⌘V', group: 'Actions' },
+  {
+    value: 'Copy Path',
+    icon: 'clipboard',
+    keys: 'mod+shift+C',
+    group: 'Actions',
+  },
+  { value: 'Paste', icon: 'clipboard-paste', keys: 'mod+V', group: 'Actions' },
 ]
 
 export const commandRtlItems: ReadonlyArray<CommandItem> = [
@@ -111,9 +116,9 @@ export const itemsForFixture = (
 const itemsLiteral = (items: ReadonlyArray<CommandItem>): string => {
   const lines = items.map(
     item =>
-      `  { value: '${item.value}'${item.icon === undefined ? '' : `, icon: '${item.icon}'`}${item.shortcut === undefined ? '' : `, shortcut: '${item.shortcut}'`}, group: '${item.group}' },`,
+      `  { value: '${item.value}'${item.icon === undefined ? '' : `, icon: '${item.icon}'`}${item.keys === undefined ? '' : `, keys: '${item.keys}'`}, group: '${item.group}' },`,
   )
-  return `type CommandItem = Readonly<{ value: string; icon?: Icon.IconName; shortcut?: string; group: string }>
+  return `type CommandItem = Readonly<{ value: string; icon?: Icon.IconName; keys?: string; group: string }>
 const commandItems: ReadonlyArray<CommandItem> = [\n${lines.join('\n')}\n]`
 }
 
@@ -134,6 +139,7 @@ const commandSource = (
 import { Command as FoldkitCommand, Runtime, Subscription, Update } from 'foldkit'
 import { type Document, type HtmlBuilder } from 'foldkit/html'
 
+import { currentPlatform, formatShortcut } from '@/lib/behaviors/shortcuts'
 import * as Button from '@/${dir}/button'
 import * as CommandMenu from '@/${dir}/command'
 import * as Dialog from '@/${dir}/dialog'
@@ -212,7 +218,7 @@ export type Message = typeof Message.Type`,
                   ...(item?.icon === undefined ? [] : [Icon.icon({ name: item.icon, size: 'sm' }, h)]),
                   h.span([], [value]),
                 ]),
-                ...(item?.shortcut === undefined ? {} : { shortcut: item.shortcut }),
+                ...(item?.keys === undefined ? {} : { shortcut: formatShortcut(item.keys, currentPlatform()) }),
               }
             },
             itemGroupKey: value => commandItems.find(entry => entry.value === value)?.group ?? 'Other',

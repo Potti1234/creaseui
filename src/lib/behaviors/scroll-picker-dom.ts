@@ -206,7 +206,7 @@ export const observePicker = (
   }
   const waitForRest = (): void => {
     view.clearTimeout(timer)
-    timer = view.setTimeout(rest, 120)
+    if (!supportsScrollEnd) timer = view.setTimeout(rest, 120)
   }
   const interrupt = (): void => {
     emit(Message.Interrupted())
@@ -307,8 +307,9 @@ export const observePicker = (
     event.preventDefault()
     emit(Message.Paged({ delta }))
   }
-  const onCommand = (): void => {
-    waitForRest()
+  const onCommand = (event: Event): void => {
+    const { offset } = (event as CustomEvent<{ offset: number }>).detail
+    if (Math.abs(offset - scroll()) < 1) rest()
   }
   const resizes = view.ResizeObserver
     ? new view.ResizeObserver(measure)
