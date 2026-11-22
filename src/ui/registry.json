@@ -1831,6 +1831,7 @@
       },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/dialog-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -4209,6 +4210,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/overlay-boundary-behavior",
+        "Potti1234/creaseui/popover-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [

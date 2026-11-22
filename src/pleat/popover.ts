@@ -2,7 +2,7 @@ import { Style, When } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Popover as PopoverPrimitive } from '@foldkit/ui'
+import * as PopoverPrimitive from '@/lib/behaviors/popover'
 
 import { overlayStyles } from './overlay-tokens'
 import type {
