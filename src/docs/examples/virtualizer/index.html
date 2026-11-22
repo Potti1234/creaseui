@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Virtualizer behavior · CreaseUI</title>
+    <style>
+      :root { font: 1rem/1.5 system-ui, sans-serif; color: #172033; background: #f6f8fc; }
+      main { max-width: 40rem; margin: 3rem auto; }
+      .controls { display: flex; gap: .5rem; margin-bottom: 1rem; }
+      button { font: inherit; padding: .4rem 1rem; cursor: pointer; }
+      .list { height: 320px; overflow: auto; border: 1px solid #bbc5d6; background: white; }
+      .row { box-sizing: border-box; height: 32px; padding-inline: 1rem; border-bottom: 1px solid #e6eaf1; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

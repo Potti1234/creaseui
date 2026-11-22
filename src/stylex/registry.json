@@ -1757,7 +1757,8 @@
         "Potti1234/creaseui/stylex-overlay-tokens-stylex",
         "Potti1234/creaseui/stylex-reset",
         "Potti1234/creaseui/stylex-style",
-        "Potti1234/creaseui/stylex-tokens-stylex"
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/text-match-behavior"
       ],
       "devDependencies": [
         "@stylexjs/unplugin@^0.19.0"
@@ -2608,9 +2609,11 @@
         "@stylexjs/stylex@^0.19.0"
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/date-input-behavior",
         "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-picker-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/stylex-calendar",
         "Potti1234/creaseui/stylex-contracts",
@@ -2686,6 +2689,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme-css",
+        "Potti1234/creaseui/date-picker-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/stylex-calendar",
         "Potti1234/creaseui/stylex-contracts",
@@ -2752,6 +2756,7 @@
         "@stylexjs/stylex@^0.19.0"
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-range-input-behavior",
@@ -2824,8 +2829,10 @@
         "@stylexjs/stylex@^0.19.0"
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/date-picker-behavior",
         "Potti1234/creaseui/date-time-input-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/stylex-calendar",

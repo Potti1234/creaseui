@@ -6361,6 +6361,7 @@
     "--move-y",
     "--nested-drawers",
     "--peek",
+    "--picker-offset",
     "--sheet-expanded-height",
     "--sheet-layout-offset",
     "--sheet-scrim-opacity",
