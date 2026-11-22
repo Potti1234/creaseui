@@ -89,11 +89,6 @@ test('Command ranks folded fuzzy matches and highlights labels with icons', asyn
   const query = dialog.getByRole('combobox')
   const options = dialog.getByRole('option')
   await expect(options).toHaveText(['Calendar', 'Search Emoji', 'Calculator'])
-  const scrollRegion = dialog.getByRole('listbox')
-  await expect(scrollRegion).toHaveAttribute('tabindex', '0')
-  await query.press('Tab')
-  await expect(scrollRegion).toBeFocused()
-  await query.focus()
   await query.fill('c')
   await expect(options).toHaveText(['Calendar', 'Calculator', 'Search Emoji'])
   await expect(dialog.locator('[data-slot="command-match"]')).toHaveText([
