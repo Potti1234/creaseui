@@ -7,6 +7,11 @@ import { filterOptions } from '../src/lib/multi-selector-view.ts'
 import { Option } from 'effect'
 
 describe('MultiSelector submodel', () => {
+  it('folds accents without fuzzy matching', () => {
+    const options = [{ value: 'lodz', label: 'Łódź' }]
+    assert.deepEqual(filterOptions(options, 'LOD'), options)
+    assert.deepEqual(filterOptions(options, 'ldz'), [])
+  })
   it('initializes with seeded values and option set', () => {
     const model = MultiSelector.init({
       id: 'columns',
