@@ -139,6 +139,8 @@ describe('Area lifecycle and attributes', () => {
     assert.equal(Area.thumbStyle(model).top, '25%')
     assert.equal(Area.thumbStyle(model).insetInlineStart, '25%')
     assert.equal(Area.thumbStyle(model)['--area-y'], '0.75')
+    assert.deepEqual(Area.axisOf(), { min: 0, max: 1, step: 0.01 })
+    assert.equal(Area.thumbAttrs(model)['aria-valuetext'], 'X 25%, Y 75%')
     const attrs = Area.thumbAttrs(model, {
       x: { label: 'Width' },
       y: { label: 'Height' },

@@ -6,13 +6,16 @@ import * as Mount from 'foldkit/mount'
 import * as Drag from '@/lib/behaviors/drag'
 
 export const Point = S.Struct({ x: S.Number, y: S.Number })
+
 export type Point = typeof Point.Type
+
 export type Axis = Readonly<{
   min?: number
   max?: number
   step?: number
   label?: string
 }>
+
 export type Options = Readonly<{
   x?: Axis
   y?: Axis
@@ -20,17 +23,21 @@ export type Options = Readonly<{
   rtl?: boolean
   valueText?: (value: Point) => string
 }>
+
 export const Reason = S.Literals([
   'track-press',
   'drag',
   'step-key',
   'imperative',
 ])
+
 export const Model = S.Struct({
   value: Point,
   pressReason: S.Option(Reason),
 })
+
 export type Model = typeof Model.Type
+
 export const Message = defineMessageUnion({
   PressedTrack: { fractions: Point },
   MovedPointer: { fractions: Point },
@@ -38,19 +45,22 @@ export const Message = defineMessageUnion({
   PressedKey: { key: S.String, shift: S.Boolean },
   RequestedValue: { value: Point },
 })
+
 export type Message = typeof Message.Type
+
 export const OutMessage = defineMessageUnion({
   ChangedValue: { value: Point, reason: Reason },
   CommittedValue: { value: Point, reason: Reason },
 })
+
 export type OutMessage = typeof OutMessage.Type
 
 export const axisOf = (axis: Axis = {}) => ({
   min: axis.min ?? 0,
   max: axis.max ?? 1,
   step: axis.step ?? 0.01,
-  label: axis.label ?? 'X',
 })
+
 export const clamp = (value: number, min = 0, max = 1): number =>
   Math.max(min, Math.min(max, value))
 
@@ -72,18 +82,22 @@ export const snap = (value: number, axis: Axis = {}): number => {
     ),
   )
 }
+
 export const valueToFraction = (value: number, axis: Axis = {}): number => {
   const { min, max } = axisOf(axis)
   return max === min ? 0 : clamp((value - min) / (max - min))
 }
+
 export const fractionToValue = (fraction: number, axis: Axis = {}): number => {
   const { min, max } = axisOf(axis)
   return min + clamp(fraction) * (max - min)
 }
+
 export const snapPoint = (value: Point, options: Options = {}): Point => ({
   x: snap(value.x, options.x),
   y: snap(value.y, options.y),
 })
+
 export const keyToNextValue = (
   value: Point,
   key: string,
@@ -140,6 +154,7 @@ export const keyToNextValue = (
       return Option.none()
   }
 }
+
 export const init = (
   value: Point = { x: 0, y: 0 },
   options: Options = {},
@@ -147,12 +162,14 @@ export const init = (
   value: snapPoint(value, options),
   pressReason: Option.none(),
 })
+
 export const reflect = (model: Model, value: Point): Model => ({
   ...model,
   value,
 })
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+
 export const update = (
   model: Model,
   message: Message,
@@ -227,10 +244,12 @@ export const update = (
     RequestedValue: ({ value }) => set(value, 'imperative'),
   })
 }
+
 export const fractions = (model: Model, options: Options = {}): Point => ({
   x: valueToFraction(model.value.x, options.x),
   y: valueToFraction(model.value.y, options.y),
 })
+
 export const thumbStyle = (model: Model, options: Options = {}) => {
   const { x, y } = fractions(model, options)
   return {
@@ -241,6 +260,7 @@ export const thumbStyle = (model: Model, options: Options = {}) => {
     '--area-y': String(y),
   }
 }
+
 export const thumbAttrs = (
   model: Model,
   options: Options = {},
@@ -261,6 +281,7 @@ export const thumbAttrs = (
     'data-area-thumb': '',
   }
 }
+
 export const keyMessage = (
   key: string,
   modifiers: Readonly<{
