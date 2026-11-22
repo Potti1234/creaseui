@@ -2714,7 +2714,7 @@ Examples: Demo, Basic, Shortcuts, Groups, Scrollable, RTL
 - `OutMessage: value` (value)
 - `OutMessage<Item extends string = string> = ComboboxPrimitive.OutMessage<Item>` (type)
 - `init: value` (value)
-- `CommandItemConfig = Readonly<{ content: Html | string; searchText?: string; shortcut?: Html | string; class?: string; isDisabled?: boolean; }>` (type)
+- `CommandItemConfig = Readonly<{ content?: Html | string; label?: string; leadingContent?: Html; searchText?: string; keywords?: ReadonlyArray<string>; fallbackKeywords?: ReadonlyArray<string>; shortcut?: Html | string; class?: string; isDisabled?: boolean; }>` (type)
 - `CommandProps<Item extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Item>; restingInputValue: string; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToConfig: (item: Item) => CommandItemConfig; plac…` (type)
 - `commandGroupHeading<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html` (function)
 - `commandShortcut<Msg>(content: Html | string, className: string | undefined, h: HtmlBuilder<Msg>): Html` (function)
@@ -3092,7 +3092,7 @@ A CreaseUI Grid component for Foldkit.
 
 Source: `src/ui/grid.ts`
 
-Examples: Grid, Grid — Column Spanning, Grid — Responsive Auto-Fit, Grid — Dashboard Layout, Grid — Card Gallery, GridSpan — Columns, Grid Span, Grid — Adaptive Metric Cards
+Examples: Grid, Grid — Column Spanning, Grid — Responsive Auto-Fit, Grid — Dashboard Layout, Grid — Card Gallery, GridSpan — Columns, Grid Span, Grid — Lasso Selection, Grid — Adaptive Metric Cards
 
 - `GridAlignment = 'start' | 'center' | 'end' | 'stretch'` (type)
 - `GridSpacing = 0 | 0.5 | 1 | 1.5 | 2 | 3 | 4 | 5 | 6 | 8 | 10` (type)

@@ -2021,7 +2021,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/overlay-boundary-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/text-match-behavior"
       ],
       "examples": [
         "Demo",
@@ -2156,7 +2157,8 @@
         "Potti1234/creaseui/command-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/text-match-behavior"
       ],
       "examples": [
         "Demo",
@@ -2205,7 +2207,7 @@
         {
           "name": "CommandItemConfig",
           "kind": "type",
-          "signature": "CommandItemConfig = Readonly<{ content: Html | string; searchText?: string; shortcut?: Html | string; class?: string; isDisabled?: boolean; }>"
+          "signature": "CommandItemConfig = Readonly<{ content?: Html | string; label?: string; leadingContent?: Html; searchText?: string; keywords?: ReadonlyArray<string>; fallbackKeywords?: ReadonlyArray<string>; shortcut?: Html | string; class?: string; isDisabled?: boolean; }>"
         },
         {
           "name": "CommandProps",
@@ -2451,7 +2453,9 @@
         "Potti1234/creaseui/date-input-behavior",
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/date-picker-behavior"
       ],
       "examples": [
         "Date Input",
@@ -2548,7 +2552,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/overlay-boundary-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/date-picker-behavior"
       ],
       "examples": [
         "Pick a date",
@@ -2681,7 +2686,8 @@
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-range-input-behavior",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/calendar-range"
       ],
       "examples": [
         "Date Range Input",
@@ -2785,7 +2791,9 @@
         "Potti1234/creaseui/date-time-input-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/time-parse-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/date-picker-behavior"
       ],
       "examples": [
         "Date Time Input",
@@ -3758,6 +3766,7 @@
         "Grid — Card Gallery",
         "GridSpan — Columns",
         "Grid Span",
+        "Grid — Lasso Selection",
         "Grid — Adaptive Metric Cards"
       ],
       "api": [
