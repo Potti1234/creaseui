@@ -1831,6 +1831,7 @@
       },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/dialog-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -4208,6 +4209,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/overlay-boundary-behavior",
+        "Potti1234/creaseui/popover-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -4351,6 +4353,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
+        "Potti1234/creaseui/resizable-behavior",
         "Potti1234/creaseui/utils"
       ],
       "files": [
@@ -5901,6 +5904,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
+        "Potti1234/creaseui/drag-and-drop-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input",
         "Potti1234/creaseui/utils"

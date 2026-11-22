@@ -2,9 +2,11 @@
    Toolbar keyboard wiring (packages/core/src/Toolbar/Toolbar.tsx) — examples and
    visual spec adapted to Crease UI tokens. */
 
-import { Effect, Queue, Schema as S, Stream } from 'effect'
+import { Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import * as Mount from 'foldkit/mount'
 import { defineMessageUnion } from 'foldkit/message'
+
+import { navigate } from '@/lib/behaviors/roving-focus'
 
 export const Message = defineMessageUnion({
   CompletedFocusToolbarItems: {},
@@ -87,28 +89,6 @@ const isRtlElement = (el: HTMLElement | null): boolean => {
   return window.getComputedStyle(el).direction === 'rtl'
 }
 
-const findEnabledIndex = (
-  items: ReadonlyArray<HTMLElement>,
-  isDisabled: (el: HTMLElement) => boolean,
-  start: number,
-  step: 1 | -1,
-  shouldWrap: boolean,
-): number => {
-  const count = items.length
-  if (count === 0) return -1
-  let index = start
-  for (let i = 0; i < count; i++) {
-    if (index < 0 || index >= count) {
-      if (!shouldWrap) return -1
-      index = (index + count) % count
-    }
-    const item = items[index]
-    if (item && !isDisabled(item)) return index
-    index += step
-  }
-  return -1
-}
-
 const setTabIndex = (el: HTMLElement, value: 0 | -1): void => {
   if (el.getAttribute('tabindex') !== String(value)) {
     el.setAttribute('tabindex', String(value))
@@ -146,27 +126,6 @@ export const FocusToolbarItems = Mount.defineStream('FocusToolbarItems', {
               }
             }
 
-            const getCurrentIndex = (
-              items: ReadonlyArray<HTMLElement>,
-            ): number => {
-              const active = document.activeElement
-              return items.findIndex(
-                item => item === active || item.contains(active),
-              )
-            }
-
-            const focusIndex = (
-              items: ReadonlyArray<HTMLElement>,
-              index: number,
-            ): void => {
-              const target = items[index]
-              if (!target) return
-              for (const el of items) {
-                setTabIndex(el, el === target ? 0 : -1)
-              }
-              target.focus()
-            }
-
             const onKeyDown = (event: KeyboardEvent): void => {
               if (
                 event.defaultPrevented ||
@@ -176,29 +135,6 @@ export const FocusToolbarItems = Mount.defineStream('FocusToolbarItems', {
               )
                 return
 
-              const horizontal = orientation === 'horizontal'
-              const rtl =
-                horizontal &&
-                (event.key === 'ArrowLeft' || event.key === 'ArrowRight')
-                  ? isRtlElement(element)
-                  : false
-
-              const nextKeys: Array<string> = []
-              const prevKeys: Array<string> = []
-              if (horizontal) {
-                nextKeys.push(rtl ? 'ArrowLeft' : 'ArrowRight')
-                prevKeys.push(rtl ? 'ArrowRight' : 'ArrowLeft')
-              } else {
-                nextKeys.push('ArrowDown')
-                prevKeys.push('ArrowUp')
-              }
-
-              const isNext = nextKeys.includes(event.key)
-              const isPrev = prevKeys.includes(event.key)
-              const isHome = event.key === 'Home'
-              const isEnd = event.key === 'End'
-              if (!isNext && !isPrev && !isHome && !isEnd) return
-
               if (
                 shouldDeferToCaret(event.target, event.key) ||
                 shouldDeferToCaret(document.activeElement, event.key)
@@ -207,50 +143,24 @@ export const FocusToolbarItems = Mount.defineStream('FocusToolbarItems', {
               }
 
               const items = getItems()
-              const currentIndex = getCurrentIndex(items)
-
-              if (isNext) {
-                const from = currentIndex === -1 ? 0 : currentIndex + 1
-                const next = findEnabledIndex(
-                  items,
-                  isItemDisabled,
-                  from,
-                  1,
-                  true,
-                )
-                if (next !== -1) focusIndex(items, next)
-              } else if (isPrev) {
-                const from =
-                  currentIndex === -1 ? items.length - 1 : currentIndex - 1
-                const prev = findEnabledIndex(
-                  items,
-                  isItemDisabled,
-                  from,
-                  -1,
-                  true,
-                )
-                if (prev !== -1) focusIndex(items, prev)
-              } else if (isHome) {
-                const first = findEnabledIndex(
-                  items,
-                  isItemDisabled,
-                  0,
-                  1,
-                  false,
-                )
-                if (first !== -1) focusIndex(items, first)
-              } else if (isEnd) {
-                const last = findEnabledIndex(
-                  items,
-                  isItemDisabled,
-                  items.length - 1,
-                  -1,
-                  false,
-                )
-                if (last !== -1) focusIndex(items, last)
-              }
+              const next = navigate({
+                keys: items,
+                currentKey: items.find(item =>
+                  item.contains(document.activeElement),
+                ),
+                pressedKey: event.key,
+                orientation:
+                  orientation === 'horizontal' ? 'Horizontal' : 'Vertical',
+                direction: isRtlElement(element) ? 'rtl' : 'ltr',
+                isDisabled: isItemDisabled,
+              })
+              if (Option.isNone(next)) return
 
               event.preventDefault()
+              for (const item of items) {
+                setTabIndex(item, item === next.value ? 0 : -1)
+              }
+              next.value.focus()
             }
 
             const onFocusIn = (): void => syncTabStops()
