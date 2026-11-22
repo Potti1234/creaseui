@@ -6,6 +6,7 @@ import type { Update } from 'foldkit'
 import {
   foldText,
   fuzzyFilter,
+  fuzzyScore,
   matchRanges,
   matchSegments,
   type MatchSegment,
@@ -36,6 +37,7 @@ export const filterCommandItems = <Item>(
   itemToSearchText: (item: Item) => string,
   options: Readonly<{
     itemToKeywords?: (item: Item) => ReadonlyArray<string>
+    itemToFallbackKeywords?: (item: Item) => ReadonlyArray<string>
     itemGroupKey?: (item: Item) => string
   }> = {},
 ): ReadonlyArray<Item> => {
@@ -44,12 +46,17 @@ export const filterCommandItems = <Item>(
     query === '' || queryValue === restingInputValue
       ? items
       : Listbox.filter(items, query, itemToSearchText, item =>
-          fuzzyFilter(
-            {
-              label: itemToSearchText(item),
-              keywords: options.itemToKeywords?.(item) ?? [],
-            },
-            query,
+          Math.max(
+            fuzzyFilter(
+              {
+                label: itemToSearchText(item),
+                keywords: options.itemToKeywords?.(item) ?? [],
+              },
+              query,
+            ),
+            ...(options.itemToFallbackKeywords?.(item) ?? []).map(
+              keyword => fuzzyScore(keyword, query) * 0.9,
+            ),
           ),
         )
   if (options.itemGroupKey === undefined) return filtered

@@ -82,6 +82,7 @@ export type CommandItemConfig = Readonly<{
   leadingContent?: Html
   searchText?: string
   keywords?: ReadonlyArray<string>
+  fallbackKeywords?: ReadonlyArray<string>
   shortcut?: Html | string
   layoutStyle?: ComponentLayoutStyle
   isDisabled?: boolean
@@ -188,6 +189,8 @@ const renderCommand = <Item extends string, Msg>(
     itemToSearchText,
     {
       itemToKeywords: item => props.itemToConfig(item).keywords ?? [],
+      itemToFallbackKeywords: item =>
+        props.itemToConfig(item).fallbackKeywords ?? [],
       ...(groupKey === undefined ? {} : { itemGroupKey: groupKey }),
     },
   )

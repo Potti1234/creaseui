@@ -36,7 +36,7 @@ describe('Command query policy', () => {
       [],
     )
   })
-  it('ranks an exact documentation title above matches in other fields', () => {
+  it('ranks exact documentation titles first and retains lower-weight cross-field matches', () => {
     const pages = [
       {
         title: 'Status Dot',
@@ -48,6 +48,12 @@ describe('Command query policy', () => {
         slug: 'stat',
         description: 'A single KPI: a muted label and a prominent value.',
       },
+      {
+        title: 'Map Styles',
+        slug: 'map-styles',
+        description:
+          'OpenFreeMap presets, custom style URLs or JSON, and Crease UI palette tokens.',
+      },
     ]
     const search = (query: string) =>
       filterCommandItems(pages, query, '', page => page.title, {
@@ -55,11 +61,29 @@ describe('Command query policy', () => {
           page.slug.replaceAll('-', ' '),
           page.description,
         ],
+        itemToFallbackKeywords: page => [
+          `${page.title} ${page.slug.replaceAll('-', ' ')} ${page.description}`,
+        ],
       })
     assert.equal(search('stat')[0], pages[1])
     assert.deepEqual(search('kpi'), [pages[1]])
+    assert.deepEqual(search('map styles openfreemap'), [pages[2]])
     assert.deepEqual(search(''), pages)
     assert.deepEqual(search('missing'), [])
+  })
+  it('weights fallback keywords below individual keywords', () => {
+    const items = [
+      { label: 'Other', keywords: [], fallback: ['cat'] },
+      { label: 'Example', keywords: ['cat'], fallback: [] },
+      { label: 'cat', keywords: [], fallback: [] },
+    ]
+    assert.deepEqual(
+      filterCommandItems(items, 'cat', '', item => item.label, {
+        itemToKeywords: item => item.keywords,
+        itemToFallbackKeywords: item => item.fallback,
+      }),
+      [items[2], items[1], items[0]],
+    )
   })
   it('segments fuzzy label matches and leaves resting, empty and unmatched queries plain', () => {
     assert.deepEqual(commandLabelSegments('Calendar', 'cl', ''), [

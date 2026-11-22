@@ -161,6 +161,9 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html =>
                       slug.replaceAll('-', ' '),
                       page?.description ?? '',
                     ],
+                    fallbackKeywords: [
+                      `${page?.title ?? slug} ${slug.replaceAll('-', ' ')} ${page?.description ?? ''}`,
+                    ],
                     content: h.div(
                       [h.Class(skin.searchResult)],
                       [
