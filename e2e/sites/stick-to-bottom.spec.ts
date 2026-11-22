@@ -12,6 +12,13 @@ const expectAtTail = async (viewport: Locator) => {
   await expect(viewport).toHaveAttribute('data-following', 'true')
 }
 
+const waitForInitialScroll = async (viewport: Locator) => {
+  await viewport.scrollIntoViewIfNeeded()
+  await expect(viewport).toHaveAttribute('data-pending-scroll', 'false', {
+    timeout: 20_000,
+  })
+}
+
 test('message scroller follows streamed text and resumes with a smooth jump', async ({
   page,
 }) => {
@@ -22,7 +29,7 @@ test('message scroller follows streamed text and resumes with a smooth jump', as
   const streamedReply = viewport.getByText(
     'Streaming tokens land chunk by chunk…',
   )
-  await viewport.scrollIntoViewIfNeeded()
+  await waitForInitialScroll(viewport)
   await expectAtTail(viewport)
   await example.getByRole('button', { name: 'Start streaming' }).click()
   await expect(streamedReply).toHaveCount(1, { timeout: 20_000 })
@@ -49,7 +56,7 @@ test('loading earlier messages preserves the reader position', async ({
   await page.goto('/docs/components/message-scroller')
   const example = page.locator('#loading-earlier-messages')
   const viewport = example.locator('[data-slot="message-scroller-viewport"]')
-  await viewport.scrollIntoViewIfNeeded()
+  await waitForInitialScroll(viewport)
   await expectAtTail(viewport)
   const row = viewport.locator('[data-message-id="msg-6"]')
   await row.evaluate(node => {
