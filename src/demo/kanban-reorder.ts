@@ -49,7 +49,12 @@ export const update = <Lane extends Readonly<{ id: string; name: string }>>(
   lanes: ReadonlyArray<Lane>,
   announcement: string,
   id: string,
-) => {
+): Readonly<{
+  model: Reorder.Model
+  lanes: ReadonlyArray<Lane>
+  announcement: string
+  commands: ReadonlyArray<Command.Command<Reorder.Message>>
+}> => {
   const value = lanes.map(lane => lane.id)
   const reflected = Reorder.update(model, Reorder.Message.Reflect({}), {
     value,
