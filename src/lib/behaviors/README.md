@@ -98,6 +98,12 @@ feed client coordinates to `createAutoScroll` and stop it on release,
 cancellation, and unmount. Resizable, Drawer, Color Picker, and Lightbox
 keep their own sizing, dismissal, channel, and pan policies.
 
+InlineEdit is the pure in-place editing lifecycle. It owns the editing id,
+draft and type-over flag, and reports starts, changed commits, unchanged ends,
+cancellation and rejected validation through OutMessages. Use startKey and
+inputKey for keyboard intent. Components own editor focus, selection/caret,
+focus restoration, roles and ARIA; grids retain navigation and editor policy.
+
 DragAndDrop wraps Foldkit for single-item pointer sorting in lists and boards.
 Prefer it to ui-sdk's `createReorder` for this path: Foldkit already supplies
 a Schema Model, typed drag Messages and drop OutMessages, and scoped

@@ -1174,6 +1174,11 @@
           "path": "data-grid.ts",
           "type": "registry:lib",
           "target": "@lib/data-grid.ts"
+        },
+        {
+          "path": "behaviors/inline-edit.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/inline-edit.ts"
         }
       ],
       "registryDependencies": [

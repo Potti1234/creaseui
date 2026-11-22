@@ -307,7 +307,7 @@ const textInputEditor = <Row>(
 ): Html =>
   h.input([
     h.Type('text'),
-    h.Value(model.draftValue),
+    h.Value(model.inlineEdit.draft),
     h.OnInput(value => DataGrid.Message.ChangedDraft({ value })),
     h.Class(
       'absolute inset-0 h-full w-full bg-background px-2 text-sm outline-none ring-1 ring-inset ring-ring',
@@ -335,7 +335,7 @@ const numberInputEditor = <Row>(
     ...(column.numberStep === undefined
       ? []
       : [h.Step(String(column.numberStep))]),
-    h.Value(model.draftValue),
+    h.Value(model.inlineEdit.draft),
     h.OnInput(value => DataGrid.Message.ChangedDraft({ value })),
     h.Class(
       'absolute inset-0 h-full w-full bg-background px-2 text-sm outline-none ring-1 ring-inset ring-ring [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
@@ -367,7 +367,7 @@ const cellEditor = <Row>(
             [
               h.textarea([
                 h.Attribute('placeholder', 'Enter text...'),
-                h.Value(model.draftValue),
+                h.Value(model.inlineEdit.draft),
                 h.OnInput(value => DataGrid.Message.ChangedDraft({ value })),
                 h.Class(
                   'max-h-75 min-h-37.5 w-full resize-none overflow-y-auto rounded-none border-0 bg-transparent p-3 text-sm shadow-none outline-none focus-visible:ring-1 focus-visible:ring-ring',
@@ -432,7 +432,7 @@ const cellEditor = <Row>(
       )
     case 'multi-select': {
       const selected = column.getOptions?.(row) ?? []
-      const query = model.draftValue.toLowerCase()
+      const query = model.inlineEdit.draft.toLowerCase()
       const options = (column.options ?? []).filter(option =>
         option.toLowerCase().includes(query),
       )
@@ -485,7 +485,7 @@ const cellEditor = <Row>(
                   ),
                   h.input([
                     h.Type('text'),
-                    h.Value(model.draftValue),
+                    h.Value(model.inlineEdit.draft),
                     h.Attribute('placeholder', 'Search...'),
                     h.OnInput(value =>
                       DataGrid.Message.ChangedDraft({ value }),
@@ -1384,8 +1384,8 @@ export const dataGrid = <Row>(
                       model.focusedCell.row === rowIndex &&
                       model.focusedCell.column === column.id
                     const isEditing =
-                      model.editingCell.row === rowIndex &&
-                      model.editingCell.column === column.id
+                      DataGrid.editingCell(model).row === rowIndex &&
+                      DataGrid.editingCell(model).column === column.id
                     const inSelection = isSelected(rowIndex, column.id)
                     return h.div(
                       [
