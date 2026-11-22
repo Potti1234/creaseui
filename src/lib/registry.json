@@ -505,6 +505,48 @@
           "type": "registry:lib",
           "target": "@lib/hover-card.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/hover-intent-behavior"
+      ]
+    },
+    {
+      "name": "dialog-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Dialog Behavior",
+      "description": "Native dialog lifecycle and focus management.",
+      "files": [
+        {
+          "path": "behaviors/dialog.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/dialog.ts"
+        }
+      ]
+    },
+    {
+      "name": "popover-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Popover Behavior",
+      "description": "Anchored popup lifecycle, dismissal and focus management.",
+      "files": [
+        {
+          "path": "behaviors/popover.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/popover.ts"
+        }
+      ]
+    },
+    {
+      "name": "hover-intent-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Hover Intent Behavior",
+      "description": "Hover and focus lifecycle with cancelable waits and a pointer bridge.",
+      "files": [
+        {
+          "path": "behaviors/hover-intent.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/hover-intent.ts"
+        }
       ]
     },
     {
@@ -514,9 +556,9 @@
       "description": "Shared hover and focus ownership with command-based open and close delays and stale-timer protection.",
       "files": [
         {
-          "path": "tooltip.ts",
+          "path": "behaviors/tooltip.ts",
           "type": "registry:lib",
-          "target": "@lib/tooltip.ts"
+          "target": "@lib/behaviors/tooltip.ts"
         }
       ]
     },
