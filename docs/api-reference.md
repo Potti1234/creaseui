@@ -1532,20 +1532,16 @@ Source: [`src/ui/resizable.ts`](../src/ui/resizable.ts)
 
 | Export | Kind | Signature |
 | --- | --- | --- |
-| `Model` | value | `Model: value` |
-| `Model` | type | `Model = typeof Model.Type` |
-| `Message` | value | `Message: value` |
-| `Message` | type | `Message = typeof Message.Type` |
-| `init` | function | `init(id: string, firstSize = 50): Model` |
-| `update` | function | `update(model: Model, message: Message): Model` |
+| `GroupMessage` | re-export | `export { GroupMessage } from '@/lib/resizable'` |
+| `GroupModel` | re-export | `export { GroupModel } from '@/lib/resizable'` |
+| `Message` | re-export | `export { Message } from '@/lib/resizable'` |
+| `Model` | re-export | `export { Model } from '@/lib/resizable'` |
+| `init` | re-export | `export { init } from '@/lib/resizable'` |
+| `initGroup` | re-export | `export { initGroup } from '@/lib/resizable'` |
+| `update` | re-export | `export { update } from '@/lib/resizable'` |
+| `updateGroup` | re-export | `export { updateGroup } from '@/lib/resizable'` |
 | `ResizableProps` | type | `ResizableProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; first: Html \| string; second: Html \| string; direction?: 'horizontal' \| 'vertical'; rtl?: boolean; withHandle?: boolean; minSize?: number; maxSize?: number; extent?: nu…` |
 | `resizable` | function | `resizable<Msg>(props: ResizableProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `GroupModel` | value | `GroupModel: value` |
-| `GroupModel` | type | `GroupModel = typeof GroupModel.Type` |
-| `GroupMessage` | value | `GroupMessage: value` |
-| `GroupMessage` | type | `GroupMessage = typeof GroupMessage.Type` |
-| `initGroup` | function | `initGroup(id: string, panelCount: number, sizes?: ReadonlyArray<number>): GroupModel` |
-| `updateGroup` | function | `updateGroup(model: GroupModel, message: GroupMessage): GroupModel` |
 | `ResizableGroupProps` | type | `ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html \| string>; direction?: 'horizontal' \| 'vertical'; rtl?: boolean; minSize?: number; extent: number; withHandles?: boolean; disa…` |
 | `resizableGroup` | function | `resizableGroup<Msg>(props: ResizableGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
