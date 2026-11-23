@@ -1,12 +1,25 @@
-import { Effect, Option, Schema as S } from 'effect'
+import { Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
-import * as Dom from 'foldkit/dom'
 import type { Html } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-
+import * as FocusRecovery from '@/lib/behaviors/focus-recovery'
 import * as Reorder from '@/lib/behaviors/reorder'
 import * as Announce from '@/lib/behaviors/announce'
+
+export const removeId = (id: string, key: string): string =>
+  `${id}-remove-${key}`
+export const addId = (id: string): string => `${id}-add`
+export const reorderId = (id: string, key: string): string =>
+  `${id}-reorder-${key}`
+export const focusMount = <Msg>(send: (message: Message) => Msg) =>
+  FocusRecovery.collectionMount(
+    {
+      keyAttribute: 'data-list-input-row',
+      actionSelector: '[data-list-input-remove]:not(:disabled)',
+    },
+    message => send(Message.GotFocusRecoveryMessage({ message })),
+  )
 
 /* Ported from Meta Astryx ListInput (packages/lab/src/ListInput) — column
    definitions, mutation intents, keyboard reorder state, and live-region
@@ -83,6 +96,7 @@ export const Model = S.Struct({
   reorder: Reorder.Model,
   announcement: S.Option(S.String),
   announcer: Announce.Model,
+  focusRecovery: FocusRecovery.CollectionModel,
 })
 export type Model = typeof Model.Type
 
@@ -92,9 +106,11 @@ export const init = (config: InitConfig): Model => ({
   reorder: Reorder.init(),
   announcement: Option.none(),
   announcer: Announce.init(),
+  focusRecovery: FocusRecovery.initCollection(),
 })
 
 export const Message = defineMessageUnion({
+  GotFocusRecoveryMessage: { message: FocusRecovery.CollectionMessage },
   /* The new item rides the message: messages must be data because previews
      route them through JSON.stringify, which drops function payloads
      (astryx invokes createItem() inside the click handler; the view samples
@@ -108,6 +124,7 @@ export const Message = defineMessageUnion({
   FieldEdited: { index: S.Number, nextItem: S.Unknown, columnKey: S.String },
   /* Arrow keys on the handle while not grabbed: immediate one-position move. */
   MoveRequested: {
+    key: S.String,
     fromIndex: S.Number,
     toIndex: S.Number,
     itemName: S.String,
@@ -119,7 +136,6 @@ export const Message = defineMessageUnion({
     keys: S.Array(S.String),
     itemName: S.String,
   },
-  CompletedFocus: {},
   GotAnnouncementMessage: { message: Announce.Message },
 })
 export type Message = typeof Message.Type
@@ -138,17 +154,16 @@ export type UpdateReturn = Update.ReturnWithOutMessage<
   OutMessage
 >
 
-export const reorderHandleId = (id: string, key: string): string =>
-  `${id}-reorder-${encodeURIComponent(key)}`
-const FocusReorderHandle = Command.define('FocusReorderHandle', {
-  args: { id: S.String, key: S.String },
-  messages: [Message.CompletedFocus],
-  execute: ({ id, key }) =>
-    Dom.focus(`[id="${reorderHandleId(id, key)}"]`).pipe(
-      Effect.ignore,
-      Effect.as(Message.CompletedFocus({})),
-    ),
-})
+const keepReorderFocus = (id: string, key: string) =>
+  Command.mapMessages(
+    [
+      FocusRecovery.RecoverFocus({
+        targetId: reorderId(id, key),
+        lostId: reorderId(id, key),
+      }),
+    ],
+    message => Message.GotFocusRecoveryMessage({ message }),
+  )
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   const result = updateModel(model, message)
@@ -187,6 +202,19 @@ const updateModel = (model: Model, message: Message): UpdateReturn => {
         ),
       }
     }
+    case 'GotFocusRecoveryMessage': {
+      const result = FocusRecovery.updateCollection(
+        model.focusRecovery,
+        message.message,
+        { itemId: key => removeId(model.id, key), fallbackId: addId(model.id) },
+      )
+      return {
+        model: { ...model, focusRecovery: result.model },
+        commands: Command.mapMessages(result.commands ?? [], message =>
+          Message.GotFocusRecoveryMessage({ message }),
+        ),
+      }
+    }
     case 'AddRequested':
       return {
         model: {
@@ -218,6 +246,7 @@ const updateModel = (model: Model, message: Message): UpdateReturn => {
       }
     case 'MoveRequested':
       return {
+        commands: keepReorderFocus(model.id, message.key),
         model: {
           ...model,
           announcement: Option.some(
@@ -284,11 +313,9 @@ const updateModel = (model: Model, message: Message): UpdateReturn => {
         ...(outMessage ? { outMessage } : {}),
         commands: Option.match(maybeFocus, {
           onNone: () => [],
-          onSome: key => [FocusReorderHandle({ id: model.id, key })],
+          onSome: key => keepReorderFocus(model.id, key),
         }),
       }
     }
-    case 'CompletedFocus':
-      return { model }
   }
 }

@@ -5,7 +5,6 @@ import type { HtmlBuilder } from 'foldkit/html'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
-  createGuest,
   listInputFixtures,
   type Guest,
 } from '@/docs/components/pages/list-input/shared'
@@ -24,6 +23,7 @@ const ListInputPreviewModel = S.Struct({
   _docsPage: S.Literal('list-input'),
   input: ListInput.Model,
   guests: S.Array(GuestSchema),
+  nextGuestId: S.Number,
 })
 type ListInputPreviewModel = typeof ListInputPreviewModel.Type
 
@@ -77,6 +77,7 @@ export const listInputTailwindPreviewProgram = definePreviewProgram<
       _docsPage: 'list-input',
       input: ListInput.init({ id: `docs-list-input-${String(index)}` }),
       guests: [...fixture.initialGuests],
+      nextGuestId: fixture.initialGuests.length + 1,
     }
   },
   update: (model, message) => {
@@ -105,7 +106,13 @@ export const listInputTailwindPreviewProgram = definePreviewProgram<
           }
         })()
         return {
-          model: { ...model, input: next.model, guests },
+          model: {
+            ...model,
+            input: next.model,
+            guests,
+            nextGuestId:
+              model.nextGuestId + (out?._tag === 'ItemAdded' ? 1 : 0),
+          },
           commands: Command.mapMessages(commands, next2 =>
             GotListInputMessage.GotListInputMessage({ message: next2 }),
           ),
@@ -128,7 +135,11 @@ export const listInputTailwindPreviewProgram = definePreviewProgram<
             itemName: 'guest',
             value: model.guests,
             getItemKey: guest => guest.id,
-            createItem: () => createGuest(model.guests),
+            createItem: () => ({
+              id: `g-${String(model.nextGuestId)}`,
+              name: '',
+              email: '',
+            }),
             columns: guestColumns(h),
             ...(fixture.isReorderable === true ? { isReorderable: true } : {}),
             ...(fixture.maxItems === undefined

@@ -14,6 +14,7 @@ import { defineMessageUnion } from 'foldkit/message'
 import { taggedStruct } from 'foldkit/schema'
 import * as ToastPrimitive from '@foldkit/ui/toast'
 import { Animation } from '@foldkit/ui'
+import * as FocusRecovery from '@/lib/behaviors/focus-recovery'
 
 export const Position = S.Literals([
   'top-left',
@@ -24,6 +25,9 @@ export const Position = S.Literals([
   'bottom-right',
 ])
 export type Position = typeof Position.Type
+export const viewportId = (id: string, position: Position): string =>
+  `${id}-viewport-${position}`
+export const focusTargetId = (entryId: string): string => `${entryId}-focus`
 export const Variant = S.Literals([
   'Default',
   'Success',
@@ -58,6 +62,7 @@ export const Model = S.Struct({
   focusedPositions: S.Array(Position),
   heights: S.Record(S.String, S.Number),
   viewportHeight: S.Number,
+  focusRecovery: S.Record(S.String, FocusRecovery.CollectionModel),
 })
 export type Model = typeof Model.Type
 export const Entry = Toast.Entry
@@ -100,6 +105,10 @@ export const Message = defineMessageUnion({
   MeasuredToast: { entryId: S.String, height: S.Number },
   MeasuredToastViewport: { height: S.Number },
   ChangedToastLimit: { limit: S.Number },
+  GotFocusRecoveryMessage: {
+    position: Position,
+    message: FocusRecovery.CollectionMessage,
+  },
 })
 export type Message = typeof Message.Type | typeof ActivatedToastAction.Type
 
@@ -171,6 +180,7 @@ export const init = (
   focusedPositions: [],
   heights: {},
   viewportHeight: 0,
+  focusRecovery: {},
 })
 
 const normalizeLimit = (limit: number): number =>
@@ -237,6 +247,31 @@ const reconcile = (
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
+    case 'GotFocusRecoveryMessage': {
+      const result = FocusRecovery.updateCollection(
+        model.focusRecovery[message.position] ?? FocusRecovery.initCollection(),
+        message.message,
+        {
+          itemId: focusTargetId,
+          fallbackId: viewportId(model.id, message.position),
+        },
+      )
+      return {
+        model: {
+          ...model,
+          focusRecovery: {
+            ...model.focusRecovery,
+            [message.position]: result.model,
+          },
+        },
+        commands: Command.mapMessages(result.commands ?? [], next =>
+          Message.GotFocusRecoveryMessage({
+            position: message.position,
+            message: next,
+          }),
+        ),
+      }
+    }
     case 'ChangedToastLimit':
       return reconcile({ ...model, limit: normalizeLimit(message.limit) })
     case 'ChangedToastViewportPointer':
@@ -596,6 +631,7 @@ type ViewportMessage = Extract<
       | 'ReleasedSwipePointer'
       | 'CancelledSwipe'
       | 'PressedEscape'
+      | 'GotFocusRecoveryMessage'
   }
 >
 
@@ -617,6 +653,7 @@ export const ObserveToastViewport = Mount.defineStream('ObserveToastViewport', {
     Message.ReleasedSwipePointer,
     Message.CancelledSwipe,
     Message.PressedEscape,
+    Message.GotFocusRecoveryMessage,
   ],
   execute: ({ element, position, fallbackPosition, swipeEnabled, pause }) =>
     Stream.callback<ViewportMessage>(queue =>
@@ -624,7 +661,6 @@ export const ObserveToastViewport = Mount.defineStream('ObserveToastViewport', {
         yield* Effect.acquireRelease(
           Effect.sync(() => {
             if (!(element instanceof HTMLElement)) return undefined
-            let lastFocused: Element | undefined
             let hoverRect: DOMRect | undefined
             let drag:
               | { card: HTMLElement; pointerId: number; pointerType: string }
@@ -737,7 +773,6 @@ export const ObserveToastViewport = Mount.defineStream('ObserveToastViewport', {
             const cancel = (event: PointerEvent) => end(event, true)
             const lostCapture = (event: PointerEvent) => end(event, true)
             const focus = () => {
-              lastFocused = element.ownerDocument.activeElement ?? undefined
               Queue.offerUnsafe(
                 queue,
                 Message.ChangedToastViewportFocus({
@@ -752,7 +787,6 @@ export const ObserveToastViewport = Mount.defineStream('ObserveToastViewport', {
                 !(event.relatedTarget instanceof Node) ||
                 !element.contains(event.relatedTarget)
               ) {
-                lastFocused = undefined
                 Queue.offerUnsafe(
                   queue,
                   Message.ChangedToastViewportFocus({
@@ -820,15 +854,6 @@ export const ObserveToastViewport = Mount.defineStream('ObserveToastViewport', {
               measure,
             )
             measure()
-            const mutation = new MutationObserver(() => {
-              if (lastFocused && !element.contains(lastFocused)) {
-                const next = element.querySelector<HTMLElement>(
-                  '[data-slot="toast-entry"]:not([data-limited]) button',
-                )
-                ;(next ?? element).focus({ preventScroll: true })
-              }
-            })
-            mutation.observe(element, { childList: true, subtree: true })
             element.addEventListener('focusin', focus)
             element.addEventListener('focusout', blur)
             element.addEventListener('pointerenter', enter)
@@ -845,7 +870,6 @@ export const ObserveToastViewport = Mount.defineStream('ObserveToastViewport', {
                 'resize',
                 measure,
               )
-              mutation.disconnect()
               element.removeEventListener('focusin', focus)
               element.removeEventListener('focusout', blur)
               element.removeEventListener('pointerenter', enter)
@@ -864,6 +888,17 @@ export const ObserveToastViewport = Mount.defineStream('ObserveToastViewport', {
         )
         return yield* Effect.never
       }),
+    ).pipe(
+      Stream.merge(
+        FocusRecovery.collectionChanges(element, {
+          keyAttribute: 'data-toast-focus-key',
+          actionSelector: ':scope:not([data-limited]) button:not(:disabled)',
+        }).pipe(
+          Stream.map(message =>
+            Message.GotFocusRecoveryMessage({ position, message }),
+          ),
+        ),
+      ),
     ),
 })
 

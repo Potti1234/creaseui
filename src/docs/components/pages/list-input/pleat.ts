@@ -8,7 +8,6 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
-  createGuest,
   listInputFixtures,
   type Guest,
 } from '@/docs/components/pages/list-input/shared'
@@ -27,6 +26,7 @@ const ListInputPreviewModel = S.Struct({
   _docsPage: S.Literal('list-input'),
   input: ListInput.Model,
   guests: S.Array(GuestSchema),
+  nextGuestId: S.Number,
 })
 type ListInputPreviewModel = typeof ListInputPreviewModel.Type
 
@@ -80,6 +80,7 @@ export const listInputPleatPreviewProgram = definePreviewProgram<
       _docsPage: 'list-input',
       input: ListInput.init({ id: `docs-list-input-${String(index)}` }),
       guests: [...fixture.initialGuests],
+      nextGuestId: fixture.initialGuests.length + 1,
     }
   },
   update: (model, message) => {
@@ -108,7 +109,13 @@ export const listInputPleatPreviewProgram = definePreviewProgram<
           }
         })()
         return {
-          model: { ...model, input: next.model, guests },
+          model: {
+            ...model,
+            input: next.model,
+            guests,
+            nextGuestId:
+              model.nextGuestId + (out?._tag === 'ItemAdded' ? 1 : 0),
+          },
           commands: Command.mapMessages(commands, next2 =>
             GotListInputMessage.GotListInputMessage({ message: next2 }),
           ),
@@ -131,7 +138,11 @@ export const listInputPleatPreviewProgram = definePreviewProgram<
             itemName: 'guest',
             value: model.guests,
             getItemKey: guest => guest.id,
-            createItem: () => createGuest(model.guests),
+            createItem: () => ({
+              id: `g-${String(model.nextGuestId)}`,
+              name: '',
+              email: '',
+            }),
             columns: guestColumns(h),
             ...(fixture.isReorderable === true ? { isReorderable: true } : {}),
             ...(fixture.maxItems === undefined
@@ -174,6 +185,7 @@ export const listInputPleatPreview: ExamplePreviewProvider = <Msg>(
   const previewModel = model as {
     input: ListInput.Model
     guests: ReadonlyArray<Guest>
+    nextGuestId: number
   }
   return h.div(
     [h.Class(className(previewLayout.wider))],
@@ -190,7 +202,11 @@ export const listInputPleatPreview: ExamplePreviewProvider = <Msg>(
           itemName: 'guest',
           value: previewModel.guests,
           getItemKey: guest => guest.id,
-          createItem: () => createGuest(previewModel.guests),
+          createItem: () => ({
+            id: `g-${String(previewModel.nextGuestId)}`,
+            name: '',
+            email: '',
+          }),
           columns: guestColumns(h),
           ...(fixture.isReorderable === true ? { isReorderable: true } : {}),
           ...(fixture.maxItems === undefined
