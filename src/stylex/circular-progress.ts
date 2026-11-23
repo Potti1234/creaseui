@@ -1,6 +1,10 @@
 import { reset } from '@/ui/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
-import { Progress as ProgressPrimitive } from '@foldkit/ui'
+import {
+  progressAttributes,
+  progressLabelId,
+  progressStateAttributes,
+} from '@/lib/progress'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ComponentLayoutStyle } from './contracts'
@@ -193,8 +197,7 @@ export const circularProgress = <Msg>(
   const showValueLabel = props.hasValueLabel === true && !isIndeterminate
   const hasCenterContent =
     props.children !== undefined && props.children.length > 0
-  const labelId =
-    props.id === undefined ? undefined : ProgressPrimitive.labelId(props.id)
+  const labelId = props.id === undefined ? undefined : progressLabelId(props.id)
 
   const fillVariant = isDisabled ? 'neutral' : variant
   const trackVariant = isDisabled ? 'neutral' : variant
@@ -253,76 +256,78 @@ export const circularProgress = <Msg>(
       h.div(
         [h.Class(className(styles.ringWrapper))],
         [
-          ProgressPrimitive.view(
-            {
-              id: props.id ?? 'circular-progress',
-              ...(isIndeterminate ? {} : { value: clampedValue }),
-              max: safeMax,
-              ...(labelId === undefined
-                ? { ariaLabel: props.label }
-                : { ariaLabelledBy: labelId }),
-              ...(isIndeterminate ? {} : { valueText: formatValueLabel }),
-              toView: ({ progress: progressAttrs }) =>
-                h.svg(
-                  [
-                    // Root div owns the element id; the svg carries progressbar semantics.
-                    ...progressAttrs.filter(attr => attr._tag !== 'Id'),
-                    h.Width(String(diameter)),
-                    h.Height(String(diameter)),
-                    h.ViewBox(`0 0 ${diameter} ${diameter}`),
-                    h.Class(
-                      className(
-                        reset.svg,
-                        styles.svg,
-                        isIndeterminate
-                          ? styles.svgIndeterminate
-                          : styles.svgDeterminate,
-                      ),
-                    ),
-                  ],
-                  [
-                    h.circle(
-                      [
-                        h.DataAttribute('slot', 'circular-progress-track'),
-                        h.Class(className(styles.track, trackStyle)),
-                        h.Cx(String(center)),
-                        h.Cy(String(center)),
-                        h.R(String(radius)),
-                        h.StrokeWidth(String(strokeWidth)),
-                      ],
-                      [],
-                    ),
-
-                    h.circle(
-                      [
-                        h.DataAttribute('slot', 'circular-progress-fill'),
-                        h.DataAttribute('variant', fillVariant),
-                        h.Class(
-                          className(
-                            styles.fill,
-                            fillStyle,
-                            isIndeterminate
-                              ? styles.fillIndeterminate
-                              : styles.fillDeterminate,
-                          ),
-                        ),
-                        h.Cx(String(center)),
-                        h.Cy(String(center)),
-                        h.R(String(radius)),
-                        h.StrokeWidth(String(strokeWidth)),
-                        ...(isIndeterminate
-                          ? []
-                          : [
-                              h.StrokeDasharray(String(circumference)),
-                              h.StrokeDashoffset(String(dashoffset)),
-                            ]),
-                      ],
-                      [],
-                    ),
-                  ],
+          h.svg(
+            [
+              // Root div owns the element id; the svg carries progressbar semantics.
+              ...progressAttributes(
+                {
+                  ...(props.id === undefined
+                    ? { ariaLabel: props.label }
+                    : { id: props.id }),
+                  value: isIndeterminate ? null : clampedValue,
+                  max: safeMax,
+                  ...(isIndeterminate ? {} : { valueText }),
+                },
+                h,
+              ).filter(attr => attr._tag !== 'Id'),
+              ...progressStateAttributes(
+                isIndeterminate ? null : clampedValue,
+                safeMax,
+                h,
+              ),
+              h.Width(String(diameter)),
+              h.Height(String(diameter)),
+              h.ViewBox(`0 0 ${diameter} ${diameter}`),
+              h.Class(
+                className(
+                  reset.svg,
+                  styles.svg,
+                  isIndeterminate
+                    ? styles.svgIndeterminate
+                    : styles.svgDeterminate,
                 ),
-            },
-            h,
+              ),
+            ],
+            [
+              h.circle(
+                [
+                  h.DataAttribute('slot', 'circular-progress-track'),
+                  h.Class(className(styles.track, trackStyle)),
+                  h.Cx(String(center)),
+                  h.Cy(String(center)),
+                  h.R(String(radius)),
+                  h.StrokeWidth(String(strokeWidth)),
+                ],
+                [],
+              ),
+
+              h.circle(
+                [
+                  h.DataAttribute('slot', 'circular-progress-fill'),
+                  h.DataAttribute('variant', fillVariant),
+                  h.Class(
+                    className(
+                      styles.fill,
+                      fillStyle,
+                      isIndeterminate
+                        ? styles.fillIndeterminate
+                        : styles.fillDeterminate,
+                    ),
+                  ),
+                  h.Cx(String(center)),
+                  h.Cy(String(center)),
+                  h.R(String(radius)),
+                  h.StrokeWidth(String(strokeWidth)),
+                  ...(isIndeterminate
+                    ? []
+                    : [
+                        h.StrokeDasharray(String(circumference)),
+                        h.StrokeDashoffset(String(dashoffset)),
+                      ]),
+                ],
+                [],
+              ),
+            ],
           ),
           ...(hasCenterContent || showValueLabel
             ? [

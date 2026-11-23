@@ -1070,7 +1070,8 @@
       },
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/progress-normalization"
       ],
       "files": [
         {

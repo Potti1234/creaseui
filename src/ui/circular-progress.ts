@@ -1,4 +1,8 @@
-import { Progress as ProgressPrimitive } from '@foldkit/ui'
+import {
+  progressAttributes,
+  progressLabelId,
+  progressStateAttributes,
+} from '@/lib/progress'
 import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { cn } from '@/lib/utils'
@@ -99,8 +103,7 @@ export const circularProgress = <Msg>(
   const showValueLabel = props.hasValueLabel === true && !isIndeterminate
   const hasCenterContent =
     props.children !== undefined && props.children.length > 0
-  const labelId =
-    props.id === undefined ? undefined : ProgressPrimitive.labelId(props.id)
+  const labelId = props.id === undefined ? undefined : progressLabelId(props.id)
 
   const fillVariant = isDisabled ? 'neutral' : variant
   const trackVariant = isDisabled ? 'neutral' : variant
@@ -214,19 +217,26 @@ export const circularProgress = <Msg>(
       h.div(
         [h.Class('relative inline-flex')],
         [
-          ProgressPrimitive.view(
-            {
-              id: props.id ?? 'circular-progress',
-              ...(isIndeterminate ? {} : { value: clampedValue }),
-              max: safeMax,
-              ...(labelId === undefined
-                ? { ariaLabel: props.label }
-                : { ariaLabelledBy: labelId }),
-              ...(isIndeterminate ? {} : { valueText: formatValueLabel }),
-              toView: ({ progress: progressAttrs }) =>
-                h.svg(svgAttrs(progressAttrs), [trackCircle, fillCircle]),
-            },
-            h,
+          h.svg(
+            svgAttrs([
+              ...progressAttributes(
+                {
+                  ...(props.id === undefined
+                    ? { ariaLabel: props.label }
+                    : { id: props.id }),
+                  value: isIndeterminate ? null : clampedValue,
+                  max: safeMax,
+                  ...(isIndeterminate ? {} : { valueText }),
+                },
+                h,
+              ),
+              ...progressStateAttributes(
+                isIndeterminate ? null : clampedValue,
+                safeMax,
+                h,
+              ),
+            ]),
+            [trackCircle, fillCircle],
           ),
           ...(hasCenterContent || showValueLabel
             ? [

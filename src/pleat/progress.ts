@@ -1,12 +1,11 @@
 import { Style, When, Global } from '@pleat/core'
-import { Progress as ProgressPrimitive } from '@foldkit/ui'
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
+import type { Html, HtmlBuilder } from 'foldkit/html'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens'
 import { className } from './style'
 import { tokens } from './tokens'
 import { interactionTokens } from './interaction-tokens'
-import { normalizeProgress } from '@/lib/progress'
+import { normalizeProgress, progressAttributes } from '@/lib/progress'
 
 const indeterminateFrames = Global.keyframes('progress-indeterminate-frames', {
   '0%': { transform: 'translateX(-100%)' },
@@ -50,66 +49,41 @@ export type ProgressProps = Readonly<{
   direction?: 'ltr' | 'rtl'
   layoutStyle?: ComponentLayoutStyle | undefined
 }>
-const PRIMITIVE_DATA_KEYS = new Set([
-  'state',
-  'indeterminate',
-  'value',
-  'min',
-  'max',
-])
-
-const keepProgressAttribute = <Msg>(
-  attr: Attribute<Msg>,
-  hasId: boolean,
-): boolean =>
-  !(attr._tag === 'Id' && !hasId) &&
-  !(attr._tag === 'AriaLabelledBy' && !hasId) &&
-  !(attr._tag === 'DataAttribute' && PRIMITIVE_DATA_KEYS.has(attr.key))
-
 export const progress = <Msg>(
   props: ProgressProps,
   h: HtmlBuilder<Msg>,
 ): Html => {
   const normalized = normalizeProgress(props.value, props.max)
-  const hasId = props.id !== undefined
-  return ProgressPrimitive.view(
-    {
-      id: props.id ?? 'progress',
-      ...(normalized.value === null ? {} : { value: normalized.value }),
-      max: normalized.max,
-      ...(props.ariaLabel === undefined ? {} : { ariaLabel: props.ariaLabel }),
-      ...(props.valueText === undefined ? {} : { valueText: props.valueText }),
-      toView: ({ progress: progressAttrs }) =>
-        h.div(
-          [
-            ...progressAttrs.filter(attr => keepProgressAttribute(attr, hasId)),
-            ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
-            h.DataAttribute('state', normalized.state),
-            h.DataAttribute('slot', 'progress'),
-            h.Class(className(styles.root, props.layoutStyle)),
-          ],
-          [
-            h.div(
-              [
-                h.DataAttribute('slot', 'progress-indicator'),
-                h.Class(
-                  className(
-                    styles.indicator,
-                    normalized.value === null && styles.indeterminate,
-                  ),
-                ),
-                h.Style({
-                  transform:
-                    normalized.percentage === null
-                      ? 'translateX(-60%)'
-                      : `translateX(${(props.direction === 'rtl' ? 1 : -1) * (100 - normalized.percentage)}%)`,
-                }),
-              ],
-              [],
+  return h.div(
+    [
+      ...progressAttributes(
+        { ...props, value: normalized.value, max: normalized.max },
+        h,
+      ),
+      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+      h.DataAttribute('state', normalized.state),
+      h.DataAttribute('slot', 'progress'),
+      h.Class(className(styles.root, props.layoutStyle)),
+    ],
+    [
+      h.div(
+        [
+          h.DataAttribute('slot', 'progress-indicator'),
+          h.Class(
+            className(
+              styles.indicator,
+              normalized.value === null && styles.indeterminate,
             ),
-          ],
-        ),
-    },
-    h,
+          ),
+          h.Style({
+            transform:
+              normalized.percentage === null
+                ? 'translateX(-60%)'
+                : `translateX(${(props.direction === 'rtl' ? 1 : -1) * (100 - normalized.percentage)}%)`,
+          }),
+        ],
+        [],
+      ),
+    ],
   )
 }
