@@ -17,3 +17,5 @@ Floating UI engine without requiring a trigger element. It reports resolved
 origin. Dispose it at unmount; `cleanup.place()` requests a fresh placement.
 Mount arguments are fixed for the mount lifetime; key the panel anew for a
 different model-owned point, or use the getter API in a custom integration.
+
+Compose a new inline popup using `position-native.ts`. It exposes point and element positioning without loading the Foldkit UI Anchor adapter. Use `position.ts` where an existing component still needs that adapter.

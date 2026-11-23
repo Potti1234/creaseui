@@ -618,7 +618,7 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/hover-intent-behavior",
-        "Potti1234/creaseui/position-behavior"
+        "Potti1234/creaseui/native-position-behavior"
       ]
     },
     {
@@ -921,6 +921,20 @@
       ]
     },
     {
+      "name": "native-position-behavior",
+      "type": "registry:lib",
+      "title": "Native Position Behavior",
+      "description": "Shared floating positioning for inline elements, points and live rectangles.",
+      "dependencies": ["@floating-ui/dom@1.8.0"],
+      "files": [
+        {
+          "path": "behaviors/position-native.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/position-native.ts"
+        }
+      ]
+    },
+    {
       "name": "nav-menu-behavior",
       "type": "registry:lib",
       "title": "Nav Menu Behavior",
@@ -1042,8 +1056,8 @@
       "type": "registry:lib",
       "title": "Position Behavior",
       "description": "Foldkit Anchor mount and floating positioning for elements, points and live rectangles.",
-      "dependencies": [
-        "@floating-ui/dom@1.8.0"
+      "registryDependencies": [
+        "Potti1234/creaseui/native-position-behavior"
       ],
       "files": [
         {

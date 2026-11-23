@@ -6,7 +6,7 @@ import * as Mount from 'foldkit/mount'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as HoverIntentPrimitive from '@/lib/behaviors/hover-intent'
-import * as Position from '@/lib/behaviors/position'
+import * as Position from '@/lib/behaviors/position-native'
 
 /* Keep the public Hover Card messages while composing shared interaction state. */
 
