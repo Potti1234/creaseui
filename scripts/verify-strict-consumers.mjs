@@ -624,6 +624,7 @@ ${Object.entries(pleatAliases)
       'shadcn@latest',
       'add',
       ...ITEMS.map(item => `${registry}/${consumer.prefix}${item}.json`),
+      `${registry}/grid-focus-behavior.json`,
       '--yes',
     ])
     expect(label('registry install'), add.status === 0, add.stdout + add.stderr)
@@ -644,6 +645,20 @@ ${Object.entries(pleatAliases)
     write(path.join(root, 'src/app/dashboard.ts'), dashboardApp(consumer.alias))
     write(path.join(root, 'src/app/range.ts'), rangeApp(consumer.alias))
     write(path.join(root, 'src/app/icons.ts'), iconsApp(consumer.alias))
+    write(
+      path.join(root, 'src/app/grid-focus.ts'),
+      `import * as GridFocus from '@/lib/behaviors/grid-focus'
+
+export const model = GridFocus.init({ id: 'grid' })
+export const firstCell = GridFocus.tabStop(model, { rows: 2, columns: 2 })
+export const nextCell = GridFocus.navigate({
+  rows: 2,
+  columns: 2,
+  currentCell: { row: 0, column: 0 },
+  pressedKey: 'ArrowRight',
+})
+`,
+    )
     write(
       path.join(root, 'src/app/main.ts'),
       mainApp.replace('ALIAS', consumer.alias),

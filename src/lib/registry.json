@@ -321,7 +321,8 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/calendar-range",
-        "Potti1234/creaseui/date-parse-behavior"
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/grid-focus-behavior"
       ]
     },
     {
@@ -572,6 +573,19 @@
           "path": "form.ts",
           "type": "registry:lib",
           "target": "@lib/form.ts"
+        }
+      ]
+    },
+    {
+      "name": "grid-focus-behavior",
+      "type": "registry:lib",
+      "title": "Grid Focus Behavior",
+      "description": "Shared Foldkit behavior for two-dimensional grid focus.",
+      "files": [
+        {
+          "path": "behaviors/grid-focus.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/grid-focus.ts"
         }
       ]
     },
