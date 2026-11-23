@@ -20,7 +20,7 @@ import {
   pickerButtonId,
 } from '../src/lib/time-input.ts'
 import { Option } from 'effect'
-import { Listbox } from '@foldkit/ui'
+import * as Listbox from '@/lib/behaviors/anchored-listbox'
 
 test('parses HH:MM[:SS] and rejects out-of-range parts', () => {
   assert.deepEqual(parseISOTime('09:05'), { minutes: 545, seconds: 0 })

@@ -1,6 +1,6 @@
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
-import { Listbox as ListboxPrimitive } from '@foldkit/ui'
+import * as ListboxPrimitive from '@/lib/behaviors/anchored-listbox'
 
 import * as Icon from '@/lib/icon'
 import * as Checkbox from '@/ui/checkbox'
@@ -27,7 +27,7 @@ import {
 /* Ported from Meta Astryx MultiSelector (packages/core/src/MultiSelector/)
    — examples and visual spec adapted to Crease UI tokens.
 
-   foldkit's Multi Listbox supplies the trigger button + anchored checkbox
+   The shared Multi Listbox supplies the trigger button + anchored checkbox
    option panel (incl. section headings via itemGroupKey). The selection
    lives in src/lib/multi-selector.ts; the select-all row is a
    SELECT_ALL_VALUE pseudo-option folded by the lib update.
@@ -46,7 +46,7 @@ export {
   update,
 }
 
-const listboxBundle = ListboxPrimitive.Multi.create<string>()
+const listboxBundle = ListboxPrimitive.createMulti<string>()
 
 const LABEL_CLASS = 'text-sm font-medium leading-none text-foreground'
 
@@ -246,7 +246,7 @@ export const multiSelector = <Msg>(
     ? h.label(
         [
           h.Id(labelId),
-          h.For(ListboxPrimitive.Multi.buttonId(model.listbox.id)),
+          h.For(ListboxPrimitive.buttonId(model.listbox.id)),
           h.Class(
             'pointer-events-none absolute m-[-1px] h-px w-px overflow-hidden whitespace-nowrap border-0 p-0 [clip-path:inset(50%)]',
           ),
@@ -256,7 +256,7 @@ export const multiSelector = <Msg>(
     : h.label(
         [
           h.Id(labelId),
-          h.For(ListboxPrimitive.Multi.buttonId(model.listbox.id)),
+          h.For(ListboxPrimitive.buttonId(model.listbox.id)),
           h.Class(LABEL_CLASS),
         ],
         [
@@ -338,7 +338,7 @@ export const multiSelector = <Msg>(
 
   const statusType = props.status?.type
 
-  const viewInputs: ListboxPrimitive.Multi.ViewInputs<string> = {
+  const viewInputs: ListboxPrimitive.MultiViewInputs<string> = {
     items: [
       ...(props.hasSelectAll === true ? [SELECT_ALL_VALUE] : []),
       ...flatOptions.map(option => option.value),

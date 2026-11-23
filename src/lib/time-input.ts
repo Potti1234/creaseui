@@ -1,7 +1,7 @@
 import { Option, Schema as S } from 'effect'
 import { Command, type Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { Listbox } from '@foldkit/ui'
+import * as Listbox from '@/lib/behaviors/anchored-listbox'
 
 /* Ported from Meta Astryx TimeInput (packages/core/src/TimeInput) — typed time
    parsing ("2:30 PM", "2pm", "1430"), 12h/24h display, minute stepping, and
@@ -293,7 +293,7 @@ const PickerContext = S.Struct({
   max: S.NullOr(S.String),
 })
 
-const PartSelect = Listbox.create<string, string>()
+const PartSelect = Listbox.create<string>()
 
 export const pickerButtonId = (model: Model): string =>
   Listbox.buttonId(model.parts.hour.id)

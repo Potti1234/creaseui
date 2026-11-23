@@ -14,7 +14,11 @@ supply its size. `first`/`last` work in either focus mode. Pass only unmodified
 printable keys to the view's keydown callback for typeahead.
 Pointer highlight does not choose. Pair Listbox with `Selection.create<Key>()`
 for choosing, or keep the component's existing selection policy. Roles and
-aria-selected belong to that component. Command reuses the pure helpers while
-retaining Foldkit Combobox state with folded fuzzy ranking.
-Select stays on @foldkit/ui Listbox for its button/anchor/top-layer/focus
-lifecycle; this behavior does not replace that lifecycle.
+aria-selected belong to that component.
+
+Anchored Listbox (`anchored-listbox.ts`) composes these navigation helpers
+with shared typeahead, popup transitions, and positioning. Select and Time Input
+use single selection. Multi Selector keeps its panel open when committing and
+folds each selected value through the shared Selection behavior. The table
+page-size selector consumes the same single-selection update. The parent
+continues to own the committed selection in every case.

@@ -2,7 +2,7 @@ import { Option } from 'effect'
 import { Command } from 'foldkit'
 import * as Scene from 'foldkit/scene'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { Listbox as ListboxPrimitive } from '@foldkit/ui'
+import * as ListboxPrimitive from '@/lib/behaviors/anchored-listbox'
 import { describe, it } from 'vitest'
 
 import * as StyleXSelect from '@/stylex/select'
@@ -165,8 +165,8 @@ const anchorListboxName = (themed: boolean) =>
    result is a no-op in the primitive update. */
 const resolveOpenMountsFor = (themed: boolean) => () => [
   themed
-    ? Scene.Mount.resolve(AnchorThemedListbox, {
-        _tag: 'GotSelect' as const,
+    ? Scene.Mount.resolve<'AnchorThemedListbox', unknown>(AnchorThemedListbox, {
+        _tag: 'GotSelect',
         message: ListboxPrimitive.Message.CompletedAnchorListbox(),
       })
     : Scene.Mount.resolve(

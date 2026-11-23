@@ -2,7 +2,7 @@
    examples and visual spec adapted to Crease UI tokens.
 
    Typed entry and the optional hour/minute selector use the same controlled
-   ISO time value; selector interaction is owned by Foldkit Listbox. */
+   ISO time value; selector interaction uses the shared Listbox. */
 
 import { Option } from 'effect'
 import { defineView } from 'foldkit/submodel'
