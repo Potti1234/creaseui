@@ -170,7 +170,10 @@ describe('StyleX component authoring contract', () => {
 
     // The shared engine wraps the Dialog submodel and adds the bottom-side
     // gesture state machine; both skins only render through DialogPrimitive.
-    assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
+    assert.match(
+      behavior,
+      /import \* as Dialog from ['"][^'"]*behaviors\/dialog['"]/u,
+    )
     for (const source of [tailwind, stylex]) {
       assert.match(source, /Model = SheetBehavior\.Model/u)
       assert.match(source, /update = SheetBehavior\.update/u)
@@ -187,7 +190,10 @@ describe('StyleX component authoring contract', () => {
     const tailwind = readFileSync('src/ui/drawer.ts', 'utf8')
     const stylex = readFileSync('src/stylex/drawer.ts', 'utf8')
 
-    assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
+    assert.match(
+      behavior,
+      /import \* as Dialog from ['"][^'"]*behaviors\/dialog['"]/u,
+    )
     assert.match(behavior, /ReleaseDecision/u)
     assert.match(behavior, /releaseVelocity/u)
     assert.match(behavior, /CancelledSwipe/u)
@@ -534,7 +540,10 @@ describe('StyleX component authoring contract', () => {
     const tailwind = readFileSync('src/ui/alert-dialog.ts', 'utf8')
     const stylex = readFileSync('src/stylex/alert-dialog.ts', 'utf8')
 
-    assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
+    assert.match(
+      behavior,
+      /import \* as Dialog from ['"][^'"]*behaviors\/dialog['"]/u,
+    )
     assert.match(behavior, /ConfirmedAlertDialog/u)
     assert.match(behavior, /CancelledAlertDialog/u)
     assert.match(tailwind, /@\/lib\/alert-dialog/u)

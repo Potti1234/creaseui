@@ -3,7 +3,7 @@ import { Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
-import { Dialog } from '@foldkit/ui'
+import * as Dialog from './behaviors/dialog'
 
 import * as Drag from '@/lib/behaviors/drag'
 import * as Velocity from '@/lib/behaviors/velocity'

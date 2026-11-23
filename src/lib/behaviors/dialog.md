@@ -1,8 +1,10 @@
 # Dialog and Popover
 
-Dialog and Popover wrap `@foldkit/ui` instead of porting the UI SDK popup
-controller. Foldkit Dialog manages the native dialog, focus containment and
-restoration, inert background, and scroll locking for the dialog lifetime.
-Foldkit Popover already combines collision-aware anchoring, optional modal
-resources, and focus restoration with its exit lifecycle. The wrappers keep
-these Commands and Mounts intact; each renderer supplies only the skin.
+CreaseUI Dialog drives enter and leave through shared animation state. It
+uses Foldkit's native dialog view and resource commands for focus containment
+and restoration, background isolation, and scroll locking. Drawer, Sheet,
+and Alert Dialog use the same Dialog behavior while supplying their own
+gestures and dismissal rules.
+
+CreaseUI Popover manages anchoring, optional modal resources, focus
+restoration, and exit animation through its own popup behavior.

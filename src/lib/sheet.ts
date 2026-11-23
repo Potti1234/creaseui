@@ -13,7 +13,7 @@ import * as Command from 'foldkit/command'
 import * as Dom from 'foldkit/dom'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
-import { Dialog } from '@foldkit/ui'
+import * as Dialog from './behaviors/dialog'
 
 import * as Velocity from '@/lib/behaviors/velocity'
 

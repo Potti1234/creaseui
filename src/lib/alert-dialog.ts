@@ -2,7 +2,7 @@ import type { Update } from 'foldkit'
 import { Option, Schema as S } from 'effect'
 import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
-import { Dialog } from '@foldkit/ui'
+import * as Dialog from './behaviors/dialog'
 
 export const Model = Dialog.Model
 export type Model = typeof Model.Type
