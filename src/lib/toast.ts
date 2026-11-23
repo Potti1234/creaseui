@@ -13,7 +13,7 @@ import * as Mount from 'foldkit/mount'
 import { defineMessageUnion } from 'foldkit/message'
 import { taggedStruct } from 'foldkit/schema'
 import * as ToastPrimitive from '@foldkit/ui/toast'
-import { Animation } from '@foldkit/ui'
+import * as Animation from './behaviors/animation'
 import * as FocusRecovery from '@/lib/behaviors/focus-recovery'
 
 export const Position = S.Literals([

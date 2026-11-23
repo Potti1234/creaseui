@@ -1,6 +1,6 @@
 # Motion
 
-Motion wraps Foldkit Animation for panel presence instead of ui-sdk DOM callbacks:
+Motion uses the native Animation behavior for enter and exit transitions.
 
 - Schema state/generations reject stale Commands.
 - `Dom.waitForAnimationSettled` observes CSS completion, not guessed timers.

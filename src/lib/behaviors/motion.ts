@@ -3,7 +3,7 @@ import { Command, type Update } from 'foldkit'
 import * as Dom from 'foldkit/dom'
 import { inertHtml, type Attribute } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { Animation } from '@foldkit/ui'
+import * as Animation from './animation'
 
 import * as Popup from './popup'
 

@@ -76,6 +76,19 @@
       ]
     },
     {
+      "name": "animation-behavior",
+      "type": "registry:lib",
+      "title": "Animation Behavior",
+      "description": "Foldkit-native enter and exit lifecycle with generation-guarded CSS settlement.",
+      "files": [
+        {
+          "path": "behaviors/animation.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/animation.ts"
+        }
+      ]
+    },
+    {
       "name": "area-behavior",
       "type": "registry:lib",
       "title": "Area Behavior",
@@ -1463,6 +1476,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/animation-behavior",
         "Potti1234/creaseui/focus-recovery-behavior"
       ]
     },
