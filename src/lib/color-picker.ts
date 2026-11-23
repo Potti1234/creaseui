@@ -13,7 +13,7 @@ import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 import type { Subscriptions } from 'foldkit/subscription'
-import { Popover } from '@foldkit/ui'
+import * as Popover from '@/lib/behaviors/popover'
 
 import * as Drag from '@/lib/behaviors/drag'
 import * as Area from '@/lib/behaviors/area'

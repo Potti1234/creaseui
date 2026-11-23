@@ -5,7 +5,7 @@ import { Option } from 'effect'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 import type * as FoldkitCalendar from 'foldkit/calendar'
 
-import { Popover as PopoverPrimitive } from '@foldkit/ui'
+import * as PopoverPrimitive from '@/lib/behaviors/popover'
 
 import * as Icon from '@/lib/icon'
 import {
@@ -267,7 +267,9 @@ export const dateInput = <Msg>(
         view: PopoverPrimitive.view,
         viewInputs: {
           anchor: { placement: 'bottom-start', gap: 4 },
-          focusSelector: '[role="grid"]',
+          themedPortal: true,
+          focusSelector:
+            model.openedFromInput === true ? ':focus' : '[role="grid"]',
           isDisabled: props.isDisabled ?? false,
           ariaLabelledBy: labelId,
           toView: ({ button, panel, backdrop, isVisible }) =>

@@ -7,7 +7,7 @@ import * as Dom from 'foldkit/dom'
 import * as Calendar from 'foldkit/calendar'
 import { defineMessageUnion } from 'foldkit/message'
 
-import { Popover as PopoverPrimitive } from '@foldkit/ui'
+import * as PopoverPrimitive from '@/lib/behaviors/popover'
 
 import { normalizeRange } from '@/lib/calendar'
 

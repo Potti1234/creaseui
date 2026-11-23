@@ -4,7 +4,7 @@ import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as FoldkitCalendar from 'foldkit/calendar'
 
-import { Popover as PopoverPrimitive } from '@foldkit/ui'
+import * as PopoverPrimitive from '@/lib/behaviors/popover'
 
 import * as Icon from '@/lib/icon'
 import {
@@ -240,6 +240,7 @@ export const dateRangeInput = <Msg>(
     view: PopoverPrimitive.view,
     viewInputs: {
       anchor: { placement: 'bottom-start', gap: 4 },
+      themedPortal: true,
       focusSelector: '[role="grid"]',
       isDisabled: isEffectivelyDisabled,
       ariaLabelledBy: labelId,
