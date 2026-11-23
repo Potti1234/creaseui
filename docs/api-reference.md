@@ -450,8 +450,8 @@ Source: [`src/ui/color-picker.ts`](../src/ui/color-picker.ts)
 | `colorPickerEyeDropper` | function | `colorPickerEyeDropper<Msg>(props: ColorPickerEyeDropperProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `colorPickerFormatSelect` | function | `colorPickerFormatSelect<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `colorPickerInput` | function | `colorPickerInput<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `colorPickerContent` | function | `colorPickerContent<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `ColorPickerProps` | type | `ColorPickerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?: string; contentClass?: string; }>` |
+| `colorPickerContent` | function | `colorPickerContent<Msg>(props: ChannelProps<Msg> & Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; }>, h: HtmlBuilder<Msg>): Html` |
+| `ColorPickerProps` | type | `ColorPickerProps<Msg> = Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?…` |
 | `colorPicker` | function | `colorPicker<Msg>(props: ColorPickerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Combobox
@@ -770,8 +770,8 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | --- | --- | --- |
 | `ControlFieldParts` | re-export | `export { ControlFieldParts } from '@/lib/field'` |
 | `FieldError` | re-export | `export { FieldError } from '@/lib/field'` |
-| `fieldSetLegendId` | value | `fieldSetLegendId: value` |
-| `fieldSetDescriptionId` | value | `fieldSetDescriptionId: value` |
+| `fieldSetLegendId` | re-export | `export { fieldSetLegendId } from '@/lib/field'` |
+| `fieldSetDescriptionId` | re-export | `export { fieldSetDescriptionId } from '@/lib/field'` |
 | `FieldSetProps` | type | `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean; id?: string; hasDescription?: boolean; }>` |
 | `fieldSet` | function | `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` |
 | `FieldLegendProps` | type | `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' \| 'label'; id?: string; }>` |
@@ -1544,6 +1544,12 @@ Source: [`src/ui/resizable.ts`](../src/ui/resizable.ts)
 | `resizable` | function | `resizable<Msg>(props: ResizableProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `ResizableGroupProps` | type | `ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html \| string>; direction?: 'horizontal' \| 'vertical'; rtl?: boolean; minSize?: number; extent: number; withHandles?: boolean; disa…` |
 | `resizableGroup` | function | `resizableGroup<Msg>(props: ResizableGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `BoxResizeMessage` | re-export | `export { BoxResizeMessage } from '@/lib/box-resizer'` |
+| `BoxResizeModel` | re-export | `export { BoxResizeModel } from '@/lib/box-resizer'` |
+| `initBoxResize` | re-export | `export { initBoxResize } from '@/lib/box-resizer'` |
+| `resizableBox` | re-export | `export { resizableBox } from '@/lib/box-resizer'` |
+| `updateBoxResize` | re-export | `export { updateBoxResize } from '@/lib/box-resizer'` |
+| `ResizableBoxProps` | re-export | `export { type ResizableBoxProps } from '@/lib/box-resizer'` |
 
 ## Scroll Area
 
@@ -2163,7 +2169,7 @@ Source: [`src/ui/tree-list.ts`](../src/ui/tree-list.ts)
 | `UpdateReturn` | re-export | `export { UpdateReturn } from '@/lib/tree-list'` |
 | `TreeListVariant` | re-export | `export { TreeListVariant } from '@/lib/tree-list'` |
 | `VisibleItem` | re-export | `export { VisibleItem } from '@/lib/tree-list'` |
-| `ViewInputs` | type | `ViewInputs = Readonly<{ items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' \| 'rtl'; class?: string; }>` |
+| `ViewInputs` | type | `ViewInputs = Readonly<{ reorderable?: boolean; items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' \| 'rtl'; class…` |
 | `view` | value | `view: value` |
 | `TreeListProps` | type | `TreeListProps<Msg> = ViewInputs & Readonly<{ model: TreeListBehavior.Model; toParentMessage: (message: TreeListBehavior.Message) => Msg; }>` |
 | `treeList` | function | `treeList<Msg>(props: TreeListProps<Msg>, h: HtmlBuilder<Msg>): Html` |

@@ -16,6 +16,7 @@
       "source": "src/ui/accordion.ts",
       "install": "npx creaseui add accordion",
       "dependencies": [
+        "Potti1234/creaseui/disclosure-behavior",
         "Potti1234/creaseui/accordion-state",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -633,6 +634,7 @@
       "source": "src/ui/banner.ts",
       "install": "npx creaseui add banner",
       "dependencies": [
+        "Potti1234/creaseui/disclosure-behavior",
         "Potti1234/creaseui/banner-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -1630,7 +1632,8 @@
       "install": "npx creaseui add circular-progress",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/progress-normalization"
       ],
       "examples": [
         "Circular Progress",
@@ -1810,6 +1813,7 @@
       "source": "src/ui/collapsible.ts",
       "install": "npx creaseui add collapsible",
       "dependencies": [
+        "Potti1234/creaseui/disclosure-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -1997,12 +2001,12 @@
         {
           "name": "colorPickerContent",
           "kind": "function",
-          "signature": "colorPickerContent<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html"
+          "signature": "colorPickerContent<Msg>(props: ChannelProps<Msg> & Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; }>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "ColorPickerProps",
           "kind": "type",
-          "signature": "ColorPickerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?: string; contentClass?: string; }>"
+          "signature": "ColorPickerProps<Msg> = Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?…"
         },
         {
           "name": "colorPicker",
@@ -3457,13 +3461,13 @@
         },
         {
           "name": "fieldSetLegendId",
-          "kind": "value",
-          "signature": "fieldSetLegendId: value"
+          "kind": "re-export",
+          "signature": "export { fieldSetLegendId } from '@/lib/field'"
         },
         {
           "name": "fieldSetDescriptionId",
-          "kind": "value",
-          "signature": "fieldSetDescriptionId: value"
+          "kind": "re-export",
+          "signature": "export { fieldSetDescriptionId } from '@/lib/field'"
         },
         {
           "name": "FieldSetProps",
@@ -6106,6 +6110,7 @@
       "source": "src/ui/native-select.ts",
       "install": "npx creaseui add native-select",
       "dependencies": [
+        "Potti1234/creaseui/field-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -6753,6 +6758,36 @@
           "name": "resizableGroup",
           "kind": "function",
           "signature": "resizableGroup<Msg>(props: ResizableGroupProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "BoxResizeMessage",
+          "kind": "re-export",
+          "signature": "export { BoxResizeMessage } from '@/lib/box-resizer'"
+        },
+        {
+          "name": "BoxResizeModel",
+          "kind": "re-export",
+          "signature": "export { BoxResizeModel } from '@/lib/box-resizer'"
+        },
+        {
+          "name": "initBoxResize",
+          "kind": "re-export",
+          "signature": "export { initBoxResize } from '@/lib/box-resizer'"
+        },
+        {
+          "name": "resizableBox",
+          "kind": "re-export",
+          "signature": "export { resizableBox } from '@/lib/box-resizer'"
+        },
+        {
+          "name": "updateBoxResize",
+          "kind": "re-export",
+          "signature": "export { updateBoxResize } from '@/lib/box-resizer'"
+        },
+        {
+          "name": "ResizableBoxProps",
+          "kind": "re-export",
+          "signature": "export { type ResizableBoxProps } from '@/lib/box-resizer'"
         }
       ]
     },
@@ -8148,6 +8183,7 @@
       "install": "npx creaseui add tabs",
       "dependencies": [
         "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/tabs-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -8807,6 +8843,7 @@
       "install": "npx creaseui add toggle",
       "dependencies": [
         "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/button-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -9518,7 +9555,7 @@
         {
           "name": "ViewInputs",
           "kind": "type",
-          "signature": "ViewInputs = Readonly<{ items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class?: string; }>"
+          "signature": "ViewInputs = Readonly<{ reorderable?: boolean; items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class…"
         },
         {
           "name": "view",

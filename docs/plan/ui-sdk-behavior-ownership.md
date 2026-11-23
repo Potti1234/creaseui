@@ -16,7 +16,10 @@ Ship the form-control, hover-intent, and selection slices independently. Establi
 
 ## Current branch
 
-- Button, Toggle, Input Group buttons, Input, Textarea, Checkbox, Switch, Fieldset, and Native Select build their native attributes in CreaseUI. File Drop and consumer-specific primitive uses are tracked separately.
+- Button, Toggle, Input Group buttons, Input, Textarea, Checkbox, Switch, Fieldset, and Native Select build their native attributes in CreaseUI. File Input also uses the native File Drop behavior. Some higher-level consumers still use the Foldkit UI primitives directly.
 - Hover Intent owns its Schema state, and Hover Card uses native placement across the renderers.
-- The anchored popup foundation exposes inline position, dismissal, and focus. Existing modal, animated, and portaled overlays still need consumer migrations.
+- The anchored popup foundation exposes inline position, dismissal, and focus. Popover owns its open, close, dismissal, and animation state. It retains the Foldkit UI portal adapter. Dialog, Drawer, Sheet, and other overlay consumers still need migration.
 - Inline Command owns query, highlight, and selection updates. Its existing Combobox schemas, DOM effects, and popup lifecycle still need a migration.
+
+- Accordion, Collapsible, and Banner use shared native Disclosure attributes. Linear and Circular Progress use the same owned progress semantics. Motion uses generation-guarded native animation commands. Toast retains its existing surface and queue contract.
+- Radio Group and Tabs own their focus cursors and selection messages. Parent Models still own the selected values. Slider owns range normalization, keyboard navigation, and pointer drag state.

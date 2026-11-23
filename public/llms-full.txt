@@ -2666,8 +2666,8 @@ Examples: Swatch Trigger, Button Trigger, Input Trigger, Inline, Controlled, Wit
 - `colorPickerEyeDropper<Msg>(props: ColorPickerEyeDropperProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `colorPickerFormatSelect<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `colorPickerInput<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `colorPickerContent<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
-- `ColorPickerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?: string; contentClass?: string; }>` (type)
+- `colorPickerContent<Msg>(props: ChannelProps<Msg> & Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; }>, h: HtmlBuilder<Msg>): Html` (function)
+- `ColorPickerProps<Msg> = Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?…` (type)
 - `colorPicker<Msg>(props: ColorPickerProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Combobox
@@ -3018,8 +3018,8 @@ Examples: Payment Method, Input, Textarea, Select, Slider, Fieldset, Checkbox, R
 
 - `export { ControlFieldParts } from '@/lib/field'` (re-export)
 - `export { FieldError } from '@/lib/field'` (re-export)
-- `fieldSetLegendId: value` (value)
-- `fieldSetDescriptionId: value` (value)
+- `export { fieldSetLegendId } from '@/lib/field'` (re-export)
+- `export { fieldSetDescriptionId } from '@/lib/field'` (re-export)
 - `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean; id?: string; hasDescription?: boolean; }>` (type)
 - `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` (function)
 - `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' | 'label'; id?: string; }>` (type)
@@ -3886,6 +3886,12 @@ Examples: Basic, Vertical, Handle, RTL
 - `resizable<Msg>(props: ResizableProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 - `ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html | string>; direction?: 'horizontal' | 'vertical'; rtl?: boolean; minSize?: number; extent: number; withHandles?: boolean; disa…` (type)
 - `resizableGroup<Msg>(props: ResizableGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
+- `export { BoxResizeMessage } from '@/lib/box-resizer'` (re-export)
+- `export { BoxResizeModel } from '@/lib/box-resizer'` (re-export)
+- `export { initBoxResize } from '@/lib/box-resizer'` (re-export)
+- `export { resizableBox } from '@/lib/box-resizer'` (re-export)
+- `export { updateBoxResize } from '@/lib/box-resizer'` (re-export)
+- `export { type ResizableBoxProps } from '@/lib/box-resizer'` (re-export)
 
 ### Scroll Area
 
@@ -4571,7 +4577,7 @@ Examples: Tree List, TreeList — File Tree With Icons, TreeList — Interactive
 - `export { UpdateReturn } from '@/lib/tree-list'` (re-export)
 - `export { TreeListVariant } from '@/lib/tree-list'` (re-export)
 - `export { VisibleItem } from '@/lib/tree-list'` (re-export)
-- `ViewInputs = Readonly<{ items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class?: string; }>` (type)
+- `ViewInputs = Readonly<{ reorderable?: boolean; items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class…` (type)
 - `view: value` (value)
 - `TreeListProps<Msg> = ViewInputs & Readonly<{ model: TreeListBehavior.Model; toParentMessage: (message: TreeListBehavior.Message) => Msg; }>` (type)
 - `treeList<Msg>(props: TreeListProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)

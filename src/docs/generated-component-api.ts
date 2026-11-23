@@ -1357,12 +1357,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "colorPickerContent",
       "kind": "function",
-      "signature": "colorPickerContent<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html"
+      "signature": "colorPickerContent<Msg>(props: ChannelProps<Msg> & Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "ColorPickerProps",
       "kind": "type",
-      "signature": "ColorPickerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?: string; contentClass?: string; }>"
+      "signature": "ColorPickerProps<Msg> = Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?…"
     },
     {
       "name": "colorPicker",
@@ -2428,13 +2428,13 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     },
     {
       "name": "fieldSetLegendId",
-      "kind": "value",
-      "signature": "fieldSetLegendId: value"
+      "kind": "re-export",
+      "signature": "export { fieldSetLegendId } from '@/lib/field'"
     },
     {
       "name": "fieldSetDescriptionId",
-      "kind": "value",
-      "signature": "fieldSetDescriptionId: value"
+      "kind": "re-export",
+      "signature": "export { fieldSetDescriptionId } from '@/lib/field'"
     },
     {
       "name": "FieldSetProps",
@@ -4744,6 +4744,36 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "resizableGroup",
       "kind": "function",
       "signature": "resizableGroup<Msg>(props: ResizableGroupProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "BoxResizeMessage",
+      "kind": "re-export",
+      "signature": "export { BoxResizeMessage } from '@/lib/box-resizer'"
+    },
+    {
+      "name": "BoxResizeModel",
+      "kind": "re-export",
+      "signature": "export { BoxResizeModel } from '@/lib/box-resizer'"
+    },
+    {
+      "name": "initBoxResize",
+      "kind": "re-export",
+      "signature": "export { initBoxResize } from '@/lib/box-resizer'"
+    },
+    {
+      "name": "resizableBox",
+      "kind": "re-export",
+      "signature": "export { resizableBox } from '@/lib/box-resizer'"
+    },
+    {
+      "name": "updateBoxResize",
+      "kind": "re-export",
+      "signature": "export { updateBoxResize } from '@/lib/box-resizer'"
+    },
+    {
+      "name": "ResizableBoxProps",
+      "kind": "re-export",
+      "signature": "export { type ResizableBoxProps } from '@/lib/box-resizer'"
     }
   ],
   "scroll-area": [
@@ -6754,7 +6784,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ViewInputs",
       "kind": "type",
-      "signature": "ViewInputs = Readonly<{ items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class?: string; }>"
+      "signature": "ViewInputs = Readonly<{ reorderable?: boolean; items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class…"
     },
     {
       "name": "view",
