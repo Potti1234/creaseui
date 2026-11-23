@@ -35,4 +35,4 @@ imperative moves, and per-step announcements.
   outside Transfer; an in-flight draft is rebased or dropped.
 
 The Sprint board block (`creaseui-kanban-board`) uses Transfer in Tailwind,
-StyleX and Pleat: In progress holds at most two cards.
+StyleX and Pleat: In progress holds at most three cards.
