@@ -185,7 +185,8 @@
         "Potti1234/creaseui/alert-dialog-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/dialog-behavior"
       ],
       "examples": [
         "Basic",
@@ -2164,7 +2165,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/shortcuts-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/combobox-behavior"
       ],
       "examples": [
         "Demo",
@@ -3070,7 +3072,8 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/drawer-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/dialog-behavior"
       ],
       "examples": [
         "Activity goal",
@@ -4594,7 +4597,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/lightbox-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/dialog-behavior"
       ],
       "examples": [
         "Lightbox",
@@ -5841,7 +5845,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/mobile-nav-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/dialog-behavior"
       ],
       "examples": [
         "Mobile Nav",
@@ -6028,7 +6033,8 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/multi-selector-behavior",
         "Potti1234/creaseui/multi-selector-view-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/anchored-listbox-behavior"
       ],
       "examples": [
         "Multi Selector",
@@ -7063,7 +7069,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/sheet-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/dialog-behavior"
       ],
       "examples": [
         "Basic",
@@ -8938,7 +8945,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/tokenizer-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/combobox-behavior"
       ],
       "examples": [
         "Tokenizer",

@@ -344,7 +344,7 @@
         },
         {
           "path": "behaviors/combobox.LICENSE.txt",
-          "type": "registry:lib",
+          "type": "registry:file",
           "target": "@lib/behaviors/combobox.LICENSE.txt"
         }
       ],
@@ -408,11 +408,6 @@
           "target": "@lib/behaviors/cell-range.ts"
         },
         {
-          "path": "behaviors/ui-sdk-LICENSE.txt",
-          "type": "registry:file",
-          "target": "@lib/behaviors/ui-sdk-LICENSE.txt"
-        },
-        {
           "path": "behaviors/undo-stack.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/undo-stack.ts"
@@ -426,7 +421,8 @@
       "registryDependencies": [
         "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/date-parse-behavior",
-        "Potti1234/creaseui/grid-focus-behavior"
+        "Potti1234/creaseui/grid-focus-behavior",
+        "Potti1234/creaseui/ui-sdk-license"
       ]
     },
     {
@@ -883,7 +879,8 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/roving-focus-behavior",
-        "Potti1234/creaseui/tree-list-behavior"
+        "Potti1234/creaseui/tree-list-behavior",
+        "Potti1234/creaseui/typeahead-behavior"
       ]
     },
     {
@@ -1284,15 +1281,11 @@
           "path": "behaviors/resize.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/resize.ts"
-        },
-        {
-          "path": "behaviors/ui-sdk-LICENSE.txt",
-          "type": "registry:file",
-          "target": "@lib/behaviors/ui-sdk-LICENSE.txt"
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/drag-behavior"
+        "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/ui-sdk-license"
       ]
     },
     {
@@ -1434,12 +1427,10 @@
           "path": "behaviors/stick-to-bottom.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/stick-to-bottom.ts"
-        },
-        {
-          "path": "behaviors/ui-sdk-LICENSE.txt",
-          "type": "registry:file",
-          "target": "@lib/behaviors/ui-sdk-LICENSE.txt"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/ui-sdk-license"
       ]
     },
     {
@@ -1473,6 +1464,20 @@
       ]
     },
     {
+      "name": "tabs-behavior",
+      "type": "registry:lib",
+      "title": "Tabs Behavior",
+      "description": "Controlled tab selection and shared roving focus for Foldkit.",
+      "registryDependencies": ["Potti1234/creaseui/roving-focus-behavior"],
+      "files": [
+        {
+          "path": "behaviors/tabs.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/tabs.ts"
+        }
+      ]
+    },
+    {
       "name": "tanstack-table-state-behavior",
       "type": "registry:lib",
       "title": "Tanstack Table State Behavior",
@@ -1495,20 +1500,6 @@
           "path": "behaviors/text-match.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/text-match.ts"
-        }
-      ]
-    },
-    {
-      "name": "tabs-behavior",
-      "type": "registry:lib",
-      "title": "Tabs Behavior",
-      "description": "Controlled tab selection and shared roving focus for Foldkit.",
-      "registryDependencies": ["Potti1234/creaseui/roving-focus-behavior"],
-      "files": [
-        {
-          "path": "behaviors/tabs.ts",
-          "type": "registry:lib",
-          "target": "@lib/behaviors/tabs.ts"
         }
       ]
     },
@@ -1745,6 +1736,19 @@
           "path": "behaviors/typeahead.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/typeahead.ts"
+        }
+      ]
+    },
+    {
+      "name": "ui-sdk-license",
+      "type": "registry:lib",
+      "title": "UI SDK License",
+      "description": "License notice for shared behaviors adapted from UI SDK.",
+      "files": [
+        {
+          "path": "behaviors/ui-sdk-LICENSE.txt",
+          "type": "registry:file",
+          "target": "@lib/behaviors/ui-sdk-LICENSE.txt"
         }
       ]
     },
