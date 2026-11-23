@@ -1,5 +1,63 @@
 import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
+export const fieldSetLegendId = (id: string): string => `${id}-legend`
+const descriptionId = (id: string): string => `${id}-description`
+export const fieldSetDescriptionId = descriptionId
+
+export const fieldSetAttributes = <Msg>(
+  props: Readonly<{
+    id?: string
+    isDisabled?: boolean
+    hasDescription?: boolean
+  }>,
+  h: HtmlBuilder<Msg>,
+): ReadonlyArray<Attribute<Msg>> => [
+  ...(props.id === undefined
+    ? []
+    : [
+        h.Id(props.id),
+        ...(props.hasDescription === true
+          ? [h.AriaDescribedBy(descriptionId(props.id))]
+          : []),
+      ]),
+  ...(props.isDisabled === true
+    ? [
+        h.Disabled(true),
+        ...(props.id === undefined ? [] : [h.DataAttribute('disabled', '')]),
+      ]
+    : []),
+]
+
+export const nativeSelectParts = <Msg>(
+  props: Readonly<{
+    id: string
+    value: string
+    onChange: (value: string) => Msg
+    isDisabled?: boolean
+    isInvalid?: boolean
+    description?: string
+    name?: string
+  }>,
+  h: HtmlBuilder<Msg>,
+) => ({
+  select: [
+    h.Id(props.id),
+    ...(props.description === undefined
+      ? []
+      : [h.AriaDescribedBy(descriptionId(props.id))]),
+    ...(props.isDisabled === true
+      ? [h.Disabled(true), h.DataAttribute('disabled', '')]
+      : [h.OnChange(props.onChange)]),
+    ...(props.isInvalid === true
+      ? [h.AriaInvalid(true), h.DataAttribute('invalid', '')]
+      : []),
+    h.Value(props.value),
+    ...(props.name === undefined ? [] : [h.Name(props.name)]),
+  ],
+  label: [h.For(props.id)],
+  description: [h.Id(descriptionId(props.id))],
+})
+
 export type FieldError = Readonly<{ message?: string }> | undefined
 export type FieldOrientation = 'vertical' | 'horizontal' | 'responsive'
 

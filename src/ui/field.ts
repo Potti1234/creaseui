@@ -1,11 +1,11 @@
 import { type VariantProps, cva } from 'class-variance-authority'
-import { Fieldset as FieldsetPrimitive } from '@foldkit/ui'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import {
   type ControlFieldProps as SharedControlFieldProps,
   type FieldError,
   fieldErrorMessages,
+  fieldSetAttributes,
   renderControlField,
 } from '@/lib/field'
 import { cn } from '@/lib/utils'
@@ -13,10 +13,8 @@ import { separator } from '@/ui/separator'
 
 export type { ControlFieldParts, FieldError } from '@/lib/field'
 
-/** Legend id for the fieldset's `id`; pass to `fieldLegend`'s `id` prop. */
-export const fieldSetLegendId = FieldsetPrimitive.legendId
-/** Description id for the fieldset's `id`; pass to `fieldDescription`'s `id` prop. */
-export const fieldSetDescriptionId = FieldsetPrimitive.descriptionId
+/** IDs for fieldLegend and fieldDescription inside an identified fieldset. */
+export { fieldSetLegendId, fieldSetDescriptionId } from '@/lib/field'
 
 /* Ported from shadcn/ui field.tsx as structural foldkit view functions.
    Stateful selectors are adapted to foldkit's valueless data-disabled and
@@ -31,7 +29,7 @@ export type FieldSetProps = Slot &
   Readonly<{
     isDisabled?: boolean
     /** Base id; wires legend/description ids and aria-describedby via the
-        foldkit Fieldset primitive. Pair with `fieldSetLegendId` and
+        native fieldset attributes. Pair with `fieldSetLegendId` and
         `fieldSetDescriptionId`. */
     id?: string
     /** Set when a `fieldDescription` is rendered inside this fieldset. */
@@ -47,34 +45,10 @@ export const fieldSet = <Msg>(
     props.class,
   )
 
-  if (props.id !== undefined) {
-    return FieldsetPrimitive.view(
-      {
-        id: props.id,
-        ...(props.isDisabled === undefined
-          ? {}
-          : { isDisabled: props.isDisabled }),
-        ...(props.hasDescription === undefined
-          ? {}
-          : { hasDescription: props.hasDescription }),
-        toView: ({ fieldset }) =>
-          h.fieldset(
-            [
-              ...fieldset,
-              h.DataAttribute('slot', 'field-set'),
-              h.Class(className),
-            ],
-            [...props.children],
-          ),
-      },
-      h,
-    )
-  }
-
   return h.fieldset(
     [
       h.DataAttribute('slot', 'field-set'),
-      ...(props.isDisabled === undefined ? [] : [h.Disabled(props.isDisabled)]),
+      ...fieldSetAttributes(props, h),
       h.Class(className),
     ],
     [...props.children],

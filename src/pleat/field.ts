@@ -1,11 +1,11 @@
 import { Style, When } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
-import { Fieldset as FieldsetPrimitive } from '@foldkit/ui'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import {
   type ControlFieldProps as SharedControlFieldProps,
   type FieldError,
   fieldErrorMessages,
+  fieldSetAttributes,
   renderControlField,
 } from '@/lib/field'
 import type { ComponentLayoutStyle } from './contracts'
@@ -22,10 +22,8 @@ import { className, type Marker } from './style'
 import { tokens } from './tokens'
 export type { ControlFieldParts, FieldError } from '@/lib/field'
 
-/** Legend id for the fieldset's `id`; pass to `fieldLegend`'s `id` prop. */
-export const fieldSetLegendId = FieldsetPrimitive.legendId
-/** Description id for the fieldset's `id`; pass to `fieldDescription`'s `id` prop. */
-export const fieldSetDescriptionId = FieldsetPrimitive.descriptionId
+/** IDs for fieldLegend and fieldDescription inside an identified fieldset. */
+export { fieldSetLegendId, fieldSetDescriptionId } from '@/lib/field'
 export type FieldVariants = Readonly<{
   orientation?: 'vertical' | 'horizontal' | 'responsive' | null
 }>
@@ -291,38 +289,17 @@ export type FieldSetProps = Slot &
   Readonly<{
     isDisabled?: boolean
     /** Base id; wires legend/description ids and aria-describedby via the
-        foldkit Fieldset primitive. Pair with `fieldSetLegendId` and
+        native fieldset attributes. Pair with `fieldSetLegendId` and
         `fieldSetDescriptionId`. */
     id?: string
     /** Set when a `fieldDescription` is rendered inside this fieldset. */
     hasDescription?: boolean
   }>
 export const fieldSet = <Msg>(p: FieldSetProps, h: HtmlBuilder<Msg>): Html => {
-  if (p.id !== undefined) {
-    return FieldsetPrimitive.view(
-      {
-        id: p.id,
-        ...(p.isDisabled === undefined ? {} : { isDisabled: p.isDisabled }),
-        ...(p.hasDescription === undefined
-          ? {}
-          : { hasDescription: p.hasDescription }),
-        toView: ({ fieldset }) =>
-          h.fieldset(
-            [
-              ...fieldset,
-              h.DataAttribute('slot', 'field-set'),
-              h.Class(className(reset.fieldset, styles.set, p.layoutStyle)),
-            ],
-            [...p.children],
-          ),
-      },
-      h,
-    )
-  }
   return h.fieldset(
     [
       h.DataAttribute('slot', 'field-set'),
-      ...(p.isDisabled === undefined ? [] : [h.Disabled(p.isDisabled)]),
+      ...fieldSetAttributes(p, h),
       h.Class(className(reset.fieldset, styles.set, p.layoutStyle)),
     ],
     [...p.children],
