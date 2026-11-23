@@ -1589,7 +1589,7 @@ Source: [`src/ui/select.ts`](../src/ui/select.ts)
 | `SelectSize` | type | `SelectSize = 'sm' \| 'default'` |
 | `SelectItemConfig` | type | `SelectItemConfig = Readonly<{ content?: Html \| string; searchText?: string; class?: string; isDisabled?: boolean; }>` |
 | `SelectProps` | type | `SelectProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLabel: (item: Item) => string; …` |
-| `SelectBundle` | type | `SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value, Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
+| `SelectBundle` | type | `SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
 | `create` | function | `create<Value extends string = string>(): SelectBundle<Value>` |
 | `update` | value | `update: value` |
 | `select` | value | `select: value` |

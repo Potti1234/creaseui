@@ -144,12 +144,13 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /renderRadioGroup\(/u)
   })
 
-  it('keeps both Dialog skins on the canonical Foldkit submodel', () => {
+  it('keeps both Dialog skins on the shared CreaseUI submodel', () => {
     const tailwind = readFileSync('src/ui/dialog.ts', 'utf8')
     const stylex = readFileSync('src/stylex/dialog.ts', 'utf8')
 
     const behavior = readFileSync('src/lib/behaviors/dialog.ts', 'utf8')
-    assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
+    assert.match(behavior, /import \* as Popup from '\.\/popup'/u)
+    assert.match(behavior, /export const Model = S\.Struct/u)
     assert.match(
       tailwind,
       /import \* as DialogPrimitive from '@\/lib\/behaviors\/dialog'/u,
@@ -312,8 +313,14 @@ describe('StyleX component authoring contract', () => {
     const tailwind = readFileSync('src/ui/select.ts', 'utf8')
     const stylex = readFileSync('src/stylex/select.ts', 'utf8')
 
-    assert.match(tailwind, /Listbox as ListboxPrimitive/u)
-    assert.match(stylex, /Listbox as ListboxPrimitive/u)
+    assert.match(
+      tailwind,
+      /as ListboxPrimitive from '@\/lib\/behaviors\/anchored-listbox'/u,
+    )
+    assert.match(
+      stylex,
+      /as ListboxPrimitive from '@\/lib\/behaviors\/anchored-listbox'/u,
+    )
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/select['"]/u)
     assert.match(tailwind, /export const create = <\s*Value extends string/u)
     assert.match(stylex, /export const create = <\s*Value extends string/u)
@@ -331,8 +338,14 @@ describe('StyleX component authoring contract', () => {
     const tailwind = readFileSync('src/ui/combobox.ts', 'utf8')
     const stylex = readFileSync('src/stylex/combobox.ts', 'utf8')
 
-    assert.match(tailwind, /Combobox as ComboboxPrimitive/u)
-    assert.match(stylex, /Combobox as ComboboxPrimitive/u)
+    assert.match(
+      tailwind,
+      /as ComboboxPrimitive from '@\/lib\/behaviors\/combobox'/u,
+    )
+    assert.match(
+      stylex,
+      /as ComboboxPrimitive from '@\/lib\/behaviors\/combobox'/u,
+    )
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/combobox['"]/u)
     assert.match(tailwind, /export const create = <\s*Value extends string/u)
     assert.match(stylex, /export const create = <\s*Value extends string/u)

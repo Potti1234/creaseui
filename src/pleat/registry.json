@@ -1564,7 +1564,8 @@
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/text-match-behavior"
+        "Potti1234/creaseui/text-match-behavior",
+        "Potti1234/creaseui/combobox-behavior"
       ]
     },
     {
@@ -2380,7 +2381,8 @@
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens"
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/popover-behavior"
       ]
     },
     {
@@ -2516,7 +2518,8 @@
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens"
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/popover-behavior"
       ]
     },
     {
@@ -2586,7 +2589,8 @@
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-tokens",
-        "Potti1234/creaseui/time-parse-behavior"
+        "Potti1234/creaseui/time-parse-behavior",
+        "Potti1234/creaseui/popover-behavior"
       ]
     },
     {
@@ -5750,7 +5754,8 @@
         "Potti1234/creaseui/pleat-overlay-tokens",
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
-        "Potti1234/creaseui/pleat-tokens"
+        "Potti1234/creaseui/pleat-tokens",
+        "Potti1234/creaseui/anchored-listbox-behavior"
       ]
     },
     {

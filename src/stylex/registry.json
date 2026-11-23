@@ -1762,7 +1762,8 @@
         "Potti1234/creaseui/stylex-reset",
         "Potti1234/creaseui/stylex-style",
         "Potti1234/creaseui/stylex-tokens-stylex",
-        "Potti1234/creaseui/text-match-behavior"
+        "Potti1234/creaseui/text-match-behavior",
+        "Potti1234/creaseui/combobox-behavior"
       ],
       "devDependencies": [
         "@stylexjs/unplugin@^0.19.0"
@@ -2637,7 +2638,8 @@
         "Potti1234/creaseui/stylex-overlay-tokens-stylex",
         "Potti1234/creaseui/stylex-reset",
         "Potti1234/creaseui/stylex-style",
-        "Potti1234/creaseui/stylex-tokens-stylex"
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "devDependencies": [
         "@stylexjs/unplugin@^0.19.0"
@@ -2783,7 +2785,8 @@
         "Potti1234/creaseui/stylex-overlay-tokens-stylex",
         "Potti1234/creaseui/stylex-reset",
         "Potti1234/creaseui/stylex-style",
-        "Potti1234/creaseui/stylex-tokens-stylex"
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "devDependencies": [
         "@stylexjs/unplugin@^0.19.0"
@@ -2858,7 +2861,8 @@
         "Potti1234/creaseui/stylex-reset",
         "Potti1234/creaseui/stylex-style",
         "Potti1234/creaseui/stylex-tokens-stylex",
-        "Potti1234/creaseui/time-parse-behavior"
+        "Potti1234/creaseui/time-parse-behavior",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "devDependencies": [
         "@stylexjs/unplugin@^0.19.0"
@@ -6326,7 +6330,8 @@
         "Potti1234/creaseui/stylex-overlay-tokens-stylex",
         "Potti1234/creaseui/stylex-reset",
         "Potti1234/creaseui/stylex-style",
-        "Potti1234/creaseui/stylex-tokens-stylex"
+        "Potti1234/creaseui/stylex-tokens-stylex",
+        "Potti1234/creaseui/anchored-listbox-behavior"
       ],
       "devDependencies": [
         "@stylexjs/unplugin@^0.19.0"

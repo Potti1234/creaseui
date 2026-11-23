@@ -2027,7 +2027,8 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/text-match-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/combobox-behavior"
       ],
       "examples": [
         "Demo",
@@ -2402,6 +2403,7 @@
       "source": "src/ui/data-table.ts",
       "install": "npx creaseui add data-table",
       "dependencies": [
+        "Potti1234/creaseui/checkbox-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/calendar",
         "Potti1234/creaseui/checkbox",
@@ -2460,7 +2462,8 @@
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-picker-behavior",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "examples": [
         "Date Input",
@@ -2692,7 +2695,8 @@
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-range-input-behavior",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "examples": [
         "Date Range Input",
@@ -2798,7 +2802,8 @@
         "Potti1234/creaseui/date-time-input-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/time-parse-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "examples": [
         "Date Time Input",
@@ -6880,7 +6885,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/overlay-boundary-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/anchored-listbox-behavior"
       ],
       "examples": [
         "Basic",
@@ -6945,7 +6951,7 @@
         {
           "name": "SelectBundle",
           "kind": "type",
-          "signature": "SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value, Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
+          "signature": "SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
         },
         {
           "name": "create",

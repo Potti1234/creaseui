@@ -61,6 +61,26 @@
       ]
     },
     {
+      "name": "anchored-listbox-behavior",
+      "type": "registry:lib",
+      "title": "Anchored Listbox Behavior",
+      "description": "Shared anchored selection, typeahead, focus, dismissal and animation.",
+      "files": [
+        {
+          "path": "behaviors/anchored-listbox.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/anchored-listbox.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/animation-behavior",
+        "Potti1234/creaseui/listbox-behavior",
+        "Potti1234/creaseui/popup-behavior",
+        "Potti1234/creaseui/position-behavior",
+        "Potti1234/creaseui/typeahead-behavior"
+      ]
+    },
+    {
       "name": "anchored-popup-behavior",
       "type": "registry:lib",
       "title": "Anchored Popup Behavior",
@@ -297,7 +317,41 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/area-behavior",
-        "Potti1234/creaseui/drag-behavior"
+        "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/popover-behavior"
+      ]
+    },
+    {
+      "name": "combobox-behavior",
+      "type": "registry:lib",
+      "title": "Combobox Behavior",
+      "description": "Shared single and multiple editable selection, keyboard navigation and anchored popup behavior.",
+      "files": [
+        {
+          "path": "behaviors/combobox.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/combobox.ts"
+        },
+        {
+          "path": "behaviors/combobox-multi.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/combobox-multi.ts"
+        },
+        {
+          "path": "behaviors/combobox-shared.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/combobox-shared.ts"
+        },
+        {
+          "path": "behaviors/combobox.LICENSE.txt",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/combobox.LICENSE.txt"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/animation-behavior",
+        "Potti1234/creaseui/listbox-behavior",
+        "Potti1234/creaseui/position-behavior"
       ]
     },
     {
@@ -307,7 +361,8 @@
       "description": "Skin-neutral command query normalization and application-provided search-text filtering.",
       "registryDependencies": [
         "Potti1234/creaseui/listbox-behavior",
-        "Potti1234/creaseui/text-match-behavior"
+        "Potti1234/creaseui/text-match-behavior",
+        "Potti1234/creaseui/combobox-behavior"
       ],
       "files": [
         {
@@ -398,7 +453,8 @@
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-range-input-behavior",
         "Potti1234/creaseui/slider-behavior",
-        "Potti1234/creaseui/text-match-behavior"
+        "Potti1234/creaseui/text-match-behavior",
+        "Potti1234/creaseui/anchored-listbox-behavior"
       ]
     },
     {
@@ -415,7 +471,8 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/date-parse-behavior",
-        "Potti1234/creaseui/date-picker-behavior"
+        "Potti1234/creaseui/date-picker-behavior",
+        "Potti1234/creaseui/popover-behavior"
       ]
     },
     {
@@ -461,7 +518,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/calendar-range"
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/popover-behavior"
       ]
     },
     {
@@ -480,7 +538,8 @@
         "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-picker-behavior",
-        "Potti1234/creaseui/time-parse-behavior"
+        "Potti1234/creaseui/time-parse-behavior",
+        "Potti1234/creaseui/popover-behavior"
       ]
     },
     {
@@ -788,7 +847,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/viewport-behavior"
+        "Potti1234/creaseui/viewport-behavior",
+        "Potti1234/creaseui/dialog-behavior"
       ]
     },
     {
@@ -929,6 +989,9 @@
           "type": "registry:lib",
           "target": "@lib/mobile-nav.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/dialog-behavior"
       ]
     },
     {
@@ -958,7 +1021,10 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/drawer-behavior",
-        "Potti1234/creaseui/selection-behavior"
+        "Potti1234/creaseui/selection-behavior",
+        "Potti1234/creaseui/anchored-listbox-behavior",
+        "Potti1234/creaseui/dialog-behavior",
+        "Potti1234/creaseui/popover-behavior"
       ]
     },
     {
@@ -975,7 +1041,9 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/multi-selector-behavior",
-        "Potti1234/creaseui/text-match-behavior"
+        "Potti1234/creaseui/text-match-behavior",
+        "Potti1234/creaseui/anchored-listbox-behavior",
+        "Potti1234/creaseui/popover-behavior"
       ]
     },
     {
@@ -1046,7 +1114,10 @@
       "title": "Overlay Boundary Behavior",
       "description": "Shared Foldkit behavior and helpers for Overlay Boundary.",
       "registryDependencies": [
-        "Potti1234/creaseui/position-behavior"
+        "Potti1234/creaseui/position-behavior",
+        "Potti1234/creaseui/anchored-listbox-behavior",
+        "Potti1234/creaseui/combobox-behavior",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "files": [
         {
@@ -1315,7 +1386,7 @@
       "name": "slider-behavior",
       "type": "registry:lib",
       "title": "Foldkit Slider Behavior",
-      "description": "Skin-neutral @foldkit/ui slider seam with bound, step, and range update normalization and a multi-thumb submodel.",
+      "description": "Shared slider range and step normalization with keyboard and pointer interaction state.",
       "files": [
         {
           "path": "behaviors/slider.ts",
@@ -1478,6 +1549,9 @@
           "type": "registry:lib",
           "target": "@lib/time-input.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/anchored-listbox-behavior"
       ]
     },
     {
@@ -1552,7 +1626,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/focus-recovery-behavior"
+        "Potti1234/creaseui/focus-recovery-behavior",
+        "Potti1234/creaseui/combobox-behavior"
       ]
     },
     {
@@ -1652,16 +1727,25 @@
           "path": "behaviors/tree-reorder.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/tree-reorder.ts"
-        },
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/tree-collection-behavior",
+        "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/typeahead-behavior"
+      ]
+    },
+    {
+      "name": "typeahead-behavior",
+      "type": "registry:lib",
+      "title": "Typeahead Behavior",
+      "description": "Shared timed matching and navigation for composite widgets.",
+      "files": [
         {
           "path": "behaviors/typeahead.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/typeahead.ts"
         }
-      ],
-      "registryDependencies": [
-        "Potti1234/creaseui/tree-collection-behavior",
-        "Potti1234/creaseui/drag-behavior"
       ]
     },
     {

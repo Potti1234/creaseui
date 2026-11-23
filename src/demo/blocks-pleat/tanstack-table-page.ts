@@ -867,7 +867,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
                           ),
                           badge(
                             {
-                              children: ['@foldkit/ui VirtualList'],
+                              children: ['CreaseUI Virtualizer'],
                               variant: 'outline',
                             },
                             h,
