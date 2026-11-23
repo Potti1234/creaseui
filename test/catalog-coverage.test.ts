@@ -109,18 +109,6 @@ describe('component catalog coverage', () => {
       const stylexExamples = page.definition.stylexExamples
       if (stylexExamples === undefined) continue
 
-      if (page.definition.sourcePath !== undefined) {
-        assert.deepEqual(stylexExamples, page.definition.examples, page.slug)
-        for (const example of stylexExamples)
-          assert.ok(
-            example.code.includes(
-              `@/${page.definition.sourcePath.slice(4).replace(/\.ts$/u, '')}`,
-            ),
-            `${page.slug} must import its copied source module`,
-          )
-        continue
-      }
-
       assert.equal(
         rendererExamplesAreInParity(
           page.slug,
@@ -392,16 +380,10 @@ describe('component catalog coverage', () => {
   it('owns every component route in an authored page module', () => {
     assert.deepEqual(
       Object.values(authoredPages)
-        .filter(page => page.definition.sourcePath === undefined)
         .map(page => page.slug)
         .sort(),
       documentedSlugs,
     )
-    for (const page of Object.values(authoredPages)) {
-      if (page.definition.sourcePath === undefined) continue
-      assert.ok(existsSync(page.definition.sourcePath), page.slug)
-      assert.ok(hasDedicatedDefinition(page.slug), page.slug)
-    }
   })
 
   it('keeps static page previews in route-local models', () => {

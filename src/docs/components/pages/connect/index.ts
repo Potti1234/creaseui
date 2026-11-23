@@ -3,6 +3,7 @@ import { Command } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as Connect from '@/lib/behaviors/connect'
+import { connectFixtures } from '@/docs/components/pages/connect/shared'
 import {
   authoredPage,
   definePreviewProgram,
@@ -288,16 +289,12 @@ type Message = typeof Message.Type`,
 })`,
 })
 
-const examples = [
-  {
-    title: 'Connect ports',
-    description:
-      'A renderer-neutral SVG canvas with component-owned saved edges. Duplicate requests are refused without announcing success.',
-    heroOnly: true,
-    keepIdsCanonical: true,
-    code: usage,
-  },
-]
+const examples = connectFixtures.map(fixture => ({
+  ...fixture,
+  heroOnly: true,
+  keepIdsCanonical: true,
+  code: usage,
+}))
 
 export const connectPage = authoredPage({
   slug: 'connect',
@@ -306,7 +303,10 @@ export const connectPage = authoredPage({
   previewProgram: connectPreviewProgram,
   definition: {
     kind: 'submodel',
-    sourcePath: 'src/lib/behaviors/connect.ts',
+    source: {
+      path: 'src/lib/behaviors/connect.ts',
+      registryItem: 'connect',
+    },
     description:
       'A headless connection draft for pointer and keyboard port connections.',
     architecture:

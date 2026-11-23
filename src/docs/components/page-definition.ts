@@ -65,7 +65,6 @@ export type PageDefinition = Readonly<{
   stylexExamples?: ReadonlyArray<DocsExample>
   pleatExamples?: ReadonlyArray<DocsExample>
   kind?: ComponentKind
-  sourcePath?: string
   architecture?: string
   usage?: string
   source?: Readonly<{ path: string; registryItem: string }>

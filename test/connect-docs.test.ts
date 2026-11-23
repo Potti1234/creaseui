@@ -4,7 +4,7 @@ import { describe, it } from 'node:test'
 
 import * as Connect from '../src/lib/behaviors/connect.ts'
 import { componentKind } from '../src/docs/components/catalog.ts'
-import { connectPage } from '../src/docs/components/pages/connect.ts'
+import { connectPage } from '../src/docs/components/pages/connect/index.ts'
 import { authoredPages } from '../src/docs/components/pages/index.ts'
 
 describe('Connect behavior documentation', () => {
@@ -40,14 +40,17 @@ describe('Connect behavior documentation', () => {
     }
   })
 
-  it('documents a copied behavior Submodel, not a registry renderer', () => {
+  it('documents a registry-owned behavior Submodel, not a renderer', () => {
     assert.equal(definition.kind, 'submodel')
     assert.equal(componentKind('connect'), 'submodel')
-    assert.equal(definition.sourcePath, 'src/lib/behaviors/connect.ts')
-    assert.ok(existsSync(definition.sourcePath))
+    assert.deepEqual(definition.source, {
+      path: 'src/lib/behaviors/connect.ts',
+      registryItem: 'connect',
+    })
+    assert.ok(existsSync(definition.source.path))
     assert.equal(
       definition.apiHref,
-      `https://github.com/Potti1234/creaseui/blob/main/${definition.sourcePath}`,
+      `https://github.com/Potti1234/creaseui/blob/main/${definition.source.path}`,
     )
     const registry = JSON.parse(
       readFileSync('src/ui/registry.json', 'utf8'),
@@ -56,6 +59,24 @@ describe('Connect behavior documentation', () => {
       registry.items.some(item => item.name === 'connect'),
       false,
     )
+    const library = JSON.parse(
+      readFileSync('src/lib/registry.json', 'utf8'),
+    ) as {
+      items: ReadonlyArray<{
+        name: string
+        docs?: string
+        files: ReadonlyArray<{ path: string; target: string }>
+      }>
+    }
+    const item = library.items.find(item => item.name === 'connect')
+    assert.equal(item?.docs, '/docs/components/connect')
+    assert.deepEqual(item?.files, [
+      {
+        path: 'behaviors/connect.ts',
+        type: 'registry:lib',
+        target: '@lib/behaviors/connect.ts',
+      },
+    ])
   })
 
   it('shows real create/update/OutMessage wiring shared by every renderer', () => {

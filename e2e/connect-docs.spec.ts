@@ -22,9 +22,12 @@ for (const [renderer, port] of [
       page.getByText('Stateful submodel', { exact: true }),
     ).toBeVisible()
     const installation = page.locator('#installation')
-    await expect(installation).toContainText('src/lib/behaviors/connect.ts')
-    await expect(installation).toContainText('No registry item is required.')
-    await expect(installation).not.toContainText('shadcn')
+    await expect(installation).toContainText(
+      'npx shadcn@latest add Potti1234/creaseui/connect',
+    )
+    await expect(installation).not.toContainText(
+      'No registry item is required.',
+    )
     const usage = page.locator('#usage')
     for (const text of [
       'Connect.create<PortKey>()',
