@@ -9,6 +9,7 @@ import {
   normalizeMultiValues,
   normalizeRangeValues,
   snapRangeValue,
+  reflectMultiRange,
   toThumbValue,
   updateMulti,
   updateRangeValue,
@@ -79,4 +80,31 @@ describe('Slider behavior multi-thumb submodel', () => {
     assert.equal(next.thumbs[0], model.thumbs[0])
     assert.notEqual(next.thumbs[1], model.thumbs[1])
   })
+})
+
+it('reflects external bounds in both the multi model and its thumbs', () => {
+  const initial = initMulti({
+    id: 'price',
+    thumbs: 2,
+    min: 0,
+    max: 10,
+    step: 2,
+  })
+  const model = reflectMultiRange(initial, { min: 20, max: 12 })
+  assert.deepEqual([model.min, model.max], [12, 20])
+  assert.deepEqual(
+    model.thumbs.map(thumb => [thumb.min, thumb.max]),
+    [
+      [12, 20],
+      [12, 20],
+    ],
+  )
+  const result = updateMulti(
+    model,
+    MultiMessage.PressedTrack({ index: 0, value: 17, originValue: 12 }),
+  )
+  assert.deepEqual(
+    result.outMessage,
+    MultiOutMessage.ChangedThumbValue({ index: 0, value: 18 }),
+  )
 })

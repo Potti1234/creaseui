@@ -2,7 +2,7 @@ import { Option } from 'effect'
 
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import * as SliderPrimitive from '@/lib/behaviors/slider'
+import * as SliderBehavior from '@/lib/behaviors/slider'
 
 import {
   initMulti,
@@ -18,20 +18,20 @@ import {
 } from '@/lib/behaviors/slider'
 import { cn } from '@/lib/utils'
 
-export const Model = SliderPrimitive.Model
+export const Model = SliderBehavior.Model
 export type Model = typeof Model.Type
-export const Message = SliderPrimitive.Message
+export const Message = SliderBehavior.Message
 export type Message = typeof Message.Type
-export const OutMessage = SliderPrimitive.OutMessage
+export const OutMessage = SliderBehavior.OutMessage
 export type OutMessage = typeof OutMessage.Type
 
-export const init = SliderPrimitive.init
-export const update = SliderPrimitive.update
-export const reflectRange = SliderPrimitive.reflectRange
-export const snapAndClamp = SliderPrimitive.snapAndClamp
-export const subscriptions = SliderPrimitive.subscriptions
-export const subscriptionsForRoot = SliderPrimitive.subscriptionsForRoot
-export const fractionOfValue = SliderPrimitive.fractionOfValue
+export const init = SliderBehavior.init
+export const update = SliderBehavior.update
+export const reflectRange = SliderBehavior.reflectRange
+export const snapAndClamp = SliderBehavior.snapAndClamp
+export const subscriptions = SliderBehavior.subscriptions
+export const subscriptionsForRoot = SliderBehavior.subscriptionsForRoot
+export const fractionOfValue = SliderBehavior.fractionOfValue
 
 export {
   initMulti,
@@ -49,10 +49,6 @@ export {
 const ROOT_CLASS =
   'relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col'
 
-/* The foldkit Slider primitive is horizontal-only and sets data-orientation on
-   the ROOT part, not on track/range as Radix does — so shadcn's
-   data-[orientation=horizontal]: variants never match there. Horizontal styles
-   are applied directly instead. */
 const TRACK_CLASS =
   'relative grow overflow-hidden rounded-full bg-muted h-1.5 w-full'
 
@@ -62,12 +58,6 @@ const THUMB_CLASS =
   'block size-4 shrink-0 focus:z-10 data-[dragging]:z-20 rounded-full border border-primary bg-white shadow-sm ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden aria-disabled:pointer-events-none aria-disabled:opacity-50'
 
 const LABEL_CLASS = 'text-sm leading-none font-medium select-none'
-
-/* Multi-thumb sliders share one visual track; each thumb still needs its own
-   foldkit Slider model so drag state and key focus stay independent. The
-   primitive measures drags against the element carrying its
-   data-slider-track-id, so every thumb renders a zero-area track overlay (it
-   can never receive a pointer) that reports the shared track's geometry. */
 
 export type SliderProps<Msg> = Readonly<{
   model: Model
@@ -123,7 +113,7 @@ export const slider = <Msg>(
   return h.submodel({
     slotId: props.model.id,
     model: props.model,
-    view: SliderPrimitive.view,
+    view: SliderBehavior.view,
     viewInputs: {
       value: props.value,
       isDisabled: props.isDisabled ?? false,
@@ -193,7 +183,7 @@ Subscriptions: Slider.subscriptions
 View: Slider.slider({ model: model.volume, value: model.volumeValue, toParentMessage: GotSliderMessage, ariaLabel: 'Volume' })
 */
 
-/** An N-thumb slider on the foldkit Slider primitive: one primitive model per
+/** An N-thumb slider with one interaction model per
  * thumb, a shared track whose presses move the nearest thumb, and fills
  * between the lowest and highest values. Thumbs keep their identity and can
  * cross. `values` stays parent-owned; thumb changes arrive as `MultiOutMessage.ChangedThumbValue` out messages. */
@@ -206,14 +196,14 @@ export const multiSlider = <Msg>(
   const horizontal = orientation === 'horizontal'
   const range = { min: model.min, max: model.max, step: model.step }
   const values = normalizeMultiValues(props.values, range)
-  const span = Math.max(range.max - range.min, 1)
+  const span = range.max - range.min
   const isInteractive = props.isDisabled !== true && props.isReadOnly !== true
   const displayValues = values.map(value => toThumbValue(model, value))
   const displayFractions = displayValues.map(
-    value => ((value - range.min) / span) * 100,
+    value => fractionOfValue(value, range.min, range.max) * 100,
   )
   const minFraction =
-    ((toThumbValue(model, range.min) - range.min) / span) * 100
+    fractionOfValue(toThumbValue(model, range.min), range.min, range.max) * 100
   const segments: ReadonlyArray<readonly [number, number]> =
     displayFractions.length === 0
       ? []
@@ -269,9 +259,11 @@ export const multiSlider = <Msg>(
     h.submodel({
       slotId: thumb.id,
       model: thumb,
-      view: SliderPrimitive.view,
+      view: SliderBehavior.view,
       viewInputs: {
         value: displayValues[index] ?? range.min,
+        logicalValue: values[index] ?? range.min,
+        mirrored: model.mirrored,
         orientation: horizontal ? 'Horizontal' : 'Vertical',
         isDisabled: props.isDisabled ?? false,
         isReadOnly: props.isReadOnly ?? false,
@@ -280,10 +272,7 @@ export const multiSlider = <Msg>(
           ? {}
           : {
               formatValue: (value: number) =>
-                props.formatValue?.(
-                  model.mirrored ? model.min + model.max - value : value,
-                  index,
-                ) ?? '',
+                props.formatValue?.(value, index) ?? '',
             }),
         ...(props.name === undefined
           ? {}
@@ -293,7 +282,7 @@ export const multiSlider = <Msg>(
           return hs.div(
             [hs.Class('contents')],
             [
-              /* The primitive measures drag distance against the track
+              /* The behavior measures drag distance against the track
                  element it rendered, so the hidden copy must cover the same
                  box as the visual track while letting presses fall through
                  to the shared track below. */
@@ -311,11 +300,6 @@ export const multiSlider = <Msg>(
                   ...thumb,
                   hs.DataAttribute('slot', 'slider-thumb'),
                   hs.Class(THUMB_CLASS),
-                  /* The primitive reports the display-space value; under
-                       mirroring (RTL) report the true value instead. */
-                  ...(model.mirrored
-                    ? [hs.AriaValuenow(values[index] ?? range.min)]
-                    : []),
                 ],
                 [],
               ),

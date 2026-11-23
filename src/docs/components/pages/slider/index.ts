@@ -12,8 +12,8 @@ export const sliderPage = authoredPage({
     description:
       'Selects a numeric value from a bounded range through pointer and keyboard interaction.',
     architecture:
-      'Slider keeps drag/focus mechanics in a child Model and reports value changes as OutMessages. The parent delegates Messages, maps Commands, stores the emitted value, and lifts pointer/Escape subscriptions.',
-    apiHref: 'https://foldkit.dev/ui/slider',
+      'CreaseUI Slider keeps pointer drag state in a child Model and reports value changes as OutMessages. The parent delegates Messages, maps Commands, stores the emitted value, and lifts pointer/Escape subscriptions.',
+    apiHref: 'https://foldkit.dev/core/submodels',
     styling:
       'Show a visible label or value when precision matters. The range recipe supports horizontal and vertical tracks without layout animation. Thumbs move independently across the full scale and may cross; the fill spans the lowest and highest values.',
     accessibility:

@@ -28,15 +28,14 @@ import * as TailwindSlider from '@/ui/slider'
  *  - Field/Form integration: data-touched/dirty/focused hooks, validate
  *    modes, FormData submission, external `form` attribute — creaseui emits
  *    a hidden mirror input / named range inputs instead.
- *  - RTL keyboard direction reversal and vertical single-slider orientation
- *    — the foldkit thumb primitive is horizontal-only.
+ *  - RTL and vertical orientation are exposed on the multi-slider API.
  *  - Base UI props creaseui does not expose: largeStep, minStepsBetweenValues,
  *    per-thumb `disabled`/`tabIndex`, per-thumb aria-* passthrough props,
  *    `locale` (callers close over it in `formatValue`), `getAriaLabel`,
  *    `thumbCollisionBehavior`, `Slider.Value`/`Slider.Indicator` parts.
  *    Expressible gaps are pinned below with it.fails / it.todo.
  *
- * Range and multi sliders compose one foldkit Slider model per thumb on a
+ * Range and multi sliders compose one Slider interaction model per thumb on a
  * shared track; pointer drags route through each thumb's own drag
  * subscriptions, so drag flows here are driven by Subscription.emit after a
  * pointerDown — the same subscription traffic the runtime produces.
@@ -492,8 +491,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
       })
 
       it.todo(
-        'supports a vertical single-thumb slider — the foldkit thumb ' +
-          'primitive is horizontal-only; creaseui has no orientation prop on `slider`',
+        'supports a vertical single-thumb slider through the multi-slider API',
       )
     })
 
@@ -585,11 +583,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI supports e-notation steps like 1e-8. The
-      // foldkit primitive's stepDecimals does not parse exponent notation
-      // ('1e-8' has no '.'), so snapAndClamp rounds every tiny-step value
-      // to 0 — arrow keys can never move a tiny-step slider.
-      it.fails('supports tiny step values without rounding error', () => {
+      it('supports tiny step values without rounding error', () => {
         Scene.scene(
           { update, view: sliderView({ ariaLabel: 'Volume' }) },
           Scene.given(initialModel(id, { value: 0, step: 1e-8 })),
@@ -904,7 +898,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
       })
 
       it('key: PageUp increments the value by the page step', () => {
-        // Base UI's default largeStep is 10; foldkit's page step is step*10,
+        // Base UI's default largeStep is 10; the Slider page step is step*10,
         // identical for step=1.
         Scene.scene(
           { update, view: sliderView({ ariaLabel: 'Volume' }) },
@@ -928,7 +922,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
       })
 
       // DIVERGENCE: Base UI multiplies the move by largeStep when Shift is
-      // held. foldkit ignores modifiers — Shift+ArrowRight moves one step.
+      // held. Slider ignores modifiers — Shift+ArrowRight moves one step.
       it.fails('key: ArrowRight increments the value by largeStep when Shift is pressed', () => {
         Scene.scene(
           { update, view: sliderView({ ariaLabel: 'Volume' }) },
@@ -940,7 +934,7 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
       })
 
       // DIVERGENCE: Base UI steps PageUp by a configurable largeStep (5 here,
-      // so 20 → 25). foldkit has no largeStep prop — PageUp always moves
+      // so 20 → 25). Slider has no largeStep prop — PageUp always moves
       // step*10 (20 → 40 on a step-2 grid).
       it.fails('key: PageUp preserves largeStep increments when step uses a different grid', () => {
         Scene.scene(
@@ -979,6 +973,44 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
             'aria-valuenow',
             '49',
           ),
+        )
+      })
+
+      it('keeps RTL endpoint keys and form values in logical order', () => {
+        Scene.scene(
+          {
+            update,
+            view: rangeView({
+              direction: 'rtl',
+              name: 'price',
+              formatValue: value => `€${value}`,
+            }),
+          },
+          Scene.given(
+            initialModel(id, {
+              min: 0,
+              max: 9,
+              step: 2,
+              values: [2, 6],
+              direction: 'rtl',
+            }),
+          ),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuetext', '€2'),
+          Scene.expect(Scene.selector('input[name="price[0]"]')).toHaveValue(
+            '2',
+          ),
+          Scene.keydown(lowerInput, 'ArrowRight'),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '0'),
+          Scene.keydown(lowerInput, 'ArrowUp'),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '2'),
+          Scene.keydown(lowerInput, 'Home'),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '0'),
+          Scene.keydown(lowerInput, 'End'),
+          Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '9'),
+          Scene.expect(Scene.selector('input[name="price[0]"]')).toHaveValue(
+            '9',
+          ),
+          Scene.expect(upperInput).toHaveAttr('aria-valuenow', '6'),
         )
       })
 
@@ -1244,9 +1276,6 @@ const verifyRenderer = (name: string, Slider: SliderModule) => {
       it('handles non-integer changes on a thumb', () => {
         Scene.scene(
           { update, view: rangeView({}) },
-          /* step 1e-8 stringifies exponentially and the foldkit primitive's
-             snap precision reads 0 decimals from that form; 1e-6 covers the
-             same non-integer snapping path. */
           Scene.given(initialModel(id, { values: [44, 55], step: 0.000001 })),
           ...dragThumb(lowerInput, 'range', 0, 51.1),
           Scene.expect(lowerInput).toHaveAttr('aria-valuenow', '51.1'),
