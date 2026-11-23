@@ -6,7 +6,7 @@ import type { ChildAttribute, Html } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 import { makeModifyFieldsFor } from 'foldkit/struct'
-import { type View as SubmodelView, defineView } from 'foldkit/submodel'
+import { defineView } from 'foldkit/submodel'
 import * as Update from 'foldkit/update'
 
 import * as Animation from './animation'
@@ -890,8 +890,10 @@ export type ViewBehavior = Readonly<{
 }>
 
 /** Creates a combobox view function from variant-specific behavior. Shared rendering logic (input, items, transitions, keyboard navigation) is handled internally; only listbox multi-select semantics vary by variant. */
-export const makeView = <Model extends BaseModel>(behavior: ViewBehavior) => {
-  const impl = defineView<Model, Message, BaseViewInputs<string>>(
+export const makeView = <Model extends BaseModel, Item extends string>(
+  behavior: ViewBehavior,
+) => {
+  return defineView<Model, Message, BaseViewInputs<Item>>(
     (model, viewInputs, h): Html => {
       const {
         id,
@@ -953,7 +955,7 @@ export const makeView = <Model extends BaseModel>(behavior: ViewBehavior) => {
 
       const inputLabelAttributes = resolveInputLabel()
 
-      const isValueSelected = (itemValue: string): boolean =>
+      const isValueSelected = (itemValue: Item): boolean =>
         Array.contains(selectedValues, itemValue)
 
       const isLeaving =
@@ -1480,8 +1482,4 @@ export const makeView = <Model extends BaseModel>(behavior: ViewBehavior) => {
       ])
     },
   )
-
-  return <Item extends string>() =>
-    /* eslint-disable-next-line @typescript-eslint/consistent-type-assertions */
-    impl as unknown as SubmodelView<Model, Message, BaseViewInputs<Item>>
 }

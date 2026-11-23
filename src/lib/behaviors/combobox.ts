@@ -1,6 +1,6 @@
 // Adapted from @foldkit/ui 0.164.0 (MIT). See combobox.LICENSE.txt.
 import { Option, Schema } from 'effect'
-import { type Update } from 'foldkit'
+import type { Update } from 'foldkit'
 import { modifyFields } from 'foldkit/struct'
 import { type View as SubmodelView, defineView } from 'foldkit/submodel'
 
@@ -111,8 +111,6 @@ export type ViewInputs<Item extends string> = BaseViewInputsCommon<Item> &
     maybeSelectedValue: Option.Option<Item>
   }>
 
-const internalView = makeView<Model>({ ariaMultiSelectable: false })
-
 type BundleUpdateReturn<Item extends string> = Update.ReturnWithOutMessage<
   Model,
   Message,
@@ -148,9 +146,8 @@ export const create = <Item extends string = string>(): Bundle<Item> => {
     Message,
     OutMessage<Item>
   >
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const typedUpdate = update as (model: Model, message: Message) => UpdateReturn
-  const arrayBasedView = internalView<Item>()
+  const arrayBasedView = makeView<Model, Item>({ ariaMultiSelectable: false })
   const view = defineView<Model, Message, ViewInputs<Item>>(
     (model, { maybeSelectedValue, ...baseInputs }, h) =>
       arrayBasedView(
