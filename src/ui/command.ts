@@ -8,7 +8,7 @@ import {
   createInlineCommandView,
   commandAnnouncement,
   filterCommandItems,
-  retainCommandQuery,
+  createCommandState,
 } from '@/lib/command'
 import * as Icon from '@/lib/icon'
 import {
@@ -27,8 +27,8 @@ import { cn } from '@/lib/utils'
    PORT NOTE: global cmd-k dialog wiring is intentionally not included;
    consumers compose commandPalette with the dialog wrapper.
 
-   Foldkit owns typed query, active-item, and selection updates; the command
-   view keeps results in document flow and lets Escape reach its parent dialog. */
+   Command handles inline query, active-item, and selection updates. Its view
+   keeps results in document flow and lets Escape reach its parent dialog. */
 
 export const Model = ComboboxPrimitive.Model
 export type Model = typeof Model.Type
@@ -336,15 +336,9 @@ export type CommandBundle<Item extends string> = Readonly<{
 }>
 
 export const create = <Item extends string = string>(): CommandBundle<Item> => {
-  const primitive = ComboboxPrimitive.create<Item>()
   const commandView = createInlineCommandView<Item>()
   return {
-    update: (model, message) =>
-      retainCommandQuery(model, primitive.update(model, message)),
-    selectItem: (model, item, displayText) =>
-      retainCommandQuery(model, primitive.selectItem(model, item, displayText)),
-    open: primitive.open,
-    close: primitive.close,
+    ...createCommandState<Item>(),
     command: (props, h) => renderCommand(commandView, props, h),
   }
 }
