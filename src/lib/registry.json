@@ -55,6 +55,9 @@
           "type": "registry:lib",
           "target": "@lib/alert-dialog.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/dialog-behavior"
       ]
     },
     {
@@ -173,8 +176,8 @@
     {
       "name": "calendar-range",
       "type": "registry:lib",
-      "title": "Calendar Range Policy",
-      "description": "Pure parent-owned range normalization and explicit instant-to-calendar-date time-zone conversion for Calendar recipes.",
+      "title": "Calendar Behavior and Range Policy",
+      "description": "Calendar grid state and navigation, parent-owned range normalization, and explicit time-zone conversion.",
       "files": [
         {
           "path": "calendar.ts",
@@ -432,9 +435,10 @@
       "name": "date-picker-behavior",
       "type": "registry:lib",
       "title": "Date Picker Behavior",
-      "description": "Foldkit DatePicker lifecycle with shared Calendar keyboard behavior.",
+      "description": "Composes Calendar navigation and Popover lifecycle with parent-owned date selection.",
       "registryDependencies": [
-        "Potti1234/creaseui/calendar-range"
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "files": [
         {
@@ -483,7 +487,11 @@
       "name": "dialog-behavior",
       "type": "registry:lib",
       "title": "Foldkit Dialog Behavior",
-      "description": "Native dialog lifecycle and focus management.",
+      "description": "Shared dialog visibility and animation with native modal focus management.",
+      "registryDependencies": [
+        "Potti1234/creaseui/animation-behavior",
+        "Potti1234/creaseui/popup-behavior"
+      ],
       "files": [
         {
           "path": "behaviors/dialog.ts",
@@ -544,6 +552,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/dialog-behavior",
         "Potti1234/creaseui/drag-behavior",
         "Potti1234/creaseui/velocity-behavior"
       ]
@@ -1254,6 +1263,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/dialog-behavior",
         "Potti1234/creaseui/velocity-behavior"
       ]
     },

@@ -256,9 +256,9 @@ Source: [`src/ui/calendar.ts`](../src/ui/calendar.ts)
 | `reflectDisabledDates` | value | `reflectDisabledDates: value` |
 | `reflectDisabledDaysOfWeek` | value | `reflectDisabledDaysOfWeek: value` |
 | `dropToDays` | value | `dropToDays: value` |
-| `CalendarViewOptions` | type | `CalendarViewOptions = Readonly<{ captionLayout?: 'label' \| 'dropdown'; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>` |
+| `CalendarViewOptions` | type | `CalendarViewOptions = Readonly<{ captionLayout?: 'label' \| 'dropdown'; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarPrimitive.CalendarRange; weekNumbers?: boolean; }>` |
 | `calendarView` | function | `calendarView<Msg>(attributes: CalendarPrimitive.CalendarAttributes, options: CalendarViewOptions, h: HtmlBuilder<Msg>): Html` |
-| `CalendarProps` | type | `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' \| 'dropdown'; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior…` |
+| `CalendarProps` | type | `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' \| 'dropdown'; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarPrimitiv…` |
 | `calendar` | function | `calendar<Msg>(props: CalendarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Card

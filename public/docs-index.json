@@ -1145,7 +1145,7 @@
         {
           "name": "CalendarViewOptions",
           "kind": "type",
-          "signature": "CalendarViewOptions = Readonly<{ captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>"
+          "signature": "CalendarViewOptions = Readonly<{ captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarPrimitive.CalendarRange; weekNumbers?: boolean; }>"
         },
         {
           "name": "calendarView",
@@ -1155,7 +1155,7 @@
         {
           "name": "CalendarProps",
           "kind": "type",
-          "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior…"
+          "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarPrimitiv…"
         },
         {
           "name": "calendar",

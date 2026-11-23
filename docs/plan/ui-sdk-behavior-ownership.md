@@ -18,8 +18,11 @@ Ship the form-control, hover-intent, and selection slices independently. Establi
 
 - Button, Toggle, Input Group buttons, Input, Textarea, Checkbox, Switch, Fieldset, and Native Select build their native attributes in CreaseUI. File Input also uses the native File Drop behavior. Some higher-level consumers still use the Foldkit UI primitives directly.
 - Hover Intent owns its Schema state, and Hover Card uses native placement across the renderers.
-- The anchored popup foundation exposes inline position, dismissal, and focus. Popover owns its open, close, dismissal, and animation state. It retains the Foldkit UI portal adapter. Dialog, Drawer, Sheet, and other overlay consumers still need migration.
+- The anchored popup foundation exposes inline position, dismissal, and focus. Popover owns its open, close, dismissal, and animation state. It retains Foldkit UI portal and advanced placement helpers. Tooltip owns its timers and visibility and uses the same low-level anchor setup for placement.
 - Inline Command owns query, highlight, and selection updates. Its existing Combobox schemas, DOM effects, and popup lifecycle still need a migration.
 
-- Accordion, Collapsible, and Banner use shared native Disclosure attributes. Linear and Circular Progress use the same owned progress semantics. Motion uses generation-guarded native animation commands. Toast retains its existing surface and queue contract.
+- Accordion, Collapsible, and Banner use shared native Disclosure attributes. Linear and Circular Progress use the same owned progress semantics. Motion and Toast use generation-guarded native animation commands. Toast also owns its queue, timers, actions, and swipe behavior.
 - Radio Group and Tabs own their focus cursors and selection messages. Parent Models still own the selected values. Slider owns range normalization, keyboard navigation, and pointer drag state.
+
+- Calendar owns its grid, navigation, focus, and range policy. Date Picker composes it with the CreaseUI Popover lifecycle. The parent owns the selected date.
+- Dialog, Alert Dialog, Drawer, and Sheet share visibility and animation. They still use the Foldkit UI dialog view and native modal resources. Other consumers, including Lightbox and Mobile Nav, still use the upstream Dialog directly.

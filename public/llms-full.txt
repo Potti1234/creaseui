@@ -2450,9 +2450,9 @@ Examples: Demo, Persian / Hijri / Jalali Calendar, Basic, Range Calendar, Month 
 - `reflectDisabledDates: value` (value)
 - `reflectDisabledDaysOfWeek: value` (value)
 - `dropToDays: value` (value)
-- `CalendarViewOptions = Readonly<{ captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>` (type)
+- `CalendarViewOptions = Readonly<{ captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarPrimitive.CalendarRange; weekNumbers?: boolean; }>` (type)
 - `calendarView<Msg>(attributes: CalendarPrimitive.CalendarAttributes, options: CalendarViewOptions, h: HtmlBuilder<Msg>): Html` (function)
-- `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior…` (type)
+- `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarPrimitiv…` (type)
 - `calendar<Msg>(props: CalendarProps<Msg>, h: HtmlBuilder<Msg>): Html` (function)
 
 ### Card
