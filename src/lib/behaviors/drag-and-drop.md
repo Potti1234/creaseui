@@ -1,15 +1,20 @@
 # DragAndDrop
 
-DragAndDrop wraps Foldkit for single-item pointer sorting in lists and boards.
-Prefer it to ui-sdk's `createReorder` for this path: Foldkit already supplies
-a Schema Model, typed drag Messages and drop OutMessages, and scoped
-subscriptions for thresholded pointer tracking, hit testing, viewport edge
-scrolling, and keyboard fallback. The parent applies drop intents to its own
-order instead of connecting a mutable store and draft.
+DragAndDrop handles single-item sorting in lists and boards. CreaseUI owns
+the Schema Model, Messages and OutMessages, pointer activation threshold,
+drag transitions, and drop and cancel intents. The parent applies those
+intents to its own order.
 
-Pointer sorting stays on DragAndDrop. Use [Reorder](reorder.md) for ui-sdk's
-keyboard draft, grouped moves, rebase/cancel, and announcement data; it does
-not duplicate Foldkit's pointer lifecycle.
+The behavior module is the integration boundary for Foldkit DragAndDrop.
+Foldkit supplies the scoped document pointer and keyboard subscriptions,
+DOM hit testing, temporary document styles, viewport edge scrolling,
+keyboard target resolution and focus Commands, and ghost positioning. Those
+delegates read the compatible local drag phases and emit messages that the
+local update handles. The DOM protocol uses `data-draggable-id` on handles,
+`data-sortable-id` on rows, and `data-droppable-id` on containers.
+
+Use [Reorder](reorder.md) for keyboard drafts with grouped moves, rebase,
+cancel, and announcement data.
 
 Spread `view` on the focusable handle, `sortable` on each row, and `dropTarget`
 on its list. Lift `subscriptions` and the Commands from `update` into the

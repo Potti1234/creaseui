@@ -158,6 +158,47 @@ describe('Virtualizer', () => {
       320,
     )
   })
+  it('restores the initial position only on the first measurement', () => {
+    const restored = V.init({
+      id: 'list',
+      rowHeightPx: 20,
+      initialScrollTop: 75,
+    })
+    const result = V.update(
+      restored,
+      V.Message.MeasuredContainer({ containerHeight: 100 }),
+    )
+    assert.deepEqual(result.model.pendingScroll, {
+      _tag: 'ScrollingToIndex',
+      index: 3,
+      version: 1,
+    })
+    assert.equal(target(result), 75)
+    const resized = V.update(
+      result.model,
+      V.Message.MeasuredContainer({ containerHeight: 120 }),
+    )
+    assert.equal(resized.commands, undefined)
+    assert.equal(resized.model.pendingScroll, result.model.pendingScroll)
+    assert.deepEqual(resized.model.measurement, {
+      _tag: 'Measured',
+      containerHeight: 120,
+    })
+  })
+  it('keeps exact variable row boundaries and spacer heights', () => {
+    const items = [10, 30, 80, 60, 20]
+    const model = V.update(
+      measured,
+      V.Message.ScrolledContainer({ scrollTop: 40 }),
+    ).model
+    const window = V.visibleWindowVariable(model, items, height => height, 0)
+    assert.deepEqual(Option.getOrThrow(window), {
+      startIndex: 2,
+      endIndex: 4,
+      topSpacerHeight: 40,
+      bottomSpacerHeight: 20,
+    })
+  })
   it('exposes Foldkit windows, near-end thresholds and row positions', () => {
     assert.ok(Option.isNone(V.visibleWindow(initial, 100, 2)))
     const window = Option.getOrThrow(
