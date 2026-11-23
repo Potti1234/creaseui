@@ -254,6 +254,11 @@
           "path": "color-picker.ts",
           "type": "registry:lib",
           "target": "@lib/color-picker.ts"
+        },
+        {
+          "path": "behaviors/preview.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/preview.ts"
         }
       ],
       "registryDependencies": [

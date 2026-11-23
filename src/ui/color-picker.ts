@@ -345,7 +345,8 @@ export const colorPickerInput = <Msg>(
 
 /** The popover body: area, eyedropper + hue/alpha column, format + input. */
 export const colorPickerContent = <Msg>(
-  props: ChannelProps<Msg>,
+  props: ChannelProps<Msg> &
+    Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset> }>,
   h: HtmlBuilder<Msg>,
 ): Html =>
   h.div(
@@ -374,10 +375,46 @@ export const colorPickerContent = <Msg>(
         [h.Class('flex items-center gap-2')],
         [colorPickerFormatSelect(props, h), colorPickerInput(props, h)],
       ),
+      ...(props.presets === undefined
+        ? []
+        : [
+            h.div(
+              [
+                h.Role('group'),
+                h.AriaLabel('Color presets'),
+                h.OnMount(Picker.colorPresetMount(props.toParentMessage)),
+                h.Class('flex flex-wrap items-center gap-2'),
+              ],
+              [
+                ...props.presets.map(preset =>
+                  h.button(
+                    Picker.colorPresetAttributes(
+                      props.model,
+                      preset,
+                      props.toParentMessage,
+                      h,
+                    ),
+                    [colorPickerSwatch({ color: preset.value }, h)],
+                  ),
+                ),
+                h.div(
+                  [h.AriaLive('polite')],
+                  [
+                    colorPickerSwatch(
+                      { color: Picker.previewHex(props.model) },
+                      h,
+                    ),
+                    Picker.previewHex(props.model),
+                  ],
+                ),
+              ],
+            ),
+          ]),
     ],
   )
 
 export type ColorPickerProps<Msg> = Readonly<{
+  presets?: ReadonlyArray<Picker.ColorPreset>
   model: Model
   toParentMessage: (message: Message) => Msg
   /** Content rendered inside the trigger button; defaults to the swatch. */
@@ -396,10 +433,7 @@ export const colorPicker = <Msg>(
   props: ColorPickerProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  const panel = colorPickerContent(
-    { model: props.model, toParentMessage: props.toParentMessage },
-    h,
-  )
+  const panel = colorPickerContent(props, h)
   if (props.inline === true) {
     return h.div(
       [

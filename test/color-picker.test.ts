@@ -11,6 +11,7 @@ import {
   hsvToRgb,
   init,
   parseColorString,
+  previewHex,
   reflectValue,
   rgbToHex,
   rgbToHsv,
@@ -239,5 +240,30 @@ describe('update', () => {
     assert.equal(reflected.draft, '#ef4444')
     const unchanged = reflectValue(base, 'oklch(0.5 0.1 20)')
     assert.equal(hex(unchanged), hex(base))
+  })
+})
+
+describe('color preset previews', () => {
+  it('keeps a newer preview when an earlier option leaves and emits on commit', () => {
+    const original = init({ id: 'preset-test', value: '#3b82f6' })
+    const green = update(original, Message.PreviewedColor({ value: '#15803d' }))
+    assert.equal(green.outMessage, undefined)
+    assert.equal(hex(green.model), '#3b82f6')
+    assert.equal(previewHex(green.model), '#15803d')
+    const pink = update(
+      green.model,
+      Message.PreviewedColor({ value: '#be185d' }),
+    ).model
+    const afterLeave = update(
+      pink,
+      Message.ClearedColorPreview({ value: '#15803d' }),
+    ).model
+    assert.equal(previewHex(afterLeave), '#be185d')
+    const chosen = update(
+      afterLeave,
+      Message.ChoseColorPreset({ value: '#be185d' }),
+    )
+    assert.equal(hex(chosen.model), '#be185d')
+    assert.equal(chosen.outMessage?._tag, 'ChangedValue')
   })
 })

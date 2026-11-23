@@ -90,3 +90,36 @@ test('the color pad captures a drag outside the track and settles on release', a
     'saturation 100%, value 89%',
   )
 })
+
+test('preset preview does not publish a color until it is chosen', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/color-picker')
+  const example = page.locator('#swatch-trigger')
+  await example.getByRole('button').first().click()
+  const presets = page.getByRole('group', { name: 'Color presets' })
+  const green = presets.getByRole('button', { name: 'Forest green' })
+  const value = page
+    .locator('#docs-color-picker-swatch-popover-panel')
+    .getByRole('textbox', { name: 'Color value' })
+  await expect(value).toHaveValue('#3b82f6')
+  await green.hover()
+  await expect(presets.locator('[aria-live]')).toHaveText('#15803d')
+  await expect(value).toHaveValue('#3b82f6')
+  await green.focus()
+  await green.press('Enter')
+  await expect(value).toHaveValue('#15803d')
+  const blue = presets.getByRole('button', { name: 'Ocean blue' })
+  const pink = presets.getByRole('button', { name: 'Rose pink' })
+  const start = (await blue.boundingBox())!
+  const end = (await pink.boundingBox())!
+  await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(end.x + end.width / 2, end.y + end.height / 2, {
+    steps: 8,
+  })
+  await expect(presets.locator('[aria-live]')).toHaveText('#be185d')
+  await expect(value).toHaveValue('#15803d')
+  await page.mouse.up()
+  await expect(value).toHaveValue('#be185d')
+})

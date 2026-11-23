@@ -480,7 +480,8 @@ export const colorPickerInput = <Msg>(
   ])
 
 export const colorPickerContent = <Msg>(
-  props: ChannelProps<Msg>,
+  props: ChannelProps<Msg> &
+    Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset> }>,
   h: HtmlBuilder<Msg>,
 ): Html =>
   h.div(
@@ -509,10 +510,46 @@ export const colorPickerContent = <Msg>(
         [h.Class(className(styles.row))],
         [colorPickerFormatSelect(props, h), colorPickerInput(props, h)],
       ),
+      ...(props.presets === undefined
+        ? []
+        : [
+            h.div(
+              [
+                h.Role('group'),
+                h.AriaLabel('Color presets'),
+                h.OnMount(Picker.colorPresetMount(props.toParentMessage)),
+                h.Class(className(styles.row)),
+              ],
+              [
+                ...props.presets.map(preset =>
+                  h.button(
+                    Picker.colorPresetAttributes(
+                      props.model,
+                      preset,
+                      props.toParentMessage,
+                      h,
+                    ),
+                    [colorPickerSwatch({ color: preset.value }, h)],
+                  ),
+                ),
+                h.div(
+                  [h.AriaLive('polite')],
+                  [
+                    colorPickerSwatch(
+                      { color: Picker.previewHex(props.model) },
+                      h,
+                    ),
+                    Picker.previewHex(props.model),
+                  ],
+                ),
+              ],
+            ),
+          ]),
     ],
   )
 
 export type ColorPickerProps<Msg> = Readonly<{
+  presets?: ReadonlyArray<Picker.ColorPreset>
   model: Model
   toParentMessage: (message: Message) => Msg
   trigger?: Html
@@ -538,6 +575,7 @@ export const colorPicker = <Msg>(
     {
       model: props.model,
       toParentMessage: props.toParentMessage,
+      ...(props.presets === undefined ? {} : { presets: props.presets }),
       ...(props.contentLayoutStyle === undefined
         ? {}
         : { layoutStyle: props.contentLayoutStyle }),

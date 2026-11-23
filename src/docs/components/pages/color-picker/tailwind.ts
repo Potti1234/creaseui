@@ -6,6 +6,7 @@ import { defineMessageUnion } from 'foldkit/message'
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
   colorPickerFixtures,
+  exampleColorPresets,
   type ColorPickerFixture,
 } from '@/docs/components/pages/color-picker/shared'
 import * as ColorPicker from '@/ui/color-picker'
@@ -31,7 +32,11 @@ const pickerView = (
 ): Html => {
   const toParentMessage = (message: ColorPicker.Message): Got =>
     Got.GotColorPickerMessage({ id: fixture.id, message })
-  const base = { model: picker, toParentMessage }
+  const base = {
+    model: picker,
+    toParentMessage,
+    ...(fixture.id === 'swatch' ? { presets: exampleColorPresets } : {}),
+  }
   switch (fixture.trigger) {
     case 'button':
       return ColorPicker.colorPicker(
@@ -88,8 +93,7 @@ export const colorPickerTailwindPreviewProgram = definePreviewProgram<
 >({
   Model,
   Message: Got,
-  init: index => {
-    const fixture = colorPickerFixtures[index] ?? colorPickerFixtures[0]
+  init: () => {
     return {
       _docsPage: 'color-picker',
       pickers: Object.fromEntries(

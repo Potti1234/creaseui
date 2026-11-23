@@ -17,6 +17,12 @@ export type ColorPickerFixture = Readonly<{
   heroOnly?: boolean
 }>
 
+export const exampleColorPresets = [
+  { label: 'Ocean blue', value: '#3b82f6' },
+  { label: 'Forest green', value: '#15803d' },
+  { label: 'Rose pink', value: '#be185d' },
+] as const
+
 export const colorPickerFixtures: Readonly<
   [ColorPickerFixture, ...ReadonlyArray<ColorPickerFixture>]
 > = [
@@ -117,6 +123,12 @@ const pickerSource = (
   ]
     .filter((flag): flag is string => flag !== undefined)
     .join(',\n    ')
+  const presetsSource =
+    fixture.id === 'swatch'
+      ? `presets: [
+        ${exampleColorPresets.map(preset => `{ label: '${preset.label}', value: '${preset.value}' }`).join(',\n        ')},
+      ],`
+      : ''
   const viewCall =
     fixture.kind === 'inline'
       ? `ColorPicker.colorPicker({
@@ -146,6 +158,7 @@ const pickerSource = (
     }, h)`
           : `ColorPicker.colorPicker({
       model: model.picker,
+      ${presetsSource}
       toParentMessage: message => GotColorPickerMessage({ message }),
     }, h)`
   const viewBody =

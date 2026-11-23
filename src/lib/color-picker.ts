@@ -1,3 +1,5 @@
+import type { HtmlBuilder } from 'foldkit/html'
+import * as Preview from '@/lib/behaviors/preview'
 // Color Picker — skin-neutral state for the diceui-style compound color
 // picker. The model is the single source of truth for the color (held as
 // HSV + alpha because the 2D area maps directly onto saturation/value) plus
@@ -305,6 +307,7 @@ export const Model = S.Struct({
   drag: S.Union([DragChannel, S.Literal('idle')]),
   popover: Popover.Model,
   area: Area.Model,
+  colorPreview: S.optional(Preview.Model),
 })
 export type Model = typeof Model.Type
 
@@ -321,6 +324,9 @@ export const Message = defineMessageUnion({
   NudgedChannel: { channel: DragChannel, x: S.Number, y: S.Number },
   ChangedFormat: { format: S.Literals(['hex', 'rgb', 'hsl', 'hsb']) },
   ChangedInput: { text: S.String },
+  PreviewedColor: { value: S.String },
+  ClearedColorPreview: { value: S.optional(S.String) },
+  ChoseColorPreset: { value: S.String },
   CommittedInput: {},
   PressedEyeDropper: {},
   CompletedEyeDropperPick: { hex: S.Union([S.String, S.Null]) },
@@ -396,6 +402,113 @@ export const reflectValue = (model: Model, value: string): Model =>
 
 export const rgb = (model: Model): RgbColor => hsvToRgb(model.color)
 export const hex = (model: Model): string => rgbToHex(hsvToRgb(model.color))
+export const previewHex = (model: Model): string =>
+  Preview.value(model.colorPreview ?? Preview.init(), hex(model))
+
+export type ColorPreset = Readonly<{ label: string; value: string }>
+
+const presetSelector = 'button[data-color-preset]'
+
+const ObserveColorPresets = Mount.defineStream('ObserveColorPresets', {
+  messages: [
+    Message.PreviewedColor,
+    Message.ClearedColorPreview,
+    Message.ChoseColorPreset,
+  ],
+  execute: ({ element }) =>
+    !(element instanceof HTMLElement)
+      ? Stream.empty
+      : Drag.observeDrag<
+          Extract<
+            Message,
+            {
+              _tag:
+                | 'PreviewedColor'
+                | 'ClearedColorPreview'
+                | 'ChoseColorPreset'
+            }
+          >
+        >(element, (down, send) => {
+          if (!(down.target instanceof Element)) return
+          const button = down.target.closest<HTMLButtonElement>(presetSelector)
+          if (button == null || button.disabled) return
+          const at = (x: number, y: number): string | undefined => {
+            const control = element.ownerDocument
+              .elementFromPoint(x, y)
+              ?.closest<HTMLButtonElement>(presetSelector)
+            return control == null ||
+              control.disabled ||
+              !element.contains(control)
+              ? undefined
+              : control.dataset.colorPreset
+          }
+          let active = false
+          let last: string | undefined
+          return {
+            captureElement: button,
+            threshold: Drag.dragThreshold,
+            cancelOnEscape: true,
+            onStart: () => {
+              active = true
+            },
+            onMove: ({ x, y }) => {
+              const value = at(x, y)
+              if (last === value) return
+              last = value
+              send(
+                value === undefined
+                  ? Message.ClearedColorPreview({})
+                  : Message.PreviewedColor({ value }),
+              )
+            },
+            onEnd: (event, cancelled) => {
+              if (!active) return
+              const value = cancelled
+                ? undefined
+                : at(event.clientX, event.clientY)
+              send(
+                value === undefined
+                  ? Message.ClearedColorPreview({})
+                  : Message.ChoseColorPreset({ value }),
+              )
+            },
+          }
+        }),
+})
+
+export const colorPresetMount = <Msg>(send: (message: Message) => Msg) =>
+  Mount.mapMessage(ObserveColorPresets(), send)
+
+export const colorPresetAttributes = <Msg>(
+  model: Model,
+  preset: ColorPreset,
+  send: (message: Message) => Msg,
+  h: HtmlBuilder<Msg>,
+) => [
+  h.Type('button'),
+  h.Key(preset.value),
+  h.DataAttribute('color-preset', preset.value),
+  h.Style({ touchAction: 'none' }),
+  h.AriaLabel(preset.label),
+  h.Disabled(model.disabled),
+  h.OnFocus(send(Message.PreviewedColor({ value: preset.value }))),
+  h.OnMouseEnter(send(Message.PreviewedColor({ value: preset.value }))),
+  h.OnBlur(send(Message.ClearedColorPreview({ value: preset.value }))),
+  h.OnMouseLeave(send(Message.ClearedColorPreview({ value: preset.value }))),
+  h.OnClick(send(Message.ChoseColorPreset({ value: preset.value }))),
+  h.OnKeyDownPreventDefault(key =>
+    key === 'Escape' && model.colorPreview?.key != null
+      ? Option.some(send(Message.ClearedColorPreview({})))
+      : Option.none(),
+  ),
+]
+
+const presetColor = (model: Model, value: string): Option.Option<RgbColor> =>
+  model.disabled
+    ? Option.none()
+    : Option.map(parseColorString(value), color =>
+        model.withoutAlpha ? { ...color, a: 1 } : color,
+      )
 
 /** The committed value rendered in `colorToString`'s active format. */
 export const formattedValue = (model: Model): string =>
@@ -451,6 +564,7 @@ const updateArea = (model: Model, message: Area.Message): UpdateReturn => {
 const changedValue = (model: Model, color: HsvColor): UpdateReturn => ({
   model: {
     ...model,
+    colorPreview: Preview.init(),
     color,
     area: Area.reflect(model.area, { x: color.s, y: color.v }),
     draft: colorToString(hsvToRgb(color), model.format),
@@ -528,6 +642,38 @@ export const update = (model: Model, message: Message): UpdateReturn =>
   M.value(message).pipe(
     M.withReturnType<UpdateReturn>(),
     M.tagsExhaustive({
+      PreviewedColor: ({ value }) =>
+        Option.match(presetColor(model, value), {
+          onNone: () => ({ model }),
+          onSome: color => ({
+            model: {
+              ...model,
+              colorPreview: Preview.show(
+                model.colorPreview ?? Preview.init(),
+                rgbToHex(color),
+                hex(model),
+              ),
+            },
+          }),
+        }),
+      ClearedColorPreview: ({ value }) => {
+        const preview = model.colorPreview
+        if (preview?.key == null) return { model }
+        const key =
+          value === undefined
+            ? Option.some(preview.key)
+            : Option.map(presetColor(model, value), rgbToHex)
+        if (Option.isNone(key)) return { model }
+        const next = Preview.clear(preview, key.value)
+        return {
+          model: next === preview ? model : { ...model, colorPreview: next },
+        }
+      },
+      ChoseColorPreset: ({ value }) =>
+        Option.match(presetColor(model, value), {
+          onNone: () => ({ model }),
+          onSome: color => changedValue(model, rgbToHsv(color)),
+        }),
       GotAreaMessage: ({ message }) => updateArea(model, message),
       GotPopoverMessage: ({ message }) =>
         model.disabled ? { model } : liftPopover(model, message),
