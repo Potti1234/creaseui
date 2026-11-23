@@ -1311,29 +1311,85 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
                 }),
               )
             }
-            const onRangeMouseDown = (event: MouseEvent): void => {
-              if (event.button !== 0 || !event.shiftKey) return
-              if (!(event.target instanceof Element)) return
+            type RangeDrag = Readonly<{
+              pointerId: number
+              startX: number
+              startY: number
+              last: CellAddress
+            }>
+            let rangeDrag: RangeDrag | undefined
+            const cellAt = (
+              target: EventTarget | null,
+            ): CellAddress | undefined => {
+              if (!(target instanceof Element)) return
               if (
-                event.target.closest(
+                target.closest(
                   'button, input, select, textarea, a, [contenteditable]',
                 )
               )
                 return
-              const cell = event.target.closest<HTMLElement>(
+              const cell = target.closest<HTMLElement>(
                 '[data-row-index][data-column-id]',
               )
               if (cell?.closest('[role="grid"]') !== element) return
               const row = Number(cell.dataset['rowIndex'])
               const column = cell.dataset['columnId']
-              if (!Number.isInteger(row) || row < 0 || column === undefined)
-                return
+              if (Number.isInteger(row) && row >= 0 && column !== undefined)
+                return { row, column }
+            }
+            const sendRange = (cell: CellAddress): void => {
+              Queue.offerUnsafe(queue, MountMessage.GridRangeExtended(cell))
+            }
+            const onRangeMouseDown = (event: MouseEvent): void => {
+              if (event.button !== 0 || !event.shiftKey) return
+              const cell = cellAt(event.target)
+              if (cell === undefined) return
               event.preventDefault()
               event.stopPropagation()
-              Queue.offerUnsafe(
-                queue,
-                MountMessage.GridRangeExtended({ row, column }),
+              sendRange(cell)
+            }
+            const onRangePointerDown = (event: PointerEvent): void => {
+              if (
+                event.button !== 0 ||
+                event.pointerType !== 'mouse' ||
+                event.shiftKey
               )
+                return
+              const cell = cellAt(event.target)
+              if (cell === undefined) return
+              rangeDrag = {
+                pointerId: event.pointerId,
+                startX: event.clientX,
+                startY: event.clientY,
+                last: cell,
+              }
+            }
+            const onRangePointerMove = (event: PointerEvent): void => {
+              const drag = rangeDrag
+              if (drag?.pointerId !== event.pointerId) return
+              if ((event.buttons & 1) === 0) {
+                rangeDrag = undefined
+                return
+              }
+              if (
+                Math.hypot(
+                  event.clientX - drag.startX,
+                  event.clientY - drag.startY,
+                ) < 3
+              )
+                return
+              const cell = cellAt(event.target)
+              if (
+                cell === undefined ||
+                (cell.row === drag.last.row && cell.column === drag.last.column)
+              )
+                return
+              rangeDrag = { ...drag, last: cell }
+              sendRange(cell)
+            }
+            const onRangePointerEnd = (event: PointerEvent): void => {
+              if (rangeDrag?.pointerId === event.pointerId)
+                rangeDrag = undefined
             }
             const onContextMenu = (event: MouseEvent): void => {
               const target = (event.target as HTMLElement).closest(
@@ -1371,12 +1427,19 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
             )
             element.addEventListener('keydown', onKeyDown)
             element.addEventListener('mousedown', onRangeMouseDown, true)
+            element.addEventListener('pointerdown', onRangePointerDown)
+            element.addEventListener('pointermove', onRangePointerMove)
+            window.addEventListener('pointerup', onRangePointerEnd)
+            window.addEventListener('pointercancel', onRangePointerEnd)
             element.addEventListener('contextmenu', onContextMenu)
             element.addEventListener('scroll', onScroll, { passive: true })
             window.addEventListener('resize', onResize)
             return {
               onKeyDown,
               onRangeMouseDown,
+              onRangePointerDown,
+              onRangePointerMove,
+              onRangePointerEnd,
               onContextMenu,
               onScroll,
               onResize,
@@ -1392,6 +1455,22 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
                 'mousedown',
                 resource.onRangeMouseDown,
                 true,
+              )
+              element.removeEventListener(
+                'pointerdown',
+                resource.onRangePointerDown,
+              )
+              element.removeEventListener(
+                'pointermove',
+                resource.onRangePointerMove,
+              )
+              window.removeEventListener(
+                'pointerup',
+                resource.onRangePointerEnd,
+              )
+              window.removeEventListener(
+                'pointercancel',
+                resource.onRangePointerEnd,
               )
               element.removeEventListener('contextmenu', resource.onContextMenu)
               element.removeEventListener('scroll', resource.onScroll)
