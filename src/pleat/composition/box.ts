@@ -1,5 +1,5 @@
 import { Style, When, Theme } from '@pleat/core'
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { foundationTokens } from '../foundations-tokens'
 import { className } from '../style'
@@ -26,7 +26,7 @@ export type BoxRadius = 'none' | 'sm' | 'md' | 'lg' | 'full'
 
 export type BoxProps<Message = never> = Readonly<{
   as?: LayoutElement
-  attrs?: ReadonlyArray<Attribute<Message>>
+  attrs?: ReadonlyArray<Attribute<Message> | ChildAttribute>
   children: PrimitiveChildren
   contain?: 'none' | 'paint'
   contentAlignment?: 'normal' | 'center'
