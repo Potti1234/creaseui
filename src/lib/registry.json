@@ -309,6 +309,16 @@
           "target": "@lib/data-grid.ts"
         },
         {
+          "path": "behaviors/cell-range.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/cell-range.ts"
+        },
+        {
+          "path": "behaviors/ui-sdk-LICENSE.txt",
+          "type": "registry:file",
+          "target": "@lib/behaviors/ui-sdk-LICENSE.txt"
+        },
+        {
           "path": "behaviors/undo-stack.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/undo-stack.ts"

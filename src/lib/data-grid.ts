@@ -7,11 +7,13 @@ import * as CalendarPrimitive from '@/lib/behaviors/calendar'
 
 import { Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import * as Calendar from 'foldkit/calendar'
+import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 
 import * as InlineEdit from '@/lib/behaviors/inline-edit'
 import { dateFromISO, dateToISO } from '@/lib/date-parse'
+import * as CellSelection from './behaviors/cell-range'
 import * as GridFocus from '@/lib/behaviors/grid-focus'
 import * as UndoStack from '@/lib/behaviors/undo-stack'
 
@@ -122,6 +124,20 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
+export const cellSelection = (model: Model, columns: ReadonlyArray<string>) => {
+  const indices = new Map(columns.map((column, index) => [column, index]))
+  const cell = (position: typeof model.selectionAnchor) => ({
+    row: position.row,
+    column: indices.get(position.column) ?? -1,
+  })
+  const range = CellSelection.bounds(
+    cell(model.selectionAnchor),
+    cell(model.selectionEnd),
+  )
+  return (row: number, column: string): boolean =>
+    CellSelection.contains(range, cell({ row, column }))
+}
+
 export const Message = defineMessageUnion({
   FocusedCell: { row: S.Number, column: S.String },
   StartedEditing: { row: S.Number, column: S.String, seed: S.String },
@@ -172,6 +188,7 @@ export const Message = defineMessageUnion({
   },
   ClosedContextMenu: {},
   AppliedContextAction: { action: S.String },
+  PastedCells: { text: S.String },
   AddedRow: {},
   AddedRowAt: { index: S.Number },
   DeletedRows: { indexes: S.Array(S.Number) },
@@ -303,6 +320,79 @@ export const displayedRows = <Row>(
   config: DataGridConfig<Row>,
 ): ReadonlyArray<Row> =>
   sortedRows(filteredRows(model, config), model.sorting, config)
+
+export const clipboardText = <Row>(
+  model: Model,
+  config: DataGridConfig<Row>,
+  rows = displayedRows(model, config),
+): string => {
+  const columns = visibleColumns(model)
+  const anchor =
+    model.selectionAnchor.row < 0 ? model.focusedCell : model.selectionAnchor
+  const end =
+    model.selectionEnd.row < 0 ? model.focusedCell : model.selectionEnd
+  const address = (cell: CellAddress) => ({
+    row: cell.row,
+    column: columns.indexOf(cell.column),
+  })
+  const range = CellSelection.bounds(address(anchor), address(end))
+  if (range === undefined) return ''
+  const selectedColumns = columns.slice(range.left, range.right + 1)
+  return CellSelection.cellsToText(
+    rows
+      .slice(range.top, range.bottom + 1)
+      .map(row => selectedColumns.map(column => cellText(row, column, config))),
+  )
+}
+
+export const gridClipboardAttributes = <Row>(
+  model: Model,
+  config: DataGridConfig<Row>,
+  rows: ReadonlyArray<Row>,
+  h: HtmlBuilder<Message>,
+) =>
+  model.focusedCell.row < 0 || editingCell(model).row >= 0
+    ? []
+    : [
+        h.OnCopyText(clipboardText(model, config, rows)),
+        h.OnPastePreventDefault(text =>
+          Option.some(Message.PastedCells({ text })),
+        ),
+      ]
+
+const pasteCells = <Row>(
+  model: Model,
+  text: string,
+  config: DataGridConfig<Row>,
+): Model => {
+  const startRow = model.focusedCell.row
+  const columns = visibleColumnDefs(model, config)
+  const startColumn = columns.findIndex(
+    column => column.id === model.focusedCell.column,
+  )
+  if (startRow < 0 || startColumn < 0) return model
+  const displayed = displayedRows(model, config)
+  const changes = new Map<string, Row>()
+  CellSelection.textToCells(text).forEach((values, rowOffset) => {
+    const original = displayed[startRow + rowOffset]
+    if (original === undefined) return
+    let row = original
+    values.forEach((value, offset) => {
+      const column = columns[startColumn + offset]
+      if (column?.set === undefined || column.get(row) === value) return
+      row = column.set(row, value)
+    })
+    if (row !== original) changes.set(config.rowKey(original), row)
+  })
+  if (changes.size === 0) return model
+  return {
+    ...model,
+    history: UndoStack.push(model.history, model.rows, config.history),
+    rows: rowsArray<Row>(model).map(
+      row => changes.get(config.rowKey(row)) ?? row,
+    ),
+  }
+}
 
 export const visibleColumnDefs = <Row>(
   model: Model,
@@ -858,6 +948,8 @@ const applyMessage = <Row>(
       }
     case 'ClosedContextMenu':
       return { ...model, contextMenu: { ...model.contextMenu, open: false } }
+    case 'PastedCells':
+      return pasteCells(model, message.text, config)
     case 'AppliedContextAction': {
       const menu = model.contextMenu
       const closed = {
@@ -954,6 +1046,26 @@ const applyMessage = <Row>(
   }
 }
 
+const navigateSelection = <Row>(
+  model: Model,
+  key: string,
+  config: DataGridConfig<Row>,
+  extend: boolean,
+  ctrl = false,
+  direction = model.direction,
+): Model => {
+  const next = moveFocus(model, key, config, ctrl, direction)
+  if (next === model) return model
+
+  const anchor =
+    model.selectionAnchor.row < 0 ? model.focusedCell : model.selectionAnchor
+  return {
+    ...next,
+    selectionAnchor: extend && anchor.row >= 0 ? anchor : next.focusedCell,
+    selectionEnd: next.focusedCell,
+  }
+}
+
 const onGridKey = <Row>(
   model: Model,
   key: string,
@@ -966,7 +1078,9 @@ const onGridKey = <Row>(
     switch (key.toLowerCase()) {
       case 'home':
       case 'end':
-        return isEditing ? model : moveFocus(model, key, config, true)
+        return isEditing
+          ? model
+          : navigateSelection(model, key, config, shift, true)
       case 'f':
         return applyMessage(model, Message.ToggledSearch({}), config)
       case 'z':
@@ -1011,7 +1125,7 @@ const onGridKey = <Row>(
     case 'End':
     case 'PageUp':
     case 'PageDown':
-      return moveFocus(model, key, config)
+      return navigateSelection(model, key, config, shift)
     case 'Escape':
       if (model.searchOpen)
         return applyMessage(model, Message.ToggledSearch({}), config)
@@ -1022,12 +1136,13 @@ const onGridKey = <Row>(
     case 'ArrowDown':
     case 'ArrowLeft':
     case 'ArrowRight':
-      return moveFocus(model, key, config)
+      return navigateSelection(model, key, config, shift)
     case 'Tab':
-      return moveFocus(
+      return navigateSelection(
         model,
         shift ? 'ArrowLeft' : 'ArrowRight',
         config,
+        false,
         false,
         'ltr',
       )
@@ -1081,6 +1196,7 @@ const MountMessage = defineMessageUnion({
     shift: S.Boolean,
     meta: S.Boolean,
   },
+  GridRangeExtended: { row: S.Number, column: S.String },
   GridContextMenu: {
     x: S.Number,
     y: S.Number,
@@ -1102,6 +1218,7 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
   args: {},
   messages: [
     MountMessage.GridKeydown,
+    MountMessage.GridRangeExtended,
     MountMessage.GridContextMenu,
     MountMessage.GridScrolled,
     MountMessage.GridViewportHeight,
@@ -1194,6 +1311,30 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
                 }),
               )
             }
+            const onRangeMouseDown = (event: MouseEvent): void => {
+              if (event.button !== 0 || !event.shiftKey) return
+              if (!(event.target instanceof Element)) return
+              if (
+                event.target.closest(
+                  'button, input, select, textarea, a, [contenteditable]',
+                )
+              )
+                return
+              const cell = event.target.closest<HTMLElement>(
+                '[data-row-index][data-column-id]',
+              )
+              if (cell?.closest('[role="grid"]') !== element) return
+              const row = Number(cell.dataset['rowIndex'])
+              const column = cell.dataset['columnId']
+              if (!Number.isInteger(row) || row < 0 || column === undefined)
+                return
+              event.preventDefault()
+              event.stopPropagation()
+              Queue.offerUnsafe(
+                queue,
+                MountMessage.GridRangeExtended({ row, column }),
+              )
+            }
             const onContextMenu = (event: MouseEvent): void => {
               const target = (event.target as HTMLElement).closest(
                 '[data-row-index][data-column-id]',
@@ -1229,16 +1370,29 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
               MountMessage.GridViewportHeight({ height: window.innerHeight }),
             )
             element.addEventListener('keydown', onKeyDown)
+            element.addEventListener('mousedown', onRangeMouseDown, true)
             element.addEventListener('contextmenu', onContextMenu)
             element.addEventListener('scroll', onScroll, { passive: true })
             window.addEventListener('resize', onResize)
-            return { onKeyDown, onContextMenu, onScroll, onResize, observer }
+            return {
+              onKeyDown,
+              onRangeMouseDown,
+              onContextMenu,
+              onScroll,
+              onResize,
+              observer,
+            }
           }),
           resource =>
             Effect.sync(() => {
               if (resource === undefined || !(element instanceof HTMLElement))
                 return
               element.removeEventListener('keydown', resource.onKeyDown)
+              element.removeEventListener(
+                'mousedown',
+                resource.onRangeMouseDown,
+                true,
+              )
               element.removeEventListener('contextmenu', resource.onContextMenu)
               element.removeEventListener('scroll', resource.onScroll)
               window.removeEventListener('resize', resource.onResize)
@@ -1249,6 +1403,35 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
       }),
     ),
 })
+
+export const gridMountMessage = (message: MountMessage): Message => {
+  switch (message._tag) {
+    case 'GridKeydown':
+      return Message.GridKey({
+        key: message.key,
+        ctrl: message.ctrl,
+        shift: message.shift,
+        meta: message.meta,
+      })
+    case 'GridRangeExtended':
+      return Message.SelectedRange({
+        row: message.row,
+        column: message.column,
+        extend: true,
+      })
+    case 'GridContextMenu':
+      return Message.OpenedContextMenu({
+        x: message.x,
+        y: message.y,
+        row: message.row,
+        column: message.column,
+      })
+    case 'GridViewportHeight':
+      return Message.SetViewportHeight({ height: message.height })
+    case 'GridScrolled':
+      return Message.Scrolled({ scrollTop: message.scrollTop })
+  }
+}
 
 export const gridKeysMount = <Msg>(
   toParentMessage: (message: MountMessage) => Msg,
