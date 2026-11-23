@@ -7059,6 +7059,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/button-behavior",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",

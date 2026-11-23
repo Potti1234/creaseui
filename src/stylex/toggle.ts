@@ -1,7 +1,7 @@
 import { reset } from '@/ui/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { Button as ButtonPrimitive } from '@foldkit/ui'
+import { nativeButtonAttributes } from '@/lib/button'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { className } from './style'
@@ -77,39 +77,37 @@ export type ToggleProps<Msg> = Readonly<{
   layoutStyle?: ComponentLayoutStyle
 }>
 export const toggle = <Msg>(p: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html =>
-  ButtonPrimitive.view(
-    {
-      onClick: p.onToggle,
-      isDisabled: p.isDisabled ?? false,
-      type: 'button',
-      toView: ({ button }) =>
-        h.button(
-          [
-            ...button,
-            h.DataAttribute('slot', 'toggle'),
-            h.DataAttribute('size', p.size ?? 'default'),
-            h.AriaPressed(p.isPressed ? 'true' : 'false'),
-            ...(p.id === undefined ? [] : [h.Id(p.id)]),
-            ...(p.ariaLabel === undefined ? [] : [h.AriaLabel(p.ariaLabel)]),
-            ...(p.describedBy === undefined
-              ? []
-              : [h.AriaDescribedBy(p.describedBy)]),
-            ...(p.direction === undefined ? [] : [h.Dir(p.direction)]),
-            h.Class(
-              className(
-                reset.button,
-                styles.root,
-                p.variant === 'outline' && styles.outline,
-                p.size === 'sm' && styles.sm,
-                p.size === 'lg' && styles.lg,
-                p.isPressed && styles.pressed,
-                p.isDisabled && styles.disabled,
-                p.layoutStyle,
-              ),
-            ),
-          ],
-          [...p.children],
+  h.button(
+    [
+      ...nativeButtonAttributes(
+        {
+          onClick: p.onToggle,
+          isDisabled: p.isDisabled ?? false,
+          type: 'button',
+        },
+        h,
+      ),
+      h.DataAttribute('slot', 'toggle'),
+      h.DataAttribute('size', p.size ?? 'default'),
+      h.AriaPressed(p.isPressed ? 'true' : 'false'),
+      ...(p.id === undefined ? [] : [h.Id(p.id)]),
+      ...(p.ariaLabel === undefined ? [] : [h.AriaLabel(p.ariaLabel)]),
+      ...(p.describedBy === undefined
+        ? []
+        : [h.AriaDescribedBy(p.describedBy)]),
+      ...(p.direction === undefined ? [] : [h.Dir(p.direction)]),
+      h.Class(
+        className(
+          reset.button,
+          styles.root,
+          p.variant === 'outline' && styles.outline,
+          p.size === 'sm' && styles.sm,
+          p.size === 'lg' && styles.lg,
+          p.isPressed && styles.pressed,
+          p.isDisabled && styles.disabled,
+          p.layoutStyle,
         ),
-    },
-    h,
+      ),
+    ],
+    [...p.children],
   )

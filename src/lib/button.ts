@@ -84,6 +84,24 @@ const content = <Msg>(
       ]),
 ]
 
+export const nativeButtonAttributes = <Msg>(
+  props: Pick<
+    ButtonBehaviorProps<Msg>,
+    'type' | 'isDisabled' | 'isAutofocus' | 'onClick'
+  >,
+  h: HtmlBuilder<Msg>,
+): ReadonlyArray<Attribute<Msg>> => [
+  h.Type(props.type ?? 'button'),
+  h.Tabindex(0),
+  ...(props.isDisabled === true
+    ? [h.AriaDisabled(true), h.DataAttribute('disabled', '')]
+    : []),
+  ...(props.onClick === undefined || props.isDisabled === true
+    ? []
+    : [h.OnClick(props.onClick)]),
+  ...(props.isAutofocus === true ? [h.Autofocus(true)] : []),
+]
+
 export const renderButton = <Msg>(
   props: ButtonBehaviorProps<Msg>,
   visualAttributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
@@ -93,15 +111,7 @@ export const renderButton = <Msg>(
 
   return h.button(
     [
-      h.Type(props.type ?? 'button'),
-      h.Tabindex(0),
-      ...(isDisabled
-        ? [h.AriaDisabled(true), h.DataAttribute('disabled', '')]
-        : []),
-      ...(props.onClick === undefined || isDisabled
-        ? []
-        : [h.OnClick(props.onClick)]),
-      ...(props.isAutofocus === true ? [h.Autofocus(true)] : []),
+      ...nativeButtonAttributes({ ...props, isDisabled }, h),
       h.DataAttribute('slot', props.slot ?? 'button'),
       h.DataAttribute('state', props.isLoading === true ? 'loading' : 'idle'),
       ...(props.dataSize === undefined
