@@ -1,9 +1,10 @@
 import { Command } from 'foldkit'
 import * as Scene from 'foldkit/scene'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
-import { Animation, Dialog as DialogPrimitive } from '@foldkit/ui'
 import { describe, it } from 'vitest'
 
+import * as Animation from '@/lib/behaviors/animation'
+import * as DialogPrimitive from '@/lib/behaviors/dialog'
 import * as SheetBehavior from '@/lib/sheet'
 import * as StyleXDialog from '@/stylex/dialog'
 import * as StyleXSheet from '@/stylex/sheet'
@@ -294,7 +295,10 @@ const dialogView =
         Dialog.dialog(
           {
             model: model.dialog,
-            toParentMessage: message => ({ _tag: 'GotDialogMessage', message }),
+            toParentMessage: (message): Message => ({
+              _tag: 'GotDialogMessage',
+              message,
+            }),
             title: model.title,
             ...(model.description === undefined
               ? {}
@@ -1134,7 +1138,7 @@ const verifyRenderer = (
                     ...Sheet.init({ id: 'test-sheet' }),
                     dialog: model.dialog,
                   },
-                  toParentMessage: message => ({
+                  toParentMessage: (message): Message => ({
                     _tag: 'GotSheetMessage',
                     message,
                   }),

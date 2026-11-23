@@ -20,7 +20,7 @@ export const mobileNavPage = authoredPage({
     styling:
       'A full-height panel 320px wide with a blurred scrim, a compact header row with a close control, and a scrollable nav body; start/end slide transforms mirror for RTL.',
     accessibility:
-      'The Dialog supplies focus containment and Escape dismissal. Without a visible title the label falls back to sr-only text; the toggle exposes aria-controls and aria-expanded bound to the drawer.',
+      'The shared CreaseUI Dialog supplies focus containment, Escape dismissal, and page scroll locking. Without a visible title the label falls back to sr-only text; the toggle exposes aria-controls and aria-expanded bound to the drawer.',
     keyboard: [
       ['Escape', 'Closes the drawer and restores focus to the toggle.'],
       ['Tab', 'Cycles focus within the open drawer.'],

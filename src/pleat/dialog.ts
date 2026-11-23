@@ -44,19 +44,19 @@ const isStaticStyle = (value: unknown): value is Style.Style =>
 const cn = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
-/* Ported from shadcn/ui dialog.tsx on top of the foldkit Dialog submodel.
+/* Ported from shadcn/ui dialog.tsx on top of the CreaseUI Dialog submodel.
 
    Class strings are shadcn's, with two adaptations:
-   - Centering: foldkit renders a native <dialog> that is already fixed inset-0
+   - Centering: CreaseUI renders a native <dialog> that is already fixed inset-0
      fullscreen, so the panel is flex-centered by the wrapper instead of
      shadcn's fixed + translate(-50%,-50%) trick.
-   - Animation: foldkit marks transition phases with data-closed/data-enter/
+   - Animation: CreaseUI marks transition phases with data-closed/data-enter/
      data-leave (Headless-UI style) instead of Radix's data-[state]. shadcn's
      animate-in/fade-in-0/zoom-in-95 become CSS transitions driven by
      data-[closed]:. Pass isAnimated: true to init for the transition to run.
 
-   State (Model/Message/update) is the foldkit Dialog's own — re-exported here
-   so consumers import everything from this module, shadcn-style. */
+   The CreaseUI behavior owns Model, Message, and update. The renderer
+   re-exports them so consumers can import everything from this module. */
 
 export const Model = DialogPrimitive.Model
 export type Model = typeof Model.Type
@@ -176,7 +176,7 @@ export type DialogProps<Msg> = Readonly<{
   content?: (slots: DialogSlots) => ReadonlyArray<Html>
   footer?: (slots: DialogSlots) => ReadonlyArray<Html>
   /** Replaces the default header/content/footer layout with shadcn-like,
-   *  bound part builders while the Foldkit model still owns behavior. */
+   *  bound part builders while the shared Dialog model still owns behavior. */
   layout?: (parts: DialogParts<Msg>) => ReadonlyArray<Html>
   showCloseButton?: boolean
   layoutStyle?: ComponentLayoutStyle | undefined

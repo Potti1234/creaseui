@@ -45,7 +45,7 @@ export const init = ({
   transitionGeneration: 0,
 })
 
-const WaitForPaint = Command.define('WaitForPaint', {
+export const WaitForPaint = Command.define('WaitForPaint', {
   args: { generation: S.Number },
   messages: [Message.CompletedWaitForPaint],
   execute: ({ generation }) =>
@@ -54,14 +54,17 @@ const WaitForPaint = Command.define('WaitForPaint', {
     ),
 })
 
-const WaitForAnimationSettled = Command.define('WaitForAnimationSettled', {
-  args: { id: S.String, generation: S.Number },
-  messages: [Message.EndedAnimation],
-  execute: ({ id, generation }) =>
-    Effect.suspend(() =>
-      Dom.waitForAnimationSettled(`#${CSS.escape(id)}`),
-    ).pipe(Effect.as(Message.EndedAnimation({ generation }))),
-})
+export const WaitForAnimationSettled = Command.define(
+  'WaitForAnimationSettled',
+  {
+    args: { id: S.String, generation: S.Number },
+    messages: [Message.EndedAnimation],
+    execute: ({ id, generation }) =>
+      Effect.suspend(() =>
+        Dom.waitForAnimationSettled(`#${CSS.escape(id)}`),
+      ).pipe(Effect.as(Message.EndedAnimation({ generation }))),
+  },
+)
 
 export const defaultLeaveCommand = (model: Model) =>
   WaitForAnimationSettled({

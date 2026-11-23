@@ -3,7 +3,7 @@
 import { Option } from 'effect'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Dialog as DialogPrimitive } from '@foldkit/ui'
+import * as DialogPrimitive from '@/lib/behaviors/dialog'
 
 import * as Icon from '@/lib/icon'
 import * as LightboxBehavior from '@/lib/lightbox'
