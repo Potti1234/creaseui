@@ -6,7 +6,7 @@ import * as Mount from 'foldkit/mount'
 import * as TooltipBehavior from '@/lib/behaviors/tooltip'
 import { cn } from '@/lib/utils'
 
-/* Ported from shadcn/ui tooltip.tsx on top of foldkit Tooltip.
+/* Ported from shadcn/ui tooltip.tsx using the shared CreaseUI Tooltip behavior.
 
    Foldkit's floating anchor may flip a panel to avoid collisions. The arrow is
    styled from the anchor's runtime data-placement, so it follows that flip. */
