@@ -1,0 +1,160 @@
+diff --git a/node_modules/foldkit/dist/runtime/messageQueue.d.ts b/node_modules/foldkit/dist/runtime/messageQueue.d.ts
+index 66ad568..b9dd2b6 100644
+--- a/node_modules/foldkit/dist/runtime/messageQueue.d.ts
++++ b/node_modules/foldkit/dist/runtime/messageQueue.d.ts
+@@ -5,7 +5,9 @@ export type MessageQueue<Message> = Readonly<{
+     enqueueMessage: (message: Message) => void;
+     enqueueMessageEffect: (message: Message) => Effect.Effect<void>;
+     drainPendingMessages: () => void;
++    drainQueuedPrefix: () => void;
+     resetDrainBudget: () => void;
++    isAnyMessageDeferred: () => boolean;
+     completeBoot: () => void;
+ }>;
+ /**
+diff --git a/node_modules/foldkit/dist/runtime/messageQueue.js b/node_modules/foldkit/dist/runtime/messageQueue.js
+index fe2bf8b..d4ee04f 100644
+--- a/node_modules/foldkit/dist/runtime/messageQueue.js
++++ b/node_modules/foldkit/dist/runtime/messageQueue.js
+@@ -116,9 +116,38 @@ export const makeMessageQueue = ({ status, processMessage, crashWith, }) => Effe
+             isProcessingMessages = false;
+         }
+     };
++    const drainQueuedPrefix = () => {
++        if (!isBootComplete ||
++            isProcessingMessages ||
++            status.isRenderingFrame ||
++            status.isRuntimeDisposed ||
++            status.isCrashed) {
++            return;
++        }
++        const prefix = pendingMessages;
++        pendingMessages = [];
++        const drainStartedAt = performance.now();
++        isProcessingMessages = true;
++        try {
++            for (const message of prefix) {
++                currentMessage = Option.some(message);
++                processMessage(message);
++            }
++        }
++        catch (error) {
++            Effect.runFork(crashWith(Cause.die(error), currentMessage));
++        }
++        finally {
++            const drainEndedAt = performance.now();
++            syncWorkMsSinceYield += drainEndedAt - drainStartedAt;
++            lastDrainEndedAt = drainEndedAt;
++            isProcessingMessages = false;
++        }
++    };
+     const resetDrainBudget = () => {
+         syncWorkMsSinceYield = 0;
+     };
++    const isAnyMessageDeferred = () => isDrainDeferredToNextTask && pendingMessages.length > 0;
+     const completeBoot = () => {
+         isBootComplete = true;
+         drainPendingMessages();
+@@ -127,7 +156,9 @@ export const makeMessageQueue = ({ status, processMessage, crashWith, }) => Effe
+         enqueueMessage,
+         enqueueMessageEffect,
+         drainPendingMessages,
++        drainQueuedPrefix,
+         resetDrainBudget,
++        isAnyMessageDeferred,
+         completeBoot,
+     };
+ });
+diff --git a/node_modules/foldkit/dist/runtime/renderer.js b/node_modules/foldkit/dist/runtime/renderer.js
+index 573b77c..04c25a1 100644
+--- a/node_modules/foldkit/dist/runtime/renderer.js
++++ b/node_modules/foldkit/dist/runtime/renderer.js
+@@ -9,6 +9,7 @@ import { Dispatch } from './dispatch.js';
+ import { applyDocumentMetadata } from './documentMetadata.js';
+ import { measureSlowPhase, reportSlowPhase, } from './slowPhase.js';
+ import { __decideViewTransition, __silenceViewTransitionRejections, } from './viewTransition.js';
++const QUEUE_REFUSAL_LIMIT = 3;
+ /**
+  * Builds the render side of one runtime: the current vnode and, when
+  * hydrating, the server-rendered root the first render adopts, the crash
+@@ -22,7 +23,7 @@ import { __decideViewTransition, __silenceViewTransitionRejections, } from './vi
+  * those fibers are interrupted.
+  */
+ export const makeRenderer = ({ status, container, view, htmlBuilder, manageDocument, crash, buildId, initModel, maybeHydrationRoot, maybeSlowView, maybeSlowPatch, duplicateIdScanner, maybeResolvedViewTransition, commitNotifier, runtimeContext, readLiveModel, messageQueue, devToolsIntegration, }) => Effect.gen(function* () {
+-    const { enqueueMessage, enqueueMessageEffect, drainPendingMessages, resetDrainBudget, } = messageQueue;
++    const { enqueueMessage, enqueueMessageEffect, drainPendingMessages, drainQueuedPrefix, resetDrainBudget, isAnyMessageDeferred, } = messageQueue;
+     const { mountTracker, mountRuntime, drainMountEvents, readViewState, setViewState, isPausedNow, resumeDevTools, attachRenderedMounts, } = devToolsIntegration;
+     const settlePendingCommit = () => {
+         if (commitNotifier.service.isCommitPending()) {
+@@ -39,6 +40,7 @@ export const makeRenderer = ({ status, container, view, htmlBuilder, manageDocum
+     // from an ordinary frame that was already queued when jumpTo installed
+     // the historical view.
+     let isLiveViewRestorePending = false;
++    let queueRefusalCount = 0;
+     // NOTE: the Model behind the DOM currently on screen, which is what a
+     // View Transition animates away from. Seeded with `initModel` because
+     // the init render paints it, and advanced only where a render actually
+@@ -284,6 +286,7 @@ export const makeRenderer = ({ status, container, view, htmlBuilder, manageDocum
+             // NOTE: after the patch, so a render that threw leaves this on the
+             // Model still on screen, and before `drainPendingMessages` below,
+             // whose handlers can advance the live Model again.
++            queueRefusalCount = 0;
+             lastRenderedModel = renderedModel;
+             // NOTE: resume clears the store's pause flag before this frame.
+             // Publish Live only after the live DOM has been installed.
+@@ -361,6 +364,20 @@ export const makeRenderer = ({ status, container, view, htmlBuilder, manageDocum
+                     settlePendingCommit();
+                     return;
+                 }
++                if (isAnyMessageDeferred()) {
++                    update.isInvalidated = true;
++                    skipPendingViewTransition();
++                    if (queueRefusalCount < QUEUE_REFUSAL_LIMIT) {
++                        queueRefusalCount += 1;
++                        scheduleRenderFrame();
++                        return;
++                    }
++                    drainQueuedPrefix();
++                    if (status.isRuntimeDisposed || status.isCrashed) {
++                        settlePendingCommit();
++                        return;
++                    }
++                }
+                 runRenderFrameBody();
+             }, maybeDecision.value.maybeTypes);
+             maybePendingViewTransition = Option.some({ handle, update });
+@@ -374,8 +391,8 @@ export const makeRenderer = ({ status, container, view, htmlBuilder, manageDocum
+             return false;
+         }
+     };
+-    // NOTE: every path out of a scheduled frame settles the commit
+-    // notifier, whether or not it patched. A frame abandoned silently
++    // NOTE: terminal paths settle the commit notifier. Queue-related
++    // refusals retain it for the retry. A frame abandoned silently
+     // would strand any `Render.afterCommit` registered against it, and
+     // the Dom helpers that gate on it would never run their DOM work.
+     const renderFramePlain = () => {
+@@ -407,6 +424,23 @@ export const makeRenderer = ({ status, container, view, htmlBuilder, manageDocum
+             settlePendingCommit();
+             return;
+         }
++        // Don't overwrite a native edit with the older Model value. Under
++        // sustained traffic, drain the queued prefix to allow painting.
++        if (isAnyMessageDeferred()) {
++            if (queueRefusalCount < QUEUE_REFUSAL_LIMIT) {
++                queueRefusalCount += 1;
++                scheduleRenderFrame(isRestoringLiveView);
++                return;
++            }
++            skipPendingViewTransition();
++            drainQueuedPrefix();
++            if (status.isRuntimeDisposed || status.isCrashed) {
++                settlePendingCommit();
++                return;
++            }
++            runRenderFrameBody();
++            return;
++        }
+         // NOTE: the unconfigured path pays one `Option.isNone` check and
+         // renders directly, allocating no per-frame callback. Only a
+         // runtime configured with `viewTransition` reaches
