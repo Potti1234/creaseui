@@ -5,10 +5,10 @@ import { Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import { Command, Subscription } from 'foldkit'
 
-import { DragAndDrop as Dnd } from '@foldkit/ui'
 import * as Reorder from '@/lib/behaviors/reorder'
 import * as Announce from '@/lib/behaviors/announce'
 import * as KanbanReorder from '@/demo/kanban-reorder'
+import * as Transfer from '@/lib/behaviors/transfer'
 import { loginArtwork } from '@/stylex/composition/login-artwork'
 import { badge } from '@/stylex/badge'
 import { button } from '@/stylex/button'
@@ -58,9 +58,8 @@ import {
   inboxTable,
   initialKanbanLanes,
   kanbanBoard,
-  kanbanSubscriptions,
-  moveKanbanCard,
-  kanbanAnnouncement as announceKanban,
+  initKanbanTransfer,
+  updateKanbanTransfer,
   orderDetail,
 } from './creaseui-blocks'
 import { appShell } from './app-shell'
@@ -86,8 +85,8 @@ export const Model = S.Struct({
   radioGroup: RadioGroup.Model,
   kanbanAnnouncement: S.String,
   kanbanAnnouncer: Announce.Model,
-  kanbanDnd: Dnd.Model,
   kanbanReorder: Reorder.Model,
+  kanbanTransfer: Transfer.Model,
   kanbanLanes: S.Array(KanbanLaneData),
   sidebarCollapsed: S.Boolean,
   sidebarMobileOpen: S.Boolean,
@@ -132,9 +131,6 @@ export const GotTablecnGridMessage = taggedStruct(
     message: TablecnPage.Message,
   },
 )
-export const GotKanbanDndMessage = taggedStruct('GotKanbanDndMessage', {
-  message: Dnd.Message,
-})
 export const GotKanbanReorderMessage = taggedStruct('GotKanbanReorderMessage', {
   message: Reorder.Message,
 })
@@ -143,6 +139,10 @@ export const GotKanbanAnnouncementMessage = taggedStruct(
   {
     message: Announce.Message,
   },
+)
+export const GotKanbanTransferMessage = taggedStruct(
+  'GotKanbanTransferMessage',
+  { message: Transfer.Message },
 )
 export const ToggledBlockSidebar = taggedStruct('ToggledBlockSidebar')
 export const ToggledBlockMobileSidebar = taggedStruct(
@@ -164,9 +164,9 @@ export const Message = S.Union([
   GotRadioGroupMessage,
   GotTablecnMessage,
   GotTablecnGridMessage,
-  GotKanbanDndMessage,
   GotKanbanReorderMessage,
   GotKanbanAnnouncementMessage,
+  GotKanbanTransferMessage,
 ])
 export type Message = typeof Message.Type
 export const init = (): Model => ({
@@ -175,8 +175,8 @@ export const init = (): Model => ({
   email: '',
   kanbanAnnouncement: '',
   kanbanAnnouncer: Announce.init(),
-  kanbanDnd: Dnd.init({ id: 'featured-kanban' }),
   kanbanReorder: Reorder.init(),
+  kanbanTransfer: initKanbanTransfer('featured-kanban'),
   kanbanLanes: initialKanbanLanes,
   kind: 'all',
   mail: 'nora',
@@ -205,15 +205,6 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
   )<Model, Message>({
     toChildModel: model => model.tablecnGrid.table,
     toParentMessage: message => GotTablecnGridMessage({ message }),
-  }),
-  Subscription.lift({
-    featuredSxKanbanEscape: kanbanSubscriptions.documentEscape,
-    featuredSxKanbanKeyboard: kanbanSubscriptions.documentKeyboard,
-    featuredSxKanbanPointer: kanbanSubscriptions.documentPointer,
-    featuredSxKanbanScroll: kanbanSubscriptions.autoScroll,
-  })<Model, Message>({
-    toChildModel: model => model.kanbanDnd,
-    toParentMessage: message => GotKanbanDndMessage({ message }),
   }),
 )
 
@@ -259,7 +250,7 @@ const updateModel = (
       message.message,
       model.kanbanLanes,
       model.kanbanAnnouncement,
-      model.kanbanDnd.id,
+      model.kanbanTransfer.id,
     )
     return {
       model: {
@@ -274,28 +265,24 @@ const updateModel = (
     }
   }
   if (message._tag === 'GotBlocksStyleXEChartMessage') return { model: model }
-  if (message._tag === 'GotKanbanDndMessage') {
-    const result = Dnd.update(model.kanbanDnd, message.message)
-    const kanbanLanes =
-      result.outMessage?._tag === 'Reordered'
-        ? moveKanbanCard(model.kanbanLanes, result.outMessage)
-        : model.kanbanLanes
-    const kanbanAnnouncement = announceKanban(
-      kanbanLanes,
-      model.kanbanDnd,
-      result.model,
-      result.outMessage,
-      model.kanbanAnnouncement,
+  if (message._tag === 'GotKanbanTransferMessage') {
+    const result = updateKanbanTransfer(
+      {
+        announcement: model.kanbanAnnouncement,
+        lanes: model.kanbanLanes,
+        transfer: model.kanbanTransfer,
+      },
+      message.message,
     )
     return {
-      commands: Command.mapMessages(result.commands ?? [], inner =>
-        GotKanbanDndMessage({ message: inner }),
+      commands: Command.mapMessages(result.commands, inner =>
+        GotKanbanTransferMessage({ message: inner }),
       ),
       model: {
         ...model,
-        kanbanAnnouncement,
-        kanbanDnd: result.model,
-        kanbanLanes,
+        kanbanAnnouncement: result.announcement,
+        kanbanLanes: result.lanes,
+        kanbanTransfer: result.transfer,
       },
     }
   }
@@ -1242,11 +1229,11 @@ const blocks: ReadonlyArray<Block> = [
         chromeState(model),
         {
           announcement: model.kanbanAnnouncer.text,
-          dnd: model.kanbanDnd,
           reorder: model.kanbanReorder,
           toReorderMessage: message => GotKanbanReorderMessage({ message }),
+          transfer: model.kanbanTransfer,
           lanes: model.kanbanLanes,
-          toDndMessage: message => GotKanbanDndMessage({ message }),
+          toTransferMessage: message => GotKanbanTransferMessage({ message }),
         },
         h,
       ),

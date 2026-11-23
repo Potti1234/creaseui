@@ -2213,6 +2213,40 @@ Source: [`src/lib/behaviors/avoid-keyboard.ts`](../src/lib/behaviors/avoid-keybo
 | `Message` | type | `Message = typeof Message.Type` |
 | `AvoidKeyboard` | value | `AvoidKeyboard: value` |
 
+## Connect
+
+Source: [`src/lib/behaviors/connect.ts`](../src/lib/behaviors/connect.ts)
+
+| Export | Kind | Signature |
+| --- | --- | --- |
+| `ConnectDraft` | value | `ConnectDraft: value` |
+| `ConnectDraft` | type | `ConnectDraft = typeof ConnectDraft.Type` |
+| `Model` | value | `Model: value` |
+| `Model` | type | `Model = typeof Model.Type` |
+| `Reason` | value | `Reason: value` |
+| `Message` | value | `Message: value` |
+| `Message` | type | `Message = typeof Message.Type` |
+| `OutMessage` | value | `OutMessage: value` |
+| `OutMessage` | type | `OutMessage = typeof OutMessage.Type` |
+| `ConnectMessage` | type | `ConnectMessage = Readonly<{ type: 'start'; from: string; }> \| Readonly<{ type: 'target' \| 'connect'; from: string; to: string; }> \| Readonly<{ type: 'cancel'; from: string; }>` |
+| `connectMessage` | function | `connectMessage(message: ConnectMessage, label: (key: string) => string): string` |
+| `Options` | type | `Options = Readonly<{ keys: ReadonlyArray<string>; canConnect?: (from: string, to: string) => boolean; label?: (key: string) => string; message?: (message: ConnectMessage, label: (key: string) => string) => string; announcementId?: string; }>` |
+| `init` | function | `init(): Model` |
+| `MeasurePorts` | value | `MeasurePorts: value` |
+| `Announce` | value | `Announce: value` |
+| `update` | function | `update(model: Model, message: Message, options: Options): UpdateReturn` |
+| `role` | function | `role(model: Model, key: string, options: Options): Option.Option<'Source' \| 'Target' \| 'Candidate'>` |
+| `Rect` | type | `Rect = Readonly<{ left: number; right: number; top: number; bottom: number; }>` |
+| `Port` | type | `Port<Key extends string = string> = Readonly<{ key: Key; rect: Rect; }>` |
+| `nearestInDirection` | function | `nearestInDirection<Key extends string>(fromRect: Rect, candidates: ReadonlyArray<Port<Key>>, direction: readonly [ number, number ]): Option.Option<Key>` |
+| `keyboardTarget` | function | `keyboardTarget(model: Model, pressedKey: string, ports: ReadonlyArray<Port>, options: Options): Readonly<{ handled: boolean; preventDefault: boolean; message: Option.Option<Message>; }>` |
+| `ObservePorts` | value | `ObservePorts: value` |
+| `PortInfo` | type | `PortInfo<Key extends string> = Readonly<{ key: Key; attributes: ReadonlyArray<ChildAttribute>; }>` |
+| `ViewInputs` | type | `ViewInputs<Key extends string = string> = Omit<Options, 'keys'> & Readonly<{ id: string; keys: ReadonlyArray<Key>; radius?: number; toView: (ports: ReadonlyArray<PortInfo<Key>>, attributes: ReadonlyArray<ChildAttribute>) => Html; }>` |
+| `Bundle` | type | `Bundle<Key extends string = string> = Readonly<{ update: typeof update; view: SubmodelView<Model, Message, ViewInputs<Key>>; }>` |
+| `create` | function | `create<Key extends string = string>(): Bundle<Key>` |
+| `view` | value | `view: value` |
+
 ## Pointer Kind
 
 Source: [`src/lib/behaviors/pointer-kind.ts`](../src/lib/behaviors/pointer-kind.ts)

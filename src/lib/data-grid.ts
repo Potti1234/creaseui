@@ -12,6 +12,7 @@ import * as Mount from 'foldkit/mount'
 
 import * as InlineEdit from '@/lib/behaviors/inline-edit'
 import { dateFromISO, dateToISO } from '@/lib/date-parse'
+import * as GridFocus from '@/lib/behaviors/grid-focus'
 import * as UndoStack from '@/lib/behaviors/undo-stack'
 
 export type CellVariant =
@@ -230,6 +231,19 @@ export const init = <Row>(
 export const rowHeightPx = (id: string): number =>
   ROW_HEIGHTS.find(entry => entry.id === id)?.height ?? 36
 
+export const viewportHeightPx = (model: Model): number =>
+  Math.max(400, model.viewportHeight - 150)
+
+export const headerHeightPx = 33
+
+export const pageSize = (model: Model): number =>
+  Math.max(
+    1,
+    Math.floor(
+      (viewportHeightPx(model) - headerHeightPx) / rowHeightPx(model.rowHeight),
+    ),
+  )
+
 const rowsArray = <Row>(model: Model): Array<Row> => model.rows as Array<Row>
 
 export const cellText = <Row>(
@@ -343,28 +357,56 @@ const commitFiles = <Row>(
 
 const moveFocus = <Row>(
   model: Model,
-  dRow: number,
-  dColumn: number,
+  pressedKey: string,
   config: DataGridConfig<Row>,
+  ctrl = false,
+  direction = model.direction,
 ): Model => {
   const columns = visibleColumns(model)
   const columnIndex = columns.indexOf(model.focusedCell.column)
-  const nextColumn = Math.min(
-    Math.max(columnIndex + dColumn, 0),
-    columns.length - 1,
-  )
-  const nextRow = Math.min(
-    Math.max(model.focusedCell.row + dRow, 0),
-    displayedRows(model, config).length - 1,
-  )
-  return {
-    ...model,
-    focusedCell: { row: nextRow, column: columns[nextColumn] ?? '' },
-  }
+  const rows = displayedRows(model, config).length
+  const target =
+    model.focusedCell.row < 0 || columnIndex < 0
+      ? GridFocus.tabStop(GridFocus.init({ id: '' }), {
+          rows,
+          columns: columns.length,
+        })
+      : GridFocus.navigate({
+          rows,
+          columns: columns.length,
+          currentCell: { row: model.focusedCell.row, column: columnIndex },
+          pressedKey,
+          ctrl,
+          direction,
+          pageSize: pageSize(model),
+        })
+  return Option.match(target, {
+    onNone: () => model,
+    onSome: cell => ({
+      ...model,
+      focusedCell: { row: cell.row, column: columns[cell.column] ?? '' },
+    }),
+  })
 }
 
 export const visibleColumns = (model: Model): Array<string> =>
   model.columnOrder.filter(column => !model.hiddenColumnIds.includes(column))
+
+export const renderedRowIndexes = (
+  model: Model,
+  rows: number,
+  start: number,
+  end: number,
+): ReadonlyArray<number> => {
+  const indexes = Array.from(
+    { length: Math.max(0, end - start) },
+    (_, offset) => start + offset,
+  )
+  const focused = model.focusedCell.row
+  if (focused >= 0 && focused < rows && !indexes.includes(focused))
+    indexes.push(focused)
+  return indexes.sort((a, b) => a - b)
+}
 
 const emptyCell = { row: -1, column: '' }
 
@@ -555,9 +597,9 @@ const applyMessage = <Row>(
           : model
       const moved =
         message.move === 'down'
-          ? moveFocus(committed, 1, 0, config)
+          ? moveFocus(committed, 'ArrowDown', config)
           : message.move === 'right'
-            ? moveFocus(committed, 0, 1, config)
+            ? moveFocus(committed, 'ArrowRight', config, false, 'ltr')
             : committed
       return { ...moved, inlineEdit: next.model }
     }
@@ -922,6 +964,9 @@ const onGridKey = <Row>(
   const isEditing = editingCell(model).row !== -1
   if (ctrl) {
     switch (key.toLowerCase()) {
+      case 'home':
+      case 'end':
+        return isEditing ? model : moveFocus(model, key, config, true)
       case 'f':
         return applyMessage(model, Message.ToggledSearch({}), config)
       case 'z':
@@ -962,6 +1007,11 @@ const onGridKey = <Row>(
     return applyMessage(model, Message.CommittedDraft({ move }), config)
   }
   switch (key) {
+    case 'Home':
+    case 'End':
+    case 'PageUp':
+    case 'PageDown':
+      return moveFocus(model, key, config)
     case 'Escape':
       if (model.searchOpen)
         return applyMessage(model, Message.ToggledSearch({}), config)
@@ -969,15 +1019,18 @@ const onGridKey = <Row>(
         return applyMessage(model, Message.ClosedContextMenu({}), config)
       return applyMessage(model, Message.ClearedSelection({}), config)
     case 'ArrowUp':
-      return moveFocus(model, -1, 0, config)
     case 'ArrowDown':
-      return moveFocus(model, 1, 0, config)
     case 'ArrowLeft':
-      return moveFocus(model, 0, -1, config)
     case 'ArrowRight':
-      return moveFocus(model, 0, 1, config)
+      return moveFocus(model, key, config)
     case 'Tab':
-      return moveFocus(model, 0, shift ? -1 : 1, config)
+      return moveFocus(
+        model,
+        shift ? 'ArrowLeft' : 'ArrowRight',
+        config,
+        false,
+        'ltr',
+      )
     case 'Delete':
     case 'Backspace': {
       if (model.focusedCell.row === -1) return model
@@ -1059,6 +1112,33 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
         yield* Effect.acquireRelease(
           Effect.sync(() => {
             if (!(element instanceof HTMLElement)) return undefined
+            let focusedCell: string | undefined
+            const revealFocus = (): void => {
+              const cell = element.querySelector<HTMLElement>(
+                '[data-focused="true"]',
+              )
+              if (cell === null) return
+              const key = `${cell.dataset['rowIndex']}:${cell.dataset['columnId']}`
+              if (key === focusedCell) return
+              focusedCell = key
+              const header = element.querySelector<HTMLElement>(
+                '[data-slot="grid-header"]',
+              )
+              const footer = element.querySelector<HTMLElement>(
+                '[data-slot="grid-footer"]',
+              )
+              cell.style.scrollMarginBlockStart = `${header?.offsetHeight ?? 0}px`
+              cell.style.scrollMarginBlockEnd = `${footer?.offsetHeight ?? 0}px`
+              cell.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+            }
+            const observer = new MutationObserver(revealFocus)
+            observer.observe(element, {
+              subtree: true,
+              childList: true,
+              attributes: true,
+              attributeFilter: ['data-focused'],
+            })
+            revealFocus()
             const onKeyDown = (event: KeyboardEvent): void => {
               const target = event.target as HTMLElement | null
               const inEditor =
@@ -1080,6 +1160,10 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
                   'ArrowDown',
                   'ArrowLeft',
                   'ArrowRight',
+                  'Home',
+                  'End',
+                  'PageUp',
+                  'PageDown',
                   'Tab',
                   'Enter',
                   'Escape',
@@ -1090,13 +1174,14 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
                 printable
               if (!handled) return
               if (
-                !event.ctrlKey &&
-                !event.metaKey &&
-                (event.key.startsWith('Arrow') ||
-                  event.key === 'Tab' ||
-                  event.key === 'Delete' ||
-                  event.key === 'Backspace' ||
-                  event.key === 'F2')
+                ['Home', 'End', 'PageUp', 'PageDown'].includes(event.key) ||
+                (!event.ctrlKey &&
+                  !event.metaKey &&
+                  (event.key.startsWith('Arrow') ||
+                    event.key === 'Tab' ||
+                    event.key === 'Delete' ||
+                    event.key === 'Backspace' ||
+                    event.key === 'F2'))
               )
                 event.preventDefault()
               Queue.offerUnsafe(
@@ -1147,7 +1232,7 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
             element.addEventListener('contextmenu', onContextMenu)
             element.addEventListener('scroll', onScroll, { passive: true })
             window.addEventListener('resize', onResize)
-            return { onKeyDown, onContextMenu, onScroll, onResize }
+            return { onKeyDown, onContextMenu, onScroll, onResize, observer }
           }),
           resource =>
             Effect.sync(() => {
@@ -1157,6 +1242,7 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
               element.removeEventListener('contextmenu', resource.onContextMenu)
               element.removeEventListener('scroll', resource.onScroll)
               window.removeEventListener('resize', resource.onResize)
+              resource.observer.disconnect()
             }),
         )
         return yield* Effect.never

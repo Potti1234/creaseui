@@ -1,4 +1,4 @@
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import type { PrimitiveData } from '@/stylex/composition/types'
 export const attributes = <M>(
   css: string,
@@ -57,7 +57,7 @@ export const element = <M>(
     | 'ul'
     | 'ol'
     | 'li',
-  attrs: ReadonlyArray<Attribute<M>>,
+  attrs: ReadonlyArray<Attribute<M> | ChildAttribute>,
   children: ReadonlyArray<Html | string>,
   h: HtmlBuilder<M>,
 ): Html => h[as](attrs, children)

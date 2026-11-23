@@ -38,6 +38,7 @@ import { codeBlockPage } from '@/docs/components/pages/code-block'
 import { collapsiblePage } from '@/docs/components/pages/collapsible'
 import { colorPickerPage } from '@/docs/components/pages/color-picker'
 import { comboboxPage } from '@/docs/components/pages/combobox'
+import { connectPage } from '@/docs/components/pages/connect'
 import { commandPage } from '@/docs/components/pages/command'
 import { contextMenuPage } from '@/docs/components/pages/context-menu'
 import { dateInputPage } from '@/docs/components/pages/date-input'
@@ -170,6 +171,7 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       colorPickerPage,
       comboboxPage,
       commandPage,
+      connectPage,
       contextMenuPage,
       dateInputPage,
       datePickerPage,

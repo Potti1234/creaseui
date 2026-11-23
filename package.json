@@ -28,6 +28,7 @@
     "release:lint:publish": "node scripts/publish-lint.mjs",
     "release:lint": "npm run release:lint:check && npm run release:lint:publish",
     "audit": "npm audit",
+    "postinstall": "patch-package --error-on-fail",
     "prepare": "husky",
     "format": "oxfmt --write",
     "generate:lint-docs": "node scripts/generate-lint-docs.mjs",
@@ -115,6 +116,7 @@
     "embla-carousel-autoplay": "^8.6.0",
     "foldkit": "0.164.0",
     "maplibre-gl": "^6.13.0",
+    "patch-package": "8.0.1",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.3.1"
   },

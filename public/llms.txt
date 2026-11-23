@@ -147,4 +147,5 @@
 - Typography: /docs/components/typography — install with `npx creaseui add typography`
 - Visually Hidden: /docs/components/visually-hidden — install with `npx creaseui add visually-hidden`
 - Avoid Keyboard: /docs/components/avoid-keyboard — install with `npx creaseui add avoid-keyboard`
+- Connect: /docs/components/connect — install with `npx creaseui add connect`
 - Pointer Kind: /docs/components/pointer-kind — install with `npx creaseui add pointer-kind`

@@ -378,7 +378,12 @@ describe('component catalog coverage', () => {
   })
 
   it('owns every component route in an authored page module', () => {
-    assert.deepEqual(Object.keys(authoredPages).sort(), documentedSlugs)
+    assert.deepEqual(
+      Object.values(authoredPages)
+        .map(page => page.slug)
+        .sort(),
+      documentedSlugs,
+    )
   })
 
   it('keeps static page previews in route-local models', () => {

@@ -7,10 +7,10 @@ import { defineView } from 'foldkit/submodel'
 import { modifyFields } from 'foldkit/struct'
 
 import type { ChromeState } from '@/demo/blocks/app-chrome'
-import { DragAndDrop as Dnd } from '@foldkit/ui'
 import * as Reorder from '@/lib/behaviors/reorder'
 import * as Announce from '@/lib/behaviors/announce'
 import * as KanbanReorder from '@/demo/kanban-reorder'
+import * as Transfer from '@/lib/behaviors/transfer'
 import * as BlocksBlocks from '@/demo/blocks/creaseui-blocks'
 import * as BlocksDashboards from '@/demo/blocks/creaseui-dashboards'
 import * as AccountAccess from '@/demo/cards/account-access'
@@ -93,8 +93,8 @@ export const Model = S.Struct({
   canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   blocksKanbanAnnouncement: S.String,
   blocksKanbanAnnouncer: Announce.Model,
-  blocksKanbanDnd: Dnd.Model,
   blocksKanbanReorder: Reorder.Model,
+  blocksKanbanTransfer: Transfer.Model,
   blocksKanbanLanes: S.Array(BlocksBlocks.KanbanLaneData),
   blocksSidebarCollapsed: S.Boolean,
   blocksSidebarMobileOpen: S.Boolean,
@@ -201,9 +201,9 @@ export const Message = defineMessageUnion({
   ChoseCreateCanvas: {
     canvas: S.Literals(['board', 'blocks', 'type', 'palette']),
   },
-  GotBlocksKanbanDndMessage: { message: Dnd.Message },
   GotBlocksKanbanReorderMessage: { message: Reorder.Message },
   GotBlocksKanbanAnnouncementMessage: { message: Announce.Message },
+  GotBlocksKanbanTransferMessage: { message: Transfer.Message },
   ToggledBlocksSidebar: {},
   ToggledBlocksMobileSidebar: {},
   ClickedResetCreatePreset: {},
@@ -385,8 +385,8 @@ export const init = (preset: Preset.Config = Preset.DEFAULT_CONFIG): Model => ({
   canvas: 'board',
   blocksKanbanAnnouncement: '',
   blocksKanbanAnnouncer: Announce.init(),
-  blocksKanbanDnd: Dnd.init({ id: 'create-blocks-kanban' }),
   blocksKanbanReorder: Reorder.init(),
+  blocksKanbanTransfer: BlocksBlocks.initKanbanTransfer('create-blocks-kanban'),
   blocksKanbanLanes: BlocksBlocks.initialKanbanLanes,
   blocksSidebarCollapsed: false,
   blocksSidebarMobileOpen: false,
@@ -688,30 +688,23 @@ const updateModel = (model: Model, message: Message): UpdateReturn =>
           canvas: () => canvas,
         }),
       }),
-      GotBlocksKanbanDndMessage: ({ message: childMessage }) => {
-        const result = Dnd.update(model.blocksKanbanDnd, childMessage)
-        const blocksKanbanLanes =
-          result.outMessage?._tag === 'Reordered'
-            ? BlocksBlocks.moveKanbanCard(
-                model.blocksKanbanLanes,
-                result.outMessage,
-              )
-            : model.blocksKanbanLanes
-        const blocksKanbanAnnouncement = BlocksBlocks.kanbanAnnouncement(
-          blocksKanbanLanes,
-          model.blocksKanbanDnd,
-          result.model,
-          result.outMessage,
-          model.blocksKanbanAnnouncement,
+      GotBlocksKanbanTransferMessage: ({ message: childMessage }) => {
+        const result = BlocksBlocks.updateKanbanTransfer(
+          {
+            announcement: model.blocksKanbanAnnouncement,
+            lanes: model.blocksKanbanLanes,
+            transfer: model.blocksKanbanTransfer,
+          },
+          childMessage,
         )
         return {
-          commands: Command.mapMessages(result.commands ?? [], next =>
-            Message.GotBlocksKanbanDndMessage({ message: next }),
+          commands: Command.mapMessages(result.commands, next =>
+            Message.GotBlocksKanbanTransferMessage({ message: next }),
           ),
           model: modifyFields(model, {
-            blocksKanbanAnnouncement: () => blocksKanbanAnnouncement,
-            blocksKanbanDnd: () => result.model,
-            blocksKanbanLanes: () => blocksKanbanLanes,
+            blocksKanbanAnnouncement: () => result.announcement,
+            blocksKanbanLanes: () => result.lanes,
+            blocksKanbanTransfer: () => result.transfer,
           }),
         }
       },
@@ -721,7 +714,7 @@ const updateModel = (model: Model, message: Message): UpdateReturn =>
           message,
           model.blocksKanbanLanes,
           model.blocksKanbanAnnouncement,
-          model.blocksKanbanDnd.id,
+          model.blocksKanbanTransfer.id,
         )
         return {
           model: {
@@ -2116,13 +2109,13 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Html => {
           blocksChrome,
           {
             announcement: model.blocksKanbanAnnouncer.text,
-            dnd: model.blocksKanbanDnd,
             reorder: model.blocksKanbanReorder,
             toReorderMessage: message =>
               Message.GotBlocksKanbanReorderMessage({ message }),
+            transfer: model.blocksKanbanTransfer,
             lanes: model.blocksKanbanLanes,
-            toDndMessage: message =>
-              Message.GotBlocksKanbanDndMessage({ message }),
+            toTransferMessage: message =>
+              Message.GotBlocksKanbanTransferMessage({ message }),
           },
           h,
         ),
@@ -2235,13 +2228,5 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
   Subscription.lift(RollerShades.subscriptions)<Model, Message>({
     toChildModel: model => model.rollerShades,
     toParentMessage: message => Message.GotRollerShadesMessage({ message }),
-  }),
-  Subscription.lift({
-    kanbanEscape: BlocksBlocks.kanbanSubscriptions.documentEscape,
-    kanbanKeyboard: BlocksBlocks.kanbanSubscriptions.documentKeyboard,
-    kanbanPointer: BlocksBlocks.kanbanSubscriptions.documentPointer,
-  })<Model, Message>({
-    toChildModel: model => model.blocksKanbanDnd,
-    toParentMessage: message => Message.GotBlocksKanbanDndMessage({ message }),
   }),
 )
