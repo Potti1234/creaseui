@@ -96,6 +96,7 @@ import { menubarPleatPreview } from '@/docs/components/pages/menubar/pleat'
 import { navigationMenuPleatPreview } from '@/docs/components/pages/navigation-menu/pleat'
 import { selectPleatPreview } from '@/docs/components/pages/select/pleat'
 import { comboboxPleatPreview } from '@/docs/components/pages/combobox/pleat'
+import { connectPreviewProgram } from '@/docs/components/pages/connect'
 import { commandPleatPreview } from '@/docs/components/pages/command/pleat'
 import { attachmentPleatPreview } from '@/docs/components/pages/attachment/pleat'
 import { bubblePleatPreview } from '@/docs/components/pages/bubble/pleat'
@@ -213,6 +214,7 @@ installPleatExamplePreviewProvider(
 installPleatExamplePreviewProvider('select', selectPleatPreview)
 installPleatExamplePreviewProvider('combobox', comboboxPleatPreview)
 installPleatExamplePreviewProvider('command', commandPleatPreview)
+installPleatPreviewView('connect', connectPreviewProgram.view)
 installPleatExamplePreviewProvider('attachment', attachmentPleatPreview)
 installPleatExamplePreviewProvider('bubble', bubblePleatPreview)
 installPleatExamplePreviewProvider('card', cardPleatPreview)

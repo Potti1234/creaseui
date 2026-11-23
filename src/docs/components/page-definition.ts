@@ -1,4 +1,5 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import type { ApiEntry } from '@/docs/generated-component-api'
 
 export type DocsExample = Readonly<{
   title: string
@@ -74,6 +75,7 @@ export type PageDefinition = Readonly<{
   composition?: string
   apiHref?: string
   apiDescription?: string
+  apiEntries?: ReadonlyArray<ApiEntry>
 }>
 
 export type PageDefinitions = Readonly<Record<string, PageDefinition>>

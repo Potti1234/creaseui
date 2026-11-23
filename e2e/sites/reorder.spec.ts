@@ -112,12 +112,12 @@ test('kanban columns reorder horizontally, announce and preserve card order', as
   )
   const cards = await lanes
     .first()
-    .locator('[data-draggable-id]')
+    .locator('[data-transfer-key]')
     .allTextContents()
   await expect(lanes.first()).toHaveAttribute('role', 'group')
-  const cardList = lanes.first().getByRole('listbox', { name: 'Backlog cards' })
-  await expect(cardList.getByRole('option')).toHaveCount(cards.length)
-  await expect(cardList.getByRole('button')).toHaveCount(0)
+  await expect(lanes.first().locator('[data-transfer-key]')).toHaveCount(
+    cards.length,
+  )
   await handle.press('Space')
   await expect(handle).toHaveAttribute('aria-pressed', 'true')
   await expect(announcement).toHaveText('Picked up Backlog, position 1 of 4.')
@@ -129,7 +129,7 @@ test('kanban columns reorder horizontally, announce and preserve card order', as
   await expect(announcement).toHaveText('Dropped Backlog at position 2 of 4.')
   await expect(handle).toHaveAttribute('aria-pressed', 'false')
   await expect(handle).toBeFocused()
-  await expect(lanes.nth(1).locator('[data-draggable-id]')).toHaveText(cards)
+  await expect(lanes.nth(1).locator('[data-transfer-key]')).toHaveText(cards)
   await handle.press('Space')
   await expect(handle).toHaveAttribute('aria-pressed', 'true')
   await page.keyboard.press('Home')

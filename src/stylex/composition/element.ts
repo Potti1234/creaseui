@@ -1,4 +1,4 @@
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import type { LayoutElement, PrimitiveChildren, PrimitiveData } from './types'
 
@@ -17,7 +17,7 @@ export const primitiveAttributes = <Message>(
 
 export const primitiveElement = <Message>(
   as: LayoutElement,
-  attributes: ReadonlyArray<Attribute<Message>>,
+  attributes: ReadonlyArray<Attribute<Message> | ChildAttribute>,
   children: PrimitiveChildren,
   h: HtmlBuilder<Message>,
 ): Html => {

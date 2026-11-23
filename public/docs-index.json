@@ -6,7 +6,7 @@
     "src/lib/registry.json",
     "src/lib/behaviors/*.ts"
   ],
-  "componentCount": 127,
+  "componentCount": 128,
   "components": [
     {
       "slug": "accordion",
@@ -3768,6 +3768,7 @@
         "Grid — Card Gallery",
         "GridSpan — Columns",
         "Grid Span",
+        "Grid — Spatial Focus",
         "Grid — Lasso Selection",
         "Grid — Adaptive Metric Cards"
       ],
@@ -9719,6 +9720,156 @@
           "name": "AvoidKeyboard",
           "kind": "value",
           "signature": "AvoidKeyboard: value"
+        }
+      ]
+    },
+    {
+      "slug": "connect",
+      "title": "Connect",
+      "description": "Port connection drafts with Foldkit state, keyboard navigation and pointer lifecycle.",
+      "docs": "/docs/components/connect",
+      "source": "src/lib/behaviors/connect.ts",
+      "install": "npx creaseui add connect",
+      "dependencies": [],
+      "examples": [
+        "Keyboard connections",
+        "Pointer connections"
+      ],
+      "api": [
+        {
+          "name": "ConnectDraft",
+          "kind": "value",
+          "signature": "ConnectDraft: value"
+        },
+        {
+          "name": "ConnectDraft",
+          "kind": "type",
+          "signature": "ConnectDraft = typeof ConnectDraft.Type"
+        },
+        {
+          "name": "Model",
+          "kind": "value",
+          "signature": "Model: value"
+        },
+        {
+          "name": "Model",
+          "kind": "type",
+          "signature": "Model = typeof Model.Type"
+        },
+        {
+          "name": "Reason",
+          "kind": "value",
+          "signature": "Reason: value"
+        },
+        {
+          "name": "Message",
+          "kind": "value",
+          "signature": "Message: value"
+        },
+        {
+          "name": "Message",
+          "kind": "type",
+          "signature": "Message = typeof Message.Type"
+        },
+        {
+          "name": "OutMessage",
+          "kind": "value",
+          "signature": "OutMessage: value"
+        },
+        {
+          "name": "OutMessage",
+          "kind": "type",
+          "signature": "OutMessage = typeof OutMessage.Type"
+        },
+        {
+          "name": "ConnectMessage",
+          "kind": "type",
+          "signature": "ConnectMessage = Readonly<{ type: 'start'; from: string; }> | Readonly<{ type: 'target' | 'connect'; from: string; to: string; }> | Readonly<{ type: 'cancel'; from: string; }>"
+        },
+        {
+          "name": "connectMessage",
+          "kind": "function",
+          "signature": "connectMessage(message: ConnectMessage, label: (key: string) => string): string"
+        },
+        {
+          "name": "Options",
+          "kind": "type",
+          "signature": "Options = Readonly<{ keys: ReadonlyArray<string>; canConnect?: (from: string, to: string) => boolean; label?: (key: string) => string; message?: (message: ConnectMessage, label: (key: string) => string) => string; announcementId?: string; }>"
+        },
+        {
+          "name": "init",
+          "kind": "function",
+          "signature": "init(): Model"
+        },
+        {
+          "name": "MeasurePorts",
+          "kind": "value",
+          "signature": "MeasurePorts: value"
+        },
+        {
+          "name": "Announce",
+          "kind": "value",
+          "signature": "Announce: value"
+        },
+        {
+          "name": "update",
+          "kind": "function",
+          "signature": "update(model: Model, message: Message, options: Options): UpdateReturn"
+        },
+        {
+          "name": "role",
+          "kind": "function",
+          "signature": "role(model: Model, key: string, options: Options): Option.Option<'Source' | 'Target' | 'Candidate'>"
+        },
+        {
+          "name": "Rect",
+          "kind": "type",
+          "signature": "Rect = Readonly<{ left: number; right: number; top: number; bottom: number; }>"
+        },
+        {
+          "name": "Port",
+          "kind": "type",
+          "signature": "Port<Key extends string = string> = Readonly<{ key: Key; rect: Rect; }>"
+        },
+        {
+          "name": "nearestInDirection",
+          "kind": "function",
+          "signature": "nearestInDirection<Key extends string>(fromRect: Rect, candidates: ReadonlyArray<Port<Key>>, direction: readonly [ number, number ]): Option.Option<Key>"
+        },
+        {
+          "name": "keyboardTarget",
+          "kind": "function",
+          "signature": "keyboardTarget(model: Model, pressedKey: string, ports: ReadonlyArray<Port>, options: Options): Readonly<{ handled: boolean; preventDefault: boolean; message: Option.Option<Message>; }>"
+        },
+        {
+          "name": "ObservePorts",
+          "kind": "value",
+          "signature": "ObservePorts: value"
+        },
+        {
+          "name": "PortInfo",
+          "kind": "type",
+          "signature": "PortInfo<Key extends string> = Readonly<{ key: Key; attributes: ReadonlyArray<ChildAttribute>; }>"
+        },
+        {
+          "name": "ViewInputs",
+          "kind": "type",
+          "signature": "ViewInputs<Key extends string = string> = Omit<Options, 'keys'> & Readonly<{ id: string; keys: ReadonlyArray<Key>; radius?: number; toView: (ports: ReadonlyArray<PortInfo<Key>>, attributes: ReadonlyArray<ChildAttribute>) => Html; }>"
+        },
+        {
+          "name": "Bundle",
+          "kind": "type",
+          "signature": "Bundle<Key extends string = string> = Readonly<{ update: typeof update; view: SubmodelView<Model, Message, ViewInputs<Key>>; }>"
+        },
+        {
+          "name": "create",
+          "kind": "function",
+          "signature": "create<Key extends string = string>(): Bundle<Key>"
+        },
+        {
+          "name": "view",
+          "kind": "value",
+          "signature": "view: value"
         }
       ]
     },

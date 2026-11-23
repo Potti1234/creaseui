@@ -1,4 +1,5 @@
 import type { DocsExample } from '@/docs/components/page-definition'
+import { source as spatialSource } from '@/docs/components/pages/grid/spatial-focus-demo'
 import { source as lassoSource } from '@/docs/components/pages/grid/lasso-demo'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import {
@@ -25,6 +26,7 @@ export type GridFixture = Readonly<{
     | 'spanColumns'
     | 'spanShowcase'
     | 'metrics'
+    | 'spatialFocus'
     | 'lasso'
 }>
 
@@ -66,6 +68,12 @@ export const gridFixtures: Readonly<[GridFixture, ...Array<GridFixture>]> = [
     description:
       'GridSpan lets a grid item span multiple columns or rows within an Grid, enabling masonry-style and asymmetric layouts.',
     kind: 'spanShowcase',
+  },
+  {
+    title: 'Grid — Spatial Focus',
+    description:
+      'Navigate an uneven board of cards with physical arrow keys. SpatialFocus chooses screen geometry rather than the next document item, skips disabled cards, and keeps one tab stop.',
+    kind: 'spatialFocus',
   },
   {
     title: 'Grid — Lasso Selection',
@@ -563,6 +571,8 @@ const emitBody = (
       return emitMetrics(renderer)
     case 'autoFit':
       return '' // handled by emitAutoFit
+    case 'spatialFocus':
+      return '' // handled by spatialSource
     case 'lasso':
       return ''
   }
@@ -627,6 +637,7 @@ const source = (
   renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat',
 ): string => {
   const fixture = gridFixtures[index] ?? gridFixtures[0]
+  if (fixture.kind === 'spatialFocus') return spatialSource(renderer)
   if (fixture.kind === 'lasso') return lassoSource(renderer)
   if (fixture.kind === 'autoFit') return emitAutoFit(renderer)
   const mod = renderer !== 'tailwind' ? 'stylex' : 'ui'

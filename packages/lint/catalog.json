@@ -523,6 +523,7 @@
       "exports": ["dataGrid"],
       "install": "npx shadcn@latest add Potti1234/creaseui/data-grid",
       "item": "data-grid",
+      "recipes": ["data-grid-focus"],
       "renderer": "tailwind",
       "state": "stateless",
       "title": "Data Grid"
@@ -2645,6 +2646,7 @@
       "exports": ["dataGrid"],
       "install": "npx shadcn@latest add Potti1234/creaseui/stylex-data-grid",
       "item": "stylex-data-grid",
+      "recipes": ["data-grid-focus"],
       "renderer": "stylex",
       "state": "stateless",
       "title": "Data Grid"
@@ -4734,6 +4736,7 @@
       "exports": ["dataGrid"],
       "install": "npx shadcn@latest add Potti1234/creaseui/pleat-data-grid",
       "item": "pleat-data-grid",
+      "recipes": ["data-grid-focus"],
       "renderer": "pleat",
       "state": "stateless",
       "title": "Data Grid"

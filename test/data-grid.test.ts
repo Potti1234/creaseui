@@ -56,6 +56,133 @@ const byId = (model: Grid.Model, id: string) =>
 const displayedIds = (model: Grid.Model) =>
   Grid.displayedRows<Row>(model, config).map(row => row.id)
 
+describe('data grid keyboard navigation', () => {
+  it('uses the shared body height minus its sticky header for page movement', () => {
+    const manyRows = Array.from({ length: 100 }, (_, index) => ({
+      id: String(index),
+      name: String(index),
+      done: false,
+    }))
+    const model = step(
+      Grid.init(config, manyRows),
+      Grid.Message.SetViewportHeight({ height: 900 }),
+      Grid.Message.FocusedCell({ row: 0, column: 'name' }),
+    )
+    assert.equal(Grid.viewportHeightPx(model), 750)
+    const expected = Math.floor(
+      (750 - Grid.headerHeightPx) / Grid.rowHeightPx(model.rowHeight),
+    )
+    assert.equal(Grid.pageSize(model), expected)
+    assert.equal(
+      step(
+        model,
+        Grid.Message.GridKey({
+          key: 'PageDown',
+          ctrl: false,
+          meta: false,
+          shift: false,
+        }),
+      ).focusedCell.row,
+      expected,
+    )
+    assert.equal(Grid.viewportHeightPx({ ...model, viewportHeight: 200 }), 400)
+  })
+  it('enters a fresh grid at the first visible cell for arrows and Tab', () => {
+    for (const key of [
+      'ArrowDown',
+      'ArrowUp',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab',
+    ]) {
+      const model = step(
+        Grid.init(config, rows),
+        Grid.Message.GridKey({ key, shift: false, ctrl: false, meta: false }),
+      )
+      assert.deepEqual(model.focusedCell, { row: 0, column: 'name' })
+    }
+    const empty = Grid.init(config, [])
+    assert.deepEqual(
+      step(
+        empty,
+        Grid.Message.GridKey({
+          key: 'ArrowDown',
+          shift: false,
+          ctrl: false,
+          meta: false,
+        }),
+      ).focusedCell,
+      empty.focusedCell,
+    )
+  })
+  it('follows RTL for arrows but keeps Tab and commit-right logical', () => {
+    let model = step(
+      Grid.init(config, rows),
+      Grid.Message.SetDirection({ direction: 'rtl' }),
+      Grid.Message.FocusedCell({ row: 0, column: 'name' }),
+    )
+    const press = (key: string, shift = false) => {
+      model = step(
+        model,
+        Grid.Message.GridKey({ key, shift, ctrl: false, meta: false }),
+      )
+      return model.focusedCell
+    }
+    assert.deepEqual(press('ArrowLeft'), { row: 0, column: 'done' })
+    assert.deepEqual(press('ArrowRight'), { row: 0, column: 'name' })
+    assert.deepEqual(press('Tab'), { row: 0, column: 'done' })
+    assert.deepEqual(press('Tab', true), { row: 0, column: 'name' })
+    model = step(
+      model,
+      Grid.Message.StartedEditing({ row: 0, column: 'name', seed: '' }),
+      Grid.Message.CommittedDraft({ move: 'right' }),
+    )
+    assert.deepEqual(model.focusedCell, { row: 0, column: 'done' })
+  })
+  it('renders offscreen focus before revealing without expanding the virtual window', () => {
+    const model = {
+      ...Grid.init(config, rows),
+      focusedCell: { row: 99, column: 'name' },
+    }
+    assert.deepEqual(Grid.renderedRowIndexes(model, 100, 0, 3), [0, 1, 2, 99])
+    assert.deepEqual(Grid.renderedRowIndexes(model, 3, 0, 3), [0, 1, 2])
+    assert.deepEqual(Grid.renderedRowIndexes(model, 0, 0, 0), [])
+    assert.deepEqual(
+      Grid.renderedRowIndexes(
+        { ...model, focusedCell: { row: 1, column: 'name' } },
+        100,
+        0,
+        3,
+      ),
+      [0, 1, 2],
+    )
+  })
+  it('preserves arrows and Tab and adds row, grid and page jumps', () => {
+    let model = step(
+      Grid.init(config, rows),
+      Grid.Message.FocusedCell({ row: 0, column: 'name' }),
+    )
+    const press = (key: string, ctrl = false, meta = false) => {
+      model = step(
+        model,
+        Grid.Message.GridKey({ key, ctrl, meta, shift: false }),
+      )
+      return model.focusedCell
+    }
+    assert.deepEqual(press('ArrowRight'), { row: 0, column: 'done' })
+    assert.deepEqual(press('ArrowRight'), { row: 0, column: 'done' })
+    assert.deepEqual(press('ArrowDown'), { row: 1, column: 'done' })
+    assert.deepEqual(press('Home'), { row: 1, column: 'name' })
+    assert.deepEqual(press('End'), { row: 1, column: 'done' })
+    assert.deepEqual(press('Home', true), { row: 0, column: 'name' })
+    assert.deepEqual(press('End', false, true), { row: 2, column: 'done' })
+    assert.deepEqual(press('PageUp'), { row: 0, column: 'done' })
+    assert.deepEqual(press('PageDown'), { row: 2, column: 'done' })
+    assert.deepEqual(press('ArrowLeft'), { row: 2, column: 'name' })
+    assert.deepEqual(press('Tab'), { row: 2, column: 'done' })
+  })
+})
+
 describe('data grid row identity', () => {
   it('decodes grid history with optional grouping state', () => {
     const model = Grid.init(config, rows)

@@ -284,6 +284,20 @@
       ]
     },
     {
+      "name": "connect",
+      "type": "registry:lib",
+      "title": "Connect",
+      "description": "Port connection drafts with Foldkit state, keyboard navigation and pointer lifecycle.",
+      "docs": "/docs/components/connect",
+      "files": [
+        {
+          "path": "behaviors/connect.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/connect.ts"
+        }
+      ]
+    },
+    {
       "name": "data-grid-behavior",
       "type": "registry:lib",
       "title": "Data Grid Behavior",
@@ -307,7 +321,8 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/calendar-range",
-        "Potti1234/creaseui/date-parse-behavior"
+        "Potti1234/creaseui/date-parse-behavior",
+        "Potti1234/creaseui/grid-focus-behavior"
       ]
     },
     {
@@ -558,6 +573,19 @@
           "path": "form.ts",
           "type": "registry:lib",
           "target": "@lib/form.ts"
+        }
+      ]
+    },
+    {
+      "name": "grid-focus-behavior",
+      "type": "registry:lib",
+      "title": "Grid Focus Behavior",
+      "description": "Shared Foldkit behavior for two-dimensional grid focus.",
+      "files": [
+        {
+          "path": "behaviors/grid-focus.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/grid-focus.ts"
         }
       ]
     },
@@ -903,6 +931,11 @@
           "path": "number-input.ts",
           "type": "registry:lib",
           "target": "@lib/number-input.ts"
+        },
+        {
+          "path": "behaviors/hold-repeat.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/hold-repeat.ts"
         }
       ]
     },
@@ -1178,6 +1211,22 @@
           "path": "behaviors/slider.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/slider.ts"
+        }
+      ]
+    },
+    {
+      "name": "spatial-focus-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Spatial Focus Behavior",
+      "description": "Skin-neutral geometry-based arrow navigation with one enabled tab stop and document-order Home/End.",
+      "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior"
+      ],
+      "files": [
+        {
+          "path": "behaviors/spatial-focus.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/spatial-focus.ts"
         }
       ]
     },
