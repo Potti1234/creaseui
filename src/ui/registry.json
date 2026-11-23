@@ -44,6 +44,7 @@
         }
       },
       "registryDependencies": [
+        "Potti1234/creaseui/disclosure-behavior",
         "Potti1234/creaseui/accordion-state",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -454,6 +455,7 @@
         }
       },
       "registryDependencies": [
+        "Potti1234/creaseui/disclosure-behavior",
         "Potti1234/creaseui/banner-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -1199,6 +1201,7 @@
         }
       },
       "registryDependencies": [
+        "Potti1234/creaseui/disclosure-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],

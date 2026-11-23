@@ -1,7 +1,7 @@
 import { reset } from '@/ui/stylex/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
+import * as DisclosureBehavior from '@/lib/disclosure'
 
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
@@ -88,9 +88,6 @@ const isStaticStyle = (value: unknown): value is StaticStyles =>
 const cn = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
-/* shadcn/ui Collapsible is a thin composition over foldkit Disclosure.
-   animatePanel keeps the content mounted and smoothly transitions its height. */
-
 export type CollapsibleProps<Msg> = Readonly<{
   id: string
   isOpen: boolean
@@ -109,7 +106,7 @@ export const collapsible = <Msg>(
   props: CollapsibleProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return DisclosurePrimitive.view(
+  return DisclosureBehavior.view(
     {
       id: props.id,
       isOpen: props.isOpen,

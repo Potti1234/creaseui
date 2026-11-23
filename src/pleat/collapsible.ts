@@ -2,7 +2,7 @@ import { Style, When } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
+import * as DisclosureBehavior from '@/lib/disclosure'
 
 import type { ComponentLayoutStyle } from './contracts'
 import { className } from './style'
@@ -69,9 +69,6 @@ const isStaticStyle = (value: unknown): value is Style.Style =>
 const cn = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
-/* shadcn/ui Collapsible is a thin composition over foldkit Disclosure.
-   animatePanel keeps the content mounted and smoothly transitions its height. */
-
 export type CollapsibleProps<Msg> = Readonly<{
   id: string
   isOpen: boolean
@@ -90,7 +87,7 @@ export const collapsible = <Msg>(
   props: CollapsibleProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return DisclosurePrimitive.view(
+  return DisclosureBehavior.view(
     {
       id: props.id,
       isOpen: props.isOpen,

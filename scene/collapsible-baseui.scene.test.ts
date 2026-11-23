@@ -1,9 +1,13 @@
 import * as Scene from 'foldkit/scene'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { describe, it } from 'vitest'
+import { describe, it, vi } from 'vitest'
 
+import * as PleatCollapsible from '@/pleat/collapsible'
 import * as StyleXCollapsible from '@/stylex/collapsible'
 import * as TailwindCollapsible from '@/ui/collapsible'
+
+// Happy DOM cannot create Pleat's cascade layers. These scenes exercise behavior.
+vi.mock('@/pleat/style', () => ({ className: () => 'pleat-test' }))
 
 /**
  * Behavioral parity suite ported from Base UI's collapsible tests
@@ -25,7 +29,7 @@ import * as TailwindCollapsible from '@/ui/collapsible'
  *  - Panel `hidden`/`hiddenUntilFound`, `beforematch` find-in-page reveals,
  *    every CSS transition/animation/SSR/`React.Activity` case: no layout
  *    engine, animation timeline, or browser events exist at the vnode level.
- *    foldkit's `animatePanel` performs the open/close height transition.
+ *    The shared disclosure's `animatePanel` performs the height transition.
  *  - Panel mounting during the "ending" transition phase: depends on
  *    `transitionStatus` internals and a `render=` prop.
  */
@@ -441,3 +445,4 @@ const verifyRenderer = (name: string, Collapsible: CollapsibleModule) => {
 
 verifyRenderer('Tailwind', TailwindCollapsible)
 verifyRenderer('StyleX', StyleXCollapsible)
+verifyRenderer('Pleat', PleatCollapsible)

@@ -2,7 +2,7 @@ import { Style } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
 import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
+import * as DisclosureBehavior from '@/lib/disclosure'
 
 import * as BannerBehavior from '@/lib/banner'
 import * as Icon from '@/lib/icon'
@@ -395,7 +395,7 @@ export const banner = <Msg>(
   if (!hasToggle) {
     return render(props, showContent, false, undefined, h)
   }
-  return DisclosurePrimitive.view(
+  return DisclosureBehavior.view(
     {
       id: props.id,
       isOpen: model.isOpen,

@@ -208,12 +208,14 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /EmblaCarousel\(/u)
   })
 
-  it('keeps Collapsible controlled on canonical Disclosure in both skins', () => {
-    const tailwind = readFileSync('src/ui/collapsible.ts', 'utf8')
-    const stylex = readFileSync('src/stylex/collapsible.ts', 'utf8')
-
-    for (const source of [tailwind, stylex]) {
-      assert.match(source, /DisclosurePrimitive\.view/u)
+  it('shares Disclosure across all renderers and keeps Collapsible controlled', () => {
+    for (const renderer of ['ui', 'stylex', 'pleat']) {
+      for (const component of ['accordion', 'banner', 'collapsible']) {
+        const source = readFileSync(`src/${renderer}/${component}.ts`, 'utf8')
+        assert.match(source, /@\/lib\/disclosure/u)
+        assert.match(source, /DisclosureBehavior\.view/u)
+      }
+      const source = readFileSync(`src/${renderer}/collapsible.ts`, 'utf8')
       assert.match(source, /isOpen: props\.isOpen/u)
       assert.match(source, /onToggle: props\.onToggle/u)
       assert.doesNotMatch(source, /export const Model/u)

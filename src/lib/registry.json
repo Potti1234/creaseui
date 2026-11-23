@@ -493,6 +493,19 @@
       ]
     },
     {
+      "name": "disclosure-behavior",
+      "type": "registry:lib",
+      "title": "Disclosure Behavior",
+      "description": "Controlled trigger, panel, and height animation attributes for Foldkit disclosures.",
+      "files": [
+        {
+          "path": "disclosure.ts",
+          "type": "registry:lib",
+          "target": "@lib/disclosure.ts"
+        }
+      ]
+    },
+    {
       "name": "drag-and-drop-behavior",
       "type": "registry:lib",
       "title": "Foldkit Drag and Drop Behavior",

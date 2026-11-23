@@ -54,6 +54,7 @@
         "@stylexjs/stylex@^0.19.0"
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/disclosure-behavior",
         "Potti1234/creaseui/accordion-state",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
@@ -607,6 +608,7 @@
         "@stylexjs/stylex@^0.19.0"
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/disclosure-behavior",
         "Potti1234/creaseui/banner-behavior",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
@@ -1605,6 +1607,7 @@
         "@stylexjs/stylex@^0.19.0"
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/disclosure-behavior",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/stylex-complex-tokens-stylex",
         "Potti1234/creaseui/stylex-contracts",
