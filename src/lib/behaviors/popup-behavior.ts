@@ -1,5 +1,5 @@
 import type { Update } from 'foldkit'
-import { Effect, Result, Schema, Stream } from 'effect'
+import { Effect, Queue, Result, Schema, Stream } from 'effect'
 import * as Command from 'foldkit/command'
 import * as Dom from 'foldkit/dom'
 import type { Attribute, HtmlBuilder } from 'foldkit/html'
@@ -37,7 +37,7 @@ export type Config = Popup.ContentLabels &
     initialFocus?: 'panel' | Readonly<{ selector: string }>
     restoreFocus?: boolean
     arrowPadding?: number
-    waitForExit?: boolean
+    waitForExit?: boolean | 'auto'
   }>
 
 const FocusTrigger = Command.define('FocusAnchoredPopupTrigger', {
@@ -65,7 +65,7 @@ export const update = (
   const result = Popup.update(model, message, {
     disabled: config.disabled ?? false,
     dismissible: config.dismissible ?? true,
-    waitForExit: config.waitForExit ?? false,
+    waitForExit: config.waitForExit === true || config.waitForExit === 'auto',
   })
   if (
     result.outMessage?._tag === 'Closed' &&
@@ -81,7 +81,61 @@ export const update = (
   return result
 }
 
-// Foldkit installs a single mount action per element. Compose both scoped
+const exitVersionAttribute = 'data-popup-exit-version'
+
+/** Observe a mounted surface's finite animations after its data-popup-exit-version changes. */
+export const exitCompletions = (
+  element: HTMLElement,
+): Stream.Stream<typeof Request.CompletedExit.Type> =>
+  Stream.callback(queue =>
+    Effect.acquireRelease(
+      Effect.sync(() => {
+        const realm = element.ownerDocument.defaultView
+        if (realm === null) return () => {}
+        let frame = 0
+        let current: AbortController | undefined
+        const observeExit = () => {
+          current?.abort()
+          realm.cancelAnimationFrame(frame)
+          const value = element.getAttribute(exitVersionAttribute)
+          if (value === null) return
+          const version = Number(value)
+          if (!Number.isSafeInteger(version) || version < 1) return
+          const pending = new AbortController()
+          current = pending
+          frame = realm.requestAnimationFrame(() => {
+            const animations = (element.getAnimations?.() ?? []).filter(
+              animation =>
+                animation.effect?.getComputedTiming().endTime !== Infinity &&
+                animation.playbackRate !== 0 &&
+                animation.playState !== 'paused',
+            )
+            void Promise.allSettled(
+              animations.map(animation => animation.finished),
+            ).then(() => {
+              if (
+                !pending.signal.aborted &&
+                element.isConnected &&
+                element.getAttribute(exitVersionAttribute) === value
+              )
+                Queue.offerUnsafe(queue, Request.CompletedExit({ version }))
+            })
+          })
+        }
+        const observer = new realm.MutationObserver(observeExit)
+        observer.observe(element, { attributeFilter: [exitVersionAttribute] })
+        observeExit()
+        return () => {
+          observer.disconnect()
+          current?.abort()
+          realm.cancelAnimationFrame(frame)
+        }
+      }),
+      cleanup => Effect.sync(cleanup),
+    ),
+  )
+
+// Foldkit installs a single mount action per element. Compose scoped
 // actions here so they share the panel's lifetime and teardown.
 const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
   args: {
@@ -90,8 +144,13 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
     arrowId: Schema.String,
     focusAfterPosition: Schema.Boolean,
     focusSelector: Schema.optionalKey(Schema.String),
+    autoExit: Schema.optionalKey(Schema.Boolean),
   },
-  messages: [Lifecycle.CompletedPanelMount, Request.RequestedDismissal],
+  messages: [
+    Lifecycle.CompletedPanelMount,
+    Request.RequestedDismissal,
+    Request.CompletedExit,
+  ],
   execute: ({
     element,
     viewStateChanges,
@@ -100,6 +159,7 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
     arrowId,
     focusAfterPosition,
     focusSelector,
+    autoExit,
   }) => {
     let shouldFocus = focusAfterPosition
     return viewStateChanges.pipe(
@@ -153,6 +213,7 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
                 }),
             ).pipe(Effect.as(Lifecycle.CompletedPanelMount())),
           ).pipe(
+            Stream.merge(autoExit ? exitCompletions(element) : Stream.empty),
             Stream.merge(
               Layer.mount({ insideIds: [triggerId] })
                 .f(element, Mount.liveViewStateChanges)
@@ -199,7 +260,7 @@ export const triggerAttributes = <Msg>(
   ),
 ]
 
-/** Render the inline panel only while the model is open. Mount options are read
+/** Render the inline panel while the model is mounted. Mount options are read
  * on insertion. The consumer supplies its role, accessible name and styling. */
 export const panelAttributes = <Msg>(
   config: Config,
@@ -229,6 +290,7 @@ export const panelAttributes = <Msg>(
             : { arrowPadding: config.arrowPadding }),
         },
         focusAfterPosition: config.initialFocus !== undefined,
+        ...(config.waitForExit === 'auto' ? { autoExit: true } : {}),
         ...(typeof config.initialFocus === 'object'
           ? { focusSelector: config.initialFocus.selector }
           : {}),
@@ -267,6 +329,9 @@ export const parts = <Msg>(
           h.Inert(true),
           h.AriaHidden(true),
           h.DataAttribute('popup-exiting', ''),
+          ...(config.waitForExit === 'auto'
+            ? [h.DataAttribute('popup-exit-version', String(model.exitVersion))]
+            : []),
         ]
       : []),
   ],

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { Deferred, Effect, Fiber, Stream } from 'effect'
+import { Deferred, Effect, Fiber, Option, Stream } from 'effect'
 import * as Mount from 'foldkit/mount'
 import { Window } from 'happy-dom'
 import { __htmlBuilder } from '../node_modules/foldkit/dist/html/index.js'
@@ -193,6 +193,50 @@ describe('Anchored popup behavior', () => {
       true,
     )
   })
+})
+
+it('ignores a superseded animation and completes an exit with no motion', async () => {
+  const window = new Window()
+  try {
+    const panel = window.document.createElement('section')
+    window.document.body.append(panel)
+    let finish: () => void = () => {}
+    const finished = new Promise<void>(resolve => {
+      finish = resolve
+    })
+    const observed = Deferred.makeUnsafe<void>()
+    let reads = 0
+    Object.defineProperty(panel, 'getAnimations', {
+      value: () => {
+        reads += 1
+        Effect.runSync(Deferred.succeed(observed, undefined))
+        return reads === 1
+          ? [{ finished, playbackRate: 1, playState: 'running' }]
+          : []
+      },
+    })
+    panel.setAttribute('data-popup-exit-version', '1')
+
+    await Effect.runPromise(
+      Effect.gen(function* () {
+        const element: unknown = panel
+        const completed = yield* Effect.forkChild(
+          Stream.runHead(Behavior.exitCompletions(element as HTMLElement)),
+        )
+        yield* Deferred.await(observed)
+        panel.setAttribute('data-popup-exit-version', '2')
+        finish()
+        const message = yield* Fiber.join(completed)
+        assert.deepEqual(
+          Option.getOrThrow(message),
+          Behavior.Request.CompletedExit({ version: 2 }),
+        )
+        assert.equal(reads, 2)
+      }).pipe(Effect.timeout('3 seconds')),
+    )
+  } finally {
+    await window.happyDOM.close()
+  }
 })
 
 it('reveals and focuses the inline panel after placement and releases its layer', async () => {

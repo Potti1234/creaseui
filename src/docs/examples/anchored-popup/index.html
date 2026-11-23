@@ -12,6 +12,10 @@
       .backdrop { position: fixed; inset: 0; }
       .panel { padding: 1rem; max-width: min(18rem, calc(100vw - 2rem)); background: Canvas; border: 1px solid GrayText; border-radius: .5rem; }
       .panel h2 { margin-top: 0; }
+      @media (prefers-reduced-motion: no-preference) {
+        .panel[data-popup-exiting] { animation: panel-exit 180ms ease-out both; }
+        @keyframes panel-exit { to { opacity: 0; } }
+      }
       .arrow { position: absolute; width: .5rem; height: .5rem; background: Canvas; transform: rotate(45deg); border: solid GrayText; border-width: 1px 0 0 1px; }
       .arrow[data-side="bottom"] { left: var(--arrow-x); top: -.25rem; }
       .arrow[data-side="top"] { left: var(--arrow-x); bottom: -.25rem; transform: rotate(225deg); }

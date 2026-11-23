@@ -15,6 +15,7 @@ const config = {
   arrowPadding: 8,
   hasPopup: 'dialog',
   initialFocus: { selector: '#done' },
+  waitForExit: 'auto',
 } satisfies Popup.Config
 
 const Model = Schema.Struct({ details: Popup.Model })

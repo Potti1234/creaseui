@@ -24,8 +24,15 @@ Use `initialFocus` to focus the panel or a descendant after placement.
 
 ## Keep the panel present through exit
 
-Enable `waitForExit` to keep the parts mounted during an exit transition. Start
-your transition when the behavior emits Closed and send
+Set `waitForExit: 'auto'` to keep the parts mounted while finite CSS
+animations and transitions on the panel settle. Style the panel using
+`[data-popup-exiting]`. The panel completes on the next frame when reduced
+motion disables its animation. Keep exit motion on the panel itself.
+Custom mounts can compose `exitCompletions(element)` and set
+`data-popup-exit-version` to the current exit version while closing.
+
+Set `waitForExit: true` to coordinate your own transition. Start it when the
+behavior emits Closed and send
 `Request.CompletedExit({ version })` with the closing model's `exitVersion`
 when the transition settles. Use a completion even for reduced motion.
 The exiting panel is inert and stale completions leave newer openings intact.
