@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Anchored popup behavior · CreaseUI</title>
+    <style>
+      :root { font: 1rem/1.5 system-ui, sans-serif; color-scheme: light dark; }
+      main { max-width: 40rem; margin: 3rem auto; padding-inline: 1rem; }
+      button { font: inherit; padding: .4rem .8rem; }
+      .viewport { position: relative; z-index: 1; }
+      .backdrop { position: fixed; inset: 0; }
+      .panel { padding: 1rem; max-width: min(18rem, calc(100vw - 2rem)); background: Canvas; border: 1px solid GrayText; border-radius: .5rem; }
+      .panel h2 { margin-top: 0; }
+      .arrow { position: absolute; width: .5rem; height: .5rem; background: Canvas; transform: rotate(45deg); border: solid GrayText; border-width: 1px 0 0 1px; }
+      .arrow[data-side="bottom"] { left: var(--arrow-x); top: -.25rem; }
+      .arrow[data-side="top"] { left: var(--arrow-x); bottom: -.25rem; transform: rotate(225deg); }
+      .arrow[data-side="left"] { top: var(--arrow-y); right: -.25rem; transform: rotate(135deg); }
+      .arrow[data-side="right"] { top: var(--arrow-y); left: -.25rem; transform: rotate(315deg); }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

@@ -1,5 +1,6 @@
 import { Schema } from 'effect'
 import type { Update } from 'foldkit'
+import type { Attribute, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 export const Model = Schema.Struct({
@@ -102,3 +103,38 @@ export const update = (
         : { model },
   })
 }
+
+export type ContentLabels = Readonly<{
+  titleId?: string
+  descriptionId?: string
+}>
+
+export const contentLabelAttributes = <Msg>(
+  labels: ContentLabels,
+  h: HtmlBuilder<Msg>,
+): Attribute<Msg>[] => [
+  ...(labels.titleId === undefined ? [] : [h.AriaLabelledBy(labels.titleId)]),
+  ...(labels.descriptionId === undefined
+    ? []
+    : [h.AriaDescribedBy(labels.descriptionId)]),
+]
+
+export const labelPartAttributes = <Msg>(
+  id: string,
+  h: HtmlBuilder<Msg>,
+): Attribute<Msg>[] => [h.Id(id)]
+
+export const arrowAttributes = <Msg>(
+  id: string,
+  h: HtmlBuilder<Msg>,
+): Attribute<Msg>[] => [h.Id(id), h.AriaHidden(true)]
+
+export const backdropAttributes = <Msg>(
+  id: string,
+  h: HtmlBuilder<Msg>,
+): Attribute<Msg>[] => [h.Id(id), h.AriaHidden(true)]
+
+export const viewportAttributes = <Msg>(
+  id: string,
+  h: HtmlBuilder<Msg>,
+): Attribute<Msg>[] => [h.Id(id)]

@@ -25,17 +25,20 @@ export const Message = Schema.Union([Request, Lifecycle])
 export type Message = typeof Message.Type
 
 /** IDs must be stable and unique in the shared root. Automatic trigger focus uses the document root. */
-export type Config = Readonly<{
-  triggerId: string
-  panelId: string
-  placement: Position.PlacementOptions
-  disabled?: boolean
-  dismissible?: boolean
-  dismissOnFocusLeave?: boolean
-  hasPopup?: 'dialog' | 'grid' | 'listbox' | 'menu' | 'tree'
-  initialFocus?: 'panel' | Readonly<{ selector: string }>
-  restoreFocus?: boolean
-}>
+export type Config = Popup.ContentLabels &
+  Readonly<{
+    triggerId: string
+    panelId: string
+    placement: Position.PlacementOptions
+    disabled?: boolean
+    dismissible?: boolean
+    dismissOnFocusLeave?: boolean
+    hasPopup?: 'dialog' | 'grid' | 'listbox' | 'menu' | 'tree'
+    initialFocus?: 'panel' | Readonly<{ selector: string }>
+    restoreFocus?: boolean
+    arrowPadding?: number
+    waitForExit?: boolean
+  }>
 
 const FocusTrigger = Command.define('FocusAnchoredPopupTrigger', {
   args: { id: Schema.String },
@@ -62,6 +65,7 @@ export const update = (
   const result = Popup.update(model, message, {
     disabled: config.disabled ?? false,
     dismissible: config.dismissible ?? true,
+    waitForExit: config.waitForExit ?? false,
   })
   if (
     result.outMessage?._tag === 'Closed' &&
@@ -83,6 +87,7 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
   args: {
     triggerId: Schema.String,
     placement: Position.PlacementOptions,
+    arrowId: Schema.String,
     focusAfterPosition: Schema.Boolean,
     focusSelector: Schema.optionalKey(Schema.String),
   },
@@ -92,6 +97,7 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
     viewStateChanges,
     triggerId,
     placement,
+    arrowId,
     focusAfterPosition,
     focusSelector,
   }) => {
@@ -120,6 +126,10 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
                 let placed = false
                 return Position.position(trigger, element, {
                   ...placement,
+                  arrow: () =>
+                    root instanceof realm.ShadowRoot
+                      ? root.getElementById(arrowId)
+                      : element.ownerDocument.getElementById(arrowId),
                   onPlaced: () => {
                     if (placed || !element.isConnected) return
                     placed = true
@@ -149,7 +159,8 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
                 .pipe(
                   Stream.filterMap(message =>
                     message._tag === 'RequestedDismissal' &&
-                    message.reason !== 'window-blur'
+                    message.reason !== 'window-blur' &&
+                    !element.hasAttribute('data-popup-exiting')
                       ? Result.succeed(
                           Request.RequestedDismissal({
                             reason: message.reason,
@@ -196,6 +207,7 @@ export const panelAttributes = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Attribute<Msg>[] => [
   h.Id(config.panelId),
+  ...Popup.contentLabelAttributes(config, h),
   h.Tabindex(-1),
   h.Style({ visibility: 'hidden' }),
   ...(config.dismissOnFocusLeave
@@ -209,7 +221,13 @@ export const panelAttributes = <Msg>(
     Mount.mapMessage(
       ObservePanel({
         triggerId: config.triggerId,
-        placement: config.placement,
+        arrowId: arrowId(config),
+        placement: {
+          ...config.placement,
+          ...(config.arrowPadding === undefined
+            ? {}
+            : { arrowPadding: config.arrowPadding }),
+        },
         focusAfterPosition: config.initialFocus !== undefined,
         ...(typeof config.initialFocus === 'object'
           ? { focusSelector: config.initialFocus.selector }
@@ -228,3 +246,40 @@ export const closeAttributes = <Msg>(
   h.Type('button'),
   h.OnClick(send(Request.RequestedClose({ reason: 'close-press' }))),
 ]
+
+const arrowId = (config: Config) => config.panelId + '-arrow'
+
+/** Wire the parts an anchored popup renders. The caller chooses the markup,
+ * role, styling, and which optional parts to render. */
+export const parts = <Msg>(
+  model: Model,
+  config: Config,
+  send: (message: Message) => Msg,
+  h: HtmlBuilder<Msg>,
+) => ({
+  isOpen: model.isOpen,
+  isMounted: Popup.isMounted(model),
+  trigger: triggerAttributes(model, config, send, h),
+  panel: [
+    ...panelAttributes(config, send, h),
+    ...(model.isExiting
+      ? [
+          h.Inert(true),
+          h.AriaHidden(true),
+          h.DataAttribute('popup-exiting', ''),
+        ]
+      : []),
+  ],
+  title:
+    config.titleId === undefined
+      ? []
+      : Popup.labelPartAttributes(config.titleId, h),
+  description:
+    config.descriptionId === undefined
+      ? []
+      : Popup.labelPartAttributes(config.descriptionId, h),
+  close: closeAttributes(send, h),
+  arrow: Popup.arrowAttributes(arrowId(config), h),
+  backdrop: Popup.backdropAttributes(config.panelId + '-backdrop', h),
+  viewport: Popup.viewportAttributes(config.panelId + '-viewport', h),
+})

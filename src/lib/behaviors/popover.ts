@@ -589,13 +589,13 @@ export const view = defineView<Model, Message, ViewInputs>(
             ]),
       ]),
       backdrop: childAttributes([
-        h.Id(backdropId(id)),
+        ...Popup.backdropAttributes(backdropId(id), h),
         h.OnMount(PortalPopoverBackdrop()),
         ...(isLeaving
           ? [h.Style({ pointerEvents: 'none' })]
           : [h.OnClick(Message.RequestedClose())]),
       ]),
-      arrow: childAttributes([h.Id(arrowId(id)), h.AriaHidden(true)]),
+      arrow: childAttributes(Popup.arrowAttributes(arrowId(id), h)),
       isVisible,
     })
   },

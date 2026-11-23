@@ -131,10 +131,67 @@ describe('Anchored popup behavior', () => {
     assert.equal(mounts[0]?.action.name, 'ObserveAnchoredPopup')
     assert.deepEqual(mounts[0]?.action.args, {
       triggerId: config.triggerId,
+      arrowId: config.panelId + '-arrow',
       placement: config.placement,
       focusAfterPosition: true,
       focusSelector: '#first-action',
     })
+  })
+
+  it('composes accessible parts and keeps the panel present until the current exit completes', () => {
+    const labelledConfig = {
+      ...config,
+      titleId: 'details-title',
+      descriptionId: 'details-description',
+      waitForExit: true,
+    }
+    const initialParts = Behavior.parts(
+      Behavior.init(),
+      labelledConfig,
+      send,
+      h,
+    )
+    assert.equal(initialParts.isMounted, false)
+    assert.deepEqual(initialParts.title, [h.Id('details-title')])
+    assert.deepEqual(initialParts.description, [h.Id('details-description')])
+    assert.ok(
+      initialParts.panel.some(attribute => attribute._tag === 'AriaLabelledBy'),
+    )
+    assert.ok(
+      initialParts.panel.some(
+        attribute => attribute._tag === 'AriaDescribedBy',
+      ),
+    )
+    assert.deepEqual(initialParts.arrow, [
+      h.Id(config.panelId + '-arrow'),
+      h.AriaHidden(true),
+    ])
+    assert.deepEqual(initialParts.backdrop, [
+      h.Id(config.panelId + '-backdrop'),
+      h.AriaHidden(true),
+    ])
+    assert.deepEqual(initialParts.viewport, [
+      h.Id(config.panelId + '-viewport'),
+    ])
+    assert.deepEqual(Behavior.parts(opened, config, send, h).title, [])
+
+    const exiting = Behavior.update(opened, close, labelledConfig).model
+    const exitParts = Behavior.parts(exiting, labelledConfig, send, h)
+    assert.equal(exitParts.isMounted, true)
+    assert.equal(exitParts.isOpen, false)
+    assert.ok(exitParts.panel.some(attribute => attribute._tag === 'Inert'))
+    const complete = Behavior.Request.CompletedExit({
+      version: exiting.exitVersion,
+    })
+    assert.equal(
+      Behavior.update(exiting, complete, labelledConfig).model.isExiting,
+      false,
+    )
+    const reopened = Behavior.update(exiting, open, labelledConfig).model
+    assert.equal(
+      Behavior.update(reopened, complete, labelledConfig).model.isOpen,
+      true,
+    )
   })
 })
 

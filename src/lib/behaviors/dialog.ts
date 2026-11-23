@@ -287,10 +287,15 @@ export const view = defineView<Model, Message, ViewInputs>(
     return inputs.toView({
       dialog: childAttributes([
         h.Id(id),
-        h.AriaLabelledBy(titleId(model)),
-        ...(inputs.hasDescription
-          ? [h.AriaDescribedBy(descriptionId(model))]
-          : []),
+        ...Popup.contentLabelAttributes(
+          {
+            titleId: titleId(model),
+            ...(inputs.hasDescription
+              ? { descriptionId: descriptionId(model) }
+              : {}),
+          },
+          h,
+        ),
         // Foldkit routes its topmost Escape signal here and filters native cancel events.
         h.OnCancelPreventDefault(Message.RequestedClose()),
         h.Open(visible),
@@ -326,8 +331,10 @@ export const view = defineView<Model, Message, ViewInputs>(
         h.Id(model.animation.id),
         ...animationAttributes,
       ]),
-      title: childAttributes([h.Id(titleId(model))]),
-      description: childAttributes([h.Id(descriptionId(model))]),
+      title: childAttributes(Popup.labelPartAttributes(titleId(model), h)),
+      description: childAttributes(
+        Popup.labelPartAttributes(descriptionId(model), h),
+      ),
       initialFocus: childAttributes([h.DataAttribute(initialFocusMarker, '')]),
       closeButton: childAttributes([h.Type('button'), ...dismissAttributes]),
       isVisible: visible,
