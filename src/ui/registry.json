@@ -1529,6 +1529,7 @@
         }
       },
       "registryDependencies": [
+        "Potti1234/creaseui/checkbox-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/calendar",
         "Potti1234/creaseui/checkbox",

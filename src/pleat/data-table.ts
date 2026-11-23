@@ -2,7 +2,7 @@ import { Style, When } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { Checkbox as CheckboxPrimitive } from '@foldkit/ui'
+import { checkboxControlAttributes } from '@/lib/checkbox'
 
 import {
   type FilterVariant,
@@ -309,48 +309,35 @@ const selectionControl = <Msg>(
     onToggle: (isChecked: boolean) => Msg
   }>,
   h: HtmlBuilder<Msg>,
-): Html =>
-  CheckboxPrimitive.view(
-    {
-      id: props.id,
-      isChecked: props.isChecked,
-      isIndeterminate: props.isIndeterminate ?? false,
-      isDisabled: props.isDisabled ?? false,
-      onToggle: props.onToggle,
-      toView: ({ checkbox }) =>
-        h.button(
-          [
-            ...checkbox,
-            h.Type('button'),
-            h.AriaLabel(props.label),
-            h.Class(className(reset.button, styles.selectionButton)),
-          ],
-          [
-            h.span(
-              [
-                h.Class(
-                  className(
-                    styles.selectionBox,
-                    (props.isChecked || props.isIndeterminate === true) &&
-                      styles.selectionBoxChecked,
-                  ),
-                ),
-                h.Style({ borderRadius: '4px' }),
-              ],
-              [
-                props.isChecked || props.isIndeterminate === true
-                  ? Icon.check<Msg>(
-                      { class: className(styles.selectionIcon) },
-                      h,
-                    )
-                  : '',
-              ],
+): Html => {
+  const { label, ...control } = props
+  return h.button(
+    [
+      ...checkboxControlAttributes(control, h),
+      h.AriaLabel(label),
+      h.Class(className(reset.button, styles.selectionButton)),
+    ],
+    [
+      h.span(
+        [
+          h.Class(
+            className(
+              styles.selectionBox,
+              (props.isChecked || props.isIndeterminate === true) &&
+                styles.selectionBoxChecked,
             ),
-          ],
-        ),
-    },
-    h,
+          ),
+          h.Style({ borderRadius: '4px' }),
+        ],
+        [
+          props.isChecked || props.isIndeterminate === true
+            ? Icon.check<Msg>({ class: className(styles.selectionIcon) }, h)
+            : '',
+        ],
+      ),
+    ],
   )
+}
 
 const columnAlignStyle = (align: DataTableColumn<unknown>['align']) =>
   align === 'right'

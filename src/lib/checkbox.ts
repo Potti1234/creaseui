@@ -26,27 +26,23 @@ export type CheckboxVisualAttributes<Msg> = Readonly<{
   description: ReadonlyArray<Attribute<Msg>>
 }>
 
-export const renderCheckbox = <Msg>(
+const canToggle = <Msg>(props: CheckboxBehaviorProps<Msg>): boolean =>
+  props.isDisabled !== true && props.isReadOnly !== true
+
+const toggle = <Msg>(props: CheckboxBehaviorProps<Msg>): Msg => {
+  if (props.onToggle === undefined)
+    throw new Error('checkbox: a toggleable checkbox needs onToggle')
+  return props.onToggle(!props.isChecked)
+}
+
+export const checkboxControlAttributes = <Msg>(
   props: CheckboxBehaviorProps<Msg>,
-  visual: CheckboxVisualAttributes<Msg>,
-  indicator: Html,
   h: HtmlBuilder<Msg>,
-): Html => {
-  const canToggle = props.isDisabled !== true && props.isReadOnly !== true
-  const labelId = `${props.id}-label`
-  const descriptionId = `${props.id}-description`
-  const nextMessage = () => {
-    if (props.onToggle === undefined)
-      throw new Error('checkbox: a toggleable checkbox needs onToggle')
-    return props.onToggle(!props.isChecked)
-  }
-  const checkbox = [
+): ReadonlyArray<Attribute<Msg>> => {
+  return [
+    h.Type('button'),
     h.Role('checkbox'),
     h.AriaChecked(props.isIndeterminate === true ? 'mixed' : props.isChecked),
-    h.AriaLabelledBy(labelId),
-    ...(props.description === undefined
-      ? []
-      : [h.AriaDescribedBy(descriptionId)]),
     h.Tabindex(0),
     ...(props.isIndeterminate === true
       ? [h.DataAttribute('indeterminate', '')]
@@ -59,18 +55,28 @@ export const renderCheckbox = <Msg>(
     ...(props.isReadOnly === true
       ? [h.AriaReadonly(true), h.DataAttribute('readonly', '')]
       : []),
-    ...(canToggle
+    ...(canToggle(props)
       ? [
-          h.OnClick(nextMessage()),
+          h.OnClick(toggle(props)),
           h.OnKeyUpPreventDefault(key =>
-            key === ' ' ? Option.some(nextMessage()) : Option.none(),
+            key === ' ' ? Option.some(toggle(props)) : Option.none(),
           ),
         ]
       : []),
   ]
+}
+
+export const renderCheckbox = <Msg>(
+  props: CheckboxBehaviorProps<Msg>,
+  visual: CheckboxVisualAttributes<Msg>,
+  indicator: Html,
+  h: HtmlBuilder<Msg>,
+): Html => {
+  const labelId = `${props.id}-label`
+  const descriptionId = `${props.id}-description`
   const label = [
     h.Id(labelId),
-    ...(canToggle ? [h.OnClick(nextMessage())] : []),
+    ...(canToggle(props) ? [h.OnClick(toggle(props))] : []),
   ]
   const description = [h.Id(descriptionId)]
   const hiddenInput = props.name
@@ -85,13 +91,12 @@ export const renderCheckbox = <Msg>(
     [
       h.button(
         [
-          ...checkbox.filter(
-            attribute =>
-              props.description !== undefined ||
-              attribute._tag !== 'AriaDescribedBy',
-          ),
+          ...checkboxControlAttributes(props, h),
           h.Id(props.id),
-          h.Type('button'),
+          h.AriaLabelledBy(labelId),
+          ...(props.description === undefined
+            ? []
+            : [h.AriaDescribedBy(descriptionId)]),
           h.DataAttribute('slot', 'checkbox'),
           h.AriaInvalid(props.isInvalid ?? false),
           ...visual.control,

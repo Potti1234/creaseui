@@ -2545,6 +2545,7 @@
         "@stylexjs/stylex@^0.19.0"
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/checkbox-behavior",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/data-table-mechanics",
         "Potti1234/creaseui/date-range-input-behavior",
@@ -8350,6 +8351,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/checkbox-behavior",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/stylex-contracts",
