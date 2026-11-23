@@ -1,7 +1,7 @@
 import { Effect, Option, Schema as S } from 'effect'
 import { Command, Dom, Update } from 'foldkit'
 import { defineMessageUnion } from 'foldkit/message'
-import { FileDrop } from '@foldkit/ui'
+import * as FileDrop from '@/lib/behaviors/file-drop'
 
 /* Ported from Meta Astryx FileInput (packages/core/src/FileInput) — file
    validation (accept/maxSize/maxFiles), dropzone/compact chrome, and the

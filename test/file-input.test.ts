@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import * as FileDrop from '../src/lib/behaviors/file-drop.ts'
 
 import {
   formatFileSize,
@@ -51,4 +52,23 @@ test('update forwards ClearRequested as Cleared and clears validation errors', (
   assert.equal(next.outMessage?._tag, 'Cleared')
   const trigger = update(model, Message.TriggerClicked())
   assert.equal((trigger.commands ?? []).length, 1)
+})
+
+test('drop state clears and File Input validates files from the shared behavior', () => {
+  const model = init({ id: 'docs', accept: '.pdf' })
+  const enter = update(
+    model,
+    Message.GotFileDropMessage({ message: FileDrop.Message.EnteredDragZone() }),
+  )
+  assert.equal(enter.model.fileDrop.isDragOver, true)
+  const pdf = new File(['document'], 'a.pdf')
+  const rejected = new File(['other'], 'b.exe')
+  const result = update(
+    enter.model,
+    Message.GotFileDropMessage({
+      message: FileDrop.Message.DroppedFiles({ files: [pdf, rejected] }),
+    }),
+  )
+  assert.equal(result.model.fileDrop.isDragOver, false)
+  assert.deepEqual(result.outMessage, { _tag: 'ChangedValue', files: [pdf] })
 })

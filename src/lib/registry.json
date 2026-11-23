@@ -580,6 +580,11 @@
           "path": "file-input.ts",
           "type": "registry:lib",
           "target": "@lib/file-input.ts"
+        },
+        {
+          "path": "behaviors/file-drop.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/file-drop.ts"
         }
       ]
     },
