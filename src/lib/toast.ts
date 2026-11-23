@@ -1,18 +1,9 @@
 import type { Update } from 'foldkit'
-import {
-  Duration,
-  Effect,
-  Equal,
-  Option,
-  Queue,
-  Schema as S,
-  Stream,
-} from 'effect'
+import { Duration, Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import * as Command from 'foldkit/command'
 import * as Mount from 'foldkit/mount'
 import { defineMessageUnion } from 'foldkit/message'
-import { taggedStruct } from 'foldkit/schema'
-import * as ToastPrimitive from '@foldkit/ui/toast'
+import { defineTaggedUnion, taggedStruct } from 'foldkit/schema'
 import * as Animation from './behaviors/animation'
 import * as FocusRecovery from '@/lib/behaviors/focus-recovery'
 
@@ -37,9 +28,6 @@ export const Variant = S.Literals([
 ])
 export type Variant = typeof Variant.Type
 
-/** The crease toast payload. `variant` lives inside the payload because the
- *  upstream Toast entry variant has no `Default` case; the primitive's own
- *  `entry.variant` field maps `Default` to `Info`. */
 export const ToastPayload = S.Struct({
   title: S.String,
   description: S.optional(S.String),
@@ -49,10 +37,40 @@ export const ToastPayload = S.Struct({
 })
 export type ToastPayload = typeof ToastPayload.Type
 
-const Toast = ToastPrimitive.make(ToastPayload)
+const SwipeDirection = S.Literals(['Left', 'Right'])
+const SwipeConfig = S.Struct({
+  direction: SwipeDirection,
+  threshold: S.Number,
+})
+export type SwipeToDismissConfig = Partial<typeof SwipeConfig.Type>
+
+export const SwipeState = defineTaggedUnion({
+  Idle: {},
+  Dragging: { pointerId: S.Number, startX: S.Number, currentX: S.Number },
+  Settling: { offsetX: S.Number },
+  Dismissing: { offsetX: S.Number, direction: SwipeDirection },
+})
+type SwipeState = typeof SwipeState.Type
+
+export const Entry = S.Struct({
+  id: S.String,
+  variant: S.Literals(['Info', 'Success', 'Warning', 'Error']),
+  animation: Animation.Model,
+  maybeDuration: S.Option(S.DurationFromMillis),
+  pendingDismissVersion: S.Number,
+  isHovered: S.Boolean,
+  swipeState: SwipeState,
+  swipeVersion: S.Number,
+  payload: ToastPayload,
+})
+export type Entry = typeof Entry.Type
 
 export const Model = S.Struct({
-  ...Toast.Model.fields,
+  id: S.String,
+  defaultDuration: S.DurationFromMillis,
+  entries: S.Array(Entry),
+  nextEntryKey: S.Number,
+  maybeSwipeConfig: S.Option(SwipeConfig),
   position: Position,
   limit: S.Number,
   limitedIds: S.Array(S.String),
@@ -65,11 +83,6 @@ export const Model = S.Struct({
   focusRecovery: S.Record(S.String, FocusRecovery.CollectionModel),
 })
 export type Model = typeof Model.Type
-export const Entry = Toast.Entry
-export type Entry = typeof Entry.Type
-
-/** The crease-only message a toast action button dispatches. Every other
- *  message in the union is an upstream `Toast.Message`. */
 export const ActivatedToastAction = taggedStruct('ActivatedToastAction', {
   id: S.String,
 })
@@ -120,57 +133,58 @@ export type OutMessage = typeof OutMessage.Type
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
 
-const primitiveVariant = (
-  variant: Variant,
-): 'Info' | 'Success' | 'Warning' | 'Error' =>
+// Keep the entry variant compatible with existing models.
+const entryVariant = (variant: Variant): Entry['variant'] =>
   variant === 'Default' ? 'Info' : variant
 
-/** Maps the primitive's `DismissedToast({payload})` back to crease's
- *  `{entry}` shape by structural payload equality — the primitive rebuilds
- *  the payload through Schema decoding, so identity comparison misses. */
-const toOutMessage = (
-  model: Model,
-  out: typeof Toast.OutMessage.Type | undefined,
-  entryId?: string,
-): OutMessage | undefined => {
-  if (out === undefined) return undefined
-  const entry = model.entries.find(candidate =>
-    entryId === undefined
-      ? Equal.equals(candidate.payload, out.payload)
-      : candidate.id === entryId,
-  )
-  return entry === undefined ? undefined : OutMessage.DismissedToast({ entry })
-}
+export const WaitBeforeDismissal = Command.define('WaitBeforeDismissal', {
+  args: {
+    entryId: S.String,
+    version: S.Number,
+    duration: S.DurationFromMillis,
+  },
+  messages: [Message.CompletedWaitBeforeDismissal],
+  execute: ({ entryId, version, duration }) =>
+    Effect.sleep(duration).pipe(
+      Effect.as(Message.CompletedWaitBeforeDismissal({ entryId, version })),
+    ),
+})
 
-const mapCommands = (
-  commands:
-    | ReadonlyArray<Command.Command<typeof Toast.Message.Type>>
-    | undefined,
-): ReadonlyArray<Command.Command<Message>> =>
-  Command.mapMessages(commands ?? [], message => message)
+const WaitForSwipeSettled = Command.define('WaitForSwipeSettled', {
+  args: { entryId: S.String, version: S.Number },
+  messages: [Message.CompletedWaitForSwipeSettled],
+  execute: ({ entryId, version }) =>
+    Effect.sleep(Duration.millis(150)).pipe(
+      Effect.as(Message.CompletedWaitForSwipeSettled({ entryId, version })),
+    ),
+})
 
 export const init = (
   config: Readonly<{
     id: string
     defaultDuration?: Duration.Input
-    swipeToDismiss?: ToastPrimitive.SwipeToDismissConfig | false
+    swipeToDismiss?: SwipeToDismissConfig | false
     limit?: number
     position?: Position
   }>,
 ): Model => ({
-  ...Toast.init({
-    id: config.id,
-    ...(config.defaultDuration === undefined
-      ? {}
-      : { defaultDuration: config.defaultDuration }),
-    ...(config.swipeToDismiss === false
-      ? {}
-      : {
-          swipeToDismiss: config.swipeToDismiss ?? {
-            direction: config.position?.endsWith('left') ? 'Left' : 'Right',
-          },
+  id: config.id,
+  defaultDuration: Duration.fromInputUnsafe(
+    config.defaultDuration ?? '4 seconds',
+  ),
+  entries: [],
+  nextEntryKey: 0,
+  maybeSwipeConfig:
+    config.swipeToDismiss === false
+      ? Option.none()
+      : Option.some({
+          threshold: config.swipeToDismiss?.threshold ?? 40,
+          direction: config.swipeToDismiss
+            ? (config.swipeToDismiss.direction ?? 'Right')
+            : config.position?.endsWith('left')
+              ? 'Left'
+              : 'Right',
         }),
-  }),
   position: config.position ?? 'bottom-right',
   limit: normalizeLimit(config.limit ?? 3),
   limitedIds: [],
@@ -204,11 +218,97 @@ const toggle = <T>(
       : [...values, value]
     : values.filter(item => item !== value)
 
-/** Limited entries keep their payload and ID, but cannot expire before being
- * seen. Versioned primitive timers make previously scheduled waits harmless. */
+const replaceEntry = (model: Model, entry: Entry): Model => ({
+  ...model,
+  entries: model.entries.map(current =>
+    current.id === entry.id ? entry : current,
+  ),
+})
+
+const dismissalCommands = (
+  entry: Entry,
+): ReadonlyArray<Command.Command<Message>> =>
+  leaving(entry) || entry.isHovered || entry.swipeState._tag === 'Dragging'
+    ? []
+    : Option.match(entry.maybeDuration, {
+        onNone: () => [],
+        onSome: duration => [
+          WaitBeforeDismissal({
+            entryId: entry.id,
+            version: entry.pendingDismissVersion,
+            duration,
+          }),
+        ],
+      })
+
+const animate = (
+  model: Model,
+  entry: Entry,
+  message: Animation.Message,
+): UpdateReturn => {
+  const result = Animation.update(entry.animation, message)
+  if (result.outMessage?._tag === 'TransitionedOut') {
+    const { [entry.id]: _height, ...heights } = model.heights
+    return {
+      ...reconcile({
+        ...model,
+        entries: model.entries.filter(current => current.id !== entry.id),
+        heights,
+        hoveredEntryIds: model.hoveredEntryIds.filter(id => id !== entry.id),
+      }),
+      outMessage: OutMessage.DismissedToast({ entry }),
+    }
+  }
+  const commands =
+    result.outMessage?._tag === 'StartedLeaveAnimating'
+      ? [
+          ...(result.commands ?? []),
+          Animation.defaultLeaveCommand(result.model),
+        ]
+      : (result.commands ?? [])
+  return {
+    model:
+      result.model === entry.animation
+        ? model
+        : replaceEntry(model, { ...entry, animation: result.model }),
+    commands: Command.mapMessages(commands, message =>
+      Message.GotAnimationMessage({ entryId: entry.id, message }),
+    ),
+  }
+}
+
+const beginDismissal = (model: Model, entry: Entry): UpdateReturn =>
+  leaving(entry) ? { model } : animate(model, entry, Animation.Message.Hid())
+
+const draggingEntry = (model: Model, pointerId: number) =>
+  model.entries.find(
+    entry =>
+      entry.swipeState._tag === 'Dragging' &&
+      entry.swipeState.pointerId === pointerId,
+  )
+
+const settleSwipe = (model: Model, entry: Entry): UpdateReturn => {
+  const next: Entry = {
+    ...entry,
+    swipeState: SwipeState.Settling({ offsetX: 0 }),
+    swipeVersion: entry.swipeVersion + 1,
+    pendingDismissVersion: entry.pendingDismissVersion + 1,
+  }
+  return {
+    model: replaceEntry(model, next),
+    commands: [
+      WaitForSwipeSettled({ entryId: next.id, version: next.swipeVersion }),
+      ...dismissalCommands(next),
+    ],
+  }
+}
+
+/** Limited entries keep their payload and ID. Timer versions invalidate
+ * waits scheduled before a toast was paused or moved out of view. */
 const reconcile = (
   model: Model,
   commands: ReadonlyArray<Command.Command<Message>> = [],
+  armEntryId?: string,
 ): UpdateReturn => {
   const previousLimited = new Set(model.limitedIds)
   const candidates = model.entries.filter(
@@ -220,29 +320,30 @@ const reconcile = (
   const limitedIds = model.entries
     .filter(entry => !visibleIds.has(entry.id))
     .map(entry => entry.id)
-  let next = { ...model, limitedIds }
   const effects = [...commands]
   const limited = new Set(limitedIds)
   const hovered = new Set(model.hoveredEntryIds)
-  for (const entry of next.entries) {
-    if (leaving(entry)) continue
-    const position = entry.payload.position ?? next.position
+  const entries = model.entries.map(entry => {
+    if (leaving(entry)) return entry
+    const position = entry.payload.position ?? model.position
     const paused =
       limited.has(entry.id) ||
       hovered.has(entry.id) ||
-      next.pointerPausedPositions.includes(position) ||
-      next.focusedPositions.includes(position)
-    if (paused === entry.isHovered) continue
-    const result = Toast.update(
-      next,
-      paused
-        ? Toast.Message.HoveredEntry({ entryId: entry.id })
-        : Toast.Message.LeftEntry({ entryId: entry.id }),
-    )
-    next = { ...next, ...result.model }
-    effects.push(...mapCommands(result.commands))
-  }
-  return { model: next, commands: effects }
+      model.pointerPausedPositions.includes(position) ||
+      model.focusedPositions.includes(position)
+    if (paused === entry.isHovered) {
+      if (entry.id === armEntryId) effects.push(...dismissalCommands(entry))
+      return entry
+    }
+    const next = {
+      ...entry,
+      isHovered: paused,
+      pendingDismissVersion: entry.pendingDismissVersion + 1,
+    }
+    effects.push(...dismissalCommands(next))
+    return next
+  })
+  return { model: { ...model, limitedIds, entries }, commands: effects }
 }
 
 export const update = (model: Model, message: Message): UpdateReturn => {
@@ -323,49 +424,134 @@ export const update = (model: Model, message: Message): UpdateReturn => {
           message._tag === 'HoveredEntry',
         ),
       })
-    case 'CompletedWaitBeforeDismissal':
-      if (
-        model.limitedIds.includes(message.entryId) ||
-        model.entries.find(entry => entry.id === message.entryId)?.isHovered
+    case 'Added': {
+      const { entry } = message
+      const result = animate(
+        {
+          ...model,
+          entries: [...model.entries, entry],
+          nextEntryKey: model.nextEntryKey + 1,
+        },
+        entry,
+        Animation.Message.Showed(),
       )
-        return { model }
-      break
-    case 'PressedEntryPointer':
-      if (model.limitedIds.includes(message.entryId)) return { model }
-      break
-  }
-  if (message._tag === 'ActivatedToastAction') {
-    const entry = model.entries.find(candidate => candidate.id === message.id)
-    if (entry === undefined) return { model }
-    const result = Toast.dismiss(model, message.id)
-    return {
-      ...reconcile({ ...model, ...result.model }, mapCommands(result.commands)),
-      outMessage: OutMessage.ActivatedToast({ entry }),
+      return reconcile(result.model, result.commands, entry.id)
     }
-  }
-  const result = Toast.update(model, message)
-  const outMessage = toOutMessage(
-    model,
-    result.outMessage,
-    message._tag === 'GotAnimationMessage' ? message.entryId : undefined,
-  )
-  return {
-    ...reconcile(
-      {
-        ...model,
-        ...result.model,
-        heights: Object.fromEntries(
-          Object.entries(model.heights).filter(([id]) =>
-            result.model.entries.some(entry => entry.id === id),
-          ),
-        ),
-        hoveredEntryIds: model.hoveredEntryIds.filter(id =>
-          result.model.entries.some(entry => entry.id === id),
-        ),
-      },
-      mapCommands(result.commands),
-    ),
-    ...(outMessage === undefined ? {} : { outMessage }),
+    case 'Dismissed':
+    case 'CompletedWaitBeforeDismissal':
+    case 'ActivatedToastAction':
+    case 'GotAnimationMessage':
+    case 'PressedEntryPointer':
+    case 'CompletedWaitForSwipeSettled': {
+      const id =
+        message._tag === 'ActivatedToastAction' ? message.id : message.entryId
+      const entry = model.entries.find(current => current.id === id)
+      if (entry === undefined) return { model }
+      switch (message._tag) {
+        case 'Dismissed':
+          return beginDismissal(model, entry)
+        case 'CompletedWaitBeforeDismissal':
+          return entry.pendingDismissVersion === message.version &&
+            Option.isSome(entry.maybeDuration) &&
+            !entry.isHovered &&
+            !model.limitedIds.includes(id) &&
+            entry.swipeState._tag !== 'Dragging'
+            ? beginDismissal(model, entry)
+            : { model }
+        case 'ActivatedToastAction':
+          return {
+            ...beginDismissal(model, entry),
+            outMessage: OutMessage.ActivatedToast({ entry }),
+          }
+        case 'GotAnimationMessage':
+          return animate(model, entry, message.message)
+        case 'PressedEntryPointer': {
+          const { pointerId, clientX } = message
+          if (
+            Option.isNone(model.maybeSwipeConfig) ||
+            model.limitedIds.includes(id) ||
+            leaving(entry) ||
+            entry.swipeState._tag === 'Dragging' ||
+            draggingEntry(model, pointerId)
+          )
+            return { model }
+          return {
+            model: replaceEntry(model, {
+              ...entry,
+              swipeState: SwipeState.Dragging({
+                pointerId,
+                startX: clientX,
+                currentX: clientX,
+              }),
+              swipeVersion: entry.swipeVersion + 1,
+              pendingDismissVersion: entry.pendingDismissVersion + 1,
+            }),
+          }
+        }
+        case 'CompletedWaitForSwipeSettled':
+          return entry.swipeState._tag === 'Settling' &&
+            entry.swipeVersion === message.version
+            ? {
+                model: replaceEntry(model, {
+                  ...entry,
+                  swipeState: SwipeState.Idle(),
+                }),
+              }
+            : { model }
+      }
+    }
+    case 'MovedSwipePointer':
+    case 'ReleasedSwipePointer':
+    case 'CancelledSwipe': {
+      const entry = draggingEntry(model, message.pointerId)
+      if (entry?.swipeState._tag !== 'Dragging') return { model }
+      if (message._tag === 'CancelledSwipe') return settleSwipe(model, entry)
+      const config = Option.getOrUndefined(model.maybeSwipeConfig)
+      if (!config) return { model }
+      const { startX } = entry.swipeState
+      const distance = message.clientX - startX
+      const offsetX =
+        config.direction === 'Right'
+          ? Math.max(0, distance)
+          : Math.min(0, distance)
+      if (message._tag === 'MovedSwipePointer')
+        return {
+          model: replaceEntry(model, {
+            ...entry,
+            swipeState: { ...entry.swipeState, currentX: startX + offsetX },
+          }),
+        }
+      if (Math.abs(offsetX) <= config.threshold)
+        return settleSwipe(model, entry)
+      const next = {
+        ...entry,
+        swipeState: SwipeState.Dismissing({
+          offsetX,
+          direction: config.direction,
+        }),
+        swipeVersion: entry.swipeVersion + 1,
+      }
+      return beginDismissal(replaceEntry(model, next), next)
+    }
+    case 'DismissedAll':
+    case 'PressedEscape': {
+      let next = model
+      const commands: Command.Command<Message>[] = []
+      for (const entry of model.entries) {
+        if (
+          message._tag === 'PressedEscape' &&
+          entry.swipeState._tag !== 'Dragging'
+        )
+          continue
+        const result =
+          message._tag === 'DismissedAll'
+            ? beginDismissal(next, entry)
+            : settleSwipe(next, entry)
+        next = result.model
+        commands.push(...(result.commands ?? []))
+      }
+      return { model: next, commands }
+    }
   }
 }
 
@@ -411,18 +597,31 @@ const payload = (
 })
 
 export const show = (model: Model, input: ShowInput): UpdateReturn => {
-  const result = Toast.show(model, {
-    payload: payload(input, input.variant),
-    variant: primitiveVariant(input.variant),
-    ...(input.duration === undefined ? {} : { duration: input.duration }),
-    ...(input.sticky === undefined ? {} : { sticky: input.sticky }),
-  })
-  return reconcile({ ...model, ...result.model }, mapCommands(result.commands))
+  const id = `${model.id}-entry-${model.nextEntryKey}`
+  return update(
+    model,
+    Message.Added({
+      entry: {
+        id,
+        payload: payload(input, input.variant),
+        variant: entryVariant(input.variant),
+        animation: Animation.init({ id }),
+        maybeDuration: input.sticky
+          ? Option.none()
+          : Option.some(
+              input.duration === undefined
+                ? model.defaultDuration
+                : Duration.fromInputUnsafe(input.duration),
+            ),
+        isHovered: false,
+        pendingDismissVersion: 0,
+        swipeState: SwipeState.Idle(),
+        swipeVersion: 0,
+      },
+    }),
+  )
 }
 
-/** Rebuilds an entry's payload/variant/duration, then routes a synthetic
- *  `LeftEntry` through the primitive so its dismissal timer reschedules
- *  against a fresh `pendingDismissVersion`. */
 export const updateToast = (
   model: Model,
   id: string,
@@ -452,7 +651,8 @@ export const updateToast = (
           : { position: previous.payload.position }
         : { position: input.position }),
     },
-    variant: primitiveVariant(variant),
+    variant: entryVariant(variant),
+    pendingDismissVersion: previous.pendingDismissVersion + 1,
     maybeDuration:
       input.sticky === true
         ? Option.none()
@@ -460,27 +660,13 @@ export const updateToast = (
           ? Option.some(Duration.fromInputUnsafe(input.duration))
           : previous.maybeDuration,
   }
-  const replaced = {
-    ...model,
-    entries: model.entries.map(candidate =>
-      candidate.id === id ? nextEntry : candidate,
-    ),
-  }
-  // Refresh the timer without clearing viewport focus/hover or queue pauses.
-  const result = Toast.update(
-    replaced,
-    Toast.Message.LeftEntry({ entryId: id }),
-  )
-  return reconcile(
-    { ...replaced, ...result.model },
-    mapCommands(result.commands),
-  )
+  return reconcile(replaceEntry(model, nextEntry), [], id)
 }
 
 export const dismiss = (model: Model, id: string): UpdateReturn =>
-  update(model, Toast.Message.Dismissed({ entryId: id }))
+  update(model, Message.Dismissed({ entryId: id }))
 export const dismissAll = (model: Model): UpdateReturn =>
-  update(model, Toast.Message.DismissedAll())
+  update(model, Message.DismissedAll())
 export const Added = Entry
 
 /** Geometry shared by both skins. Index zero is the newest, frontmost card. */
@@ -529,7 +715,12 @@ export const stackLayout = (
           : offset
         : stackIndex * 12 + (1 - scale) * height
       const swiping = entry.swipeState._tag === 'Dragging'
-      const swipeOffset = ToastPrimitive.swipeOffset(entry.swipeState)
+      const swipeOffset = SwipeState.match(entry.swipeState, {
+        Idle: () => 0,
+        Dragging: ({ currentX, startX }) => currentX - startX,
+        Settling: ({ offsetX }) => offsetX,
+        Dismissing: ({ offsetX }) => offsetX,
+      })
       const swipeDirection =
         entry.swipeState._tag === 'Dismissing'
           ? entry.swipeState.direction

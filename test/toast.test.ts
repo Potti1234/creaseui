@@ -267,6 +267,34 @@ describe('Toast notification behavior', () => {
     )
   })
 
+  it('arms an updated queued toast only when it becomes visible', () => {
+    const first = Toast.show(
+      Toast.init({ id: 'queue', limit: 1 }),
+      Toast.info({ title: 'Queued' }),
+    ).model
+    const front = Toast.show(
+      first,
+      Toast.plain({ title: 'Front', sticky: true }),
+    )
+    const entryId = 'queue-entry-0'
+    const updated = Toast.updateToast(front.model, entryId, {
+      duration: '2 seconds',
+    })
+    assert.deepEqual(updated.commands, [])
+
+    const closing = Toast.dismiss(updated.model, 'queue-entry-1').model
+    const promoted = finishAnimation(closing, 'queue-entry-1')
+    const entry = Toast.visibleEntries(promoted.model)[0]!
+    assert.equal(entry.id, entryId)
+    assert.equal(entry.isHovered, false)
+    assert.equal(promoted.commands?.length, 1)
+    assert.equal(promoted.commands?.[0]?.name, 'WaitBeforeDismissal')
+    assert.equal(
+      promoted.commands?.[0]?.args?.['version'],
+      entry.pendingDismissVersion,
+    )
+  })
+
   it('changes the visible limit without losing queued payloads or IDs', () => {
     let model = Toast.init({ id: 'queue', limit: 2 })
     for (let index = 0; index < 6; index += 1)
