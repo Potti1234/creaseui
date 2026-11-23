@@ -1805,11 +1805,27 @@
           "path": "virtual-data-table-state.ts",
           "type": "registry:lib",
           "target": "@lib/virtual-data-table-state.ts"
-        },
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/virtualizer-behavior"
+      ]
+    },
+    {
+      "name": "virtualizer-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Virtualizer Behavior",
+      "description": "Shared window layout, scroll observation and keyed row rendering for Foldkit.",
+      "files": [
         {
           "path": "behaviors/virtualizer.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/virtualizer.ts"
+        },
+        {
+          "path": "behaviors/virtualizer-layout.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/virtualizer-layout.ts"
         }
       ]
     }

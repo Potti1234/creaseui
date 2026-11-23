@@ -7626,7 +7626,8 @@
         "Potti1234/creaseui/pleat-reset",
         "Potti1234/creaseui/pleat-style",
         "Potti1234/creaseui/pleat-virtual-data-table-pleat",
-        "Potti1234/creaseui/virtual-data-table-state-behavior"
+        "Potti1234/creaseui/virtual-data-table-state-behavior",
+        "Potti1234/creaseui/virtualizer-behavior"
       ]
     },
     {

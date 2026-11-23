@@ -199,7 +199,33 @@ describe('Virtualizer', () => {
       bottomSpacerHeight: 20,
     })
   })
-  it('exposes Foldkit windows, near-end thresholds and row positions', () => {
+  it('reuses one subview while keeping each item type', () => {
+    assert.equal(V.view<string>(), V.view<number>())
+  })
+
+  it('computes axis-neutral bounds without a rendered list', () => {
+    const layout = V.Layout.variable([25, 15, 35, 25], size => size)
+    assert.deepEqual(V.Layout.range(layout, 25, 50, 0), {
+      startIndex: 1,
+      endIndex: 3,
+      before: 25,
+      after: 25,
+    })
+    assert.deepEqual(V.Layout.range(layout, 25, 50, 1), {
+      startIndex: 0,
+      endIndex: 4,
+      before: 0,
+      after: 0,
+    })
+    assert.deepEqual(V.Layout.range(V.Layout.uniform(0, 20), 100, 50, 3), {
+      startIndex: 0,
+      endIndex: 0,
+      before: 0,
+      after: 0,
+    })
+  })
+
+  it('exposes visible windows, near-end thresholds and row positions', () => {
     assert.ok(Option.isNone(V.visibleWindow(initial, 100, 2)))
     const window = Option.getOrThrow(
       V.visibleWindow({ ...measured, scrollTop: 1800 }, 100, 0),

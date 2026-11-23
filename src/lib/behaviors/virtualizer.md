@@ -6,13 +6,16 @@ restores a nonzero initial offset. Later resize events update the viewport
 height, and only a completion with the current scroll version clears the
 pending request.
 
-The behavior module is the integration boundary for Foldkit VirtualList.
-Foldkit supplies the scoped scroll and resize subscription, including
-MutationObserver reattachment across mounts and observer/listener cleanup.
-It also supplies both window calculations and the keyed spacer view that
-uses them, keeping rendered rows in normal flow. The delegates share the
-local model shape and emit compatible measurement and scroll messages.
-Consumers import these entry points from the CreaseUI behavior.
+CreaseUI's own layout helpers calculate the visible window independently of
+the renderer. Use `Layout.uniform` for equal sizes or `Layout.variable` to
+precompute offsets from per-item sizes. `Layout.range` maps an axis offset,
+viewport size and overscan to visible indices and spacer sizes. A custom view
+can keep the layout while its item sizes stay constant, then use it on either
+axis. The included list view uses this calculation to render keyed rows and
+spacers in normal vertical flow.
+
+The Foldkit subscription follows DOM scroll and resize events. It reattaches
+when the container remounts and releases observers and listeners when stopped.
 
 CreaseUI supplies start/center/end/auto alignment, `isNearEnd`, and
 `rowPosition` ARIA position values. Uniform
@@ -25,7 +28,7 @@ nonnegative finite variable heights and valid row indices to `rowPosition`.
 Components own roles and map position values to ARIA attributes.
 Not covered: `scrollMargin` (Foldkit's scroller has no content before the first row),
 measured dynamic row heights (`measure`/`reset`; callers supply
-heights via `itemToRowHeightPx`), horizontal lists, `keep` for non-contiguous
+heights via `itemToRowHeightPx`), horizontal DOM observation and list rendering, `keep` for non-contiguous
 rows, or findable/find-in-page layers.
 
 Try `npm run dev -- --open /src/docs/examples/virtualizer/`.

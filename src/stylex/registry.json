@@ -8372,7 +8372,8 @@
         "Potti1234/creaseui/stylex-reset",
         "Potti1234/creaseui/stylex-style",
         "Potti1234/creaseui/stylex-virtual-data-table-stylex",
-        "Potti1234/creaseui/virtual-data-table-state-behavior"
+        "Potti1234/creaseui/virtual-data-table-state-behavior",
+        "Potti1234/creaseui/virtualizer-behavior"
       ]
     },
     {
