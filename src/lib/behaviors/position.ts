@@ -121,7 +121,10 @@ export type Reference =
     }>
 type Source<T> = T | (() => T)
 export type PositionOptions = PlacementOptions &
-  Readonly<{ arrow?: Source<Element | null | undefined> }>
+  Readonly<{
+    arrow?: Source<Element | null | undefined>
+    onPlaced?: (placement: Anchor.Placement) => void
+  }>
 
 const read = <T>(source: Source<T>): T =>
   typeof source === 'function' ? (source as () => T)() : source
@@ -306,6 +309,7 @@ export const position = (
                     : 'center'
                 : `${y + (arrowElement?.getBoundingClientRect().height ?? 0) / 2}px`
         panel.style.setProperty('--transform-origin', `${originX} ${originY}`)
+        options.onPlaced?.(result.placement)
       })
       .catch((error: unknown) => {
         if (active && !warned) {

@@ -3,14 +3,12 @@ import { Duration, Effect, Option, Queue, Schema as S, Stream } from 'effect'
 import * as Command from 'foldkit/command'
 import type { HtmlBuilder } from 'foldkit/html'
 import * as Mount from 'foldkit/mount'
-import { Anchor } from '@foldkit/ui'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as HoverIntentPrimitive from '@/lib/behaviors/hover-intent'
+import * as Position from '@/lib/behaviors/position'
 
-/* The open/close intent state machine is the foldkit HoverIntent primitive;
-   this module keeps crease's model (with its caller-facing `id`) and message
-   vocabulary as a thin adapter so consumers keep a stable API. */
+/* Keep the public Hover Card messages while composing shared interaction state. */
 
 export const Model = S.Struct({
   id: S.String,
@@ -85,12 +83,31 @@ export const WaitBeforeClosing = Command.define('WaitBeforeClosingHoverCard', {
     ),
 })
 
-/* The shared anchor middleware clamps every panel to its clipping ancestor
-   with inline max-height + overflow-y: auto, which puts a scrollbar inside
-   the card. A hover card should size to its content and never scroll, so the
-   observer strips the clamp properties whenever the middleware writes them. */
+export const HoverCardPlacement = S.Literals([
+  'top',
+  'top-start',
+  'top-end',
+  'right',
+  'right-start',
+  'right-end',
+  'bottom',
+  'bottom-start',
+  'bottom-end',
+  'left',
+  'left-start',
+  'left-end',
+])
+export type HoverCardPlacement = typeof HoverCardPlacement.Type
+
 export const AnchorHoverCard = Mount.defineStream('HoverCardAnchor', {
-  args: { buttonId: S.String, anchor: Anchor.AnchorConfig },
+  args: {
+    buttonId: S.String,
+    anchor: S.Struct({
+      placement: S.optionalKey(HoverCardPlacement),
+      gap: S.optionalKey(S.Number),
+      padding: S.optionalKey(S.Number),
+    }),
+  },
   messages: [Message.CompletedHoverCardAnchor, Message.LeftHoverCard],
   execute: ({ element, buttonId, anchor }) =>
     Stream.callback<
@@ -113,67 +130,51 @@ export const AnchorHoverCard = Mount.defineStream('HoverCardAnchor', {
         yield* Effect.acquireRelease(
           Effect.sync(() => {
             const viewport = element.ownerDocument.defaultView
-            let cleanup = () => {}
-            const position = () => {
-              cleanup()
-              const button = owner.getElementById(buttonId)
-              const rect = button?.getBoundingClientRect()
-              const placement = anchor.placement ?? 'bottom'
-              const isHorizontal =
-                placement.startsWith('left') || placement.startsWith('right')
-              const padding = anchor.padding
-              const horizontalPadding =
-                typeof padding === 'number'
-                  ? padding
-                  : Math.max(padding?.left ?? 0, padding?.right ?? 0)
-              const availableWidth =
-                rect === undefined || viewport === null
+            const button = owner.getElementById(buttonId)
+            if (!(element instanceof HTMLElement) || button === null)
+              return () => {}
+            const savedVisibility = element.style.visibility
+            const savedPlacement = element.getAttribute('data-placement')
+            const requested = anchor.placement ?? 'bottom'
+            const [rawSide, rawAlign] = requested.split('-')
+            const side = rawSide as 'top' | 'right' | 'bottom' | 'left'
+            const align =
+              rawAlign === 'start' || rawAlign === 'end' ? rawAlign : 'center'
+            const horizontal = side === 'left' || side === 'right'
+            const padding = anchor.padding ?? 0
+            const gap = anchor.gap ?? 0
+            const cleanup = Position.position(button, element, () => {
+              const rect = button.getBoundingClientRect()
+              const room =
+                viewport === null
                   ? Infinity
                   : Math.max(rect.left, viewport.innerWidth - rect.right) -
-                    (anchor.gap ?? 0) -
-                    horizontalPadding
-              // Flip handles opposite sides, but cannot switch axes when neither
-              // horizontal side has room for a readable card.
-              const resolvedPlacement: Anchor.AnchorConfig['placement'] =
-                isHorizontal &&
-                availableWidth < element.getBoundingClientRect().width
-                  ? placement.endsWith('-start')
-                    ? 'bottom-start'
-                    : placement.endsWith('-end')
-                      ? 'bottom-end'
-                      : 'bottom'
-                  : placement
-              cleanup = Anchor.anchorSetup(element, {
-                buttonId,
-                anchor: { ...anchor, placement: resolvedPlacement },
-                interceptTab: false,
-              })
-            }
-            position()
-            viewport?.addEventListener('resize', position)
-            return () => {
-              viewport?.removeEventListener('resize', position)
-              cleanup()
-            }
-          }),
-          cleanup => Effect.sync(cleanup),
-        )
-        const unclamp = () => {
-          if (element instanceof HTMLElement) {
-            element.style.removeProperty('max-height')
-            element.style.removeProperty('overflow-y')
-            element.style.removeProperty('overscroll-behavior')
-          }
-        }
-        yield* Effect.acquireRelease(
-          Effect.sync(() => {
-            unclamp()
-            const observer = new MutationObserver(unclamp)
-            observer.observe(element, {
-              attributes: true,
-              attributeFilter: ['style'],
+                    gap -
+                    padding
+              return {
+                side:
+                  horizontal && room < element.getBoundingClientRect().width
+                    ? 'bottom'
+                    : side,
+                align,
+                sideOffset: gap,
+                collisionPadding: padding,
+                onPlaced: placement => {
+                  element.setAttribute(
+                    'data-placement',
+                    placement.split('-')[0]!,
+                  )
+                  element.style.visibility = ''
+                },
+              }
             })
-            return () => observer.disconnect()
+            return () => {
+              cleanup()
+              element.style.visibility = savedVisibility
+              if (savedPlacement === null)
+                element.removeAttribute('data-placement')
+              else element.setAttribute('data-placement', savedPlacement)
+            }
           }),
           cleanup => Effect.sync(cleanup),
         )

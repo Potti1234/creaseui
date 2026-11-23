@@ -1,7 +1,6 @@
 import { Option } from 'effect'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import * as Mount from 'foldkit/mount'
-import type { Anchor } from '@foldkit/ui'
 
 import * as HoverCardBehavior from '@/lib/hover-card'
 import { cn } from '@/lib/utils'
@@ -38,7 +37,7 @@ const CONTENT_CLASS =
 export type HoverCardSide = 'top' | 'right' | 'bottom' | 'left'
 export type HoverCardAlign = 'start' | 'center' | 'end'
 
-type Placement = NonNullable<Anchor.AnchorConfig['placement']>
+type Placement = HoverCardBehavior.HoverCardPlacement
 const PLACEMENTS: Readonly<
   Record<HoverCardSide, Readonly<Record<HoverCardAlign, Placement>>>
 > = {
@@ -146,7 +145,6 @@ export const hoverCard = <Msg>(
                           ],
                         gap: 8,
                         padding: 8,
-                        portal: false,
                       },
                     }),
                     props.toParentMessage,
