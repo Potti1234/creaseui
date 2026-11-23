@@ -6530,6 +6530,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/tabs-behavior",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/pleat-contracts",
         "Potti1234/creaseui/pleat-core",

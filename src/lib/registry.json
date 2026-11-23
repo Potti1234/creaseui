@@ -1418,6 +1418,20 @@
       ]
     },
     {
+      "name": "tabs-behavior",
+      "type": "registry:lib",
+      "title": "Tabs Behavior",
+      "description": "Controlled tab selection and shared roving focus for Foldkit.",
+      "registryDependencies": ["Potti1234/creaseui/roving-focus-behavior"],
+      "files": [
+        {
+          "path": "behaviors/tabs.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/tabs.ts"
+        }
+      ]
+    },
+    {
       "name": "textarea-behavior",
       "type": "registry:lib",
       "title": "Foldkit Textarea Behavior",

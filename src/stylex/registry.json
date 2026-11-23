@@ -7180,6 +7180,7 @@
         "@stylexjs/stylex@^0.19.0"
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/tabs-behavior",
         "Potti1234/creaseui/crease-theme-css",
         "Potti1234/creaseui/stylex-contracts",
         "Potti1234/creaseui/stylex-foundations-tokens-stylex",

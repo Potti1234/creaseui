@@ -1,12 +1,12 @@
 import { type VariantProps, cva } from 'class-variance-authority'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Tabs as TabsPrimitive } from '@foldkit/ui'
+import * as TabsPrimitive from '@/lib/behaviors/tabs'
 
 import { cn } from '@/lib/utils'
 
-/* Ported from shadcn/ui tabs.tsx on top of the foldkit Tabs submodel.
-   Radix's data-[state=active] selectors are driven by foldkit's
+/* Ported from shadcn/ui tabs.tsx on top of the local Tabs behavior.
+   Radix's data-[state=active] selectors are driven by the behavior's
    data-selected attribute. */
 
 export const Model = TabsPrimitive.Model

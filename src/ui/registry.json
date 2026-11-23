@@ -5196,6 +5196,7 @@
         "class-variance-authority@^0.7.1"
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/tabs-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
