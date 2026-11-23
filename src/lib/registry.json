@@ -58,6 +58,24 @@
       ]
     },
     {
+      "name": "anchored-popup-behavior",
+      "type": "registry:lib",
+      "title": "Anchored Popup Behavior",
+      "description": "Compose inline popup state, positioning, dismissal, and focus in Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/layer-behavior",
+        "Potti1234/creaseui/native-position-behavior",
+        "Potti1234/creaseui/popup-behavior"
+      ],
+      "files": [
+        {
+          "path": "behaviors/popup-behavior.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/popup-behavior.ts"
+        }
+      ]
+    },
+    {
       "name": "area-behavior",
       "type": "registry:lib",
       "title": "Area Behavior",
