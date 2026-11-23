@@ -1,3 +1,4 @@
+import * as Mount from 'foldkit/mount'
 import { Style, When } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
 /* Ported from Meta Astryx TreeList (packages/core/src/TreeList/) — StyleX
@@ -554,6 +555,16 @@ const render = <Msg>(
   return h.div(
     [
       h.DataAttribute('slot', 'tree-list'),
+      ...(viewInputs.reorderable
+        ? [
+            h.OnMount(
+              Mount.mapMessage(
+                TreeListBehavior.ObserveTreeReorder(),
+                toMessage,
+              ),
+            ),
+          ]
+        : []),
       h.Class(className(styles.root, viewInputs.layoutStyle)),
       h.Style({
         '--tree-list-indent': '16px',

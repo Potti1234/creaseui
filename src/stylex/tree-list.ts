@@ -1,3 +1,4 @@
+import * as Mount from 'foldkit/mount'
 import { reset } from '@/ui/stylex/reset'
 /* Ported from Meta Astryx TreeList (packages/core/src/TreeList/) — StyleX
    renderer; visual spec adapted to Crease UI tokens. */
@@ -579,6 +580,16 @@ const render = <Msg>(
   return h.div(
     [
       h.DataAttribute('slot', 'tree-list'),
+      ...(viewInputs.reorderable
+        ? [
+            h.OnMount(
+              Mount.mapMessage(
+                TreeListBehavior.ObserveTreeReorder(),
+                toMessage,
+              ),
+            ),
+          ]
+        : []),
       h.Class(className(styles.root, viewInputs.layoutStyle)),
       h.Style({
         '--tree-list-indent': '16px',

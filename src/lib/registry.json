@@ -1557,7 +1557,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/tree-collection-behavior"
+        "Potti1234/creaseui/tree-collection-behavior",
+        "Potti1234/creaseui/drag-behavior"
       ]
     },
     {

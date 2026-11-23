@@ -3,11 +3,13 @@
    (arrows, Home/End, Enter/Space activation, 500ms typeahead buffer) adapted
    to foldkit's model/update/command structure. */
 
-import { Effect, Option, Schema as S } from 'effect'
+import { Effect, Option, Schema as S, Stream } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import * as Dom from 'foldkit/dom'
 import { defineMessageUnion } from 'foldkit/message'
+import * as Mount from 'foldkit/mount'
+import * as Drag from '@/lib/behaviors/drag'
 
 import * as TreeReorder from '@/lib/behaviors/tree-reorder'
 import * as TreeCollection from '@/lib/behaviors/tree-collection'
@@ -68,6 +70,7 @@ const TypeaheadCandidate = S.Struct({
 })
 
 export const Message = defineMessageUnion({
+  DroppedTreePointer: { placement: TreeReorder.Placement },
   GrabbedTreeListItem: { id: S.String },
   RepositionedTreeListItem: { placement: TreeReorder.Placement },
   DroppedTreeListItem: {},
@@ -118,6 +121,99 @@ export const reorderedItems = (
     ...(model.treePlacements ?? []),
     ...(model.treeDraft?.placements ?? []),
   ].reduce((current, placement) => TreeReorder.place(current, placement), items)
+
+const reorderRowSelector = '[data-slot="tree-list-item"]'
+const reorderItemSelector = '[role="treeitem"][data-tree-id]'
+
+export const ObserveTreeReorder = Mount.defineStream('ObserveTreeReorder', {
+  messages: [Message.DroppedTreePointer],
+  execute: ({ element }) =>
+    !(element instanceof HTMLElement)
+      ? Stream.empty
+      : Drag.observeDrag<typeof Message.DroppedTreePointer.Type>(
+          element,
+          (down, send) => {
+            if (
+              !(down.target instanceof Element) ||
+              down.pointerType !== 'mouse'
+            )
+              return
+            const row = down.target.closest<HTMLElement>(reorderRowSelector)
+            const source = row?.closest<HTMLElement>(reorderItemSelector)
+            const id = source?.dataset.treeId
+            if (
+              row === null ||
+              row === undefined ||
+              source === undefined ||
+              source === null ||
+              id === undefined ||
+              source.hasAttribute('data-tree-disabled') ||
+              row.closest('[data-slot="tree-list"]') !== element
+            )
+              return
+            let active = false
+            return {
+              captureElement: row,
+              threshold: Drag.dragThreshold,
+              cancelOnEscape: true,
+              onStart: () => {
+                active = true
+              },
+              onMove: () => {},
+              onEnd: (event, cancelled) => {
+                if (!active || cancelled) return
+                const targetRow = element.ownerDocument
+                  .elementFromPoint(event.clientX, event.clientY)
+                  ?.closest<HTMLElement>(reorderRowSelector)
+                const target =
+                  targetRow?.closest<HTMLElement>(reorderItemSelector)
+                const targetId = target?.dataset.treeId
+                if (
+                  targetRow == null ||
+                  target == null ||
+                  targetId === undefined ||
+                  source.contains(target) ||
+                  !element.contains(target)
+                )
+                  return
+
+                const rect = targetRow.getBoundingClientRect()
+                const isMiddle =
+                  event.clientY > rect.top + rect.height / 3 &&
+                  event.clientY < rect.bottom - rect.height / 3
+                const nest =
+                  isMiddle && !target.hasAttribute('data-tree-disabled')
+                const parent =
+                  target.parentElement?.closest<HTMLElement>(
+                    reorderItemSelector,
+                  )
+                const next = target.nextElementSibling as HTMLElement | null
+                if (
+                  !nest &&
+                  event.clientY >= rect.top + rect.height / 2 &&
+                  next === source
+                )
+                  return
+                send(
+                  Message.DroppedTreePointer({
+                    placement: {
+                      id,
+                      parent: nest
+                        ? targetId
+                        : (parent?.dataset.treeId ?? null),
+                      before: nest
+                        ? null
+                        : event.clientY < rect.top + rect.height / 2
+                          ? targetId
+                          : (next?.dataset.treeId ?? null),
+                    },
+                  }),
+                )
+              },
+            }
+          },
+        ),
+})
 
 export const reorderKey = (
   items: ReadonlyArray<TreeListItemData>,
@@ -484,6 +580,24 @@ export type UpdateReturn = Update.ReturnWithOutMessage<
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
+    case 'DroppedTreePointer': {
+      if (model.treeDraft !== undefined) return { model }
+      const { placement } = message
+      return {
+        model: {
+          ...model,
+          focusedId: Option.some(placement.id),
+          treePlacements: [...(model.treePlacements ?? []), placement],
+          expandedOverrides:
+            placement.parent === null
+              ? model.expandedOverrides
+              : { ...model.expandedOverrides, [placement.parent]: true },
+        },
+        commands: [
+          FocusTreeListItem({ domId: itemDomId(model.id, placement.id) }),
+        ],
+      }
+    }
     case 'GrabbedTreeListItem':
       return model.treeDraft === undefined
         ? { model: { ...model, treeDraft: { id: message.id, placements: [] } } }
