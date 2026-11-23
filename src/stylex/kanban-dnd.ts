@@ -1,4 +1,4 @@
-import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { box } from '@/ui/stylex/composition/box'
 
@@ -12,17 +12,29 @@ import { box } from '@/ui/stylex/composition/box'
  * reaching for `h.Style` directly (check-constrained-composition.mjs).
  */
 
-/** Ring outline on the real card while a keyboard drag previews its slot. */
-export const kanbanKeyboardPreviewAttr = <Message>(
+/** Grab cursor on a card, plus a ring outline while the keyboard moves it. */
+export const kanbanCardAttr = <Message>(
+  isMoving: boolean,
   h: HtmlBuilder<Message>,
 ): Attribute<Message> =>
-  h.Style({ outline: '2px solid var(--ring)', outlineOffset: '2px' })
+  h.Style({
+    cursor: 'grab',
+    touchAction: 'none',
+    userSelect: 'none',
+    ...(isMoving
+      ? { outline: '2px solid var(--ring)', outlineOffset: '2px' }
+      : {}),
+  })
 
-/** Dashed insertion marker the pointer drag drops into. */
-export const kanbanDropPlaceholder = <Message>(h: HtmlBuilder<Message>): Html =>
+/** Dashed slot the dragged card holds while its ghost follows the pointer. */
+export const kanbanDropPlaceholder = <Message>(
+  attrs: ReadonlyArray<Attribute<Message> | ChildAttribute>,
+  h: HtmlBuilder<Message>,
+): Html =>
   box<Message>(
     {
       attrs: [
+        ...attrs,
         h.AriaHidden(true),
         h.Style({
           backgroundColor:
@@ -40,7 +52,7 @@ export const kanbanDropPlaceholder = <Message>(h: HtmlBuilder<Message>): Html =>
 
 /** Fixed-position clone that follows the pointer during a drag. */
 export const kanbanGhostCard = <Message>(
-  ghostPosition: Record<string, string>,
+  preview: Readonly<{ x: number; y: number; width: number }>,
   content: Html,
   h: HtmlBuilder<Message>,
 ): Html =>
@@ -49,9 +61,13 @@ export const kanbanGhostCard = <Message>(
       attrs: [
         h.AriaHidden(true),
         h.Style({
-          ...ghostPosition,
+          left: `${preview.x}px`,
+          pointerEvents: 'none',
+          position: 'fixed',
           rotate: '2deg',
-          width: '16rem',
+          top: `${preview.y}px`,
+          width: `${preview.width}px`,
+          zIndex: '50',
         }),
       ],
       children: [content],
