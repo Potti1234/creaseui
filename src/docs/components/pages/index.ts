@@ -48,6 +48,8 @@ import { dateTimeInputPage } from '@/docs/components/pages/date-time-input'
 import { dataGridPage } from '@/docs/components/pages/data-grid'
 import { dataTablePage } from '@/docs/components/pages/data-table'
 import { directionPage } from '@/docs/components/pages/direction'
+import { pointerKindPage } from '@/docs/components/pages/pointer-kind'
+import { avoidKeyboardPage } from '@/docs/components/pages/avoid-keyboard'
 import { dialogPage } from '@/docs/components/pages/dialog'
 import { drawerPage } from '@/docs/components/pages/drawer'
 import { dropdownMenuPage } from '@/docs/components/pages/dropdown-menu'
@@ -178,6 +180,8 @@ export const authoredPages: Readonly<Record<string, AuthoredPage>> = {
       dataGridPage,
       dataTablePage,
       directionPage,
+      pointerKindPage,
+      avoidKeyboardPage,
       dialogPage,
       drawerPage,
       dropdownMenuPage,

@@ -2,9 +2,11 @@
   "$schema": "./docs-index.schema.json",
   "generatedFrom": [
     "src/ui/registry.json",
-    "src/ui/*.ts"
+    "src/ui/*.ts",
+    "src/lib/registry.json",
+    "src/lib/behaviors/*.ts"
   ],
-  "componentCount": 125,
+  "componentCount": 127,
   "components": [
     {
       "slug": "accordion",
@@ -9330,6 +9332,7 @@
         "Potti1234/creaseui/drag-and-drop-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/input",
+        "Potti1234/creaseui/transfer-list-behavior",
         "Potti1234/creaseui/utils"
       ],
       "examples": [
@@ -9649,6 +9652,166 @@
           "name": "visuallyHidden",
           "kind": "function",
           "signature": "visuallyHidden<Msg>(props: VisuallyHiddenProps, h: HtmlBuilder<Msg>): Html"
+        }
+      ]
+    },
+    {
+      "slug": "avoid-keyboard",
+      "title": "Avoid Keyboard",
+      "description": "Keeps a footer above the on-screen keyboard with a scoped Foldkit Mount.",
+      "docs": "/docs/components/avoid-keyboard",
+      "source": "src/lib/behaviors/avoid-keyboard.ts",
+      "install": "npx creaseui add avoid-keyboard",
+      "dependencies": [],
+      "examples": [
+        "Keyboard-aware footer",
+        "A little breathing room"
+      ],
+      "api": [
+        {
+          "name": "Length",
+          "kind": "type",
+          "signature": "Length = Readonly<{ percent: number; px: number; }>"
+        },
+        {
+          "name": "lengthOf",
+          "kind": "function",
+          "signature": "lengthOf(value: string): Length"
+        },
+        {
+          "name": "cssLength",
+          "kind": "function",
+          "signature": "cssLength({ percent, px }: Length): string"
+        },
+        {
+          "name": "parseTranslate",
+          "kind": "function",
+          "signature": "parseTranslate(value: string): Readonly<{ x: string; y: Length; z: string | undefined; }>"
+        },
+        {
+          "name": "Coverage",
+          "kind": "type",
+          "signature": "Coverage = Readonly<{ box: Readonly<{ top: number; bottom: number; height: number; }>; rest: Length; now: Length; originTop: number; innerHeight: number; offsetTop: number; height: number; }>"
+        },
+        {
+          "name": "coveredPixels",
+          "kind": "function",
+          "signature": "coveredPixels({ box, rest, now, originTop, innerHeight, offsetTop, height, }: Coverage): number"
+        },
+        {
+          "name": "avoidKeyboard",
+          "kind": "function",
+          "signature": "avoidKeyboard(element: HTMLElement): (() => void)"
+        },
+        {
+          "name": "Message",
+          "kind": "value",
+          "signature": "Message: value"
+        },
+        {
+          "name": "Message",
+          "kind": "type",
+          "signature": "Message = typeof Message.Type"
+        },
+        {
+          "name": "AvoidKeyboard",
+          "kind": "value",
+          "signature": "AvoidKeyboard: value"
+        }
+      ]
+    },
+    {
+      "slug": "pointer-kind",
+      "title": "Pointer Kind",
+      "description": "Tracks pointer precision and hover support with Foldkit state and subscriptions.",
+      "docs": "/docs/components/pointer-kind",
+      "source": "src/lib/behaviors/pointer-kind.ts",
+      "install": "npx creaseui add pointer-kind",
+      "dependencies": [],
+      "examples": [
+        "Live capabilities",
+        "Server hints"
+      ],
+      "api": [
+        {
+          "name": "PointerPrecision",
+          "kind": "value",
+          "signature": "PointerPrecision: value"
+        },
+        {
+          "name": "PointerPrecision",
+          "kind": "type",
+          "signature": "PointerPrecision = typeof PointerPrecision.Type"
+        },
+        {
+          "name": "PointerHover",
+          "kind": "value",
+          "signature": "PointerHover: value"
+        },
+        {
+          "name": "PointerHover",
+          "kind": "type",
+          "signature": "PointerHover = typeof PointerHover.Type"
+        },
+        {
+          "name": "Model",
+          "kind": "value",
+          "signature": "Model: value"
+        },
+        {
+          "name": "Model",
+          "kind": "type",
+          "signature": "Model = typeof Model.Type"
+        },
+        {
+          "name": "Message",
+          "kind": "value",
+          "signature": "Message: value"
+        },
+        {
+          "name": "Message",
+          "kind": "type",
+          "signature": "Message = typeof Message.Type"
+        },
+        {
+          "name": "init",
+          "kind": "function",
+          "signature": "init(initial: Partial<Model> = {}): Model"
+        },
+        {
+          "name": "update",
+          "kind": "function",
+          "signature": "update(model: Model, message: Message): Update.Return<Model, Message>"
+        },
+        {
+          "name": "read",
+          "kind": "function",
+          "signature": "read(matchMedia: (query: string) => { matches: boolean; }): Model"
+        },
+        {
+          "name": "pointerKindOf",
+          "kind": "function",
+          "signature": "pointerKindOf(mobileHint?: string | null): Partial<Model>"
+        },
+        {
+          "name": "canHover",
+          "kind": "function",
+          "signature": "canHover(model: Model): boolean"
+        },
+        {
+          "name": "ReadPointerKind",
+          "kind": "value",
+          "signature": "ReadPointerKind: value"
+        },
+        {
+          "name": "changes",
+          "kind": "function",
+          "signature": "changes(): Stream.Stream<Message>"
+        },
+        {
+          "name": "subscriptions",
+          "kind": "value",
+          "signature": "subscriptions: value"
         }
       ]
     }

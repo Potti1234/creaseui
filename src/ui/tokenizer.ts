@@ -14,6 +14,7 @@ import {
   init,
   reflect,
   reflectItems,
+  tokenRemoveId,
   panelMount,
   update,
 } from '@/lib/tokenizer'
@@ -213,6 +214,7 @@ const statusIcon = <Msg>(
   )
 
 const tokenChip = <Msg>(
+  id: string,
   token: Token,
   index: number,
   size: 'sm' | 'md' | 'lg',
@@ -221,13 +223,16 @@ const tokenChip = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html =>
   h.span(
-    [h.Class(cn(TOKEN_CLASS, TOKEN_SIZE_CLASS[size]))],
+    [h.Key(token.id), h.Class(cn(TOKEN_CLASS, TOKEN_SIZE_CLASS[size]))],
     [
       h.span([h.Class(TOKEN_LABEL_CLASS)], [token.label]),
       h.button(
         [
           h.Type('button'),
           h.Tabindex(-1),
+          h.Id(tokenRemoveId(id, token.id)),
+          h.OnFocus(toParent(Message.FocusedToken({ key: token.id }))),
+          h.OnBlur(toParent(Message.BlurredToken())),
           h.Class(TOKEN_REMOVE_CLASS),
           h.AriaLabel(`Remove ${token.label}`),
           h.DataAttribute('slot', 'tokenizer-token-remove'),
@@ -450,7 +455,7 @@ export const tokenizer = <Msg>(
               ]
             : []),
           ...model.tokens.map((token, index) =>
-            tokenChip(token, index, size, isDisabled, toParent, h),
+            tokenChip(model.id, token, index, size, isDisabled, toParent, h),
           ),
           comboboxView,
         ],
@@ -520,14 +525,19 @@ export const tokenizer = <Msg>(
     ],
     [
       labelView,
-      isLayerExpanded
+      props.tokenOverflowBehavior === 'unfocusedLayer'
         ? h.div(
             [h.Class('relative'), h.DataAttribute('slot', 'tokenizer-layer')],
             [
               // Height placeholder keeps the field's row height while the
               // expanded wrapper overlays it (astryx unfocusedLayer).
               h.div(
-                [h.Class(TRUNCATED_SIZE_CLASS[size]), h.AriaHidden(true)],
+                [
+                  ...(isLayerExpanded
+                    ? [h.Class(TRUNCATED_SIZE_CLASS[size])]
+                    : []),
+                  h.AriaHidden(true),
+                ],
                 [],
               ),
               wrapper,

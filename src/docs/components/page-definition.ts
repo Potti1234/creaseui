@@ -36,6 +36,7 @@ export const rendererExamplesAreInParity = (
   slug: string,
   tailwindExamples: ReadonlyArray<DocsExample>,
   stylexExamples: ReadonlyArray<DocsExample>,
+  sharedImport?: string,
 ): boolean =>
   tailwindExamples.length === stylexExamples.length &&
   tailwindExamples.every((tailwindExample, index) => {
@@ -44,8 +45,8 @@ export const rendererExamplesAreInParity = (
       stylexExample !== undefined &&
       tailwindExample.title === stylexExample.title &&
       tailwindExample.description === stylexExample.description &&
-      tailwindExample.code.includes(`@/ui/${slug}`) &&
-      stylexExample.code.includes(`@/stylex/${slug}`)
+      tailwindExample.code.includes(sharedImport ?? `@/ui/${slug}`) &&
+      stylexExample.code.includes(sharedImport ?? `@/stylex/${slug}`)
     )
   })
 
@@ -67,6 +68,7 @@ export type PageDefinition = Readonly<{
   sourcePath?: string
   architecture?: string
   usage?: string
+  source?: Readonly<{ path: string; registryItem: string }>
   sections?: ReadonlyArray<DocsSection>
   styling?: string
   accessibility?: string

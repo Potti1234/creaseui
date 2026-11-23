@@ -3,6 +3,7 @@ import { describe, it } from 'node:test'
 import { Option } from 'effect'
 
 import * as Toast from '../src/lib/toast.ts'
+import * as FocusRecovery from '../src/lib/behaviors/focus-recovery.ts'
 
 const finishAnimation = (model: Toast.Model, id: string) => {
   const generation = model.entries.find(entry => entry.id === id)!.animation
@@ -24,6 +25,62 @@ const finishAnimation = (model: Toast.Model, id: string) => {
 }
 
 describe('Toast notification behavior', () => {
+  it('recovers keyed focus only after unmount, never at dismissal intent', () => {
+    let model = Toast.init({ id: 'focus' })
+    for (const title of ['First', 'Middle', 'Next'])
+      model = Toast.show(model, Toast.plain({ title, sticky: true })).model
+    const keys = model.entries.map(entry => entry.id)
+    const send = (message: FocusRecovery.CollectionMessage) =>
+      Toast.Message.GotFocusRecoveryMessage({
+        position: 'bottom-right',
+        message,
+      })
+    const reconciled = (keys: readonly string[]) =>
+      send(
+        FocusRecovery.CollectionMessage.ReconciledItems({
+          keys,
+          enabledKeys: keys,
+        }),
+      )
+    model = Toast.update(model, reconciled(keys)).model
+    model = Toast.update(
+      model,
+      send(FocusRecovery.CollectionMessage.FocusedItem({ key: keys[1]! })),
+    ).model
+    const dismissed = Toast.update(
+      model,
+      Toast.Message.Dismissed({ entryId: keys[1]! }),
+    )
+    assert.ok(dismissed.model.entries.some(entry => entry.id === keys[1]))
+    assert.ok(
+      !dismissed.commands?.some(command => command.name === 'RecoverFocus'),
+    )
+    const unchanged = Toast.update(dismissed.model, reconciled(keys))
+    assert.equal(unchanged.commands?.length, 0)
+    const unmounted = Toast.update(
+      unchanged.model,
+      reconciled([keys[0]!, keys[2]!]),
+    )
+    assert.deepEqual(unmounted.commands?.[0]?.args, {
+      lostId: Toast.focusTargetId(keys[1]!),
+      targetId: Toast.focusTargetId(keys[2]!),
+    })
+    model = Toast.update(
+      unmounted.model,
+      send(FocusRecovery.CollectionMessage.FocusedItem({ key: keys[2]! })),
+    ).model
+    const cleared = Toast.update(model, reconciled([]))
+    assert.deepEqual(cleared.commands?.[0]?.args, {
+      lostId: Toast.focusTargetId(keys[2]!),
+      targetId: Toast.viewportId('focus', 'bottom-right'),
+    })
+    assert.equal(
+      Toast.update(Toast.init({ id: 'empty' }), reconciled([])).commands
+        ?.length,
+      0,
+    )
+  })
+
   it('drags with its pointer, snaps back below threshold, and dismisses past it', () => {
     let model = Toast.init({ id: 'swipe', swipeToDismiss: { threshold: 60 } })
     for (let index = 0; index < 4; index++)

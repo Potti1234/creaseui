@@ -11,6 +11,86 @@ import {
   OutMessage,
 } from '../src/lib/list-input.ts'
 
+import * as FocusRecovery from '../src/lib/behaviors/focus-recovery.ts'
+import * as ListInput from '../src/lib/list-input.ts'
+
+test('focus recovers on accepted keyed row reconciliation, not a removal request', () => {
+  const send = (
+    model: ListInput.Model,
+    message: FocusRecovery.CollectionMessage,
+  ) =>
+    ListInput.update(
+      model,
+      ListInput.Message.GotFocusRecoveryMessage({ message }),
+    )
+  const initial = send(
+    ListInput.init({ id: 'guests' }),
+    FocusRecovery.CollectionMessage.ReconciledItems({
+      keys: ['a', 'b', 'c'],
+      enabledKeys: ['a', 'b', 'c'],
+    }),
+  ).model
+  const focused = send(
+    initial,
+    FocusRecovery.CollectionMessage.FocusedItem({ key: 'b' }),
+  ).model
+  const requested = ListInput.update(
+    focused,
+    ListInput.Message.RemoveRequested({
+      index: 1,
+      itemName: 'guest',
+      position: 2,
+    }),
+  )
+  assert.deepEqual(requested.commands ?? [], [])
+  assert.equal(requested.model.focusRecovery, focused.focusRecovery)
+  assert.deepEqual(
+    send(
+      requested.model,
+      FocusRecovery.CollectionMessage.ReconciledItems({
+        keys: ['a', 'b', 'c'],
+        enabledKeys: ['a', 'b', 'c'],
+      }),
+    ).commands,
+    [],
+  )
+  const accepted = send(
+    requested.model,
+    FocusRecovery.CollectionMessage.ReconciledItems({
+      keys: ['a', 'c'],
+      enabledKeys: ['a', 'c'],
+    }),
+  )
+  assert.deepEqual(accepted.commands?.[0]?.args, {
+    lostId: 'guests-remove-b',
+    targetId: 'guests-remove-c',
+  })
+  const last = send(
+    accepted.model,
+    FocusRecovery.CollectionMessage.FocusedItem({ key: 'c' }),
+  ).model
+  assert.deepEqual(
+    send(
+      last,
+      FocusRecovery.CollectionMessage.ReconciledItems({
+        keys: [],
+        enabledKeys: [],
+      }),
+    ).commands?.[0]?.args,
+    { lostId: 'guests-remove-c', targetId: 'guests-add' },
+  )
+  assert.deepEqual(
+    send(
+      initial,
+      FocusRecovery.CollectionMessage.ReconciledItems({
+        keys: [],
+        enabledKeys: [],
+      }),
+    ).commands,
+    [],
+  )
+})
+
 test('column tracks resolve to pixel or proportional grid tracks', () => {
   assert.equal(resolveColumnTrack({ type: 'pixel', value: 120 }), '120px')
   assert.equal(
@@ -58,6 +138,7 @@ test('immediate move announces the destination; boundary announces in place', ()
   const moved = update(
     model,
     Message.MoveRequested({
+      key: 'a',
       fromIndex: 0,
       toIndex: 1,
       itemName: 'guest',
@@ -65,6 +146,10 @@ test('immediate move announces the destination; boundary announces in place', ()
     }),
   )
   assert.equal(moved.outMessage?._tag, 'ItemReordered')
+  assert.deepEqual(moved.commands?.[0]?.args, {
+    targetId: 'li-reorder-a',
+    lostId: 'li-reorder-a',
+  })
   assert.equal(
     Option.getOrElse(moved.model.announcement, () => ''),
     'guest moved to position 2 of 3.',
