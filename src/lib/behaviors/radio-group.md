@@ -1,12 +1,14 @@
-# RadioGroup
+# Radio Group
 
-RadioGroup keeps the `@foldkit/ui` primitive. It already models focus as an
-immutable Schema submodel, leaves the selected value with the parent, and
-ships the APG-complete parts ui-sdk's radio would need porting for: disabled
-and read-only options, Home/End/Page keys, focus Commands, label and
-description ids, and the hidden form input. `behaviors/radio-group.ts` is the
-seam components import: the primitive's Model, Message, OutMessage and
-`init`, plus `create<Value>()`, whose view also accepts `direction` and maps
-both arrow axes onto the group's orientation as the APG pattern requires.
-The pure `toOrientationKey` holds that key policy. Components still own the
-rendered markup, labels, indicator and styling.
+CreaseUI owns the Foldkit interaction model, focus command, and behavior
+attributes in `behaviors/radio-group.ts`. The parent passes `selectedValue`
+and handles the `Selected` out-message. The child model tracks the roving
+focus index when focus moves independently in a read-only group.
+
+Both arrow axes wrap and skip disabled options. Inline arrows follow
+`direction`. Home and Page Up move to the first enabled option, and End and
+Page Down move to the last. Space selects the current option in editable groups.
+
+The shared renderer assembles the buttons, labels, descriptions, indicators,
+and hidden form input. Tailwind, StyleX, and Pleat supply their own visual
+attributes. The shared behavior depends directly on `foldkit` and `effect`.

@@ -2,12 +2,16 @@ import { Option } from 'effect'
 import { Command } from 'foldkit'
 import * as Scene from 'foldkit/scene'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { RadioGroup as RadioGroupPrimitive } from '@foldkit/ui'
-import { describe, it } from 'vitest'
+import { describe, it, vi } from 'vitest'
 
 import type { RadioGroupOption } from '@/lib/radio-group'
+import * as RadioGroupBehavior from '@/lib/behaviors/radio-group'
+import * as PleatRadio from '@/pleat/radio-group'
 import * as StyleXRadio from '@/stylex/radio-group'
 import * as TailwindRadio from '@/ui/radio-group'
+
+// Happy DOM cannot mount Pleat's cascade layers. These scenes assert behavior.
+vi.mock('@/pleat/style', () => ({ className: () => 'pleat-scene' }))
 
 /**
  * Behavioral parity suite ported from Base UI's radio tests
@@ -156,8 +160,8 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
   const labels = Scene.all.selector('label')
   const indicators = Scene.all.selector('[data-slot="radio-group-indicator"]')
   const focusAck = Scene.Command.resolve(
-    RadioGroupPrimitive.FocusOption,
-    RadioGroupPrimitive.Message.CompletedFocusOption(),
+    RadioGroupBehavior.FocusOption,
+    RadioGroupBehavior.Message.CompletedFocusOption(),
   )
 
   describe(`${name} RadioGroup (Base UI port)`, () => {
@@ -548,6 +552,29 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
         )
       })
 
+      it('uses Page Down and Page Up to reach enabled endpoints', () => {
+        Scene.scene(
+          { update, view: view() },
+          Scene.given(
+            initialModel(Radio, {
+              value: Option.some('b'),
+              options: [
+                ...defaultOptions,
+                { value: 'd', label: 'Option D', isDisabled: true },
+              ],
+            }),
+          ),
+          Scene.keydown(radioByName('Option B'), 'PageDown'),
+          Scene.expectHandled(),
+          focusAck,
+          Scene.expect(radioByName('Option C')).toBeChecked(),
+          Scene.keydown(radioByName('Option C'), 'PageUp'),
+          Scene.expectHandled(),
+          focusAck,
+          Scene.expect(radioByName('Option A')).toBeChecked(),
+        )
+      })
+
       it('moves focus normally when Shift is held during arrow navigation', () => {
         // foldkit's keydown handler ignores modifiers, matching Base UI's
         // behavior for Shift.
@@ -602,15 +629,13 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
         )
       })
 
-      // DIVERGENCE: Base UI responds to all four arrow keys regardless of
-      // orientation; foldkit gates the axis by the orientation prop, so
-      // ArrowRight is a no-op in a Vertical group. Severity: medium.
-      it.fails('responds to horizontal arrows in a Vertical group', () => {
+      it('responds to horizontal arrows in a Vertical group', () => {
         Scene.scene(
           { update, view: view() },
           Scene.given(initialModel(Radio, { value: Option.some('a') })),
           Scene.keydown(radioByName('Option A'), 'ArrowRight'),
-          Scene.expectIgnored(),
+          Scene.expectHandled(),
+          focusAck,
           Scene.expect(radioByName('Option B')).toBeChecked(),
         )
       })
@@ -833,3 +858,4 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
 
 verifyRenderer('Tailwind', TailwindRadio)
 verifyRenderer('StyleX', StyleXRadio)
+verifyRenderer('Pleat', PleatRadio)

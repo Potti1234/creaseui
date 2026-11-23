@@ -1,5 +1,5 @@
 import type { Option } from 'effect'
-import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 import * as RadioGroupBehavior from '@/lib/behaviors/radio-group'
 
 export type RadioGroupOption = Readonly<{
@@ -38,16 +38,6 @@ type OptionState = Readonly<{
   isDisabled: boolean
   isReadOnly: boolean
 }>
-
-const childAttributeTag = (attribute: ChildAttribute): string | undefined => {
-  const value = attribute.attribute
-  return typeof value === 'object' &&
-    value !== null &&
-    '_tag' in value &&
-    typeof value._tag === 'string'
-    ? value._tag
-    : undefined
-}
 
 export type RadioGroupVisualAttributes<Msg> = Readonly<{
   group: ReadonlyArray<Attribute<Msg>>
@@ -101,12 +91,7 @@ export const renderRadioGroup = <Msg>(
                 [
                   h.button(
                     [
-                      ...option.option.filter(
-                        attribute =>
-                          content.description !== undefined ||
-                          childAttributeTag(attribute) !== 'AriaDescribedBy',
-                      ),
-                      h.Type('button'),
+                      ...option.option,
                       h.DataAttribute('slot', 'radio-group-item'),
                       ...(content.isInvalid === true
                         ? [h.AriaInvalid(true)]
@@ -130,7 +115,10 @@ export const renderRadioGroup = <Msg>(
                         [
                           ...option.label,
                           h.For(
-                            `${props.model.id}-option-${String(option.index)}`,
+                            RadioGroupBehavior.optionId(
+                              props.model.id,
+                              option.index,
+                            ),
                           ),
                           ...visual.label,
                         ],
