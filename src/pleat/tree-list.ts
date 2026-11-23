@@ -499,6 +499,7 @@ const renderItem = <Msg>(
 }
 
 export type ViewInputs = Readonly<{
+  reorderable?: boolean
   items: ReadonlyArray<TreeListBehavior.TreeListItemData>
   density?: TreeListBehavior.TreeListDensity
   variant?: TreeListBehavior.TreeListVariant
@@ -514,11 +515,14 @@ const render = <Msg>(
   toMessage: (message: TreeListBehavior.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  const items = viewInputs.reorderable
+    ? TreeListBehavior.reorderedItems(viewInputs.items, model)
+    : viewInputs.items
   const variant = viewInputs.variant ?? 'lineGuides'
   const density = viewInputs.density ?? 'balanced'
   const direction = viewInputs.direction ?? 'ltr'
   const headerId = `${model.id}-header`
-  const hasExpandableItems = viewInputs.items.some(
+  const hasExpandableItems = items.some(
     item => item.children !== undefined && item.children.length > 0,
   )
   const ctx: RenderContext<Msg> = {
@@ -527,7 +531,7 @@ const render = <Msg>(
     density,
     variant,
     hasExpandableItems,
-    tabbable: TreeListBehavior.tabbableId(viewInputs.items, model),
+    tabbable: TreeListBehavior.tabbableId(items, model),
     h,
   }
 
@@ -559,8 +563,19 @@ const render = <Msg>(
         ? []
         : [h.Dir(viewInputs.direction)]),
       h.OnKeyDownPreventDefault((key, modifiers) => {
+        if (viewInputs.reorderable) {
+          const reorder = TreeListBehavior.reorderKey(
+            items,
+            model,
+            key,
+            modifiers,
+            direction,
+          )
+          if (Option.isSome(reorder))
+            return Option.some(toMessage(reorder.value))
+        }
         const intent = TreeListBehavior.resolveKey(
-          viewInputs.items,
+          items,
           model,
           key,
           modifiers,
@@ -576,7 +591,7 @@ const render = <Msg>(
               ),
             )
           case 'toggle': {
-            const item = findItem(viewInputs.items, intent.id)
+            const item = findItem(items, intent.id)
             return item === undefined
               ? Option.none()
               : Option.some(
@@ -622,6 +637,9 @@ const render = <Msg>(
       h.ul(
         [
           h.Role('tree'),
+          ...(viewInputs.reorderable
+            ? [h.AriaKeyshortcuts('Shift+Space')]
+            : []),
           h.Class(className(reset.list, styles.list)),
           ...(viewInputs.header === undefined
             ? viewInputs.ariaLabel === undefined
@@ -629,15 +647,15 @@ const render = <Msg>(
               : [h.AriaLabel(viewInputs.ariaLabel)]
             : [h.AriaLabelledBy(headerId)]),
         ],
-        viewInputs.items.map((item, index) =>
+        items.map((item, index) =>
           renderItem(
             ctx,
             item,
             0,
             index + 1,
-            viewInputs.items.length,
+            items.length,
             [],
-            index === viewInputs.items.length - 1,
+            index === items.length - 1,
           ),
         ),
       ),

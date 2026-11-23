@@ -77,6 +77,7 @@ const treeView = <Msg>(
     viewInputs: {
       items: decorateItems(items, h),
       variant: tree.variant,
+      reorderable: tree.ariaLabel === 'Project files',
       ariaLabel: tree.ariaLabel,
     },
     toParentMessage: message =>

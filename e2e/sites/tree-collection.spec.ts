@@ -63,3 +63,30 @@ test('Sidebar disclosure hides and restores ordered navigation links', async ({
   await expect(current).toHaveAttribute('aria-current', 'page')
   await expect(preview.getByRole('tree')).toHaveCount(0)
 })
+
+test('Tree List moves whole branches and cancels a nesting draft', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/tree-list')
+  const tree = page
+    .getByRole('tree', { name: 'Project files', exact: true })
+    .first()
+  const item = (name: string) =>
+    tree.getByRole('treeitem', { name, exact: true })
+  const app = item('App.ts')
+  await app.focus()
+  await expect(app).toBeFocused()
+  await page.keyboard.press('Shift+Space')
+  await page.keyboard.press('ArrowRight')
+  await expect(app).toHaveAttribute('aria-level', '3')
+  await expect(item('Button.ts')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(app).toHaveAttribute('aria-level', '2')
+  await expect(app).toBeFocused()
+  await page.keyboard.press('Shift+Space')
+  await page.keyboard.press('ArrowRight')
+  await expect(app).toHaveAttribute('aria-level', '3')
+  await page.keyboard.press('Enter')
+  await expect(app).toBeFocused()
+  await expect(app).toHaveAttribute('aria-level', '3')
+})

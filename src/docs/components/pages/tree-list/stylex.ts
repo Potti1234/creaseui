@@ -73,6 +73,7 @@ export const treeListStyleXPreview: ExamplePreviewProvider = <Msg>(
       viewInputs: {
         items: decorateItems(fixture.items, h),
         variant: tree.variant,
+        reorderable: tree.ariaLabel === 'Project files',
         ariaLabel: tree.ariaLabel,
       },
       toParentMessage: message =>

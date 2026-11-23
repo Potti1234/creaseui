@@ -1541,6 +1541,11 @@
           "target": "@lib/tree-list.ts"
         },
         {
+          "path": "behaviors/tree-reorder.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/tree-reorder.ts"
+        },
+        {
           "path": "behaviors/typeahead.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/typeahead.ts"
