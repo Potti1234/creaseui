@@ -44,13 +44,16 @@
 import * as Command from 'foldkit/command'
 import * as Scene from 'foldkit/scene'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { describe, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
-import { Animation, Popover as PopoverPrimitive } from '@foldkit/ui'
+import { Animation } from '@foldkit/ui'
+import * as PopoverPrimitive from '@/lib/behaviors/popover'
 
 import * as StyleXPopover from '@/stylex/popover'
-import { AnchorThemedPopover } from '@/lib/overlay-boundary'
+import * as PleatPopover from '@/pleat/popover'
 import * as TailwindPopover from '@/ui/popover'
+
+vi.mock('@/pleat/style', () => ({ className: () => 'pleat-test' }))
 
 type Model = Readonly<{
   popover: PopoverPrimitive.Model
@@ -63,9 +66,7 @@ type Message = Readonly<
 >
 
 const popoverId = 'test-popover'
-const buttonId = `${popoverId}-button`
 const panelId = `${popoverId}-panel`
-const popoverArrowId = `${popoverId}-arrow`
 
 const initialModel = (
   config?: Partial<{
@@ -138,31 +139,16 @@ const closeButton = Scene.role('button', { name: 'Close' })
 const panel = Scene.selector('[data-slot="popover-content"]')
 const backdrop = Scene.selector('[data-slot="popover-backdrop"]')
 
-/* Mount.mapMessage lifts are invisible to Scene's boundary folding, so a
-   themed Mount is resolved with the already-lifted parent Message (the same
-   pattern application.scene.test.ts uses for MountChart). The Completed*
-   result is a no-op in the primitive update. */
-const anchorPopoverResolver = (themed: boolean) =>
-  themed
-    ? ([
-        AnchorThemedPopover,
-        {
-          _tag: 'GotPopoverMessage',
-          message: PopoverPrimitive.Message.CompletedAnchorPopover(),
-        },
-      ] as const)
-    : ([
-        PopoverPrimitive.AnchorPopover,
-        PopoverPrimitive.Message.CompletedAnchorPopover(),
-      ] as const)
-const anchorPopover = (themed: boolean) =>
-  themed ? AnchorThemedPopover : PopoverPrimitive.AnchorPopover
-
-const panelResolver = (themed: boolean) =>
-  Scene.Mount.resolveAll(anchorPopoverResolver(themed), [
+const resolvePanelMounts = Scene.Mount.resolveAll(
+  [
+    PopoverPrimitive.AnchorPopover,
+    PopoverPrimitive.Message.CompletedAnchorPopover(),
+  ],
+  [
     PopoverPrimitive.PortalPopoverBackdrop,
     PopoverPrimitive.Message.CompletedPortalPopoverBackdrop(),
-  ])
+  ],
+)
 
 const resolveFocusButton = Scene.Command.resolveAllExact([
   PopoverPrimitive.FocusButton,
@@ -212,8 +198,8 @@ const animationPaintedThenSettled = (
 
 // expectEnded steps are single-use: the closure drains its matchers on the
 // first run, so build a fresh pair for every scene.
-const endedPanelMountsFor = (themed: boolean) => () => [
-  Scene.Mount.expectEnded(anchorPopover(themed)),
+const endedPanelMounts = () => [
+  Scene.Mount.expectEnded(PopoverPrimitive.AnchorPopover),
   Scene.Mount.expectEnded(PopoverPrimitive.PortalPopoverBackdrop),
 ]
 
@@ -250,6 +236,7 @@ type PopoverModuleProps = Readonly<{
   align?: 'start' | 'center' | 'end'
   side?: 'top' | 'right' | 'bottom' | 'left'
   direction?: 'ltr' | 'rtl'
+  portal?: 'themed'
   focusSelector?: string
 }>
 
@@ -259,12 +246,12 @@ type PopoverModuleProps = Readonly<{
 type PopoverModule = Readonly<{
   popover: (props: PopoverModuleProps, h: HtmlBuilder<Message>) => Html
   anchor: (placement: PopoverPlacement) => PopoverPrimitive.AnchorConfig
-  /* Tailwind portals through the theme-carrying AnchorThemedPopover Mount. */
   themed: boolean
 }>
 
 type ViewOptions = Readonly<{
   closeButton?: boolean
+  portal?: 'themed'
   side?: 'top' | 'right' | 'bottom' | 'left'
   align?: 'start' | 'center' | 'end'
   focusSelector?: string
@@ -293,6 +280,7 @@ const makeView =
               'Close',
             )
           : 'Content',
+        ...(options.portal === undefined ? {} : { portal: options.portal }),
         ...(options.side === undefined ? {} : { side: options.side }),
         ...(options.align === undefined ? {} : { align: options.align }),
         ...(options.focusSelector === undefined
@@ -304,8 +292,6 @@ const makeView =
 
 const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
   describe(rendererName, () => {
-    const resolvePanelMounts = panelResolver(Module.themed)
-    const endedPanelMounts = endedPanelMountsFor(Module.themed)
     describe('<Popover.Root />', () => {
       it('should render the children', () => {
         Scene.scene(
@@ -935,12 +921,11 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
             Scene.click(trigger),
             Scene.expectHandled(),
             Scene.Mount.expectHas(
-              (Module.themed
-                ? AnchorThemedPopover
-                : PopoverPrimitive.AnchorPopover)({
-                buttonId,
+              PopoverPrimitive.AnchorPopover({
+                id: popoverId,
                 anchor: Module.anchor('bottom'),
-                arrowId: popoverArrowId,
+                isModal: false,
+                themedPortal: Module.themed,
                 focusSelector: '#focus-me',
               }),
             ),
@@ -1010,6 +995,22 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
     })
 
     describe('positioning', () => {
+      it('uses the themed panel mount when requested', () => {
+        Scene.scene(
+          { update, view: makeView(Module, { portal: 'themed' }) },
+          Scene.given(initialModel({ open: true })),
+          Scene.Mount.expectHas(
+            PopoverPrimitive.AnchorPopover({
+              id: popoverId,
+              anchor: Module.anchor('bottom'),
+              isModal: false,
+              themedPortal: true,
+            }),
+          ),
+          resolvePanelMounts,
+        )
+      })
+
       it('maps side/align props onto the anchor mount placement', () => {
         Scene.scene(
           { update, view: makeView(Module, { side: 'top', align: 'end' }) },
@@ -1017,12 +1018,11 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
           Scene.click(trigger),
           Scene.expectHandled(),
           Scene.Mount.expectHas(
-            (Module.themed
-              ? AnchorThemedPopover
-              : PopoverPrimitive.AnchorPopover)({
-              buttonId,
+            PopoverPrimitive.AnchorPopover({
+              id: popoverId,
               anchor: Module.anchor('top-end'),
-              arrowId: popoverArrowId,
+              isModal: false,
+              themedPortal: Module.themed,
             }),
           ),
           resolvePanelMounts,
@@ -1035,11 +1035,41 @@ const verifyRenderer = (rendererName: string, Module: PopoverModule): void => {
 verifyRenderer('Tailwind', {
   themed: true,
   popover: (props, h) => TailwindPopover.popover(props, h),
-  anchor: placement => ({ placement, gap: 4 }),
+  anchor: placement => ({ placement, gap: 4, portal: false }),
 })
 
 verifyRenderer('StyleX', {
   themed: false,
   popover: (props, h) => StyleXPopover.popover(props, h),
   anchor: placement => ({ placement, gap: 4, portal: false }),
+})
+
+verifyRenderer('Pleat', {
+  themed: false,
+  popover: (props, h) => PleatPopover.popover(props, h),
+  anchor: placement => ({ placement, gap: 4, portal: false }),
+})
+
+it('preserves a reopened panel when a previous exit completes', () => {
+  const initial = PopoverPrimitive.init({ id: popoverId, isAnimated: true })
+  const opened = PopoverPrimitive.open(initial).model
+  const closed = PopoverPrimitive.close(opened).model
+  const generation = closed.animation.transitionGeneration
+  const leaving = PopoverPrimitive.update(
+    closed,
+    PopoverPrimitive.Message.GotAnimationMessage({
+      message: Animation.Message.CompletedWaitForPaint({ generation }),
+    }),
+  ).model
+  expect(leaving.animation.transitionState).toBe('LeaveAnimating')
+
+  const reopened = PopoverPrimitive.open(leaving).model
+  const settled = PopoverPrimitive.update(
+    reopened,
+    PopoverPrimitive.Message.GotAnimationMessage({
+      message: Animation.Message.EndedAnimation({ generation }),
+    }),
+  ).model
+  expect(settled.isOpen).toBe(true)
+  expect(settled.animation.transitionState).toBe('EnterStart')
 })

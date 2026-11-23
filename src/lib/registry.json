@@ -1079,6 +1079,12 @@
       "type": "registry:lib",
       "title": "Foldkit Popover Behavior",
       "description": "Anchored popup lifecycle, dismissal and focus management.",
+      "registryDependencies": [
+        "Potti1234/creaseui/animation-behavior",
+        "Potti1234/creaseui/layer-behavior",
+        "Potti1234/creaseui/popup-behavior",
+        "Potti1234/creaseui/position-behavior"
+      ],
       "files": [
         {
           "path": "behaviors/popover.ts",
