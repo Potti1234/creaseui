@@ -115,6 +115,18 @@ describe('Transfer', () => {
     )
   })
 
+  it('keeps an immediate move when an in-flight draft drops', () => {
+    const grabbed = key(start(), ' ')
+    const moved = Transfer.move(grabbed.model, 'c', 'done', 0, options)
+    assert.deepEqual(moved.model.lists.done, ['c'])
+    const dropped = key(key(moved.model, 'ArrowRight').model, ' ')
+    assert.deepEqual(dropped.model.lists, {
+      todo: ['b'],
+      doing: ['a'],
+      done: ['c'],
+    })
+  })
+
   it('never moves a draft into a list that does not exist', () => {
     const grabbed = key(start(), ' ')
     const missing = Transfer.moveTo(grabbed.model, 'archive', 0, options)

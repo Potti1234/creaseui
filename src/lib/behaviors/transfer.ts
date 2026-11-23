@@ -429,7 +429,7 @@ export const move = (
   }
   if (options.canCommit?.(next, details) === false) return { model }
   return {
-    model: { ...model, lists: next },
+    model: setLists(model, next, options),
     outMessage: OutMessage.Transferred({
       ...details,
       lists: next,
