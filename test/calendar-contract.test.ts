@@ -47,10 +47,16 @@ describe('Calendar controlled contract', () => {
     for (const source of [
       readFileSync('src/ui/calendar.ts', 'utf8'),
       readFileSync('src/stylex/calendar.ts', 'utf8'),
+      readFileSync('src/pleat/calendar.ts', 'utf8'),
     ]) {
       assert.match(source, /maybeSelectedDate/u)
       assert.match(source, /CalendarPrimitive\.Model/u)
-      assert.match(source, /CalendarBehavior\.rangePosition/u)
+      assert.match(
+        source,
+        /import \* as CalendarPrimitive from '@\/lib\/behaviors\/calendar'/u,
+      )
+      assert.match(source, /CalendarPrimitive\.rangePosition/u)
+      assert.match(source, /view: CalendarPrimitive\.view/u)
       assert.match(source, /direction\?: 'ltr' \| 'rtl'/u)
       assert.doesNotMatch(source, /selectedDate:\s*S\./u)
     }

@@ -6,7 +6,6 @@ import { Match as M } from 'effect'
 import type * as FoldkitCalendar from 'foldkit/calendar'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import * as CalendarBehavior from '@/lib/calendar'
 import * as Icon from '@/lib/icon'
 import type { ComponentLayoutStyle } from './contracts'
 import { cellScope, dayScope } from './calendar.markers'
@@ -20,7 +19,7 @@ export type Message = typeof Message.Type
 export const OutMessage = CalendarPrimitive.OutMessage
 export type OutMessage = typeof OutMessage.Type
 export const init = CalendarPrimitive.init
-export const update = CalendarBehavior.update
+export const update = CalendarPrimitive.update
 export const selectDate = CalendarPrimitive.selectDate
 export const focusDate = CalendarPrimitive.focusDate
 export const reflectMinDate = CalendarPrimitive.reflectMinDate
@@ -347,7 +346,7 @@ export type CalendarViewOptions = Readonly<{
   density?: 'default' | 'flush'
   direction?: 'ltr' | 'rtl'
   layoutStyle?: ComponentLayoutStyle | undefined
-  range?: CalendarBehavior.CalendarRange
+  range?: CalendarPrimitive.CalendarRange
   size?: 'default' | 'comfortable'
   /** Overrides --cell-size directly (e.g. TW sidebar-15's w-[33px] cells). */
   cellWidth?: string
@@ -437,7 +436,7 @@ const daysView = <Msg>(
             ]
           : []),
         ...week.cells.map(cell => {
-          const position = CalendarBehavior.rangePosition(
+          const position = CalendarPrimitive.rangePosition(
             cell.date,
             options.range,
           )
@@ -718,7 +717,7 @@ export type CalendarProps<Msg> = Readonly<{
    * card, mirroring `p-0` on the Tailwind skin. */
   density?: 'default' | 'flush'
   direction?: 'ltr' | 'rtl'
-  range?: CalendarBehavior.CalendarRange
+  range?: CalendarPrimitive.CalendarRange
   layoutStyle?: ComponentLayoutStyle | undefined
   size?: 'default' | 'comfortable'
   /** Overrides --cell-size directly (e.g. TW sidebar-15's w-[33px] cells). */
@@ -788,7 +787,7 @@ export const calendar = <Msg>(
     toParentMessage: message =>
       props.toParentMessage(
         props.direction === 'rtl'
-          ? CalendarBehavior.mirrorNavigationKeyForRtl(message)
+          ? CalendarPrimitive.mirrorNavigationKeyForRtl(message)
           : message,
       ),
   })

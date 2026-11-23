@@ -4,7 +4,6 @@ import { Match as M } from 'effect'
 import type * as FoldkitCalendar from 'foldkit/calendar'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import * as CalendarBehavior from '@/lib/calendar'
 import * as Icon from '@/lib/icon'
 import { buttonVariants } from '@/ui/button'
 import { cn } from '@/lib/utils'
@@ -28,7 +27,7 @@ export const OutMessage = CalendarPrimitive.OutMessage
 export type OutMessage = typeof OutMessage.Type
 
 export const init = CalendarPrimitive.init
-export const update = CalendarBehavior.update
+export const update = CalendarPrimitive.update
 export const selectDate = CalendarPrimitive.selectDate
 export const focusDate = CalendarPrimitive.focusDate
 export const reflectMinDate = CalendarPrimitive.reflectMinDate
@@ -114,7 +113,7 @@ export type CalendarViewOptions = Readonly<{
   captionLayout?: 'label' | 'dropdown'
   class?: string
   direction?: 'ltr' | 'rtl'
-  range?: CalendarBehavior.CalendarRange
+  range?: CalendarPrimitive.CalendarRange
   weekNumbers?: boolean
 }>
 
@@ -239,7 +238,7 @@ const daysView = <Msg>(
                         ]
                       : []),
                     ...week.cells.map(cell => {
-                      const position = CalendarBehavior.rangePosition(
+                      const position = CalendarPrimitive.rangePosition(
                         cell.date,
                         options.range,
                       )
@@ -416,7 +415,7 @@ export type CalendarProps<Msg> = Readonly<{
   captionLayout?: 'label' | 'dropdown'
   class?: string
   direction?: 'ltr' | 'rtl'
-  range?: CalendarBehavior.CalendarRange
+  range?: CalendarPrimitive.CalendarRange
   weekNumbers?: boolean
   previousMonthLabel?: string
   nextMonthLabel?: string
@@ -476,7 +475,7 @@ export const calendar = <Msg>(
     toParentMessage: message =>
       props.toParentMessage(
         props.direction === 'rtl'
-          ? CalendarBehavior.mirrorNavigationKeyForRtl(message)
+          ? CalendarPrimitive.mirrorNavigationKeyForRtl(message)
           : message,
       ),
   })
