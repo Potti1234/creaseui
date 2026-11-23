@@ -26,8 +26,10 @@ type BindDragOptions = Readonly<{
   onEnd: (event: PointerEvent, canceled: boolean) => void
 }>
 
+const captureListener = { capture: true }
+
 const suppressDragClick = (doc: Document, view: Window, pointerId: number) => {
-  const clear = () => doc.removeEventListener('click', swallow, true)
+  const clear = () => doc.removeEventListener('click', swallow, captureListener)
   const swallow = (event: MouseEvent) => {
     if (
       event.detail === 0 ||
@@ -38,7 +40,7 @@ const suppressDragClick = (doc: Document, view: Window, pointerId: number) => {
     event.stopPropagation()
     clear()
   }
-  doc.addEventListener('click', swallow, true)
+  doc.addEventListener('click', swallow, captureListener)
   view.setTimeout(clear, 0)
 }
 
@@ -85,10 +87,10 @@ export const bindDrag = (
     stopped = true
     if (frame !== undefined) view?.cancelAnimationFrame(frame)
     pending = undefined
-    doc.removeEventListener('pointermove', move, true)
-    doc.removeEventListener('pointerup', up, true)
-    doc.removeEventListener('pointercancel', cancel, true)
-    doc.removeEventListener('keydown', escape, true)
+    doc.removeEventListener('pointermove', move, captureListener)
+    doc.removeEventListener('pointerup', up, captureListener)
+    doc.removeEventListener('pointercancel', cancel, captureListener)
+    doc.removeEventListener('keydown', escape, captureListener)
     element.removeEventListener('lostpointercapture', cancel)
     view?.removeEventListener('blur', blur)
     if (captured && element.hasPointerCapture(pointerId))
@@ -174,11 +176,12 @@ export const bindDrag = (
     finish(last, true)
   }
 
-  doc.addEventListener('pointermove', move, true)
-  doc.addEventListener('pointerup', up, true)
-  doc.addEventListener('pointercancel', cancel, true)
+  doc.addEventListener('pointermove', move, captureListener)
+  doc.addEventListener('pointerup', up, captureListener)
+  doc.addEventListener('pointercancel', cancel, captureListener)
   if (captured) element.addEventListener('lostpointercapture', cancel)
-  if (options.cancelOnEscape) doc.addEventListener('keydown', escape, true)
+  if (options.cancelOnEscape)
+    doc.addEventListener('keydown', escape, captureListener)
   view.addEventListener('blur', blur)
   return stop
 }
