@@ -5,7 +5,7 @@ import { defineMessageUnion } from 'foldkit/message'
 import * as Dom from 'foldkit/dom'
 import * as Render from 'foldkit/render'
 import * as Mount from 'foldkit/mount'
-import { HoverIntent } from '@foldkit/ui'
+import * as HoverIntent from '@/lib/behaviors/hover-intent'
 import { ObserveDocumentationHover } from './hover'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
