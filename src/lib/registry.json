@@ -1176,6 +1176,22 @@
       ]
     },
     {
+      "name": "spatial-focus-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Spatial Focus Behavior",
+      "description": "Skin-neutral geometry-based arrow navigation with one enabled tab stop and document-order Home/End.",
+      "registryDependencies": [
+        "Potti1234/creaseui/roving-focus-behavior"
+      ],
+      "files": [
+        {
+          "path": "behaviors/spatial-focus.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/spatial-focus.ts"
+        }
+      ]
+    },
+    {
       "name": "stepper-behavior",
       "type": "registry:lib",
       "title": "Stepper Behavior",

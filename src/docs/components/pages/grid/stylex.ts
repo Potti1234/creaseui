@@ -1,6 +1,7 @@
 import { reset } from '@/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as SpatialDemo from '@/docs/components/pages/grid/spatial-focus-demo'
 import * as LassoDemo from '@/docs/components/pages/grid/lasso-demo'
 
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
@@ -15,6 +16,7 @@ import {
 } from '@/docs/components/pages/grid/shared'
 import type { ComponentLayoutStyle } from '@/stylex/contracts'
 import { className } from '@/stylex/style'
+import { tokens } from '@/stylex/tokens.stylex'
 import * as Card from '@/stylex/card'
 import * as Grid from '@/stylex/grid'
 import * as Resizable from '@/stylex/resizable'
@@ -28,6 +30,35 @@ const CARD_SHADOW =
   'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px'
 
 const styles = stylex.create({
+  spatialCard: { height: '100%' },
+  spatialButton: {
+    borderRadius: tokens.cardRadius,
+    cursor: { default: 'pointer', ':disabled': 'not-allowed' },
+    opacity: { default: 1, ':disabled': 0.5 },
+    outlineColor: 'var(--ring)',
+    outlineOffset: '4px',
+    outlineStyle: { default: 'none', ':focus-visible': 'solid' },
+    outlineWidth: '3px',
+    textAlign: 'left',
+  },
+  spatialNote: {
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: '1.5rem',
+  },
+  spatialLabel: {
+    display: 'block',
+    fontSize: '0.875rem',
+    fontWeight: 600,
+    lineHeight: '1.25rem',
+  },
+  spatialDetail: {
+    color: 'var(--muted-foreground)',
+    display: 'block',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+    marginTop: '0.5rem',
+  },
   label: { fontSize: '0.875rem', fontWeight: 500, lineHeight: '1.25rem' },
   supporting: { fontSize: '0.75rem', lineHeight: '1rem' },
   body: {
@@ -63,6 +94,7 @@ const styles = stylex.create({
 
 type PreviewModel = Readonly<{
   resizable: Resizable.Model
+  spatialDemo: SpatialDemo.Model
   lassoDemo: LassoDemo.Model
 }>
 
@@ -436,6 +468,53 @@ const viewFor = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   switch (fixture.kind) {
+    case 'spatialFocus':
+      return SpatialDemo.preview(
+        model.spatialDemo,
+        message =>
+          onMessageJson(
+            JSON.stringify({ _tag: 'GotSpatialPreviewMessage', message }),
+          ),
+        h,
+        {
+          buttonClass: className(reset.button, styles.spatialButton),
+          noteClass: className(reset.text, styles.spatialNote),
+          frame: children =>
+            Grid.grid(
+              { columns: 1, gap: 4, width: '100%', maxWidth: 560, children },
+              h,
+            ),
+          renderCard: (key, index) =>
+            Card.card(
+              {
+                size: 'sm',
+                layoutStyle: styles.spatialCard as ComponentLayoutStyle,
+                children: [
+                  Card.cardContent(
+                    {
+                      children: [
+                        h.span(
+                          [h.Class(className(styles.spatialLabel))],
+                          [`Card ${key}`],
+                        ),
+                        h.span(
+                          [h.Class(className(styles.spatialDetail))],
+                          [
+                            key === 'D'
+                              ? 'Unavailable'
+                              : `Document position ${index + 1}`,
+                          ],
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+        },
+      )
     case 'lasso':
       return LassoDemo.preview(
         model.lassoDemo,

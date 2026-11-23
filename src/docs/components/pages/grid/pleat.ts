@@ -1,6 +1,7 @@
-import { Style } from '@pleat/core'
+import { Style, When } from '@pleat/core'
 import { reset } from '@/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as SpatialDemo from '@/docs/components/pages/grid/spatial-focus-demo'
 import * as LassoDemo from '@/docs/components/pages/grid/lasso-demo'
 
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
@@ -13,8 +14,9 @@ import {
   gridStats,
   gridTeams,
 } from '@/docs/components/pages/grid/shared'
-import type { ComponentLayoutStyle } from '@/pleat/contracts'
+import { layoutStyle, type ComponentLayoutStyle } from '@/pleat/contracts'
 import { className } from '@/pleat/style'
+import { tokens } from '@/pleat/tokens'
 import * as Card from '@/pleat/card'
 import * as Grid from '@/pleat/grid'
 import * as Resizable from '@/pleat/resizable'
@@ -28,6 +30,36 @@ const CARD_SHADOW =
   'rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px'
 
 const styles = {
+  spatialButton: Style.make({
+    borderRadius: tokens.cardRadius,
+    textAlign: 'left',
+    cursor: 'pointer',
+    outlineStyle: 'none',
+    outlineWidth: '3px',
+    outlineOffset: '4px',
+    outlineColor: 'var(--ring)',
+  }).pipe(
+    Style.when(When.focusVisible, { outlineStyle: 'solid' }),
+    Style.when(When.disabled, { opacity: 0.5, cursor: 'not-allowed' }),
+  ),
+  spatialNote: Style.make({
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: '1.5rem',
+  }),
+  spatialLabel: Style.make({
+    display: 'block',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    fontWeight: 600,
+  }),
+  spatialDetail: Style.make({
+    display: 'block',
+    marginTop: '0.5rem',
+    color: 'var(--muted-foreground)',
+    fontSize: '0.75rem',
+    lineHeight: '1rem',
+  }),
   label: Style.make({
     fontSize: '0.875rem',
     fontWeight: 500,
@@ -67,6 +99,7 @@ const styles = {
 
 type PreviewModel = Readonly<{
   resizable: Resizable.Model
+  spatialDemo: SpatialDemo.Model
   lassoDemo: LassoDemo.Model
 }>
 
@@ -440,6 +473,53 @@ const viewFor = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html => {
   switch (fixture.kind) {
+    case 'spatialFocus':
+      return SpatialDemo.preview(
+        model.spatialDemo,
+        message =>
+          onMessageJson(
+            JSON.stringify({ _tag: 'GotSpatialPreviewMessage', message }),
+          ),
+        h,
+        {
+          buttonClass: className(reset.button, styles.spatialButton),
+          noteClass: className(reset.text, styles.spatialNote),
+          frame: children =>
+            Grid.grid(
+              { columns: 1, gap: 4, width: '100%', maxWidth: 560, children },
+              h,
+            ),
+          renderCard: (key, index) =>
+            Card.card(
+              {
+                size: 'sm',
+                layoutStyle: layoutStyle({ height: '100%' }),
+                children: [
+                  Card.cardContent(
+                    {
+                      children: [
+                        h.span(
+                          [h.Class(className(styles.spatialLabel))],
+                          [`Card ${key}`],
+                        ),
+                        h.span(
+                          [h.Class(className(styles.spatialDetail))],
+                          [
+                            key === 'D'
+                              ? 'Unavailable'
+                              : `Document position ${index + 1}`,
+                          ],
+                        ),
+                      ],
+                    },
+                    h,
+                  ),
+                ],
+              },
+              h,
+            ),
+        },
+      )
     case 'lasso':
       return LassoDemo.preview(
         model.lassoDemo,
