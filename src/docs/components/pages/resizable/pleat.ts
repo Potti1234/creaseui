@@ -3,6 +3,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
+  boxResizeDemo,
   resizableFixtures,
   type ResizableFixture,
 } from '@/docs/components/pages/resizable/shared'
@@ -25,6 +26,7 @@ const styles = {
 }
 
 interface PreviewShape {
+  readonly box: Resizable.BoxResizeModel
   readonly panels: Resizable.Model
   readonly outer: Resizable.GroupModel
   readonly inner: Resizable.GroupModel
@@ -103,7 +105,24 @@ export const resizablePleatPreview: ExamplePreviewProvider = <Msg>(
 ): Html => {
   const preview = model as PreviewShape
   const fixture = resizableFixtures[index] ?? resizableFixtures[0]
-  return fixture.kind === 'single'
-    ? singleView(fixture, preview, onMessageJson, h)
-    : nestedView(fixture, preview, onMessageJson, h)
+  const panels =
+    fixture.kind === 'single'
+      ? singleView(fixture, preview, onMessageJson, h)
+      : nestedView(fixture, preview, onMessageJson, h)
+  return fixture.title === 'Handle'
+    ? h.div(
+        [h.Style({ display: 'grid', gap: '1rem' })],
+        [
+          panels,
+          boxResizeDemo(
+            preview.box,
+            message =>
+              onMessageJson(
+                JSON.stringify({ _tag: 'GotResizableBoxMessage', message }),
+              ),
+            h,
+          ),
+        ],
+      )
+    : panels
 }

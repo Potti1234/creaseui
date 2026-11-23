@@ -1,3 +1,5 @@
+import type { Html, HtmlBuilder } from 'foldkit/html'
+import * as BoxResize from '@/lib/box-resizer'
 import type { DocsExample } from '@/docs/components/page-definition'
 import { pleatExamples } from '@/docs/components/pleat-source'
 import { foldkitApplication } from '@/docs/components/pages/authored-page'
@@ -42,6 +44,54 @@ export const resizableFixtures = [
 ] as const
 
 export type ResizableFixture = (typeof resizableFixtures)[number]
+
+export const boxDemoLimits = {
+  min: { width: 64, height: 48 },
+  bounds: { left: 8, top: 8, right: 264, bottom: 156 },
+}
+
+export const boxResizeDemo = <Msg>(
+  model: BoxResize.BoxResizeModel,
+  send: (message: BoxResize.BoxResizeMessage) => Msg,
+  h: HtmlBuilder<Msg>,
+): Html =>
+  h.div(
+    [
+      h.Style({
+        position: 'relative',
+        width: '17rem',
+        height: '10.25rem',
+        maxWidth: '100%',
+        overflow: 'hidden',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-md)',
+      }),
+    ],
+    [
+      BoxResize.resizableBox(
+        {
+          model,
+          toParentMessage: send,
+          step: 2,
+          children: [
+            h.div(
+              [
+                h.Style({
+                  width: '100%',
+                  height: '100%',
+                  background: 'var(--muted)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-sm)',
+                }),
+              ],
+              [],
+            ),
+          ],
+        },
+        h,
+      ),
+    ],
+  )
 
 const STYLES_BLOCK = `
 const styles = stylex.create({

@@ -1121,6 +1121,11 @@
           "target": "@lib/resizable.ts"
         },
         {
+          "path": "box-resizer.ts",
+          "type": "registry:lib",
+          "target": "@lib/box-resizer.ts"
+        },
+        {
           "path": "behaviors/resize.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/resize.ts"

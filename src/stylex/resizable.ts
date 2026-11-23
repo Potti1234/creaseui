@@ -387,3 +387,12 @@ export const resizableGroup = <Msg>(
     children,
   )
 }
+
+export {
+  BoxResizeMessage,
+  BoxResizeModel,
+  initBoxResize,
+  resizableBox,
+  updateBoxResize,
+  type ResizableBoxProps,
+} from '@/lib/box-resizer'
