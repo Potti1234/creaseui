@@ -1119,6 +1119,16 @@
           "path": "resizable.ts",
           "type": "registry:lib",
           "target": "@lib/resizable.ts"
+        },
+        {
+          "path": "behaviors/resize.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/resize.ts"
+        },
+        {
+          "path": "behaviors/ui-sdk-LICENSE.txt",
+          "type": "registry:file",
+          "target": "@lib/behaviors/ui-sdk-LICENSE.txt"
         }
       ],
       "registryDependencies": [

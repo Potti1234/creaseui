@@ -2,6 +2,7 @@ import { Option, Schema as S, Stream } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 
+import { clampTo, resizeBox } from '@/lib/behaviors/resize'
 import * as DragBehavior from '@/lib/behaviors/drag'
 
 const Drag = S.Struct({ start: S.Number, initialSize: S.Number })
@@ -23,8 +24,18 @@ export const Message = defineMessageUnion({
 })
 export type Message = typeof Message.Type
 
-export const clampTo = (value: number, min: number, max: number): number =>
-  Math.max(min, Math.min(max, value))
+export { clampTo } from '@/lib/behaviors/resize'
+
+const resizePane = (
+  size: number,
+  delta: number,
+  minimum: number,
+  maximum: number,
+): number =>
+  resizeBox({ x: 0, y: 0, width: size, height: 1 }, 'e', delta, 0, {
+    min: { width: minimum, height: 1 },
+    max: { width: maximum, height: 1 },
+  }).width
 const clamp = (value: number): number => clampTo(value, 10, 90)
 export const init = (id: string, firstSize = 50): Model => ({
   id,
@@ -46,17 +57,22 @@ export const update = (model: Model, message: Message): Model => {
         onNone: () => model,
         onSome: drag => ({
           ...model,
-          firstSize: clamp(
-            drag.initialSize +
-              ((message.position - drag.start) / Math.max(1, message.extent)) *
-                100,
+          firstSize: resizePane(
+            drag.initialSize,
+            ((message.position - drag.start) / Math.max(1, message.extent)) *
+              100,
+            10,
+            90,
           ),
         }),
       })
     case 'EndedResize':
       return { ...model, drag: Option.none() }
     case 'NudgedResize':
-      return { ...model, firstSize: clamp(model.firstSize + message.delta) }
+      return {
+        ...model,
+        firstSize: resizePane(model.firstSize, message.delta, 10, 90),
+      }
   }
 }
 
@@ -125,9 +141,10 @@ const resizePair = (
   const before = sizes[handle]
   const after = sizes[handle + 1]
   if (before === undefined || after === undefined) return next
-  const bounded = Math.max(minSize - before, Math.min(after - minSize, delta))
-  next[handle] = before + bounded
-  next[handle + 1] = after - bounded
+  const total = before + after
+  const resized = resizePane(before, delta, minSize, total - minSize)
+  next[handle] = resized
+  next[handle + 1] = total - resized
   return next
 }
 
