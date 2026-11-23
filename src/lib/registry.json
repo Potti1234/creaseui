@@ -284,6 +284,20 @@
       ]
     },
     {
+      "name": "connect",
+      "type": "registry:lib",
+      "title": "Connect",
+      "description": "Port connection drafts with Foldkit state, keyboard navigation and pointer lifecycle.",
+      "docs": "/docs/components/connect",
+      "files": [
+        {
+          "path": "behaviors/connect.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/connect.ts"
+        }
+      ]
+    },
+    {
       "name": "data-grid-behavior",
       "type": "registry:lib",
       "title": "Data Grid Behavior",

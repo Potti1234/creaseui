@@ -139,6 +139,7 @@
 - Typography: /docs/components/typography — install with `npx creaseui add typography`
 - Visually Hidden: /docs/components/visually-hidden — install with `npx creaseui add visually-hidden`
 - Avoid Keyboard: /docs/components/avoid-keyboard — install with `npx creaseui add avoid-keyboard`
+- Connect: /docs/components/connect — install with `npx creaseui add connect`
 - Pointer Kind: /docs/components/pointer-kind — install with `npx creaseui add pointer-kind`
 
 ## Application recipes and icon discovery
@@ -4625,6 +4626,42 @@ Examples: Keyboard-aware footer, A little breathing room
 - `Message: value` (value)
 - `Message = typeof Message.Type` (type)
 - `AvoidKeyboard: value` (value)
+
+### Connect
+
+Port connection drafts with Foldkit state, keyboard navigation and pointer lifecycle.
+
+Source: `src/lib/behaviors/connect.ts`
+
+Examples: Keyboard connections, Pointer connections
+
+- `ConnectDraft: value` (value)
+- `ConnectDraft = typeof ConnectDraft.Type` (type)
+- `Model: value` (value)
+- `Model = typeof Model.Type` (type)
+- `Reason: value` (value)
+- `Message: value` (value)
+- `Message = typeof Message.Type` (type)
+- `OutMessage: value` (value)
+- `OutMessage = typeof OutMessage.Type` (type)
+- `ConnectMessage = Readonly<{ type: 'start'; from: string; }> | Readonly<{ type: 'target' | 'connect'; from: string; to: string; }> | Readonly<{ type: 'cancel'; from: string; }>` (type)
+- `connectMessage(message: ConnectMessage, label: (key: string) => string): string` (function)
+- `Options = Readonly<{ keys: ReadonlyArray<string>; canConnect?: (from: string, to: string) => boolean; label?: (key: string) => string; message?: (message: ConnectMessage, label: (key: string) => string) => string; announcementId?: string; }>` (type)
+- `init(): Model` (function)
+- `MeasurePorts: value` (value)
+- `Announce: value` (value)
+- `update(model: Model, message: Message, options: Options): UpdateReturn` (function)
+- `role(model: Model, key: string, options: Options): Option.Option<'Source' | 'Target' | 'Candidate'>` (function)
+- `Rect = Readonly<{ left: number; right: number; top: number; bottom: number; }>` (type)
+- `Port<Key extends string = string> = Readonly<{ key: Key; rect: Rect; }>` (type)
+- `nearestInDirection<Key extends string>(fromRect: Rect, candidates: ReadonlyArray<Port<Key>>, direction: readonly [ number, number ]): Option.Option<Key>` (function)
+- `keyboardTarget(model: Model, pressedKey: string, ports: ReadonlyArray<Port>, options: Options): Readonly<{ handled: boolean; preventDefault: boolean; message: Option.Option<Message>; }>` (function)
+- `ObservePorts: value` (value)
+- `PortInfo<Key extends string> = Readonly<{ key: Key; attributes: ReadonlyArray<ChildAttribute>; }>` (type)
+- `ViewInputs<Key extends string = string> = Omit<Options, 'keys'> & Readonly<{ id: string; keys: ReadonlyArray<Key>; radius?: number; toView: (ports: ReadonlyArray<PortInfo<Key>>, attributes: ReadonlyArray<ChildAttribute>) => Html; }>` (type)
+- `Bundle<Key extends string = string> = Readonly<{ update: typeof update; view: SubmodelView<Model, Message, ViewInputs<Key>>; }>` (type)
+- `create<Key extends string = string>(): Bundle<Key>` (function)
+- `view: value` (value)
 
 ### Pointer Kind
 
