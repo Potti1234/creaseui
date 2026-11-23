@@ -491,10 +491,7 @@ export const view = (
       description: definition.description,
       kind,
       architecture: definition.architecture ?? architectureFor(kind, name),
-      installation:
-        renderer === 'tailwind'
-          ? `npx shadcn@latest add Potti1234/creaseui/${slug}`
-          : `npx shadcn@latest add Potti1234/creaseui/${renderer}-${slug}`,
+      installation: `npx shadcn@latest add Potti1234/creaseui/${definition.source?.registryItem ?? (renderer === 'tailwind' ? slug : `${renderer}-${slug}`)}`,
       usage:
         model.renderer === 'tailwind'
           ? (definition.usage ?? usageFor(slug, name, kind))
@@ -535,7 +532,7 @@ export const view = (
         compositionFor(kind, name, primaryExport(slug)),
       examples: renderedExamples,
       apiHref: definition.apiHref ?? 'https://foldkit.dev/ui/overview',
-      sourceHref: `https://github.com/Potti1234/creaseui/blob/main/src/${model.renderer === 'tailwind' ? 'ui' : model.renderer}/${slug}.ts`,
+      sourceHref: `https://github.com/Potti1234/creaseui/blob/main/${definition.source?.path ?? `src/${model.renderer === 'tailwind' ? 'ui' : model.renderer}/${slug}.ts`}`,
       apiDescription:
         definition.apiDescription ??
         `${name} is source-owned after installation. Its public model, messages, update function, and view helpers are documented directly in the installed TypeScript source.`,

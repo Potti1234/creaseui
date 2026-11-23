@@ -87,6 +87,20 @@
       ]
     },
     {
+      "name": "avoid-keyboard",
+      "type": "registry:lib",
+      "title": "Avoid Keyboard",
+      "description": "Keeps a footer above the on-screen keyboard with a scoped Foldkit Mount.",
+      "docs": "/docs/components/avoid-keyboard",
+      "files": [
+        {
+          "path": "behaviors/avoid-keyboard.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/avoid-keyboard.ts"
+        }
+      ]
+    },
+    {
       "name": "banner-behavior",
       "type": "registry:lib",
       "title": "Banner Behavior",
@@ -522,6 +536,19 @@
       ]
     },
     {
+      "name": "focus-recovery-behavior",
+      "type": "registry:lib",
+      "title": "Focus Recovery Behavior",
+      "description": "Key-based focus recovery after item removal with guarded post-render focus.",
+      "files": [
+        {
+          "path": "behaviors/focus-recovery.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/focus-recovery.ts"
+        }
+      ]
+    },
+    {
       "name": "form-behavior",
       "type": "registry:lib",
       "title": "Foldkit Form Behavior",
@@ -673,6 +700,9 @@
           "type": "registry:lib",
           "target": "@lib/list-input.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/focus-recovery-behavior"
       ]
     },
     {
@@ -918,6 +948,20 @@
           "path": "pagination.ts",
           "type": "registry:lib",
           "target": "@lib/pagination.ts"
+        }
+      ]
+    },
+    {
+      "name": "pointer-kind",
+      "type": "registry:lib",
+      "title": "Pointer Kind",
+      "description": "Tracks pointer precision and hover support with Foldkit state and subscriptions.",
+      "docs": "/docs/components/pointer-kind",
+      "files": [
+        {
+          "path": "behaviors/pointer-kind.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/pointer-kind.ts"
         }
       ]
     },
@@ -1285,6 +1329,9 @@
           "type": "registry:lib",
           "target": "@lib/toast.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/focus-recovery-behavior"
       ]
     },
     {
@@ -1314,6 +1361,9 @@
           "type": "registry:lib",
           "target": "@lib/tokenizer.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/focus-recovery-behavior"
       ]
     },
     {
@@ -1359,6 +1409,22 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/nav-menu-behavior"
+      ]
+    },
+    {
+      "name": "transfer-list-behavior",
+      "type": "registry:lib",
+      "title": "Transfer List Behavior",
+      "description": "Shared Foldkit behavior and helpers for Transfer List.",
+      "files": [
+        {
+          "path": "transfer-list.ts",
+          "type": "registry:lib",
+          "target": "@lib/transfer-list.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/focus-recovery-behavior"
       ]
     },
     {

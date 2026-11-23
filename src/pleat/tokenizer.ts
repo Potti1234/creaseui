@@ -16,6 +16,7 @@ import {
   init,
   reflect,
   reflectItems,
+  tokenRemoveId,
   update,
 } from '@/lib/tokenizer'
 import type { ComponentLayoutStyle } from './contracts'
@@ -432,6 +433,7 @@ const statusIcon = <Msg>(
   )
 
 const tokenChip = <Msg>(
+  id: string,
   token: Token,
   index: number,
   size: 'sm' | 'md' | 'lg',
@@ -440,13 +442,16 @@ const tokenChip = <Msg>(
   h: HtmlBuilder<Msg>,
 ): Html =>
   h.span(
-    [h.Class(className(styles.token, TOKEN_SIZE_STYLE[size]))],
+    [h.Key(token.id), h.Class(className(styles.token, TOKEN_SIZE_STYLE[size]))],
     [
       h.span([h.Class(className(styles.tokenLabel))], [token.label]),
       h.button(
         [
           h.Type('button'),
           h.Tabindex(-1),
+          h.Id(tokenRemoveId(id, token.id)),
+          h.OnFocus(toParent(Message.FocusedToken({ key: token.id }))),
+          h.OnBlur(toParent(Message.BlurredToken())),
           h.Class(
             className(
               reset.button,
@@ -689,7 +694,7 @@ export const tokenizer = <Msg>(
               ]
             : []),
           ...model.tokens.map((token, index) =>
-            tokenChip(token, index, size, isDisabled, toParent, h),
+            tokenChip(model.id, token, index, size, isDisabled, toParent, h),
           ),
           comboboxView,
         ],
@@ -765,7 +770,7 @@ export const tokenizer = <Msg>(
     ],
     [
       labelView,
-      isLayerExpanded
+      props.tokenOverflowBehavior === 'unfocusedLayer'
         ? h.div(
             [
               h.Class(className(styles.layerRoot)),
@@ -774,12 +779,16 @@ export const tokenizer = <Msg>(
             [
               h.div(
                 [
-                  h.Class(
-                    className(
-                      styles.layerPlaceholder,
-                      TRUNCATED_SIZE_STYLE[size],
-                    ),
-                  ),
+                  ...(isLayerExpanded
+                    ? [
+                        h.Class(
+                          className(
+                            styles.layerPlaceholder,
+                            TRUNCATED_SIZE_STYLE[size],
+                          ),
+                        ),
+                      ]
+                    : []),
                   h.AriaHidden(true),
                 ],
                 [],

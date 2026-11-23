@@ -5,6 +5,68 @@ import { Option } from 'effect'
 
 import * as Dnd from '../src/lib/behaviors/drag-and-drop.ts'
 import * as TransferList from '../src/ui/transfer-list.ts'
+import * as FocusRecovery from '../src/lib/behaviors/focus-recovery.ts'
+import * as TransferFocus from '../src/lib/transfer-list.ts'
+
+it('recovers accepted source removals independently of the other panel', () => {
+  const reconcile = (side: TransferFocus.Side, keys: readonly string[]) =>
+    TransferFocus.Message.ChangedCollection({
+      side,
+      message: FocusRecovery.CollectionMessage.ReconciledItems({
+        keys,
+        enabledKeys: keys,
+      }),
+    })
+  let model = TransferFocus.update(
+    TransferFocus.init(),
+    reconcile('selected', ['a', 'b', 'c']),
+    'transfer',
+  ).model
+  model = TransferFocus.update(
+    model,
+    reconcile('available', ['d']),
+    'transfer',
+  ).model
+  const focused = (key: string) =>
+    TransferFocus.Message.ChangedCollection({
+      side: 'selected',
+      message: FocusRecovery.CollectionMessage.FocusedItem({ key }),
+    })
+  model = TransferFocus.update(model, focused('b'), 'transfer').model
+  const otherPanel = TransferFocus.update(
+    model,
+    reconcile('available', []),
+    'transfer',
+  )
+  assert.equal(otherPanel.commands?.length, 0)
+  const removed = TransferFocus.update(
+    otherPanel.model,
+    reconcile('selected', ['a', 'c']),
+    'transfer',
+  )
+  assert.deepEqual(removed.commands?.[0]?.args, {
+    lostId: 'transfer-action-selected-b',
+    targetId: 'transfer-action-selected-c',
+  })
+  model = TransferFocus.update(removed.model, focused('c'), 'transfer').model
+  const cleared = TransferFocus.update(
+    model,
+    reconcile('selected', []),
+    'transfer',
+  )
+  assert.deepEqual(cleared.commands?.[0]?.args, {
+    lostId: 'transfer-action-selected-c',
+    targetId: 'transfer-search',
+  })
+  assert.equal(
+    TransferFocus.update(
+      TransferFocus.init(),
+      reconcile('available', []),
+      'transfer',
+    ).commands?.length,
+    0,
+  )
+})
 
 const options: ReadonlyArray<TransferList.TransferListOption> = [
   { value: 'a', label: 'A' },

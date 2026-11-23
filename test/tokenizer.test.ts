@@ -4,6 +4,7 @@ import { Option } from 'effect'
 import { Combobox } from '@foldkit/ui'
 
 import * as Tokenizer from '../src/lib/tokenizer.ts'
+import * as FocusRecovery from '../src/lib/behaviors/focus-recovery.ts'
 
 const people = [
   { id: 'alice', label: 'Alice' },
@@ -31,6 +32,92 @@ const select = (model: Tokenizer.Model, value: string) =>
   )
 
 describe('Tokenizer submodel', () => {
+  it('recovers by stable token ID and falls back to the combobox input', () => {
+    const tokens = [...people, { id: 'carol', label: 'Carol' }]
+    const initial = Tokenizer.init({ id: 'team', tokens })
+    const focused = Tokenizer.update(
+      initial,
+      Tokenizer.Message.FocusedToken({ key: 'bob' }),
+    ).model
+    const removed = Tokenizer.update(
+      focused,
+      Tokenizer.Message.RemovedToken({ index: 1 }),
+    )
+    assert.deepEqual(removed.commands?.[0]?.args, {
+      lostId: Tokenizer.tokenRemoveId('team', 'bob'),
+      targetId: Tokenizer.tokenRemoveId('team', 'carol'),
+    })
+    assert.equal(removed.commands?.[0]?.name, FocusRecovery.RecoverFocus.name)
+    assert.equal(removed.model.focusRecovery.version, 1)
+    const last = Tokenizer.update(
+      Tokenizer.init({ id: 'team', tokens: [people[0]] }),
+      Tokenizer.Message.FocusedToken({ key: 'alice' }),
+    ).model
+    assert.deepEqual(
+      Tokenizer.update(last, Tokenizer.Message.RemovedToken({ index: 0 }))
+        .commands?.[0]?.args,
+      {
+        lostId: Tokenizer.tokenRemoveId('team', 'alice'),
+        targetId: 'team-combobox-input',
+      },
+    )
+  })
+
+  it('clear-all recovers only when a removed token held focus', () => {
+    const initial = Tokenizer.init({ id: 'team', tokens: [...people] })
+    const focused = Tokenizer.update(
+      initial,
+      Tokenizer.Message.FocusedToken({ key: 'bob' }),
+    ).model
+    const cleared = Tokenizer.update(
+      focused,
+      Tokenizer.Message.ClickedClearAll(),
+    )
+    assert.equal(cleared.commands?.length, 1)
+    assert.equal(cleared.commands?.[0]?.args.targetId, 'team-combobox-input')
+    const blurred = Tokenizer.update(
+      focused,
+      Tokenizer.Message.BlurredToken(),
+    ).model
+    assert.deepEqual(blurred.focusRecovery.maybeFocusedKey, Option.none())
+    for (const model of [initial, blurred]) {
+      assert.deepEqual(
+        Tokenizer.update(model, Tokenizer.Message.ClickedClearAll()).commands,
+        [],
+      )
+      assert.deepEqual(
+        Tokenizer.update(model, Tokenizer.Message.RemovedToken({ index: 0 }))
+          .commands,
+        [],
+      )
+    }
+    assert.equal(
+      Tokenizer.update(
+        cleared.model,
+        Tokenizer.Message.GotFocusRecoveryMessage({
+          message: FocusRecovery.Message.CompletedRecoverFocus(),
+        }),
+      ).model,
+      cleared.model,
+    )
+  })
+
+  it('leaves focus alone when the input toggles a selected token', () => {
+    const initial = Tokenizer.init({ id: 'team', tokens: [...people] })
+    const result = select(initial, 'alice')
+    assert.deepEqual(result.model.tokens, [people[1]])
+    assert.equal(
+      result.commands?.some(
+        command => command.name === FocusRecovery.RecoverFocus.name,
+      ),
+      false,
+    )
+    assert.equal(
+      Tokenizer.tokenRemoveId('team', 'a b'),
+      'team-token-remove-a b',
+    )
+  })
+
   it('initializes empty and registers labels from items', () => {
     const model = Tokenizer.init({ id: 'tags', items: [...people] })
     assert.deepEqual(model.tokens, [])
