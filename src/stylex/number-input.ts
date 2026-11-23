@@ -15,6 +15,7 @@ import { defineView } from 'foldkit/submodel'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as Icon from '@/lib/icon'
+import * as HoldRepeat from '@/lib/behaviors/hold-repeat'
 import {
   renderAttachedStatus,
   renderDetachedStatus,
@@ -640,30 +641,59 @@ const view = defineView<Model, Message, NumberInputViewInputs>(
                   | undefined,
               },
             ].map(({ delta, label, icon, extra }) =>
-              h.button(
-                [
-                  h.Type('button'),
-                  h.Tabindex(-1),
-                  h.AriaLabel(label),
-                  h.Disabled(
-                    props.isDisabled === true ||
-                      props.isReadOnly === true ||
-                      !canStep(delta, {
-                        value: stepValue,
-                        min: props.min,
-                        max: props.max,
-                      }),
-                  ),
-                  // Stepping edits the focused input; do not blur it on press.
-                  h.Attribute('onmousedown', 'event.preventDefault()'),
-                  h.OnClick(Message.Stepped({ value: stepper(delta) }), {
-                    propagation: 'Stop',
-                    focusSelector: `#${fieldIds.input}`,
+              h.submodel({
+                slotId: `${model.id}-hold-${delta}`,
+                model: model.hold,
+                view: HoldRepeat.view,
+                toParentMessage: message =>
+                  Message.HeldStepper({
+                    message,
+                    direction: delta,
+                    value: stepValue ?? null,
+                    min: props.min ?? null,
+                    max: props.max ?? null,
+                    step: props.step ?? null,
+                    isIntegerOnly: props.isIntegerOnly === true,
+                    disabled:
+                      props.isDisabled === true || props.isReadOnly === true,
                   }),
-                  h.Class(className(reset.button, styles.stepperButton, extra)),
-                ],
-                [Icon.icon(icon, { class: className(styles.stepperIcon) }, h)],
-              ),
+                viewInputs: {
+                  toView: holdAttributes =>
+                    h.button(
+                      [
+                        h.Type('button'),
+                        h.Tabindex(-1),
+                        h.AriaLabel(label),
+                        h.Disabled(
+                          props.isDisabled === true ||
+                            props.isReadOnly === true ||
+                            !canStep(delta, {
+                              value: stepValue,
+                              min: props.min,
+                              max: props.max,
+                            }),
+                        ),
+                        // Stepping edits the focused input; do not blur it on press.
+                        h.Attribute('onmousedown', 'event.preventDefault()'),
+                        h.OnClick(Message.FocusGained(), {
+                          propagation: 'Stop',
+                          focusSelector: `#${fieldIds.input}`,
+                        }),
+                        ...holdAttributes,
+                        h.Class(
+                          className(reset.button, styles.stepperButton, extra),
+                        ),
+                      ],
+                      [
+                        Icon.icon(
+                          icon,
+                          { class: className(styles.stepperIcon) },
+                          h,
+                        ),
+                      ],
+                    ),
+                },
+              }),
             ),
           )
         : undefined

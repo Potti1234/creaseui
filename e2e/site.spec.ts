@@ -5238,9 +5238,9 @@ test('number input steppers preserve focus, formatting, and independent previews
   test.setTimeout(120_000)
   for (const width of [1280, 390]) {
     await page.setViewportSize({ width, height: 900 })
-    for (const renderer of ['Tailwind', 'StyleX'] as const) {
+    for (const renderer of ['Tailwind', 'StyleX', 'Pleat'] as const) {
       await page.goto('/docs/components/number-input')
-      if (renderer === 'StyleX') await visitRenderer(page, renderer)
+      if (renderer !== 'Tailwind') await visitRenderer(page, renderer)
       const controls = page.locator('[data-slot="number-input-input"]')
       const controlIds = await controls.evaluateAll(nodes =>
         nodes.map(node => node.id),
@@ -5264,9 +5264,8 @@ test('number input steppers preserve focus, formatting, and independent previews
       expect(box).not.toBeNull()
       await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2)
       await page.mouse.down()
-      await expect(input).toBeFocused()
-      await expect(input).toHaveValue('1')
       await page.mouse.up()
+      await expect(input).toBeFocused()
       await expect(input).toHaveValue('2')
 
       // A step uses the current draft without requiring a blur first.

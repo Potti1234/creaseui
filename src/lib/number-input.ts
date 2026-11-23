@@ -1,6 +1,8 @@
 import { Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
+import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
+import * as HoldRepeat from './behaviors/hold-repeat'
 
 /* Ported from Meta Astryx NumberInput (packages/core/src/NumberInput) —
    locale-aware number parsing, stepper math, and the commit-resolution state
@@ -239,6 +241,9 @@ export const Model = S.Struct({
   id: S.String,
   pendingInput: S.Option(S.String),
   isFocused: S.Boolean,
+  hold: HoldRepeat.Model,
+  stepValue: S.Option(S.Number),
+  stepDirection: S.Number,
 })
 export type Model = typeof Model.Type
 
@@ -247,6 +252,9 @@ export const init = (config: InitConfig): Model => ({
   id: config.id,
   pendingInput: Option.none(),
   isFocused: false,
+  hold: HoldRepeat.init(),
+  stepValue: Option.none(),
+  stepDirection: 1,
 })
 
 export const NumberInputCommitResolution = S.Union([
@@ -267,6 +275,16 @@ export const commitResolutionOf = (
       : { _tag: 'revert' }
 
 export const Message = defineMessageUnion({
+  HeldStepper: {
+    message: HoldRepeat.Message,
+    direction: S.Literals([1, -1]),
+    value: S.NullOr(S.Number),
+    min: S.NullOr(S.Number),
+    max: S.NullOr(S.Number),
+    step: S.NullOr(S.Number),
+    isIntegerOnly: S.Boolean,
+    disabled: S.Boolean,
+  },
   FocusGained: {},
   DraftEdited: { text: S.String },
   /* View-time resolution of the draft at commit time (blur/Enter). */
@@ -290,6 +308,52 @@ export type UpdateReturn = Update.ReturnWithOutMessage<
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
+    case 'HeldStepper': {
+      if (
+        message.direction !== model.stepDirection &&
+        (model.hold.active ||
+          (message.message._tag !== 'Pressed' &&
+            message.message._tag !== 'Clicked'))
+      )
+        return { model }
+      const value = Option.getOrUndefined(
+        message.message._tag === 'Pressed' || message.message._tag === 'Clicked'
+          ? Option.fromNullishOr(message.value)
+          : model.stepValue,
+      )
+      const options = {
+        value,
+        min: message.min ?? undefined,
+        max: message.max ?? undefined,
+        step: message.step ?? undefined,
+        isIntegerOnly: message.isIntegerOnly,
+      }
+      const next = HoldRepeat.update(model.hold, message.message, {
+        disabled: message.disabled,
+        canStep: canStep(message.direction, options),
+      })
+      const stepped = next.outMessage?._tag === 'Stepped'
+      const stepValue = stepped
+        ? Option.some(getSteppedValue(message.direction, options))
+        : message.message._tag === 'Pressed'
+          ? Option.fromNullishOr(message.value)
+          : model.stepValue
+      return {
+        model: {
+          ...model,
+          hold: next.model,
+          stepValue,
+          stepDirection: message.direction,
+          ...(stepped ? { pendingInput: Option.none() } : {}),
+        },
+        commands: Command.mapMessages(next.commands, tick =>
+          Message.HeldStepper({ ...message, message: tick }),
+        ),
+        ...(stepped
+          ? { outMessage: OutMessage.ChangedValue({ value: stepValue }) }
+          : {}),
+      }
+    }
     case 'FocusGained':
       return { model: { ...model, isFocused: true } }
     case 'DraftEdited':

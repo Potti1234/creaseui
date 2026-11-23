@@ -901,6 +901,11 @@
           "path": "number-input.ts",
           "type": "registry:lib",
           "target": "@lib/number-input.ts"
+        },
+        {
+          "path": "behaviors/hold-repeat.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/hold-repeat.ts"
         }
       ]
     },
