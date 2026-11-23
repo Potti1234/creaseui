@@ -307,6 +307,7 @@ export const moveTo = (
 ): UpdateReturn => {
   if (Option.isNone(model.draft)) return { model }
   const draft = model.draft.value
+  if (draft.lists[list] === undefined) return { model }
   const changesList = !Option.contains(listWith(draft.lists, draft.key), list)
   if (changesList && !accepts(options, draft.key, list)) return { model }
   const next = transferred(draft.lists, draft.key, list, index)

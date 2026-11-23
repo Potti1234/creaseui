@@ -115,6 +115,18 @@ describe('Transfer', () => {
     )
   })
 
+  it('never moves a draft into a list that does not exist', () => {
+    const grabbed = key(start(), ' ')
+    const missing = Transfer.moveTo(grabbed.model, 'archive', 0, options)
+    assert.equal(missing.model, grabbed.model)
+    const stale = Transfer.setLists(grabbed.model, {
+      todo: ['a', 'b'],
+      done: [],
+    })
+    const right = key(stale, 'ArrowRight')
+    assert.deepEqual(Transfer.lists(right.model), { todo: ['b'], done: ['a'] })
+  })
+
   it('rebases an in-flight draft when the lists change', () => {
     const moved = key(key(start(), ' ').model, 'ArrowRight').model
     const rebased = Transfer.setLists(
