@@ -376,7 +376,7 @@ const pasteCells = <Row>(
   CellSelection.textToCells(text).forEach((values, rowOffset) => {
     const original = displayed[startRow + rowOffset]
     if (original === undefined) return
-    let row = original
+    let row: Row = original
     values.forEach((value, offset) => {
       const column = columns[startColumn + offset]
       if (column?.set === undefined || column.get(row) === value) return
