@@ -5,12 +5,12 @@ import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
 import * as Icon from '@/lib/icon'
 import { mirrorNavigationKeyForRtl } from '@/lib/calendar'
-import { themedAnchor, themedPopoverPanel } from '@/lib/overlay-boundary'
+import { themedAnchor } from '@/lib/overlay-boundary'
 import { buttonVariants } from '@/ui/button'
 import { calendarView } from '@/ui/calendar'
 import { cn } from '@/lib/utils'
 
-/* Ported from shadcn's date-picker demo on top of foldkit DatePicker.
+/* Ported from shadcn's date-picker demo using CreaseUI Calendar and Popover.
 
    DatePicker is config-driven, so trigger/panel/backdrop classes are passed
    through their ClassName inputs and every supplemental attribute bundle is
@@ -118,6 +118,7 @@ export const datePicker = <Msg>(
     viewInputs: {
       maybeSelectedDate: props.maybeSelectedDate,
       anchor: themedAnchor({ placement: 'bottom-start', gap: 4 }),
+      themedPortal: true,
       triggerContent:
         props.triggerContent ??
         (maybeDate =>
@@ -163,17 +164,6 @@ export const datePicker = <Msg>(
         props.panelClass,
       ),
       panelAttributes: childAttributes([
-        hd.OnMount(
-          themedPopoverPanel(
-            `${props.model.popover.id}-button`,
-            { placement: 'bottom-start', gap: 4 },
-            message =>
-              props.toParentMessage(
-                DatePickerPrimitive.Message.GotPopoverMessage({ message }),
-              ),
-            `#${props.model.calendar.id}-grid`,
-          ),
-        ),
         hd.DataAttribute('slot', 'popover-content'),
         hd.Role('dialog'),
       ]),
