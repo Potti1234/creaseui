@@ -5,7 +5,7 @@ import * as Command from 'foldkit/command'
 import * as Mount from 'foldkit/mount'
 import { defineMessageUnion } from 'foldkit/message'
 
-import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
+import * as ComboboxPrimitive from '@/lib/behaviors/combobox'
 import * as FocusRecovery from '@/lib/behaviors/focus-recovery'
 
 const combobox = ComboboxPrimitive.Multi.create<string>()
@@ -16,10 +16,10 @@ const focusRecovery = FocusRecovery.create<string>()
 
    Tokens render as inline chips before the input inside one flex-wrap
    wrapper. Selection is owned HERE (astryx's controlled `value`), folded
-   from the foldkit Multi combobox's Selected out-message and token remove
+   from the shared multi-select Combobox's Selected out-message and token remove
    buttons; ChangedTokens is the onChange out-message.
 
-   PORT NOTE: foldkit's combobox owns its input's keydown handling, so
+   PORT NOTE: the shared Combobox owns its input's keydown handling, so
    astryx's Backspace-on-empty-removes-last-token contract isn't reachable —
    tokens remove via their × button, the create row, or clear-all.
    PORT NOTE: overflow collapse counts tokens, not pixels — astryx measures

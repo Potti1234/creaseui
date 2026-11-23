@@ -2,7 +2,7 @@ import { Option } from 'effect'
 
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
-import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
+import * as ComboboxPrimitive from '@/lib/behaviors/combobox'
 
 import * as Icon from '@/lib/icon'
 import {
@@ -23,7 +23,7 @@ import { cn } from '@/lib/utils'
 /* Ported from Meta Astryx Tokenizer (packages/core/src/Tokenizer/)
    — examples and visual spec adapted to Crease UI tokens.
 
-   The foldkit Multi combobox supplies the input + anchored listbox; the
+   The shared multi-select Combobox supplies the input + anchored listbox; the
    chips, wrapper chrome, clear-all, create row, and overflow collapse are
    rendered here (the primitive's own input wrapper is neutralized so chips
    and the input share one border box, like astryx's single field shell).

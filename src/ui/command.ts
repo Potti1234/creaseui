@@ -1,7 +1,7 @@
 import type { Option } from 'effect'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
-import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
+import * as ComboboxPrimitive from '@/lib/behaviors/combobox'
 
 import {
   commandLabelSegments,
@@ -18,10 +18,10 @@ import {
 } from '@/lib/behaviors/shortcuts'
 import { cn } from '@/lib/utils'
 
-/* Ported from shadcn/ui command.tsx on top of foldkit's config-driven
+/* Ported from shadcn/ui command.tsx on top of CreaseUI's config-driven
    single-select Combobox submodel.
 
-   Command's selected/highlighted state maps to foldkit's data-active
+   Command's selected/highlighted state maps to the data-active
    attribute. The search input and results form one always-visible surface.
 
    PORT NOTE: global cmd-k dialog wiring is intentionally not included;

@@ -4,7 +4,7 @@ import { Option } from 'effect'
 
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
-import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
+import * as ComboboxPrimitive from '@/lib/behaviors/combobox'
 
 import * as Icon from '@/lib/icon'
 import {

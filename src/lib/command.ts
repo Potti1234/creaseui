@@ -1,5 +1,5 @@
 import { Option } from 'effect'
-import { Combobox } from '@foldkit/ui'
+import * as Combobox from '@/lib/behaviors/combobox'
 import { defineView } from 'foldkit/submodel'
 import type { Html } from 'foldkit/html'
 import type { Update } from 'foldkit'
@@ -280,38 +280,40 @@ export const createInlineCommandView = <Item extends string>() =>
                       [props.buttonContent],
                     ),
                   ]),
-              h.input([
-                h.Id(inputId),
-                h.Role('combobox'),
-                h.AriaExpanded(true),
-                h.AriaControls(listId),
-                h.Attribute('aria-autocomplete', 'list'),
-                ...(props.ariaLabel === undefined
-                  ? []
-                  : [h.AriaLabel(props.ariaLabel)]),
-                ...(props.ariaLabelledBy === undefined
-                  ? []
-                  : [h.AriaLabelledBy(props.ariaLabelledBy)]),
-                ...(active === undefined
-                  ? []
-                  : [h.AriaActiveDescendant(itemId(active))]),
-                h.Autocomplete('off'),
-                h.Value(model.inputValue),
-                ...(props.inputPlaceholder === undefined
-                  ? []
-                  : [h.Placeholder(props.inputPlaceholder)]),
-                h.OnInput(value =>
-                  Combobox.Message.UpdatedInputValue({ value }),
-                ),
-                h.OnKeyDownPreventDefault(keyMessage),
-                ...(model.selectInputOnFocus
-                  ? [h.OnMount(Combobox.AttachComboboxSelectOnFocus())]
-                  : []),
-                ...(props.inputClassName === undefined
-                  ? []
-                  : [h.Class(props.inputClassName)]),
-                ...(props.inputAttributes ?? []),
-              ]),
+              Combobox.guardComboboxComposition(
+                h.input([
+                  h.Id(inputId),
+                  h.Role('combobox'),
+                  h.AriaExpanded(true),
+                  h.AriaControls(listId),
+                  h.Attribute('aria-autocomplete', 'list'),
+                  ...(props.ariaLabel === undefined
+                    ? []
+                    : [h.AriaLabel(props.ariaLabel)]),
+                  ...(props.ariaLabelledBy === undefined
+                    ? []
+                    : [h.AriaLabelledBy(props.ariaLabelledBy)]),
+                  ...(active === undefined
+                    ? []
+                    : [h.AriaActiveDescendant(itemId(active))]),
+                  h.Autocomplete('off'),
+                  h.Value(model.inputValue),
+                  ...(props.inputPlaceholder === undefined
+                    ? []
+                    : [h.Placeholder(props.inputPlaceholder)]),
+                  h.OnInput(value =>
+                    Combobox.Message.UpdatedInputValue({ value }),
+                  ),
+                  h.OnKeyDownPreventDefault(keyMessage),
+                  ...(model.selectInputOnFocus
+                    ? [h.OnMount(Combobox.AttachComboboxSelectOnFocus())]
+                    : []),
+                  ...(props.inputClassName === undefined
+                    ? []
+                    : [h.Class(props.inputClassName)]),
+                  ...(props.inputAttributes ?? []),
+                ]),
+              ),
             ],
           ),
           h.div(
@@ -383,12 +385,12 @@ const resetInteraction = (model: Combobox.Model): Combobox.Model => ({
 
 export const createCommandState = <Item extends string>() => {
   // Keep the Combobox contract for callers that use its popup lifecycle.
-  const legacy = Combobox.create<Item>()
-  const update: typeof legacy.update = (model, message) => {
+  const popup = Combobox.create<Item>()
+  const update: typeof popup.update = (model, message) => {
     switch (message._tag) {
       case 'UpdatedInputValue':
         if (!model.isOpen && (model.isModal || model.isAnimated))
-          return legacy.update(model, message)
+          return popup.update(model, message)
         return {
           model: {
             ...model,
@@ -404,7 +406,7 @@ export const createCommandState = <Item extends string>() => {
         }
       case 'ActivatedItem':
         if (Option.isSome(message.maybeImmediateSelection))
-          return legacy.update(model, message)
+          return popup.update(model, message)
         return {
           model: {
             ...model,
@@ -443,7 +445,7 @@ export const createCommandState = <Item extends string>() => {
       }
       case 'SelectedItem':
         if (model.isOpen && (model.isModal || model.isAnimated))
-          return retainCommandQuery(model, legacy.update(model, message))
+          return retainCommandQuery(model, popup.update(model, message))
         return {
           model: resetInteraction(model),
           commands: [Combobox.FocusInput({ id: model.id })],
@@ -468,15 +470,15 @@ export const createCommandState = <Item extends string>() => {
       case 'CompletedAttachComboboxSelectOnFocus':
         return { model }
       default:
-        return legacy.update(model, message)
+        return popup.update(model, message)
     }
   }
 
-  const selectItem: typeof legacy.selectItem = (model, item, displayText) =>
+  const selectItem: typeof popup.selectItem = (model, item, displayText) =>
     update(
       model,
       Combobox.Message.SelectedItem({ item, displayText, wasSelected: false }),
     )
 
-  return { update, selectItem, open: legacy.open, close: legacy.close }
+  return { update, selectItem, open: popup.open, close: popup.close }
 }
