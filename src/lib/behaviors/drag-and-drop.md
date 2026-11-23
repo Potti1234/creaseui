@@ -7,6 +7,10 @@ subscriptions for thresholded pointer tracking, hit testing, viewport edge
 scrolling, and keyboard fallback. The parent applies drop intents to its own
 order instead of connecting a mutable store and draft.
 
+Pointer sorting stays on DragAndDrop. Use [Reorder](reorder.md) for ui-sdk's
+keyboard draft, grouped moves, rebase/cancel, and announcement data; it does
+not duplicate Foldkit's pointer lifecycle.
+
 Spread `view` on the focusable handle, `sortable` on each row, and `dropTarget`
 on its list. Lift `subscriptions` and the Commands from `update` into the
 parent. Supply roles, announcements, and styling (including

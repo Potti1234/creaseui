@@ -43,6 +43,17 @@ export const listInputFixtures: Readonly<
     hasFieldStatus: true,
     hasListStatus: true,
   },
+  {
+    title: 'Keyboard reordering',
+    description:
+      'Pick up a guest with Space or Enter, move with arrows, and drop or cancel with Escape. Unmodified arrows move immediately.',
+    initialGuests: [
+      { id: 'g-1', name: 'Ada Lovelace', email: 'ada@example.com' },
+      { id: 'g-2', name: 'Grace Hopper', email: 'grace@example.com' },
+      { id: 'g-3', name: 'Margaret Hamilton', email: 'margaret@example.com' },
+    ],
+    isReorderable: true,
+  },
 ]
 
 const ui = (renderer: 'tailwind' | 'stylex' | 'pleat' | 'pleat'): string =>

@@ -1,6 +1,8 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Option, Schema as S } from 'effect'
 import * as Transfer from '@/lib/behaviors/transfer'
+import * as Reorder from '@/lib/behaviors/reorder'
+import * as KanbanReorder from '@/demo/kanban-reorder'
 
 import { badge } from '@/stylex/badge'
 import { bubble, bubbleContent, bubbleGroup } from '@/stylex/bubble'
@@ -594,6 +596,8 @@ export const initialKanbanLanes: ReadonlyArray<KanbanLaneData> = [
 
 export type KanbanBoardState<Message> = Readonly<{
   announcement: string
+  reorder: Reorder.Model
+  toReorderMessage: (message: Reorder.Message) => Message
   lanes: ReadonlyArray<KanbanLaneData>
   transfer: Transfer.Model
   toTransferMessage: (message: Transfer.Message) => Message
@@ -791,8 +795,22 @@ export const kanbanBoard = <Message>(
       {
         attrs: [
           ...list.attributes,
+          h.Key(laneData.id),
+          h.Role('group'),
+          h.DataAttribute('kanban-lane', laneData.id),
           h.AriaLabel(laneData.name),
           kanbanLaneTargetAttr(isTarget, h),
+          h.OnKeyDown(key =>
+            kanban.toReorderMessage(
+              key === 'Tab'
+                ? Reorder.Message.Cancel({ restoreFocus: false })
+                : Reorder.Message.Swallow({}),
+            ),
+          ),
+          kanbanLaneTargetAttr(
+            isTarget || Reorder.isMoving(kanban.reorder, laneData.id),
+            h,
+          ),
         ],
         children: [
           stack(
@@ -802,15 +820,74 @@ export const kanbanBoard = <Message>(
                   {
                     align: 'center',
                     children: [
-                      text({ children: [laneData.name], variant: 'label' }, h),
-                      badge({ children: [count], variant: 'secondary' }, h),
+                      inline(
+                        {
+                          align: 'center',
+                          children: [
+                            text(
+                              { children: [laneData.name], variant: 'label' },
+                              h,
+                            ),
+                            badge(
+                              {
+                                children: [count],
+                                variant: 'secondary',
+                              },
+                              h,
+                            ),
+                          ],
+                          gap: 'sm',
+                        },
+                        h,
+                      ),
+                      button(
+                        {
+                          id: KanbanReorder.handleId(
+                            kanban.transfer.id,
+                            laneData.id,
+                          ),
+                          ariaLabel: `Reorder ${laneData.name} column`,
+                          onClick: kanban.toReorderMessage(
+                            Reorder.isMoving(kanban.reorder, laneData.id)
+                              ? Reorder.Message.Drop({})
+                              : Reorder.Message.Grab({ key: laneData.id }),
+                          ),
+                          variant: 'ghost',
+                          size: 'icon-sm',
+                          buttonAttributes: [
+                            h.OnFocus(
+                              kanban.toReorderMessage(
+                                Reorder.Message.Focused({ key: laneData.id }),
+                              ),
+                            ),
+                            h.OnBlur(
+                              kanban.toReorderMessage(
+                                Reorder.Message.Blurred({ key: laneData.id }),
+                              ),
+                            ),
+                            h.AriaPressed(
+                              Reorder.isMoving(kanban.reorder, laneData.id)
+                                ? 'true'
+                                : 'false',
+                            ),
+                            h.DataAttribute('kanban-lane-reorder', laneData.id),
+                            KanbanReorder.keydownAttribute(
+                              kanban.reorder,
+                              laneData.id,
+                              kanban.toReorderMessage,
+                            ),
+                          ],
+                          children: [icon({ name: 'grip-vertical' }, h)],
+                        },
+                        h,
+                      ),
                     ],
                     justify: 'between',
                     width: 'full',
                   },
                   h,
                 ),
-                stack(
+                box(
                   {
                     children: list.items.flatMap(item => {
                       const card = cards.get(item.key)
@@ -890,14 +967,21 @@ export const kanbanBoard = <Message>(
                                 ),
                                 grid(
                                   {
-                                    children: kanban.lanes.flatMap(
-                                      (laneData, index) => {
-                                        const list = lists[index]
-                                        return list === undefined
-                                          ? []
-                                          : [lane(laneData, list)]
-                                      },
-                                    ),
+                                    children: Reorder.order(
+                                      kanban.reorder,
+                                      kanban.lanes.map(lane => lane.id),
+                                    ).flatMap(key => {
+                                      const laneData = kanban.lanes.find(
+                                        lane => lane.id === key,
+                                      )
+                                      const list = lists.find(
+                                        list => list.list === key,
+                                      )
+                                      return laneData === undefined ||
+                                        list === undefined
+                                        ? []
+                                        : [lane(laneData, list)]
+                                    }),
                                     columns: 'four',
                                     gap: 'md',
                                     grow: true,

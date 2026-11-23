@@ -3345,7 +3345,7 @@ A CreaseUI List Input component for Foldkit.
 
 Source: `src/ui/list-input.ts`
 
-Examples: List Input, Controlled guest list
+Examples: List Input, Controlled guest list, Keyboard reordering
 
 - `export { init } from '@/lib/list-input'` (re-export)
 - `export { Model } from '@/lib/list-input'` (re-export)

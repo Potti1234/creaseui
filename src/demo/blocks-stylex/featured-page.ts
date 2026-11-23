@@ -5,6 +5,9 @@ import { Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import { Command, Subscription } from 'foldkit'
 
+import * as Reorder from '@/lib/behaviors/reorder'
+import * as Announce from '@/lib/behaviors/announce'
+import * as KanbanReorder from '@/demo/kanban-reorder'
 import * as Transfer from '@/lib/behaviors/transfer'
 import { loginArtwork } from '@/stylex/composition/login-artwork'
 import { badge } from '@/stylex/badge'
@@ -81,6 +84,8 @@ export const Model = S.Struct({
   query: S.String,
   radioGroup: RadioGroup.Model,
   kanbanAnnouncement: S.String,
+  kanbanAnnouncer: Announce.Model,
+  kanbanReorder: Reorder.Model,
   kanbanTransfer: Transfer.Model,
   kanbanLanes: S.Array(KanbanLaneData),
   sidebarCollapsed: S.Boolean,
@@ -126,6 +131,15 @@ export const GotTablecnGridMessage = taggedStruct(
     message: TablecnPage.Message,
   },
 )
+export const GotKanbanReorderMessage = taggedStruct('GotKanbanReorderMessage', {
+  message: Reorder.Message,
+})
+export const GotKanbanAnnouncementMessage = taggedStruct(
+  'GotKanbanAnnouncementMessage',
+  {
+    message: Announce.Message,
+  },
+)
 export const GotKanbanTransferMessage = taggedStruct(
   'GotKanbanTransferMessage',
   { message: Transfer.Message },
@@ -150,6 +164,8 @@ export const Message = S.Union([
   GotRadioGroupMessage,
   GotTablecnMessage,
   GotTablecnGridMessage,
+  GotKanbanReorderMessage,
+  GotKanbanAnnouncementMessage,
   GotKanbanTransferMessage,
 ])
 export type Message = typeof Message.Type
@@ -158,6 +174,8 @@ export const init = (): Model => ({
   delivery: 'standard',
   email: '',
   kanbanAnnouncement: '',
+  kanbanAnnouncer: Announce.init(),
+  kanbanReorder: Reorder.init(),
   kanbanTransfer: initKanbanTransfer('featured-kanban'),
   kanbanLanes: initialKanbanLanes,
   kind: 'all',
@@ -191,6 +209,61 @@ export const subscriptions = Subscription.aggregate<Model, Message>()(
 )
 
 export const update = (model: Model, message: Message): UpdateReturn => {
+  if (message._tag === 'GotKanbanAnnouncementMessage') {
+    const result = Announce.update(model.kanbanAnnouncer, message.message)
+    return {
+      model: { ...model, kanbanAnnouncer: result.model },
+      commands: Command.mapMessages(result.commands ?? [], message =>
+        GotKanbanAnnouncementMessage({ message }),
+      ),
+    }
+  }
+  const result = updateModel(model, message)
+  if (result.model.kanbanAnnouncement === model.kanbanAnnouncement)
+    return result
+  const announced = Announce.update(
+    result.model.kanbanAnnouncer,
+    Announce.Message.RequestedAnnouncement({
+      text: result.model.kanbanAnnouncement,
+      priority: 'assertive',
+    }),
+  )
+  return {
+    ...result,
+    model: { ...result.model, kanbanAnnouncer: announced.model },
+    commands: [
+      ...(result.commands ?? []),
+      ...Command.mapMessages(announced.commands ?? [], message =>
+        GotKanbanAnnouncementMessage({ message }),
+      ),
+    ],
+  }
+}
+
+const updateModel = (
+  model: Model,
+  message: Exclude<Message, typeof GotKanbanAnnouncementMessage.Type>,
+): UpdateReturn => {
+  if (message._tag === 'GotKanbanReorderMessage') {
+    const result = KanbanReorder.update(
+      model.kanbanReorder,
+      message.message,
+      model.kanbanLanes,
+      model.kanbanAnnouncement,
+      model.kanbanTransfer.id,
+    )
+    return {
+      model: {
+        ...model,
+        kanbanReorder: result.model,
+        kanbanLanes: result.lanes,
+        kanbanAnnouncement: result.announcement,
+      },
+      commands: Command.mapMessages(result.commands, message =>
+        GotKanbanReorderMessage({ message }),
+      ),
+    }
+  }
   if (message._tag === 'GotBlocksStyleXEChartMessage') return { model: model }
   if (message._tag === 'GotKanbanTransferMessage') {
     const result = updateKanbanTransfer(
@@ -1155,7 +1228,9 @@ const blocks: ReadonlyArray<Block> = [
       kanbanBoard(
         chromeState(model),
         {
-          announcement: model.kanbanAnnouncement,
+          announcement: model.kanbanAnnouncer.text,
+          reorder: model.kanbanReorder,
+          toReorderMessage: message => GotKanbanReorderMessage({ message }),
           transfer: model.kanbanTransfer,
           lanes: model.kanbanLanes,
           toTransferMessage: message => GotKanbanTransferMessage({ message }),
