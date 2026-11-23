@@ -1,9 +1,10 @@
 import type { Update } from 'foldkit'
 import { Duration, Effect, Option, Schema as S } from 'effect'
 import * as Command from 'foldkit/command'
-import { Anchor } from '@foldkit/ui'
 import * as Mount from 'foldkit/mount'
 import { defineMessageUnion } from 'foldkit/message'
+
+import * as Position from './position'
 
 export const Model = S.Struct({
   id: S.String,
@@ -39,16 +40,16 @@ export const OutMessage = defineMessageUnion({
 export type OutMessage = typeof OutMessage.Type
 
 // The anchor mount preserves the renderer portal and placement contract.
-export type AnchorConfig = Anchor.AnchorConfig
+export type AnchorConfig = Position.AnchorConfig
 const AnchorMessage = defineMessageUnion({ CompletedAnchorTooltip: {} })
 
 export const AnchorTooltip = Mount.define('AnchorTooltip', {
-  args: { buttonId: S.String, anchor: Anchor.AnchorConfig },
+  args: { buttonId: S.String, anchor: Position.AnchorConfig },
   messages: [AnchorMessage.CompletedAnchorTooltip],
   execute: ({ element, buttonId, anchor }) =>
     Effect.acquireRelease(
       Effect.sync(() =>
-        Anchor.anchorSetup(element, { buttonId, anchor, interceptTab: false }),
+        Position.bindAnchor(element, { buttonId, anchor, interceptTab: false }),
       ),
       cleanup => Effect.sync(cleanup),
     ).pipe(Effect.as(AnchorMessage.CompletedAnchorTooltip())),

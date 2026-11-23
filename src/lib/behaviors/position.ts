@@ -9,11 +9,15 @@ export * from './position-native'
 
 export const AnchorConfig = Anchor.AnchorConfig
 export type AnchorConfig = typeof AnchorConfig.Type
+export type AnchorSetupConfig = Anchor.SetupConfig
+
+export const portalToContainingRoot = Anchor.portalToContainingRoot
+export const portalBackdrop = Anchor.portalBackdrop
 
 /** Foldkit owns collision handling, scroll tracking, portal and focus policy. */
 export const bindAnchor = (
   panel: Element,
-  config: Anchor.SetupConfig,
+  config: AnchorSetupConfig,
 ): (() => void) => Anchor.anchorSetup(panel, config)
 
 export const mount = Mount.define('AttachPositionAnchor', {
@@ -35,7 +39,7 @@ export const mount = Mount.define('AttachPositionAnchor', {
 })
 
 export const view = <Msg>(
-  config: Anchor.SetupConfig,
+  config: AnchorSetupConfig,
   send: (message: Message) => Msg,
   h: HtmlBuilder<Msg>,
 ) => [

@@ -1576,6 +1576,9 @@
       "type": "registry:lib",
       "title": "Foldkit Tooltip Interaction Behavior",
       "description": "Shared hover and focus ownership with command-based open and close delays and stale-timer protection.",
+      "registryDependencies": [
+        "Potti1234/creaseui/position-behavior"
+      ],
       "files": [
         {
           "path": "behaviors/tooltip.ts",

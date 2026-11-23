@@ -1,4 +1,3 @@
-import { Anchor } from '@foldkit/ui'
 import { Effect, Option, Queue, Schema, Stream } from 'effect'
 import * as Command from 'foldkit/command'
 import * as Dom from 'foldkit/dom'
@@ -14,7 +13,7 @@ import * as Layer from './layer'
 import * as Popup from './popup'
 import * as Position from './position'
 
-export type AnchorConfig = Anchor.AnchorConfig
+export type AnchorConfig = Position.AnchorConfig
 
 export const Model = Schema.Struct({
   id: Schema.String,
@@ -240,7 +239,7 @@ export const PortalPopoverBackdrop = Mount.define('PortalPopoverBackdrop', {
   messages: [Message.CompletedPortalPopoverBackdrop],
   execute: ({ element }) =>
     Effect.acquireRelease(
-      Effect.sync(() => Anchor.portalBackdrop(element)),
+      Effect.sync(() => Position.portalBackdrop(element)),
       cleanup => Effect.sync(cleanup),
     ).pipe(Effect.as(Message.CompletedPortalPopoverBackdrop())),
 })
@@ -317,7 +316,7 @@ const inheritTheme = (source: Element, panel: HTMLElement, win: Window) => {
 export const AnchorPopover = Mount.defineStream('AnchorPopover', {
   args: {
     id: Schema.String,
-    anchor: Anchor.AnchorConfig,
+    anchor: Position.AnchorConfig,
     isModal: Schema.Boolean,
     themedPortal: Schema.Boolean,
     focusSelector: Schema.optionalKey(Schema.String),
@@ -359,7 +358,7 @@ export const AnchorPopover = Mount.defineStream('AnchorPopover', {
                 : undefined
             const releasePortal =
               themedPortal || anchor.portal !== false
-                ? Anchor.portalToContainingRoot(element)
+                ? Position.portalToContainingRoot(element)
                 : undefined
             let frame: number | undefined
             let placed = false
