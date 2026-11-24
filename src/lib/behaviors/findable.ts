@@ -1,5 +1,7 @@
-import { Option } from 'effect'
+import { Stream } from 'effect'
 import { inertHtml, type Attribute } from 'foldkit/html'
+import { defineMessageUnion } from 'foldkit/message'
+import * as Mount from 'foldkit/mount'
 
 export const supportsHiddenUntilFound = (
   doc: Document | undefined = globalThis.document,
@@ -16,9 +18,19 @@ export const hiddenAttributes = (
 ): ReadonlyArray<Attribute<never>> =>
   isOpen ? [] : [inertHtml.Attribute('hidden', isFindable ? 'until-found' : '')]
 
-/** Lift the browser's beforematch event into the parent model. */
+const Message = defineMessageUnion({ Matched: {} })
+
+const ObserveMatch = Mount.defineStream('ObserveFindMatch', {
+  messages: [Message.Matched],
+  execute: ({ element }) =>
+    Stream.fromEventListener<Event>(element, 'beforematch').pipe(
+      Stream.filter(event => event.target === element),
+      Stream.map(() => Message.Matched()),
+    ),
+})
+
+/** Lift the browser's native beforematch event into the parent Model. */
 export const reveal = <Msg>(message: Msg): Attribute<Msg> => ({
-  _tag: 'OnCustomEvent',
-  name: 'beforematch',
-  f: () => Option.some(message),
+  _tag: 'OnMount',
+  action: Mount.mapMessage(ObserveMatch(), () => message),
 })

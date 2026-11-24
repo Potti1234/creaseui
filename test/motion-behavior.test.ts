@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { Effect, Option } from 'effect'
+import { Effect, Option, Stream } from 'effect'
+import * as Mount from 'foldkit/mount'
 import { Window } from 'happy-dom'
 import { Animation } from '@foldkit/ui'
 
@@ -256,7 +257,7 @@ describe('Motion', () => {
     ])
   })
 
-  it('supports hidden-until-found and beforematch reveal without owning state', () => {
+  it('lifts a native beforematch event without owning state', async () => {
     assert.deepEqual(Motion.hiddenAttributes(true, true), [])
     assert.deepEqual(Motion.hiddenAttributes(false, true), [
       { _tag: 'Attribute', key: 'hidden', value: 'until-found' },
@@ -265,13 +266,21 @@ describe('Motion', () => {
       { _tag: 'Attribute', key: 'hidden', value: '' },
     ])
     const reveal = Motion.reveal(Motion.Message.Showed())
-    assert.equal(reveal._tag, 'OnCustomEvent')
-    if (reveal._tag === 'OnCustomEvent') {
-      assert.equal(reveal.name, 'beforematch')
-      assert.deepEqual(
-        reveal.f({} as CustomEvent),
-        Option.some(Motion.Message.Showed()),
-      )
+    assert.ok(reveal._tag === 'OnMount')
+    class FindTarget extends EventTarget {
+      override addEventListener(
+        ...args: Parameters<EventTarget['addEventListener']>
+      ) {
+        super.addEventListener(...args)
+        queueMicrotask(() => this.dispatchEvent(new Event('beforematch')))
+      }
     }
+    const target: unknown = new FindTarget()
+    const message = await Effect.runPromise(
+      Stream.runHead(
+        reveal.action.f(target as Element, Mount.liveViewStateChanges),
+      ).pipe(Effect.timeout('1 second')),
+    )
+    assert.deepEqual(Option.getOrThrow(message), Motion.Message.Showed())
   })
 })
