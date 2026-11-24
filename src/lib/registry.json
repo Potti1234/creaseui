@@ -1362,6 +1362,19 @@
       ]
     },
     {
+      "name": "popup-controller-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Popup Controller",
+      "description": "Correlated popup requests and typed outcomes over a Foldkit message boundary.",
+      "files": [
+        {
+          "path": "behaviors/popup-controller.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/popup-controller.ts"
+        }
+      ]
+    },
+    {
       "name": "portal-behavior",
       "type": "registry:lib",
       "title": "Foldkit Portal Behavior",

@@ -7,6 +7,7 @@
     <style>
       :root { font: 1rem/1.5 system-ui, sans-serif; color-scheme: light dark; }
       main { max-width: 40rem; margin: 3rem auto; padding-inline: 1rem; }
+      .controller-demo { max-width: 40rem; margin: 0 auto; padding-inline: 1rem; }
       button { font: inherit; padding: .4rem .8rem; }
       .viewport { position: relative; z-index: 1; }
       .backdrop { position: fixed; inset: 0; }
@@ -27,6 +28,10 @@
   </head>
   <body>
     <div id="root"></div>
+    <div class="controller-demo">
+      <button type="button" id="open-from-code">Open order from code</button>
+      <output id="controller-result" for="open-from-code"></output>
+    </div>
     <script type="module" src="./main.ts"></script>
   </body>
 </html>
