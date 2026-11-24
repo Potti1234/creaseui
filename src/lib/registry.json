@@ -1272,6 +1272,19 @@
       ]
     },
     {
+      "name": "parts-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Part Helpers",
+      "description": "Stable compound part IDs and ordered DOM part lookup.",
+      "files": [
+        {
+          "path": "behaviors/parts.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/parts.ts"
+        }
+      ]
+    },
+    {
       "name": "pointer-kind",
       "type": "registry:lib",
       "title": "Pointer Kind",
@@ -1936,6 +1949,7 @@
       "registryDependencies": [
         "Potti1234/creaseui/tree-collection-behavior",
         "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/parts-behavior",
         "Potti1234/creaseui/typeahead-behavior"
       ]
     },

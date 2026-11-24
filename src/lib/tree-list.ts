@@ -11,6 +11,7 @@ import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 import * as Drag from '@/lib/behaviors/drag'
 
+import * as Parts from '@/lib/behaviors/parts'
 import * as TreeReorder from '@/lib/behaviors/tree-reorder'
 import * as TreeCollection from '@/lib/behaviors/tree-collection'
 import * as Typeahead from '@/lib/behaviors/typeahead'
@@ -124,6 +125,7 @@ export const reorderedItems = (
 
 const reorderRowSelector = '[data-slot="tree-list-item"]'
 const reorderItemSelector = '[role="treeitem"][data-tree-id]'
+const treeSelector = '[data-slot="tree-list"]'
 
 export const ObserveTreeReorder = Mount.defineStream('ObserveTreeReorder', {
   messages: [Message.DroppedTreePointer],
@@ -148,7 +150,7 @@ export const ObserveTreeReorder = Mount.defineStream('ObserveTreeReorder', {
               source === null ||
               id === undefined ||
               source.hasAttribute('data-tree-disabled') ||
-              row.closest('[data-slot="tree-list"]') !== element
+              row.closest(treeSelector) !== element
             )
               return
             let active = false
@@ -173,7 +175,7 @@ export const ObserveTreeReorder = Mount.defineStream('ObserveTreeReorder', {
                   target == null ||
                   targetId === undefined ||
                   source.contains(target) ||
-                  !element.contains(target)
+                  target.closest(treeSelector) !== element
                 )
                   return
 
@@ -187,11 +189,23 @@ export const ObserveTreeReorder = Mount.defineStream('ObserveTreeReorder', {
                   target.parentElement?.closest<HTMLElement>(
                     reorderItemSelector,
                   )
-                const next = target.nextElementSibling as HTMLElement | null
+                const siblings =
+                  target.parentElement === null
+                    ? []
+                    : Parts.elements(
+                        target.parentElement,
+                        reorderItemSelector,
+                        'data-tree-id',
+                        { direct: true },
+                      )
+                const next =
+                  siblings[
+                    siblings.findIndex(part => part.element === target) + 1
+                  ]
                 if (
                   !nest &&
                   event.clientY >= rect.top + rect.height / 2 &&
-                  next === source
+                  next?.element === source
                 )
                   return
                 send(
@@ -205,7 +219,7 @@ export const ObserveTreeReorder = Mount.defineStream('ObserveTreeReorder', {
                         ? null
                         : event.clientY < rect.top + rect.height / 2
                           ? targetId
-                          : (next?.dataset.treeId ?? null),
+                          : (next?.key ?? null),
                     },
                   }),
                 )
@@ -376,17 +390,29 @@ const NAVIGATION_KEYS: ReadonlySet<string> = new Set([
 const itemText = (item: TreeListItemData): string =>
   item.typeaheadText ?? (typeof item.label === 'string' ? item.label : '')
 
-export const itemDomId = (treeId: string, itemId: string): string =>
-  `${treeId}-item-${encodeURIComponent(itemId)}`
+export const itemDomId = (treeId: string, itemId: string): string => {
+  const separator = '-item-'
+  const prefix = treeId + separator
+  // Keep legacy IDs when the first separator identifies the tree boundary
+  // and the result is outside the framed part namespace.
+  if (
+    !treeId.startsWith('part:') &&
+    !/\s/.test(treeId) &&
+    prefix.indexOf(separator) === treeId.length
+  ) {
+    return prefix + Parts.idPart(itemId)
+  }
+  return Parts.keyedPartId(treeId, 'item', itemId)
+}
 
 export const itemActionDomId = (treeId: string, itemId: string): string =>
-  `${itemDomId(treeId, itemId)}-action`
+  Parts.keyedPartId(treeId, 'action', itemId)
 
 export const itemLabelDomId = (treeId: string, itemId: string): string =>
-  `${itemDomId(treeId, itemId)}-label`
+  Parts.keyedPartId(treeId, 'label', itemId)
 
 export const itemDescriptionDomId = (treeId: string, itemId: string): string =>
-  `${itemDomId(treeId, itemId)}-description`
+  Parts.keyedPartId(treeId, 'description', itemId)
 
 // ---------------------------------------------------------------------------
 // Keyboard resolution — pure so the view only ships the resolved intent.
@@ -549,7 +575,7 @@ export const FocusTreeListItem = Command.define('FocusTreeListItem', {
   args: { domId: S.String },
   messages: [Message.CompletedFocusTreeListItem],
   execute: ({ domId }) =>
-    Dom.focus(`[id="${domId}"]`).pipe(
+    Dom.focus(`#${CSS.escape(domId)}`).pipe(
       Effect.ignore,
       Effect.as(Message.CompletedFocusTreeListItem()),
     ),
@@ -561,7 +587,7 @@ export const ClickTreeListItemAction = Command.define(
     args: { domId: S.String },
     messages: [Message.CompletedClickTreeListItemAction],
     execute: ({ domId }) =>
-      Dom.clickElement(`[id="${domId}"]`).pipe(
+      Dom.clickElement(`#${CSS.escape(domId)}`).pipe(
         Effect.ignore,
         Effect.as(Message.CompletedClickTreeListItemAction()),
       ),

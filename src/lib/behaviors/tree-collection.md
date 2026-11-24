@@ -12,3 +12,5 @@ Store expanded and checked values in the parent Schema. Use
 strategy (`leaf`, `trunk`, `branch`, or `independent`). Supply `checkable`
 to protect locked nodes and their descendants from ancestor toggles. The
 collection indexes input data but does not retain the last expansion value.
+
+Use [Parts](./parts.md) for keyed DOM IDs and enumeration of rendered parts.

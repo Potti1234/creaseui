@@ -5,6 +5,7 @@ import { Option } from 'effect'
 
 import * as Typeahead from '../src/lib/behaviors/typeahead.ts'
 
+import * as TreeParts from '../src/lib/tree-list.ts'
 import * as TreeList from '../src/ui/tree-list.ts'
 
 const MOD = { ctrlKey: false, metaKey: false, altKey: false }
@@ -354,4 +355,37 @@ describe('TreeList.update', () => {
     )
     assert.equal(current.model.typeahead.query, '')
   })
+})
+
+it('keeps row IDs compatible and gives associated parts distinct slots', () => {
+  const ids = [
+    TreeParts.itemDomId('files', 'draft-label'),
+    TreeParts.itemLabelDomId('files', 'draft'),
+    TreeParts.itemDomId('files', 'draft-action'),
+    TreeParts.itemActionDomId('files', 'draft'),
+    TreeParts.itemDomId('files', 'draft-description'),
+    TreeParts.itemDescriptionDomId('files', 'draft'),
+  ]
+  assert.equal(new Set(ids).size, ids.length)
+  assert.equal(
+    TreeParts.itemDomId('files', 'Q4 review %'),
+    'files-item-Q4%20review%20%25',
+  )
+})
+
+it('frames ambiguous Tree List row boundaries without changing ordinary rows', () => {
+  const ids = [
+    TreeParts.itemDomId('a-item-b', 'c'),
+    TreeParts.itemDomId('a', 'b-item-c'),
+    TreeParts.itemDomId('a-item', 'c'),
+    TreeParts.itemDomId('a', 'item-c'),
+    TreeParts.itemDomId('part:files', 'draft'),
+    TreeParts.itemActionDomId('part:files', 'draft'),
+  ]
+  assert.equal(new Set(ids).size, ids.length)
+  assert.equal(
+    TreeParts.itemDomId('files-v2', 'draft-label'),
+    'files-v2-item-draft-label',
+  )
+  assert.match(TreeParts.itemLabelDomId('files', 'draft'), /^part:/)
 })
