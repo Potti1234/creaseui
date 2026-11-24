@@ -2,6 +2,8 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { Schema } from 'effect'
 
+import * as Demo from '@/docs/behavior-demo'
+
 import * as History from '../src/lib/behaviors/history.ts'
 import * as Observe from '../src/lib/behaviors/observe.ts'
 
@@ -230,10 +232,10 @@ describe('History descriptions', () => {
       describeValue(true, { source: 'keyboard' }),
       'You set Region to true',
     )
-    assert.equal(
-      describeValue([], { label: undefined }),
-      'Agent set select to none',
-    )
+    const { label: _label, ...unlabelled } = record(History.init(), {
+      value: [],
+    }).entries[0]!
+    assert.equal(History.describeEntry(unlabelled), 'Agent set select to none')
     assert.equal(describeValue(['a', 'b']), 'Agent set Region to a, b')
     assert.equal(describeValue(1.234), 'Agent set Region to 1.23')
     assert.equal(describeValue({ x: 1.234 }), 'Agent set Region to {x:1.23}')
@@ -241,5 +243,183 @@ describe('History descriptions', () => {
       describeValue('secret', { secret: true }),
       'Agent set Region to [redacted]',
     )
+  })
+})
+
+describe('History staging', () => {
+  type Field = Readonly<{ value: unknown; revision: number }>
+  type Settings = Readonly<{
+    fields: Readonly<Record<string, Field>>
+    locked?: boolean
+  }>
+  const init = (): Settings => ({
+    fields: {
+      'region/value': { value: 'London', revision: 1 },
+      'workspace/checked': { value: false, revision: 1 },
+      'workspace/value': { value: 'Private', revision: 1 },
+    },
+  })
+  const access = {
+    read: (model: Settings, { ref, key }: { ref: string; key: string }) =>
+      model.fields[`${ref}/${key}`],
+    write: (
+      model: Settings,
+      { ref, key, value }: { ref: string; key: string; value: unknown },
+    ): Settings => {
+      const id = `${ref}/${key}`
+      const field = model.fields[id]
+      if (!field || model.locked) return model
+      return {
+        ...model,
+        fields: {
+          ...model.fields,
+          [id]: { value, revision: field.revision + 1 },
+        },
+      }
+    },
+  }
+  const stage = (model: Settings) =>
+    History.stageChanges(
+      model,
+      [
+        { ref: 'region', value: 'Paris' },
+        { ref: 'workspace', key: 'checked', value: true },
+        { ref: 'region', value: 'Frankfurt' },
+      ],
+      access,
+    )
+
+  it('stages the last suggestion per field and restores only those fields in reverse order', () => {
+    const result = stage(init())
+    assert.equal(Schema.is(History.Stage)(result.stage), true)
+    assert.deepEqual(result.failed, [])
+    assert.deepEqual(
+      result.stage.map(item => [item.ref, item.before, item.value]),
+      [
+        ['region', 'London', 'Frankfurt'],
+        ['workspace', false, true],
+      ],
+    )
+    const edited = access.write(result.model, {
+      ref: 'workspace',
+      key: 'value',
+      value: 'Renamed',
+    })
+    const order: string[] = []
+    const rolledBack = History.rollbackStage(edited, result.stage, {
+      ...access,
+      write: (model, change) => {
+        order.push(change.ref)
+        return access.write(model, change)
+      },
+    })
+    assert.deepEqual(order, ['workspace', 'region'])
+    assert.deepEqual(rolledBack.failed, [])
+    assert.equal(rolledBack.model.fields['region/value']?.value, 'London')
+    assert.equal(rolledBack.model.fields['workspace/checked']?.value, false)
+    assert.equal(rolledBack.model.fields['workspace/value']?.value, 'Renamed')
+  })
+
+  it('preserves newer writes, even when the newer edit returns to the staged value', () => {
+    const result = stage(init())
+    const edited = ['Paris', 'Frankfurt'].reduce(
+      (model, value) =>
+        access.write(model, { ref: 'region', key: 'value', value }),
+      result.model,
+    )
+    const rolledBack = History.rollbackStage(edited, result.stage, access)
+    assert.deepEqual(rolledBack.failed, [{ ref: 'region', key: 'value' }])
+    assert.equal(
+      rolledBack.model.fields['region/value'],
+      edited.fields['region/value'],
+    )
+    assert.equal(rolledBack.model.fields['workspace/checked']?.value, false)
+    const repeated = History.rollbackStage(
+      rolledBack.model,
+      result.stage,
+      access,
+    )
+    assert.equal(repeated.model, rolledBack.model)
+  })
+
+  it('skips unavailable, refused and unchanged suggestions and can report rollback refusal', () => {
+    const result = History.stageChanges(
+      init(),
+      [
+        { ref: 'missing', value: 'secret' },
+        { ref: 'region', value: 'London' },
+        { ref: 'workspace', key: 'checked', value: true },
+      ],
+      access,
+    )
+    assert.deepEqual(result.failed, [{ ref: 'missing', key: 'value' }])
+    assert.equal(result.stage.length, 1)
+    const locked = { ...result.model, locked: true }
+    assert.deepEqual(stage(locked).failed, [{ ref: 'region', key: 'value' }])
+    assert.deepEqual(History.rollbackStage(locked, result.stage, access), {
+      model: locked,
+      failed: [{ ref: 'workspace', key: 'checked' }],
+    })
+  })
+
+  it('can restore an object value from a serialized parent stage', () => {
+    const original = { city: 'London' }
+    const model = access.write(init(), {
+      ref: 'region',
+      key: 'value',
+      value: original,
+    })
+    const preview = History.stageChanges(
+      model,
+      [{ ref: 'region', value: { city: 'Paris' } }],
+      access,
+    )
+    const stage = Schema.decodeUnknownSync(History.Stage)(
+      JSON.parse(JSON.stringify(preview.stage)),
+    )
+    const rolledBack = History.rollbackStage(preview.model, stage, access)
+    assert.deepEqual(rolledBack.failed, [])
+    assert.deepEqual(rolledBack.model.fields['region/value']?.value, original)
+  })
+})
+
+describe('History staging demo', () => {
+  it('previews without recording, then records acceptance or restores on discard', () => {
+    const initial = Demo.init()
+    const preview = Demo.update(initial, Demo.Message.PreviewedRegion()).model
+    assert.equal(preview.region, 'Berlin')
+    assert.equal(preview.history.entries.length, 0)
+    const accepted = Demo.update(
+      preview,
+      Demo.Message.AcceptedRegionPreview(),
+    ).model
+    assert.equal(accepted.region, 'Berlin')
+    assert.deepEqual(accepted.regionStage, [])
+    assert.equal(accepted.history.entries[0]?.previous, 'London')
+    assert.equal(accepted.history.entries[0]?.value, 'Berlin')
+    const reverted = Demo.update(
+      preview,
+      Demo.Message.RevertedRegionPreview(),
+    ).model
+    assert.equal(reverted.region, 'London')
+    assert.equal(reverted.history.entries.length, 0)
+  })
+
+  it('keeps a manual edit after discarding its superseded preview', () => {
+    const preview = Demo.update(
+      Demo.init(),
+      Demo.Message.PreviewedRegion(),
+    ).model
+    const edited = Demo.update(
+      preview,
+      Demo.Message.ChangedRegion({ value: 'Paris' }),
+    ).model
+    const reverted = Demo.update(
+      edited,
+      Demo.Message.RevertedRegionPreview(),
+    ).model
+    assert.equal(reverted.region, 'Paris')
+    assert.equal(reverted.history.entries[0]?.previous, 'London')
+    assert.deepEqual(reverted.regionStage, [])
   })
 })
