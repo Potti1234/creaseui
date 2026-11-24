@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { Effect, Option, Schema } from 'effect'
+import { Effect, Option, Schema, Stream } from 'effect'
+import * as Scene from 'foldkit/scene'
 import { Window } from 'happy-dom'
 import * as V from '../src/lib/behaviors/virtualizer.ts'
 
@@ -16,8 +17,16 @@ describe('Virtualizer', () => {
   it('applies scroll and completes even when the container has unmounted', async () => {
     const document = new Window().document
     const previous = Object.getOwnPropertyDescriptor(globalThis, 'document')
+    const previousStyle = Object.getOwnPropertyDescriptor(
+      globalThis,
+      'getComputedStyle',
+    )
     Object.defineProperty(globalThis, 'document', {
       value: document,
+      configurable: true,
+    })
+    Object.defineProperty(globalThis, 'getComputedStyle', {
+      value: document.defaultView!.getComputedStyle.bind(document.defaultView),
       configurable: true,
     })
     try {
@@ -32,6 +41,26 @@ describe('Virtualizer', () => {
         completion,
         V.Message.CompletedApplyScroll({ version: 3 }),
       )
+      await Effect.runPromise(
+        V.ApplyScroll({
+          id: 'list',
+          scrollTop: 45,
+          horizontal: true,
+          version: 4,
+        }).effect,
+      )
+      assert.equal(element.scrollLeft, 45)
+      assert.equal(element.scrollTop, 120)
+      element.style.direction = 'rtl'
+      await Effect.runPromise(
+        V.ApplyScroll({
+          id: 'list',
+          scrollTop: 60,
+          horizontal: true,
+          version: 5,
+        }).effect,
+      )
+      assert.equal(element.scrollLeft, -60)
       element.remove()
       assert.deepEqual(
         await Effect.runPromise(
@@ -42,6 +71,9 @@ describe('Virtualizer', () => {
     } finally {
       if (previous) Object.defineProperty(globalThis, 'document', previous)
       else Reflect.deleteProperty(globalThis, 'document')
+      if (previousStyle)
+        Object.defineProperty(globalThis, 'getComputedStyle', previousStyle)
+      else Reflect.deleteProperty(globalThis, 'getComputedStyle')
     }
   })
   it('aligns uniform and supplied variable heights in every mode', () => {
@@ -201,6 +233,181 @@ describe('Virtualizer', () => {
   })
   it('reuses one subview while keeping each item type', () => {
     assert.equal(V.view<string>(), V.view<number>())
+  })
+
+  it('uses horizontal spacers, intrinsic measured items and absolute ARIA positions', () => {
+    const model = {
+      ...V.init({
+        id: 'sideways',
+        orientation: 'horizontal',
+        estimatedItemSize: 20,
+        measureItems: true,
+      }),
+      measurement: measured.measurement,
+      scrollTop: 20,
+    }
+    Scene.scene(
+      {
+        update: V.update,
+        view: (model, h) => {
+          const node = V.view<string>()(
+            model,
+            {
+              items: Array.from({ length: 9 }, (_, index) => String(index)),
+              itemToKey: value => value,
+              itemToView: value => h.span([], [value]),
+              overscan: 0,
+            },
+            h,
+          )
+          assert.equal(node?.data?.style?.['display'], 'flex')
+          const [before, first, ...rest] = node?.children ?? []
+          const after = rest.at(-1)
+          assert.ok(before && typeof before !== 'string')
+          assert.ok(first && typeof first !== 'string')
+          assert.ok(after && typeof after !== 'string')
+          assert.equal(before.data?.style?.['width'], '20px')
+          assert.equal(after.data?.style?.['width'], '60px')
+          assert.equal(first.data?.style?.['width'], undefined)
+          return node
+        },
+      },
+      Scene.given(model),
+      Scene.expect(
+        Scene.selector(
+          '[aria-posinset="2"][data-virtual-list-measure-key="1"]',
+        ),
+      ).toExist(),
+    )
+    assert.equal(
+      V.scrollToIndex(model, 9, 8).commands?.[0]?.args?.['horizontal'],
+      true,
+    )
+  })
+
+  it('measures by stable key across reorder, shares scroll offsets, and rejects stale resets', () => {
+    const initial = V.init({
+      id: 'dynamic',
+      estimatedItemSize: 20,
+      measureItems: true,
+    })
+    const model = V.update(
+      { ...initial, measurement: measured.measurement },
+      V.Message.MeasuredItems({ version: 0, sizes: { a: 70, b: 40, c: 0 } }),
+    ).model
+    const inputs = {
+      items: ['b', 'a', 'c', 'constructor'],
+      itemToKey: (key: string) => key,
+    }
+    const layout = V.dynamicLayout(model, inputs)
+    assert.deepEqual(
+      [0, 1, 2, 3, 4].map(layout.offsetAt),
+      [0, 40, 110, 130, 150],
+    )
+    assert.deepEqual(Option.getOrThrow(V.visibleRange(model, layout, 0)), {
+      startIndex: 0,
+      endIndex: 2,
+      before: 0,
+      after: 40,
+    })
+    assert.equal(
+      target(V.scrollToIndexLayout(model, layout, 1, { align: 'start' })),
+      40,
+    )
+    const same = V.update(
+      model,
+      V.Message.MeasuredItems({ version: 0, sizes: { a: 70 } }),
+    )
+    assert.equal(same.model, model)
+    const reset = V.resetMeasurements(model)
+    assert.equal(V.dynamicLayout(reset, inputs).totalSize, 80)
+    assert.equal(
+      V.update(reset, V.Message.MeasuredItems({ version: 0, sizes: { a: 75 } }))
+        .model,
+      reset,
+    )
+    assert.equal(
+      V.dynamicLayout(
+        V.update(
+          reset,
+          V.Message.MeasuredItems({ version: 1, sizes: { a: 75 } }),
+        ).model,
+        inputs,
+      ).totalSize,
+      135,
+    )
+  })
+
+  it('observes horizontal viewport, scroll and item sizes and disconnects on release', async () => {
+    const window = new Window()
+    const list = window.document.createElement('ul')
+    list.id = 'observed-list'
+    list.dataset['virtualListId'] = list.id
+    list.style.direction = 'rtl'
+    Object.defineProperty(list, 'clientWidth', { value: 200 })
+    const row = window.document.createElement('li')
+    row.dataset['virtualListMeasureKey'] = 'item'
+    Object.defineProperty(row, 'offsetWidth', { value: 75 })
+    list.append(row)
+    window.document.body.append(list)
+    let disconnects = 0
+    class TestResizeObserver {
+      constructor(
+        private readonly callback: (
+          entries: ReadonlyArray<{ target: typeof list | typeof row }>,
+        ) => void,
+      ) {}
+      observe(target: typeof list | typeof row) {
+        queueMicrotask(() => {
+          this.callback([{ target }])
+          if (target === list) {
+            list.scrollLeft = -50
+            list.dispatchEvent(new window.Event('scroll'))
+          }
+        })
+      }
+      disconnect() {
+        disconnects += 1
+      }
+    }
+    const globals = {
+      document: window.document,
+      HTMLElement: window.HTMLElement,
+      MutationObserver: window.MutationObserver,
+      ResizeObserver: TestResizeObserver,
+      getComputedStyle: window.getComputedStyle.bind(window),
+    }
+    const previous = Object.entries(globals).map(([key, value]) => {
+      const descriptor = Object.getOwnPropertyDescriptor(globalThis, key)
+      Object.defineProperty(globalThis, key, { value, configurable: true })
+      return [key, descriptor] as const
+    })
+    try {
+      const subscription = V.subscriptions.containerEvents
+      const model = V.init({
+        id: list.id,
+        orientation: 'horizontal',
+        estimatedItemSize: 20,
+        measureItems: true,
+      })
+      const events = await Effect.runPromise(
+        subscription
+          .dependenciesToStream(subscription.modelToDependencies(model))
+          .pipe(Stream.take(3), Stream.runCollect, Effect.timeout('2 seconds')),
+      )
+      assert.deepEqual(Array.from(events), [
+        V.Message.MeasuredContainer({ containerHeight: 200 }),
+        V.Message.ScrolledContainer({ scrollTop: 50 }),
+        V.Message.MeasuredItems({ sizes: { item: 75 }, version: 0 }),
+      ])
+      assert.equal(disconnects, 2)
+    } finally {
+      for (const [key, descriptor] of previous) {
+        if (descriptor) Object.defineProperty(globalThis, key, descriptor)
+        else Reflect.deleteProperty(globalThis, key)
+      }
+      await window.close()
+    }
   })
 
   it('computes axis-neutral bounds without a rendered list', () => {

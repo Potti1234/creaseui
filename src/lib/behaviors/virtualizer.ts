@@ -40,6 +40,11 @@ import * as Layout from './virtualizer-layout'
 
 export { Layout }
 
+const Orientation = Schema.Literals(['vertical', 'horizontal'])
+const ItemSizes = Schema.Record(Schema.String, Schema.Number)
+const itemKeyAttribute = 'virtual-list-measure-key'
+const containerAttribute = 'virtual-list-id'
+
 const Measurement = defineTaggedUnion({
   Unmeasured: {},
   Measured: { containerHeight: Schema.Number },
@@ -57,6 +62,9 @@ export const Model = Schema.Struct({
   measurement: Measurement,
   pendingScroll: PendingScroll,
   pendingScrollVersion: Schema.Number,
+  orientation: Schema.optionalKey(Orientation),
+  itemSizes: Schema.optionalKey(ItemSizes),
+  measurementVersion: Schema.optionalKey(Schema.Number),
 })
 export type Model = typeof Model.Type
 
@@ -64,44 +72,122 @@ export const Message = defineMessageUnion({
   ScrolledContainer: { scrollTop: Schema.Number },
   MeasuredContainer: { containerHeight: Schema.Number },
   CompletedApplyScroll: { version: Schema.Number },
+  MeasuredItems: { sizes: ItemSizes, version: Schema.Number },
 })
 export type Message = typeof Message.Type
 
-export type InitConfig = Readonly<{
-  id: string
-  rowHeightPx: number
-  initialScrollTop?: number
-}>
+export type InitConfig = Readonly<
+  {
+    id: string
+    orientation?: typeof Orientation.Type
+    initialScrollTop?: number
+    initialScrollOffset?: number
+    measureItems?: boolean
+  } & ({ rowHeightPx: number } | { estimatedItemSize: number })
+>
 
-export const init = ({
-  id,
-  rowHeightPx,
-  initialScrollTop = 0,
-}: InitConfig): Model => ({
-  id,
-  rowHeightPx,
-  scrollTop: initialScrollTop,
+export const init = (config: InitConfig): Model => ({
+  id: config.id,
+  rowHeightPx:
+    'estimatedItemSize' in config
+      ? config.estimatedItemSize
+      : config.rowHeightPx,
+  scrollTop: config.initialScrollOffset ?? config.initialScrollTop ?? 0,
   measurement: Measurement.Unmeasured(),
   pendingScroll: PendingScroll.Idle(),
   pendingScrollVersion: 0,
+  ...(config.orientation === undefined
+    ? {}
+    : { orientation: config.orientation }),
+  ...(config.measureItems ? { itemSizes: {}, measurementVersion: 0 } : {}),
 })
+
+const horizontalSign = (element: HTMLElement): number =>
+  getComputedStyle(element).direction === 'rtl' ? -1 : 1
+
+const observeItems = (
+  container: HTMLElement,
+  horizontal: boolean,
+  emit: (sizes: typeof ItemSizes.Type) => void,
+) => {
+  const rows = new Map<Element, string>()
+  const ownerSelector = `[data-${containerAttribute}]`
+  const keyAttribute = `data-${itemKeyAttribute}`
+  const resize = new ResizeObserver(entries => {
+    const sizes: Array<[string, number]> = []
+    for (const { target } of entries) {
+      const key = rows.get(target)
+      if (
+        key === undefined ||
+        target.getAttribute(keyAttribute) !== key ||
+        target.closest(ownerSelector) !== container ||
+        !target.isConnected
+      )
+        continue
+      // offsetWidth/Height measure the layout border box without CSS transforms.
+      if (!(target instanceof HTMLElement)) continue
+      const size = horizontal ? target.offsetWidth : target.offsetHeight
+      if (size > 0) sizes.push([key, size])
+    }
+    if (sizes.length > 0) emit(Object.fromEntries(sizes))
+  })
+
+  return {
+    reconcile: () => {
+      const next = new Map<Element, string>()
+      for (const row of container.querySelectorAll(`[${keyAttribute}]`)) {
+        const key = row.getAttribute(keyAttribute)
+        if (key !== null && row.closest(ownerSelector) === container)
+          next.set(row, key)
+      }
+      for (const [row, key] of rows) {
+        if (next.get(row) === key) continue
+        resize.unobserve(row)
+        rows.delete(row)
+      }
+      for (const [row, key] of next) {
+        if (rows.has(row)) continue
+        rows.set(row, key)
+        resize.observe(row, { box: 'border-box' })
+      }
+    },
+    dispose: () => {
+      resize.disconnect()
+      rows.clear()
+    },
+  }
+}
 
 export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   containerEvents: entry(
-    { id: Schema.String },
     {
-      modelToDependencies: model => ({ id: model.id }),
-      dependenciesToStream: ({ id }) =>
+      id: Schema.String,
+      horizontal: Schema.Boolean,
+      version: Schema.optionalKey(Schema.Number),
+    },
+    {
+      modelToDependencies: model => ({
+        id: model.id,
+        horizontal: model.orientation === 'horizontal',
+        ...(model.measurementVersion === undefined
+          ? {}
+          : { version: model.measurementVersion }),
+      }),
+      dependenciesToStream: ({ id, horizontal, version }) =>
         Stream.callback(queue =>
           Effect.acquireRelease(
             Effect.sync(() => {
               let observed: HTMLElement | null = null
               let cleanup: (() => void) | undefined
+              let items: ReturnType<typeof observeItems> | undefined
               let frame: number | undefined
 
               const reconcile = () => {
                 const element = document.getElementById(id)
-                if (element === observed) return
+                if (element === observed) {
+                  items?.reconcile()
+                  return
+                }
                 cleanup?.()
                 cleanup = undefined
                 observed = element
@@ -110,29 +196,57 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
                 const scrolled = () => {
                   Queue.offerUnsafe(
                     queue,
-                    Message.ScrolledContainer({ scrollTop: element.scrollTop }),
+                    Message.ScrolledContainer({
+                      scrollTop: horizontal
+                        ? Math.max(
+                            0,
+                            element.scrollLeft * horizontalSign(element),
+                          )
+                        : element.scrollTop,
+                    }),
                   )
                 }
-                const resize = new ResizeObserver(entries => {
-                  const size = entries.at(-1)?.contentRect.height
-                  if (observed === element && size !== undefined) {
+                const resize = new ResizeObserver(() => {
+                  if (observed === element) {
                     Queue.offerUnsafe(
                       queue,
-                      Message.MeasuredContainer({ containerHeight: size }),
+                      Message.MeasuredContainer({
+                        containerHeight: horizontal
+                          ? element.clientWidth
+                          : element.clientHeight,
+                      }),
                     )
                   }
                 })
                 element.addEventListener('scroll', scrolled, { passive: true })
                 resize.observe(element)
+                if (version !== undefined) {
+                  items = observeItems(element, horizontal, sizes =>
+                    Queue.offerUnsafe(
+                      queue,
+                      Message.MeasuredItems({ sizes, version }),
+                    ),
+                  )
+                  items.reconcile()
+                }
                 cleanup = () => {
                   resize.disconnect()
                   element.removeEventListener('scroll', scrolled)
+                  items?.dispose()
+                  items = undefined
                 }
               }
 
               reconcile()
-              const mutations = new MutationObserver(() => {
-                if (observed?.isConnected || frame !== undefined) return
+              const mutations = new MutationObserver(records => {
+                if (frame !== undefined) return
+                const element = observed
+                if (
+                  element?.isConnected &&
+                  (version === undefined ||
+                    !records.some(record => element.contains(record.target)))
+                )
+                  return
                 frame = requestAnimationFrame(() => {
                   frame = undefined
                   reconcile()
@@ -141,6 +255,12 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
               mutations.observe(document.documentElement, {
                 childList: true,
                 subtree: true,
+                ...(version === undefined
+                  ? {}
+                  : {
+                      attributes: true,
+                      attributeFilter: [`data-${itemKeyAttribute}`],
+                    }),
               })
               return () => {
                 mutations.disconnect()
@@ -161,19 +281,12 @@ const windowFor = (
   layout: Layout.Layout,
   overscan: number,
 ): Option.Option<VisibleWindow> => {
-  if (model.measurement._tag === 'Unmeasured') return Option.none()
-  const result = Layout.range(
-    layout,
-    model.scrollTop,
-    model.measurement.containerHeight,
-    overscan,
-  )
-  return Option.some({
+  return Option.map(visibleRange(model, layout, overscan), result => ({
     startIndex: result.startIndex,
     endIndex: result.endIndex,
     topSpacerHeight: result.before,
     bottomSpacerHeight: result.after,
-  })
+  }))
 }
 
 export const visibleWindow = (
@@ -193,13 +306,54 @@ export const visibleWindowVariable = <Item>(
     ? Option.none()
     : windowFor(model, Layout.variable(items, itemToRowHeightPx), overscan)
 
+export type DynamicInputs<Item> = Readonly<{
+  items: ReadonlyArray<Item>
+  itemToKey: (item: Item, index: number) => string
+  estimateItemSize?: (item: Item, index: number) => number
+}>
+
+export const dynamicLayout = <Item>(
+  model: Model,
+  { items, itemToKey, estimateItemSize }: DynamicInputs<Item>,
+): Layout.Layout =>
+  Layout.variable(items, (item, index) => {
+    const key = itemToKey(item, index)
+    const sizes = model.itemSizes
+    const measured =
+      sizes !== undefined && Object.hasOwn(sizes, key) ? sizes[key] : undefined
+    return measured ?? estimateItemSize?.(item, index) ?? model.rowHeightPx
+  })
+
+/** Mark the scroller and intrinsically sized items in a custom view. */
+export const measurementAttributes = <Msg>(h: HtmlBuilder<Msg>) => ({
+  container: (id: string) => h.DataAttribute(containerAttribute, id),
+  item: (key: string) => h.DataAttribute(itemKeyAttribute, key),
+})
+
+export const resetMeasurements = (model: Model): Model =>
+  model.measurementVersion === undefined
+    ? model
+    : {
+        ...model,
+        itemSizes: {},
+        measurementVersion: model.measurementVersion + 1,
+      }
+
 export const ApplyScroll = Command.define('ApplyScroll', {
-  args: { id: Schema.String, scrollTop: Schema.Number, version: Schema.Number },
+  args: {
+    id: Schema.String,
+    scrollTop: Schema.Number,
+    version: Schema.Number,
+    horizontal: Schema.optionalKey(Schema.Boolean),
+  },
   messages: [Message.CompletedApplyScroll],
-  execute: ({ id, scrollTop, version }) =>
+  execute: ({ id, scrollTop, version, horizontal }) =>
     Effect.sync(() => {
       const element = document.getElementById(id)
-      if (element !== null) element.scrollTop = scrollTop
+      if (element !== null) {
+        if (horizontal) element.scrollLeft = scrollTop * horizontalSign(element)
+        else element.scrollTop = scrollTop
+      }
       return Message.CompletedApplyScroll({ version })
     }),
 })
@@ -234,6 +388,9 @@ const renderWindow = <Item>(
     containerAttributes = [],
     containerClassName,
   } = inputs
+  const horizontal = model.orientation === 'horizontal'
+  const dynamic = model.measurementVersion !== undefined
+  const attributes = measurementAttributes(h)
   const container = (children: Html[]) =>
     h.keyed('ul')(
       model.id,
@@ -241,12 +398,13 @@ const renderWindow = <Item>(
         ...childAttributes([
           h.Id(model.id),
           h.Role('list'),
-          h.DataAttribute('virtual-list-id', model.id),
+          attributes.container(model.id),
           h.Style({
             overflow: 'auto',
             'list-style': 'none',
             margin: '0',
             padding: '0',
+            ...(horizontal ? { display: 'flex' } : {}),
           }),
           ...(containerClassName === undefined
             ? []
@@ -258,8 +416,15 @@ const renderWindow = <Item>(
     )
   if (model.measurement._tag === 'Unmeasured') return container([])
 
-  const layout =
-    inputs.itemToRowHeightPx === undefined
+  const layout = dynamic
+    ? dynamicLayout(model, {
+        items,
+        itemToKey: inputs.itemToKey,
+        ...(inputs.itemToRowHeightPx === undefined
+          ? {}
+          : { estimateItemSize: inputs.itemToRowHeightPx }),
+      })
+    : inputs.itemToRowHeightPx === undefined
       ? Layout.uniform(items.length, model.rowHeightPx)
       : Layout.variable(items, inputs.itemToRowHeightPx)
   const { startIndex, endIndex, before, after } = Layout.range(
@@ -271,19 +436,31 @@ const renderWindow = <Item>(
   const spacer = (edge: 'top' | 'bottom', size: number) =>
     h.keyed('li')(`${model.id}-${edge}-spacer`, [
       h.Role('presentation'),
-      h.Style({ height: `${size}px` }),
+      h.Style(
+        horizontal
+          ? { flex: 'none', width: `${size}px` }
+          : { height: `${size}px` },
+      ),
     ])
   const rows = items.slice(startIndex, endIndex).map((item, index) => {
     const position = startIndex + index
+    const key = inputs.itemToKey(item, position)
     const size = layout.offsetAt(position + 1) - layout.offsetAt(position)
     return h.keyed(rowElement)(
-      inputs.itemToKey(item, position),
+      key,
       [
         h.Role('listitem'),
         h.DataAttribute('virtual-list-item-index', String(position)),
         h.AriaSetsize(items.length),
         h.AriaPosinset(position + 1),
-        h.Style({ display: 'grid', height: `${size}px` }),
+        ...(dynamic ? [attributes.item(key)] : []),
+        h.Style({
+          display: 'grid',
+          ...(horizontal ? { flex: 'none' } : {}),
+          ...(dynamic
+            ? {}
+            : { [horizontal ? 'width' : 'height']: `${size}px` }),
+        }),
       ],
       [inputs.itemToView(item, position)],
     )
@@ -306,7 +483,14 @@ const applyScroll = (
       pendingScrollVersion: version,
       pendingScroll: PendingScroll.ScrollingToIndex({ index, version }),
     },
-    commands: [ApplyScroll({ id: model.id, scrollTop, version })],
+    commands: [
+      ApplyScroll({
+        id: model.id,
+        scrollTop,
+        version,
+        ...(model.orientation === 'horizontal' ? { horizontal: true } : {}),
+      }),
+    ],
   }
 }
 
@@ -316,6 +500,24 @@ export const update = (
 ): Update.Return<Model, Message> =>
   Message.match(message, {
     ScrolledContainer: ({ scrollTop }) => ({ model: { ...model, scrollTop } }),
+    MeasuredItems: ({ sizes, version }) => {
+      if (model.measurementVersion !== version) return { model }
+      const changes = Object.entries(sizes).filter(
+        ([key, size]) =>
+          Number.isFinite(size) &&
+          size > 0 &&
+          (!Object.hasOwn(model.itemSizes ?? {}, key) ||
+            model.itemSizes?.[key] !== size),
+      )
+      return changes.length === 0
+        ? { model }
+        : {
+            model: {
+              ...model,
+              itemSizes: { ...model.itemSizes, ...Object.fromEntries(changes) },
+            },
+          }
+    },
     MeasuredContainer: ({ containerHeight }) => {
       const measured = {
         ...model,
@@ -394,10 +596,25 @@ export const scrollToIndexVariable = <Item>(
   itemToRowHeightPx: (item: Item, index: number) => number,
   index: number,
   options: ScrollOptions = {},
+): Update.Return<Model, Message> =>
+  items.length === 0 || !Number.isFinite(index)
+    ? { model }
+    : scrollToIndexLayout(
+        model,
+        Layout.variable(items, itemToRowHeightPx),
+        index,
+        options,
+      )
+
+/** Use the same computed layout for windowing and programmatic scrolling. */
+export const scrollToIndexLayout = (
+  model: Model,
+  layout: Layout.Layout,
+  index: number,
+  options: ScrollOptions = {},
 ): Update.Return<Model, Message> => {
-  if (items.length === 0 || !Number.isFinite(index)) return { model }
-  const clamped = Math.max(0, Math.min(Math.trunc(index), items.length - 1))
-  const layout = Layout.variable(items, itemToRowHeightPx)
+  if (layout.count === 0 || !Number.isFinite(index)) return { model }
+  const clamped = Math.max(0, Math.min(Math.trunc(index), layout.count - 1))
   const top = layout.offsetAt(clamped)
   return scroll(
     model,
@@ -408,6 +625,22 @@ export const scrollToIndexVariable = <Item>(
     options,
   )
 }
+
+export const visibleRange = (
+  model: Model,
+  layout: Layout.Layout,
+  overscan: number,
+): Option.Option<Layout.Range> =>
+  model.measurement._tag === 'Unmeasured'
+    ? Option.none()
+    : Option.some(
+        Layout.range(
+          layout,
+          model.scrollTop,
+          model.measurement.containerHeight,
+          overscan,
+        ),
+      )
 
 export const isNearEnd = (
   window: VisibleWindow,
