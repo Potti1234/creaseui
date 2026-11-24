@@ -88,7 +88,8 @@
       "registryDependencies": [
         "Potti1234/creaseui/layer-behavior",
         "Potti1234/creaseui/native-position-behavior",
-        "Potti1234/creaseui/popup-behavior"
+        "Potti1234/creaseui/popup-behavior",
+        "Potti1234/creaseui/portal-behavior"
       ],
       "files": [
         {
@@ -1198,12 +1199,26 @@
       ]
     },
     {
+      "name": "portal-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Portal Behavior",
+      "description": "Native top-layer activation and scoped overlay relocation.",
+      "files": [
+        {
+          "path": "behaviors/portal.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/portal.ts"
+        }
+      ]
+    },
+    {
       "name": "position-behavior",
       "type": "registry:lib",
       "title": "Position Behavior",
-      "description": "Foldkit Anchor mount and floating positioning for elements, points and live rectangles.",
+      "description": "Foldkit mounts for floating positioning, anchored surfaces, and containing-root portals.",
       "registryDependencies": [
-        "Potti1234/creaseui/native-position-behavior"
+        "Potti1234/creaseui/native-position-behavior",
+        "Potti1234/creaseui/portal-behavior"
       ],
       "files": [
         {

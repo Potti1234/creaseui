@@ -12,6 +12,7 @@
       .backdrop { position: fixed; inset: 0; }
       .panel { padding: 1rem; max-width: min(18rem, calc(100vw - 2rem)); background: Canvas; border: 1px solid GrayText; border-radius: .5rem; }
       .panel h2 { margin-top: 0; }
+      .panel[data-portal="top-layer"] { inset: auto; }
       @media (prefers-reduced-motion: no-preference) {
         .panel[data-popup-exiting] { animation: panel-exit 180ms ease-out both; }
         @keyframes panel-exit { to { opacity: 0; } }

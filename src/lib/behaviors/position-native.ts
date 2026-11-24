@@ -7,7 +7,12 @@ import {
   shift,
   size,
 } from '@floating-ui/dom'
-import type { Placement, VirtualElement } from '@floating-ui/dom'
+import type {
+  Padding,
+  Placement,
+  Strategy,
+  VirtualElement,
+} from '@floating-ui/dom'
 import { Effect, Schema as S } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
@@ -86,13 +91,19 @@ export type PositionOptions = PlacementOptions &
   Readonly<{
     arrow?: Source<Element | null | undefined>
     onPlaced?: (placement: Placement) => void
+    onSize?: (
+      size: Readonly<{ referenceWidth: number; availableHeight: number }>,
+    ) => void
+    strategy?: Strategy
+    padding?: Padding
+    lockPlacement?: boolean
   }>
 
 const read = <T>(source: Source<T>): T =>
   typeof source === 'function' ? (source as () => T)() : source
 
 const asReference = (anchor: Reference): Element | VirtualElement =>
-  anchor instanceof Element
+  'nodeType' in anchor
     ? anchor
     : {
         ...('contextElement' in anchor
@@ -161,7 +172,9 @@ export const position = (
   let lastArrow: Element | null | undefined
   let frame: number | undefined
   let warned = false
-  panel.style.position = 'fixed'
+  const strategy = read(optionsSource).strategy ?? 'fixed'
+  let lockedPlacement: Placement | undefined
+  panel.style.position = strategy
   panel.style.margin = '0'
 
   const place = (): void => {
@@ -180,26 +193,31 @@ export const position = (
       requestedArrow !== panel
         ? requestedArrow
         : undefined
-    const padding = options.collisionPadding ?? 8
+    const padding = options.padding ?? options.collisionPadding ?? 8
     const rtl = win.getComputedStyle(panel).direction === 'rtl'
     let availableWidth = 0
     let availableHeight = 0
     running = true
     void computePosition(asReference(anchor), panel, {
-      strategy: 'fixed',
-      placement: placement(options, rtl),
+      strategy,
+      placement: lockedPlacement ?? placement(options, rtl),
       middleware: [
         offset({
           mainAxis: options.sideOffset ?? 4,
           crossAxis: options.alignOffset ?? 0,
         }),
-        flip({ padding }),
+        ...(lockedPlacement === undefined ? [flip({ padding })] : []),
         shift({ padding }),
         size({
           padding,
           apply: result => {
             availableWidth = result.availableWidth
             availableHeight = result.availableHeight
+            if (active)
+              options.onSize?.({
+                referenceWidth: result.rects.reference.width,
+                availableHeight: Math.max(0, availableHeight),
+              })
           },
         }),
         ...(arrowElement === undefined
@@ -215,6 +233,7 @@ export const position = (
       .then(result => {
         if (!active) return
         warned = false
+        if (options.lockPlacement) lockedPlacement ??= result.placement
         const [side = 'bottom', align = 'center'] = result.placement.split('-')
         panel.style.left = `${result.x}px`
         panel.style.top = `${result.y}px`
@@ -294,7 +313,7 @@ export const position = (
   const initial = read(anchorSource)
   const watchFrame =
     typeof anchorSource === 'function' ||
-    (initial != null && !(initial instanceof Element)) ||
+    (initial != null && !('nodeType' in initial)) ||
     typeof optionsSource === 'function' ||
     typeof read(optionsSource).arrow === 'function'
   const stop =

@@ -16,6 +16,7 @@ const config = {
   hasPopup: 'dialog',
   initialFocus: { selector: '#done' },
   waitForExit: 'auto',
+  portal: 'top-layer',
 } satisfies Popup.Config
 
 const Model = Schema.Struct({ details: Popup.Model })

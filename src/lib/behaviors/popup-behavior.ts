@@ -8,6 +8,7 @@ import * as Mount from 'foldkit/mount'
 
 import * as Layer from './layer'
 import * as Popup from './popup'
+import * as Portal from './portal'
 import * as Position from './position-native'
 
 export const Model = Popup.Model
@@ -36,6 +37,7 @@ export type Config = Popup.ContentLabels &
     hasPopup?: 'dialog' | 'grid' | 'listbox' | 'menu' | 'tree'
     initialFocus?: 'panel' | Readonly<{ selector: string }>
     restoreFocus?: boolean
+    portal?: 'top-layer'
     arrowPadding?: number
     waitForExit?: boolean | 'auto'
   }>
@@ -145,6 +147,7 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
     focusAfterPosition: Schema.Boolean,
     focusSelector: Schema.optionalKey(Schema.String),
     autoExit: Schema.optionalKey(Schema.Boolean),
+    topLayer: Schema.optionalKey(Schema.Boolean),
   },
   messages: [
     Lifecycle.CompletedPanelMount,
@@ -160,6 +163,7 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
     focusAfterPosition,
     focusSelector,
     autoExit,
+    topLayer,
   }) => {
     let shouldFocus = focusAfterPosition
     return viewStateChanges.pipe(
@@ -184,7 +188,10 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
             Effect.acquireRelease(
               Effect.sync(() => {
                 let placed = false
-                return Position.position(trigger, element, {
+                const releasePortal = topLayer
+                  ? Portal.activate(element)
+                  : undefined
+                const stopPosition = Position.position(trigger, element, {
                   ...placement,
                   arrow: () =>
                     root instanceof realm.ShadowRoot
@@ -205,6 +212,13 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
                     focusTarget.focus({ preventScroll: true })
                   },
                 })
+                return () => {
+                  try {
+                    stopPosition()
+                  } finally {
+                    releasePortal?.()
+                  }
+                }
               }),
               cleanup =>
                 Effect.sync(() => {
@@ -260,7 +274,7 @@ export const triggerAttributes = <Msg>(
   ),
 ]
 
-/** Render the inline panel while the model is mounted. Mount options are read
+/** Render the panel while the model is mounted. Mount options are read
  * on insertion. The consumer supplies its role, accessible name and styling. */
 export const panelAttributes = <Msg>(
   config: Config,
@@ -271,6 +285,7 @@ export const panelAttributes = <Msg>(
   ...Popup.contentLabelAttributes(config, h),
   h.Tabindex(-1),
   h.Style({ visibility: 'hidden' }),
+  ...(config.portal === 'top-layer' ? Portal.attributes(h) : []),
   ...(config.dismissOnFocusLeave
     ? [
         h.OnFocusLeave(
@@ -290,6 +305,7 @@ export const panelAttributes = <Msg>(
             : { arrowPadding: config.arrowPadding }),
         },
         focusAfterPosition: config.initialFocus !== undefined,
+        ...(config.portal === 'top-layer' ? { topLayer: true } : {}),
         ...(config.waitForExit === 'auto' ? { autoExit: true } : {}),
         ...(typeof config.initialFocus === 'object'
           ? { focusSelector: config.initialFocus.selector }

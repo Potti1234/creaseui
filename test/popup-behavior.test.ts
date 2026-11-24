@@ -239,7 +239,7 @@ it('ignores a superseded animation and completes an exit with no motion', async 
   }
 })
 
-it('reveals and focuses the inline panel after placement and releases its layer', async () => {
+it('acquires the top layer before placement and releases it with dismissal observation', async () => {
   const window = new Window()
   const { document } = window
   const globals = {
@@ -259,6 +259,20 @@ it('reveals and focuses the inline panel after placement and releases its layer'
     const trigger = document.createElement('button')
     trigger.id = config.triggerId
     const panel = document.createElement('section')
+    let inTopLayer = false
+    const matches = panel.matches.bind(panel)
+    Object.assign(panel, {
+      showPopover: () => {
+        assert.equal(panel.getAttribute('popover'), 'manual')
+        assert.equal(panel.style.position, '')
+        inTopLayer = true
+      },
+      hidePopover: () => {
+        inTopLayer = false
+      },
+      matches: (selector: string) =>
+        selector === ':popover-open' ? inTopLayer : matches(selector),
+    })
     panel.style.visibility = 'hidden'
     const firstAction = document.createElement('button')
     firstAction.id = 'first-action'
@@ -266,7 +280,11 @@ it('reveals and focuses the inline panel after placement and releases its layer'
     document.body.append(trigger, panel)
 
     const mount = Behavior.panelAttributes(
-      { ...config, initialFocus: { selector: '#first-action' } },
+      {
+        ...config,
+        portal: 'top-layer',
+        initialFocus: { selector: '#first-action' },
+      },
       send,
       h,
     ).find(attribute => attribute._tag === 'OnMount')
@@ -310,6 +328,8 @@ it('reveals and focuses the inline panel after placement and releases its layer'
         yield* Deferred.await(layerReady)
         yield* Effect.yieldNow
         assert.equal(panel.style.visibility, '')
+        assert.equal(inTopLayer, true)
+        assert.equal(panel.parentNode, document.body)
         assert.equal(document.activeElement, firstAction)
         assert.equal(escape(), true)
         assert.deepEqual(
@@ -319,6 +339,8 @@ it('reveals and focuses the inline panel after placement and releases its layer'
         yield* Fiber.interrupt(fiber)
         assert.equal(panel.style.visibility, 'hidden')
         assert.equal(panel.style.position, '')
+        assert.equal(inTopLayer, false)
+        assert.equal(panel.hasAttribute('popover'), false)
         assert.equal(escape(), false)
       }).pipe(Effect.timeout('3 seconds')),
     )
