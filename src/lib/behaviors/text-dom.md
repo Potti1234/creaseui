@@ -3,6 +3,8 @@
 Use `labelOf(element)` to collect an item's text for Typeahead. It skips
 decorations marked hidden or `aria-hidden` and uses `aria-label` when the item
 has no text. `isComposing(event)` lets keyboard handlers leave IME input alone.
+`isRTL(element)` reads computed direction for logical keyboard or gesture
+navigation.
 
 `pageLocale(element)` resolves the nearest language across DOM and shadow
 boundaries. `userLocale()` resolves the browser's language preferences.

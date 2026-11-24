@@ -29,6 +29,11 @@ export const isComposing = (
   event: Pick<KeyboardEvent, 'isComposing' | 'keyCode'>,
 ): boolean => event.isComposing || event.keyCode === 229
 
+/** Read direction in the element's browsing context, including shadow trees. */
+export const isRTL = (element: Element): boolean =>
+  element.ownerDocument.defaultView?.getComputedStyle(element).direction ===
+  'rtl'
+
 export const toLocale = (tag?: string | null): string | undefined => {
   if (!tag?.trim()) return undefined
   try {

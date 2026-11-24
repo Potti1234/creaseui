@@ -773,11 +773,25 @@
       "type": "registry:lib",
       "title": "Foldkit Input Behavior",
       "description": "Skin-neutral controlled input semantics and deterministic label and description linkage shared by Crease renderers.",
+      "registryDependencies": ["Potti1234/creaseui/input-hints-behavior"],
       "files": [
         {
           "path": "input.ts",
           "type": "registry:lib",
           "target": "@lib/input.ts"
+        }
+      ]
+    },
+    {
+      "name": "input-hints-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Input Hints",
+      "description": "Native mobile keyboard, autofill, and text correction attributes selected by field purpose.",
+      "files": [
+        {
+          "path": "behaviors/input-hints.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/input-hints.ts"
         }
       ]
     },
@@ -1080,6 +1094,7 @@
       "title": "Native Position Behavior",
       "description": "Shared floating positioning for inline elements, points and live rectangles.",
       "dependencies": ["@floating-ui/dom@1.8.0"],
+      "registryDependencies": ["Potti1234/creaseui/text-dom-behavior"],
       "files": [
         {
           "path": "behaviors/position-native.ts",

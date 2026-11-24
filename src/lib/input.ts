@@ -1,5 +1,7 @@
 import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 
+import * as InputHints from './behaviors/input-hints'
+
 export type InputMode =
   | 'none'
   | 'text'
@@ -23,6 +25,8 @@ export type InputBehaviorProps<Msg> = Readonly<{
   form?: string
   autocomplete?: string
   inputMode?: InputMode
+  hintKind?: InputHints.Kind
+  enterKeyHint?: InputHints.EnterKeyHint
   describedBy?: string
   /** Extra WAI-ARIA role for composite inputs (e.g. 'searchbox', 'combobox'). */
   role?: string
@@ -92,10 +96,27 @@ export const renderInput = <Msg>(
       ? [h.Required(true), h.AriaRequired(true)]
       : []),
     ...(props.form === undefined ? [] : [h.FormAttr(props.form)]),
-    ...(props.autocomplete === undefined
-      ? []
-      : [h.Autocomplete(props.autocomplete)]),
-    ...(props.inputMode === undefined ? [] : [h.InputMode(props.inputMode)]),
+    ...(props.hintKind === undefined
+      ? [
+          ...(props.autocomplete === undefined
+            ? []
+            : [h.Autocomplete(props.autocomplete)]),
+          ...(props.inputMode === undefined
+            ? []
+            : [h.InputMode(props.inputMode)]),
+          ...(props.enterKeyHint === undefined
+            ? []
+            : [h.EnterKeyHint(props.enterKeyHint)]),
+        ]
+      : InputHints.attributes(props.hintKind, h, {
+          ...(props.autocomplete === undefined
+            ? {}
+            : { autocomplete: props.autocomplete }),
+          ...(props.inputMode === undefined ? {} : { mode: props.inputMode }),
+          ...(props.enterKeyHint === undefined
+            ? {}
+            : { enter: props.enterKeyHint }),
+        })),
     ...(props.role === undefined ? [] : [h.Role(props.role)]),
     ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
     ...(describedBy === undefined ? [] : [h.AriaDescribedBy(describedBy)]),

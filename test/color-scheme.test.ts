@@ -8,6 +8,16 @@ import * as Preference from '../src/lib/behaviors/preference.ts'
 
 const scheme = ColorScheme.create()
 describe('ColorScheme', () => {
+  it('accepts a request hint as the system scheme', () => {
+    const system = ColorScheme.colorSchemeOf(' "dark" ')
+    assert.equal(
+      ColorScheme.resolved(scheme.init(Option.none(), system)),
+      'dark',
+    )
+    assert.equal(ColorScheme.colorSchemeOf('light'), 'light')
+    assert.equal(ColorScheme.colorSchemeOf('"system"'), 'unknown')
+    assert.equal(ColorScheme.colorSchemeOf(null), 'unknown')
+  })
   it('restricts model choices to system, light or dark', () => {
     assert.throws(() =>
       Schema.decodeUnknownSync(ColorScheme.Model)({

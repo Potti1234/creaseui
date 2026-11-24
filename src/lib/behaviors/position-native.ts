@@ -17,6 +17,8 @@ import { Effect, Schema as S } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 
+import { isRTL } from './text-dom'
+
 export const Side = S.Literals([
   'top',
   'right',
@@ -194,7 +196,7 @@ export const position = (
         ? requestedArrow
         : undefined
     const padding = options.padding ?? options.collisionPadding ?? 8
-    const rtl = win.getComputedStyle(panel).direction === 'rtl'
+    const rtl = isRTL(panel)
     let availableWidth = 0
     let availableHeight = 0
     running = true
