@@ -37,6 +37,7 @@ import { defineTaggedUnion } from 'foldkit/schema'
 import { defineView } from 'foldkit/submodel'
 
 import * as Layout from './virtualizer-layout'
+import { supportsHiddenUntilFound } from './findable'
 
 export { Layout }
 
@@ -44,6 +45,8 @@ const Orientation = Schema.Literals(['vertical', 'horizontal'])
 const ItemSizes = Schema.Record(Schema.String, Schema.Number)
 const itemKeyAttribute = 'virtual-list-measure-key'
 const containerAttribute = 'virtual-list-id'
+const findIndexAttribute = 'virtual-list-find-index'
+const findKeyAttribute = 'virtual-list-find-key'
 
 const Measurement = defineTaggedUnion({
   Unmeasured: {},
@@ -67,6 +70,8 @@ export const Model = Schema.Struct({
   measurementVersion: Schema.optionalKey(Schema.Number),
   scrollMargin: Schema.optionalKey(Schema.Number),
   stickyScrollMargin: Schema.optionalKey(Schema.Boolean),
+  preserveScrollAnchor: Schema.optionalKey(Schema.Boolean),
+  findInPage: Schema.optionalKey(Schema.Boolean),
 })
 export type Model = typeof Model.Type
 
@@ -75,6 +80,7 @@ export const Message = defineMessageUnion({
   MeasuredContainer: { containerHeight: Schema.Number },
   CompletedApplyScroll: { version: Schema.Number },
   MeasuredItems: { sizes: ItemSizes, version: Schema.Number },
+  FoundItem: { key: Schema.String, index: Schema.Number },
 })
 export type Message = typeof Message.Type
 
@@ -87,6 +93,8 @@ export type InitConfig = Readonly<
     measureItems?: boolean
     scrollMargin?: number
     stickyScrollMargin?: boolean
+    preserveScrollAnchor?: boolean
+    findInPage?: boolean
   } & ({ rowHeightPx: number } | { estimatedItemSize: number })
 >
 
@@ -108,6 +116,8 @@ export const init = (config: InitConfig): Model => ({
     ? {}
     : { scrollMargin: config.scrollMargin }),
   ...(config.stickyScrollMargin ? { stickyScrollMargin: true } : {}),
+  ...(config.preserveScrollAnchor ? { preserveScrollAnchor: true } : {}),
+  ...(config.findInPage ? { findInPage: true } : {}),
 })
 
 const scrollMargin = (model: Model): number =>
@@ -115,6 +125,27 @@ const scrollMargin = (model: Model): number =>
 
 const horizontalSign = (element: HTMLElement): number =>
   getComputedStyle(element).direction === 'rtl' ? -1 : 1
+
+const observeFindMatches = (
+  container: HTMLElement,
+  emit: (message: Message) => void,
+) => {
+  const matched = (event: Event) => {
+    const target = event.target
+    if (
+      !(target instanceof HTMLElement) ||
+      target.closest(`[data-${containerAttribute}]`) !== container
+    )
+      return
+    const key = target.getAttribute(`data-${findKeyAttribute}`)
+    const index = target.getAttribute(`data-${findIndexAttribute}`)
+    if (key !== null && index !== null && Number.isSafeInteger(Number(index))) {
+      emit(Message.FoundItem({ key, index: Number(index) }))
+    }
+  }
+  container.addEventListener('beforematch', matched, true)
+  return () => container.removeEventListener('beforematch', matched, true)
+}
 
 const observeItems = (
   container: HTMLElement,
@@ -175,6 +206,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
       id: Schema.String,
       horizontal: Schema.Boolean,
       version: Schema.optionalKey(Schema.Number),
+      findInPage: Schema.optionalKey(Schema.Boolean),
     },
     {
       modelToDependencies: model => ({
@@ -183,8 +215,9 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
         ...(model.measurementVersion === undefined
           ? {}
           : { version: model.measurementVersion }),
+        ...(model.findInPage ? { findInPage: true } : {}),
       }),
-      dependenciesToStream: ({ id, horizontal, version }) =>
+      dependenciesToStream: ({ id, horizontal, version, findInPage }) =>
         Stream.callback(queue =>
           Effect.acquireRelease(
             Effect.sync(() => {
@@ -231,6 +264,12 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
                 })
                 element.addEventListener('scroll', scrolled, { passive: true })
                 resize.observe(element)
+                const stopFind =
+                  findInPage && supportsHiddenUntilFound(element.ownerDocument)
+                    ? observeFindMatches(element, message =>
+                        Queue.offerUnsafe(queue, message),
+                      )
+                    : undefined
                 if (version !== undefined) {
                   items = observeItems(element, horizontal, sizes =>
                     Queue.offerUnsafe(
@@ -243,6 +282,7 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
                 cleanup = () => {
                   resize.disconnect()
                   element.removeEventListener('scroll', scrolled)
+                  stopFind?.()
                   items?.dispose()
                   items = undefined
                 }
@@ -356,14 +396,24 @@ export const ApplyScroll = Command.define('ApplyScroll', {
     scrollTop: Schema.Number,
     version: Schema.Number,
     horizontal: Schema.optionalKey(Schema.Boolean),
+    expectedOffset: Schema.optionalKey(Schema.Number),
   },
   messages: [Message.CompletedApplyScroll],
-  execute: ({ id, scrollTop, version, horizontal }) =>
+  execute: ({ id, scrollTop, version, horizontal, expectedOffset }) =>
     Effect.sync(() => {
       const element = document.getElementById(id)
       if (element !== null) {
-        if (horizontal) element.scrollLeft = scrollTop * horizontalSign(element)
-        else element.scrollTop = scrollTop
+        const sign = horizontal ? horizontalSign(element) : 1
+        const currentOffset = horizontal
+          ? element.scrollLeft * sign
+          : element.scrollTop
+        if (
+          expectedOffset === undefined ||
+          Math.abs(currentOffset - expectedOffset) <= 1
+        ) {
+          if (horizontal) element.scrollLeft = scrollTop * sign
+          else element.scrollTop = scrollTop
+        }
       }
       return Message.CompletedApplyScroll({ version })
     }),
@@ -387,6 +437,7 @@ export type ViewInputs<Item> = Readonly<{
   containerAttributes?: ReadonlyArray<ChildAttribute>
   leadingContent?: Html
   keep?: ReadonlyArray<number>
+  findable?: (item: Item, index: number) => string | ReadonlyArray<string>
 }>
 
 /** Keep the visible range separate from the sorted rows to mount. */
@@ -425,6 +476,12 @@ const renderWindow = <Item>(
   } = inputs
   const horizontal = model.orientation === 'horizontal'
   const dynamic = model.measurementVersion !== undefined
+  const findable =
+    model.findInPage &&
+    inputs.findable !== undefined &&
+    supportsHiddenUntilFound()
+      ? inputs.findable
+      : undefined
   const attributes = measurementAttributes(h)
   const container = (children: Html[]) =>
     h.keyed('ul')(
@@ -439,6 +496,9 @@ const renderWindow = <Item>(
             'list-style': 'none',
             margin: '0',
             padding: '0',
+            ...(dynamic && model.preserveScrollAnchor
+              ? { 'overflow-anchor': 'none' }
+              : {}),
             ...(horizontal ? { display: 'flex' } : {}),
           }),
           ...(containerClassName === undefined
@@ -493,11 +553,58 @@ const renderWindow = <Item>(
     model.measurement.containerHeight,
   )
   const positions = renderedIndices(range, items.length, inputs.keep)
-  const spacer = (edge: string, size: number) =>
-    h.keyed('li')(`${model.id}-${edge}-spacer`, [
-      h.Role('presentation'),
-      h.Style(axisSize(size)),
-    ])
+  const spacer = (edge: string, start: number, end: number) => {
+    const size = layout.offsetAt(end) - layout.offsetAt(start)
+    if (findable === undefined || start === end) {
+      return h.keyed('li')(`${model.id}-${edge}-spacer`, [
+        h.Role('presentation'),
+        h.Style(axisSize(size)),
+      ])
+    }
+    const matches: Html[] = []
+    for (let index = start; index < end; index += 1) {
+      const item = items[index]!
+      const content = findable(item, index)
+      const text = typeof content === 'string' ? content : content.join(' ')
+      if (text === '') continue
+      const key = inputs.itemToKey(item, index)
+      matches.push(
+        h.keyed('div')(
+          key,
+          [
+            h.Attribute('hidden', 'until-found'),
+            h.DataAttribute(findIndexAttribute, String(index)),
+            h.DataAttribute(findKeyAttribute, key),
+          ],
+          [text],
+        ),
+      )
+    }
+    return h.keyed('li')(
+      `${model.id}-${edge}-spacer`,
+      [
+        h.Role('presentation'),
+        h.Style({ ...axisSize(size), position: 'relative' }),
+      ],
+      [
+        h.div(
+          [
+            h.AriaHidden(true),
+            h.Style({
+              position: 'absolute',
+              'inset-inline-start': '0',
+              'inset-block-start': '0',
+              'inline-size': '0',
+              'block-size': '0',
+              overflow: 'clip',
+              'pointer-events': 'none',
+            }),
+          ],
+          matches,
+        ),
+      ],
+    )
+  }
   const renderItem = (item: Item, position: number) => {
     const key = inputs.itemToKey(item, position)
     const size = layout.offsetAt(position + 1) - layout.offsetAt(position)
@@ -521,21 +628,16 @@ const renderWindow = <Item>(
     )
   }
   const first = positions[0] ?? range.startIndex
-  const children = [...leading, spacer('top', layout.offsetAt(first))]
+  const children = [...leading, spacer('top', 0, first)]
   let next = first
   for (const position of positions) {
     if (position > next) {
-      children.push(
-        spacer(
-          `gap-${position}`,
-          layout.offsetAt(position) - layout.offsetAt(next),
-        ),
-      )
+      children.push(spacer(`gap-${position}`, next, position))
     }
     children.push(renderItem(items[position]!, position))
     next = position + 1
   }
-  children.push(spacer('bottom', layout.totalSize - layout.offsetAt(next)))
+  children.push(spacer('bottom', next, layout.count))
   return container(children)
 }
 
@@ -546,6 +648,7 @@ const applyScroll = (
   model: Model,
   index: number,
   scrollTop: number,
+  expectedOffset?: number,
 ): Update.Return<Model, Message> => {
   const version = model.pendingScrollVersion + 1
   return {
@@ -560,17 +663,73 @@ const applyScroll = (
         scrollTop,
         version,
         ...(model.orientation === 'horizontal' ? { horizontal: true } : {}),
+        ...(expectedOffset === undefined ? {} : { expectedOffset }),
       }),
     ],
   }
 }
 
-export const update = (
+const correctAnchor = <Item>(
+  before: Model,
+  after: Model,
+  inputs: DynamicInputs<Item> | undefined,
+): Update.Return<Model, Message> => {
+  if (
+    !before.preserveScrollAnchor ||
+    inputs === undefined ||
+    before.pendingScroll._tag !== 'Idle' ||
+    before.measurement._tag !== 'Measured' ||
+    before.measurement.containerHeight <= 0
+  )
+    return { model: after }
+  const viewport = before.measurement.containerHeight
+  const previousLayout = dynamicLayout(before, inputs)
+  const { startIndex, endIndex } = measuredRange(
+    before,
+    previousLayout,
+    0,
+    viewport,
+  )
+  if (startIndex >= endIndex) return { model: after }
+  const nextLayout = dynamicLayout(after, inputs)
+  const shift =
+    nextLayout.offsetAt(startIndex) - previousLayout.offsetAt(startIndex)
+  if (shift === 0) return { model: after }
+  const maxOffset = Math.max(
+    0,
+    scrollMargin(after) + nextLayout.totalSize - viewport,
+  )
+  const target = Math.max(0, Math.min(before.scrollTop + shift, maxOffset))
+  return target === before.scrollTop
+    ? { model: after }
+    : applyScroll(after, startIndex, target, before.scrollTop)
+}
+
+export const updateWithLayout = <Item>(
   model: Model,
   message: Message,
+  inputs?: DynamicInputs<Item>,
 ): Update.Return<Model, Message> =>
   Message.match(message, {
     ScrolledContainer: ({ scrollTop }) => ({ model: { ...model, scrollTop } }),
+    FoundItem: ({ key, index }) => {
+      if (!model.findInPage || inputs === undefined) return { model }
+      const item = inputs.items[index]
+      const currentIndex =
+        index in inputs.items && inputs.itemToKey(item!, index) === key
+          ? index
+          : inputs.items.findIndex(
+              (item, position) => inputs.itemToKey(item, position) === key,
+            )
+      return currentIndex < 0
+        ? { model }
+        : scrollToIndexLayout(
+            model,
+            dynamicLayout(model, inputs),
+            currentIndex,
+            { align: 'center' },
+          )
+    },
     MeasuredItems: ({ sizes, version }) => {
       if (model.measurementVersion !== version) return { model }
       const changes = Object.entries(sizes).filter(
@@ -582,12 +741,14 @@ export const update = (
       )
       return changes.length === 0
         ? { model }
-        : {
-            model: {
+        : correctAnchor(
+            model,
+            {
               ...model,
               itemSizes: { ...model.itemSizes, ...Object.fromEntries(changes) },
             },
-          }
+            inputs,
+          )
     },
     MeasuredContainer: ({ containerHeight }) => {
       const measured = {
@@ -610,6 +771,11 @@ export const update = (
         ? { model: { ...model, pendingScroll: PendingScroll.Idle() } }
         : { model },
   })
+
+export const update = (
+  model: Model,
+  message: Message,
+): Update.Return<Model, Message> => updateWithLayout(model, message)
 
 export type ScrollOptions = Readonly<{
   align?: 'start' | 'center' | 'end' | 'auto'

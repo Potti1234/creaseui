@@ -729,6 +729,19 @@
       ]
     },
     {
+      "name": "findable-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Findable Content",
+      "description": "Feature detection and beforematch bindings for browser-searchable collapsed content.",
+      "files": [
+        {
+          "path": "behaviors/findable.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/findable.ts"
+        }
+      ]
+    },
+    {
       "name": "focus-recovery-behavior",
       "type": "registry:lib",
       "title": "Focus Recovery Behavior",
@@ -1120,6 +1133,24 @@
           "path": "more-menu.ts",
           "type": "registry:lib",
           "target": "@lib/more-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "motion-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Motion Behavior",
+      "description": "Reusable enter and exit presence, transition state, and findable content.",
+      "registryDependencies": [
+        "Potti1234/creaseui/animation-behavior",
+        "Potti1234/creaseui/findable-behavior",
+        "Potti1234/creaseui/popup-behavior"
+      ],
+      "files": [
+        {
+          "path": "behaviors/motion.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/motion.ts"
         }
       ]
     },
@@ -2043,6 +2074,7 @@
       "type": "registry:lib",
       "title": "Foldkit Virtualizer Behavior",
       "description": "Shared window layout, scroll observation and keyed row rendering for Foldkit.",
+      "registryDependencies": ["Potti1234/creaseui/findable-behavior"],
       "files": [
         {
           "path": "behaviors/virtualizer.ts",

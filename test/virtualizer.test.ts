@@ -61,6 +61,27 @@ describe('Virtualizer', () => {
         }).effect,
       )
       assert.equal(element.scrollLeft, -60)
+      await Effect.runPromise(
+        V.ApplyScroll({
+          id: 'list',
+          scrollTop: 100,
+          horizontal: true,
+          expectedOffset: 60,
+          version: 6,
+        }).effect,
+      )
+      assert.equal(element.scrollLeft, -100)
+      const skipped = await Effect.runPromise(
+        V.ApplyScroll({
+          id: 'list',
+          scrollTop: 150,
+          horizontal: true,
+          expectedOffset: 60,
+          version: 7,
+        }).effect,
+      )
+      assert.equal(element.scrollLeft, -100)
+      assert.deepEqual(skipped, V.Message.CompletedApplyScroll({ version: 7 }))
       element.remove()
       assert.deepEqual(
         await Effect.runPromise(
@@ -481,7 +502,19 @@ describe('Virtualizer', () => {
     const row = window.document.createElement('li')
     row.dataset['virtualListMeasureKey'] = 'item'
     Object.defineProperty(row, 'offsetWidth', { value: 75 })
-    list.append(row)
+    const standIn = window.document.createElement('div')
+    standIn.dataset['virtualListFindKey'] = 'row-8'
+    standIn.dataset['virtualListFindIndex'] = '8'
+    list.append(row, standIn)
+    Object.defineProperties(window.HTMLElement.prototype, {
+      hidden: {
+        get(this: typeof standIn) {
+          return this.getAttribute('hidden')
+        },
+        configurable: true,
+      },
+      onbeforematch: { value: null, configurable: true },
+    })
     window.document.body.append(list)
     let disconnects = 0
     class TestResizeObserver {
@@ -496,6 +529,9 @@ describe('Virtualizer', () => {
           if (target === list) {
             list.scrollLeft = -50
             list.dispatchEvent(new window.Event('scroll'))
+            standIn.dispatchEvent(
+              new window.Event('beforematch', { bubbles: true }),
+            )
           }
         })
       }
@@ -522,18 +558,80 @@ describe('Virtualizer', () => {
         orientation: 'horizontal',
         estimatedItemSize: 20,
         measureItems: true,
+        findInPage: true,
       })
       const events = await Effect.runPromise(
         subscription
           .dependenciesToStream(subscription.modelToDependencies(model))
-          .pipe(Stream.take(3), Stream.runCollect, Effect.timeout('2 seconds')),
+          .pipe(Stream.take(4), Stream.runCollect, Effect.timeout('2 seconds')),
       )
       assert.deepEqual(Array.from(events), [
         V.Message.MeasuredContainer({ containerHeight: 200 }),
         V.Message.ScrolledContainer({ scrollTop: 50 }),
+        V.Message.FoundItem({ key: 'row-8', index: 8 }),
         V.Message.MeasuredItems({ sizes: { item: 75 }, version: 0 }),
       ])
       assert.equal(disconnects, 2)
+      const items = Array.from({ length: 12 }, (_, index) => `row-${index}`)
+      const inputs = { items, itemToKey: (item: string) => item }
+      const found = V.updateWithLayout(
+        { ...model, measurement: measured.measurement },
+        V.Message.FoundItem({ key: 'row-8', index: 9 }),
+        inputs,
+      )
+      assert.equal(target(found), 120)
+      assert.equal(found.commands?.[0]?.args?.['horizontal'], true)
+      assert.equal(
+        V.updateWithLayout(
+          model,
+          V.Message.FoundItem({ key: 'gone', index: 8 }),
+          inputs,
+        ).commands,
+        undefined,
+      )
+
+      for (const enabled of [true, false]) {
+        const searched = new Set<string>()
+        Scene.scene(
+          {
+            update: V.update,
+            view: (current, h) =>
+              V.view<string>()(
+                current,
+                {
+                  ...inputs,
+                  itemToView: item => h.span([], [item]),
+                  findable: item => {
+                    searched.add(item)
+                    return item
+                  },
+                  keep: [8],
+                  overscan: 0,
+                },
+                h,
+              ),
+          },
+          Scene.given({
+            ...model,
+            findInPage: enabled,
+            measurement: measured.measurement,
+            scrollTop: 0,
+          }),
+          Scene.expect(Scene.selector('[aria-posinset="9"]')).toExist(),
+          Scene.expect(Scene.selector('[data-virtual-list-find-index="7"]'))[
+            enabled ? 'toExist' : 'toBeAbsent'
+          ](),
+          Scene.expect(
+            Scene.selector('[data-virtual-list-find-index="8"]'),
+          ).toBeAbsent(),
+        )
+        assert.deepEqual(
+          [...searched],
+          enabled
+            ? ['row-5', 'row-6', 'row-7', 'row-9', 'row-10', 'row-11']
+            : [],
+        )
+      }
     } finally {
       for (const [key, descriptor] of previous) {
         if (descriptor) Object.defineProperty(globalThis, key, descriptor)
@@ -541,6 +639,62 @@ describe('Virtualizer', () => {
       }
       await window.close()
     }
+  })
+
+  it('corrects growth and shrinkage before the visible anchor with a sticky margin', () => {
+    const model = {
+      ...V.init({
+        id: 'anchored',
+        estimatedItemSize: 20,
+        measureItems: true,
+        preserveScrollAnchor: true,
+        orientation: 'horizontal',
+        scrollMargin: 30,
+        stickyScrollMargin: true,
+      }),
+      measurement: measured.measurement,
+      scrollTop: 65,
+    }
+    const inputs = {
+      items: Array.from({ length: 20 }, (_, index) => String(index)),
+      itemToKey: String,
+    }
+    const measure = (sizes: Record<string, number>) =>
+      V.Message.MeasuredItems({ sizes, version: 0 })
+    const grown = V.updateWithLayout(
+      model,
+      measure({ '0': 35, '1': 30, '3': 100, '7': 40 }),
+      inputs,
+    )
+    assert.equal(target(grown), 90)
+    assert.equal(grown.commands?.[0]?.args?.['expectedOffset'], 65)
+    assert.equal(grown.commands?.[0]?.args?.['horizontal'], true)
+    const settled = V.update(
+      V.update(grown.model, V.Message.ScrolledContainer({ scrollTop: 90 }))
+        .model,
+      V.Message.CompletedApplyScroll({ version: 1 }),
+    ).model
+    assert.equal(
+      target(V.updateWithLayout(settled, measure({ '0': 15 }), inputs)),
+      70,
+    )
+    assert.equal(
+      V.updateWithLayout(settled, measure({ '7': 60 }), inputs).commands,
+      undefined,
+    )
+    assert.equal(
+      V.updateWithLayout(grown.model, measure({ '0': 15 }), inputs).commands,
+      undefined,
+    )
+    assert.equal(V.update(model, measure({ '0': 35 })).commands, undefined)
+    assert.equal(
+      V.updateWithLayout(
+        { ...model, preserveScrollAnchor: false },
+        measure({ '0': 35 }),
+        inputs,
+      ).commands,
+      undefined,
+    )
   })
 
   it('computes axis-neutral bounds without a rendered list', () => {

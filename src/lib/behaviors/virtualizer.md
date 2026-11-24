@@ -62,7 +62,31 @@ when the row is fully visible. Empty collections are no-ops. Parents track
 Uniform rows require a positive finite `rowHeightPx`. Callers supply
 nonnegative finite variable heights and valid row indices to `rowPosition`.
 Components own roles and map position values to ARIA attributes.
-Find-in-page layers remain open. Dynamic measurement updates offsets
-without an explicit scroll-anchor correction when earlier items change size.
+For explicit scroll-anchor correction, enable `preserveScrollAnchor: true`
+alongside `measureItems: true` and pass the current `DynamicInputs` as the
+third argument to `updateWithLayout`. Use the same keys and estimates in the view and
+the update. Changes to measured sizes before the first visible item adjust
+the scroll offset to keep that item's position. A pending scroll request
+takes precedence, and the correction command checks that the DOM offset
+still matches the offset used to calculate it. The built-in view disables
+native CSS scroll anchoring in this mode. Custom views should set
+`overflow-anchor: none` on their scroller too.
+
+### Find in page
+
+Enable `findInPage: true` on the model and pass `findable(item, index)` to
+the included view. Return the text the live row displays, either as a string
+or as a list of strings. Forward Virtualizer messages to `updateWithLayout`
+with the current items, keys, and size estimates. The existing subscription
+handles a native `beforematch` event from a stand-in and sends `FoundItem`.
+The update resolves the current index by key and scrolls the live row into
+view. Retained and visible rows are searchable through their live text.
+
+The disabled path and browsers without `hidden="until-found"` support use
+ordinary spacers and search sees the mounted rows. The opt-in path adds one
+searchable stand-in per nonempty unmounted row. The browser's original
+highlight and match count may change when that stand-in is replaced by the
+live row. Highlight transfer would require a separate text ownership
+contract so Foldkit and the browser can share the same text node safely.
 
 Try `npm run dev -- --open /src/docs/examples/virtualizer/`.
