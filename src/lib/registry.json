@@ -545,6 +545,7 @@
       "description": "Shared dialog visibility and animation with native modal focus management.",
       "registryDependencies": [
         "Potti1234/creaseui/animation-behavior",
+        "Potti1234/creaseui/modal-behavior",
         "Potti1234/creaseui/popup-behavior"
       ],
       "files": [
@@ -989,6 +990,19 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/dialog-behavior"
+      ]
+    },
+    {
+      "name": "modal-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Modal Behavior",
+      "description": "Native dialog focus, Escape handling, and scroll lock with Foldkit Commands and Mounts.",
+      "files": [
+        {
+          "path": "behaviors/modal.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/modal.ts"
+        }
       ]
     },
     {
