@@ -61,7 +61,7 @@ describe('DragAndDrop', () => {
     })
   })
 
-  it('uses delegated pointer hit testing and releases the document drag styles', async () => {
+  it('uses local pointer hit testing and restores existing document drag styles', async () => {
     const window = new Window()
     const { document } = window
     const previous = Object.getOwnPropertyDescriptor(globalThis, 'document')
@@ -72,37 +72,63 @@ describe('DragAndDrop', () => {
     try {
       const list = document.createElement('div')
       const row = document.createElement('div')
+      const child = document.createElement('span')
       list.setAttribute('data-droppable-id', 'destination')
       row.setAttribute('data-sortable-id', 'another-item')
+      row.append(child)
       list.append(row)
       document.body.append(list)
+      document.documentElement.style.setProperty(
+        'user-select',
+        'text',
+        'important',
+      )
       Object.defineProperty(document, 'elementsFromPoint', {
-        value: () => [row, list],
+        value: () => [child],
       })
       const subscription = Dnd.subscriptions.documentPointer
-      const pending = Dnd.update(idle, press).model
+      const pending = Dnd.update(
+        idle,
+        Dnd.Message.PressedDraggable({
+          ...item,
+          screenX: 0,
+          screenY: 0,
+          pointerId: 7,
+        }),
+      ).model
       const events = subscription.dependenciesToStream(
         subscription.modelToDependencies(pending),
       )
       const result = Effect.runPromise(
-        Stream.runHead(events).pipe(Effect.timeout('2 seconds')),
+        Stream.runCollect(Stream.take(events, 2)).pipe(
+          Effect.timeout('2 seconds'),
+        ),
       )
       // Wait for the subscription to acquire its document styles before moving.
       const pointer = setInterval(() => {
         if (document.head.querySelector('style') === null) return
         document.dispatchEvent(
+          new window.PointerEvent('pointerup', { pointerId: 8 }),
+        )
+        document.dispatchEvent(
           new window.PointerEvent('pointermove', {
+            pointerId: 7,
             screenX: 5,
             screenY: 0,
             clientX: 20,
             clientY: 40,
           }),
         )
+        document.dispatchEvent(
+          new window.PointerEvent('pointercancel', { pointerId: 7 }),
+        )
       }, 10)
-      const moved = Option.getOrThrow(
+      const [moved, cancelled] = Array.from(
         await result.finally(() => clearInterval(pointer)),
       )
+      assert.ok(moved)
       assert.equal(moved._tag, 'MovedPointer')
+      assert.deepEqual(cancelled, Dnd.Message.CancelledDrag())
       const dragging = Dnd.update(pending, moved).model
       assert.deepEqual(Option.getOrThrow(Dnd.maybeDropTarget(dragging)), {
         containerId: 'destination',
@@ -110,7 +136,11 @@ describe('DragAndDrop', () => {
       })
       assert.equal(
         document.documentElement.style.getPropertyValue('user-select'),
-        '',
+        'text',
+      )
+      assert.equal(
+        document.documentElement.style.getPropertyPriority('user-select'),
+        'important',
       )
       assert.equal(document.head.querySelector('style'), null)
     } finally {
@@ -120,7 +150,7 @@ describe('DragAndDrop', () => {
     }
   })
 
-  it('executes delegated keyboard navigation and restores focus on drop or cancel', async () => {
+  it('executes local keyboard navigation and restores focus on drop or cancel', async () => {
     const window = new Window()
     const { document } = window
     const globals = {
@@ -146,6 +176,18 @@ describe('DragAndDrop', () => {
         idle,
         Dnd.Message.ActivatedKeyboardDrag(item),
       ).model
+      const previousLane = Dnd.update(
+        activated,
+        Dnd.Message.PressedArrowKey({ direction: 'PreviousContainer' }),
+      ).commands?.[0]
+      assert.ok(previousLane)
+      assert.deepEqual(
+        await Effect.runPromise(previousLane.effect),
+        Dnd.Message.CompletedResolveKeyboardMove({
+          targetContainerId: item.containerId,
+          targetIndex: item.index,
+        }),
+      )
       const movement = Dnd.update(
         activated,
         Dnd.Message.PressedArrowKey({ direction: 'NextContainer' }),
