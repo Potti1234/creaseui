@@ -45,7 +45,7 @@ in the same document or shadow root on the next frame. Missing surfaces and
 surfaces without finite motion do not delay completion. List animated
 descendants explicitly if their motion should delay removal.
 
-Custom mounts can compose `exitCompletions(element)` and set
+Custom mounts can compose `exitCompletions(element, additionalSurfaceIds)` and set
 `data-popup-exit-version` to the current exit version while closing.
 
 Set `waitForExit: true` to coordinate your own transition. Start it when the

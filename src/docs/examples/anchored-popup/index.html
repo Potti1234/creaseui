@@ -15,6 +15,7 @@
       .panel[data-portal="top-layer"] { inset: auto; }
       @media (prefers-reduced-motion: no-preference) {
         .panel[data-popup-exiting] { animation: panel-exit 180ms ease-out both; }
+        .backdrop[data-popup-exiting] { animation: panel-exit 240ms ease-out both; }
         @keyframes panel-exit { to { opacity: 0; } }
       }
       .arrow { position: absolute; width: .5rem; height: .5rem; background: Canvas; transform: rotate(45deg); border: solid GrayText; border-width: 1px 0 0 1px; }

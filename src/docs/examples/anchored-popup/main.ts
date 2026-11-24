@@ -16,6 +16,7 @@ const config = {
   hasPopup: 'dialog',
   initialFocus: { selector: '#done' },
   waitForExit: 'auto',
+  exitSurfaceIds: ['details-panel-backdrop'],
   portal: 'top-layer',
 } satisfies Popup.Config
 
@@ -51,7 +52,16 @@ const view = (model: Model, h: HtmlBuilder<Message>) => {
             h.div(
               [...parts.viewport, h.Class('viewport')],
               [
-                h.div([...parts.backdrop, h.Class('backdrop')], []),
+                h.div(
+                  [
+                    ...parts.backdrop,
+                    h.Class('backdrop'),
+                    ...(parts.isOpen
+                      ? []
+                      : [h.DataAttribute('popup-exiting', '')]),
+                  ],
+                  [],
+                ),
                 h.section(
                   [...parts.panel, h.Role('dialog'), h.Class('panel')],
                   [

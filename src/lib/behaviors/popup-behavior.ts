@@ -40,6 +40,7 @@ export type Config = Popup.ContentLabels &
     portal?: 'top-layer'
     arrowPadding?: number
     waitForExit?: boolean | 'auto'
+    exitSurfaceIds?: readonly string[]
   }>
 
 const FocusTrigger = Command.define('FocusAnchoredPopupTrigger', {
@@ -88,6 +89,7 @@ const exitVersionAttribute = 'data-popup-exit-version'
 /** Observe a mounted surface's finite animations after its data-popup-exit-version changes. */
 export const exitCompletions = (
   element: HTMLElement,
+  additionalIds: readonly string[] = [],
 ): Stream.Stream<typeof Request.CompletedExit.Type> =>
   Stream.callback(queue =>
     Effect.acquireRelease(
@@ -106,14 +108,27 @@ export const exitCompletions = (
           const pending = new AbortController()
           current = pending
           frame = realm.requestAnimationFrame(() => {
-            const animations = (element.getAnimations?.() ?? []).filter(
+            const root = element.getRootNode()
+            const lookupRoot =
+              root instanceof realm.ShadowRoot ? root : element.ownerDocument
+            const surfaces = new Set<Element>([element])
+            for (const id of additionalIds) {
+              const surface = lookupRoot.getElementById(id)
+              if (surface?.isConnected) surfaces.add(surface)
+            }
+            const animations = new Set(
+              Array.from(surfaces).flatMap(
+                surface => surface.getAnimations?.() ?? [],
+              ),
+            )
+            const finite = Array.from(animations).filter(
               animation =>
                 animation.effect?.getComputedTiming().endTime !== Infinity &&
                 animation.playbackRate !== 0 &&
                 animation.playState !== 'paused',
             )
             void Promise.allSettled(
-              animations.map(animation => animation.finished),
+              finite.map(animation => animation.finished),
             ).then(() => {
               if (
                 !pending.signal.aborted &&
@@ -147,6 +162,7 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
     focusAfterPosition: Schema.Boolean,
     focusSelector: Schema.optionalKey(Schema.String),
     autoExit: Schema.optionalKey(Schema.Boolean),
+    exitSurfaceIds: Schema.optionalKey(Schema.Array(Schema.String)),
     topLayer: Schema.optionalKey(Schema.Boolean),
   },
   messages: [
@@ -163,6 +179,7 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
     focusAfterPosition,
     focusSelector,
     autoExit,
+    exitSurfaceIds,
     topLayer,
   }) => {
     let shouldFocus = focusAfterPosition
@@ -227,7 +244,11 @@ const ObservePanel = Mount.defineStream('ObserveAnchoredPopup', {
                 }),
             ).pipe(Effect.as(Lifecycle.CompletedPanelMount())),
           ).pipe(
-            Stream.merge(autoExit ? exitCompletions(element) : Stream.empty),
+            Stream.merge(
+              autoExit
+                ? exitCompletions(element, exitSurfaceIds)
+                : Stream.empty,
+            ),
             Stream.merge(
               Layer.mount({ insideIds: [triggerId] })
                 .f(element, Mount.liveViewStateChanges)
@@ -307,6 +328,9 @@ export const panelAttributes = <Msg>(
         focusAfterPosition: config.initialFocus !== undefined,
         ...(config.portal === 'top-layer' ? { topLayer: true } : {}),
         ...(config.waitForExit === 'auto' ? { autoExit: true } : {}),
+        ...(config.waitForExit === 'auto' && config.exitSurfaceIds !== undefined
+          ? { exitSurfaceIds: config.exitSurfaceIds }
+          : {}),
         ...(typeof config.initialFocus === 'object'
           ? { focusSelector: config.initialFocus.selector }
           : {}),
