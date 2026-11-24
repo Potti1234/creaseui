@@ -49,6 +49,7 @@ export const Model = Schema.Struct({
   lists: Lists,
   draft: Schema.Option(Draft),
   pointer: Schema.Option(Pointer),
+  pendingLists: Schema.optionalKey(Lists),
 })
 export type Model = typeof Model.Type
 
@@ -127,6 +128,7 @@ export type CommitDetails = Readonly<{
 }>
 
 export type Options = Readonly<{
+  controlled?: boolean
   order?: ReadonlyArray<string>
   group?: (key: string) => ReadonlyArray<string>
   accepts?: (key: string, list: string) => boolean
@@ -213,7 +215,7 @@ export const dropIndex = (
 
 export const lists = (model: Model): Lists =>
   Option.match(model.draft, {
-    onNone: () => model.lists,
+    onNone: () => model.pendingLists ?? model.lists,
     onSome: draft => draft.lists,
   })
 
@@ -296,6 +298,7 @@ const startDraft = (
 ): Option.Option<Model> => {
   const maybeFrom = listWith(model.lists, key)
   if (
+    model.pendingLists !== undefined ||
     Option.isSome(model.draft) ||
     Option.isNone(maybeFrom) ||
     options.disabled?.(key) === true
@@ -363,6 +366,11 @@ const settled = (model: Model): Model => ({
   pointer: Option.none(),
 })
 
+const proposed = (model: Model, next: Lists, options: Options): Model =>
+  options.controlled === true
+    ? { ...settled(model), pendingLists: next }
+    : { ...settled(model), lists: next }
+
 const commit = (
   model: Model,
   draft: Draft,
@@ -401,7 +409,7 @@ const commit = (
       commands,
     )
   return {
-    model: { ...settled(model), lists: draft.lists },
+    model: proposed(model, draft.lists, options),
     commands,
     outMessage: OutMessage.Transferred({
       ...details,
@@ -447,6 +455,7 @@ export const move = (
 ): UpdateReturn => {
   const maybeFrom = listWith(model.lists, key)
   if (
+    model.pendingLists !== undefined ||
     Option.isNone(maybeFrom) ||
     model.lists[list] === undefined ||
     (maybeFrom.value !== list && !accepts(options, key, list))
@@ -463,7 +472,10 @@ export const move = (
   }
   if (options.canCommit?.(next, details) === false) return { model }
   return {
-    model: setLists(model, next, options),
+    model:
+      options.controlled === true
+        ? proposed(model, next, options)
+        : setLists(model, next, options),
     outMessage: OutMessage.Transferred({
       ...details,
       lists: next,
@@ -472,12 +484,21 @@ export const move = (
   }
 }
 
+/** Resolves a pending controlled change with the owner's authoritative lists. */
+export const settle = (model: Model, value: Lists): Model => {
+  if (model.pendingLists === undefined) return model
+  const { pendingLists: _pending, ...rest } = model
+  return { ...rest, lists: value }
+}
+
 /** Replaces the committed lists, carrying an in-flight draft across the change. */
 export const setLists = (
   model: Model,
   now: Lists,
   options: Options = {},
 ): Model => {
+  if (model.pendingLists !== undefined)
+    return sameLists(now, model.lists) ? model : settle(model, now)
   if (Option.isNone(model.draft)) return { ...model, lists: now }
   const draft = model.draft.value
   const maybeFrom = listWith(now, draft.key)
@@ -584,6 +605,7 @@ export const update = (
       pressKey(model, key, pressedKey, modified, direction, columns, options),
     PressedItem: ({ key, pointerId, at, offset, size, focused }) =>
       pointer !== undefined ||
+      model.pendingLists !== undefined ||
       Option.isSome(model.draft) ||
       options.disabled?.(key) === true
         ? { model }
@@ -777,6 +799,7 @@ const bindInput = (surface: Element, send: (message: InputMessage) => void) => {
   let stopTracking: (() => void) | undefined
 
   const handleOf = (target: EventTarget | null): Element | undefined => {
+    if (surface.hasAttribute('data-transfer-settling')) return undefined
     if (!(target instanceof Element)) return undefined
     const handle = target.closest(itemSelectorAttribute)
     return handle !== null &&
@@ -1027,6 +1050,9 @@ export const create = <
       return inputs.toView(
         childAttributes([
           h.DataAttribute('transfer-surface', ''),
+          ...(model.pendingLists === undefined
+            ? []
+            : [h.DataAttribute('transfer-settling', '')]),
           ...(inputs.autoScroll === false
             ? []
             : [h.DataAttribute('transfer-auto-scroll', '')]),

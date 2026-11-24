@@ -1,4 +1,4 @@
-import { Effect, Equivalence, Option, Queue, Schema, Stream } from 'effect'
+import { Effect, Option, Queue, Schema, Stream } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import { inertHtml, type Attribute, type HtmlBuilder } from 'foldkit/html'
@@ -6,6 +6,8 @@ import { defineMessageUnion } from 'foldkit/message'
 import * as Render from 'foldkit/render'
 import { defineTaggedUnion } from 'foldkit/schema'
 import * as Subscription from 'foldkit/subscription'
+
+import { createAutoScroll } from './drag'
 
 const Orientation = Schema.Literals(['Horizontal', 'Vertical'])
 const Direction = Schema.Literals([
@@ -81,7 +83,10 @@ export const Message = defineMessageUnion({
   CompletedResolveKeyboardMove: keyboardTarget,
   ConfirmedKeyboardDrop: {},
   PressedArrowKey: { direction: Direction },
-  AdvancedAutoScrollFrame: {},
+  AdvancedAutoScrollFrame: {
+    at: Schema.optionalKey(ClientPoint),
+    maybeDropTarget: Schema.optionalKey(Schema.Option(DropTarget)),
+  },
   CompletedFocusItem: {},
 })
 export type Message = typeof Message.Type
@@ -116,6 +121,10 @@ export const init = ({
 })
 
 const containerSelector = '[data-droppable-id]'
+const findHandle = (doc: Document, itemId: string) =>
+  Array.from(doc.querySelectorAll<HTMLElement>('[data-draggable-id]')).find(
+    handle => handle.getAttribute('data-draggable-id') === itemId,
+  )
 const rowsIn = (container: Element) =>
   Array.from(container.querySelectorAll('[data-sortable-id]')).filter(
     row => row.closest(containerSelector) === container,
@@ -127,10 +136,7 @@ const FocusItem = Command.define('FocusDragItem', {
   execute: ({ itemId }) =>
     Render.afterCommit.pipe(
       Effect.map(() => {
-        const element = Array.from(
-          document.querySelectorAll<HTMLElement>('[data-draggable-id]'),
-        ).find(handle => handle.getAttribute('data-draggable-id') === itemId)
-        element?.focus()
+        findHandle(document, itemId)?.focus()
         return Message.CompletedFocusItem()
       }),
     ),
@@ -209,30 +215,62 @@ const hitTest = (
   })
 }
 
+const documentDragStyles = new WeakMap<
+  Document,
+  { count: number; restore: () => void }
+>()
+
+const lockDragStyles = (doc: Document): (() => void) => {
+  let lock = documentDragStyles.get(doc)
+  if (lock === undefined) {
+    const rootStyle = doc.documentElement.style
+    const previous = ['user-select', '-webkit-user-select'].map(property => ({
+      property,
+      value: rootStyle.getPropertyValue(property),
+      priority: rootStyle.getPropertyPriority(property),
+    }))
+    for (const { property } of previous)
+      rootStyle.setProperty(property, 'none', 'important')
+    const cursor = doc.createElement('style')
+    cursor.textContent = '* { cursor: grabbing !important; }'
+    doc.head.append(cursor)
+    lock = {
+      count: 0,
+      restore: () => {
+        cursor.remove()
+        for (const { property, value, priority } of previous)
+          rootStyle.setProperty(property, value, priority)
+      },
+    }
+    documentDragStyles.set(doc, lock)
+  }
+  const acquired = lock
+  acquired.count++
+  return () => {
+    acquired.count--
+    if (acquired.count === 0) {
+      documentDragStyles.delete(doc)
+      acquired.restore()
+    }
+  }
+}
+
 const trackPointer = (
   doc: Document,
   orientation: typeof Orientation.Type,
   pointerId: number | undefined,
+  itemId: string,
 ) =>
   Stream.callback<Message>(queue =>
     Effect.acquireRelease(
       Effect.sync(() => {
-        const rootStyle = doc.documentElement.style
-        const previous = ['user-select', '-webkit-user-select'].map(
-          property => ({
-            property,
-            value: rootStyle.getPropertyValue(property),
-            priority: rootStyle.getPropertyPriority(property),
-          }),
-        )
-        for (const { property } of previous)
-          rootStyle.setProperty(property, 'none')
-
-        const cursor = doc.createElement('style')
-        cursor.textContent = '* { cursor: grabbing !important; }'
-        doc.head.append(cursor)
+        const unlock = lockDragStyles(doc)
+        const handle =
+          pointerId === undefined ? undefined : findHandle(doc, itemId)
+        let finished = false
         const accepts = (event: PointerEvent) =>
-          pointerId === undefined || event.pointerId === pointerId
+          !finished &&
+          (pointerId === undefined || event.pointerId === pointerId)
         const move = (event: PointerEvent) => {
           if (!accepts(event)) return
           const { screenX, screenY, clientX, clientY } = event
@@ -247,23 +285,34 @@ const trackPointer = (
             }),
           )
         }
-        const release = (event: PointerEvent) => {
-          if (accepts(event))
-            Queue.offerUnsafe(queue, Message.ReleasedPointer())
+        const finish = (event: PointerEvent, message: Message) => {
+          if (!accepts(event)) return
+          finished = true
+          Queue.offerUnsafe(queue, message)
         }
-        const cancel = (event: PointerEvent) => {
-          if (accepts(event)) Queue.offerUnsafe(queue, Message.CancelledDrag())
-        }
+        const release = (event: PointerEvent) =>
+          finish(event, Message.ReleasedPointer())
+        const cancel = (event: PointerEvent) =>
+          finish(event, Message.CancelledDrag())
         doc.addEventListener('pointermove', move)
         doc.addEventListener('pointerup', release)
         doc.addEventListener('pointercancel', cancel)
+        handle?.addEventListener('lostpointercapture', cancel)
+        if (pointerId !== undefined) {
+          try {
+            handle?.setPointerCapture?.(pointerId)
+          } catch {
+            // The pointer may already be inactive before the subscription starts.
+          }
+        }
         return () => {
           doc.removeEventListener('pointermove', move)
           doc.removeEventListener('pointerup', release)
           doc.removeEventListener('pointercancel', cancel)
-          cursor.remove()
-          for (const { property, value, priority } of previous)
-            rootStyle.setProperty(property, value, priority)
+          handle?.removeEventListener('lostpointercapture', cancel)
+          if (pointerId !== undefined && handle?.hasPointerCapture?.(pointerId))
+            handle.releasePointerCapture(pointerId)
+          unlock()
         }
       }),
       cleanup => Effect.sync(cleanup),
@@ -295,18 +344,14 @@ const keyboardMove = (event: KeyboardEvent): Option.Option<Message> => {
   }
 }
 
-const scrollViewport = (viewport: Window, y: number) => {
-  const edge = 40
-  const bottom = viewport.innerHeight - y
-  const distance = Math.min(y, bottom)
-  if (distance >= edge) return
-  const speed = 15 * Math.min(1, 1 - distance / edge)
-  viewport.scrollBy(0, y <= bottom ? -speed : speed)
-}
-
 export const subscriptions = Subscription.make<Model, Message>()(entry => ({
   documentPointer: entry(
-    { active: Schema.Boolean, orientation: Orientation, ...pointerIdentity },
+    {
+      active: Schema.Boolean,
+      orientation: Orientation,
+      itemId: Schema.String,
+      ...pointerIdentity,
+    },
     {
       modelToDependencies: ({ dragState, orientation }) => {
         const active =
@@ -315,11 +360,14 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
         return {
           active,
           orientation,
+          itemId: active ? dragState.itemId : '',
           ...(pointerId === undefined ? {} : { pointerId }),
         }
       },
-      dependenciesToStream: ({ active, orientation, pointerId }) =>
-        active ? trackPointer(document, orientation, pointerId) : Stream.empty,
+      dependenciesToStream: ({ active, orientation, pointerId, itemId }) =>
+        active
+          ? trackPointer(document, orientation, pointerId, itemId)
+          : Stream.empty,
     },
   ),
   documentEscape: entry(
@@ -354,27 +402,40 @@ export const subscriptions = Subscription.make<Model, Message>()(entry => ({
     },
   ),
   autoScroll: entry(
-    { active: Schema.Boolean, clientY: Schema.Number },
+    { active: Schema.Boolean, orientation: Orientation, ...ClientPoint.fields },
     {
-      modelToDependencies: ({ dragState }) => ({
+      modelToDependencies: ({ dragState, orientation }) => ({
         active: dragState._tag === 'Dragging',
+        orientation,
+        clientX: dragState._tag === 'Dragging' ? dragState.current.clientX : 0,
         clientY: dragState._tag === 'Dragging' ? dragState.current.clientY : 0,
       }),
-      keepAliveEquivalence: Equivalence.Struct({ active: Equivalence.Boolean }),
-      dependenciesToStream: ({ active }, readDependencies) =>
+      dependenciesToStream: ({ active, orientation, clientX, clientY }) =>
         active
           ? Stream.callback<Message>(queue =>
               Effect.acquireRelease(
                 Effect.sync(() => {
-                  const viewport = document.defaultView
-                  if (!viewport) return () => {}
-                  const step = () => {
-                    scrollViewport(viewport, readDependencies().clientY)
-                    Queue.offerUnsafe(queue, Message.AdvancedAutoScrollFrame())
-                    frame = viewport.requestAnimationFrame(step)
-                  }
-                  let frame = viewport.requestAnimationFrame(step)
-                  return () => viewport.cancelAnimationFrame(frame)
+                  const doc = document
+                  const scroller = createAutoScroll(doc, {
+                    edge: 40,
+                    speed: 15,
+                    onScroll: () => {
+                      Queue.offerUnsafe(
+                        queue,
+                        Message.AdvancedAutoScrollFrame({
+                          at: { clientX, clientY },
+                          maybeDropTarget: hitTest(
+                            doc,
+                            clientX,
+                            clientY,
+                            orientation,
+                          ),
+                        }),
+                      )
+                    },
+                  })
+                  scroller.update(clientX, clientY)
+                  return scroller.stop
                 }),
                 cleanup => Effect.sync(cleanup),
               ).pipe(Effect.andThen(Effect.never)),
@@ -560,7 +621,14 @@ export const update = (
             ],
           }
         : { model },
-    AdvancedAutoScrollFrame: () => ({ model }),
+    AdvancedAutoScrollFrame: ({ at, maybeDropTarget }) =>
+      state._tag === 'Dragging' &&
+      maybeDropTarget !== undefined &&
+      (at === undefined ||
+        (at.clientX === state.current.clientX &&
+          at.clientY === state.current.clientY))
+        ? { model: { ...model, dragState: { ...state, maybeDropTarget } } }
+        : { model },
     CompletedFocusItem: () => ({ model }),
   })
 }

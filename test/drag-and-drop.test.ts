@@ -73,6 +73,13 @@ describe('DragAndDrop', () => {
       const list = document.createElement('div')
       const row = document.createElement('div')
       const child = document.createElement('span')
+      const captures = new Set<number>()
+      child.setAttribute('data-draggable-id', item.itemId)
+      Object.assign(child, {
+        setPointerCapture: (id: number) => captures.add(id),
+        hasPointerCapture: (id: number) => captures.has(id),
+        releasePointerCapture: (id: number) => captures.delete(id),
+      })
       list.setAttribute('data-droppable-id', 'destination')
       row.setAttribute('data-sortable-id', 'another-item')
       row.append(child)
@@ -104,11 +111,27 @@ describe('DragAndDrop', () => {
           Effect.timeout('2 seconds'),
         ),
       )
+      const waiting = Dnd.update(
+        idle,
+        Dnd.Message.PressedDraggable({
+          ...item,
+          screenX: 0,
+          screenY: 0,
+          pointerId: 8,
+        }),
+      ).model
+      const second = Effect.runPromise(
+        Stream.runHead(
+          subscription.dependenciesToStream(
+            subscription.modelToDependencies(waiting),
+          ),
+        ).pipe(Effect.timeout('2 seconds')),
+      )
       // Wait for the subscription to acquire its document styles before moving.
       const pointer = setInterval(() => {
-        if (document.head.querySelector('style') === null) return
+        if (!captures.has(7) || !captures.has(8)) return
         document.dispatchEvent(
-          new window.PointerEvent('pointerup', { pointerId: 8 }),
+          new window.PointerEvent('pointerup', { pointerId: 9 }),
         )
         document.dispatchEvent(
           new window.PointerEvent('pointermove', {
@@ -119,8 +142,8 @@ describe('DragAndDrop', () => {
             clientY: 40,
           }),
         )
-        document.dispatchEvent(
-          new window.PointerEvent('pointercancel', { pointerId: 7 }),
+        child.dispatchEvent(
+          new window.PointerEvent('lostpointercapture', { pointerId: 7 }),
         )
       }, 10)
       const [moved, cancelled] = Array.from(
@@ -129,6 +152,21 @@ describe('DragAndDrop', () => {
       assert.ok(moved)
       assert.equal(moved._tag, 'MovedPointer')
       assert.deepEqual(cancelled, Dnd.Message.CancelledDrag())
+      assert.equal(captures.has(7), false)
+      assert.equal(captures.has(8), true)
+      assert.equal(document.head.querySelectorAll('style').length, 1)
+      assert.equal(
+        document.documentElement.style.getPropertyValue('user-select'),
+        'none',
+      )
+      document.dispatchEvent(
+        new window.PointerEvent('pointerup', { pointerId: 8 }),
+      )
+      assert.deepEqual(
+        Option.getOrThrow(await second),
+        Dnd.Message.ReleasedPointer(),
+      )
+      assert.equal(captures.size, 0)
       const dragging = Dnd.update(pending, moved).model
       assert.deepEqual(Option.getOrThrow(Dnd.maybeDropTarget(dragging)), {
         containerId: 'destination',
@@ -143,6 +181,96 @@ describe('DragAndDrop', () => {
         'important',
       )
       assert.equal(document.head.querySelector('style'), null)
+    } finally {
+      if (previous) Object.defineProperty(globalThis, 'document', previous)
+      else Reflect.deleteProperty(globalThis, 'document')
+      await window.close()
+    }
+  })
+
+  it('rechecks the target after nested scrolling and stays quiet away from edges', async () => {
+    const window = new Window()
+    const { document } = window
+    const previous = Object.getOwnPropertyDescriptor(globalThis, 'document')
+    Object.defineProperty(globalThis, 'document', {
+      value: document,
+      configurable: true,
+    })
+    try {
+      const scroller = document.createElement('div')
+      const list = document.createElement('div')
+      const row = document.createElement('div')
+      list.setAttribute('data-droppable-id', destination.containerId)
+      row.setAttribute('data-sortable-id', 'another-item')
+      scroller.style.overflowY = 'auto'
+      scroller.append(list)
+      list.append(row)
+      document.body.append(scroller)
+      Object.defineProperties(scroller, {
+        scrollHeight: { value: 400 },
+        clientHeight: { value: 100 },
+      })
+      const rect = (top: number, bottom: number) => ({
+        left: 0,
+        right: 100,
+        top,
+        bottom,
+        height: bottom - top,
+        width: 100,
+      })
+      Object.defineProperty(scroller, 'getBoundingClientRect', {
+        value: () => rect(0, 100),
+      })
+      Object.defineProperty(row, 'getBoundingClientRect', {
+        value: () => rect(90 - scroller.scrollTop, 110 - scroller.scrollTop),
+      })
+      Object.defineProperty(document, 'elementsFromPoint', {
+        value: () => [row],
+      })
+      const pending = Dnd.update(idle, press).model
+      const at = (clientY: number) =>
+        Dnd.update(
+          pending,
+          Dnd.Message.MovedPointer({
+            screenX: 10,
+            screenY: 0,
+            clientX: 50,
+            clientY,
+            maybeDropTarget: Option.some({
+              containerId: destination.containerId,
+              index: 0,
+            }),
+          }),
+        ).model
+      const subscription = Dnd.subscriptions.autoScroll
+      const stream = (model: Dnd.Model) =>
+        subscription.dependenciesToStream(
+          subscription.modelToDependencies(model),
+        )
+      const quiet = await Effect.runPromise(
+        Stream.runHead(stream(at(50))).pipe(Effect.timeoutOption('100 millis')),
+      )
+      assert.ok(Option.isNone(quiet))
+      assert.equal(scroller.scrollTop, 0)
+      const dragging = at(95)
+      const frame = Option.getOrThrow(
+        await Effect.runPromise(
+          Stream.runHead(stream(dragging)).pipe(Effect.timeout('2 seconds')),
+        ),
+      )
+      assert.ok(scroller.scrollTop > 0)
+      assert.equal(frame._tag, 'AdvancedAutoScrollFrame')
+      assert.deepEqual(
+        Option.getOrThrow(
+          Dnd.maybeDropTarget(Dnd.update(dragging, frame).model),
+        ),
+        {
+          containerId: destination.containerId,
+          index: 1,
+        },
+      )
+      const away = at(50)
+      assert.equal(Dnd.update(away, frame).model, away)
     } finally {
       if (previous) Object.defineProperty(globalThis, 'document', previous)
       else Reflect.deleteProperty(globalThis, 'document')

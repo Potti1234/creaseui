@@ -622,6 +622,7 @@
       "type": "registry:lib",
       "title": "Foldkit Drag and Drop Behavior",
       "description": "Headless pointer and keyboard drag-and-drop Submodel and attribute bundles for sortable lists.",
+      "registryDependencies": ["Potti1234/creaseui/drag-behavior"],
       "files": [
         {
           "path": "behaviors/drag-and-drop.ts",

@@ -45,6 +45,12 @@ imperative moves, and per-step announcements.
 - Use `move` for an immediate move ("Move to Done"), and `grab`, `moveTo`,
   `drop` and `cancel` for a staged one. Call `setLists` when the lists change
   outside Transfer; an in-flight draft is rebased or dropped.
+- For an owner-controlled list, pass `controlled: true` to the update. A
+  successful drop or imperative move emits the proposed lists and keeps
+  them visible while the owner decides. `model.lists` remains the last owner
+  value. Use `setLists` to reflect an updated owner value, or `settle(model,
+ownerLists)` to explicitly accept, adjust, or reject the proposal. Transfer
+  waits for the current proposal to settle before starting another move.
 
 The Sprint board block (`creaseui-kanban-board`) uses Transfer in Tailwind,
 StyleX and Pleat: In progress holds at most three cards.

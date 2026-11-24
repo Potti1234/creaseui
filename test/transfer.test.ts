@@ -33,6 +33,31 @@ const announcement = (result: { outMessage?: Transfer.OutMessage }) =>
   result.outMessage?.announcement
 
 describe('Transfer', () => {
+  it('keeps a controlled drop visible until the owner accepts or rejects it', () => {
+    const config = { ...options, controlled: true }
+    const initial = start()
+    const grabbed = Transfer.grab(initial, 'a', config).model
+    const draft = Transfer.moveTo(grabbed, 'done', 0, config).model
+    const { model, outMessage } = Transfer.drop(draft, config)
+    assert.equal(outMessage?._tag, 'Transferred')
+    assert.equal(model.lists, initial.lists)
+    assert.deepEqual(Transfer.lists(model).done, ['a'])
+    assert.equal(Transfer.moving(model, 'a'), false)
+    assert.equal(Transfer.setLists(model, { ...initial.lists }), model)
+    assert.equal(Transfer.grab(model, 'b', config).model, model)
+    assert.equal(Transfer.move(model, 'b', 'done', 0, config).model, model)
+    assert.ok(outMessage?._tag === 'Transferred')
+    const accepted = Transfer.setLists(model, outMessage.lists)
+    assert.equal(accepted.pendingLists, undefined)
+    assert.deepEqual(accepted.lists.done, ['a'])
+    const rejected = Transfer.settle(model, initial.lists)
+    assert.equal(rejected.pendingLists, undefined)
+    assert.equal(Transfer.lists(rejected), initial.lists)
+    const immediate = Transfer.move(initial, 'a', 'done', 0, config).model
+    assert.equal(immediate.lists, initial.lists)
+    assert.deepEqual(Transfer.lists(immediate).done, ['a'])
+  })
+
   it('moves groups in source order and requires every member to be accepted', () => {
     const model = Transfer.init({
       id: 'grid',
