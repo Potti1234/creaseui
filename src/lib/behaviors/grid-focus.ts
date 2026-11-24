@@ -12,16 +12,23 @@ export const GridCell = Schema.Struct({
 })
 export type GridCell = typeof GridCell.Type
 
+const MoveContext = Schema.Struct({
+  reason: Schema.Literals(['keyboard', 'programmatic', 'focus']),
+  shift: Schema.Boolean,
+})
+type MoveContext = typeof MoveContext.Type
+
 export const Model = Schema.Struct({
   id: Schema.String,
   maybeActiveCell: Schema.Option(GridCell),
   revealVersion: Schema.optional(Schema.Number),
   pendingReveal: Schema.optional(GridCell),
+  pendingMoveContext: Schema.optional(MoveContext),
 })
 export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
-  MovedFocus: { cell: GridCell },
+  MovedFocus: { cell: GridCell, context: Schema.optional(MoveContext) },
   FocusedCell: { cell: GridCell },
   CompletedFocusCell: {},
   RevealedCell: { version: Schema.Number },
@@ -31,11 +38,19 @@ export type Message = typeof Message.Type
 
 export const OutMessage = defineMessageUnion({
   RequestedReveal: { cell: GridCell, version: Schema.Number },
+  ActiveCellMoved: {
+    from: Schema.Option(GridCell),
+    cell: GridCell,
+    context: MoveContext,
+  },
 })
 export type OutMessage = typeof OutMessage.Type
 
 type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
-type FocusOptions = Readonly<{ requiresReveal?: (cell: GridCell) => boolean }>
+type FocusOptions = Readonly<{
+  requiresReveal?: (cell: GridCell) => boolean
+  notifyMove?: boolean
+}>
 
 export const init = (config: Readonly<{ id: string }>): Model => ({
   id: config.id,
@@ -53,6 +68,28 @@ const cellSelector = (id: string, cell: GridCell): string =>
 
 const sameCell = (a: GridCell, b: GridCell): boolean =>
   a.row === b.row && a.column === b.column
+
+/** Only the cells whose active state changed, in leave-then-enter order. */
+export const byCell = (
+  previous: Option.Option<GridCell>,
+  next: Option.Option<GridCell>,
+): ReadonlyArray<Readonly<{ cell: GridCell; isActive: boolean }>> => {
+  if (
+    Option.isSome(previous) &&
+    Option.exists(next, cell => sameCell(previous.value, cell))
+  )
+    return []
+  return [
+    ...Option.match(previous, {
+      onNone: () => [],
+      onSome: cell => [{ cell, isActive: false }],
+    }),
+    ...Option.match(next, {
+      onNone: () => [],
+      onSome: cell => [{ cell, isActive: true }],
+    }),
+  ]
+}
 
 export const isActive = (model: Model, cell: GridCell): boolean =>
   Option.exists(model.maybeActiveCell, active => sameCell(active, cell))
@@ -117,24 +154,52 @@ export const FocusCell = Command.define('FocusCell', {
     ),
 })
 
-export const focus = (
+const setActiveCell = (
   model: Model,
   cell: GridCell,
-  options: FocusOptions = {},
+  context: MoveContext,
+  notifyMove = false,
 ): UpdateReturn => {
-  if (options.requiresReveal?.(cell)) {
-    const version = (model.revealVersion ?? 0) + 1
-    return {
-      model: { ...model, revealVersion: version, pendingReveal: cell },
-      outMessage: OutMessage.RequestedReveal({ cell, version }),
-    }
-  }
+  const next = Option.some(cell)
   return {
     model: {
       ...model,
       pendingReveal: undefined,
-      maybeActiveCell: Option.some(cell),
+      pendingMoveContext: undefined,
+      maybeActiveCell: next,
     },
+    ...(!notifyMove || isActive(model, cell)
+      ? {}
+      : {
+          outMessage: OutMessage.ActiveCellMoved({
+            from: model.maybeActiveCell,
+            cell,
+            context,
+          }),
+        }),
+  }
+}
+
+export const focus = (
+  model: Model,
+  cell: GridCell,
+  options: FocusOptions = {},
+  context: MoveContext = { reason: 'programmatic', shift: false },
+): UpdateReturn => {
+  if (options.requiresReveal?.(cell)) {
+    const version = (model.revealVersion ?? 0) + 1
+    return {
+      model: {
+        ...model,
+        revealVersion: version,
+        pendingReveal: cell,
+        pendingMoveContext: options.notifyMove ? context : undefined,
+      },
+      outMessage: OutMessage.RequestedReveal({ cell, version }),
+    }
+  }
+  return {
+    ...setActiveCell(model, cell, context, options.notifyMove),
     commands: [FocusCell({ id: model.id, cell })],
   }
 }
@@ -145,22 +210,31 @@ export const update = (
   options: FocusOptions = {},
 ): UpdateReturn =>
   Message.match<UpdateReturn>(message, {
-    MovedFocus: ({ cell }) => focus(model, cell, options),
-    FocusedCell: ({ cell }) => ({
-      model: {
-        ...model,
-        pendingReveal: undefined,
-        maybeActiveCell: Option.some(cell),
-      },
-    }),
+    MovedFocus: ({ cell, context }) => focus(model, cell, options, context),
+    FocusedCell: ({ cell }) =>
+      setActiveCell(
+        model,
+        cell,
+        { reason: 'focus', shift: false },
+        options.notifyMove,
+      ),
     RevealedCell: ({ version }) =>
       version === model.revealVersion && model.pendingReveal !== undefined
-        ? focus(model, model.pendingReveal)
+        ? focus(
+            model,
+            model.pendingReveal,
+            { notifyMove: model.pendingMoveContext !== undefined },
+            model.pendingMoveContext,
+          )
         : { model },
     CanceledReveal: ({ version }) => ({
       model:
         version === model.revealVersion
-          ? { ...model, pendingReveal: undefined }
+          ? {
+              ...model,
+              pendingReveal: undefined,
+              pendingMoveContext: undefined,
+            }
           : model,
     }),
     CompletedFocusCell: () => ({ model }),
@@ -284,7 +358,17 @@ export const create = (): Bundle => ({
                     currentCell: model.pendingReveal ?? cell,
                     pressedKey,
                     ctrl: modifiers.ctrlKey || modifiers.metaKey,
-                  }).pipe(Option.map(cell => Message.MovedFocus({ cell }))),
+                  }).pipe(
+                    Option.map(cell =>
+                      Message.MovedFocus({
+                        cell,
+                        context: {
+                          reason: 'keyboard',
+                          shift: modifiers.shiftKey,
+                        },
+                      }),
+                    ),
+                  ),
             ),
           ]),
         }

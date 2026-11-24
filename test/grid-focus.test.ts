@@ -13,6 +13,55 @@ const move = (input: Partial<Grid.NavigationInput> = {}) =>
     ...input,
   })
 describe('GridFocus', () => {
+  it('selects only the cells whose active flag changed', () => {
+    const from = { row: 1, column: 2 }
+    const to = { row: 2, column: 2 }
+    assert.deepEqual(
+      Grid.byCell(Option.some(from), Option.some({ ...from })),
+      [],
+    )
+    assert.deepEqual(Grid.byCell(Option.some(from), Option.some(to)), [
+      { cell: from, isActive: false },
+      { cell: to, isActive: true },
+    ])
+    assert.deepEqual(Grid.byCell(Option.none(), Option.some(to)), [
+      { cell: to, isActive: true },
+    ])
+    assert.deepEqual(Grid.byCell(Option.some(from), Option.none()), [
+      { cell: from, isActive: false },
+    ])
+  })
+
+  it('reports one move fact with original keyboard context after reveal', () => {
+    const from = { row: 1, column: 0 }
+    const cell = { row: 9, column: 0 }
+    const model = Grid.focus(Grid.init({ id: 'grid' }), from).model
+    const context = { reason: 'keyboard', shift: true } as const
+    const moved = Grid.update(
+      model,
+      Grid.Message.MovedFocus({ cell, context }),
+      {
+        requiresReveal: () => true,
+        notifyMove: true,
+      },
+    )
+    const ready = Grid.update(
+      moved.model,
+      Grid.Message.RevealedCell({ version: 1 }),
+    )
+    assert.deepEqual(
+      ready.outMessage,
+      Grid.OutMessage.ActiveCellMoved({
+        from: Option.some(from),
+        cell,
+        context,
+      }),
+    )
+    assert.equal(
+      Grid.update(ready.model, Grid.Message.FocusedCell({ cell })).outMessage,
+      undefined,
+    )
+  })
   it('reveals a newly mounted active descendant before publishing it', async () => {
     const window = new Window()
     try {

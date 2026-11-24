@@ -15,6 +15,57 @@ const move = (input: Partial<RovingFocus.NavigationInput<string>> = {}) =>
   })
 
 describe('RovingFocus navigation', () => {
+  it('skips nonfocusable items even when disabled arrow focus is enabled', () => {
+    assert.deepEqual(
+      move({
+        isFocusable: (_key, index) => index !== 2,
+        focusDisabledWithArrows: true,
+      }),
+      Option.some('one'),
+    )
+  })
+
+  it('prefers enabled tab stops and opts into a focusable disabled fallback', () => {
+    const model = RovingFocus.focus(
+      RovingFocus.init({ id: 'group' }),
+      'two',
+    ).model
+    const inputs = {
+      keys,
+      preferredKey: 'three',
+      isDisabled: (key: string) => key === 'two',
+    }
+    assert.equal(
+      RovingFocus.tabStop(model, { ...inputs, focusDisabledWithArrows: true }),
+      'three',
+    )
+    const allDisabled = {
+      ...inputs,
+      isDisabled: () => true,
+      isFocusable: (key: string) => key !== 'two',
+    }
+    assert.equal(RovingFocus.tabStop(model, allDisabled), undefined)
+    assert.equal(
+      RovingFocus.tabStop(model, {
+        ...allDisabled,
+        focusDisabledWithArrows: true,
+      }),
+      'three',
+    )
+    const clear = RovingFocus.update(
+      model,
+      RovingFocus.Message.BlurredItem({ key: 'two' }),
+    )
+    assert.equal(
+      RovingFocus.tabStop(clear.model, { keys, preferredKey: 'three' }),
+      'three',
+    )
+    assert.equal(
+      RovingFocus.update(model, RovingFocus.Message.BlurredItem({ key: 'one' }))
+        .model,
+      model,
+    )
+  })
   it('opts disabled items into arrows while Home and End still prefer enabled items', () => {
     const isDisabled = (key: string) => key === 'three'
     const focusDisabledWithArrows = true
