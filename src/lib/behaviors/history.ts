@@ -96,6 +96,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         !last.reverted &&
         sameControl(last, change) &&
         last.source === change.source &&
+        last.attribution === change.attribution &&
         last.reason === change.reason &&
         change.reason !== 'item-press' &&
         change.reason !== 'imperative'

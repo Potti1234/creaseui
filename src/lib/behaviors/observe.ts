@@ -1,4 +1,5 @@
 import { Schema } from 'effect'
+import { Context } from './change'
 
 export const Change = Schema.Struct({
   ref: Schema.String,
@@ -7,8 +8,7 @@ export const Change = Schema.Struct({
   key: Schema.String,
   value: Schema.Unknown,
   previous: Schema.Unknown,
-  reason: Schema.String,
-  source: Schema.String,
+  ...Context.fields,
   phase: Schema.Literals(['Live', 'Commit']),
   redacted: Schema.Boolean,
 })

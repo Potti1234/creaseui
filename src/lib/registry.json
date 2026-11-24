@@ -32,6 +32,20 @@
       ]
     },
     {
+      "name": "agent-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Agent Behavior",
+      "description": "Application-owned action requests, validation, approval and reported results.",
+      "registryDependencies": ["Potti1234/creaseui/observe-behavior"],
+      "files": [
+        {
+          "path": "behaviors/agent.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/agent.ts"
+        }
+      ]
+    },
+    {
       "name": "alert-behavior",
       "type": "registry:lib",
       "title": "Foldkit Alert Semantics",
@@ -280,6 +294,19 @@
           "path": "behaviors/cell-range.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/cell-range.ts"
+        }
+      ]
+    },
+    {
+      "name": "change-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Change Behavior",
+      "description": "Validated change proposals, live edits and attributed commits.",
+      "files": [
+        {
+          "path": "behaviors/change.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/change.ts"
         }
       ]
     },
@@ -753,6 +780,20 @@
       ]
     },
     {
+      "name": "history-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Change History",
+      "description": "Attributed change recording, coalescing, undo, and redo.",
+      "registryDependencies": ["Potti1234/creaseui/observe-behavior"],
+      "files": [
+        {
+          "path": "behaviors/history.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/history.ts"
+        }
+      ]
+    },
+    {
       "name": "hover-card-behavior",
       "type": "registry:lib",
       "title": "Foldkit Hover Card Interaction Behavior",
@@ -1167,6 +1208,20 @@
           "path": "behaviors/hold-repeat.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/hold-repeat.ts"
+        }
+      ]
+    },
+    {
+      "name": "observe-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Observe Behavior",
+      "description": "Typed change records with scopes, phase filtering and redaction.",
+      "registryDependencies": ["Potti1234/creaseui/change-behavior"],
+      "files": [
+        {
+          "path": "behaviors/observe.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/observe.ts"
         }
       ]
     },

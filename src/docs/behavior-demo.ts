@@ -5,6 +5,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 import * as Agent from '@/lib/behaviors/agent'
+import * as Change from '@/lib/behaviors/change'
 import * as History from '@/lib/behaviors/history'
 import * as Observe from '@/lib/behaviors/observe'
 import type * as Card from '@/ui/card'
@@ -32,7 +33,10 @@ export const Message = defineMessageUnion({
   ToggledPublic: { value: Schema.Boolean },
   GotAgentMessage: { message: Agent.Message },
   GotHistoryMessage: { message: History.Message },
-  AppliedAgentAction: { action: Agent.Action },
+  AppliedAgentAction: {
+    action: Agent.Action,
+    context: Schema.optionalKey(Change.Context),
+  },
   AppliedHistory: { changes: Changes },
 })
 export type Message = typeof Message.Type
@@ -61,11 +65,17 @@ export const components = (model: Model): readonly Agent.Component[] => [
     actions: ['setChecked'],
   },
 ]
+const agentContext: Change.Context = {
+  reason: 'imperative',
+  source: 'agent',
+  attribution: 'behavior-demo-agent',
+}
+
 const ExecuteAction = Command.define('ExecuteBehaviorDemoAction', {
-  args: { action: Agent.Action },
+  args: { action: Agent.Action, context: Change.Context },
   messages: [Message.AppliedAgentAction],
-  execute: ({ action }) =>
-    Effect.succeed(Message.AppliedAgentAction({ action })),
+  execute: ({ action, context }) =>
+    Effect.succeed(Message.AppliedAgentAction({ action, context })),
 })
 const ApplyHistory = Command.define('ApplyBehaviorDemoHistory', {
   args: { changes: Changes },
@@ -77,36 +87,47 @@ const changed = (
   model: Model,
   ref: string,
   value: unknown,
-  source: string,
-): Readonly<{ model: Model; change: Observe.Change }> => {
+  context: Change.Context,
+) => {
+  if (ref !== 'region' && ref !== 'public')
+    return { model, status: 'vetoed' as const }
+
   const isRegion = ref === 'region'
-  const input = {
+  const result = Change.apply<Model, unknown>(
+    model,
+    { ...context, value },
+    {
+      read: model => (isRegion ? model.region : model.isPublic),
+      beforeWrite: ({ value }) =>
+        isRegion ? typeof value === 'string' : typeof value === 'boolean',
+      write: (model, value) =>
+        isRegion
+          ? { ...model, region: String(value) }
+          : { ...model, isPublic: value === true },
+    },
+  )
+  if (result.status !== 'committed') return result
+  const change = Observe.change({
+    ...result.change,
     ref,
     component: isRegion ? 'input' : 'switch',
     label: isRegion ? 'Region' : 'Public',
     key: isRegion ? 'value' : 'checked',
-    value,
-    previous: isRegion ? model.region : model.isPublic,
-    reason: 'imperative',
-    phase: 'Commit' as const,
-  }
-  const change =
-    source === 'agent'
-      ? Agent.agentChange(input)
-      : Observe.change({ ...input, source })
-  const history = Observe.accepts({}, change)
-    ? History.update(model.history, History.Message.Recorded({ change })).model
-    : model.history
-  return {
-    model: {
-      ...model,
-      region: isRegion ? String(value) : model.region,
-      isPublic: isRegion ? model.isPublic : value === true,
-      history,
-    },
-    change,
-  }
+  })
+  const history = History.update(
+    result.model.history,
+    History.Message.Recorded({ change }),
+  ).model
+  return { ...result, model: { ...result.model, history }, change }
 }
+const agentFinished = (result: Agent.Result): string => {
+  const count = result.steps.reduce(
+    (sum, step) => sum + (step.changes?.length ?? 0),
+    0,
+  )
+  return `Agent finished · ${count} ${count === 1 ? 'change' : 'changes'} applied`
+}
+
 const agentUpdate = (
   model: Model,
   message: Agent.Message,
@@ -125,7 +146,7 @@ const agentUpdate = (
       status:
         out?._tag === 'Finished'
           ? out.result.ok
-            ? 'Agent finished · 2 changes applied'
+            ? agentFinished(out.result)
             : (out.result.error?.message ?? 'Stopped')
           : out?._tag === 'RequestApproval'
             ? 'Waiting for your approval'
@@ -133,7 +154,10 @@ const agentUpdate = (
     },
     commands:
       out?._tag === 'RunStep'
-        ? [...commands, ExecuteAction({ action: out.action })]
+        ? [
+            ...commands,
+            ExecuteAction({ action: out.action, context: agentContext }),
+          ]
         : commands,
   }
 }
@@ -154,16 +178,26 @@ export const update = (
       ),
     GotAgentMessage: ({ message }) => agentUpdate(model, message),
     ChangedRegion: ({ value }) => ({
-      model: changed(model, 'region', value, 'keyboard').model,
+      model: changed(model, 'region', value, {
+        reason: 'input',
+        source: 'keyboard',
+      }).model,
     }),
     ToggledPublic: ({ value }) => ({
-      model: changed(model, 'public', value, 'pointer').model,
+      model: changed(model, 'public', value, {
+        reason: 'item-press',
+        source: 'pointer',
+      }).model,
     }),
-    AppliedAgentAction: ({ action }) => {
-      const result = changed(model, action.ref, action.args[0], 'agent')
+    AppliedAgentAction: ({ action, context = agentContext }) => {
+      const result = changed(model, action.ref, action.args[0], context)
       return agentUpdate(
         result.model,
-        Agent.Message.CompletedStep({ changes: [result.change] }),
+        result.status === 'vetoed'
+          ? Agent.Message.FailedStep({ message: 'Invalid workspace setting' })
+          : Agent.Message.CompletedStep({
+              changes: result.status === 'committed' ? [result.change] : [],
+            }),
       )
     },
     GotHistoryMessage: ({ message }) => {
