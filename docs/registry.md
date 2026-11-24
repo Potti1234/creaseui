@@ -3,10 +3,9 @@
 ## Compatibility
 
 The versions used by Crease UI's checks are published in
-[`compatibility.json`](../compatibility.json). Registry items deliberately do
-not install or replace `effect`, `foldkit`, `@foldkit/ui`, or
-`@effect/platform-browser`; the application owns those framework versions.
-This prevents a component install from creating a nested, older Foldkit copy.
+[`compatibility.json`](../compatibility.json). The application owns its
+`effect`, `foldkit`, and `@effect/platform-browser` versions. Registry items
+use these framework packages and CreaseUI's shared behavior source.
 
 The validation baseline is the one recorded in `compatibility.json` and the
 lockfile; successful reports from other versions do not change that baseline.

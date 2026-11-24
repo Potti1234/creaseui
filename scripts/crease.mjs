@@ -47,7 +47,7 @@ const doctor = () => {
     ...packageJson.dependencies,
     ...packageJson.devDependencies,
   }
-  const required = ['effect', 'foldkit', '@foldkit/ui']
+  const required = ['effect', 'foldkit']
   const missing = required.filter(name => packages[name] === undefined)
 
   if (missing.length > 0) {

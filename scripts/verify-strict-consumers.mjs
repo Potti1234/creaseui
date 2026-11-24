@@ -528,7 +528,6 @@ try {
           dependencies: Object.fromEntries(
             [
               '@effect/platform-browser',
-              '@foldkit/ui',
               'effect',
               'foldkit',
               'tailwindcss',
