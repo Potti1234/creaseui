@@ -1,6 +1,8 @@
 # CreaseUI behavior ownership migration
 
-CreaseUI should be able to build components from shared behaviors with Foldkit Schema models, Messages, Commands, and Mounts. Each public component keeps its existing contract in Tailwind, StyleX, and Pleat. A remaining Foldkit UI dependency is acceptable when its primitive is self-contained and its model and lifecycle do not leak into a reusable CreaseUI behavior.
+This plan tracks CreaseUI ownership of component behavior. The [UI SDK primitive parity audit](ui-sdk-primitive-parity.md) tracks the reusable contracts for building custom components.
+
+CreaseUI should be able to build components from shared behaviors with Foldkit Schema models, Messages, Commands, and Mounts. Each public component keeps its existing contract in Tailwind, StyleX, and Pleat. Foldkit core supplies the runtime and DOM effects for the shared behaviors.
 
 | Slice                                | Starting dependency                                                                                | Migration and acceptance criteria                                                                                                                                                                                                                                        |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -17,8 +19,8 @@ Ship the form-control, hover-intent, and selection slices independently. Establi
 ## Current branch
 
 - Button, Toggle, Input Group buttons, Input, Textarea, Checkbox, Switch, Fieldset, and Native Select build their native attributes in CreaseUI. File Input also uses the native File Drop behavior. Data Table and Virtual Data Table use the same checkbox control attributes as the standalone Checkbox.
-- Hover Intent owns its Schema state, and Hover Card uses native placement across the renderers.
-- The anchored popup foundation exposes inline position, dismissal, and focus. Popover owns its open, close, dismissal, and animation state. It retains Foldkit UI portal and advanced placement helpers. Tooltip owns its timers and visibility and uses the same low-level anchor setup for placement.
+- Drag and Drop owns subscriptions, hit testing, pointer capture, nested scrolling, and post-render focus. Transfer implements group and grid drafts and is used by Kanban.
+- The anchored popup foundation composes CreaseUI Position, Layer, and Portal. Popover owns its lifecycle and uses the shared geometry. Tooltip and Hover Card share versioned hover and focus intent.
 - Combobox and anchored Listbox own their interaction models and renderer contracts. Command, Tokenizer, Select, Multi Selector, Time Input, and table filters compose those behaviors. The parent retains ownership of selection.
 
 - Accordion, Collapsible, and Banner use shared native Disclosure attributes. Linear and Circular Progress use the same owned progress semantics. Motion and Toast use generation-guarded native animation commands. Toast also owns its queue, timers, actions, and swipe behavior.
@@ -27,12 +29,12 @@ Ship the form-control, hover-intent, and selection slices independently. Establi
 - Calendar owns its grid, navigation, focus, and range policy. Date Picker composes it with the CreaseUI Popover lifecycle. The parent owns the selected date. Date Input, Date Range Input, Date Time Input, and Color Picker also use shared CreaseUI Popover.
 - Dialog owns its Schema, view, dismissal, and animation lifecycle. Alert Dialog, Drawer, Sheet, Lightbox, and Mobile Nav share this behavior. Foldkit core DOM APIs handle modal isolation, focus containment and restoration, Escape ordering, and scroll locking.
 
-## Retained Foldkit UI adapters
+## Dependency verification
 
-| Adapter                                                   | Responsibility                                                                                                                                                                                           |
-| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Position](../../src/lib/behaviors/position.ts)           | Portals and anchored DOM placement for Tooltip, Combobox and Listbox, plus Popover placement locking and per-edge collision padding. CreaseUI owns overlay visibility, dismissal and animation.          |
-| [Virtualizer](../../src/lib/behaviors/virtualizer.ts)     | DOM scroll and resize observation, visible-window calculations, and keyed spacer rendering. CreaseUI owns initialization, measurements, scroll state and completion guards.                              |
-| [Drag and Drop](../../src/lib/behaviors/drag-and-drop.ts) | DOM input subscriptions, hit testing, edge scrolling, keyboard target resolution, focus and ghost positioning. CreaseUI owns drag state, drop and cancel intent, and the parent-owned ordering contract. |
+The registry dependency test checks that installed behavior and renderer
+sources have no direct `@foldkit/ui` import. Tutorial snapshots keep the
+imports shown in their published chapters. Some older tests still use
+Foldkit UI message schemas to match historical fixtures.
 
-These are the production library boundaries that retain the package dependency. Live demos use the CreaseUI behavior entry points. Tutorial snapshots preserve the APIs used in their published chapters.
+The [primitive parity audit](ui-sdk-primitive-parity.md) records behavior
+coverage and the remaining interaction contracts.

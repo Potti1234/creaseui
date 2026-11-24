@@ -12,6 +12,7 @@
 - Component parity: /docs/component-parity.md
 - Machine-readable component index: /docs-index.json
 - Complete API inventory: /llms-full.txt
+- Behavior reference: /docs/behaviors
 
 ## Application recipes
 

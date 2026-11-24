@@ -4,6 +4,7 @@ import type { Update } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
+import { behaviors } from '@/docs/behavior-metadata'
 import { authoredPages } from '@/docs/components/pages'
 import { LINT_RULE_GROUPS } from '@/docs/lint/rules'
 import { TUTORIAL_CHAPTERS } from '@/docs/tutorial/chapter-meta'
@@ -20,6 +21,11 @@ export const DOC_PAGES = Object.values(authoredPages)
     description: page.definition.description,
   }))
   .concat(
+    behaviors.map(behavior => ({
+      slug: `behavior:${behavior.slug}`,
+      title: `${behavior.title} (${behavior.kind === 'primitive' ? 'behavior' : 'composition'})`,
+      description: behavior.description,
+    })),
     LINT_RULE_GROUPS.flatMap(group =>
       group.rules.map(rule => ({
         slug: `lint:${rule.id}`,

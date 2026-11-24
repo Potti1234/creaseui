@@ -1,3 +1,4 @@
+import { behaviorNavGroup } from '@/docs/behavior-metadata'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { autoCloseDetails } from '@/docs/details-nav'
 import * as Icon from '@/lib/icon'
@@ -772,6 +773,7 @@ export const view = <Msg>(
       label: group.label,
       items: group.components.map(componentLink),
     })),
+    behaviorNavGroup((href, label) => h.li([], [link(href, label)])),
     ...LINT_RULE_GROUPS.map(group => ({
       label: group.label,
       items: group.rules.map(rule => lintLink(rule.id, rule.title)),

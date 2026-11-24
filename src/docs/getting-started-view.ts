@@ -55,6 +55,8 @@ export type DocsGuideCodeProps<Msg> = Readonly<{
   sidebarScrolled: Msg
 }>
 
+export const docsGuideStyles = styles
+
 export const view = <Msg>(
   codeBlock: DocsGuideCodeProps<Msg>,
   h: HtmlBuilder<Msg>,

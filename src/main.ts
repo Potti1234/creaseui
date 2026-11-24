@@ -37,6 +37,10 @@ import * as ChartsPleat from '@/demo/charts-pleat/page'
 import * as ComponentCatalog from '@/docs/components/catalog'
 import * as GettingStartedPage from '@/docs/getting-started-view'
 import * as BehaviorDemo from '@/docs/behavior-demo'
+import * as BehaviorReference from '@/docs/behavior-reference'
+import { behaviorFor } from '@/docs/behavior-metadata'
+import * as Markdown from '@/lib/markdown'
+import '@/docs/behavior-reference.css'
 import * as TutorialDocs from '@/docs/tutorial-view'
 import { tutorialChapter } from '@/docs/tutorial/chapters'
 import * as CopyFeedback from '@/docs/copy-feedback'
@@ -58,6 +62,8 @@ import {
   blocksStyleXTablePath,
   chartsPath,
   componentDocsPath,
+  behaviorDocsPath,
+  behaviorsPath,
   gettingStartedPath,
   themingPath,
   lintRulePath,
@@ -228,6 +234,7 @@ export const Message = defineMessageUnion({
   GotCatalogDocsMessage: {
     message: ComponentCatalog.Message,
   },
+  GotBehaviorDocsMarkdownMessage: { message: Markdown.Message },
   GotDocsGuideCodeBlockMessage: { message: CodeBlock.Message },
   GotBehaviorDemoMessage: { message: BehaviorDemo.Message },
   ObservedDocsSidebarScroll: {},
@@ -454,7 +461,9 @@ export const update = (model: Model, message: Message): UpdateReturn =>
                           ? tutorialChapterPath(next.outMessage.slug.slice(9))
                           : next.outMessage.slug.startsWith('lint:')
                             ? lintRulePath(next.outMessage.slug.slice(5))
-                            : componentDocsPath(next.outMessage.slug),
+                            : next.outMessage.slug.startsWith('behavior:')
+                              ? behaviorDocsPath(next.outMessage.slug.slice(9))
+                              : componentDocsPath(next.outMessage.slug),
                       model.currentUrl,
                     ).href,
                   }),
@@ -1001,6 +1010,17 @@ export const update = (model: Model, message: Message): UpdateReturn =>
           },
           commands: Command.mapMessages(result.commands ?? [], message =>
             Message.GotBehaviorDemoMessage({ message }),
+          ),
+        }
+      },
+
+      GotBehaviorDocsMarkdownMessage: ({ message }) => {
+        if (model.page._tag !== 'BehaviorDocsPage') return { model }
+        const next = Markdown.update(model.page.markdown, message)
+        return {
+          model: { ...model, page: { ...model.page, markdown: next.model } },
+          commands: Command.mapMessages(next.commands ?? [], message =>
+            Message.GotBehaviorDocsMarkdownMessage({ message }),
           ),
         }
       },
@@ -1599,6 +1619,26 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
   const keyed = (key: string, content: Html): Html =>
     h.keyed('div')(key, [], [content])
 
+  const behaviorPage = (behavior?: string): Html => {
+    const path =
+      behavior === undefined ? behaviorsPath() : behaviorDocsPath(behavior)
+    const content =
+      model.page._tag === 'BehaviorDocsPage'
+        ? BehaviorReference.view(
+            behavior,
+            {
+              model: model.page.markdown,
+              renderer,
+              sidebarScrolled: Message.ObservedDocsSidebarScroll(),
+              toParentMessage: message =>
+                Message.GotBehaviorDocsMarkdownMessage({ message }),
+            },
+            h,
+          )
+        : undefined
+    return keyed(path, content ?? notFoundView(path, h))
+  }
+
   return M.value(model.route).pipe(
     M.withReturnType<Html>(),
     M.tagsExhaustive({
@@ -1761,6 +1801,8 @@ const pageView = (model: Model, h: HtmlBuilder<Message>): Html => {
               'page-not-found',
               notFoundView(`/docs/components/${component}`, h),
             ),
+      Behaviors: () => behaviorPage(),
+      BehaviorDocs: ({ behavior }) => behaviorPage(behavior),
       GettingStarted: () =>
         model.page._tag === 'GettingStartedPage'
           ? keyed(
@@ -1839,19 +1881,24 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
   // so they render without the global header.
   const isFullPage = model.route._tag === 'Block'
   const title =
-    model.route._tag === 'ComponentDocs'
-      ? `${ComponentCatalog.titleFor(model.route.component) ?? 'Not Found'} - crease/ui`
-      : model.route._tag === 'GettingStarted'
-        ? 'Get Started - crease/ui'
-        : model.route._tag === 'Theming'
-          ? 'Theming - crease/ui'
-          : model.route._tag === 'LintRules' || model.route._tag === 'LintRule'
-            ? 'Lint rules - crease/ui'
-            : model.route._tag === 'TutorialIndex'
-              ? 'Tutorial - crease/ui'
-              : model.route._tag === 'TutorialChapter'
-                ? `${tutorialChapter(model.route.chapter)?.title ?? 'Tutorial'} - crease/ui`
-                : 'crease/ui'
+    model.route._tag === 'Behaviors'
+      ? 'Behaviors - crease/ui'
+      : model.route._tag === 'BehaviorDocs'
+        ? `${behaviorFor(model.route.behavior)?.title ?? 'Not Found'} - crease/ui`
+        : model.route._tag === 'ComponentDocs'
+          ? `${ComponentCatalog.titleFor(model.route.component) ?? 'Not Found'} - crease/ui`
+          : model.route._tag === 'GettingStarted'
+            ? 'Get Started - crease/ui'
+            : model.route._tag === 'Theming'
+              ? 'Theming - crease/ui'
+              : model.route._tag === 'LintRules' ||
+                  model.route._tag === 'LintRule'
+                ? 'Lint rules - crease/ui'
+                : model.route._tag === 'TutorialIndex'
+                  ? 'Tutorial - crease/ui'
+                  : model.route._tag === 'TutorialChapter'
+                    ? `${tutorialChapter(model.route.chapter)?.title ?? 'Tutorial'} - crease/ui`
+                    : 'crease/ui'
 
   return {
     title,
