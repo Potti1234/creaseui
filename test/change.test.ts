@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { Schema } from 'effect'
+import { Window } from 'happy-dom'
 
 import * as Demo from '@/docs/behavior-demo'
 import * as Change from '@/lib/behaviors/change'
@@ -162,4 +163,63 @@ test('behavior demo vetoes malformed agent values and retains command attributio
     accepted.agent.results[0]?.changes?.[0]?.attribution,
     'session-42',
   )
+})
+
+test('classifies standalone events and tracks focus independently per scope', async () => {
+  const window = new Window()
+  try {
+    const { document } = window
+    const first = document.createElement('div')
+    const second = document.createElement('div')
+    const target = document.createElement('button')
+    first.append(target)
+    document.body.append(first, second)
+    const scope = (element: unknown) => element as Element
+    const binding = Change.bindInputSource(scope(first))
+    const other = Change.bindInputSource(scope(second))
+    const event = (value: unknown) => value as Event
+    assert.equal(Change.sourceOf(), 'programmatic')
+    assert.equal(
+      Change.sourceOf(event(new window.MouseEvent('click'))),
+      'virtual',
+    )
+    assert.equal(
+      Change.sourceOf(event(new window.MouseEvent('click', { detail: 1 }))),
+      'mouse',
+    )
+    assert.equal(
+      Change.sourceOf(
+        event(new window.PointerEvent('pointerdown', { pointerType: 'touch' })),
+      ),
+      'touch',
+    )
+
+    target.dispatchEvent(
+      new window.KeyboardEvent('keydown', { key: 'Tab', bubbles: true }),
+    )
+    target.dispatchEvent(new window.FocusEvent('focusin', { bubbles: true }))
+    assert.equal(binding.sourceOf(event(new window.Event('input'))), 'keyboard')
+    assert.equal(binding.isFocusFromKeyboard(), true)
+    assert.equal(other.sourceOf(), 'programmatic')
+    assert.equal(other.isFocusFromKeyboard(), false)
+
+    target.dispatchEvent(new window.FocusEvent('focusout', { bubbles: true }))
+    target.dispatchEvent(
+      new window.PointerEvent('pointerdown', {
+        pointerType: 'pen',
+        bubbles: true,
+      }),
+    )
+    target.dispatchEvent(new window.FocusEvent('focusin', { bubbles: true }))
+    assert.equal(binding.sourceOf(), 'pen')
+    assert.equal(binding.isFocusFromKeyboard(), false)
+    binding.dispose()
+    target.dispatchEvent(
+      new window.KeyboardEvent('keydown', { key: 'Tab', bubbles: true }),
+    )
+    assert.equal(binding.sourceOf(), 'programmatic')
+    other.dispose()
+  } finally {
+    await window.happyDOM.close()
+  }
 })

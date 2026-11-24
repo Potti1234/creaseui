@@ -46,3 +46,19 @@ export const filter = (
   (Array.isArray(changes) ? changes : [changes]).filter(change =>
     accepts(options, change),
   )
+
+/** Resolve a ref against the caller's current DOM scope. */
+export const elementOf = (
+  root: Document | DocumentFragment | Element,
+  ref: string,
+): Element | null => {
+  if ('getAttribute' in root && root.getAttribute('data-observe-ref') === ref)
+    return root
+
+  for (const element of Array.from(
+    root.querySelectorAll('[data-observe-ref]'),
+  )) {
+    if (element.getAttribute('data-observe-ref') === ref) return element
+  }
+  return null
+}

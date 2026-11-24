@@ -3,6 +3,7 @@ import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
+import { afterCommit } from 'foldkit/render'
 
 import * as Agent from '@/lib/behaviors/agent'
 import * as Change from '@/lib/behaviors/change'
@@ -38,6 +39,7 @@ export const Message = defineMessageUnion({
     context: Schema.optionalKey(Change.Context),
   },
   AppliedHistory: { changes: Changes },
+  RevealedObservedControl: {},
 })
 export type Message = typeof Message.Type
 export const init = (): Model => ({
@@ -81,6 +83,24 @@ const ApplyHistory = Command.define('ApplyBehaviorDemoHistory', {
   args: { changes: Changes },
   messages: [Message.AppliedHistory],
   execute: ({ changes }) => Effect.succeed(Message.AppliedHistory({ changes })),
+})
+
+const demoId = 'observe-behavior-demo'
+
+const RevealObservedControl = Command.define('RevealObservedControl', {
+  args: { ref: Schema.String },
+  messages: [Message.RevealedObservedControl],
+  execute: ({ ref }) =>
+    afterCommit.pipe(
+      Effect.andThen(
+        Effect.sync(() => {
+          const root = document.getElementById(demoId)
+          if (root)
+            Observe.elementOf(root, ref)?.scrollIntoView({ block: 'nearest' })
+        }),
+      ),
+      Effect.as(Message.RevealedObservedControl()),
+    ),
 })
 
 const changed = (
@@ -191,7 +211,7 @@ export const update = (
     }),
     AppliedAgentAction: ({ action, context = agentContext }) => {
       const result = changed(model, action.ref, action.args[0], context)
-      return agentUpdate(
+      const next = agentUpdate(
         result.model,
         result.status === 'vetoed'
           ? Agent.Message.FailedStep({ message: 'Invalid workspace setting' })
@@ -199,7 +219,17 @@ export const update = (
               changes: result.status === 'committed' ? [result.change] : [],
             }),
       )
+      return result.status === 'committed' && result.change.source === 'agent'
+        ? {
+            ...next,
+            commands: [
+              ...(next.commands ?? []),
+              RevealObservedControl({ ref: result.change.ref }),
+            ],
+          }
+        : next
     },
+    RevealedObservedControl: () => ({ model }),
     GotHistoryMessage: ({ message }) => {
       const result = History.update(model.history, message)
       return {
@@ -300,7 +330,7 @@ export const view = <Msg>(
     )
   const approval = Option.getOrUndefined(model.agent.maybeApproval)
   return h.div(
-    [h.DataAttribute('testid', 'behavior-demo')],
+    [h.Id(demoId), h.DataAttribute('testid', 'behavior-demo')],
     [
       kit.card(
         {
@@ -331,28 +361,39 @@ export const view = <Msg>(
                     {
                       gap: 6,
                       children: [
-                        kit.input(
-                          {
-                            id: 'behavior-region',
-                            label: 'Region',
-                            value: model.region,
-                            onInput: value =>
-                              toParent(Message.ChangedRegion({ value })),
-                            isDisabled: model.agent.running,
-                          },
-                          h,
+                        h.div(
+                          [h.DataAttribute('observe-ref', 'region')],
+                          [
+                            kit.input(
+                              {
+                                id: 'behavior-region',
+                                label: 'Region',
+                                value: model.region,
+                                onInput: value =>
+                                  toParent(Message.ChangedRegion({ value })),
+                                isDisabled: model.agent.running,
+                              },
+                              h,
+                            ),
+                          ],
                         ),
-                        kit.switchControl(
-                          {
-                            id: 'behavior-public',
-                            label: 'Public',
-                            description: 'Let anyone discover this workspace.',
-                            isChecked: model.isPublic,
-                            onToggle: value =>
-                              toParent(Message.ToggledPublic({ value })),
-                            isDisabled: model.agent.running,
-                          },
-                          h,
+                        h.div(
+                          [h.DataAttribute('observe-ref', 'public')],
+                          [
+                            kit.switchControl(
+                              {
+                                id: 'behavior-public',
+                                label: 'Public',
+                                description:
+                                  'Let anyone discover this workspace.',
+                                isChecked: model.isPublic,
+                                onToggle: value =>
+                                  toParent(Message.ToggledPublic({ value })),
+                                isDisabled: model.agent.running,
+                              },
+                              h,
+                            ),
+                          ],
                         ),
                         kit.stack(
                           {

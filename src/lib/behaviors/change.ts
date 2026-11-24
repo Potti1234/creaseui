@@ -69,3 +69,77 @@ export const apply = <Model, Value>(
         change: { ...change, phase: 'Commit' },
       }
 }
+
+export type Source =
+  | 'mouse'
+  | 'touch'
+  | 'pen'
+  | 'keyboard'
+  | 'virtual'
+  | 'programmatic'
+  | 'agent'
+
+/** Classify the event itself. Pass an explicit Context for agent work. */
+export const sourceOf = (event?: Event): Source => {
+  if (!event) return 'programmatic'
+  const { type } = event
+  if (type.startsWith('key')) return 'keyboard'
+  if (type.startsWith('touch')) return 'touch'
+  if ('pointerType' in event) {
+    const pointer = event.pointerType
+    if (pointer === 'mouse' || pointer === 'touch' || pointer === 'pen')
+      return pointer
+  }
+  if (type === 'click' && 'detail' in event)
+    return event.detail === 0 ? 'virtual' : 'mouse'
+  if (
+    type.startsWith('mouse') ||
+    type.startsWith('pointer') ||
+    type === 'wheel'
+  )
+    return 'mouse'
+  return 'programmatic'
+}
+
+/** Scope recent input and focus origin to one mounted surface. */
+export const bindInputSource = (scope: Element | Document | ShadowRoot) => {
+  let input: Source = 'programmatic'
+  let keyboardFocus = false
+  const onInput = (event: Event) => {
+    if (
+      event.type === 'keydown' &&
+      'key' in event &&
+      (event.key === 'Shift' ||
+        event.key === 'Control' ||
+        event.key === 'Alt' ||
+        event.key === 'Meta')
+    )
+      return
+    input = sourceOf(event)
+  }
+  const onFocus = () => {
+    keyboardFocus = input === 'keyboard'
+  }
+  const onBlur = () => {
+    keyboardFocus = false
+  }
+  scope.addEventListener('keydown', onInput, true)
+  scope.addEventListener('pointerdown', onInput, true)
+  scope.addEventListener('focusin', onFocus, true)
+  scope.addEventListener('focusout', onBlur, true)
+  return {
+    sourceOf: (event?: Event): Source =>
+      !event || event.type === 'input' || event.type === 'change'
+        ? input
+        : sourceOf(event),
+    isFocusFromKeyboard: () => keyboardFocus,
+    dispose: () => {
+      scope.removeEventListener('keydown', onInput, true)
+      scope.removeEventListener('pointerdown', onInput, true)
+      scope.removeEventListener('focusin', onFocus, true)
+      scope.removeEventListener('focusout', onBlur, true)
+      input = 'programmatic'
+      keyboardFocus = false
+    },
+  }
+}
