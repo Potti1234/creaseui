@@ -14,6 +14,10 @@ export type BehaviorRenderer = 'tailwind' | 'stylex' | 'pleat'
 const bySlug = new Map(behaviors.map(behavior => [behavior.slug, behavior]))
 
 export const behaviorFor = (slug: string) => bySlug.get(slug)
+export const coreBehaviorFor = (slug: string) => {
+  const entry = behaviorFor(slug)
+  return entry?.kind === 'primitive' ? entry : undefined
+}
 
 export const compositionsFor = (slug: string) =>
   behaviors.filter(entry => entry.owner === canonicalComponentSlug(slug))

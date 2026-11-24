@@ -38,7 +38,7 @@ import * as ComponentCatalog from '@/docs/components/catalog'
 import * as GettingStartedPage from '@/docs/getting-started-view'
 import * as BehaviorDemo from '@/docs/behavior-demo'
 import * as BehaviorReference from '@/docs/behavior-reference'
-import { behaviorFor } from '@/docs/behavior-metadata'
+import { coreBehaviorFor } from '@/docs/behavior-metadata'
 import * as Markdown from '@/lib/markdown'
 import { markdown as pleatMarkdown } from '@/pleat/markdown'
 import { markdown as stylexMarkdown } from '@/stylex/markdown'
@@ -1898,7 +1898,7 @@ export const view = (model: Model, h: HtmlBuilder<Message>): Document => {
     model.route._tag === 'Behaviors'
       ? 'Behaviors - crease/ui'
       : model.route._tag === 'BehaviorDocs'
-        ? `${behaviorFor(model.route.behavior)?.title ?? 'Not Found'} - crease/ui`
+        ? `${coreBehaviorFor(model.route.behavior)?.title ?? 'Not Found'} - crease/ui`
         : model.route._tag === 'ComponentDocs'
           ? `${ComponentCatalog.titleFor(model.route.component) ?? 'Not Found'} - crease/ui`
           : model.route._tag === 'GettingStarted'

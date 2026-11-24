@@ -23,21 +23,13 @@ const modelAt = (path: string) => {
 }
 
 describe('application scenes', () => {
-  it('links the former Field behavior URL to the component guide', () => {
+  it('shows the not-found page at the former Field behavior URL', () => {
     Scene.scene(
       { update, view },
       Scene.given(modelAt('/docs/behaviors/field')),
-      Scene.expect(Scene.role('link', { name: 'Open Field' })).toExist(),
+      Scene.expect(Scene.text('No page at /docs/behaviors/field.')).toExist(),
       Scene.Mount.resolve(
         { name: 'site-header-nav' },
-        Message.CompletedScrollToTop(),
-      ),
-      Scene.Mount.resolve(
-        { name: 'docs-reference-nav' },
-        Message.CompletedScrollToTop(),
-      ),
-      Scene.Mount.resolve(
-        { name: 'docs-sidebar-scroll' },
         Message.CompletedScrollToTop(),
       ),
     )

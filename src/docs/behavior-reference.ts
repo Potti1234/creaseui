@@ -1,7 +1,7 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import {
-  behaviorFor,
+  coreBehaviorFor,
   behaviorGuideLinks,
   coreBehaviors,
   componentsUsing,
@@ -236,32 +236,14 @@ export const view = <Msg>(
   props: ViewProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html | undefined => {
-  const entry = slug === undefined ? undefined : behaviorFor(slug)
+  const entry = slug === undefined ? undefined : coreBehaviorFor(slug)
   if (slug !== undefined && entry === undefined) return undefined
   const path = slug === undefined ? behaviorsPath() : behaviorDocsPath(slug)
   return h.div(
     [h.Class(docsGuideStyles.layout)],
     [
       ...docsSidebar(path, docsGuideStyles, props.sidebarScrolled, h),
-      entry === undefined
-        ? index(h)
-        : entry.owner === undefined
-          ? detail(entry, props, h)
-          : h.main(
-              [h.Class('behavior-docs-reference')],
-              [
-                h.h1([], [entry.title]),
-                h.p(
-                  [],
-                  ['This guide has moved to the component documentation.'],
-                ),
-                link(
-                  entry.docs,
-                  'Open ' + (componentTitle(entry.owner) ?? entry.title),
-                  h,
-                ),
-              ],
-            ),
+      entry === undefined ? index(h) : detail(entry, props, h),
     ],
   )
 }
