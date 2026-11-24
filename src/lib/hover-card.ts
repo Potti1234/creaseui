@@ -191,7 +191,14 @@ const toPrimitiveModel = (model: Model): HoverIntentPrimitive.Model => {
   return primitiveModel
 }
 
-const toPrimitiveMessage = (message: Message): HoverIntentPrimitive.Message => {
+type IntentMessage = Exclude<
+  Message,
+  { _tag: 'PressedPointerOnHoverCardTrigger' | 'CompletedHoverCardAnchor' }
+>
+
+const toPrimitiveMessage = (
+  message: IntentMessage,
+): HoverIntentPrimitive.Message => {
   switch (message._tag) {
     case 'EnteredHoverCard':
       return HoverIntentPrimitive.Message.EnteredTrigger()
@@ -211,45 +218,6 @@ const toPrimitiveMessage = (message: Message): HoverIntentPrimitive.Message => {
       return HoverIntentPrimitive.Message.CompletedWaitBeforeClosing({
         version: message.version,
       })
-    // Handled directly in update — the primitive has no press or anchor events.
-    case 'PressedPointerOnHoverCardTrigger':
-    case 'CompletedHoverCardAnchor':
-      return HoverIntentPrimitive.Message.CompletedWaitBeforeOpening({
-        version: -1,
-      })
-  }
-}
-
-const fromPrimitiveMessage = (
-  message: HoverIntentPrimitive.Message,
-): Message => {
-  switch (message._tag) {
-    case 'CompletedWaitBeforeOpening':
-      return Message.CompletedWaitBeforeShowingHoverCard({
-        version: message.version,
-      })
-    case 'CompletedWaitBeforeClosing':
-      return Message.CompletedWaitBeforeClosingHoverCard({
-        version: message.version,
-      })
-    case 'EnteredTrigger':
-      return Message.EnteredHoverCard()
-    case 'LeftTrigger':
-      return Message.LeftHoverCard()
-    case 'FocusedTrigger':
-      return Message.FocusedHoverCardTrigger()
-    case 'BlurredTrigger':
-      return Message.BlurredHoverCardTrigger()
-    case 'PressedEscape':
-      return Message.PressedEscapeOnHoverCard()
-    case 'EnteredPanel':
-      return Message.EnteredHoverCard()
-    case 'LeftPanel':
-      return Message.LeftHoverCard()
-    case 'FocusedPanel':
-      return Message.FocusedHoverCardTrigger()
-    case 'BlurredPanel':
-      return Message.BlurredHoverCardTrigger()
   }
 }
 
@@ -264,35 +232,23 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         ? { model }
         : { model: { ...model, isOpen: !model.isOpen, isDismissed: false } }
     default: {
-      const result = HoverIntentPrimitive.update(
+      const { model: next, wait } = HoverIntentPrimitive.transition(
         toPrimitiveModel(model),
         toPrimitiveMessage(message),
+        HoverIntentPrimitive.hoverCardPreset,
       )
+      if (wait === undefined)
+        return { model: { ...model, ...next }, commands: [] }
+      const command =
+        wait.phase === 'open' ? WaitBeforeShowing : WaitBeforeClosing
       return {
-        model: { ...model, ...result.model },
-        /* Primitive Commands are re-expressed with crease names/args so
-           callers keep resolving `WaitBeforeShowingHoverCard` /
-           `WaitBeforeClosingHoverCard`. */
-        commands: (result.commands ?? []).map(command => {
-          const args = command.args as
-            | { delay?: Duration.Duration; version?: number }
-            | undefined
-          if (args?.delay !== undefined && args.version !== undefined) {
-            if (command.name === 'WaitBeforeOpening') {
-              return WaitBeforeShowing({
-                delayMs: Duration.toMillis(args.delay),
-                version: args.version,
-              })
-            }
-            if (command.name === 'WaitBeforeClosing') {
-              return WaitBeforeClosing({
-                delayMs: Duration.toMillis(args.delay),
-                version: args.version,
-              })
-            }
-          }
-          return Command.mapMessage(command, fromPrimitiveMessage)
-        }),
+        model: { ...model, ...next },
+        commands: [
+          command({
+            delayMs: Duration.toMillis(wait.delay),
+            version: wait.version,
+          }),
+        ],
       }
     }
   }

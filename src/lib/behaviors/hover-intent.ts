@@ -56,6 +56,7 @@ export const Message = defineMessageUnion({
   FocusedPanel: {},
   BlurredPanel: {},
   PressedEscape: { source: FocusLocation },
+  Dismissed: {},
   CompletedWaitBeforeOpening: { version: S.Number },
   CompletedWaitBeforeClosing: { version: S.Number },
 })
@@ -104,37 +105,77 @@ const WaitBeforeClosing = Command.define('WaitBeforeClosing', {
 
 type UpdateResult = ReturnWithOutMessage<Model, Message, OutMessage>
 
+// Blur closes on a later turn for interactive panels so focus can move inside
+// before the close settles. A tooltip uses its configured close delay for blur.
+export type Preset = Readonly<{
+  blurDelay: 'deferred' | 'close-delay'
+  closeImmediatelyAtZero: boolean
+}>
+
+export const hoverCardPreset: Preset = {
+  blurDelay: 'deferred',
+  closeImmediatelyAtZero: false,
+}
+
+export const tooltipPreset: Preset = {
+  blurDelay: 'close-delay',
+  closeImmediatelyAtZero: true,
+}
+
+type Wait = Readonly<{
+  phase: 'open' | 'close'
+  delay: Duration.Duration
+  version: number
+}>
+
+type Transition = Readonly<{
+  model: Model
+  outMessage?: OutMessage
+  wait?: Wait
+}>
+
 const isEngaged = (model: Model): boolean =>
   model.isTriggerHovered ||
   model.isPanelHovered ||
   Option.isSome(model.maybeFocusLocation)
 
-const open = (model: Model): UpdateResult =>
-  model.isOpen
+const setOpen = (model: Model, isOpen: boolean): Transition =>
+  model.isOpen === isOpen
     ? { model }
-    : { model: { ...model, isOpen: true }, outMessage: OutMessage.Opened() }
+    : {
+        model: { ...model, isOpen },
+        outMessage: isOpen ? OutMessage.Opened() : OutMessage.Closed(),
+      }
 
-const enter = (model: Model): UpdateResult => {
+const enter = (model: Model): Transition => {
   const next = { ...model, pendingCloseVersion: model.pendingCloseVersion + 1 }
   if (next.isOpen || next.isDismissed) return { model: next }
 
   const version = next.pendingOpenVersion + 1
   return {
     model: { ...next, pendingOpenVersion: version },
-    commands: [WaitBeforeOpening({ delay: next.openDelay, version })],
+    wait: { phase: 'open', delay: next.openDelay, version },
   }
 }
 
-const leave = (model: Model, delay: Duration.Duration): UpdateResult => {
+const leave = (
+  model: Model,
+  delay: Duration.Duration,
+  preset: Preset,
+): Transition => {
   const next = { ...model, pendingOpenVersion: model.pendingOpenVersion + 1 }
   if (isEngaged(next)) return { model: next }
   if (next.isDismissed) return { model: { ...next, isDismissed: false } }
   if (!next.isOpen) return { model: next }
 
   const version = next.pendingCloseVersion + 1
+  const waiting = { ...next, pendingCloseVersion: version }
+  if (preset.closeImmediatelyAtZero && Duration.isZero(delay)) {
+    return setOpen(waiting, false)
+  }
   return {
-    model: { ...next, pendingCloseVersion: version },
-    commands: [WaitBeforeClosing({ delay, version })],
+    model: waiting,
+    wait: { phase: 'close', delay, version },
   }
 }
 
@@ -145,7 +186,7 @@ const focus = (model: Model, location: FocusLocation): UpdateResult => {
     pendingOpenVersion: model.pendingOpenVersion + 1,
     pendingCloseVersion: model.pendingCloseVersion + 1,
   }
-  return next.isDismissed ? { model: next } : open(next)
+  return next.isDismissed ? { model: next } : setOpen(next, true)
 }
 
 const triggerHasFocus = (model: Model): boolean =>
@@ -169,16 +210,29 @@ const dismiss = (model: Model, triggerFocused: boolean): UpdateResult => {
 export const close = (model: Model): UpdateResult =>
   dismiss(model, triggerHasFocus(model))
 
-export const update = (model: Model, message: Message): UpdateResult => {
+/** Resolve intent and describe any wait so hosts can use their own command messages. */
+export const transition = (
+  model: Model,
+  message: Message,
+  preset: Preset = hoverCardPreset,
+): Transition => {
   switch (message._tag) {
     case 'EnteredTrigger':
       return enter({ ...model, isTriggerHovered: true })
     case 'EnteredPanel':
       return enter({ ...model, isPanelHovered: true })
     case 'LeftTrigger':
-      return leave({ ...model, isTriggerHovered: false }, model.closeDelay)
+      return leave(
+        { ...model, isTriggerHovered: false },
+        model.closeDelay,
+        preset,
+      )
     case 'LeftPanel':
-      return leave({ ...model, isPanelHovered: false }, model.closeDelay)
+      return leave(
+        { ...model, isPanelHovered: false },
+        model.closeDelay,
+        preset,
+      )
     case 'FocusedTrigger':
       return focus(model, 'Trigger')
     case 'FocusedPanel':
@@ -187,8 +241,11 @@ export const update = (model: Model, message: Message): UpdateResult => {
     case 'BlurredPanel':
       return leave(
         { ...model, maybeFocusLocation: Option.none() },
-        Duration.zero,
+        preset.blurDelay === 'deferred' ? Duration.zero : model.closeDelay,
+        preset,
       )
+    case 'Dismissed':
+      return close(model)
     case 'PressedEscape':
       return dismiss(
         model,
@@ -202,7 +259,7 @@ export const update = (model: Model, message: Message): UpdateResult => {
       ) {
         return { model }
       }
-      return open(model)
+      return setOpen(model, true)
     case 'CompletedWaitBeforeClosing':
       if (
         message.version !== model.pendingCloseVersion ||
@@ -211,11 +268,20 @@ export const update = (model: Model, message: Message): UpdateResult => {
       ) {
         return { model }
       }
-      return {
-        model: { ...model, isOpen: false },
-        outMessage: OutMessage.Closed(),
-      }
+      return setOpen(model, false)
   }
+}
+
+export const update = (
+  model: Model,
+  message: Message,
+  preset: Preset = hoverCardPreset,
+): UpdateResult => {
+  const { wait, ...result } = transition(model, message, preset)
+  if (wait === undefined) return result
+  const { phase, delay, version } = wait
+  const command = phase === 'open' ? WaitBeforeOpening : WaitBeforeClosing
+  return { ...result, commands: [command({ delay, version })] }
 }
 
 export type RenderInfo = Readonly<{

@@ -17,3 +17,12 @@ from trigger to panel. Acquire it in the panel Mount and route departure to
 the same message as leaving the common hover region. The watcher ignores touch
 and cleans up on unmount. The Hover Card docs use it across Tailwind, StyleX,
 and Pleat.
+
+Choose `hoverCardPreset` for an interactive panel whose focus may move inside
+during blur. Choose `tooltipPreset` for a trigger-only surface where blur uses
+the configured close delay, with immediate closing when that delay is zero.
+For a trigger-only surface, route trigger interactions and `Dismissed` only.
+
+Pass the preset to `update` to use the shared Foldkit Commands. Adapters that
+already expose their own command messages can call `transition` instead and
+schedule the returned wait using its phase, delay, and version.

@@ -15,6 +15,8 @@ export type GridCell = typeof GridCell.Type
 export const Model = Schema.Struct({
   id: Schema.String,
   maybeActiveCell: Schema.Option(GridCell),
+  revealVersion: Schema.optional(Schema.Number),
+  pendingReveal: Schema.optional(GridCell),
 })
 export type Model = typeof Model.Type
 
@@ -22,8 +24,18 @@ export const Message = defineMessageUnion({
   MovedFocus: { cell: GridCell },
   FocusedCell: { cell: GridCell },
   CompletedFocusCell: {},
+  RevealedCell: { version: Schema.Number },
+  CanceledReveal: { version: Schema.Number },
 })
 export type Message = typeof Message.Type
+
+export const OutMessage = defineMessageUnion({
+  RequestedReveal: { cell: GridCell, version: Schema.Number },
+})
+export type OutMessage = typeof OutMessage.Type
+
+type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+type FocusOptions = Readonly<{ requiresReveal?: (cell: GridCell) => boolean }>
 
 export const init = (config: Readonly<{ id: string }>): Model => ({
   id: config.id,
@@ -58,19 +70,39 @@ export const FocusCell = Command.define('FocusCell', {
 export const focus = (
   model: Model,
   cell: GridCell,
-): Update.Return<Model, Message> => ({
-  model: { ...model, maybeActiveCell: Option.some(cell) },
-  commands: [FocusCell({ id: model.id, cell })],
-})
+  options: FocusOptions = {},
+): UpdateReturn => {
+  if (options.requiresReveal?.(cell)) {
+    const version = (model.revealVersion ?? 0) + 1
+    return {
+      model: { ...model, revealVersion: version, pendingReveal: cell },
+      outMessage: OutMessage.RequestedReveal({ cell, version }),
+    }
+  }
+  return {
+    model: { ...model, pendingReveal: undefined, maybeActiveCell: Option.some(cell) },
+    commands: [FocusCell({ id: model.id, cell })],
+  }
+}
 
 export const update = (
   model: Model,
   message: Message,
-): Update.Return<Model, Message> =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    MovedFocus: ({ cell }) => focus(model, cell),
+  options: FocusOptions = {},
+): UpdateReturn =>
+  Message.match<UpdateReturn>(message, {
+    MovedFocus: ({ cell }) => focus(model, cell, options),
     FocusedCell: ({ cell }) => ({
-      model: { ...model, maybeActiveCell: Option.some(cell) },
+      model: { ...model, pendingReveal: undefined, maybeActiveCell: Option.some(cell) },
+    }),
+    RevealedCell: ({ version }) =>
+      version === model.revealVersion && model.pendingReveal !== undefined
+        ? focus(model, model.pendingReveal)
+        : { model },
+    CanceledReveal: ({ version }) => ({
+      model: version === model.revealVersion
+        ? { ...model, pendingReveal: undefined }
+        : model,
     }),
     CompletedFocusCell: () => ({ model }),
   })
@@ -84,6 +116,7 @@ export type NavigationInput = Readonly<{
   direction?: 'ltr' | 'rtl'
   pageSize?: number
   isDisabled?: (cell: GridCell) => boolean
+  focusDisabledWithArrows?: boolean
 }>
 
 type GridInput = Pick<NavigationInput, 'rows' | 'columns' | 'isDisabled'>
@@ -112,6 +145,7 @@ export const navigate = ({
   direction = 'ltr',
   pageSize = 10,
   isDisabled = () => false,
+  focusDisabledWithArrows = false,
 }: NavigationInput): Option.Option<GridCell> => {
   if (rows <= 0 || columns <= 0) return Option.none()
   if (pressedKey === 'Home' || pressedKey === 'End') {
@@ -139,7 +173,8 @@ export const navigate = ({
   else row += step
   while (row >= 0 && row < rows && column >= 0 && column < columns) {
     const cell = { row, column }
-    if (!isDisabled(cell)) return Option.some(cell)
+    if ((focusDisabledWithArrows && !page) || !isDisabled(cell))
+      return Option.some(cell)
     if (horizontal) column += step
     else row += step
   }
@@ -155,7 +190,7 @@ export type CellInfo = Readonly<{
 }>
 
 export type ViewInputs = GridInput &
-  Pick<NavigationInput, 'direction' | 'pageSize'> &
+  Pick<NavigationInput, 'direction' | 'pageSize' | 'focusDisabledWithArrows'> &
   Readonly<{
     toView: (cells: ReadonlyArray<CellInfo>) => Html
   }>
@@ -183,7 +218,7 @@ export const create = (): Bundle => ({
             h.Tabindex(isTabStop ? 0 : -1),
             h.OnFocus(Message.FocusedCell({ cell })),
             h.OnKeyDownPreventDefault((pressedKey, modifiers) =>
-              isDisabled
+              isDisabled && !inputs.focusDisabledWithArrows
                 ? Option.none()
                 : navigate({
                     ...inputs,

@@ -34,7 +34,17 @@ in the same document or shadow root as the trigger.
 Set `waitForExit: 'auto'` to keep the parts mounted while finite CSS
 animations and transitions on the panel settle. Style the panel using
 `[data-popup-exiting]`. The panel completes on the next frame when reduced
-motion disables its animation. Keep exit motion on the panel itself.
+motion disables its animation. By default, only the panel's own animations
+are observed.
+
+To wait for other surfaces too, pass their IDs in `exitSurfaceIds`, for
+example `[panelId + '-backdrop', panelId + '-viewport']`. Keep those surfaces
+rendered while `isMounted` is true and start their exit motion when
+`isOpen` becomes false. The observer samples the panel and any listed surfaces
+in the same document or shadow root on the next frame. Missing surfaces and
+surfaces without finite motion do not delay completion. List animated
+descendants explicitly if their motion should delay removal.
+
 Custom mounts can compose `exitCompletions(element)` and set
 `data-popup-exit-version` to the current exit version while closing.
 

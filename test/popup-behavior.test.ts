@@ -239,7 +239,7 @@ it('ignores a superseded animation and completes an exit with no motion', async 
   }
 })
 
-it('acquires the top layer before placement and releases it with dismissal observation', async () => {
+it('retains the top layer until all mounted exit surfaces settle', async () => {
   const window = new Window()
   const { document } = window
   const globals = {
@@ -277,12 +277,31 @@ it('acquires the top layer before placement and releases it with dismissal obser
     const firstAction = document.createElement('button')
     firstAction.id = 'first-action'
     panel.append(firstAction)
-    document.body.append(trigger, panel)
+    const backdrop = document.createElement('div')
+    backdrop.id = 'exit-backdrop'
+    document.body.append(trigger, panel, backdrop)
+    const panelMotion = Promise.withResolvers<void>()
+    const backdropMotion = Promise.withResolvers<void>()
+    const sampled = Deferred.makeUnsafe<void>()
+    const completed = Deferred.makeUnsafe<Behavior.Message>()
+    let backdropReads = 0
+    Object.defineProperty(panel, 'getAnimations', {
+      value: () => [{ finished: panelMotion.promise, playbackRate: 1 }],
+    })
+    Object.defineProperty(backdrop, 'getAnimations', {
+      value: () => {
+        backdropReads++
+        Effect.runSync(Deferred.succeed(sampled, undefined))
+        return [{ finished: backdropMotion.promise, playbackRate: 1 }]
+      },
+    })
 
     const mount = Behavior.panelAttributes(
       {
         ...config,
         portal: 'top-layer',
+        waitForExit: 'auto',
+        exitSurfaceIds: [backdrop.id, 'absent', backdrop.id],
         initialFocus: { selector: '#first-action' },
       },
       send,
@@ -318,10 +337,16 @@ it('acquires the top layer before placement and releases it with dismissal obser
         const fiber = yield* Effect.forkChild(
           Stream.runForEach(
             mount.action.f(mountElement, Mount.liveViewStateChanges),
-            message =>
-              message._tag === 'RequestedDismissal'
-                ? Deferred.succeed(dismissed, message)
-                : Effect.void,
+            message => {
+              switch (message._tag) {
+                case 'RequestedDismissal':
+                  return Deferred.succeed(dismissed, message)
+                case 'CompletedExit':
+                  return Deferred.succeed(completed, message)
+                default:
+                  return Effect.void
+              }
+            },
           ),
         )
         yield* Deferred.await(focus)
@@ -336,6 +361,20 @@ it('acquires the top layer before placement and releases it with dismissal obser
           yield* Deferred.await(dismissed),
           Behavior.Request.RequestedDismissal({ reason: 'escape-key' }),
         )
+        panel.setAttribute('data-popup-exit-version', '1')
+        yield* Deferred.await(sampled)
+        panelMotion.resolve()
+        yield* Effect.promise(
+          () => new Promise<void>(resolve => window.setTimeout(resolve, 0)),
+        )
+        assert.equal(yield* Deferred.isDone(completed), false)
+        assert.equal(inTopLayer, true)
+        backdropMotion.reject(new Error('cancelled animation'))
+        assert.deepEqual(
+          yield* Deferred.await(completed),
+          Behavior.Request.CompletedExit({ version: 1 }),
+        )
+        assert.equal(backdropReads, 1)
         yield* Fiber.interrupt(fiber)
         assert.equal(panel.style.visibility, 'hidden')
         assert.equal(panel.style.position, '')
