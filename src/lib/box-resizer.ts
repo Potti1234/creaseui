@@ -1,132 +1,59 @@
-import { Option, Schema as S, Stream } from 'effect'
+import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 
-import * as Drag from '@/lib/behaviors/drag'
-import { resizeBox, type Limits } from '@/lib/behaviors/resize'
+import { dragThreshold } from '@/lib/behaviors/drag'
+import * as Resize from '@/lib/behaviors/resize'
+import { handles, type Handle } from '@/lib/behaviors/resize'
 
-export const Box = S.Struct({
-  x: S.Number,
-  y: S.Number,
-  width: S.Number,
-  height: S.Number,
-})
-const handles = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw', 'move'] as const
-const Handle = S.Literals(handles)
-type Handle = typeof Handle.Type
-
-const Draft = S.Struct({ handle: Handle, box: Box })
-export const BoxResizeModel = S.Struct({ box: Box, draft: S.NullOr(Draft) })
-export type BoxResizeModel = typeof BoxResizeModel.Type
-
-export const BoxResizeMessage = defineMessageUnion({
-  StartedBoxResize: { handle: Handle },
-  DraggedBoxResize: { dx: S.Number, dy: S.Number, lockAspect: S.Boolean },
-  FinishedBoxResize: { cancelled: S.Boolean },
-  NudgedBoxResize: { handle: Handle, dx: S.Number, dy: S.Number },
-})
-export type BoxResizeMessage = typeof BoxResizeMessage.Type
-
-export const initBoxResize = (box: typeof Box.Type): BoxResizeModel => ({
-  box,
-  draft: null,
-})
-
-export const updateBoxResize = (
-  model: BoxResizeModel,
-  message: BoxResizeMessage,
-  limits: Limits = {},
-): BoxResizeModel => {
-  switch (message._tag) {
-    case 'StartedBoxResize':
-      return model.draft === null
-        ? { ...model, draft: { handle: message.handle, box: model.box } }
-        : model
-    case 'DraggedBoxResize': {
-      if (model.draft === null) return model
-      return {
-        ...model,
-        draft: {
-          ...model.draft,
-          box: resizeBox(
-            model.box,
-            model.draft.handle,
-            message.dx,
-            message.dy,
-            message.lockAspect &&
-              limits.aspect === undefined &&
-              model.box.height > 0
-              ? { ...limits, aspect: model.box.width / model.box.height }
-              : limits,
-          ),
-        },
-      }
-    }
-    case 'FinishedBoxResize':
-      return model.draft === null
-        ? model
-        : { box: message.cancelled ? model.box : model.draft.box, draft: null }
-    case 'NudgedBoxResize':
-      return model.draft === null
-        ? {
-            ...model,
-            box: resizeBox(
-              model.box,
-              message.handle,
-              message.dx,
-              message.dy,
-              limits,
-            ),
-          }
-        : model
-  }
-}
+export {
+  Box,
+  Model as BoxResizeModel,
+  Message as BoxResizeMessage,
+  init as initBoxResize,
+  update as updateBoxResize,
+} from '@/lib/behaviors/resize'
 
 const ObserveBoxResize = Mount.defineStream('ObserveBoxResize', {
   messages: [
-    BoxResizeMessage.StartedBoxResize,
-    BoxResizeMessage.DraggedBoxResize,
-    BoxResizeMessage.FinishedBoxResize,
+    Resize.Message.StartedBoxResize,
+    Resize.Message.DraggedBoxResize,
+    Resize.Message.FinishedBoxResize,
   ],
   execute: ({ element }) =>
-    !(element instanceof HTMLElement)
-      ? Stream.empty
-      : Drag.observeDrag<
-          Exclude<BoxResizeMessage, { _tag: 'NudgedBoxResize' }>
-        >(element, (down, send) => {
-          if (!(down.target instanceof Element)) return
-          const control = down.target.closest('button[data-box-resize-handle]')
-          if (
-            !(control instanceof HTMLButtonElement) ||
-            control.disabled ||
-            control.closest('[data-slot="resizable-box"]') !== element
-          )
-            return
-          const handle = handles.find(
-            handle => handle === control.dataset.boxResizeHandle,
-          )
-          if (handle === undefined) return
-          return {
-            captureElement: control,
-            threshold: Drag.dragThreshold,
-            cancelOnEscape: true,
-            onStart: () => {
-              control.focus({ preventScroll: true })
-              send(BoxResizeMessage.StartedBoxResize({ handle }))
-            },
-            onMove: ({ event, x, y }) =>
-              send(
-                BoxResizeMessage.DraggedBoxResize({
-                  dx: x - down.clientX,
-                  dy: y - down.clientY,
-                  lockAspect: event.shiftKey,
-                }),
-              ),
-            onEnd: (_event, cancelled) =>
-              send(BoxResizeMessage.FinishedBoxResize({ cancelled })),
-          }
-        }),
+    Resize.observeResize<Exclude<Resize.Message, { _tag: 'NudgedBoxResize' }>>(
+      element,
+      down => {
+        if (!(down.target instanceof Element)) return
+        const control = down.target.closest('button[data-box-resize-handle]')
+        if (
+          !(control instanceof HTMLButtonElement) ||
+          control.disabled ||
+          control.closest('[data-slot="resizable-box"]') !== element
+        )
+          return
+        const handle = handles.find(
+          handle => handle === control.dataset.boxResizeHandle,
+        )
+        if (handle === undefined) return
+        return {
+          handle: control,
+          threshold: dragThreshold,
+          cancelOnEscape: true,
+          start: () => {
+            control.focus({ preventScroll: true })
+            return Resize.Message.StartedBoxResize({ handle })
+          },
+          move: ({ event, dx, dy }) =>
+            Resize.Message.DraggedBoxResize({
+              dx,
+              dy,
+              lockAspect: event.shiftKey,
+            }),
+          finish: cancelled => Resize.Message.FinishedBoxResize({ cancelled }),
+        }
+      },
+    ),
 })
 
 const axes = {
@@ -161,8 +88,8 @@ const label: Record<Handle, string> = {
 }
 
 export type ResizableBoxProps<Msg> = Readonly<{
-  model: BoxResizeModel
-  toParentMessage: (message: BoxResizeMessage) => Msg
+  model: Resize.Model
+  toParentMessage: (message: Resize.Message) => Msg
   children: ReadonlyArray<Html | string>
   disabled?: boolean
   step?: number
@@ -238,7 +165,7 @@ export const resizableBox = <Msg>(
               const step = (props.step ?? 1) * (modifiers.shiftKey ? 10 : 1)
               return Option.some(
                 props.toParentMessage(
-                  BoxResizeMessage.NudgedBoxResize({
+                  Resize.Message.NudgedBoxResize({
                     handle,
                     dx: delta[0] * step,
                     dy: delta[1] * step,
@@ -261,9 +188,7 @@ export const resizableBox = <Msg>(
             clipPath: 'inset(50%)',
           }),
         ],
-        [
-          `Box ${Math.round(props.model.box.width)} by ${Math.round(props.model.box.height)} at ${Math.round(props.model.box.x)}, ${Math.round(props.model.box.y)}`,
-        ],
+        [Resize.resizeMessage(props.model.box)],
       ),
     ],
   )

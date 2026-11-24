@@ -113,6 +113,19 @@
       ]
     },
     {
+      "name": "announce-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Announcement Behavior",
+      "description": "Persistent live regions and versioned screen-reader announcements.",
+      "files": [
+        {
+          "path": "behaviors/announce.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/announce.ts"
+        }
+      ]
+    },
+    {
       "name": "area-behavior",
       "type": "registry:lib",
       "title": "Area Behavior",
@@ -362,6 +375,7 @@
       "title": "Foldkit Command Query Policy",
       "description": "Skin-neutral command query normalization and application-provided search-text filtering.",
       "registryDependencies": [
+        "Potti1234/creaseui/announce-behavior",
         "Potti1234/creaseui/listbox-behavior",
         "Potti1234/creaseui/text-match-behavior",
         "Potti1234/creaseui/combobox-behavior"
@@ -371,11 +385,6 @@
           "path": "command.ts",
           "type": "registry:lib",
           "target": "@lib/command.ts"
-        },
-        {
-          "path": "behaviors/announce.ts",
-          "type": "registry:lib",
-          "target": "@lib/behaviors/announce.ts"
         }
       ]
     },
@@ -885,7 +894,7 @@
       "title": "List Input Behavior",
       "description": "Shared Foldkit behavior and helpers for List Input.",
       "registryDependencies": [
-        "Potti1234/creaseui/command-behavior",
+        "Potti1234/creaseui/announce-behavior",
         "Potti1234/creaseui/focus-recovery-behavior",
         "Potti1234/creaseui/reorder-behavior"
       ],
@@ -1336,7 +1345,20 @@
           "path": "box-resizer.ts",
           "type": "registry:lib",
           "target": "@lib/box-resizer.ts"
-        },
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/resize-behavior",
+        "Potti1234/creaseui/ui-sdk-license"
+      ]
+    },
+    {
+      "name": "resize-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Resize Behavior",
+      "description": "Shared resize drafts, pointer binding, geometry, and size announcements.",
+      "files": [
         {
           "path": "behaviors/resize.ts",
           "type": "registry:lib",
@@ -1344,8 +1366,7 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/drag-behavior",
-        "Potti1234/creaseui/ui-sdk-license"
+        "Potti1234/creaseui/drag-behavior"
       ]
     },
     {

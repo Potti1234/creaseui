@@ -2,6 +2,8 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 
 import { resizeBox } from '@/lib/behaviors/resize'
+import * as Resize from '@/lib/behaviors/resize'
+import * as BoxResizer from '@/lib/box-resizer'
 import * as SplitPane from '@/lib/resizable'
 
 test('west and north resizing preserve the opposite edges', () => {
@@ -53,4 +55,51 @@ test('group resizing keeps the adjacent panes within their limits', () => {
     }),
   )
   assert.deepEqual(resized.sizes, [60, 10, 30])
+})
+
+test('box resize drafts stay relative to committed geometry and cancel cleanly', () => {
+  const box = { x: 10, y: 20, width: 40, height: 20 }
+  const initial = Resize.init(box)
+  const active = Resize.update(
+    initial,
+    Resize.Message.StartedBoxResize({ handle: 'e' }),
+  )
+  const preview = Resize.update(
+    active,
+    Resize.Message.DraggedBoxResize({ dx: 30, dy: 0, lockAspect: false }),
+  )
+  const corrected = Resize.update(
+    preview,
+    Resize.Message.DraggedBoxResize({ dx: 12, dy: 0, lockAspect: true }),
+  )
+  assert.equal(corrected.box, box)
+  assert.deepEqual(corrected.draft?.box, {
+    x: 10,
+    y: 17,
+    width: 52,
+    height: 26,
+  })
+  assert.deepEqual(
+    Resize.update(
+      corrected,
+      Resize.Message.FinishedBoxResize({ cancelled: true }),
+    ),
+    initial,
+  )
+  const committed = Resize.update(
+    corrected,
+    Resize.Message.FinishedBoxResize({ cancelled: false }),
+  )
+  assert.equal(committed.draft, null)
+  assert.equal(
+    Resize.resizeMessage(committed.box, 'Image'),
+    'Image 52 by 26 at 10, 17',
+  )
+})
+
+test('box resizer exports the shared model and message constructors', () => {
+  assert.equal(BoxResizer.BoxResizeModel, Resize.Model)
+  assert.equal(BoxResizer.BoxResizeMessage, Resize.Message)
+  assert.equal(BoxResizer.initBoxResize, Resize.init)
+  assert.equal(BoxResizer.updateBoxResize, Resize.update)
 })

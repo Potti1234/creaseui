@@ -1,10 +1,30 @@
-export type Box = Readonly<{
-  x: number
-  y: number
-  width: number
-  height: number
-}>
-export type Handle = 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw' | 'move'
+import { Schema as S, Stream } from 'effect'
+import { defineMessageUnion } from 'foldkit/message'
+
+import * as Drag from './drag'
+
+export const Box = S.Struct({
+  x: S.Number,
+  y: S.Number,
+  width: S.Number,
+  height: S.Number,
+})
+export type Box = typeof Box.Type
+
+export const handles = [
+  'n',
+  'ne',
+  'e',
+  'se',
+  's',
+  'sw',
+  'w',
+  'nw',
+  'move',
+] as const
+export const Handle = S.Literals(handles)
+export type Handle = typeof Handle.Type
+
 type Size = Readonly<{ width: number; height: number }>
 export type Limits = Readonly<{
   min?: Size
@@ -97,4 +117,121 @@ export const resizeBox = (
     width,
     height,
   }
+}
+
+const Draft = S.Struct({ handle: Handle, box: Box })
+export const Model = S.Struct({ box: Box, draft: S.NullOr(Draft) })
+export type Model = typeof Model.Type
+
+export const Message = defineMessageUnion({
+  StartedBoxResize: { handle: Handle },
+  DraggedBoxResize: { dx: S.Number, dy: S.Number, lockAspect: S.Boolean },
+  FinishedBoxResize: { cancelled: S.Boolean },
+  NudgedBoxResize: { handle: Handle, dx: S.Number, dy: S.Number },
+})
+export type Message = typeof Message.Type
+
+export const init = (box: typeof Box.Type): Model => ({
+  box,
+  draft: null,
+})
+
+export const update = (
+  model: Model,
+  message: Message,
+  limits: Limits = {},
+): Model => {
+  switch (message._tag) {
+    case 'StartedBoxResize':
+      return model.draft === null
+        ? { ...model, draft: { handle: message.handle, box: model.box } }
+        : model
+    case 'DraggedBoxResize': {
+      if (model.draft === null) return model
+      return {
+        ...model,
+        draft: {
+          ...model.draft,
+          box: resizeBox(
+            model.box,
+            model.draft.handle,
+            message.dx,
+            message.dy,
+            message.lockAspect &&
+              limits.aspect === undefined &&
+              model.box.height > 0
+              ? { ...limits, aspect: model.box.width / model.box.height }
+              : limits,
+          ),
+        },
+      }
+    }
+    case 'FinishedBoxResize':
+      return model.draft === null
+        ? model
+        : { box: message.cancelled ? model.box : model.draft.box, draft: null }
+    case 'NudgedBoxResize':
+      return model.draft === null
+        ? {
+            ...model,
+            box: resizeBox(
+              model.box,
+              message.handle,
+              message.dx,
+              message.dy,
+              limits,
+            ),
+          }
+        : model
+  }
+}
+
+/** Format committed dimensions for a live region. Callers can supply localized text. */
+export const resizeMessage = (box: Box, label = 'Box'): string =>
+  `${label} ${Math.round(box.width)} by ${Math.round(box.height)} at ${Math.round(box.x)}, ${Math.round(box.y)}`
+
+export const percentDelta = (
+  start: number,
+  position: number,
+  extent: number,
+): number => ((position - start) / Math.max(1, extent)) * 100
+
+type ResizeSample = Drag.PointerSample & Readonly<{ dx: number; dy: number }>
+
+type PointerResize<Msg> = Readonly<{
+  handle: HTMLElement
+  threshold?: number
+  cancelOnEscape?: boolean
+  start: () => Msg
+  move: (sample: ResizeSample) => Msg | undefined
+  finish: (cancelled: boolean) => Msg
+}>
+
+/** Bind a resize handle to a streaming Mount. Omit threshold to start on pointerdown. */
+export const observeResize = <Msg>(
+  element: Element,
+  bind: (down: PointerEvent) => PointerResize<Msg> | undefined,
+): Stream.Stream<Msg> => {
+  if (!(element instanceof HTMLElement)) return Stream.empty
+  return Drag.observeDrag<Msg>(element, (down, send) => {
+    const resize = bind(down)
+    if (!resize) return
+    const deferred = (resize.threshold ?? 0) > 0
+    if (!deferred) send(resize.start())
+    return {
+      captureElement: resize.handle,
+      threshold: resize.threshold ?? 0,
+      cancelOnEscape: resize.cancelOnEscape ?? false,
+      ...(deferred && { onStart: () => send(resize.start()) }),
+      onMove: sample => {
+        const message = resize.move({
+          ...sample,
+          dx: sample.x - down.clientX,
+          dy: sample.y - down.clientY,
+        })
+        if (message !== undefined) send(message)
+      },
+      onEnd: (_event, cancelled) => send(resize.finish(cancelled)),
+    }
+  })
 }

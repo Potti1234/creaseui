@@ -30,6 +30,7 @@ import {
   reorderId,
   addId,
   focusMount,
+  prepareAnnouncements,
   type ListInputColumn,
   type ListInputRenderContext,
   type Model,
@@ -870,15 +871,9 @@ const view = defineView<Model, Message, ViewInputs>((model, props, h) => {
           ...statusLayer,
         ],
       ),
-      h.div(
-        [
-          h.Id(fieldIds.announcement),
-          h.Class(className(styles.srOnly)),
-          h.AriaLive('assertive'),
-          h.Attribute('role', 'alert'),
-        ],
-        [model.announcer.text],
-      ),
+      ...prepareAnnouncements(model.announcer, h, {
+        assertive: fieldIds.announcement,
+      }),
     ],
   )
 })

@@ -7,6 +7,8 @@ import * as FocusRecovery from '@/lib/behaviors/focus-recovery'
 import * as Reorder from '@/lib/behaviors/reorder'
 import * as Announce from '@/lib/behaviors/announce'
 
+export { prepareAnnouncements } from '@/lib/behaviors/announce'
+
 export const removeId = (id: string, key: string): string =>
   `${id}-remove-${key}`
 export const addId = (id: string): string => `${id}-add`
