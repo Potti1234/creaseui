@@ -108,6 +108,11 @@ describe('data grid keyboard navigation', () => {
       key('ArrowDown', true),
     )
     const selected = Grid.cellSelection(extended, ['name', 'done'])
+    assert.equal(
+      Grid.selection(extended, ['name', 'done']).text,
+      '4 cells selected across 2 rows and 2 columns.',
+    )
+    assert.equal(Grid.selection(focused, ['name', 'done']).text, '')
     assert.equal(selected(0, 'name'), true)
     assert.equal(selected(1, 'done'), true)
     assert.equal(selected(2, 'done'), false)

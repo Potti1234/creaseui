@@ -1,5 +1,12 @@
 # Cell Range
 
-[UI SDK Cell Range](https://ui-sdk.dev/docs/core/behaviors/selection) supplies the rectangular bounds and tab-delimited clipboard format. Data Grid stores the anchor and end as row indices and column IDs, and resolves them against the rendered column order.
+Store a selection with the `Range` Schema. Call `start(cell)` to set the
+anchor and `extend(range, cell)` when pointer or keyboard navigation moves
+the end. Use `bounds` and `contains` to render the selection.
 
-Shift+Arrow, Shift-click, and dragging across cells with the mouse extend the range. Ordinary navigation starts a new range. Copy reads the displayed cells, including virtualized rows. Paste starts at the focused cell, skips read-only columns, and saves the entire edit as one undo step. Cell editors keep their own clipboard behavior.
+`byCellRange(previous, current)` returns disjoint rectangles for the cells
+entering and leaving the selection. A grid that tracks cells individually
+can update just those rectangles. Use `cellRangeMessage` for a live-region
+announcement, and `cellsToText` or `textToCells` at the clipboard boundary.
+Data Grid uses the same bounds for selection styling and announces ranges
+larger than one cell in all three renderers.

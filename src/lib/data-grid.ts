@@ -14,6 +14,7 @@ import * as Mount from 'foldkit/mount'
 import * as InlineEdit from '@/lib/behaviors/inline-edit'
 import { dateFromISO, dateToISO } from '@/lib/date-parse'
 import * as CellSelection from './behaviors/cell-range'
+import { liveRegionAttributes } from './behaviors/announce'
 import * as GridFocus from '@/lib/behaviors/grid-focus'
 import * as UndoStack from '@/lib/behaviors/undo-stack'
 
@@ -124,7 +125,7 @@ export const Model = S.Struct({
 })
 export type Model = typeof Model.Type
 
-export const cellSelection = (model: Model, columns: ReadonlyArray<string>) => {
+export const selection = (model: Model, columns: ReadonlyArray<string>) => {
   const indices = new Map(columns.map((column, index) => [column, index]))
   const cell = (position: typeof model.selectionAnchor) => ({
     row: position.row,
@@ -134,9 +135,20 @@ export const cellSelection = (model: Model, columns: ReadonlyArray<string>) => {
     cell(model.selectionAnchor),
     cell(model.selectionEnd),
   )
-  return (row: number, column: string): boolean =>
-    CellSelection.contains(range, cell({ row, column }))
+  return {
+    contains: (row: number, column: string): boolean =>
+      CellSelection.contains(range, cell({ row, column })),
+    text: CellSelection.isMultiCell(range)
+      ? CellSelection.cellRangeMessage(range)
+      : '',
+  }
 }
+
+export const cellSelection = (model: Model, columns: ReadonlyArray<string>) =>
+  selection(model, columns).contains
+
+export const selectionAnnouncement = <Msg>(text: string, h: HtmlBuilder<Msg>) =>
+  h.div(liveRegionAttributes('polite', h), [text])
 
 export const Message = defineMessageUnion({
   FocusedCell: { row: S.Number, column: S.String },
@@ -1229,33 +1241,20 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
         yield* Effect.acquireRelease(
           Effect.sync(() => {
             if (!(element instanceof HTMLElement)) return undefined
-            let focusedCell: string | undefined
-            const revealFocus = (): void => {
-              const cell = element.querySelector<HTMLElement>(
-                '[data-focused="true"]',
-              )
-              if (cell === null) return
-              const key = `${cell.dataset['rowIndex']}:${cell.dataset['columnId']}`
-              if (key === focusedCell) return
-              focusedCell = key
-              const header = element.querySelector<HTMLElement>(
-                '[data-slot="grid-header"]',
-              )
-              const footer = element.querySelector<HTMLElement>(
-                '[data-slot="grid-footer"]',
-              )
-              cell.style.scrollMarginBlockStart = `${header?.offsetHeight ?? 0}px`
-              cell.style.scrollMarginBlockEnd = `${footer?.offsetHeight ?? 0}px`
-              cell.scrollIntoView({ block: 'nearest', inline: 'nearest' })
-            }
-            const observer = new MutationObserver(revealFocus)
-            observer.observe(element, {
-              subtree: true,
-              childList: true,
-              attributes: true,
-              attributeFilter: ['data-focused'],
-            })
-            revealFocus()
+            const stopObservingFocus = GridFocus.observeActiveDescendant(
+              element,
+              cell => {
+                const header = element.querySelector<HTMLElement>(
+                  '[data-slot="grid-header"]',
+                )
+                const footer = element.querySelector<HTMLElement>(
+                  '[data-slot="grid-footer"]',
+                )
+                cell.style.scrollMarginBlockStart = `${header?.offsetHeight ?? 0}px`
+                cell.style.scrollMarginBlockEnd = `${footer?.offsetHeight ?? 0}px`
+                cell.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+              },
+            )
             const onKeyDown = (event: KeyboardEvent): void => {
               const target = event.target as HTMLElement | null
               const inEditor =
@@ -1443,7 +1442,7 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
               onContextMenu,
               onScroll,
               onResize,
-              observer,
+              stopObservingFocus,
             }
           }),
           resource =>
@@ -1475,7 +1474,7 @@ export const GridKeys = Mount.defineStream('TablecnGridKeys', {
               element.removeEventListener('contextmenu', resource.onContextMenu)
               element.removeEventListener('scroll', resource.onScroll)
               window.removeEventListener('resize', resource.onResize)
-              resource.observer.disconnect()
+              resource.stopObservingFocus()
             }),
         )
         return yield* Effect.never

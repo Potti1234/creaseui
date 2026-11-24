@@ -15,6 +15,23 @@ const move = (input: Partial<RovingFocus.NavigationInput<string>> = {}) =>
   })
 
 describe('RovingFocus navigation', () => {
+  it('opts disabled items into arrows while Home and End still prefer enabled items', () => {
+    const isDisabled = (key: string) => key === 'three'
+    const focusDisabledWithArrows = true
+    assert.deepEqual(move({ isDisabled }), Option.some('one'))
+    assert.deepEqual(
+      move({ isDisabled, focusDisabledWithArrows }),
+      Option.some('three'),
+    )
+    assert.deepEqual(
+      move({ isDisabled, focusDisabledWithArrows, currentKey: 'three' }),
+      Option.some('one'),
+    )
+    assert.deepEqual(
+      move({ isDisabled, focusDisabledWithArrows, pressedKey: 'End' }),
+      Option.some('two'),
+    )
+  })
   it('returns None for a key that has no navigation intent', () => {
     assert.deepEqual(
       RovingFocus.navigationIntent({ pressedKey: 'Enter' }),

@@ -271,6 +271,19 @@
       ]
     },
     {
+      "name": "cell-range-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Cell Range",
+      "description": "Rectangular selection, incremental changes, announcements and clipboard conversion.",
+      "files": [
+        {
+          "path": "behaviors/cell-range.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/cell-range.ts"
+        }
+      ]
+    },
+    {
       "name": "checkbox-behavior",
       "type": "registry:lib",
       "title": "Foldkit Checkbox Behavior",
@@ -414,11 +427,6 @@
           "target": "@lib/data-grid.ts"
         },
         {
-          "path": "behaviors/cell-range.ts",
-          "type": "registry:lib",
-          "target": "@lib/behaviors/cell-range.ts"
-        },
-        {
           "path": "behaviors/undo-stack.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/undo-stack.ts"
@@ -430,7 +438,9 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/announce-behavior",
         "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/cell-range-behavior",
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/grid-focus-behavior",
         "Potti1234/creaseui/ui-sdk-license"

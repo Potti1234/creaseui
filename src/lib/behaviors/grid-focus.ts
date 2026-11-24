@@ -57,6 +57,56 @@ const sameCell = (a: GridCell, b: GridCell): boolean =>
 export const isActive = (model: Model, cell: GridCell): boolean =>
   Option.exists(model.maybeActiveCell, active => sameCell(active, cell))
 
+let nextActiveCellId = 0
+
+/** Keep DOM focus on a grid root while revealing its mounted active descendant. */
+export const observeActiveDescendant = (
+  root: HTMLElement,
+  reveal: (cell: HTMLElement) => void,
+): (() => void) => {
+  let previous: HTMLElement | undefined
+  let previousAddress: string | undefined
+  const sync = () => {
+    const cell = Array.from(
+      root.querySelectorAll<HTMLElement>(
+        '[role="gridcell"][data-focused="true"]',
+      ),
+    ).find(candidate => candidate.closest('[role="grid"]') === root)
+    const address =
+      cell && JSON.stringify([cell.dataset.rowIndex, cell.dataset.columnId])
+    if (cell === previous && address === previousAddress) return
+    previous = cell
+    previousAddress = address
+    if (cell === undefined) {
+      root.removeAttribute('aria-activedescendant')
+      return
+    }
+    reveal(cell)
+    if (!cell.id) {
+      let id: string
+      do {
+        id = `crease-grid-active-${++nextActiveCellId}`
+      } while (root.ownerDocument.getElementById(id))
+      cell.id = id
+    }
+    root.setAttribute('aria-activedescendant', cell.id)
+  }
+  const Observer = root.ownerDocument.defaultView?.MutationObserver
+  if (Observer === undefined) return () => {}
+  const observer = new Observer(sync)
+  observer.observe(root, {
+    subtree: true,
+    childList: true,
+    attributes: true,
+    attributeFilter: ['data-focused', 'data-row-index', 'data-column-id'],
+  })
+  sync()
+  return () => {
+    observer.disconnect()
+    root.removeAttribute('aria-activedescendant')
+  }
+}
+
 export const FocusCell = Command.define('FocusCell', {
   args: { id: Schema.String, cell: GridCell },
   messages: [Message.CompletedFocusCell],
@@ -80,7 +130,11 @@ export const focus = (
     }
   }
   return {
-    model: { ...model, pendingReveal: undefined, maybeActiveCell: Option.some(cell) },
+    model: {
+      ...model,
+      pendingReveal: undefined,
+      maybeActiveCell: Option.some(cell),
+    },
     commands: [FocusCell({ id: model.id, cell })],
   }
 }
@@ -93,16 +147,21 @@ export const update = (
   Message.match<UpdateReturn>(message, {
     MovedFocus: ({ cell }) => focus(model, cell, options),
     FocusedCell: ({ cell }) => ({
-      model: { ...model, pendingReveal: undefined, maybeActiveCell: Option.some(cell) },
+      model: {
+        ...model,
+        pendingReveal: undefined,
+        maybeActiveCell: Option.some(cell),
+      },
     }),
     RevealedCell: ({ version }) =>
       version === model.revealVersion && model.pendingReveal !== undefined
         ? focus(model, model.pendingReveal)
         : { model },
     CanceledReveal: ({ version }) => ({
-      model: version === model.revealVersion
-        ? { ...model, pendingReveal: undefined }
-        : model,
+      model:
+        version === model.revealVersion
+          ? { ...model, pendingReveal: undefined }
+          : model,
     }),
     CompletedFocusCell: () => ({ model }),
   })
@@ -222,7 +281,7 @@ export const create = (): Bundle => ({
                 ? Option.none()
                 : navigate({
                     ...inputs,
-                    currentCell: cell,
+                    currentCell: model.pendingReveal ?? cell,
                     pressedKey,
                     ctrl: modifiers.ctrlKey || modifiers.metaKey,
                   }).pipe(Option.map(cell => Message.MovedFocus({ cell }))),

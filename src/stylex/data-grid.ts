@@ -1915,7 +1915,7 @@ export const dataGrid = <Row>(
     Math.ceil((model.scrollTop + viewHeight) / rowH) + OVERSCAN,
   )
   const gridWidth = columns.reduce((acc, c) => acc + c.width, SELECT_COL_WIDTH)
-  const isSelected = DataGrid.cellSelection(
+  const selection = DataGrid.selection(
     model,
     columns.map(column => column.id),
   )
@@ -1930,6 +1930,7 @@ export const dataGrid = <Row>(
       searchOverlay(model, config, h),
       contextMenu(model, h),
       gridToolbar(model, config, h),
+      DataGrid.selectionAnnouncement(selection.text, h),
       h.div(
         [
           h.Role('grid'),
@@ -2162,7 +2163,7 @@ export const dataGrid = <Row>(
                     const isEditing =
                       DataGrid.editingCell(model).row === rowIndex &&
                       DataGrid.editingCell(model).column === column.id
-                    const inSelection = isSelected(rowIndex, column.id)
+                    const inSelection = selection.contains(rowIndex, column.id)
                     return h.div(
                       [
                         h.Role('gridcell'),

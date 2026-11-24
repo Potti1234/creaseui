@@ -76,6 +76,7 @@ export type NavigationInput<Key> = Readonly<{
   direction?: Direction
   loop?: boolean
   isDisabled?: (key: Key, index: number) => boolean
+  focusDisabledWithArrows?: boolean
 }>
 
 type NavigationIntent = 'First' | 'Last' | 'Next' | 'Previous'
@@ -124,7 +125,11 @@ export const navigate = <Key>(
       return Option.none()
     const wrappedIndex = ((index % keys.length) + keys.length) % keys.length
     const key = keys[wrappedIndex]
-    if (key !== undefined && !isDisabled(key, wrappedIndex))
+    if (
+      key !== undefined &&
+      ((!edge && input.focusDisabledWithArrows) ||
+        !isDisabled(key, wrappedIndex))
+    )
       return Option.some(key)
   }
   return Option.none()
@@ -144,6 +149,7 @@ export type ViewInputs<Key extends string = string> = Readonly<{
   direction?: Direction
   loop?: boolean
   isDisabled?: (key: Key, index: number) => boolean
+  focusDisabledWithArrows?: boolean
   preferredKey?: Key
   toView: (items: ReadonlyArray<ItemInfo<Key>>) => Html
 }>
@@ -173,7 +179,7 @@ export const create = <Key extends string = string>(): Bundle<Key> => ({
           h.Tabindex(key === tabStop ? 0 : -1),
           h.OnFocus(Message.FocusedItem({ key })),
           h.OnKeyDownPreventDefault(pressedKey =>
-            isDisabled(key, index)
+            isDisabled(key, index) && !inputs.focusDisabledWithArrows
               ? Option.none()
               : navigate({
                   ...inputs,
