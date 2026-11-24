@@ -2,6 +2,8 @@ import { Effect } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 
+import { bindViewport } from './visual-viewport'
+
 export type Length = Readonly<{ percent: number; px: number }>
 
 export const lengthOf = (value: string): Length => {
@@ -150,18 +152,13 @@ export const avoidKeyboard = (element: HTMLElement): (() => void) => {
   const scrolled = () => {
     if (keyboard || lifted) schedule()
   }
-  visual.addEventListener('resize', measure)
-  visual.addEventListener('scroll', measure)
-  view.addEventListener('resize', measure)
   view.addEventListener('scroll', scrolled, { capture: true, passive: true })
   doc.addEventListener('focusin', measure)
   doc.addEventListener('focusout', measure)
-  measure()
+  const stopViewport = bindViewport(view, () => measure())
   return () => {
     view.cancelAnimationFrame(frame)
-    visual.removeEventListener('resize', measure)
-    visual.removeEventListener('scroll', measure)
-    view.removeEventListener('resize', measure)
+    stopViewport()
     view.removeEventListener('scroll', scrolled, { capture: true })
     doc.removeEventListener('focusin', measure)
     doc.removeEventListener('focusout', measure)
