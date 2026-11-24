@@ -171,6 +171,15 @@ export const hiddenAttributes = (
 ): ReadonlyArray<Attribute<never>> =>
   isOpen ? [] : [inertHtml.Attribute('hidden', isFindable ? 'until-found' : '')]
 
+export const supportsHiddenUntilFound = (
+  doc: Document | undefined = globalThis.document,
+): boolean => {
+  if (!doc) return false
+  const element = doc.createElement('div')
+  element.setAttribute('hidden', 'until-found')
+  return element.hidden === 'until-found' && 'onbeforematch' in element
+}
+
 // Foldkit's public html entrypoint and HtmlBuilder omit OnCustomEvent's constructor.
 export const reveal = <Msg>(message: Msg): Attribute<Msg> => ({
   _tag: 'OnCustomEvent',

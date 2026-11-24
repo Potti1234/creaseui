@@ -7,6 +7,26 @@ import { Animation } from '@foldkit/ui'
 import * as Motion from '../src/lib/behaviors/motion.ts'
 import * as Popup from '../src/lib/behaviors/popup.ts'
 
+it('reports hidden-until-found support only when both DOM features are present', () => {
+  const capability = (hidden: boolean | string, beforeMatch: boolean) =>
+    ({
+      createElement: () => ({
+        hidden,
+        setAttribute: () => undefined,
+        ...(beforeMatch ? { onbeforematch: null } : {}),
+      }),
+    }) as Document
+  assert.equal(
+    Motion.supportsHiddenUntilFound(capability('until-found', true)),
+    true,
+  )
+  assert.equal(
+    Motion.supportsHiddenUntilFound(capability('until-found', false)),
+    false,
+  )
+  assert.equal(Motion.supportsHiddenUntilFound(capability(true, true)), false)
+})
+
 const paint = (model: Motion.Model) =>
   Motion.update(
     model,

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { Effect, Option, Schema } from 'effect'
+import { Window } from 'happy-dom'
 
 import * as FocusRecovery from '../src/lib/behaviors/focus-recovery.ts'
 
@@ -8,6 +9,28 @@ const recovery = FocusRecovery.create<'a' | 'b' | 'c' | 'd'>()
 const previousKeys = ['a', 'b', 'c', 'd'] as const
 
 describe('FocusRecovery', () => {
+  it('keeps focus on a moved descendant unless the move chooses another target', async () => {
+    const window = new Window()
+    try {
+      const { document } = window
+      const group = document.createElement('div')
+      const action = document.createElement('button')
+      const outside = document.createElement('button')
+      group.append(action)
+      document.body.append(group, outside)
+      const scope: unknown = group
+      action.focus()
+      FocusRecovery.keepFocus(scope as Element, () => {
+        action.blur()
+        group.append(action)
+      })
+      assert.equal(document.activeElement, action)
+      FocusRecovery.keepFocus(scope as Element, () => outside.focus())
+      assert.equal(document.activeElement, outside)
+    } finally {
+      await window.happyDOM.close()
+    }
+  })
   it('retains pending collection ownership across removals before focus commits', () => {
     const config = { itemId: (key: string) => key, fallbackId: 'viewport' }
     const update = (

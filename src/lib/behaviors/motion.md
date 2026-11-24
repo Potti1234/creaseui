@@ -16,5 +16,6 @@ Pass `returnFocusTo` when hiding; on closed settlement bridge Popup with
 available: wrap its messages with `Message.GotAnimationMessage`; it retains
 content and hardcodes 200ms. For find-in-page, keep content mounted with
 `hiddenAttributes(isOpen, true)` and `reveal(showMessage)` for beforematch.
-Accordion was not migrated: its exact-shape/no-Command contracts would break.
+`supportsHiddenUntilFound(document)` lets a custom view choose whether to
+offer browser search for its collapsed content.
 Demo (all renderers): `/docs/components/collapsible#motion-presence`.
