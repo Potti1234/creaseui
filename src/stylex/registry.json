@@ -4105,7 +4105,8 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/crease-theme-css",
-        "Potti1234/creaseui/stylex-composition-box"
+        "Potti1234/creaseui/stylex-composition-box",
+        "Potti1234/creaseui/transfer-behavior"
       ]
     },
     {

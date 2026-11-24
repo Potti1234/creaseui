@@ -1,5 +1,6 @@
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
+import { previewAttributes, type Preview } from '@/lib/behaviors/transfer'
 import { box } from '@/ui/stylex/composition/box'
 
 /**
@@ -52,24 +53,13 @@ export const kanbanDropPlaceholder = <Message>(
 
 /** Fixed-position clone that follows the pointer during a drag. */
 export const kanbanGhostCard = <Message>(
-  preview: Readonly<{ x: number; y: number; width: number }>,
+  preview: Pick<Preview<string>, 'x' | 'y' | 'width' | 'count'>,
   content: Html,
   h: HtmlBuilder<Message>,
 ): Html =>
   box<Message>(
     {
-      attrs: [
-        h.AriaHidden(true),
-        h.Style({
-          left: `${preview.x}px`,
-          pointerEvents: 'none',
-          position: 'fixed',
-          rotate: '2deg',
-          top: `${preview.y}px`,
-          width: `${preview.width}px`,
-          zIndex: '50',
-        }),
-      ],
+      attrs: previewAttributes(preview, h, { rotate: '2deg', zIndex: '50' }),
       children: [content],
       padding: 'sm',
       radius: 'md',

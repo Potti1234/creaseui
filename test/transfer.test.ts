@@ -33,6 +33,132 @@ const announcement = (result: { outMessage?: Transfer.OutMessage }) =>
   result.outMessage?.announcement
 
 describe('Transfer', () => {
+  it('moves groups in source order and requires every member to be accepted', () => {
+    const model = Transfer.init({
+      id: 'grid',
+      lists: { source: ['a', 'b', 'c', 'locked', 'd'], target: ['e'] },
+    })
+    const config: Transfer.Options = {
+      ...options,
+      group: () => ['c', 'missing', 'locked', 'a', 'a'],
+      accepts: (item, list) => list !== 'target' || item !== 'a',
+    }
+    const draft = Transfer.grab(model, 'c', config).model
+    assert.equal(Transfer.moving(draft, 'a'), true)
+    assert.equal(Transfer.moving(draft, 'locked'), false)
+    assert.equal(Transfer.moveTo(draft, 'target', 0, config).model, draft)
+    const moved = Transfer.moveTo(draft, 'source', 2, config).model
+    assert.deepEqual(Transfer.lists(moved).source, [
+      'b',
+      'locked',
+      'a',
+      'c',
+      'd',
+    ])
+    assert.deepEqual(Transfer.cancel(moved, config).model.lists, model.lists)
+    const accepted = Transfer.moveTo(moved, 'target', 1, {
+      ...config,
+      accepts: () => true,
+    }).model
+    assert.deepEqual(Transfer.drop(accepted).model.lists, {
+      source: ['b', 'locked', 'd'],
+      target: ['e', 'a', 'c'],
+    })
+    assert.ok(
+      Option.isNone(
+        Transfer.setLists(accepted, {
+          source: ['b', 'c', 'd'],
+          target: ['e'],
+        }).draft,
+      ),
+    )
+  })
+
+  it('uses a grid row stride and mirrors inline keyboard moves', () => {
+    const model = Transfer.init({
+      id: 'grid',
+      lists: { photos: ['a', 'b', 'c', 'd', 'e', 'f'], archive: [] },
+    })
+    const draft = Transfer.grab(model, 'a').model
+    const press = (model: Transfer.Model, pressedKey: string) =>
+      Transfer.update(
+        model,
+        Transfer.Message.PressedKey({
+          key: 'a',
+          pressedKey,
+          direction: 'rtl',
+          modified: false,
+          columns: 3,
+        }),
+      ).model
+    const down = press(draft, 'ArrowDown')
+    assert.deepEqual(Transfer.lists(down).photos, [
+      'b',
+      'c',
+      'd',
+      'a',
+      'e',
+      'f',
+    ])
+    assert.deepEqual(Transfer.lists(press(down, 'ArrowLeft')).photos, [
+      'b',
+      'c',
+      'd',
+      'e',
+      'a',
+      'f',
+    ])
+  })
+
+  it('excludes selected placeholders from pointer slots and reports the preview count', () => {
+    const model = Transfer.init({
+      id: 'board',
+      lists: { photos: ['a', 'b', 'c', 'd'] },
+    })
+    const config = { group: () => ['a', 'c'] }
+    const pending = Transfer.update(
+      model,
+      Transfer.Message.PressedItem({
+        key: 'c',
+        pointerId: 1,
+        at: { x: 5, y: 5 },
+        offset: { x: 2, y: 3 },
+        size: { width: 20, height: 12 },
+        focused: false,
+      }),
+      config,
+    ).model
+    const dragging = Transfer.update(
+      pending,
+      Transfer.Message.MovedPointer({
+        pointerId: 1,
+        at: { x: 45, y: 55 },
+        precedingKeys: ['a', 'b'],
+        maybeSlot: Option.some({ list: 'photos', index: 2 }),
+      }),
+      config,
+    ).model
+    assert.deepEqual(Transfer.lists(dragging).photos, ['b', 'a', 'c', 'd'])
+    assert.equal(Transfer.dragging(dragging, 'a'), true)
+    assert.deepEqual(Option.getOrThrow(Transfer.preview(dragging)), {
+      key: 'c',
+      count: 2,
+      x: 43,
+      y: 52,
+      width: 20,
+      height: 12,
+    })
+    const cancelled = Transfer.update(
+      dragging,
+      Transfer.Message.CancelledPointer({
+        pointerId: 1,
+      }),
+      config,
+    ).model
+    assert.deepEqual(Transfer.lists(cancelled), model.lists)
+    assert.ok(Option.isNone(Transfer.preview(cancelled)))
+  })
+
   it('moves one key into a list at a clamped index', () => {
     assert.deepEqual(Transfer.transferred(lists, 'a', 'done', 9), {
       todo: ['b'],

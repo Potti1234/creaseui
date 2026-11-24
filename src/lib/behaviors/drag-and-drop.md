@@ -13,8 +13,9 @@ delegates read the compatible local drag phases and emit messages that the
 local update handles. The DOM protocol uses `data-draggable-id` on handles,
 `data-sortable-id` on rows, and `data-droppable-id` on containers.
 
-Use [Reorder](reorder.md) for keyboard drafts with grouped moves, rebase,
-cancel, and announcement data.
+Use [Transfer](transfer.md) for pointer and keyboard drafts with grid layout,
+grouped moves, and fixed-position previews. Use [Reorder](reorder.md) for
+keyboard-only drafts with grouped moves, rebase, and announcements.
 
 Spread `view` on the focusable handle, `sortable` on each row, and `dropTarget`
 on its list. Lift `subscriptions` and the Commands from `update` into the

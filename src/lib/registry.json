@@ -1729,6 +1729,23 @@
       ]
     },
     {
+      "name": "transfer-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Transfer Behavior",
+      "description": "Pointer and keyboard transfer across lists and grids with grouped drafts and previews.",
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/reorder-behavior"
+      ],
+      "files": [
+        {
+          "path": "behaviors/transfer.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/transfer.ts"
+        }
+      ]
+    },
+    {
       "name": "transfer-list-behavior",
       "type": "registry:lib",
       "title": "Transfer List Behavior",

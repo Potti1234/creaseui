@@ -797,18 +797,10 @@ export const kanbanBoard = <Message>(
         onSome: ({ card, preview }) =>
           box(
             {
-              attrs: [
-                h.AriaHidden(true),
-                h.Style({
-                  left: `${preview.x}px`,
-                  pointerEvents: 'none',
-                  position: 'fixed',
-                  rotate: '2deg',
-                  top: `${preview.y}px`,
-                  width: `${preview.width}px`,
-                  zIndex: '50',
-                }),
-              ],
+              attrs: Transfer.previewAttributes(preview, h, {
+                rotate: '2deg',
+                zIndex: '50',
+              }),
               children: [laneCardContent(card)],
               padding: 'sm',
               radius: 'md',

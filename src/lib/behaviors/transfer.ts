@@ -2,12 +2,19 @@ import { Effect, Option, Queue, Schema, Stream } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import * as Dom from 'foldkit/dom'
-import { childAttributes, type ChildAttribute, type Html } from 'foldkit/html'
+import {
+  childAttributes,
+  type Attribute,
+  type ChildAttribute,
+  type Html,
+  type HtmlBuilder,
+} from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 import { defineView, type View as SubmodelView } from 'foldkit/submodel'
 
 import { createAutoScroll, isDrag } from './drag'
+import { columnsOf, gridDropIndex } from './reorder'
 
 export const Lists = Schema.Record(Schema.String, Schema.Array(Schema.String))
 export type Lists = typeof Lists.Type
@@ -19,6 +26,7 @@ const Slot = Schema.Struct({ list: Schema.String, index: Schema.Int })
 
 const Draft = Schema.Struct({
   key: Schema.String,
+  keys: Schema.optionalKey(Schema.Array(Schema.String)),
   from: Schema.String,
   lists: Lists,
   pointer: Schema.Boolean,
@@ -53,6 +61,7 @@ export const Message = defineMessageUnion({
     pressedKey: Schema.String,
     modified: Schema.Boolean,
     direction: Direction,
+    columns: Schema.optionalKey(Schema.Int),
   },
   PressedItem: {
     key: Schema.String,
@@ -66,6 +75,7 @@ export const Message = defineMessageUnion({
     pointerId: Schema.Int,
     at: Point,
     maybeSlot: Schema.Option(Slot),
+    precedingKeys: Schema.optionalKey(Schema.Array(Schema.String)),
   },
   ReleasedPointer: { pointerId: Schema.Int },
   CancelledPointer: { pointerId: Schema.Int },
@@ -118,6 +128,7 @@ export type CommitDetails = Readonly<{
 
 export type Options = Readonly<{
   order?: ReadonlyArray<string>
+  group?: (key: string) => ReadonlyArray<string>
   accepts?: (key: string, list: string) => boolean
   disabled?: (key: string) => boolean
   label?: (key: string) => string | undefined
@@ -156,12 +167,20 @@ export const transferred = (
   key: string,
   list: string,
   index: number,
+): Lists => transferGroup(lists, [key], list, index)
+
+const transferGroup = (
+  lists: Lists,
+  keys: ReadonlyArray<string>,
+  list: string,
+  index: number,
 ): Lists => {
   const next: Record<string, ReadonlyArray<string>> = {}
-  for (const [name, keys] of Object.entries(lists))
-    next[name] = keys.filter(other => other !== key)
+  const moving = new Set(keys)
+  for (const [name, items] of Object.entries(lists))
+    next[name] = items.filter(item => !moving.has(item))
   const target = [...(next[list] ?? [])]
-  target.splice(Math.max(0, Math.min(target.length, index)), 0, key)
+  target.splice(Math.max(0, Math.min(target.length, index)), 0, ...keys)
   next[list] = target
   return next
 }
@@ -199,10 +218,16 @@ export const lists = (model: Model): Lists =>
   })
 
 export const moving = (model: Model, key: string): boolean =>
-  Option.exists(model.draft, draft => draft.key === key)
+  Option.exists(model.draft, draft => draftKeys(draft).includes(key))
 
 export const dragging = (model: Model, key: string): boolean =>
-  Option.exists(model.draft, draft => draft.key === key && draft.pointer)
+  Option.exists(
+    model.draft,
+    draft => draft.pointer && draftKeys(draft).includes(key),
+  )
+
+const draftKeys = (draft: Draft): ReadonlyArray<string> =>
+  draft.keys ?? [draft.key]
 
 export const itemId = (id: string, key: string): string =>
   `${id}-transfer-${key}`
@@ -276,11 +301,18 @@ const startDraft = (
     options.disabled?.(key) === true
   )
     return Option.none()
+  const from = maybeFrom.value
+  const selected = new Set(options.group?.(key))
+  const keys = (model.lists[from] ?? []).filter(
+    item =>
+      item === key || (selected.has(item) && options.disabled?.(item) !== true),
+  )
   return Option.some({
     ...model,
     draft: Option.some({
       key,
-      from: maybeFrom.value,
+      from,
+      ...(keys.length > 1 ? { keys } : {}),
       lists: model.lists,
       pointer,
     }),
@@ -309,8 +341,10 @@ export const moveTo = (
   const draft = model.draft.value
   if (draft.lists[list] === undefined) return { model }
   const changesList = !Option.contains(listWith(draft.lists, draft.key), list)
-  if (changesList && !accepts(options, draft.key, list)) return { model }
-  const next = transferred(draft.lists, draft.key, list, index)
+  const keys = draftKeys(draft)
+  if (changesList && keys.some(key => !accepts(options, key, list)))
+    return { model }
+  const next = transferGroup(draft.lists, keys, list, index)
   if (sameLists(next, draft.lists)) return { model }
   const moved = { ...model, draft: Option.some({ ...draft, lists: next }) }
   return announced(
@@ -450,6 +484,8 @@ export const setLists = (
   const dropped = { ...settled(model), lists: now }
   if (Option.isNone(maybeFrom)) return dropped
   const from = maybeFrom.value
+  const group = draftKeys(draft)
+  if (group.some(key => !now[from]?.includes(key))) return dropped
   if (sameLists(draft.lists, model.lists))
     return {
       ...model,
@@ -460,20 +496,20 @@ export const setLists = (
   const target = now[list]
   if (
     target === undefined ||
-    (list !== from && !accepts(options, draft.key, list))
+    (list !== from && group.some(key => !accepts(options, key, list)))
   )
     return dropped
   const keys = draft.lists[list] ?? []
   const index = keys
     .slice(0, keys.indexOf(draft.key))
-    .filter(key => target.includes(key)).length
+    .filter(key => !group.includes(key) && target.includes(key)).length
   return {
     ...model,
     lists: now,
     draft: Option.some({
       ...draft,
       from,
-      lists: transferred(now, draft.key, list, index),
+      lists: transferGroup(now, group, list, index),
     }),
   }
 }
@@ -484,6 +520,7 @@ const pressKey = (
   pressedKey: string,
   modified: boolean,
   direction: Direction,
+  columns: number | undefined,
   options: Options,
 ): UpdateReturn => {
   if (Option.isNone(model.draft))
@@ -497,15 +534,22 @@ const pressKey = (
   if (pressedKey === 'Escape') return cancel(model, options)
   const list = Option.getOrElse(listWith(draft.lists, key), () => draft.from)
   const keys = draft.lists[list] ?? []
-  const index = keys.indexOf(key)
-  if (pressedKey === 'ArrowUp') return moveTo(model, list, index - 1, options)
-  if (pressedKey === 'ArrowDown') return moveTo(model, list, index + 1, options)
+  const group = draftKeys(draft)
+  const index = keys
+    .slice(0, keys.indexOf(key))
+    .filter(item => !group.includes(item)).length
+  const stride = Math.max(1, columns ?? 1)
+  if (pressedKey === 'ArrowUp')
+    return moveTo(model, list, index - stride, options)
+  if (pressedKey === 'ArrowDown')
+    return moveTo(model, list, index + stride, options)
   if (pressedKey === 'Home') return moveTo(model, list, 0, options)
   if (pressedKey === 'End') return moveTo(model, list, keys.length, options)
   const forward = direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight'
   const backward = direction === 'rtl' ? 'ArrowRight' : 'ArrowLeft'
   const across = pressedKey === forward ? 1 : pressedKey === backward ? -1 : 0
   if (across === 0 || modified) return { model }
+  if (columns !== undefined) return moveTo(model, list, index + across, options)
   const names = options.order ?? Object.keys(model.lists)
   for (
     let position = names.indexOf(list) + across;
@@ -536,8 +580,8 @@ export const update = (
 ): UpdateReturn => {
   const pointer = Option.getOrUndefined(model.pointer)
   return Message.match<UpdateReturn>(message, {
-    PressedKey: ({ key, pressedKey, modified, direction }) =>
-      pressKey(model, key, pressedKey, modified, direction, options),
+    PressedKey: ({ key, pressedKey, modified, direction, columns }) =>
+      pressKey(model, key, pressedKey, modified, direction, columns, options),
     PressedItem: ({ key, pointerId, at, offset, size, focused }) =>
       pointer !== undefined ||
       Option.isSome(model.draft) ||
@@ -557,7 +601,7 @@ export const update = (
               }),
             },
           },
-    MovedPointer: ({ pointerId, at, maybeSlot }) => {
+    MovedPointer: ({ pointerId, at, maybeSlot, precedingKeys }) => {
       if (pointer?.id !== pointerId) return { model }
       const tracked = { ...model, pointer: Option.some({ ...pointer, at }) }
       const isDragging = Option.exists(model.draft, draft => draft.pointer)
@@ -575,10 +619,13 @@ export const update = (
           })
       if (Option.isNone(picked.model.draft) || Option.isNone(maybeSlot))
         return picked
+      const group = draftKeys(picked.model.draft.value)
       const moved = moveTo(
         picked.model,
         maybeSlot.value.list,
-        maybeSlot.value.index,
+        precedingKeys === undefined
+          ? maybeSlot.value.index
+          : precedingKeys.filter(key => !group.includes(key)).length,
         options,
       )
       return moved.model === picked.model ? picked : moved
@@ -596,6 +643,7 @@ export const update = (
 
 export type Preview<Key extends string> = Readonly<{
   key: Key
+  count?: number
   x: number
   y: number
   width: number
@@ -603,17 +651,42 @@ export type Preview<Key extends string> = Readonly<{
 }>
 
 export const preview = (model: Model): Option.Option<Preview<string>> =>
-  Option.flatMap(model.pointer, pointer =>
-    dragging(model, pointer.key)
-      ? Option.some({
-          key: pointer.key,
-          x: pointer.at.x - pointer.offset.x,
-          y: pointer.at.y - pointer.offset.y,
-          width: pointer.size.width,
-          height: pointer.size.height,
-        })
-      : Option.none(),
-  )
+  Option.flatMap(model.pointer, pointer => {
+    const draft = Option.getOrUndefined(model.draft)
+    if (draft?.pointer !== true || draft.key !== pointer.key)
+      return Option.none()
+    const count = draftKeys(draft).length
+    return Option.some({
+      key: pointer.key,
+      ...(count > 1 ? { count } : {}),
+      x: pointer.at.x - pointer.offset.x,
+      y: pointer.at.y - pointer.offset.y,
+      width: pointer.size.width,
+      height: pointer.size.height,
+    })
+  })
+
+export const previewAttributes = <Message>(
+  preview: Pick<Preview<string>, 'x' | 'y' | 'width' | 'count'>,
+  h: HtmlBuilder<Message>,
+  decoration?: Readonly<Record<string, string>>,
+): ReadonlyArray<Attribute<Message>> => {
+  const count = String(preview.count ?? 1)
+  return [
+    h.AriaHidden(true),
+    h.Inert(true),
+    h.DataAttribute('drag-count', count),
+    h.Style({
+      ...decoration,
+      '--drag-count': count,
+      position: 'fixed',
+      pointerEvents: 'none',
+      left: `${preview.x}px`,
+      top: `${preview.y}px`,
+      width: `${preview.width}px`,
+    }),
+  ]
+}
 
 type InputMessage =
   | typeof Message.PressedKey.Type
@@ -640,6 +713,18 @@ const transferKeys = new Set([
 const owned = (surface: Element, element: Element): boolean =>
   element.closest(surfaceSelector) === surface
 
+const itemsIn = (surface: Element, list: Element): ReadonlyArray<Element> =>
+  [...list.querySelectorAll(itemSelectorAttribute)].filter(
+    item => owned(surface, item) && item.closest(listSelector) === list,
+  )
+
+const isGrid = (list: Element): boolean =>
+  list.getAttribute('data-transfer-layout') === 'grid'
+
+const isRtl = (element: Element): boolean =>
+  element.ownerDocument.defaultView?.getComputedStyle(element).direction ===
+  'rtl'
+
 const distance = (rect: DOMRect, { x, y }: Point): number =>
   Math.hypot(
     x < rect.left ? rect.left - x : x > rect.right ? x - rect.right : 0,
@@ -650,7 +735,10 @@ const slotAt = (
   surface: Element,
   key: string,
   at: Point,
-): Option.Option<typeof Slot.Type> => {
+): {
+  maybeSlot: Option.Option<typeof Slot.Type>
+  precedingKeys?: ReadonlyArray<string>
+} => {
   const nearest = [...surface.querySelectorAll(listSelector)]
     .filter(list => owned(surface, list))
     .map(list => ({
@@ -663,18 +751,24 @@ const slotAt = (
       undefined,
     )
   const name = nearest?.list.getAttribute('data-transfer-list')
-  if (nearest === undefined || name == null) return Option.none()
-  const middles = [...nearest.list.querySelectorAll(itemSelectorAttribute)]
-    .filter(
-      item =>
-        item.closest(listSelector) === nearest.list &&
-        item.getAttribute('data-transfer-key') !== key,
-    )
-    .map(item => {
-      const rect = item.getBoundingClientRect()
-      return rect.top + rect.height / 2
-    })
-  return Option.some({ list: name, index: dropIndex(middles, at.y) })
+  if (nearest === undefined || name == null) return { maybeSlot: Option.none() }
+  const list = nearest.list
+  const items = itemsIn(surface, list).filter(
+    item => item.getAttribute('data-transfer-key') !== key,
+  )
+  const rects = items.map(item => item.getBoundingClientRect())
+  const index = isGrid(list)
+    ? gridDropIndex(rects, at, { reversed: isRtl(list) })
+    : dropIndex(
+        rects.map(rect => rect.top + rect.height / 2),
+        at.y,
+      )
+  return {
+    maybeSlot: Option.some({ list: name, index }),
+    precedingKeys: items
+      .slice(0, index)
+      .map(item => item.getAttribute('data-transfer-key')!),
+  }
 }
 
 const bindInput = (surface: Element, send: (message: InputMessage) => void) => {
@@ -698,7 +792,7 @@ const bindInput = (surface: Element, send: (message: InputMessage) => void) => {
     const key = handle?.getAttribute('data-transfer-key')
     if (handle === undefined || key == null) return
     const modified = event.altKey || event.ctrlKey || event.metaKey
-    const isMoving = handle.hasAttribute('data-transfer-moving')
+    const isMoving = handle.hasAttribute('data-transfer-active')
     if (handle.hasAttribute('data-transfer-dragging')) return
     if (
       isMoving
@@ -708,12 +802,24 @@ const bindInput = (surface: Element, send: (message: InputMessage) => void) => {
       return
     if (event.key !== 'Tab') event.preventDefault()
     if (event.key === 'Escape') event.stopPropagation()
-    const direction =
-      doc.defaultView?.getComputedStyle(handle).direction === 'rtl'
-        ? 'rtl'
-        : 'ltr'
+    const direction = isRtl(handle) ? 'rtl' : 'ltr'
+    const list = handle.closest(listSelector)
+    const columns =
+      list !== null && isGrid(list)
+        ? columnsOf(
+            itemsIn(surface, list).map(
+              item => item.getBoundingClientRect().top,
+            ),
+          )
+        : undefined
     send(
-      Message.PressedKey({ key, pressedKey: event.key, modified, direction }),
+      Message.PressedKey({
+        key,
+        pressedKey: event.key,
+        modified,
+        direction,
+        ...(columns === undefined ? {} : { columns }),
+      }),
     )
   }
 
@@ -728,7 +834,9 @@ const bindInput = (surface: Element, send: (message: InputMessage) => void) => {
         Message.MovedPointer({
           pointerId,
           at,
-          maybeSlot: didDrag ? slotAt(surface, key, at) : Option.none(),
+          ...(didDrag
+            ? slotAt(surface, key, at)
+            : { maybeSlot: Option.none() }),
         }),
       )
     const scroller = surface.hasAttribute('data-transfer-auto-scroll')
@@ -891,6 +999,8 @@ export type ViewInputs<
   lists: ReadonlyArray<List>
   disabled?: (key: Key) => boolean
   autoScroll?: boolean
+  layout?: 'vertical' | 'grid'
+  preview?: boolean
   toView: (
     surface: ReadonlyArray<ChildAttribute>,
     lists: ReadonlyArray<ListInfo<Key, List>>,
@@ -925,7 +1035,12 @@ export const create = <
         ]),
         inputs.lists.map(list => ({
           list,
-          attributes: childAttributes([h.DataAttribute('transfer-list', list)]),
+          attributes: childAttributes([
+            h.DataAttribute('transfer-list', list),
+            ...(inputs.layout === 'grid'
+              ? [h.DataAttribute('transfer-layout', 'grid')]
+              : []),
+          ]),
           items: (shown[list] ?? []).map((rawKey, index) => {
             // Keys come from the caller's typed lists.
             const key = rawKey as Key
@@ -941,6 +1056,9 @@ export const create = <
               attributes: childAttributes([
                 h.Id(itemId(model.id, key)),
                 h.DataAttribute('transfer-key', key),
+                ...(Option.exists(model.draft, draft => draft.key === key)
+                  ? [h.DataAttribute('transfer-active', '')]
+                  : []),
                 ...(isMoving ? [h.DataAttribute('transfer-moving', '')] : []),
                 ...(isDragging
                   ? [h.DataAttribute('transfer-dragging', '')]
@@ -953,7 +1071,9 @@ export const create = <
           }),
         })),
         // Preview keys come from the same typed lists.
-        preview(model) as Option.Option<Preview<Key>>,
+        inputs.preview === false
+          ? Option.none()
+          : (preview(model) as Option.Option<Preview<Key>>),
       )
     },
   ),
