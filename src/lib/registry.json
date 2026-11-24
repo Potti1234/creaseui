@@ -352,7 +352,8 @@
       "registryDependencies": [
         "Potti1234/creaseui/animation-behavior",
         "Potti1234/creaseui/listbox-behavior",
-        "Potti1234/creaseui/position-behavior"
+        "Potti1234/creaseui/position-behavior",
+        "Potti1234/creaseui/text-dom-behavior"
       ]
     },
     {
@@ -781,6 +782,20 @@
       ]
     },
     {
+      "name": "input-history-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Input History Behavior",
+      "description": "Navigate earlier input entries with edge-aware keyboard bindings.",
+      "registryDependencies": ["Potti1234/creaseui/text-dom-behavior"],
+      "files": [
+        {
+          "path": "behaviors/input-history.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/input-history.ts"
+        }
+      ]
+    },
+    {
       "name": "input-status",
       "type": "registry:lib",
       "title": "Input Status",
@@ -811,6 +826,7 @@
       "type": "registry:lib",
       "title": "Layer Behavior",
       "description": "Standalone scoped mount for Escape, outside-press, and window-blur dismissal.",
+      "registryDependencies": ["Potti1234/creaseui/text-dom-behavior"],
       "files": [
         {
           "path": "behaviors/layer.ts",
@@ -1516,6 +1532,19 @@
           "path": "tanstack-table-state.ts",
           "type": "registry:lib",
           "target": "@lib/tanstack-table-state.ts"
+        }
+      ]
+    },
+    {
+      "name": "text-dom-behavior",
+      "type": "registry:lib",
+      "title": "DOM Text Behavior",
+      "description": "Typeahead labels, locale resolution, and keyboard composition detection.",
+      "files": [
+        {
+          "path": "behaviors/text-dom.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/text-dom.ts"
         }
       ]
     },

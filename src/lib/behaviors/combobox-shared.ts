@@ -12,6 +12,7 @@ import * as Update from 'foldkit/update'
 import * as Animation from './animation'
 import * as Listbox from './listbox'
 import { AnchorConfig, bindAnchor, portalBackdrop } from './position'
+import { isComposing } from './text-dom'
 
 const optionWhen = <Value>(
   condition: boolean,
@@ -32,8 +33,7 @@ export const guardComboboxComposition = (input: Html): Html => {
     handler: Exclude<typeof keydown, ReadonlyArray<unknown>>,
   ): typeof handler =>
     function (event, vnode) {
-      if (!event.isComposing && event.keyCode !== 229)
-        handler.call(this, event, vnode)
+      if (!isComposing(event)) handler.call(this, event, vnode)
     }
 
   on.keydown = Array.isArray(keydown) ? keydown.map(guard) : guard(keydown)
