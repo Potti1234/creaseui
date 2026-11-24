@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scheduling field checks · CreaseUI</title>
+    <style>
+      :root { color-scheme: light dark; font: 1rem/1.5 system-ui, sans-serif; }
+      main { max-width: 36rem; margin: 1rem auto; padding-inline: .75rem; }
+      .board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-block: 1rem; }
+      .lane { border: 1px solid GrayText; border-radius: .75rem; padding: .75rem; min-height: 10rem; }
+      h2 { margin: 0 0 .5rem; font-size: 1rem; }
+      button { font: inherit; }
+      .check { display: block; width: 100%; box-sizing: border-box; margin-block: .25rem; padding: .35rem .5rem; border: 1px solid GrayText; border-radius: .35rem; background: Canvas; color: CanvasText; text-align: start; touch-action: none; }
+      .check[data-transfer-moving] { border-color: Highlight; }
+      .check[data-transfer-dragging] { opacity: .45; }
+      [data-drag-count] { z-index: 2; }
+      [role="status"] { min-height: 1.5em; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

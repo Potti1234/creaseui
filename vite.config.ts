@@ -195,6 +195,24 @@ export default defineConfig(({ mode }) => {
       port: isTailwind ? 4173 : isStyleX ? 4174 : 4175,
       strictPort: true,
     },
-    build: { outDir: `dist/${renderer}` },
+    build: {
+      outDir: `dist/${renderer}`,
+      rolldownOptions: {
+        input: [
+          fileURLToPath(new URL('./index.html', import.meta.url)),
+          ...[
+            'anchored-popup',
+            'component',
+            'move',
+            'swipe-actions',
+            'transfer',
+            'values',
+            'viewport',
+            'virtualizer',
+          ].map(folder => source(`docs/examples/${folder}/index.html`)),
+          source('docs/spans-demo.html'),
+        ],
+      },
+    },
   }
 })

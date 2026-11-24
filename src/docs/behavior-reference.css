@@ -92,6 +92,40 @@
   overflow-wrap: anywhere;
 }
 
+.behavior-docs-example {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.behavior-docs-example + .behavior-docs-example {
+  margin-block-start: 1.75rem;
+}
+
+.behavior-docs-example :is(h3, p) {
+  margin: 0;
+}
+
+.behavior-docs-frame {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--background);
+}
+
+.behavior-docs-example summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.behavior-docs-example pre {
+  max-height: 26rem;
+  overflow: auto;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--muted);
+}
+
 @media (max-width: 44rem) {
   .behavior-docs-index-list li,
   .behavior-docs-compact-list li {

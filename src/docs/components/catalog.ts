@@ -164,6 +164,16 @@ export const update = (model: Model, message: Message): UpdateReturn => {
   }
 }
 
+export const exampleSubscriptions = (slug: string, index: number) => {
+  const program = authoredPages[slug]?.previewProgram
+  if (program?.subscriptions === undefined) return {}
+  return Subscription.lift(program.subscriptions)<Model, Message>({
+    toChildModel: model => model.examples[index] ?? program.init(index),
+    toParentMessage: message => GotExampleMessage({ index, message }),
+    when: model => model.slug === slug,
+  })
+}
+
 export const subscriptions = Subscription.aggregate<Model, Message>()(
   ...localPrograms.flatMap(({ slug, program }, programIndex) => {
     const childSubscriptions = program.subscriptions
@@ -304,6 +314,7 @@ export const view = (
   slug: string,
   dark: boolean,
   h: HtmlBuilder<Message>,
+  onlyExample?: number,
 ): Html => {
   const name = componentTitle(slug)
   const definition = definitions[slug]
@@ -415,6 +426,18 @@ export const view = (
       toParentMessage: (message): Message =>
         GotExampleMessage({ index: stateIndex, message }),
     })
+  }
+
+  if (onlyExample !== undefined) {
+    const config = authoredExamples[onlyExample]
+    return config === undefined
+      ? h.empty
+      : h.div(
+          config.previewClass === undefined
+            ? []
+            : [h.Class(config.previewClass)],
+          [previewFor(onlyExample, onlyExample)],
+        )
   }
 
   const renderedExamples = authoredExamples

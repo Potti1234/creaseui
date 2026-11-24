@@ -8,6 +8,7 @@ import {
   type BehaviorRenderer,
 } from '@/docs/behavior-metadata'
 import { docsSidebar } from '@/docs/docs-sidebar'
+import { examplesFor } from '@/docs/behavior-examples'
 import { docsGuideStyles } from '@/docs/getting-started-view'
 import { componentTitle } from '@/docs/component-metadata'
 import type * as Markdown from '@/lib/markdown'
@@ -115,6 +116,7 @@ const detail = <Msg>(
         : tailwindMarkdown
   const guide = entry.guides.map(guideFor).join('\n\n')
   const components = componentsUsing(entry.slug, props.renderer)
+  const examples = examplesFor(entry, props.renderer)
   return h.main(
     [h.Class('behavior-docs-reference')],
     [
@@ -133,6 +135,53 @@ const detail = <Msg>(
           h.p([], [link(sourceBase + entry.source, 'View source', h)]),
         ],
       ),
+      ...(examples.length === 0
+        ? []
+        : [
+            h.section(
+              [h.Class('behavior-docs-section')],
+              [
+                h.h2([], ['Examples']),
+                ...examples.map(example =>
+                  h.article(
+                    [h.Class('behavior-docs-example')],
+                    [
+                      h.h3([], [example.title]),
+                      h.p(
+                        [h.Class('behavior-docs-muted')],
+                        [example.explanation],
+                      ),
+                      ...(example.preview === undefined
+                        ? []
+                        : [
+                            h.iframe([
+                              h.Class('behavior-docs-frame'),
+                              h.Src(example.preview),
+                              h.Title(example.title),
+                              h.Loading('lazy'),
+                              h.Style({
+                                height: (example.previewHeight ?? 405) + 'px',
+                              }),
+                            ]),
+                          ]),
+                      link(example.href, 'Open example', h),
+                      ...(example.code === undefined
+                        ? []
+                        : [
+                            h.details(
+                              [],
+                              [
+                                h.summary([], ['Foldkit code']),
+                                h.pre([], [h.code([], [example.code])]),
+                              ],
+                            ),
+                          ]),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ]),
       ...(guide === ''
         ? []
         : [
