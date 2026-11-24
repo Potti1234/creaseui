@@ -16,6 +16,22 @@ by default. Use `orientation: 'horizontal'` to place them in a single flex row
 with logical scroll offsets measured from the inline start in LTR and RTL.
 Set `initialScrollOffset` for either axis.
 
+Set `scrollMargin` to the size of the leading content in the scroller. The
+included view reserves that space and can render `leadingContent` inside it.
+Set `stickyScrollMargin: true` to pin it to the leading edge and account for
+its occlusion when windowing or aligning a scroll. For a custom view, render
+the leading space yourself. Layout offsets and spacers are relative to the
+first item, while the model's scroll offset includes the margin.
+
+Pass `keep: [index]` to the included view to retain an item outside the
+visible window. For custom views, `renderedIndices(range, count, keep)`
+returns the sorted union. Size each skipped span using the difference
+between its layout offsets. Keep using the viewport range for near-end
+checks. To retain focus, keep the focused item's stable key in the parent
+model, resolve it to the current index after sorting or filtering, and pass
+that index until focus leaves the item. Retained rows use the same ARIA
+positions and measurement bindings as visible rows.
+
 The Foldkit subscription follows DOM scroll and resize events. It reattaches
 when the container remounts and releases observers and listeners when stopped.
 
@@ -46,8 +62,7 @@ when the row is fully visible. Empty collections are no-ops. Parents track
 Uniform rows require a positive finite `rowHeightPx`. Callers supply
 nonnegative finite variable heights and valid row indices to `rowPosition`.
 Components own roles and map position values to ARIA attributes.
-Remaining upstream features include `scrollMargin`, keeping non-contiguous
-items mounted, and find-in-page layers. Dynamic measurement updates offsets
+Find-in-page layers remain open. Dynamic measurement updates offsets
 without an explicit scroll-anchor correction when earlier items change size.
 
 Try `npm run dev -- --open /src/docs/examples/virtualizer/`.

@@ -65,6 +65,8 @@ export const Model = Schema.Struct({
   orientation: Schema.optionalKey(Orientation),
   itemSizes: Schema.optionalKey(ItemSizes),
   measurementVersion: Schema.optionalKey(Schema.Number),
+  scrollMargin: Schema.optionalKey(Schema.Number),
+  stickyScrollMargin: Schema.optionalKey(Schema.Boolean),
 })
 export type Model = typeof Model.Type
 
@@ -83,6 +85,8 @@ export type InitConfig = Readonly<
     initialScrollTop?: number
     initialScrollOffset?: number
     measureItems?: boolean
+    scrollMargin?: number
+    stickyScrollMargin?: boolean
   } & ({ rowHeightPx: number } | { estimatedItemSize: number })
 >
 
@@ -100,7 +104,14 @@ export const init = (config: InitConfig): Model => ({
     ? {}
     : { orientation: config.orientation }),
   ...(config.measureItems ? { itemSizes: {}, measurementVersion: 0 } : {}),
+  ...(config.scrollMargin === undefined
+    ? {}
+    : { scrollMargin: config.scrollMargin }),
+  ...(config.stickyScrollMargin ? { stickyScrollMargin: true } : {}),
 })
+
+const scrollMargin = (model: Model): number =>
+  Number.isFinite(model.scrollMargin) ? Math.max(0, model.scrollMargin ?? 0) : 0
 
 const horizontalSign = (element: HTMLElement): number =>
   getComputedStyle(element).direction === 'rtl' ? -1 : 1
@@ -374,7 +385,31 @@ export type ViewInputs<Item> = Readonly<{
   rowElement?: Exclude<TagName, 'textarea'>
   containerClassName?: string
   containerAttributes?: ReadonlyArray<ChildAttribute>
+  leadingContent?: Html
+  keep?: ReadonlyArray<number>
 }>
+
+/** Keep the visible range separate from the sorted rows to mount. */
+export const renderedIndices = (
+  range: Layout.Range,
+  itemCount: number,
+  keep: ReadonlyArray<number> = [],
+): ReadonlyArray<number> => {
+  const visible = Array.from(
+    { length: range.endIndex - range.startIndex },
+    (_, index) => index + range.startIndex,
+  )
+  const retained = keep.filter(
+    index =>
+      Number.isInteger(index) &&
+      index >= 0 &&
+      index < itemCount &&
+      (index < range.startIndex || index >= range.endIndex),
+  )
+  return retained.length === 0
+    ? visible
+    : [...new Set([...visible, ...retained])].sort((a, b) => a - b)
+}
 
 const renderWindow = <Item>(
   model: Model,
@@ -414,8 +449,32 @@ const renderWindow = <Item>(
       ],
       children,
     )
-  if (model.measurement._tag === 'Unmeasured') return container([])
+  const axisSize = (size: number) =>
+    horizontal ? { flex: 'none', width: `${size}px` } : { height: `${size}px` }
+  const leading =
+    scrollMargin(model) > 0
+      ? [
+          h.keyed('li')(
+            `virtualizer:${model.id}:leading`,
+            [
+              h.Role('presentation'),
+              h.Style({
+                ...axisSize(scrollMargin(model)),
+                ...(model.stickyScrollMargin
+                  ? {
+                      position: 'sticky',
+                      'z-index': '1',
+                      [horizontal ? 'inset-inline-start' : 'top']: '0',
+                    }
+                  : {}),
+              }),
+            ],
+            inputs.leadingContent === undefined ? [] : [inputs.leadingContent],
+          ),
+        ]
+      : []
 
+  if (model.measurement._tag === 'Unmeasured') return container(leading)
   const layout = dynamic
     ? dynamicLayout(model, {
         items,
@@ -427,23 +486,19 @@ const renderWindow = <Item>(
     : inputs.itemToRowHeightPx === undefined
       ? Layout.uniform(items.length, model.rowHeightPx)
       : Layout.variable(items, inputs.itemToRowHeightPx)
-  const { startIndex, endIndex, before, after } = Layout.range(
+  const range = measuredRange(
+    model,
     layout,
-    model.scrollTop,
-    model.measurement.containerHeight,
     overscan,
+    model.measurement.containerHeight,
   )
-  const spacer = (edge: 'top' | 'bottom', size: number) =>
+  const positions = renderedIndices(range, items.length, inputs.keep)
+  const spacer = (edge: string, size: number) =>
     h.keyed('li')(`${model.id}-${edge}-spacer`, [
       h.Role('presentation'),
-      h.Style(
-        horizontal
-          ? { flex: 'none', width: `${size}px` }
-          : { height: `${size}px` },
-      ),
+      h.Style(axisSize(size)),
     ])
-  const rows = items.slice(startIndex, endIndex).map((item, index) => {
-    const position = startIndex + index
+  const renderItem = (item: Item, position: number) => {
     const key = inputs.itemToKey(item, position)
     const size = layout.offsetAt(position + 1) - layout.offsetAt(position)
     return h.keyed(rowElement)(
@@ -464,8 +519,24 @@ const renderWindow = <Item>(
       ],
       [inputs.itemToView(item, position)],
     )
-  })
-  return container([spacer('top', before), ...rows, spacer('bottom', after)])
+  }
+  const first = positions[0] ?? range.startIndex
+  const children = [...leading, spacer('top', layout.offsetAt(first))]
+  let next = first
+  for (const position of positions) {
+    if (position > next) {
+      children.push(
+        spacer(
+          `gap-${position}`,
+          layout.offsetAt(position) - layout.offsetAt(next),
+        ),
+      )
+    }
+    children.push(renderItem(items[position]!, position))
+    next = position + 1
+  }
+  children.push(spacer('bottom', layout.totalSize - layout.offsetAt(next)))
+  return container(children)
 }
 
 export const view = <Item>() =>
@@ -526,7 +597,10 @@ export const update = (
       return model.measurement._tag === 'Unmeasured' && model.scrollTop !== 0
         ? applyScroll(
             measured,
-            Math.floor(model.scrollTop / model.rowHeightPx),
+            Math.floor(
+              Math.max(0, model.scrollTop - scrollMargin(model)) /
+                model.rowHeightPx,
+            ),
             model.scrollTop,
           )
         : { model: measured }
@@ -552,13 +626,16 @@ const scroll = (
   const measured = model.measurement._tag === 'Measured'
   const viewport = measured ? model.measurement.containerHeight : 0
   const align = measured ? (options.align ?? 'auto') : 'start'
-  const start = top
-  const end = start + height - viewport
+  const margin = scrollMargin(model)
+  const occlusion =
+    measured && model.stickyScrollMargin ? Math.min(margin, viewport) : 0
+  const start = top + margin - occlusion
+  const end = top + margin + height - viewport
   const target =
     align === 'start'
       ? start
       : align === 'center'
-        ? start + (height - viewport) / 2
+        ? (start + end) / 2
         : align === 'end'
           ? end
           : start < model.scrollTop
@@ -566,7 +643,10 @@ const scroll = (
             : end > model.scrollTop
               ? Math.min(start, end)
               : model.scrollTop
-  const scrollTop = Math.max(0, Math.min(target, Math.max(0, total - viewport)))
+  const scrollTop = Math.max(
+    0,
+    Math.min(target, Math.max(0, total + margin - viewport)),
+  )
   if (align === 'auto' && scrollTop === model.scrollTop) return { model }
   return applyScroll(model, index, scrollTop)
 }
@@ -634,13 +714,26 @@ export const visibleRange = (
   model.measurement._tag === 'Unmeasured'
     ? Option.none()
     : Option.some(
-        Layout.range(
+        measuredRange(
+          model,
           layout,
-          model.scrollTop,
-          model.measurement.containerHeight,
           overscan,
+          model.measurement.containerHeight,
         ),
       )
+
+const measuredRange = (
+  model: Model,
+  layout: Layout.Layout,
+  overscan: number,
+  viewport: number,
+): Layout.Range => {
+  const margin = scrollMargin(model)
+  const occlusion = model.stickyScrollMargin ? Math.min(margin, viewport) : 0
+  const start = Math.max(0, model.scrollTop + occlusion - margin)
+  const end = Math.max(0, model.scrollTop + viewport - margin)
+  return Layout.range(layout, start, end - start, overscan)
+}
 
 export const isNearEnd = (
   window: VisibleWindow,

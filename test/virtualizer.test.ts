@@ -285,6 +285,139 @@ describe('Virtualizer', () => {
     )
   })
 
+  it('accounts for leading content and sticky occlusion in windowing and alignment', () => {
+    const layout = V.Layout.uniform(20, 20)
+    const model = { ...measured, scrollMargin: 40 }
+    assert.deepEqual(Option.getOrThrow(V.visibleRange(model, layout, 0)), {
+      startIndex: 0,
+      endIndex: 3,
+      before: 0,
+      after: 340,
+    })
+    const scrolled = { ...model, scrollTop: 80 }
+    const sticky = {
+      ...scrolled,
+      stickyScrollMargin: true,
+      orientation: 'horizontal' as const,
+    }
+    assert.deepEqual(Option.getOrThrow(V.visibleRange(scrolled, layout, 0)), {
+      startIndex: 2,
+      endIndex: 7,
+      before: 40,
+      after: 260,
+    })
+    assert.deepEqual(Option.getOrThrow(V.visibleRange(sticky, layout, 0)), {
+      startIndex: 4,
+      endIndex: 7,
+      before: 80,
+      after: 260,
+    })
+    for (const [align, ordinary, pinned] of [
+      ['start', 240, 200],
+      ['center', 200, 180],
+      ['end', 160, 160],
+      ['auto', 160, 160],
+    ] as const) {
+      assert.equal(
+        target(V.scrollToIndexLayout(scrolled, layout, 10, { align })),
+        ordinary,
+      )
+      const request = V.scrollToIndexLayout(sticky, layout, 10, { align })
+      assert.equal(target(request), pinned)
+      assert.equal(request.commands?.[0]?.args?.['horizontal'], true)
+    }
+    assert.equal(
+      target(V.scrollToIndex(sticky, 20, 19, { align: 'start' })),
+      340,
+    )
+    assert.equal(
+      target(
+        V.scrollToIndex({ ...model, scrollMargin: NaN }, 20, 10, {
+          align: 'start',
+        }),
+      ),
+      200,
+    )
+  })
+
+  it('keeps disjoint rows in source order with exact spacers and measurement keys', () => {
+    const model = {
+      ...V.init({
+        id: 'retained',
+        estimatedItemSize: 20,
+        measureItems: true,
+        scrollMargin: 20,
+      }),
+      measurement: measured.measurement,
+      scrollTop: 80,
+      itemSizes: { 'row-0': 40, 'row-19': 50 },
+    }
+    const items = Array.from({ length: 20 }, (_, index) => `row-${index}`)
+    const layout = V.dynamicLayout(model, { items, itemToKey: item => item })
+    const range = Option.getOrThrow(V.visibleRange(model, layout, 0))
+    assert.deepEqual(
+      V.renderedIndices(range, items.length, [19, 0, 0, 2, -1, 20, 1.5, NaN]),
+      [0, 2, 3, 4, 5, 6, 19],
+    )
+    assert.equal(
+      V.isNearEnd(
+        {
+          startIndex: range.startIndex,
+          endIndex: range.endIndex,
+          topSpacerHeight: range.before,
+          bottomSpacerHeight: range.after,
+        },
+        items.length,
+      ),
+      false,
+    )
+    Scene.scene(
+      {
+        update: V.update,
+        view: (live, h) => {
+          const node = V.view<string>()(
+            live,
+            {
+              items,
+              itemToKey: item => item,
+              itemToView: item => h.span([], [item]),
+              leadingContent: h.span([], ['Header']),
+              overscan: 0,
+              keep: [19, 0],
+            },
+            h,
+          )
+          const children = node?.children ?? []
+          const elements = children.filter(child => typeof child !== 'string')
+          assert.deepEqual(
+            elements
+              .map(child => child.data?.style?.['height'])
+              .filter(size => size !== undefined),
+            ['20px', '0px', '20px', '240px', '0px'],
+          )
+          assert.deepEqual(
+            elements
+              .filter(child => child.data?.attrs?.['role'] === 'listitem')
+              .map(child => child.key),
+            ['row-0', 'row-2', 'row-3', 'row-4', 'row-5', 'row-6', 'row-19'],
+          )
+          return node
+        },
+      },
+      Scene.given(model),
+      Scene.expect(
+        Scene.selector(
+          '[aria-posinset="1"][aria-setsize="20"][data-virtual-list-measure-key="row-0"]',
+        ),
+      ).toExist(),
+      Scene.expect(
+        Scene.selector(
+          '[aria-posinset="20"][aria-setsize="20"][data-virtual-list-measure-key="row-19"]',
+        ),
+      ).toExist(),
+    )
+  })
+
   it('measures by stable key across reorder, shares scroll offsets, and rejects stale resets', () => {
     const initial = V.init({
       id: 'dynamic',
