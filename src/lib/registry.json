@@ -717,6 +717,19 @@
       ]
     },
     {
+      "name": "gesture-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Gesture Calculations",
+      "description": "Release distance, damped springs, and radial stroke sectors.",
+      "files": [
+        {
+          "path": "behaviors/gesture.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/gesture.ts"
+        }
+      ]
+    },
+    {
       "name": "grid-focus-behavior",
       "type": "registry:lib",
       "title": "Grid Focus Behavior",
@@ -1379,6 +1392,28 @@
           "path": "behaviors/roving-focus.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/roving-focus.ts"
+        }
+      ]
+    },
+    {
+      "name": "scroll-picker-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Scroll Picker",
+      "description": "Centred-item selection, pointer and wheel observation, and keyboard snapping.",
+      "registryDependencies": [
+        "Potti1234/creaseui/gesture-behavior",
+        "Potti1234/creaseui/ui-sdk-license"
+      ],
+      "files": [
+        {
+          "path": "behaviors/scroll-picker.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/scroll-picker.ts"
+        },
+        {
+          "path": "behaviors/scroll-picker-dom.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/scroll-picker-dom.ts"
         }
       ]
     },
