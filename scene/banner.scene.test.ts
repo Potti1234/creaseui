@@ -7,6 +7,10 @@ import { banner as pleatBanner } from '@/pleat/banner'
 import { banner as stylexBanner } from '@/stylex/banner'
 import { banner as tailwindBanner } from '@/ui/banner'
 
+vi.mock('@/lib/disclosure', async importOriginal =>
+  (await import('./disclosure-mock')).mockDisclosureMount(importOriginal),
+)
+
 // Happy DOM cannot create Pleat's cascade layers. These scenes exercise behavior.
 vi.mock('@/pleat/style', () => ({ className: () => 'pleat-test' }))
 

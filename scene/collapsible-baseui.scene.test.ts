@@ -6,6 +6,10 @@ import * as PleatCollapsible from '@/pleat/collapsible'
 import * as StyleXCollapsible from '@/stylex/collapsible'
 import * as TailwindCollapsible from '@/ui/collapsible'
 
+vi.mock('@/lib/disclosure', async importOriginal =>
+  (await import('./disclosure-mock')).mockDisclosureMount(importOriginal),
+)
+
 // Happy DOM cannot create Pleat's cascade layers. These scenes exercise behavior.
 vi.mock('@/pleat/style', () => ({ className: () => 'pleat-test' }))
 

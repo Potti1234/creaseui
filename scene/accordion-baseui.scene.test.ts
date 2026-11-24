@@ -7,6 +7,10 @@ import * as PleatAccordion from '@/pleat/accordion'
 import * as StyleXAccordion from '@/stylex/accordion'
 import * as TailwindAccordion from '@/ui/accordion'
 
+vi.mock('@/lib/disclosure', async importOriginal =>
+  (await import('./disclosure-mock')).mockDisclosureMount(importOriginal),
+)
+
 // Happy DOM cannot create Pleat's cascade layers. These scenes exercise behavior.
 vi.mock('@/pleat/style', () => ({ className: () => 'pleat-test' }))
 
