@@ -6,6 +6,7 @@ import { defineMessageUnion } from 'foldkit/message'
 import * as FocusRecovery from '@/lib/behaviors/focus-recovery'
 import * as Reorder from '@/lib/behaviors/reorder'
 import * as Announce from '@/lib/behaviors/announce'
+import * as Change from '@/lib/behaviors/change'
 
 export { prepareAnnouncements } from '@/lib/behaviors/announce'
 
@@ -122,7 +123,12 @@ export const Message = defineMessageUnion({
     itemName: S.String,
     position: S.Number,
   },
-  RemoveRequested: { index: S.Number, itemName: S.String, position: S.Number },
+  RemoveRequested: {
+    index: S.Number,
+    itemName: S.String,
+    position: S.Number,
+    context: S.optionalKey(Change.Context),
+  },
   FieldEdited: { index: S.Number, nextItem: S.Unknown, columnKey: S.String },
   /* Arrow keys on the handle while not grabbed: immediate one-position move. */
   MoveRequested: {
@@ -167,7 +173,26 @@ const keepReorderFocus = (id: string, key: string) =>
     message => Message.GotFocusRecoveryMessage({ message }),
   )
 
-export const update = (model: Model, message: Message): UpdateReturn => {
+export type UpdateOptions = Readonly<{
+  beforeRemove?: Change.ActionPolicy<
+    Extract<Message, { _tag: 'RemoveRequested' }>
+  >
+}>
+
+export const update = (
+  model: Model,
+  message: Message,
+  options: UpdateOptions = {},
+): UpdateReturn => {
+  if (
+    message._tag === 'RemoveRequested' &&
+    Change.dispatch(
+      message,
+      message.context ?? { reason: 'delete-press', source: 'unknown' },
+      options.beforeRemove,
+    )
+  )
+    return { model }
   const result = updateModel(model, message)
   if (
     result.model.announcement === model.announcement ||

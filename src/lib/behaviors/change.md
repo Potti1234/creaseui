@@ -1,5 +1,10 @@
 # Change and commit
 
+Use `dispatch(action, context, policy)` for a cancellable action. The policy
+can call `cancel()` before the parent proceeds. List Input accepts
+`beforeRemove` in its update options to veto removal before emitting an
+intent or announcement.
+
 In a Foldkit parent update, pass the current model and a typed proposal to `Change.apply`. The proposal carries the value, reason, source, and optional attribution. Put that context in your Message or Command arguments to preserve it across asynchronous work.
 
 Provide a reader and an immutable writer for the field. A `beforeWrite` policy can return false to veto the proposal. Identical values skip both the policy and the write. The default result reports a commit using the value read back from the new model, including any normalization by the writer.

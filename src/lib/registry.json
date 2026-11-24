@@ -974,6 +974,7 @@
       "description": "Shared Foldkit behavior and helpers for List Input.",
       "registryDependencies": [
         "Potti1234/creaseui/announce-behavior",
+        "Potti1234/creaseui/change-behavior",
         "Potti1234/creaseui/focus-recovery-behavior",
         "Potti1234/creaseui/reorder-behavior"
       ],

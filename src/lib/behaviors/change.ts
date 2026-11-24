@@ -8,6 +8,27 @@ export const Context = Schema.Struct({
 })
 export type Context = typeof Context.Type
 
+export type ActionPolicy<Action> = (
+  action: Action,
+  details: Context & Readonly<{ cancel: () => void }>,
+) => void
+
+/** Return whether a synchronous parent policy cancelled an action request. */
+export const dispatch = <Action>(
+  action: Action,
+  context: Context,
+  policy?: ActionPolicy<Action>,
+): boolean => {
+  let cancelled = false
+  policy?.(action, {
+    ...context,
+    cancel: () => {
+      cancelled = true
+    },
+  })
+  return cancelled
+}
+
 export type Request<Value> = Context & Readonly<{ value: Value }>
 
 type Transition<Value> = Request<Value> & Readonly<{ previous: Value }>
