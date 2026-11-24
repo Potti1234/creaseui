@@ -111,105 +111,6 @@
       "source": "src/lib/behaviors/text-match.ts"
     },
     {
-      "slug": "command",
-      "title": "Command",
-      "group": "Selection and lists",
-      "kind": "composition",
-      "description": "Coordinates command query, highlight, and selection intent for command palettes.",
-      "docs": "/docs/behaviors/command",
-      "source": "src/lib/command.ts"
-    },
-    {
-      "slug": "tokenizer",
-      "title": "Tokenizer",
-      "group": "Selection and lists",
-      "kind": "composition",
-      "description": "Manages a token field, free-text entry, and focus recovery when a token is removed.",
-      "docs": "/docs/behaviors/tokenizer",
-      "source": "src/lib/tokenizer.ts"
-    },
-    {
-      "slug": "multi-selector",
-      "title": "Multi Selector",
-      "group": "Selection and lists",
-      "kind": "composition",
-      "description": "Combines listbox navigation with multiple selection and responsive popover or drawer presentation.",
-      "docs": "/docs/behaviors/multi-selector",
-      "source": "src/lib/multi-selector.ts"
-    },
-    {
-      "slug": "overflow-list",
-      "title": "Overflow List",
-      "group": "Selection and lists",
-      "kind": "primitive",
-      "description": "Measures items to decide which ones fit and which belong in an overflow menu.",
-      "docs": "/docs/behaviors/overflow-list",
-      "source": "src/lib/overflow-list.ts"
-    },
-    {
-      "slug": "pagination",
-      "title": "Pagination",
-      "group": "Selection and lists",
-      "kind": "primitive",
-      "description": "Normalizes page indices and builds ranges with sibling and boundary links.",
-      "docs": "/docs/behaviors/pagination",
-      "source": "src/lib/pagination.ts"
-    },
-    {
-      "slug": "carousel",
-      "title": "Carousel",
-      "group": "Selection and lists",
-      "kind": "composition",
-      "description": "Owns Embla mounting, selection synchronization, and carousel navigation.",
-      "docs": "/docs/behaviors/carousel",
-      "source": "src/lib/carousel.ts"
-    },
-    {
-      "slug": "data-grid",
-      "title": "Data Grid",
-      "group": "Selection and lists",
-      "kind": "composition",
-      "description": "Coordinates grid focus, range selection, cell editing, and undoable updates.",
-      "docs": "/docs/behaviors/data-grid",
-      "source": "src/lib/data-grid.ts"
-    },
-    {
-      "slug": "list-input",
-      "title": "List Input",
-      "group": "Selection and lists",
-      "kind": "composition",
-      "description": "Manages an editable collection with selection and item removal.",
-      "docs": "/docs/behaviors/list-input",
-      "source": "src/lib/list-input.ts"
-    },
-    {
-      "slug": "message-scroller",
-      "title": "Message Scroller",
-      "group": "Selection and lists",
-      "kind": "composition",
-      "description": "Tracks a message list viewport, follow mode, and scroll-to-new-content intent.",
-      "docs": "/docs/behaviors/message-scroller",
-      "source": "src/lib/message-scroller.ts"
-    },
-    {
-      "slug": "transfer-list",
-      "title": "Transfer List",
-      "group": "Selection and lists",
-      "kind": "composition",
-      "description": "Coordinates source and destination collections, transfer, reorder, and focus recovery.",
-      "docs": "/docs/behaviors/transfer-list",
-      "source": "src/lib/transfer-list.ts"
-    },
-    {
-      "slug": "tree-list",
-      "title": "Tree List",
-      "group": "Selection and lists",
-      "kind": "composition",
-      "description": "Builds visible tree navigation and controlled expansion and selection.",
-      "docs": "/docs/behaviors/tree-list",
-      "source": "src/lib/tree-list.ts"
-    },
-    {
       "slug": "selection",
       "title": "Selection",
       "group": "Selection and lists",
@@ -235,33 +136,6 @@
       "description": "Manages a listbox popup, active option, selection intent, and focus.",
       "docs": "/docs/behaviors/anchored-listbox",
       "source": "src/lib/behaviors/anchored-listbox.ts"
-    },
-    {
-      "slug": "combobox",
-      "title": "Combobox",
-      "group": "Selection and lists",
-      "kind": "composition",
-      "description": "Coordinates editable filtering, active descendants, and single or multiple selection.",
-      "docs": "/docs/behaviors/combobox",
-      "source": "src/lib/behaviors/combobox.ts"
-    },
-    {
-      "slug": "radio-group",
-      "title": "Radio Group",
-      "group": "Selection and lists",
-      "kind": "composition",
-      "description": "Coordinates focus and selection intent in a group of radio controls.",
-      "docs": "/docs/behaviors/radio-group",
-      "source": "src/lib/behaviors/radio-group.ts"
-    },
-    {
-      "slug": "tabs",
-      "title": "Tabs",
-      "group": "Selection and lists",
-      "kind": "composition",
-      "description": "Routes tab focus and activation while the parent keeps the selected value.",
-      "docs": "/docs/behaviors/tabs",
-      "source": "src/lib/behaviors/tabs.ts"
     },
     {
       "slug": "cell-range",
@@ -363,123 +237,6 @@
       "source": "src/lib/behaviors/popup-controller.ts"
     },
     {
-      "slug": "popover",
-      "title": "Popover",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Coordinates an anchored panel, focus return, dismissal, and transitions.",
-      "docs": "/docs/behaviors/popover",
-      "source": "src/lib/behaviors/popover.ts"
-    },
-    {
-      "slug": "drawer",
-      "title": "Drawer",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Adds direction, swipe phases, and snap-point decisions to the shared Dialog.",
-      "docs": "/docs/behaviors/drawer",
-      "source": "src/lib/drawer.ts"
-    },
-    {
-      "slug": "sheet",
-      "title": "Sheet",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Adds edge placement, detents, and dismissal gestures to the shared Dialog.",
-      "docs": "/docs/behaviors/sheet",
-      "source": "src/lib/sheet.ts"
-    },
-    {
-      "slug": "alert-dialog",
-      "title": "Alert Dialog",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Emits confirm and cancel decisions through a shared Dialog lifecycle.",
-      "docs": "/docs/behaviors/alert-dialog",
-      "source": "src/lib/alert-dialog.ts"
-    },
-    {
-      "slug": "mobile-nav",
-      "title": "Mobile Nav",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Uses Dialog resources to manage a navigation drawer and return focus.",
-      "docs": "/docs/behaviors/mobile-nav",
-      "source": "src/lib/mobile-nav.ts"
-    },
-    {
-      "slug": "lightbox",
-      "title": "Lightbox",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Composes modal media navigation with viewport zoom and pan.",
-      "docs": "/docs/behaviors/lightbox",
-      "source": "src/lib/lightbox.ts"
-    },
-    {
-      "slug": "hover-card",
-      "title": "Hover Card",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Combines hover intent, popup placement, and focus policies for a preview.",
-      "docs": "/docs/behaviors/hover-card",
-      "source": "src/lib/hover-card.ts"
-    },
-    {
-      "slug": "dropdown-menu-behavior",
-      "title": "Dropdown Menu",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Coordinates menu navigation, selection, and dismissal across nested menus.",
-      "docs": "/docs/behaviors/dropdown-menu-behavior",
-      "source": "src/lib/dropdown-menu-behavior.ts"
-    },
-    {
-      "slug": "menubar",
-      "title": "Menubar",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Routes focus and menu activation through a keyboard-accessible menu bar.",
-      "docs": "/docs/behaviors/menubar",
-      "source": "src/lib/menubar.ts"
-    },
-    {
-      "slug": "nav-menu",
-      "title": "Nav Menu",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Coordinates navigation triggers and their open panels.",
-      "docs": "/docs/behaviors/nav-menu",
-      "source": "src/lib/nav-menu.ts"
-    },
-    {
-      "slug": "sidebar-state",
-      "title": "Sidebar State",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Tracks sidebar open and collapsed state and persists the desktop preference.",
-      "docs": "/docs/behaviors/sidebar-state",
-      "source": "src/lib/sidebar-state.ts"
-    },
-    {
-      "slug": "dialog",
-      "title": "Dialog",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Runs a native dialog lifecycle with modal focus, dismissal, and scroll locking.",
-      "docs": "/docs/behaviors/dialog",
-      "source": "src/lib/behaviors/dialog.ts"
-    },
-    {
-      "slug": "tooltip",
-      "title": "Tooltip",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Manages tooltip visibility on hover and keyboard focus with versioned delays.",
-      "docs": "/docs/behaviors/tooltip",
-      "source": "src/lib/behaviors/tooltip.ts"
-    },
-    {
       "slug": "hover-intent",
       "title": "Hover Intent",
       "group": "Popups and layers",
@@ -516,24 +273,6 @@
       "source": "src/lib/overlay-boundary.ts"
     },
     {
-      "slug": "metadata-list",
-      "title": "Metadata List",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Tracks whether a metadata list is collapsed or showing every item.",
-      "docs": "/docs/behaviors/metadata-list",
-      "source": "src/lib/metadata-list.ts"
-    },
-    {
-      "slug": "sidebar-modal",
-      "title": "Sidebar Modal",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Coordinates mobile sidebar dismissal and modal focus resources.",
-      "docs": "/docs/behaviors/sidebar-modal",
-      "source": "src/lib/sidebar-modal.ts"
-    },
-    {
       "slug": "disclosure",
       "title": "Disclosure",
       "group": "Popups and layers",
@@ -559,33 +298,6 @@
       "description": "Coordinates a mounted view with its animation and presence lifecycle.",
       "docs": "/docs/behaviors/motion",
       "source": "src/lib/behaviors/motion.ts"
-    },
-    {
-      "slug": "toast",
-      "title": "Toast",
-      "group": "Popups and layers",
-      "kind": "composition",
-      "description": "Manages a notification queue, timeout, pause, swipe, and dismissal.",
-      "docs": "/docs/behaviors/toast",
-      "source": "src/lib/toast.ts"
-    },
-    {
-      "slug": "box-resizer",
-      "title": "Box Resizer",
-      "group": "Direct manipulation",
-      "kind": "composition",
-      "description": "Applies keyboard or pointer resize intents to a bounded box.",
-      "docs": "/docs/behaviors/box-resizer",
-      "source": "src/lib/box-resizer.ts"
-    },
-    {
-      "slug": "resizable",
-      "title": "Resizable",
-      "group": "Direct manipulation",
-      "kind": "composition",
-      "description": "Coordinates resize handles and preserves the space shared by adjacent panels.",
-      "docs": "/docs/behaviors/resizable",
-      "source": "src/lib/resizable.ts"
     },
     {
       "slug": "drag",
@@ -750,159 +462,6 @@
       "source": "src/lib/behaviors/connect.ts"
     },
     {
-      "slug": "toggle-group",
-      "title": "Toggle Group",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Coordinates roving focus and parent-owned single or multiple pressed values.",
-      "docs": "/docs/behaviors/toggle-group",
-      "source": "src/lib/toggle-group.ts"
-    },
-    {
-      "slug": "number-input",
-      "title": "Number Input",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Parses edits, clamps numeric values, and handles increment and decrement actions.",
-      "docs": "/docs/behaviors/number-input",
-      "source": "src/lib/number-input.ts"
-    },
-    {
-      "slug": "time-input",
-      "title": "Time Input",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Parses editable time and coordinates selectors, segments, and constraints.",
-      "docs": "/docs/behaviors/time-input",
-      "source": "src/lib/time-input.ts"
-    },
-    {
-      "slug": "color-picker",
-      "title": "Color Picker",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Tracks color edits, channel values, presets, and the color popup.",
-      "docs": "/docs/behaviors/color-picker",
-      "source": "src/lib/color-picker.ts"
-    },
-    {
-      "slug": "date-input",
-      "title": "Date Input",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Combines editable date text, parsing and the shared calendar picker.",
-      "docs": "/docs/behaviors/date-input",
-      "source": "src/lib/date-input.ts"
-    },
-    {
-      "slug": "date-range-input",
-      "title": "Date Range Input",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Coordinates start and end date editing, range validation, and calendar selection.",
-      "docs": "/docs/behaviors/date-range-input",
-      "source": "src/lib/date-range-input.ts"
-    },
-    {
-      "slug": "date-time-input",
-      "title": "Date Time Input",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Coordinates calendar selection, time editing, and time presets.",
-      "docs": "/docs/behaviors/date-time-input",
-      "source": "src/lib/date-time-input.ts"
-    },
-    {
-      "slug": "card-pressable",
-      "title": "Card Pressable",
-      "group": "Forms and values",
-      "kind": "primitive",
-      "description": "Routes press and navigation gestures on a card while preserving nested controls.",
-      "docs": "/docs/behaviors/card-pressable",
-      "source": "src/lib/card-pressable.ts"
-    },
-    {
-      "slug": "file-input",
-      "title": "File Input",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Coordinates native file selection, validation, and File Drop updates.",
-      "docs": "/docs/behaviors/file-input",
-      "source": "src/lib/file-input.ts"
-    },
-    {
-      "slug": "stepper",
-      "title": "Stepper",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Builds step navigation semantics from the current step and completion state.",
-      "docs": "/docs/behaviors/stepper",
-      "source": "src/lib/stepper.ts"
-    },
-    {
-      "slug": "button",
-      "title": "Button",
-      "group": "Forms and values",
-      "kind": "primitive",
-      "description": "Builds native button and link semantics, including loading, disabled, and toggle semantics.",
-      "docs": "/docs/behaviors/button",
-      "source": "src/lib/button.ts"
-    },
-    {
-      "slug": "checkbox",
-      "title": "Checkbox",
-      "group": "Forms and values",
-      "kind": "primitive",
-      "description": "Builds checkbox semantics for checked, mixed, disabled, and read-only states.",
-      "docs": "/docs/behaviors/checkbox",
-      "source": "src/lib/checkbox.ts"
-    },
-    {
-      "slug": "switch",
-      "title": "Switch",
-      "group": "Forms and values",
-      "kind": "primitive",
-      "description": "Builds switch semantics and routes toggles to the parent.",
-      "docs": "/docs/behaviors/switch",
-      "source": "src/lib/switch.ts"
-    },
-    {
-      "slug": "input",
-      "title": "Input",
-      "group": "Forms and values",
-      "kind": "primitive",
-      "description": "Builds native text input attributes and reports edits to the parent.",
-      "docs": "/docs/behaviors/input",
-      "source": "src/lib/input.ts"
-    },
-    {
-      "slug": "textarea",
-      "title": "Textarea",
-      "group": "Forms and values",
-      "kind": "primitive",
-      "description": "Builds multiline input attributes and reports edits to the parent.",
-      "docs": "/docs/behaviors/textarea",
-      "source": "src/lib/textarea.ts"
-    },
-    {
-      "slug": "field",
-      "title": "Field",
-      "group": "Forms and values",
-      "kind": "primitive",
-      "description": "Connects labels, descriptions, and validation messages to controls, including fieldsets and native selects.",
-      "docs": "/docs/behaviors/field",
-      "source": "src/lib/field.ts"
-    },
-    {
-      "slug": "form",
-      "title": "Form",
-      "group": "Forms and values",
-      "kind": "primitive",
-      "description": "Coordinates form submission and validation state.",
-      "docs": "/docs/behaviors/form",
-      "source": "src/lib/form.ts"
-    },
-    {
       "slug": "inline-edit",
       "title": "Inline Edit",
       "group": "Forms and values",
@@ -919,60 +478,6 @@
       "description": "Tracks file drag state and validates files selected or dropped by the user.",
       "docs": "/docs/behaviors/file-drop",
       "source": "src/lib/behaviors/file-drop.ts"
-    },
-    {
-      "slug": "calendar",
-      "title": "Calendar",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Owns calendar grid navigation, date focus, and selectable-date rules.",
-      "docs": "/docs/behaviors/calendar",
-      "source": "src/lib/behaviors/calendar.ts"
-    },
-    {
-      "slug": "date-picker",
-      "title": "Date Picker",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Composes calendar navigation with a popover and emits parent-owned date changes.",
-      "docs": "/docs/behaviors/date-picker",
-      "source": "src/lib/behaviors/date-picker.ts"
-    },
-    {
-      "slug": "slider",
-      "title": "Slider",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Coordinates thumb focus, keyboard increments, drag, and bounded ranges.",
-      "docs": "/docs/behaviors/slider",
-      "source": "src/lib/behaviors/slider.ts"
-    },
-    {
-      "slug": "progress",
-      "title": "Progress",
-      "group": "Forms and values",
-      "kind": "composition",
-      "description": "Normalizes determinate and indeterminate progress values for renderers.",
-      "docs": "/docs/behaviors/progress",
-      "source": "src/lib/progress.ts"
-    },
-    {
-      "slug": "alert",
-      "title": "Alert",
-      "group": "Platform and state",
-      "kind": "composition",
-      "description": "Resolves status and alert live-region semantics for notifications.",
-      "docs": "/docs/behaviors/alert",
-      "source": "src/lib/alert.ts"
-    },
-    {
-      "slug": "breadcrumb",
-      "title": "Breadcrumb",
-      "group": "Platform and state",
-      "kind": "composition",
-      "description": "Collapses long trails while preserving the root and current location.",
-      "docs": "/docs/behaviors/breadcrumb",
-      "source": "src/lib/breadcrumb.ts"
     },
     {
       "slug": "announce",
@@ -1262,19 +767,16 @@
       ],
       "behaviors": {
         "tailwind": [
-          "button",
           "layer",
           "roving-focus",
           "text-dom"
         ],
         "stylex": [
-          "button",
           "layer",
           "roving-focus",
           "text-dom"
         ],
         "pleat": [
-          "button",
           "layer",
           "roving-focus",
           "text-dom"
@@ -1328,26 +830,17 @@
       ],
       "behaviors": {
         "tailwind": [
-          "alert-dialog",
           "animation",
-          "button",
-          "dialog",
           "modal",
           "popup"
         ],
         "stylex": [
-          "alert-dialog",
           "animation",
-          "button",
-          "dialog",
           "modal",
           "popup"
         ],
         "pleat": [
-          "alert-dialog",
           "animation",
-          "button",
-          "dialog",
           "modal",
           "popup"
         ]
@@ -1422,15 +915,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "alert"
-        ],
-        "stylex": [
-          "alert"
-        ],
-        "pleat": [
-          "alert"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -1546,15 +1033,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "button"
-        ],
-        "stylex": [
-          "button"
-        ],
-        "pleat": [
-          "button"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -1898,15 +1379,12 @@
       ],
       "behaviors": {
         "tailwind": [
-          "button",
           "disclosure"
         ],
         "stylex": [
-          "button",
           "disclosure"
         ],
         "pleat": [
-          "button",
           "disclosure"
         ]
       }
@@ -2040,15 +1518,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "breadcrumb"
-        ],
-        "stylex": [
-          "breadcrumb"
-        ],
-        "pleat": [
-          "breadcrumb"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -2250,15 +1722,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "button"
-        ],
-        "stylex": [
-          "button"
-        ],
-        "pleat": [
-          "button"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -2391,16 +1857,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "button",
-          "calendar"
-        ],
-        "stylex": [
-          "calendar"
-        ],
-        "pleat": [
-          "calendar"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -2518,15 +1977,12 @@
       ],
       "behaviors": {
         "tailwind": [
-          "carousel",
           "roving-focus"
         ],
         "stylex": [
-          "carousel",
           "roving-focus"
         ],
         "pleat": [
-          "carousel",
           "roving-focus"
         ]
       }
@@ -2896,15 +2352,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "checkbox"
-        ],
-        "stylex": [
-          "checkbox"
-        ],
-        "pleat": [
-          "checkbox"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -2951,15 +2401,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "progress"
-        ],
-        "stylex": [
-          "progress"
-        ],
-        "pleat": [
-          "progress"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -3060,15 +2504,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "button"
-        ],
-        "stylex": [
-          "button"
-        ],
-        "pleat": [
-          "button"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -3340,10 +2778,8 @@
         "tailwind": [
           "animation",
           "area",
-          "color-picker",
           "drag",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -3353,11 +2789,8 @@
         "stylex": [
           "animation",
           "area",
-          "button",
-          "color-picker",
           "drag",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -3367,11 +2800,8 @@
         "pleat": [
           "animation",
           "area",
-          "button",
-          "color-picker",
           "drag",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -3519,7 +2949,6 @@
       "behaviors": {
         "tailwind": [
           "animation",
-          "combobox",
           "listbox",
           "overlay-boundary",
           "portal",
@@ -3531,7 +2960,6 @@
         ],
         "stylex": [
           "animation",
-          "combobox",
           "listbox",
           "overlay-boundary",
           "portal",
@@ -3543,7 +2971,6 @@
         ],
         "pleat": [
           "animation",
-          "combobox",
           "listbox",
           "overlay-boundary",
           "portal",
@@ -3674,8 +3101,6 @@
         "tailwind": [
           "animation",
           "announce",
-          "combobox",
-          "command",
           "listbox",
           "portal",
           "position",
@@ -3688,8 +3113,6 @@
         "stylex": [
           "animation",
           "announce",
-          "combobox",
-          "command",
           "listbox",
           "portal",
           "position",
@@ -3702,8 +3125,6 @@
         "pleat": [
           "animation",
           "announce",
-          "combobox",
-          "command",
           "listbox",
           "portal",
           "position",
@@ -3817,19 +3238,14 @@
       ],
       "behaviors": {
         "tailwind": [
-          "dropdown-menu-behavior",
           "popup",
           "shortcuts"
         ],
         "stylex": [
-          "button",
-          "dropdown-menu-behavior",
           "popup",
           "shortcuts"
         ],
         "pleat": [
-          "button",
-          "dropdown-menu-behavior",
           "popup",
           "shortcuts"
         ]
@@ -3864,28 +3280,21 @@
       "behaviors": {
         "tailwind": [
           "announce",
-          "button",
-          "calendar",
           "cell-range",
-          "data-grid",
           "grid-focus",
           "inline-edit",
           "undo-stack"
         ],
         "stylex": [
           "announce",
-          "calendar",
           "cell-range",
-          "data-grid",
           "grid-focus",
           "inline-edit",
           "undo-stack"
         ],
         "pleat": [
           "announce",
-          "calendar",
           "cell-range",
-          "data-grid",
           "grid-focus",
           "inline-edit",
           "undo-stack"
@@ -3947,22 +3356,14 @@
         "tailwind": [
           "anchored-listbox",
           "animation",
-          "button",
-          "calendar",
-          "checkbox",
-          "date-range-input",
-          "input",
           "input-hints",
           "layer",
           "listbox",
           "overlay-boundary",
-          "pagination",
-          "popover",
           "popup",
           "portal",
           "position",
           "roving-focus",
-          "slider",
           "text-dom",
           "text-match",
           "typeahead"
@@ -3970,22 +3371,14 @@
         "stylex": [
           "anchored-listbox",
           "animation",
-          "button",
-          "calendar",
-          "checkbox",
-          "date-range-input",
-          "input",
           "input-hints",
           "layer",
           "listbox",
           "overlay-boundary",
-          "pagination",
-          "popover",
           "popup",
           "portal",
           "position",
           "roving-focus",
-          "slider",
           "text-dom",
           "text-match",
           "typeahead"
@@ -3993,22 +3386,14 @@
         "pleat": [
           "anchored-listbox",
           "animation",
-          "button",
-          "calendar",
-          "checkbox",
-          "date-range-input",
-          "input",
           "input-hints",
           "layer",
           "listbox",
           "overlay-boundary",
-          "pagination",
-          "popover",
           "popup",
           "portal",
           "position",
           "roving-focus",
-          "slider",
           "text-dom",
           "text-match",
           "typeahead"
@@ -4116,12 +3501,7 @@
       "behaviors": {
         "tailwind": [
           "animation",
-          "button",
-          "calendar",
-          "date-input",
-          "date-picker",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -4129,11 +3509,7 @@
         ],
         "stylex": [
           "animation",
-          "calendar",
-          "date-input",
-          "date-picker",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -4141,11 +3517,7 @@
         ],
         "pleat": [
           "animation",
-          "calendar",
-          "date-input",
-          "date-picker",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -4290,12 +3662,8 @@
       "behaviors": {
         "tailwind": [
           "animation",
-          "button",
-          "calendar",
-          "date-picker",
           "layer",
           "overlay-boundary",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -4303,11 +3671,8 @@
         ],
         "stylex": [
           "animation",
-          "calendar",
-          "date-picker",
           "layer",
           "overlay-boundary",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -4315,11 +3680,8 @@
         ],
         "pleat": [
           "animation",
-          "calendar",
-          "date-picker",
           "layer",
           "overlay-boundary",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -4434,11 +3796,7 @@
       "behaviors": {
         "tailwind": [
           "animation",
-          "button",
-          "calendar",
-          "date-range-input",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -4446,10 +3804,7 @@
         ],
         "stylex": [
           "animation",
-          "calendar",
-          "date-range-input",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -4457,10 +3812,7 @@
         ],
         "pleat": [
           "animation",
-          "calendar",
-          "date-range-input",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -4582,12 +3934,7 @@
       "behaviors": {
         "tailwind": [
           "animation",
-          "button",
-          "calendar",
-          "date-picker",
-          "date-time-input",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -4595,11 +3942,7 @@
         ],
         "stylex": [
           "animation",
-          "calendar",
-          "date-picker",
-          "date-time-input",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -4607,11 +3950,7 @@
         ],
         "pleat": [
           "animation",
-          "calendar",
-          "date-picker",
-          "date-time-input",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -4756,19 +4095,16 @@
       "behaviors": {
         "tailwind": [
           "animation",
-          "dialog",
           "modal",
           "popup"
         ],
         "stylex": [
           "animation",
-          "dialog",
           "modal",
           "popup"
         ],
         "pleat": [
           "animation",
-          "dialog",
           "modal",
           "popup"
         ]
@@ -4932,27 +4268,21 @@
       "behaviors": {
         "tailwind": [
           "animation",
-          "dialog",
           "drag",
-          "drawer",
           "modal",
           "popup",
           "velocity"
         ],
         "stylex": [
           "animation",
-          "dialog",
           "drag",
-          "drawer",
           "modal",
           "popup",
           "velocity"
         ],
         "pleat": [
           "animation",
-          "dialog",
           "drag",
-          "drawer",
           "modal",
           "popup",
           "velocity"
@@ -5093,19 +4423,14 @@
       ],
       "behaviors": {
         "tailwind": [
-          "dropdown-menu-behavior",
           "popup",
           "shortcuts"
         ],
         "stylex": [
-          "button",
-          "dropdown-menu-behavior",
           "popup",
           "shortcuts"
         ],
         "pleat": [
-          "button",
-          "dropdown-menu-behavior",
           "popup",
           "shortcuts"
         ]
@@ -5386,15 +4711,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "field"
-        ],
-        "stylex": [
-          "field"
-        ],
-        "pleat": [
-          "field"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -5479,16 +4798,13 @@
       ],
       "behaviors": {
         "tailwind": [
-          "file-drop",
-          "file-input"
+          "file-drop"
         ],
         "stylex": [
-          "file-drop",
-          "file-input"
+          "file-drop"
         ],
         "pleat": [
-          "file-drop",
-          "file-input"
+          "file-drop"
         ]
       }
     },
@@ -5588,18 +4904,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "field",
-          "form"
-        ],
-        "stylex": [
-          "field",
-          "form"
-        ],
-        "pleat": [
-          "field",
-          "form"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -5867,22 +5174,16 @@
       ],
       "behaviors": {
         "tailwind": [
-          "button",
-          "hover-card",
           "hover-intent",
           "position",
           "text-dom"
         ],
         "stylex": [
-          "button",
-          "hover-card",
           "hover-intent",
           "position",
           "text-dom"
         ],
         "pleat": [
-          "button",
-          "hover-card",
           "hover-intent",
           "position",
           "text-dom"
@@ -6099,24 +5400,21 @@
           "hover-intent",
           "portal",
           "position",
-          "text-dom",
-          "tooltip"
+          "text-dom"
         ],
         "stylex": [
           "hover-intent",
           "overlay-boundary",
           "portal",
           "position",
-          "text-dom",
-          "tooltip"
+          "text-dom"
         ],
         "pleat": [
           "hover-intent",
           "overlay-boundary",
           "portal",
           "position",
-          "text-dom",
-          "tooltip"
+          "text-dom"
         ]
       }
     },
@@ -6219,15 +5517,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "button"
-        ],
-        "stylex": [
-          "button"
-        ],
-        "pleat": [
-          "button"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -6318,15 +5610,12 @@
       ],
       "behaviors": {
         "tailwind": [
-          "input",
           "input-hints"
         ],
         "stylex": [
-          "input",
           "input-hints"
         ],
         "pleat": [
-          "input",
           "input-hints"
         ]
       }
@@ -6635,24 +5924,18 @@
       "behaviors": {
         "tailwind": [
           "animation",
-          "dialog",
-          "lightbox",
           "modal",
           "popup",
           "viewport"
         ],
         "stylex": [
           "animation",
-          "dialog",
-          "lightbox",
           "modal",
           "popup",
           "viewport"
         ],
         "pleat": [
           "animation",
-          "dialog",
-          "lightbox",
           "modal",
           "popup",
           "viewport"
@@ -6713,26 +5996,21 @@
           "hover-intent",
           "portal",
           "position",
-          "text-dom",
-          "tooltip"
+          "text-dom"
         ],
         "stylex": [
-          "button",
           "hover-intent",
           "overlay-boundary",
           "portal",
           "position",
-          "text-dom",
-          "tooltip"
+          "text-dom"
         ],
         "pleat": [
-          "button",
           "hover-intent",
           "overlay-boundary",
           "portal",
           "position",
-          "text-dom",
-          "tooltip"
+          "text-dom"
         ]
       }
     },
@@ -6832,26 +6110,20 @@
       "behaviors": {
         "tailwind": [
           "announce",
-          "button",
           "change",
           "focus-recovery",
-          "list-input",
           "reorder"
         ],
         "stylex": [
           "announce",
-          "button",
           "change",
           "focus-recovery",
-          "list-input",
           "reorder"
         ],
         "pleat": [
           "announce",
-          "button",
           "change",
           "focus-recovery",
-          "list-input",
           "reorder"
         ]
       }
@@ -7547,15 +6819,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "button"
-        ],
-        "stylex": [
-          "button"
-        ],
-        "pleat": [
-          "button"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -7698,24 +6964,16 @@
       ],
       "behaviors": {
         "tailwind": [
-          "dropdown-menu-behavior",
-          "menubar",
           "popup",
           "roving-focus",
           "shortcuts"
         ],
         "stylex": [
-          "button",
-          "dropdown-menu-behavior",
-          "menubar",
           "popup",
           "roving-focus",
           "shortcuts"
         ],
         "pleat": [
-          "button",
-          "dropdown-menu-behavior",
-          "menubar",
           "popup",
           "roving-focus",
           "shortcuts"
@@ -7990,15 +7248,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "metadata-list"
-        ],
-        "stylex": [
-          "metadata-list"
-        ],
-        "pleat": [
-          "metadata-list"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -8111,22 +7363,16 @@
       "behaviors": {
         "tailwind": [
           "animation",
-          "dialog",
-          "mobile-nav",
           "modal",
           "popup"
         ],
         "stylex": [
           "animation",
-          "dialog",
-          "mobile-nav",
           "modal",
           "popup"
         ],
         "pleat": [
           "animation",
-          "dialog",
-          "mobile-nav",
           "modal",
           "popup"
         ]
@@ -8209,20 +7455,14 @@
       ],
       "behaviors": {
         "tailwind": [
-          "button",
-          "dropdown-menu-behavior",
           "popup",
           "shortcuts"
         ],
         "stylex": [
-          "button",
-          "dropdown-menu-behavior",
           "popup",
           "shortcuts"
         ],
         "pleat": [
-          "button",
-          "dropdown-menu-behavior",
           "popup",
           "shortcuts"
         ]
@@ -8326,16 +7566,10 @@
         "tailwind": [
           "anchored-listbox",
           "animation",
-          "button",
-          "checkbox",
-          "dialog",
           "drag",
-          "drawer",
           "layer",
           "listbox",
           "modal",
-          "multi-selector",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -8349,17 +7583,11 @@
         "stylex": [
           "anchored-listbox",
           "animation",
-          "button",
-          "checkbox",
-          "dialog",
           "drag",
-          "drawer",
           "layer",
           "listbox",
           "modal",
-          "multi-selector",
           "overlay-boundary",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -8373,17 +7601,11 @@
         "pleat": [
           "anchored-listbox",
           "animation",
-          "button",
-          "checkbox",
-          "dialog",
           "drag",
-          "drawer",
           "layer",
           "listbox",
           "modal",
-          "multi-selector",
           "overlay-boundary",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -8459,15 +7681,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "field"
-        ],
-        "stylex": [
-          "field"
-        ],
-        "pleat": [
-          "field"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -8530,7 +7746,6 @@
         "tailwind": [
           "animation",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -8538,9 +7753,7 @@
         ],
         "stylex": [
           "animation",
-          "button",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -8548,9 +7761,7 @@
         ],
         "pleat": [
           "animation",
-          "button",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -8633,16 +7844,13 @@
       ],
       "behaviors": {
         "tailwind": [
-          "hold-repeat",
-          "number-input"
+          "hold-repeat"
         ],
         "stylex": [
-          "hold-repeat",
-          "number-input"
+          "hold-repeat"
         ],
         "pleat": [
-          "hold-repeat",
-          "number-input"
+          "hold-repeat"
         ]
       }
     },
@@ -8739,15 +7947,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "overflow-list"
-        ],
-        "stylex": [
-          "overflow-list"
-        ],
-        "pleat": [
-          "overflow-list"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -8836,16 +8038,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "button",
-          "pagination"
-        ],
-        "stylex": [
-          "pagination"
-        ],
-        "pleat": [
-          "pagination"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -8955,7 +8150,6 @@
         "tailwind": [
           "animation",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -8963,9 +8157,7 @@
         ],
         "stylex": [
           "animation",
-          "button",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -8973,9 +8165,7 @@
         ],
         "pleat": [
           "animation",
-          "button",
           "layer",
-          "popover",
           "popup",
           "portal",
           "position",
@@ -9017,15 +8207,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "progress"
-        ],
-        "stylex": [
-          "progress"
-        ],
-        "pleat": [
-          "progress"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -9094,15 +8278,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "radio-group"
-        ],
-        "stylex": [
-          "radio-group"
-        ],
-        "pleat": [
-          "radio-group"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -9218,21 +8396,15 @@
       ],
       "behaviors": {
         "tailwind": [
-          "box-resizer",
           "drag",
-          "resizable",
           "resize"
         ],
         "stylex": [
-          "box-resizer",
           "drag",
-          "resizable",
           "resize"
         ],
         "pleat": [
-          "box-resizer",
           "drag",
-          "resizable",
           "resize"
         ]
       }
@@ -9510,15 +8682,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "card-pressable"
-        ],
-        "stylex": [
-          "card-pressable"
-        ],
-        "pleat": [
-          "card-pressable"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -9809,26 +8975,20 @@
       "behaviors": {
         "tailwind": [
           "animation",
-          "dialog",
           "modal",
           "popup",
-          "sheet",
           "velocity"
         ],
         "stylex": [
           "animation",
-          "dialog",
           "modal",
           "popup",
-          "sheet",
           "velocity"
         ],
         "pleat": [
           "animation",
-          "dialog",
           "modal",
           "popup",
-          "sheet",
           "velocity"
         ]
       }
@@ -10068,19 +9228,12 @@
       ],
       "behaviors": {
         "tailwind": [
-          "button",
-          "sidebar-modal",
-          "sidebar-state",
           "storage"
         ],
         "stylex": [
-          "sidebar-modal",
-          "sidebar-state",
           "storage"
         ],
         "pleat": [
-          "sidebar-modal",
-          "sidebar-state",
           "storage"
         ]
       }
@@ -10292,15 +9445,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "slider"
-        ],
-        "stylex": [
-          "slider"
-        ],
-        "pleat": [
-          "slider"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -10644,18 +9791,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "button",
-          "stepper"
-        ],
-        "stylex": [
-          "button",
-          "stepper"
-        ],
-        "pleat": [
-          "button",
-          "stepper"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -10707,15 +9845,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "switch"
-        ],
-        "stylex": [
-          "switch"
-        ],
-        "pleat": [
-          "switch"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -10903,16 +10035,13 @@
       ],
       "behaviors": {
         "tailwind": [
-          "roving-focus",
-          "tabs"
+          "roving-focus"
         ],
         "stylex": [
-          "roving-focus",
-          "tabs"
+          "roving-focus"
         ],
         "pleat": [
-          "roving-focus",
-          "tabs"
+          "roving-focus"
         ]
       }
     },
@@ -11046,15 +10175,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "textarea"
-        ],
-        "stylex": [
-          "textarea"
-        ],
-        "pleat": [
-          "textarea"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -11190,7 +10313,6 @@
           "position",
           "roving-focus",
           "text-dom",
-          "time-input",
           "typeahead"
         ],
         "stylex": [
@@ -11203,7 +10325,6 @@
           "position",
           "roving-focus",
           "text-dom",
-          "time-input",
           "typeahead"
         ],
         "pleat": [
@@ -11216,7 +10337,6 @@
           "position",
           "roving-focus",
           "text-dom",
-          "time-input",
           "typeahead"
         ]
       }
@@ -11411,22 +10531,16 @@
       ],
       "behaviors": {
         "tailwind": [
-          "button",
-          "hover-card",
           "hover-intent",
           "position",
           "text-dom"
         ],
         "stylex": [
-          "button",
-          "hover-card",
           "hover-intent",
           "position",
           "text-dom"
         ],
         "pleat": [
-          "button",
-          "hover-card",
           "hover-intent",
           "position",
           "text-dom"
@@ -11476,21 +10590,15 @@
       "behaviors": {
         "tailwind": [
           "animation",
-          "button",
-          "focus-recovery",
-          "toast"
+          "focus-recovery"
         ],
         "stylex": [
           "animation",
-          "button",
-          "focus-recovery",
-          "toast"
+          "focus-recovery"
         ],
         "pleat": [
           "animation",
-          "button",
-          "focus-recovery",
-          "toast"
+          "focus-recovery"
         ]
       }
     },
@@ -11581,17 +10689,13 @@
       ],
       "behaviors": {
         "tailwind": [
-          "button",
-          "roving-focus",
-          "toggle-group"
+          "roving-focus"
         ],
         "stylex": [
-          "roving-focus",
-          "toggle-group"
+          "roving-focus"
         ],
         "pleat": [
-          "roving-focus",
-          "toggle-group"
+          "roving-focus"
         ]
       }
     },
@@ -11639,15 +10743,9 @@
         }
       ],
       "behaviors": {
-        "tailwind": [
-          "button"
-        ],
-        "stylex": [
-          "button"
-        ],
-        "pleat": [
-          "button"
-        ]
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
       }
     },
     {
@@ -11787,19 +10885,16 @@
       "behaviors": {
         "tailwind": [
           "animation",
-          "combobox",
           "focus-recovery",
           "listbox",
           "portal",
           "position",
           "roving-focus",
           "text-dom",
-          "tokenizer",
           "typeahead"
         ],
         "stylex": [
           "animation",
-          "combobox",
           "focus-recovery",
           "listbox",
           "overlay-boundary",
@@ -11807,12 +10902,10 @@
           "position",
           "roving-focus",
           "text-dom",
-          "tokenizer",
           "typeahead"
         ],
         "pleat": [
           "animation",
-          "combobox",
           "focus-recovery",
           "listbox",
           "overlay-boundary",
@@ -11820,7 +10913,6 @@
           "position",
           "roving-focus",
           "text-dom",
-          "tokenizer",
           "typeahead"
         ]
       }
@@ -12000,26 +11092,21 @@
           "hover-intent",
           "portal",
           "position",
-          "text-dom",
-          "tooltip"
+          "text-dom"
         ],
         "stylex": [
-          "button",
           "hover-intent",
           "overlay-boundary",
           "portal",
           "position",
-          "text-dom",
-          "tooltip"
+          "text-dom"
         ],
         "pleat": [
-          "button",
           "hover-intent",
           "overlay-boundary",
           "portal",
           "position",
-          "text-dom",
-          "tooltip"
+          "text-dom"
         ]
       }
     },
@@ -12216,17 +11303,14 @@
       ],
       "behaviors": {
         "tailwind": [
-          "nav-menu",
           "popup",
           "roving-focus"
         ],
         "stylex": [
-          "nav-menu",
           "popup",
           "roving-focus"
         ],
         "pleat": [
-          "nav-menu",
           "popup",
           "roving-focus"
         ]
@@ -12324,31 +11408,22 @@
       ],
       "behaviors": {
         "tailwind": [
-          "button",
           "drag",
           "drag-and-drop",
           "focus-recovery",
-          "input",
-          "input-hints",
-          "transfer-list"
+          "input-hints"
         ],
         "stylex": [
-          "button",
           "drag",
           "drag-and-drop",
           "focus-recovery",
-          "input",
-          "input-hints",
-          "transfer-list"
+          "input-hints"
         ],
         "pleat": [
-          "button",
           "drag",
           "drag-and-drop",
           "focus-recovery",
-          "input",
-          "input-hints",
-          "transfer-list"
+          "input-hints"
         ]
       }
     },
@@ -12480,7 +11555,6 @@
           "drag",
           "parts",
           "tree-collection",
-          "tree-list",
           "tree-reorder",
           "typeahead"
         ],
@@ -12488,7 +11562,6 @@
           "drag",
           "parts",
           "tree-collection",
-          "tree-list",
           "tree-reorder",
           "typeahead"
         ],
@@ -12496,7 +11569,6 @@
           "drag",
           "parts",
           "tree-collection",
-          "tree-list",
           "tree-reorder",
           "typeahead"
         ]

@@ -1,10 +1,15 @@
 import { expect, it } from 'vitest'
 import { examplesFor } from '@/docs/behavior-examples'
-import { behaviors } from '@/docs/behavior-metadata'
+import {
+  behaviors,
+  coreBehaviors,
+  compositionsFor,
+} from '@/docs/behavior-metadata'
+import { authoredPages } from '@/docs/components/pages'
 
 it('gives every documented behavior a live example and Foldkit source in each renderer', () => {
   for (const renderer of ['tailwind', 'stylex', 'pleat'] as const) {
-    for (const behavior of behaviors) {
+    for (const behavior of coreBehaviors) {
       const examples = examplesFor(behavior, renderer)
       expect(examples.length, `${renderer}: ${behavior.slug}`).toBeGreaterThan(
         0,
@@ -14,6 +19,22 @@ it('gives every documented behavior a live example and Foldkit source in each re
         expect(example.code, behavior.slug).toBeTruthy()
       }
     }
+  }
+})
+
+it('moves component-specific entries to the pages with their component examples', () => {
+  expect(coreBehaviors.map(entry => entry.slug)).not.toContain('field')
+  expect(
+    compositionsFor('field').find(entry => entry.slug === 'field')?.docs,
+  ).toBe('/docs/components/field#implementation-field')
+  for (const entry of behaviors.filter(
+    behavior => behavior.kind === 'composition',
+  )) {
+    expect(entry.owner).toBeDefined()
+    expect(
+      authoredPages[entry.owner ?? '']?.definition.examples.length,
+      entry.slug,
+    ).toBeGreaterThan(0)
   }
 })
 

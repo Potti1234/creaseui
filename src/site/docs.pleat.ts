@@ -1116,6 +1116,9 @@ export const componentPage = <Msg>(
   const toc = [
     ['architecture', 'Architecture'],
     ['behaviors', 'Behaviors'],
+    ...(config.implementation === undefined
+      ? []
+      : [['implementation', 'Implementation'] as const]),
     ['installation', 'Installation'],
     ['usage', 'Usage'],
     ...(config.sections ?? []).map(section => [section.id, section.title]),
@@ -1370,6 +1373,15 @@ export const componentPage = <Msg>(
               section('behaviors', 'Behaviors', [
                 behaviorList(toSlug(config.name), config.renderer, h),
               ]),
+              ...(config.implementation === undefined
+                ? []
+                : [
+                    section(
+                      'implementation',
+                      'Implementation',
+                      config.implementation,
+                    ),
+                  ]),
               section('installation', 'Installation', [
                 h.div(
                   [h.Class(className(styles.stackTight))],

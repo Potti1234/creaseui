@@ -23,6 +23,26 @@ const modelAt = (path: string) => {
 }
 
 describe('application scenes', () => {
+  it('links the former Field behavior URL to the component guide', () => {
+    Scene.scene(
+      { update, view },
+      Scene.given(modelAt('/docs/behaviors/field')),
+      Scene.expect(Scene.role('link', { name: 'Open Field' })).toExist(),
+      Scene.Mount.resolve(
+        { name: 'site-header-nav' },
+        Message.CompletedScrollToTop(),
+      ),
+      Scene.Mount.resolve(
+        { name: 'docs-reference-nav' },
+        Message.CompletedScrollToTop(),
+      ),
+      Scene.Mount.resolve(
+        { name: 'docs-sidebar-scroll' },
+        Message.CompletedScrollToTop(),
+      ),
+    )
+  })
+
   it('renders the landing route with accessible navigation and one heading', () => {
     Scene.scene(
       { update, view },

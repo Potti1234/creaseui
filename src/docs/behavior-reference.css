@@ -101,6 +101,12 @@
   margin-block-start: 1.75rem;
 }
 
+.behavior-docs-implementation {
+  scroll-margin-block-start: 6rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
 .behavior-docs-example :is(h3, p) {
   margin: 0;
 }

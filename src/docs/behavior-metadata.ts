@@ -15,6 +15,15 @@ const bySlug = new Map(behaviors.map(behavior => [behavior.slug, behavior]))
 
 export const behaviorFor = (slug: string) => bySlug.get(slug)
 
+export const compositionsFor = (slug: string) =>
+  behaviors.filter(entry => entry.owner === canonicalComponentSlug(slug))
+
+export const behaviorGuideLinks = (guide: string): string =>
+  guide.replace(/\]\(([\w-]+)\.md\)/g, (link, slug: string) => {
+    const entry = behaviorFor(slug)
+    return entry === undefined ? link : '](' + entry.docs + ')'
+  })
+
 export const behaviorsFor = (slug: string, renderer: BehaviorRenderer) =>
   (componentBehaviors[canonicalComponentSlug(slug)]?.[renderer] ?? []).flatMap(
     key => {

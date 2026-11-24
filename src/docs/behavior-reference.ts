@@ -2,6 +2,7 @@ import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import {
   behaviorFor,
+  behaviorGuideLinks,
   coreBehaviors,
   componentsUsing,
   type BehaviorEntry,
@@ -25,13 +26,8 @@ const guides = import.meta.glob<string>('/src/lib/behaviors/*.md', {
 
 const sourceBase = 'https://github.com/Potti1234/creaseui/blob/main/'
 const guideFor = (name: string): string =>
-  (guides['/src/lib/behaviors/' + name + '.md'] ?? '')
+  behaviorGuideLinks(guides['/src/lib/behaviors/' + name + '.md'] ?? '')
     .replace(/^# .+\r?\n+/, '')
-    .replace(/\]\(([\w-]+)\.md\)/g, (link, slug: string) =>
-      behaviorFor(slug) === undefined
-        ? link
-        : '](' + behaviorDocsPath(slug) + ')',
-    )
     .replace(
       /\]\(\.\.\/\.\.\/([^):]+)\)/g,
       (_, path: string) => '](' + sourceBase + 'src/' + path + ')',
@@ -128,9 +124,6 @@ const detail = <Msg>(
         [h.Class('behavior-docs-intro')],
         [
           h.h1([], [entry.title]),
-          ...(entry.kind === 'composition'
-            ? [h.p([], ['Component composition'])]
-            : []),
           h.p([h.Class('behavior-docs-muted')], [entry.description]),
           h.p([], [link(sourceBase + entry.source, 'View source', h)]),
         ],
@@ -250,7 +243,25 @@ export const view = <Msg>(
     [h.Class(docsGuideStyles.layout)],
     [
       ...docsSidebar(path, docsGuideStyles, props.sidebarScrolled, h),
-      entry === undefined ? index(h) : detail(entry, props, h),
+      entry === undefined
+        ? index(h)
+        : entry.owner === undefined
+          ? detail(entry, props, h)
+          : h.main(
+              [h.Class('behavior-docs-reference')],
+              [
+                h.h1([], [entry.title]),
+                h.p(
+                  [],
+                  ['This guide has moved to the component documentation.'],
+                ),
+                link(
+                  entry.docs,
+                  'Open ' + (componentTitle(entry.owner) ?? entry.title),
+                  h,
+                ),
+              ],
+            ),
     ],
   )
 }

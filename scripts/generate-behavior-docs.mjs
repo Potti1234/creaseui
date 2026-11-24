@@ -4,6 +4,7 @@ import ts from 'typescript'
 import {
   companionModules,
   compositionModules,
+  compositionOwners,
   groups,
 } from './behavior-catalog.mjs'
 
@@ -69,6 +70,19 @@ export const behaviorDocs = (root, components, registries, apiFor) => {
       const source = resolve(root, path)
       if (!existsSync(source))
         throw new Error('Missing behavior source ' + path)
+      const owner = compositionModules.has(slug)
+        ? Object.hasOwn(compositionOwners, slug)
+          ? compositionOwners[slug]
+          : slug
+        : undefined
+      const component = components.find(entry => entry.slug === owner)
+      if (owner !== undefined && component === undefined)
+        throw new Error('Missing component page for ' + slug + ': ' + owner)
+      const guides = guideFiles.filter(
+        file =>
+          file === slug + '.md' ||
+          companionModules[basename(file, '.md')] === slug,
+      )
       return {
         slug,
         group,
@@ -79,14 +93,24 @@ export const behaviorDocs = (root, components, registries, apiFor) => {
             : slug.split('-').map(titleWord).join(' '),
         description,
         source: path,
-        docs: '/docs/behaviors/' + slug,
-        guides: guideFiles
-          .filter(
-            file =>
-              file === slug + '.md' ||
-              companionModules[basename(file, '.md')] === slug,
-          )
-          .map(file => basename(file, '.md')),
+        docs:
+          component === undefined
+            ? '/docs/behaviors/' + slug
+            : component.docs + '#implementation-' + slug,
+        ...(owner === undefined
+          ? {}
+          : {
+              owner,
+              guideText: guides
+                .map(file =>
+                  readFileSync(join(folder, file), 'utf8').replace(
+                    /^# .+\r?\n+/,
+                    '',
+                  ),
+                )
+                .join('\n\n'),
+            }),
+        guides: guides.map(file => basename(file, '.md')),
         exports: [
           ...new Set(
             apiFor(source)

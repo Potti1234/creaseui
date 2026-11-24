@@ -335,6 +335,7 @@ export type ComponentPageConfig<Msg> = Readonly<{
   description: string
   kind: ComponentKind
   architecture: string
+  implementation?: ReadonlyArray<Html>
   installation: string
   usage: string
   sections?: ReadonlyArray<DocsSection>
@@ -496,6 +497,9 @@ export const componentPage = <Msg>(
   const toc: ReadonlyArray<readonly [string, string]> = [
     ['architecture', 'Architecture'],
     ['behaviors', 'Behaviors'],
+    ...(config.implementation === undefined
+      ? []
+      : [['implementation', 'Implementation'] as const]),
     ['installation', 'Installation'],
     ['usage', 'Usage'],
     ...(config.sections ?? []).map(
@@ -786,6 +790,25 @@ export const componentPage = <Msg>(
                   behaviorList(toSlug(config.name), config.renderer, h),
                 ],
               ),
+              ...(config.implementation === undefined
+                ? []
+                : [
+                    h.section(
+                      [
+                        h.Id('implementation'),
+                        h.Class('scroll-mt-24 space-y-4'),
+                      ],
+                      [
+                        heading<Msg>(
+                          'implementation',
+                          'Implementation',
+                          undefined,
+                          h,
+                        ),
+                        ...config.implementation,
+                      ],
+                    ),
+                  ]),
               h.section(
                 [h.Id('installation'), h.Class('scroll-mt-24 space-y-4')],
                 [

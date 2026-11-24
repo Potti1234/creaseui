@@ -40,6 +40,9 @@ import * as BehaviorDemo from '@/docs/behavior-demo'
 import * as BehaviorReference from '@/docs/behavior-reference'
 import { behaviorFor } from '@/docs/behavior-metadata'
 import * as Markdown from '@/lib/markdown'
+import { markdown as pleatMarkdown } from '@/pleat/markdown'
+import { markdown as stylexMarkdown } from '@/stylex/markdown'
+import { markdown as tailwindMarkdown } from '@/ui/markdown'
 import '@/docs/behavior-reference.css'
 import * as TutorialDocs from '@/docs/tutorial-view'
 import { tutorialChapter } from '@/docs/tutorial/chapters'
@@ -1228,7 +1231,18 @@ const catalogDocsView = defineView<
   ComponentCatalog.Message,
   { slug: string; dark: boolean; renderer: Page.Renderer }
 >((catalogModel, { slug, dark, renderer }, h) =>
-  ComponentCatalog.view({ ...catalogModel, renderer }, slug, dark, h),
+  ComponentCatalog.view(
+    { ...catalogModel, renderer },
+    slug,
+    dark,
+    h,
+    undefined,
+    renderer === 'pleat'
+      ? pleatMarkdown
+      : renderer === 'stylex'
+        ? stylexMarkdown
+        : tailwindMarkdown,
+  ),
 )
 const blocksRegistryView = defineView<Blocks.Model, Blocks.Message, string>(
   (blocksModel, blockId, h) => Blocks.view(blocksModel, blockId, h),

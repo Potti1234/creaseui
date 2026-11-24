@@ -23,7 +23,7 @@
           "slug": { "type": "string" },
           "title": { "type": "string" },
           "group": { "type": "string" },
-          "kind": { "enum": ["primitive", "composition"] },
+          "kind": { "const": "primitive" },
           "description": { "type": "string" },
           "docs": { "type": "string" },
           "source": { "type": "string" }
