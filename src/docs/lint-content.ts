@@ -1,7 +1,4 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { autoCloseDetails } from '@/docs/details-nav'
-import * as Icon from '@/lib/icon'
-import { sidebarScrollMemory } from '@/docs/sidebar-scroll'
 
 import type {
   DocsGuideCodeProps,
@@ -21,15 +18,8 @@ import * as CodeBlock from '@/ui/code-block'
 import * as Heading from '@/ui/heading'
 import * as Text from '@/ui/text'
 import * as Typography from '@/ui/typography'
-import {
-  gettingStartedPath,
-  lintRulePath,
-  lintRulesPath,
-  themingPath,
-  componentDocsPath,
-  tutorialIndexPath,
-} from '@/route'
-import { COMPONENT_GROUPS, toSlug } from '@/docs/component-metadata'
+import { lintRulePath, lintRulesPath } from '@/route'
+import { docsSidebar } from '@/docs/docs-sidebar'
 
 /** The guide code props plus the message a live preview form submits. */
 export type LintDocsProps<Msg> = DocsGuideCodeProps<Msg> &
@@ -46,78 +36,6 @@ export const view = <Msg>(
   const title = current?.title ?? 'Lint rules'
   const text = (children: ReadonlyArray<Html | string>): Html =>
     Text.text({ type: 'body', color: 'inherit', display: 'block', children }, h)
-  const link = (href: string, label: string, isCurrent: boolean): Html =>
-    h.a(
-      [
-        h.Href(href),
-        ...(isCurrent ? [h.AriaCurrent('page')] : []),
-        h.Class(isCurrent ? styles.navActive : styles.navLink),
-      ],
-      [text([label])],
-    )
-  const nav = (): ReadonlyArray<Html> => [
-    h.div(
-      [h.Class(styles.navGroup)],
-      [
-        h.ul(
-          [h.Class(styles.navList)],
-          [
-            h.li([], [link(gettingStartedPath(), 'Get Started', false)]),
-            h.li([], [link(themingPath(), 'Theming', false)]),
-            h.li([], [link(lintRulesPath(), 'Lint rules', rule === '')]),
-            h.li([], [link(tutorialIndexPath(), 'Tutorial', false)]),
-          ],
-        ),
-      ],
-    ),
-    ...COMPONENT_GROUPS.map(group =>
-      h.div(
-        [h.Class(styles.navGroup)],
-        [
-          h.div(
-            [h.Class(styles.navLabel)],
-            [
-              Text.text(
-                { type: 'label', color: 'primary', children: [group.label] },
-                h,
-              ),
-            ],
-          ),
-          h.ul(
-            [h.Class(styles.navList)],
-            group.components.map(name =>
-              h.li([], [link(componentDocsPath(toSlug(name)), name, false)]),
-            ),
-          ),
-        ],
-      ),
-    ),
-    ...LINT_RULE_GROUPS.map(group =>
-      h.div(
-        [h.Class(styles.navGroup)],
-        [
-          h.div(
-            [h.Class(styles.navLabel)],
-            [
-              Text.text(
-                { type: 'label', color: 'primary', children: [group.label] },
-                h,
-              ),
-            ],
-          ),
-          h.ul(
-            [h.Class(styles.navList)],
-            group.rules.map(item =>
-              h.li(
-                [],
-                [link(lintRulePath(item.id), item.title, item.id === rule)],
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  ]
   const body: ReadonlyArray<Html> =
     current === undefined
       ? LINT_RULE_GROUPS.map(group =>
@@ -151,31 +69,11 @@ export const view = <Msg>(
   return h.div(
     [h.Class(styles.layout)],
     [
-      h.details(
-        [h.Class(styles.mobile), autoCloseDetails(h, 'docs-lint-nav')],
-        [
-          h.summary(
-            [h.Class(styles.summary)],
-            [
-              Typography.typographySmall({ children: ['Browse docs'] }, h),
-              Icon.chevronDown({ class: styles.summaryChevron }, h),
-            ],
-          ),
-          h.nav(
-            [
-              h.AriaLabel('Documentation navigation'),
-              h.Class(styles.mobileNavOuter),
-            ],
-            nav(),
-          ),
-        ],
-      ),
-      h.aside(
-        [
-          h.Class(styles.sidebar),
-          sidebarScrollMemory(h, codeBlock.sidebarScrolled),
-        ],
-        [h.nav([h.AriaLabel('Documentation navigation')], nav())],
+      ...docsSidebar(
+        rule === '' ? lintRulesPath() : lintRulePath(rule),
+        styles,
+        codeBlock.sidebarScrolled,
+        h,
       ),
       h.main(
         [h.Class(styles.main)],

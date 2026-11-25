@@ -1,7 +1,7 @@
 import { Effect, Schema } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
-import type { Attribute, HtmlBuilder } from 'foldkit/html'
+import type { Attribute, Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 
 export const Priority = Schema.Literals(['polite', 'assertive'])
@@ -47,6 +47,22 @@ export const Model = Schema.Struct({
 })
 
 export type Model = typeof Model.Type
+
+/** Render both regions from the first commit so updates can announce reliably. */
+export const prepareAnnouncements = <Msg>(
+  model: Pick<Model, 'text' | 'priority'>,
+  h: HtmlBuilder<Msg>,
+  ids: Partial<Record<Priority, string>> = {},
+): readonly [Html, Html] => {
+  const region = (priority: Priority) => {
+    const id = ids[priority]
+    return h.div(
+      [...liveRegionAttributes(priority, h), ...(id ? [h.Id(id)] : [])],
+      [model.priority === priority ? model.text : ''],
+    )
+  }
+  return [region('polite'), region('assertive')]
+}
 
 export const Message = defineMessageUnion({
   RequestedAnnouncement: { text: Schema.String, priority: Priority },

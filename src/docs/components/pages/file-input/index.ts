@@ -12,7 +12,7 @@ export const fileInputPage = authoredPage({
     description:
       'A file select/dropzone with accept, size, and count validation, in dropzone or compact input modes.',
     architecture:
-      'File Input is a submodel wrapping @foldkit/ui FileDrop: its Model owns drag state plus validation config; accepted files report ChangedValue OutMessages to the parent.',
+      'File Input uses the shared CreaseUI File Drop behavior. Its Model owns drag state and validation config. Accepted files report ChangedValue OutMessages to the parent.',
     apiHref:
       'https://github.com/Potti1234/creaseui/blob/main/src/ui/file-input.ts',
     styling:

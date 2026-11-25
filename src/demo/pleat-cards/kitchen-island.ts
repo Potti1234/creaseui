@@ -5,7 +5,7 @@ import type { Update } from 'foldkit'
 import { Command, Subscription } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { Switch as SwitchPrimitive } from '@foldkit/ui'
+import { renderSwitch } from '@/lib/switch'
 
 import * as Icon from '@/demo/icon-preview'
 import {
@@ -337,50 +337,35 @@ const setting = (
 }
 
 const enabledSwitch = (model: Model, h: HtmlBuilder<Message>): Html =>
-  SwitchPrimitive.view(
+  renderSwitch(
     {
       id: 'kitchen-island-enabled',
       isChecked: model.isEnabled,
-      isDisabled: false,
+      ariaLabel: 'Kitchen Island enabled',
       onToggle: isChecked => Message.ToggledEnabled({ isChecked }),
-      toView: ({ button, label }) =>
-        h.div(
-          [h.Class(className(styles.switchRow))],
-          [
-            h.button(
-              [
-                ...button,
-                h.Type('button'),
-                h.DataAttribute('slot', 'switch'),
-                h.Class(
-                  className(
-                    reset.button,
-                    styles.switchControl,
-                    model.isEnabled && styles.switchChecked,
-                  ),
-                ),
-              ],
-              [
-                h.span(
-                  [
-                    h.DataAttribute('slot', 'switch-thumb'),
-                    h.Class(
-                      className(
-                        styles.switchThumb,
-                        model.isEnabled && styles.switchThumbChecked,
-                      ),
-                    ),
-                  ],
-                  [],
-                ),
-              ],
-            ),
-            h.label(
-              [...label, h.Class(className(styles.srOnly))],
-              ['Kitchen Island enabled'],
-            ),
-          ],
+    },
+    {
+      root: [h.Class(className(styles.switchRow))],
+      control: [
+        h.Class(
+          className(
+            reset.button,
+            styles.switchControl,
+            model.isEnabled && styles.switchChecked,
+          ),
         ),
+      ],
+      thumb: [
+        h.Class(
+          className(
+            styles.switchThumb,
+            model.isEnabled && styles.switchThumbChecked,
+          ),
+        ),
+      ],
+      text: [],
+      label: [],
+      description: [],
     },
     h,
   )

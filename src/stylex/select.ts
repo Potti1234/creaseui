@@ -2,7 +2,7 @@ import { reset } from '@/ui/stylex/reset'
 import { Option } from 'effect'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
-import { Listbox as ListboxPrimitive } from '@foldkit/ui'
+import * as ListboxPrimitive from '@/lib/behaviors/anchored-listbox'
 
 import * as Icon from '@/lib/icon'
 import * as stylex from '@stylexjs/stylex'
@@ -95,7 +95,7 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
    - The panel uses foldkit Anchor's --button-width variable and forced inline
      available-height/positioning instead of Radix positioning variables.
 
-   PORT NOTE: foldkit Listbox does not expose per-item attributes. The
+   PORT NOTE: Listbox does not expose per-item attributes. The
    select-item data slot is therefore placed on the item's content span rather
    than the primitive's outer role=option element. Arbitrary consumer items are
    projected through itemToValue, so their values must be unique. */
@@ -199,7 +199,7 @@ const buildAnchor = <Item, Value extends string, Msg>(
 }
 
 const renderSelect = <Item, Value extends string, Msg>(
-  listbox: ListboxPrimitive.Bundle<Value, Value>,
+  listbox: ListboxPrimitive.Bundle<Value>,
   props: SelectProps<Item, Value, Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
@@ -216,7 +216,7 @@ const renderSelect = <Item, Value extends string, Msg>(
     onSome: labelForValue,
   })
 
-  const viewInputs: ListboxPrimitive.ViewInputs<Value, Value> = {
+  const viewInputs: ListboxPrimitive.ViewInputs<Value> = {
     maybeSelectedValue: props.maybeSelectedValue,
     items: values,
     itemToValue: value => value,
@@ -305,8 +305,7 @@ const renderSelect = <Item, Value extends string, Msg>(
       props.variant === 'ghost' && styles.ghostContent,
     ),
     itemsAttributes: childAttributes([
-      // Upstream 0.164 stamps tabindex="-1" on the listbox; Base UI parity
-      // expects the popup listbox to remain tabbable, so restore tabindex="0".
+      // Keep the popup listbox tabbable for Select.
       hs.Tabindex(0),
       hs.DataAttribute('slot', 'select-content'),
     ]),
@@ -368,7 +367,7 @@ const renderSelect = <Item, Value extends string, Msg>(
 }
 
 export type SelectBundle<Value extends string> = Readonly<{
-  update: ReturnType<typeof ListboxPrimitive.create<Value, Value>>['update']
+  update: ReturnType<typeof ListboxPrimitive.create<Value>>['update']
   select: <Item, Msg>(
     props: SelectProps<Item, Value, Msg>,
     h: HtmlBuilder<Msg>,
@@ -378,7 +377,7 @@ export type SelectBundle<Value extends string> = Readonly<{
 export const create = <
   Value extends string = string,
 >(): SelectBundle<Value> => {
-  const listbox = ListboxPrimitive.create<Value, Value>()
+  const listbox = ListboxPrimitive.create<Value>()
   return {
     update: listbox.update,
     select: (props, h) => renderSelect(listbox, props, h),

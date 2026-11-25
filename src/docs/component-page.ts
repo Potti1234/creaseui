@@ -1,3 +1,4 @@
+import { behaviorList, behaviorNavGroup } from '@/docs/behavior-metadata'
 import { autoCloseDetails } from '@/docs/details-nav'
 import { heroFrame } from '@/docs/hero-frame'
 import { Stream } from 'effect'
@@ -334,6 +335,7 @@ export type ComponentPageConfig<Msg> = Readonly<{
   description: string
   kind: ComponentKind
   architecture: string
+  implementation?: ReadonlyArray<Html>
   installation: string
   usage: string
   sections?: ReadonlyArray<DocsSection>
@@ -454,24 +456,26 @@ export const componentPage = <Msg>(
         ),
       ],
     )
+  const secondaryNavItem = (href: string, label: string) =>
+    h.li(
+      [],
+      [
+        h.a(
+          [
+            h.Href(href),
+            h.Class(
+              'block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground',
+            ),
+          ],
+          [label],
+        ),
+      ],
+    )
   const lintNavGroups = () =>
     LINT_RULE_GROUPS.map(group => ({
       label: group.label,
       items: group.rules.map(rule =>
-        h.li(
-          [],
-          [
-            h.a(
-              [
-                h.Href(lintRulePath(rule.id)),
-                h.Class(
-                  'block rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground',
-                ),
-              ],
-              [rule.title],
-            ),
-          ],
-        ),
+        secondaryNavItem(lintRulePath(rule.id), rule.title),
       ),
     }))
   const navGroups = () => [
@@ -479,6 +483,7 @@ export const componentPage = <Msg>(
       label: group.label,
       items: group.components.map(navItem),
     })),
+    behaviorNavGroup(secondaryNavItem),
     ...lintNavGroups(),
   ]
 
@@ -491,6 +496,10 @@ export const componentPage = <Msg>(
     currentIndex >= 0 ? COMPONENT_NAV_ORDER[currentIndex + 1] : undefined
   const toc: ReadonlyArray<readonly [string, string]> = [
     ['architecture', 'Architecture'],
+    ['behaviors', 'Behaviors'],
+    ...(config.implementation === undefined
+      ? []
+      : [['implementation', 'Implementation'] as const]),
     ['installation', 'Installation'],
     ['usage', 'Usage'],
     ...(config.sections ?? []).map(
@@ -774,6 +783,32 @@ export const componentPage = <Msg>(
                   ),
                 ],
               ),
+              h.section(
+                [h.Id('behaviors'), h.Class('scroll-mt-24 space-y-4')],
+                [
+                  heading<Msg>('behaviors', 'Behaviors', undefined, h),
+                  behaviorList(toSlug(config.name), config.renderer, h),
+                ],
+              ),
+              ...(config.implementation === undefined
+                ? []
+                : [
+                    h.section(
+                      [
+                        h.Id('implementation'),
+                        h.Class('scroll-mt-24 space-y-4'),
+                      ],
+                      [
+                        heading<Msg>(
+                          'implementation',
+                          'Implementation',
+                          undefined,
+                          h,
+                        ),
+                        ...config.implementation,
+                      ],
+                    ),
+                  ]),
               h.section(
                 [h.Id('installation'), h.Class('scroll-mt-24 space-y-4')],
                 [

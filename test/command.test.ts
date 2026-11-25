@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
+import { Option } from 'effect'
 
 import {
   commandAnnouncement,
@@ -8,6 +9,53 @@ import {
   normalizeCommandQuery,
 } from '../src/lib/command.ts'
 import { docsSearchFields } from '../src/site/docs-search-fields.ts'
+import * as Command from '../src/ui/command.ts'
+
+describe('Command inline state', () => {
+  const command = Command.create<'calendar' | 'settings'>()
+
+  it('resets the active result on input and retains the query on selection', () => {
+    const initial = Command.init({ id: 'command' })
+    const hovered = command.update(
+      initial,
+      Command.Message.MovedPointerOverItem({
+        index: 1,
+        screenX: 12,
+        screenY: 8,
+      }),
+    ).model
+    assert.deepEqual(hovered.maybeActiveItemIndex, Option.some(1))
+    assert.equal(hovered.activationTrigger, 'Pointer')
+
+    const typing = command.update(
+      hovered,
+      Command.Message.UpdatedInputValue({ value: 'sett' }),
+    ).model
+    assert.deepEqual(typing.maybeActiveItemIndex, Option.some(0))
+    assert.equal(typing.activationTrigger, 'Keyboard')
+    assert.equal(typing.isOpen, true)
+
+    for (const result of [
+      command.selectItem(typing, 'settings', 'Settings'),
+      command.update(
+        typing,
+        Command.Message.SelectedItem({
+          item: 'settings',
+          displayText: 'Settings',
+          wasSelected: false,
+        }),
+      ),
+    ]) {
+      assert.equal(result.model.inputValue, 'sett')
+      assert.equal(result.model.isOpen, false)
+      assert.deepEqual(result.model.maybeActiveItemIndex, Option.none())
+      assert.deepEqual(
+        result.outMessage,
+        Command.OutMessage.Selected({ value: 'settings' }),
+      )
+    }
+  })
+})
 
 describe('Command query policy', () => {
   it('derives result announcements only for nonempty queries', () => {

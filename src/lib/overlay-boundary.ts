@@ -1,7 +1,9 @@
 import { Effect, Schema as S } from 'effect'
 import * as Mount from 'foldkit/mount'
-import { Anchor, Combobox, Listbox, Popover } from '@foldkit/ui'
 
+import * as Combobox from './behaviors/combobox-shared'
+import * as Listbox from './behaviors/anchored-listbox'
+import * as Popover from './behaviors/popover'
 import * as Position from './behaviors/position'
 
 /**
@@ -102,7 +104,7 @@ const inheritPortalTheme = (element: HTMLElement): (() => void) => {
 /** Combobox anchoring with an explicit theme-preserving portal. The input
  * keeps focus on option presses, matching Foldkit's AnchorCombobox Mount. */
 export const AnchorThemedCombobox = Mount.define('AnchorThemedCombobox', {
-  args: { buttonId: S.String, anchor: Anchor.AnchorConfig },
+  args: { buttonId: S.String, anchor: Position.AnchorConfig },
   messages: [Combobox.Message.CompletedAnchorCombobox],
   execute: ({ element, buttonId, anchor }) =>
     Effect.gen(function* () {
@@ -135,14 +137,13 @@ export const AnchorThemedCombobox = Mount.define('AnchorThemedCombobox', {
 
 export const themedComboboxPanel = <Msg>(
   buttonId: string,
-  anchor: Anchor.AnchorConfig,
+  anchor: Position.AnchorConfig,
   send: (message: Combobox.Message) => Msg,
 ) => Mount.mapMessage(AnchorThemedCombobox({ buttonId, anchor }), send)
 
-/** Listbox anchoring with an explicit theme-preserving portal. Matches
- * Foldkit's AnchorListbox Mount, which focuses the list after positioning. */
+/** Positions and focuses the list while preserving its inherited theme across the portal. */
 export const AnchorThemedListbox = Mount.define('AnchorThemedListbox', {
-  args: { buttonId: S.String, anchor: Anchor.AnchorConfig },
+  args: { buttonId: S.String, anchor: Position.AnchorConfig },
   messages: [Listbox.Message.CompletedAnchorListbox],
   execute: ({ element, buttonId, anchor }) =>
     Effect.gen(function* () {
@@ -168,7 +169,7 @@ export const AnchorThemedListbox = Mount.define('AnchorThemedListbox', {
 
 export const themedListboxPanel = <Msg>(
   buttonId: string,
-  anchor: Anchor.AnchorConfig,
+  anchor: Position.AnchorConfig,
   send: (message: Listbox.Message) => Msg,
 ) => Mount.mapMessage(AnchorThemedListbox({ buttonId, anchor }), send)
 
@@ -177,7 +178,7 @@ export const themedListboxPanel = <Msg>(
 export const AnchorThemedPopover = Mount.define('AnchorThemedPopover', {
   args: {
     buttonId: S.String,
-    anchor: Anchor.AnchorConfig,
+    anchor: Position.AnchorConfig,
     focusSelector: S.optional(S.String),
     arrowId: S.optional(S.String),
   },
@@ -209,7 +210,7 @@ export const AnchorThemedPopover = Mount.define('AnchorThemedPopover', {
 
 export const themedPopoverPanel = <Msg>(
   buttonId: string,
-  anchor: Anchor.AnchorConfig,
+  anchor: Position.AnchorConfig,
   send: (message: Popover.Message) => Msg,
   focusSelector?: string,
   arrowId?: string,

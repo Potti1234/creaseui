@@ -4,7 +4,7 @@ import { defineView } from 'foldkit/submodel'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 
-import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
+import * as DisclosureBehavior from '@/lib/disclosure'
 
 import * as Icon from '@/lib/icon'
 import * as AccordionBehavior from '@/lib/accordion-state'
@@ -158,7 +158,7 @@ const render = <Msg>(
     viewInputs.items.map((item, index) => {
       const isOpen = model.value.includes(item.value)
 
-      return DisclosurePrimitive.view(
+      return DisclosureBehavior.view(
         {
           id: itemDomId(model.id, item.value),
           isOpen,

@@ -1,7 +1,7 @@
 import { reset } from '@/ui/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { Button as ButtonPrimitive } from '@foldkit/ui'
+import { nativeButtonAttributes } from '@/lib/button'
 import { buttonVisualStyles, type ButtonProps } from './button'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens.stylex'
@@ -293,43 +293,36 @@ export const inputGroupButton = <Msg>(
   p: InputGroupButtonProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html =>
-  ButtonPrimitive.view(
-    {
-      ...(p.onClick === undefined ? {} : { onClick: p.onClick }),
-      isDisabled: p.isDisabled ?? false,
-      type: p.type ?? 'button',
-      toView: ({ button }) =>
-        h.button(
-          [
-            ...button,
-            h.DataAttribute('slot', 'input-group-button'),
-            h.DataAttribute('size', p.size ?? 'xs'),
-            ...(p.ariaLabel === undefined ? [] : [h.AriaLabel(p.ariaLabel)]),
-            h.Class(
-              className(
-                reset.button,
-                ...buttonVisualStyles({
-                  variant: p.variant ?? 'ghost',
-                  size: 'default',
-                }),
-                styles.button,
-                (p.size ?? 'xs') === 'xs' && styles.buttonXs,
-                p.size === 'sm' && styles.buttonSm,
-                p.size === 'icon-xs' && styles.buttonIcon,
-                p.size === 'icon-sm' && styles.buttonIconSm,
-                p.layoutStyle,
-              ),
-            ),
-          ],
-          [
-            h.span(
-              [h.DataAttribute('slot', 'button-content')],
-              [...p.children],
-            ),
-          ],
+  h.button(
+    [
+      ...nativeButtonAttributes(
+        {
+          ...(p.onClick === undefined ? {} : { onClick: p.onClick }),
+          isDisabled: p.isDisabled ?? false,
+          type: p.type ?? 'button',
+        },
+        h,
+      ),
+      h.DataAttribute('slot', 'input-group-button'),
+      h.DataAttribute('size', p.size ?? 'xs'),
+      ...(p.ariaLabel === undefined ? [] : [h.AriaLabel(p.ariaLabel)]),
+      h.Class(
+        className(
+          reset.button,
+          ...buttonVisualStyles({
+            variant: p.variant ?? 'ghost',
+            size: 'default',
+          }),
+          styles.button,
+          (p.size ?? 'xs') === 'xs' && styles.buttonXs,
+          p.size === 'sm' && styles.buttonSm,
+          p.size === 'icon-xs' && styles.buttonIcon,
+          p.size === 'icon-sm' && styles.buttonIconSm,
+          p.layoutStyle,
         ),
-    },
-    h,
+      ),
+    ],
+    [h.span([h.DataAttribute('slot', 'button-content')], [...p.children])],
   )
 export const inputGroupText = <Msg>(p: SlotProps, h: HtmlBuilder<Msg>): Html =>
   h.span(

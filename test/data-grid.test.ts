@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { Option, Schema } from 'effect'
 
+import * as CellRange from '@/lib/behaviors/cell-range'
 import * as Grid from '@/lib/data-grid'
 
 type Row = { id: string; name: string; done: boolean }
@@ -56,7 +57,74 @@ const byId = (model: Grid.Model, id: string) =>
 const displayedIds = (model: Grid.Model) =>
   Grid.displayedRows<Row>(model, config).map(row => row.id)
 
+describe('data grid clipboard', () => {
+  it('round-trips tabs, newlines, and quotes and accepts CRLF', () => {
+    const values = [
+      ['A\tB', 'a "quote"'],
+      ['line 1\nline 2', ''],
+    ]
+    assert.deepEqual(
+      CellRange.textToCells(CellRange.cellsToText(values)),
+      values,
+    )
+    assert.deepEqual(CellRange.textToCells('a\tb\r\nc\td\r\n'), [
+      ['a', 'b'],
+      ['c', 'd'],
+    ])
+  })
+
+  it('copies a visible range and pastes into the original sorted rows in a single undo step', () => {
+    const selected = step(
+      sortedByName(),
+      Grid.Message.FocusedCell({ row: 0, column: 'name' }),
+      Grid.Message.SelectedRange({ row: 1, column: 'done', extend: true }),
+    )
+    assert.equal(
+      Grid.clipboardText(selected, config),
+      'Alpha\tfalse\nMu\tfalse',
+    )
+    const pasted = step(
+      selected,
+      Grid.Message.FocusedCell({ row: 0, column: 'name' }),
+      Grid.Message.PastedCells({ text: 'ZZZ\ttrue\nAAA\ttrue' }),
+    )
+    assert.deepEqual(byId(pasted, 'a'), { id: 'a', name: 'ZZZ', done: true })
+    assert.deepEqual(byId(pasted, 'm'), { id: 'm', name: 'AAA', done: true })
+    assert.deepEqual(step(pasted, Grid.Message.Undo({})).rows, selected.rows)
+  })
+})
+
 describe('data grid keyboard navigation', () => {
+  it('extends a rectangular selection across rows and columns with Shift', () => {
+    const key = (key: string, shift = false) =>
+      Grid.Message.GridKey({ key, shift, ctrl: false, meta: false })
+    const focused = step(
+      Grid.init(config, rows),
+      Grid.Message.FocusedCell({ row: 0, column: 'name' }),
+    )
+    const extended = step(
+      focused,
+      key('ArrowRight', true),
+      key('ArrowDown', true),
+    )
+    const selected = Grid.cellSelection(extended, ['name', 'done'])
+    assert.equal(
+      Grid.selection(extended, ['name', 'done']).text,
+      '4 cells selected across 2 rows and 2 columns.',
+    )
+    assert.equal(Grid.selection(focused, ['name', 'done']).text, '')
+    assert.equal(selected(0, 'name'), true)
+    assert.equal(selected(1, 'done'), true)
+    assert.equal(selected(2, 'done'), false)
+    assert.equal(selected(0, 'hidden'), false)
+    const collapsed = Grid.cellSelection(step(extended, key('ArrowDown')), [
+      'name',
+      'done',
+    ])
+    assert.equal(collapsed(0, 'name'), false)
+    assert.equal(collapsed(2, 'done'), true)
+  })
+
   it('uses the shared body height minus its sticky header for page movement', () => {
     const manyRows = Array.from({ length: 100 }, (_, index) => ({
       id: String(index),

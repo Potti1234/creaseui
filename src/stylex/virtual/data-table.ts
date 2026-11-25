@@ -1,5 +1,5 @@
 import { reset } from '@/ui/stylex/reset'
-import { Checkbox as CheckboxPrimitive } from '@foldkit/ui'
+import { checkboxControlAttributes } from '@/lib/checkbox'
 import * as VirtualList from '@/lib/behaviors/virtualizer'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
@@ -54,49 +54,34 @@ const selectionControl = <Msg>(
     onToggle: (isChecked: boolean) => Msg
   }>,
   h: HtmlBuilder<Msg>,
-): Html =>
-  CheckboxPrimitive.view(
-    {
-      id: props.id,
-      isChecked: props.isChecked,
-      isIndeterminate: props.isIndeterminate ?? false,
-      isDisabled: false,
-      onToggle: props.onToggle,
-      toView: ({ checkbox }) =>
-        h.button(
-          [
-            ...checkbox,
-            h.Type('button'),
-            h.AriaLabel(props.label),
-            h.Class(className(reset.button, styles.selectionButton)),
-          ],
-          [
-            h.span(
-              [
-                h.Class(
-                  className(
-                    styles.selectionBox,
-                    (props.isChecked || props.isIndeterminate === true) &&
-                      styles.selectionBoxChecked,
-                  ),
-                ),
-              ],
-              [
-                ...(props.isChecked || props.isIndeterminate === true
-                  ? [
-                      Icon.check<Msg>(
-                        { class: className(styles.selectionIcon) },
-                        h,
-                      ),
-                    ]
-                  : []),
-              ],
+): Html => {
+  const { label, ...control } = props
+  return h.button(
+    [
+      ...checkboxControlAttributes(control, h),
+      h.AriaLabel(label),
+      h.Class(className(reset.button, styles.selectionButton)),
+    ],
+    [
+      h.span(
+        [
+          h.Class(
+            className(
+              styles.selectionBox,
+              (props.isChecked || props.isIndeterminate === true) &&
+                styles.selectionBoxChecked,
             ),
-          ],
-        ),
-    },
-    h,
+          ),
+        ],
+        [
+          ...(props.isChecked || props.isIndeterminate === true
+            ? [Icon.check<Msg>({ class: className(styles.selectionIcon) }, h)]
+            : []),
+        ],
+      ),
+    ],
   )
+}
 
 export const virtualDataTable = <Row, Msg>(
   props: VirtualDataTableProps<Row, Msg>,

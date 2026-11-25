@@ -58,6 +58,10 @@ describe('Registry dependency graph', () => {
             owners,
             item.name,
           )
+          assert.ok(
+            !graph.packages.has('@foldkit/ui'),
+            `${item.name} still imports @foldkit/ui from ${file.path}`,
+          )
           for (const dependency of graph.registry) {
             assert.ok(
               item.registryDependencies?.includes(dependency),

@@ -4,6 +4,7 @@ import { Style } from '@pleat/core'
 import type { ExamplePreviewProvider } from '@/docs/components/page-definition'
 import {
   colorPickerFixtures,
+  exampleColorPresets,
   type ColorPickerFixture,
 } from '@/docs/components/pages/color-picker/shared'
 import { layoutStyle } from '@/pleat/contracts'
@@ -59,7 +60,11 @@ const pickerView = <Msg>(
         message,
       }),
     )
-  const base = { model: picker, toParentMessage }
+  const base = {
+    model: picker,
+    toParentMessage,
+    ...(fixture.id === 'swatch' ? { presets: exampleColorPresets } : {}),
+  }
   switch (fixture.trigger) {
     case 'button':
       return ColorPicker.colorPicker(

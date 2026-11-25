@@ -1,3 +1,4 @@
+import * as Mount from 'foldkit/mount'
 /* Ported from Meta Astryx TreeList (packages/core/src/TreeList/) — examples
    and visual spec adapted to Crease UI tokens. */
 
@@ -360,6 +361,7 @@ const renderItem = <Msg>(
 }
 
 export type ViewInputs = Readonly<{
+  reorderable?: boolean
   items: ReadonlyArray<TreeListBehavior.TreeListItemData>
   density?: TreeListBehavior.TreeListDensity
   variant?: TreeListBehavior.TreeListVariant
@@ -375,13 +377,16 @@ const render = <Msg>(
   toMessage: (message: TreeListBehavior.Message) => Msg,
   h: HtmlBuilder<Msg>,
 ): Html => {
+  const items = viewInputs.reorderable
+    ? TreeListBehavior.reorderedItems(viewInputs.items, model)
+    : viewInputs.items
   const variant = viewInputs.variant ?? 'lineGuides'
   const density = viewInputs.density ?? 'balanced'
   const direction = viewInputs.direction ?? 'ltr'
   const headerId = `${model.id}-header`
   // Equivalent to "any expandable item anywhere": an expandable descendant
   // forces its ancestors expandable — so checking roots suffices.
-  const hasExpandableItems = viewInputs.items.some(
+  const hasExpandableItems = items.some(
     item => item.children !== undefined && item.children.length > 0,
   )
   const ctx: RenderContext<Msg> = {
@@ -390,13 +395,23 @@ const render = <Msg>(
     density,
     variant,
     hasExpandableItems,
-    tabbable: TreeListBehavior.tabbableId(viewInputs.items, model),
+    tabbable: TreeListBehavior.tabbableId(items, model),
     h,
   }
 
   return h.div(
     [
       h.DataAttribute('slot', 'tree-list'),
+      ...(viewInputs.reorderable
+        ? [
+            h.OnMount(
+              Mount.mapMessage(
+                TreeListBehavior.ObserveTreeReorder(),
+                toMessage,
+              ),
+            ),
+          ]
+        : []),
       h.Class(cn('relative', viewInputs.class)),
       h.Style({
         '--tree-list-indent': '16px',
@@ -406,8 +421,19 @@ const render = <Msg>(
         ? []
         : [h.Dir(viewInputs.direction)]),
       h.OnKeyDownPreventDefault((key, modifiers) => {
+        if (viewInputs.reorderable) {
+          const reorder = TreeListBehavior.reorderKey(
+            items,
+            model,
+            key,
+            modifiers,
+            direction,
+          )
+          if (Option.isSome(reorder))
+            return Option.some(toMessage(reorder.value))
+        }
         const intent = TreeListBehavior.resolveKey(
-          viewInputs.items,
+          items,
           model,
           key,
           modifiers,
@@ -436,7 +462,7 @@ const render = <Msg>(
                 }
               }
               return undefined
-            })(viewInputs.items)
+            })(items)
             return item === undefined
               ? Option.none()
               : Option.some(
@@ -477,6 +503,9 @@ const render = <Msg>(
       h.ul(
         [
           h.Role('tree'),
+          ...(viewInputs.reorderable
+            ? [h.AriaKeyshortcuts('Shift+Space')]
+            : []),
           h.Class('m-0 list-none p-0'),
           ...(viewInputs.header === undefined
             ? viewInputs.ariaLabel === undefined
@@ -484,15 +513,15 @@ const render = <Msg>(
               : [h.AriaLabel(viewInputs.ariaLabel)]
             : [h.AriaLabelledBy(headerId)]),
         ],
-        viewInputs.items.map((item, index) =>
+        items.map((item, index) =>
           renderItem(
             ctx,
             item,
             0,
             index + 1,
-            viewInputs.items.length,
+            items.length,
             [],
-            index === viewInputs.items.length - 1,
+            index === items.length - 1,
           ),
         ),
       ),

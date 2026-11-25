@@ -1,11 +1,13 @@
-import { Effect, Option, Schema } from 'effect'
+import { Effect, Schema } from 'effect'
 import { Command, type Update } from 'foldkit'
 import * as Dom from 'foldkit/dom'
 import { inertHtml, type Attribute } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
-import { Animation } from '@foldkit/ui'
+import * as Animation from './animation'
 
 import * as Popup from './popup'
+
+export { hiddenAttributes, reveal, supportsHiddenUntilFound } from './findable'
 
 export const Model = Animation.Model
 export type Model = Animation.Model
@@ -164,16 +166,3 @@ export const attributes = (model: Model): ReadonlyArray<Attribute<never>> => {
     ...(state !== 'Idle' ? [inertHtml.DataAttribute('transition', '')] : []),
   ]
 }
-
-export const hiddenAttributes = (
-  isOpen: boolean,
-  isFindable: boolean,
-): ReadonlyArray<Attribute<never>> =>
-  isOpen ? [] : [inertHtml.Attribute('hidden', isFindable ? 'until-found' : '')]
-
-// Foldkit's public html entrypoint and HtmlBuilder omit OnCustomEvent's constructor.
-export const reveal = <Msg>(message: Msg): Attribute<Msg> => ({
-  _tag: 'OnCustomEvent',
-  name: 'beforematch',
-  f: () => Option.some(message),
-})

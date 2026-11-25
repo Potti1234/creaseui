@@ -8,6 +8,12 @@ import type * as Storage from './storage'
 
 export const System = Schema.Literals(['light', 'dark', 'unknown'])
 
+/** Read a Sec-CH-Prefers-Color-Scheme request hint for the initial Model. */
+export const colorSchemeOf = (hint?: string | null): typeof System.Type => {
+  const value = hint?.trim().replace(/^"(light|dark)"$/, '$1')
+  return value === 'light' || value === 'dark' ? value : 'unknown'
+}
+
 export const Model = Schema.Struct({
   value: Schema.Literals(['system', 'light', 'dark']),
   system: System,

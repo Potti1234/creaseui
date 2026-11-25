@@ -2,7 +2,7 @@ import { Option } from 'effect'
 import * as Mount from 'foldkit/mount'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Dialog as DialogPrimitive } from '@foldkit/ui'
+import * as DialogPrimitive from '@/lib/behaviors/dialog'
 
 import * as Icon from '@/lib/icon'
 import * as SheetBehavior from '@/lib/sheet'
@@ -570,9 +570,7 @@ export const sheet = <Msg>(
           isVisible,
         }: DialogPrimitive.RenderInfo) => {
           const hd = h
-          const leaving =
-            model.dialog.animation.transitionState === 'LeaveStart' ||
-            model.dialog.animation.transitionState === 'LeaveAnimating'
+          const leaving = DialogPrimitive.isLeaving(model.dialog)
           const focusRef = { claimed: false }
           const parts = buildParts(
             hd,
@@ -821,9 +819,7 @@ export const sheetSwitcher = <Msg>(
         isVisible,
       }: DialogPrimitive.RenderInfo) => {
         const hd = h
-        const leaving =
-          model.dialog.animation.transitionState === 'LeaveStart' ||
-          model.dialog.animation.transitionState === 'LeaveAnimating'
+        const leaving = DialogPrimitive.isLeaving(model.dialog)
 
         const renderSheet = (
           spec: SwitcherSheetContent,

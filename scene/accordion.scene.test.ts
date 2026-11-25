@@ -1,8 +1,12 @@
 import * as Scene from 'foldkit/scene'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import * as Accordion from '@/stylex/accordion'
 import * as AccordionBehavior from '@/ui/accordion'
+
+vi.mock('@/lib/disclosure', async importOriginal =>
+  (await import('./disclosure-mock')).mockDisclosureMount(importOriginal),
+)
 
 const items: ReadonlyArray<Accordion.AccordionItem> = [
   {

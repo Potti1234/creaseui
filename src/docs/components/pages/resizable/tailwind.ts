@@ -4,12 +4,15 @@ import { defineMessageUnion } from 'foldkit/message'
 
 import { definePreviewProgram } from '@/docs/components/pages/authored-page'
 import {
+  boxResizeDemo,
+  boxDemoLimits,
   resizableFixtures,
   type ResizableFixture,
 } from '@/docs/components/pages/resizable/shared'
 import * as Resizable from '@/ui/resizable'
 
 const Got = defineMessageUnion({
+  GotResizableBoxMessage: { message: Resizable.BoxResizeMessage },
   GotResizableMessage: { message: Resizable.Message },
   GotOuterGroupMessage: { message: Resizable.GroupMessage },
   GotInnerGroupMessage: { message: Resizable.GroupMessage },
@@ -17,6 +20,7 @@ const Got = defineMessageUnion({
 type Got = typeof Got.Type
 const Model = S.Struct({
   _docsPage: S.Literal('resizable'),
+  box: Resizable.BoxResizeModel,
   panels: Resizable.Model,
   outer: Resizable.GroupModel,
   inner: Resizable.GroupModel,
@@ -90,6 +94,7 @@ export const resizableTailwindPreviewProgram = definePreviewProgram<Model, Got>(
       const fixture = resizableFixtures[index] ?? resizableFixtures[0]
       return {
         _docsPage: 'resizable',
+        box: Resizable.initBoxResize({ x: 52, y: 28, width: 140, height: 94 }),
         panels: Resizable.init(
           `docs-resizable-${String(index)}`,
           fixture.kind === 'single' ? fixture.initialSize : 50,
@@ -108,6 +113,17 @@ export const resizableTailwindPreviewProgram = definePreviewProgram<Model, Got>(
     },
     update: (model, message) => {
       switch (message._tag) {
+        case 'GotResizableBoxMessage':
+          return {
+            model: {
+              ...model,
+              box: Resizable.updateBoxResize(
+                model.box,
+                message.message,
+                boxDemoLimits,
+              ),
+            },
+          }
         case 'GotResizableMessage':
           return {
             model: {
@@ -133,9 +149,23 @@ export const resizableTailwindPreviewProgram = definePreviewProgram<Model, Got>(
     },
     view: (index, model, h) => {
       const fixture = resizableFixtures[index] ?? resizableFixtures[0]
-      return fixture.kind === 'single'
-        ? singleView(fixture, model, h)
-        : nestedView(fixture, model, h)
+      const panels =
+        fixture.kind === 'single'
+          ? singleView(fixture, model, h)
+          : nestedView(fixture, model, h)
+      return fixture.title === 'Handle'
+        ? h.div(
+            [h.Style({ display: 'grid', gap: '1rem' })],
+            [
+              panels,
+              boxResizeDemo(
+                model.box,
+                message => Got.GotResizableBoxMessage({ message }),
+                h,
+              ),
+            ],
+          )
+        : panels
     },
   },
 )

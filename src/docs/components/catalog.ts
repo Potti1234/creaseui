@@ -15,6 +15,9 @@ import {
 } from '@/docs/component-page'
 import * as CopyFeedback from '@/docs/copy-feedback'
 import * as CodeFile from '@/lib/code-file'
+import * as Markdown from '@/lib/markdown'
+import { behaviorGuideLinks, compositionsFor } from '@/docs/behavior-metadata'
+import { markdown as tailwindMarkdown } from '@/ui/markdown'
 import type {
   ComponentKind,
   PageDefinitions,
@@ -80,6 +83,7 @@ export const Model = S.Struct({
   examples: S.Array(S.Unknown),
   renderer: S.Literals(['tailwind', 'stylex', 'pleat']),
   copiedCode: CopyFeedback.Model,
+  implementationMarkdown: S.optionalKey(Markdown.Model),
 })
 export type Model = typeof Model.Type
 
@@ -90,9 +94,13 @@ export const GotExampleMessage = taggedStruct('GotCatalogExampleMessage', {
 export const GotCodeFileMessage = taggedStruct('GotCatalogCodeFileMessage', {
   message: CodeFile.Message,
 })
+const GotImplementationMarkdown = taggedStruct('GotImplementationMarkdown', {
+  message: Markdown.Message,
+})
 export const Message = S.Union([
   GotExampleMessage,
   GotCodeFileMessage,
+  GotImplementationMarkdown,
   CopyFeedback.Message,
 ])
 export type Message = typeof Message.Type
@@ -125,6 +133,18 @@ export const init = (slug?: string): Model => {
 type UpdateReturn = Update.Return<Model, Message>
 
 export const update = (model: Model, message: Message): UpdateReturn => {
+  if (message._tag === 'GotImplementationMarkdown') {
+    const next = Markdown.update(
+      model.implementationMarkdown ?? Markdown.init(),
+      message.message,
+    )
+    return {
+      model: { ...model, implementationMarkdown: next.model },
+      commands: Command.mapMessages(next.commands ?? [], message =>
+        GotImplementationMarkdown({ message }),
+      ),
+    }
+  }
   if (message._tag === 'GotCatalogCodeFileMessage') return { model: model }
   if (message._tag !== 'GotCatalogExampleMessage') {
     const { model: copiedCode, commands: copiedCodeCommands__ } =
@@ -148,12 +168,10 @@ export const update = (model: Model, message: Message): UpdateReturn => {
   const commands = exampleCommands__ ?? []
   return {
     model: {
+      ...model,
       examples: model.examples.map((candidate, index) =>
         index === message.index ? example : candidate,
       ),
-      slug: model.slug,
-      renderer: model.renderer,
-      copiedCode: model.copiedCode,
     },
     commands: Command.mapMessages(commands, next =>
       GotExampleMessage({
@@ -162,6 +180,16 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       }),
     ),
   }
+}
+
+export const exampleSubscriptions = (slug: string, index: number) => {
+  const program = authoredPages[slug]?.previewProgram
+  if (program?.subscriptions === undefined) return {}
+  return Subscription.lift(program.subscriptions)<Model, Message>({
+    toChildModel: model => model.examples[index] ?? program.init(index),
+    toParentMessage: message => GotExampleMessage({ index, message }),
+    when: model => model.slug === slug,
+  })
 }
 
 export const subscriptions = Subscription.aggregate<Model, Message>()(
@@ -304,6 +332,8 @@ export const view = (
   slug: string,
   dark: boolean,
   h: HtmlBuilder<Message>,
+  onlyExample?: number,
+  markdown: typeof tailwindMarkdown = tailwindMarkdown,
 ): Html => {
   const name = componentTitle(slug)
   const definition = definitions[slug]
@@ -417,6 +447,18 @@ export const view = (
     })
   }
 
+  if (onlyExample !== undefined) {
+    const config = authoredExamples[onlyExample]
+    return config === undefined
+      ? h.empty
+      : h.div(
+          config.previewClass === undefined
+            ? []
+            : [h.Class(config.previewClass)],
+          [previewFor(onlyExample, onlyExample)],
+        )
+  }
+
   const renderedExamples = authoredExamples
     .map((config, index) => ({ config, index }))
     .filter(({ config }) => config.heroOnly !== true)
@@ -485,12 +527,54 @@ export const view = (
           h,
         )
 
+  const implementation = compositionsFor(slug)
   return componentPage<Message>(
     {
       name,
       description: definition.description,
       kind,
       architecture: definition.architecture ?? architectureFor(kind, name),
+      ...(implementation.length === 0
+        ? {}
+        : {
+            implementation: implementation.map(entry =>
+              h.section(
+                [
+                  h.Id('implementation-' + entry.slug),
+                  h.Class('behavior-docs-implementation'),
+                ],
+                [
+                  h.h3([], [entry.title]),
+                  h.p([], [entry.description]),
+                  ...(entry.guideText
+                    ? [
+                        markdown(
+                          {
+                            model:
+                              model.implementationMarkdown ?? Markdown.init(),
+                            toParentMessage: message =>
+                              GotImplementationMarkdown({ message }),
+                            headingLevelStart: 3,
+                            children: behaviorGuideLinks(entry.guideText),
+                          },
+                          h,
+                        ),
+                      ]
+                    : []),
+                  h.a(
+                    [
+                      h.Class('behavior-docs-link'),
+                      h.Href(
+                        'https://github.com/Potti1234/creaseui/blob/main/' +
+                          entry.source,
+                      ),
+                    ],
+                    ['View implementation source'],
+                  ),
+                ],
+              ),
+            ),
+          }),
       installation: `npx shadcn@latest add Potti1234/creaseui/${definition.source?.registryItem ?? (renderer === 'tailwind' ? slug : `${renderer}-${slug}`)}`,
       usage:
         model.renderer === 'tailwind'

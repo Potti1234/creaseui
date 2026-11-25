@@ -3,8 +3,10 @@ import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
+import { afterCommit } from 'foldkit/render'
 
 import * as Agent from '@/lib/behaviors/agent'
+import * as Change from '@/lib/behaviors/change'
 import * as History from '@/lib/behaviors/history'
 import * as Observe from '@/lib/behaviors/observe'
 import type * as Card from '@/ui/card'
@@ -13,6 +15,8 @@ import type * as Switch from '@/ui/switch'
 
 export const Model = Schema.Struct({
   region: Schema.String,
+  regionRevision: Schema.Number,
+  regionStage: History.Stage,
   isPublic: Schema.Boolean,
   agent: Agent.Model,
   history: History.Model,
@@ -28,16 +32,25 @@ const Changes = Schema.Array(
 )
 export const Message = defineMessageUnion({
   StartedAgent: {},
+  PreviewedRegion: {},
+  AcceptedRegionPreview: {},
+  RevertedRegionPreview: {},
   ChangedRegion: { value: Schema.String },
   ToggledPublic: { value: Schema.Boolean },
   GotAgentMessage: { message: Agent.Message },
   GotHistoryMessage: { message: History.Message },
-  AppliedAgentAction: { action: Agent.Action },
+  AppliedAgentAction: {
+    action: Agent.Action,
+    context: Schema.optionalKey(Change.Context),
+  },
   AppliedHistory: { changes: Changes },
+  RevealedObservedControl: {},
 })
 export type Message = typeof Message.Type
 export const init = (): Model => ({
   region: 'London',
+  regionRevision: 0,
+  regionStage: [],
   isPublic: false,
   agent: Agent.init(),
   history: History.init(),
@@ -61,11 +74,17 @@ export const components = (model: Model): readonly Agent.Component[] => [
     actions: ['setChecked'],
   },
 ]
+const agentContext: Change.Context = {
+  reason: 'imperative',
+  source: 'agent',
+  attribution: 'behavior-demo-agent',
+}
+
 const ExecuteAction = Command.define('ExecuteBehaviorDemoAction', {
-  args: { action: Agent.Action },
+  args: { action: Agent.Action, context: Change.Context },
   messages: [Message.AppliedAgentAction],
-  execute: ({ action }) =>
-    Effect.succeed(Message.AppliedAgentAction({ action })),
+  execute: ({ action, context }) =>
+    Effect.succeed(Message.AppliedAgentAction({ action, context })),
 })
 const ApplyHistory = Command.define('ApplyBehaviorDemoHistory', {
   args: { changes: Changes },
@@ -73,40 +92,102 @@ const ApplyHistory = Command.define('ApplyBehaviorDemoHistory', {
   execute: ({ changes }) => Effect.succeed(Message.AppliedHistory({ changes })),
 })
 
+const demoId = 'observe-behavior-demo'
+
+const RevealObservedControl = Command.define('RevealObservedControl', {
+  args: { ref: Schema.String },
+  messages: [Message.RevealedObservedControl],
+  execute: ({ ref }) =>
+    afterCommit.pipe(
+      Effect.andThen(
+        Effect.sync(() => {
+          const root = document.getElementById(demoId)
+          if (root)
+            Observe.elementOf(root, ref)?.scrollIntoView({ block: 'nearest' })
+        }),
+      ),
+      Effect.as(Message.RevealedObservedControl()),
+    ),
+})
+
+const setRegion = (model: Model, region: string): Model =>
+  model.region === region
+    ? model
+    : { ...model, region, regionRevision: model.regionRevision + 1 }
+
+const regionAccess = {
+  read: (model: Model, control: { ref: string; key: string }) =>
+    control.ref === 'region' && control.key === 'value'
+      ? { value: model.region, revision: model.regionRevision }
+      : undefined,
+  write: (model: Model, change: { value: unknown }) =>
+    typeof change.value === 'string' ? setRegion(model, change.value) : model,
+}
+
+const activeRegionPreview = (model: Model) =>
+  model.regionStage.find(change => change.revision === model.regionRevision)
+
+const observeRegionPreview = (model: Model, previous: unknown) =>
+  Observe.change({
+    ref: 'region',
+    component: 'input',
+    label: 'Region',
+    key: 'value',
+    value: model.region,
+    previous,
+    reason: 'accept-preview',
+    source: 'pointer',
+    phase: 'Commit',
+  })
+
 const changed = (
   model: Model,
   ref: string,
   value: unknown,
-  source: string,
-): Readonly<{ model: Model; change: Observe.Change }> => {
+  context: Change.Context,
+) => {
+  if (ref !== 'region' && ref !== 'public')
+    return { model, status: 'vetoed' as const }
+
   const isRegion = ref === 'region'
-  const input = {
+  const result = Change.apply<Model, unknown>(
+    model,
+    { ...context, value },
+    {
+      read: model => (isRegion ? model.region : model.isPublic),
+      beforeWrite: ({ value }) =>
+        isRegion ? typeof value === 'string' : typeof value === 'boolean',
+      write: (model, value) =>
+        isRegion
+          ? setRegion(model, String(value))
+          : { ...model, isPublic: value === true },
+    },
+  )
+  if (result.status !== 'committed') return result
+  const change = Observe.change({
+    ...result.change,
+    previous: isRegion
+      ? (activeRegionPreview(model)?.before ?? result.change.previous)
+      : result.change.previous,
     ref,
     component: isRegion ? 'input' : 'switch',
     label: isRegion ? 'Region' : 'Public',
     key: isRegion ? 'value' : 'checked',
-    value,
-    previous: isRegion ? model.region : model.isPublic,
-    reason: 'imperative',
-    phase: 'Commit' as const,
-  }
-  const change =
-    source === 'agent'
-      ? Agent.agentChange(input)
-      : Observe.change({ ...input, source })
-  const history = Observe.accepts({}, change)
-    ? History.update(model.history, History.Message.Recorded({ change })).model
-    : model.history
-  return {
-    model: {
-      ...model,
-      region: isRegion ? String(value) : model.region,
-      isPublic: isRegion ? model.isPublic : value === true,
-      history,
-    },
-    change,
-  }
+  })
+  const history = Object.is(change.previous, change.value)
+    ? result.model.history
+    : History.update(result.model.history, History.Message.Recorded({ change }))
+        .model
+  return { ...result, model: { ...result.model, history }, change }
 }
+const agentFinished = (result: Agent.Result): string => {
+  const count = result.steps.reduce(
+    (sum, step) => sum + (step.changes?.length ?? 0),
+    0,
+  )
+  return `Agent finished · ${count} ${count === 1 ? 'change' : 'changes'} applied`
+}
+
 const agentUpdate = (
   model: Model,
   message: Agent.Message,
@@ -125,7 +206,7 @@ const agentUpdate = (
       status:
         out?._tag === 'Finished'
           ? out.result.ok
-            ? 'Agent finished · 2 changes applied'
+            ? agentFinished(out.result)
             : (out.result.error?.message ?? 'Stopped')
           : out?._tag === 'RequestApproval'
             ? 'Waiting for your approval'
@@ -133,7 +214,10 @@ const agentUpdate = (
     },
     commands:
       out?._tag === 'RunStep'
-        ? [...commands, ExecuteAction({ action: out.action })]
+        ? [
+            ...commands,
+            ExecuteAction({ action: out.action, context: agentContext }),
+          ]
         : commands,
   }
 }
@@ -152,20 +236,69 @@ export const update = (
           ],
         }),
       ),
+    PreviewedRegion: () => {
+      if (model.agent.running || model.regionStage.length > 0) return { model }
+      const preview = History.stageChanges(
+        model,
+        [{ ref: 'region', value: 'Berlin' }],
+        regionAccess,
+      )
+      return { model: { ...preview.model, regionStage: preview.stage } }
+    },
+    AcceptedRegionPreview: () => {
+      const preview = activeRegionPreview(model)
+      const history = preview
+        ? History.update(
+            model.history,
+            History.Message.Recorded({
+              change: observeRegionPreview(model, preview.before),
+            }),
+          ).model
+        : model.history
+      return { model: { ...model, history, regionStage: [] } }
+    },
+    RevertedRegionPreview: () => {
+      const result = History.rollbackStage(
+        model,
+        model.regionStage,
+        regionAccess,
+      )
+      return { model: { ...result.model, regionStage: [] } }
+    },
     GotAgentMessage: ({ message }) => agentUpdate(model, message),
     ChangedRegion: ({ value }) => ({
-      model: changed(model, 'region', value, 'keyboard').model,
+      model: changed(model, 'region', value, {
+        reason: 'input',
+        source: 'keyboard',
+      }).model,
     }),
     ToggledPublic: ({ value }) => ({
-      model: changed(model, 'public', value, 'pointer').model,
+      model: changed(model, 'public', value, {
+        reason: 'item-press',
+        source: 'pointer',
+      }).model,
     }),
-    AppliedAgentAction: ({ action }) => {
-      const result = changed(model, action.ref, action.args[0], 'agent')
-      return agentUpdate(
+    AppliedAgentAction: ({ action, context = agentContext }) => {
+      const result = changed(model, action.ref, action.args[0], context)
+      const next = agentUpdate(
         result.model,
-        Agent.Message.CompletedStep({ changes: [result.change] }),
+        result.status === 'vetoed'
+          ? Agent.Message.FailedStep({ message: 'Invalid workspace setting' })
+          : Agent.Message.CompletedStep({
+              changes: result.status === 'committed' ? [result.change] : [],
+            }),
       )
+      return result.status === 'committed' && result.change.source === 'agent'
+        ? {
+            ...next,
+            commands: [
+              ...(next.commands ?? []),
+              RevealObservedControl({ ref: result.change.ref }),
+            ],
+          }
+        : next
     },
+    RevealedObservedControl: () => ({ model }),
     GotHistoryMessage: ({ message }) => {
       const result = History.update(model.history, message)
       return {
@@ -184,14 +317,12 @@ export const update = (
     },
     AppliedHistory: ({ changes }) => ({
       model: changes.reduce(
-        (model, change) => ({
-          ...model,
-          ...(change.ref === 'region'
-            ? { region: String(change.value) }
+        (model, change) =>
+          change.ref === 'region'
+            ? setRegion(model, String(change.value))
             : change.ref === 'public'
-              ? { isPublic: change.value === true }
-              : {}),
-        }),
+              ? { ...model, isPublic: change.value === true }
+              : model,
         model,
       ),
     }),
@@ -266,7 +397,7 @@ export const view = <Msg>(
     )
   const approval = Option.getOrUndefined(model.agent.maybeApproval)
   return h.div(
-    [h.DataAttribute('testid', 'behavior-demo')],
+    [h.Id(demoId), h.DataAttribute('testid', 'behavior-demo')],
     [
       kit.card(
         {
@@ -297,28 +428,39 @@ export const view = <Msg>(
                     {
                       gap: 6,
                       children: [
-                        kit.input(
-                          {
-                            id: 'behavior-region',
-                            label: 'Region',
-                            value: model.region,
-                            onInput: value =>
-                              toParent(Message.ChangedRegion({ value })),
-                            isDisabled: model.agent.running,
-                          },
-                          h,
+                        h.div(
+                          [h.DataAttribute('observe-ref', 'region')],
+                          [
+                            kit.input(
+                              {
+                                id: 'behavior-region',
+                                label: 'Region',
+                                value: model.region,
+                                onInput: value =>
+                                  toParent(Message.ChangedRegion({ value })),
+                                isDisabled: model.agent.running,
+                              },
+                              h,
+                            ),
+                          ],
                         ),
-                        kit.switchControl(
-                          {
-                            id: 'behavior-public',
-                            label: 'Public',
-                            description: 'Let anyone discover this workspace.',
-                            isChecked: model.isPublic,
-                            onToggle: value =>
-                              toParent(Message.ToggledPublic({ value })),
-                            isDisabled: model.agent.running,
-                          },
-                          h,
+                        h.div(
+                          [h.DataAttribute('observe-ref', 'public')],
+                          [
+                            kit.switchControl(
+                              {
+                                id: 'behavior-public',
+                                label: 'Public',
+                                description:
+                                  'Let anyone discover this workspace.',
+                                isChecked: model.isPublic,
+                                onToggle: value =>
+                                  toParent(Message.ToggledPublic({ value })),
+                                isDisabled: model.agent.running,
+                              },
+                              h,
+                            ),
+                          ],
                         ),
                         kit.stack(
                           {
@@ -332,6 +474,27 @@ export const view = <Msg>(
                                 model.agent.running,
                                 true,
                               ),
+                              ...(model.regionStage.length > 0
+                                ? [
+                                    button(
+                                      'Keep preview',
+                                      Message.AcceptedRegionPreview(),
+                                      model.agent.running,
+                                    ),
+                                    button(
+                                      'Discard preview',
+                                      Message.RevertedRegionPreview(),
+                                      model.agent.running,
+                                    ),
+                                  ]
+                                : [
+                                    button(
+                                      'Preview Berlin',
+                                      Message.PreviewedRegion(),
+                                      model.agent.running ||
+                                        model.region === 'Berlin',
+                                    ),
+                                  ]),
                               button(
                                 'Undo agent',
                                 Message.GotHistoryMessage({

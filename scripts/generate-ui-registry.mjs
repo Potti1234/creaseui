@@ -116,7 +116,6 @@ const category = name =>
 const registryAddress = item => `Potti1234/creaseui/${item}`
 const consumerFrameworkPackages = new Set([
   '@effect/platform-browser',
-  '@foldkit/ui',
   'effect',
   'foldkit',
 ])

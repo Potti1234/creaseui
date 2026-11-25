@@ -65,9 +65,6 @@ const frameworkVersions = {
   '@effect/platform-browser':
     process.env.CREASEUI_PLATFORM_VERSION ??
     sourcePackage.dependencies['@effect/platform-browser'],
-  '@foldkit/ui':
-    process.env.CREASEUI_FOLDKIT_UI_VERSION ??
-    sourcePackage.dependencies['@foldkit/ui'],
   effect:
     process.env.CREASEUI_EFFECT_VERSION ?? sourcePackage.dependencies.effect,
   foldkit:

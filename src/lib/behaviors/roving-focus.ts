@@ -15,6 +15,7 @@ export type Model = typeof Model.Type
 export const Message = defineMessageUnion({
   MovedFocus: { key: Schema.String },
   FocusedItem: { key: Schema.String },
+  BlurredItem: { key: Schema.String },
   CompletedFocusItem: {},
 })
 export type Message = typeof Message.Type
@@ -59,6 +60,11 @@ export const update = (
     FocusedItem: ({ key }) => ({
       model: { ...model, maybeFocusedKey: Option.some(key) },
     }),
+    BlurredItem: ({ key }) => ({
+      model: Option.contains(model.maybeFocusedKey, key)
+        ? { ...model, maybeFocusedKey: Option.none() }
+        : model,
+    }),
     CompletedFocusItem: () => ({ model }),
   })
 
@@ -68,15 +74,21 @@ export type Orientation = typeof Orientation.Type
 export const Direction = Schema.Literals(['ltr', 'rtl'])
 export type Direction = typeof Direction.Type
 
-export type NavigationInput<Key> = Readonly<{
+type Items<Key> = Readonly<{
   keys: ReadonlyArray<Key>
-  currentKey: Key | undefined
-  pressedKey: string
-  orientation?: Orientation
-  direction?: Direction
-  loop?: boolean
   isDisabled?: (key: Key, index: number) => boolean
+  isFocusable?: (key: Key, index: number) => boolean
+  focusDisabledWithArrows?: boolean
 }>
+
+export type NavigationInput<Key> = Items<Key> &
+  Readonly<{
+    currentKey: Key | undefined
+    pressedKey: string
+    orientation?: Orientation
+    direction?: Direction
+    loop?: boolean
+  }>
 
 type NavigationIntent = 'First' | 'Last' | 'Next' | 'Previous'
 
@@ -124,7 +136,12 @@ export const navigate = <Key>(
       return Option.none()
     const wrappedIndex = ((index % keys.length) + keys.length) % keys.length
     const key = keys[wrappedIndex]
-    if (key !== undefined && !isDisabled(key, wrappedIndex))
+    if (
+      key !== undefined &&
+      (input.isFocusable?.(key, wrappedIndex) ?? true) &&
+      ((!edge && input.focusDisabledWithArrows) ||
+        !isDisabled(key, wrappedIndex))
+    )
       return Option.some(key)
   }
   return Option.none()
@@ -138,15 +155,40 @@ export type ItemInfo<Key extends string> = Readonly<{
   attributes: ReadonlyArray<ChildAttribute>
 }>
 
-export type ViewInputs<Key extends string = string> = Readonly<{
-  keys: ReadonlyArray<Key>
-  orientation?: Orientation
-  direction?: Direction
-  loop?: boolean
-  isDisabled?: (key: Key, index: number) => boolean
-  preferredKey?: Key
-  toView: (items: ReadonlyArray<ItemInfo<Key>>) => Html
-}>
+type TabStopInput<Key> = Items<Key> &
+  Readonly<{
+    preferredKey?: Key
+  }>
+
+export const tabStop = <Key extends string>(
+  model: Model,
+  inputs: TabStopInput<Key>,
+): Key | undefined => {
+  const focusable = inputs.keys.filter(
+    (key, index) => inputs.isFocusable?.(key, index) ?? true,
+  )
+  const enabled = inputs.keys.filter(
+    (key, index) =>
+      (inputs.isFocusable?.(key, index) ?? true) &&
+      !inputs.isDisabled?.(key, index),
+  )
+  const candidates =
+    enabled.length || !inputs.focusDisabledWithArrows ? enabled : focusable
+  return (
+    candidates.find(key => Option.contains(model.maybeFocusedKey, key)) ??
+    candidates.find(key => key === inputs.preferredKey) ??
+    candidates[0]
+  )
+}
+
+export type ViewInputs<Key extends string = string> = TabStopInput<Key> &
+  Readonly<{
+    orientation?: Orientation
+    direction?: Direction
+    loop?: boolean
+    remember?: boolean
+    toView: (items: ReadonlyArray<ItemInfo<Key>>) => Html
+  }>
 
 export type Bundle<Key extends string = string> = Readonly<{
   view: SubmodelView<Model, Message, ViewInputs<Key>>
@@ -157,23 +199,24 @@ export const create = <Key extends string = string>(): Bundle<Key> => ({
   update,
   view: defineView<Model, Message, ViewInputs<Key>>((model, inputs, h) => {
     const isDisabled = inputs.isDisabled ?? (() => false)
-    const enabled = inputs.keys.filter((key, index) => !isDisabled(key, index))
-    const tabStop =
-      enabled.find(key => Option.contains(model.maybeFocusedKey, key)) ??
-      enabled.find(key => key === inputs.preferredKey) ??
-      enabled[0]
+    const isFocusable = inputs.isFocusable ?? (() => true)
+    const stop = tabStop(model, inputs)
     return inputs.toView(
       inputs.keys.map((key, index) => ({
         key,
         index,
-        isTabStop: key === tabStop,
+        isTabStop: key === stop,
         isDisabled: isDisabled(key, index),
         attributes: childAttributes([
           h.Id(itemId(model.id, key)),
-          h.Tabindex(key === tabStop ? 0 : -1),
+          h.Tabindex(key === stop ? 0 : -1),
           h.OnFocus(Message.FocusedItem({ key })),
+          ...(inputs.remember === false
+            ? [h.OnBlur(Message.BlurredItem({ key }))]
+            : []),
           h.OnKeyDownPreventDefault(pressedKey =>
-            isDisabled(key, index)
+            !isFocusable(key, index) ||
+            (isDisabled(key, index) && !inputs.focusDisabledWithArrows)
               ? Option.none()
               : navigate({
                   ...inputs,

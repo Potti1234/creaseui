@@ -7,7 +7,7 @@ import { Option } from 'effect'
 
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Popover as PopoverPrimitive } from '@foldkit/ui'
+import * as PopoverPrimitive from '@/lib/behaviors/popover'
 
 import * as Icon from '@/lib/icon'
 import {
@@ -35,7 +35,6 @@ import { calendarView } from '@/ui/stylex/calendar'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
-import { themedAnchor } from './overlay-boundary'
 import { overlayStyles } from './overlay-tokens.stylex'
 import { className } from './style'
 import { tokens } from './tokens.stylex'
@@ -509,8 +508,9 @@ export const dateTimeInput = <Msg>(
     model: model.datePicker.popover,
     view: PopoverPrimitive.view,
     viewInputs: {
-      anchor: themedAnchor({ placement: 'bottom-start', gap: 4 }),
-      focusSelector: '[role="grid"]',
+      anchor: { placement: 'bottom-start', gap: 4, portal: false },
+      focusSelector:
+        model.openedDateFromInput === true ? ':focus' : '[role="grid"]',
       isDisabled: isEffectivelyDisabled,
       ariaLabelledBy: labelId,
       toView: ({ button, panel, backdrop, isVisible }) =>
@@ -702,7 +702,7 @@ export const dateTimeInput = <Msg>(
     model: model.timePopover,
     view: PopoverPrimitive.view,
     viewInputs: {
-      anchor: themedAnchor({ placement: 'bottom-start', gap: 4 }),
+      anchor: { placement: 'bottom-start', gap: 4, portal: false },
       focusSelector: '[role="listbox"]',
       isDisabled: isEffectivelyDisabled,
       ariaLabel: resolvedTimeLabel,

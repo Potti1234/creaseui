@@ -1,5 +1,5 @@
 import { Option } from 'effect'
-import { Combobox } from '@foldkit/ui'
+import * as Combobox from '@/lib/behaviors/combobox'
 import { defineView } from 'foldkit/submodel'
 import type { Html } from 'foldkit/html'
 import type { Update } from 'foldkit'
@@ -87,16 +87,14 @@ type CommandViewInputs<Item extends string> = Combobox.ViewInputs<Item> & {
   itemToKeys?: (item: Item) => string | undefined
 }
 
-/** Command reuses Foldkit's combobox state and typed selection updates, with
- * an always-visible list rendered in document flow. No anchor, portal, toggle,
- * blur dismissal, or dropdown animation participates in this surface. */
+/** Renders Command's always-visible list in document flow. */
 export const createInlineCommandView = <Item extends string>() =>
   defineView<Combobox.Model, Combobox.Message, CommandViewInputs<Item>>(
     (model, props, h) => {
       const inputId = Combobox.inputId(model.id)
       const listId = `${model.id}-items`
       const itemId = (index: number): string =>
-        `${model.id}-item-${String(index)}`
+        Listbox.itemId(model.id, String(index))
       const valueAt = (item: Item, index: number): Item =>
         props.itemToValue(item, index)
       const isDisabled = (index: number): boolean => {
@@ -282,38 +280,40 @@ export const createInlineCommandView = <Item extends string>() =>
                       [props.buttonContent],
                     ),
                   ]),
-              h.input([
-                h.Id(inputId),
-                h.Role('combobox'),
-                h.AriaExpanded(true),
-                h.AriaControls(listId),
-                h.Attribute('aria-autocomplete', 'list'),
-                ...(props.ariaLabel === undefined
-                  ? []
-                  : [h.AriaLabel(props.ariaLabel)]),
-                ...(props.ariaLabelledBy === undefined
-                  ? []
-                  : [h.AriaLabelledBy(props.ariaLabelledBy)]),
-                ...(active === undefined
-                  ? []
-                  : [h.AriaActiveDescendant(itemId(active))]),
-                h.Autocomplete('off'),
-                h.Value(model.inputValue),
-                ...(props.inputPlaceholder === undefined
-                  ? []
-                  : [h.Placeholder(props.inputPlaceholder)]),
-                h.OnInput(value =>
-                  Combobox.Message.UpdatedInputValue({ value }),
-                ),
-                h.OnKeyDownPreventDefault(keyMessage),
-                ...(model.selectInputOnFocus
-                  ? [h.OnMount(Combobox.AttachComboboxSelectOnFocus())]
-                  : []),
-                ...(props.inputClassName === undefined
-                  ? []
-                  : [h.Class(props.inputClassName)]),
-                ...(props.inputAttributes ?? []),
-              ]),
+              Combobox.guardComboboxComposition(
+                h.input([
+                  h.Id(inputId),
+                  h.Role('combobox'),
+                  h.AriaExpanded(true),
+                  h.AriaControls(listId),
+                  h.Attribute('aria-autocomplete', 'list'),
+                  ...(props.ariaLabel === undefined
+                    ? []
+                    : [h.AriaLabel(props.ariaLabel)]),
+                  ...(props.ariaLabelledBy === undefined
+                    ? []
+                    : [h.AriaLabelledBy(props.ariaLabelledBy)]),
+                  ...(active === undefined
+                    ? []
+                    : [h.AriaActiveDescendant(itemId(active))]),
+                  h.Autocomplete('off'),
+                  h.Value(model.inputValue),
+                  ...(props.inputPlaceholder === undefined
+                    ? []
+                    : [h.Placeholder(props.inputPlaceholder)]),
+                  h.OnInput(value =>
+                    Combobox.Message.UpdatedInputValue({ value }),
+                  ),
+                  h.OnKeyDownPreventDefault(keyMessage),
+                  ...(model.selectInputOnFocus
+                    ? [h.OnMount(Combobox.AttachComboboxSelectOnFocus())]
+                    : []),
+                  ...(props.inputClassName === undefined
+                    ? []
+                    : [h.Class(props.inputClassName)]),
+                  ...(props.inputAttributes ?? []),
+                ]),
+              ),
             ],
           ),
           h.div(
@@ -374,3 +374,111 @@ export const retainCommandQuery = <Item extends string>(
   next.outMessage?._tag === 'Selected'
     ? { ...next, model: { ...next.model, inputValue: previous.inputValue } }
     : next
+
+const resetInteraction = (model: Combobox.Model): Combobox.Model => ({
+  ...model,
+  isOpen: false,
+  maybeActiveItemIndex: Option.none(),
+  activationTrigger: 'Keyboard',
+  maybeLastPointerPosition: Option.none(),
+})
+
+export const createCommandState = <Item extends string>() => {
+  // Keep the Combobox contract for callers that use its popup lifecycle.
+  const popup = Combobox.create<Item>()
+  const update: typeof popup.update = (model, message) => {
+    switch (message._tag) {
+      case 'UpdatedInputValue':
+        if (!model.isOpen && (model.isModal || model.isAnimated))
+          return popup.update(model, message)
+        return {
+          model: {
+            ...model,
+            isOpen: true,
+            inputValue: message.value,
+            maybeActiveItemIndex: Option.some(0),
+            activationTrigger: 'Keyboard',
+            maybeLastPointerPosition: model.isOpen
+              ? model.maybeLastPointerPosition
+              : Option.none(),
+          },
+          ...(model.isOpen ? {} : { commands: [] }),
+        }
+      case 'ActivatedItem':
+        if (Option.isSome(message.maybeImmediateSelection))
+          return popup.update(model, message)
+        return {
+          model: {
+            ...model,
+            maybeActiveItemIndex: Option.some(message.index),
+            activationTrigger: message.activationTrigger,
+          },
+          ...(message.activationTrigger === 'Keyboard'
+            ? {
+                commands: [
+                  Combobox.ScrollIntoView({
+                    id: model.id,
+                    index: message.index,
+                  }),
+                ],
+              }
+            : {}),
+        }
+      case 'MovedPointerOverItem': {
+        const { index, screenX, screenY } = message
+        if (
+          Option.exists(
+            model.maybeLastPointerPosition,
+            position =>
+              position.screenX === screenX && position.screenY === screenY,
+          )
+        )
+          return { model }
+        return {
+          model: {
+            ...model,
+            maybeActiveItemIndex: Option.some(index),
+            activationTrigger: 'Pointer',
+            maybeLastPointerPosition: Option.some({ screenX, screenY }),
+          },
+        }
+      }
+      case 'SelectedItem':
+        if (model.isOpen && (model.isModal || model.isAnimated))
+          return retainCommandQuery(model, popup.update(model, message))
+        return {
+          model: resetInteraction(model),
+          commands: [Combobox.FocusInput({ id: model.id })],
+          // The renderer supplies a value from the consumer's Item union.
+          outMessage: Combobox.OutMessage.Selected({
+            value: message.item,
+          }) as Combobox.Selected<Item>,
+        }
+      case 'RequestedItemClick':
+        return {
+          model,
+          commands: [
+            Combobox.ClickItem({ id: model.id, index: message.index }),
+          ],
+        }
+      case 'SuppressedItemCommit':
+      case 'SuppressedEmptyItemNavigation':
+      case 'CompletedClickItem':
+      case 'CompletedFocusInput':
+      case 'CompletedScrollIntoView':
+      case 'CompletedAttachComboboxPreventBlur':
+      case 'CompletedAttachComboboxSelectOnFocus':
+        return { model }
+      default:
+        return popup.update(model, message)
+    }
+  }
+
+  const selectItem: typeof popup.selectItem = (model, item, displayText) =>
+    update(
+      model,
+      Combobox.Message.SelectedItem({ item, displayText, wasSelected: false }),
+    )
+
+  return { update, selectItem, open: popup.open, close: popup.close }
+}

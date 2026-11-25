@@ -2,7 +2,7 @@ import type { Update } from 'foldkit'
 import { Schema as S } from 'effect'
 import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
-import { Dialog } from '@foldkit/ui'
+import * as Dialog from '@/lib/behaviors/dialog'
 
 /* Renderer-neutral state for the MobileNav port of Meta Astryx's MobileNav:
    a full-viewport dialog hosting an edge-anchored navigation drawer. */

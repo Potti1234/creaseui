@@ -9,7 +9,9 @@ describe('Radio Group renderer contract', () => {
     const shared = readFileSync('src/lib/radio-group.ts', 'utf8')
     assert.match(shared, /RadioGroupBehavior\.create<string>\(\)/u)
     assert.match(shared, /isOptionDisabled/u)
+    const behavior = readFileSync('src/lib/behaviors/radio-group.ts', 'utf8')
     assert.doesNotMatch(shared, /@foldkit\/ui/u)
+    assert.doesNotMatch(behavior, /@foldkit\/ui/u)
   })
 })
 

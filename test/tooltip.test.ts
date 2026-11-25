@@ -111,3 +111,40 @@ test('Escape dismisses until both pointer and focus disengage', () => {
   assert.equal(left.isDismissed, true)
   assert.equal(blurred.isDismissed, false)
 })
+
+test('tooltip blur uses the configured delay, with immediate close at zero', () => {
+  for (const closeDelay of [0, 125]) {
+    const focused = Tooltip.update(
+      Tooltip.init({ id: 'tip', closeDelay }),
+      Tooltip.Message.FocusedTooltipTrigger(),
+    ).model
+    const blurred = Tooltip.update(
+      focused,
+      Tooltip.Message.BlurredTooltipTrigger(),
+    )
+    if (closeDelay === 0) {
+      assert.equal(blurred.model.isOpen, false)
+      assert.equal(blurred.outMessage?._tag, 'HiddenTooltip')
+      assert.equal(blurred.commands, undefined)
+      continue
+    }
+    assert.equal(blurred.model.isOpen, true)
+    assert.deepEqual(blurred.commands?.[0]?.args, {
+      delayMs: closeDelay,
+      version: blurred.model.pendingCloseVersion,
+    })
+    const refocused = Tooltip.update(
+      blurred.model,
+      Tooltip.Message.FocusedTooltipTrigger(),
+    ).model
+    assert.equal(
+      Tooltip.update(
+        refocused,
+        Tooltip.Message.CompletedWaitBeforeClosingTooltip({
+          version: blurred.model.pendingCloseVersion,
+        }),
+      ).model.isOpen,
+      true,
+    )
+  }
+})

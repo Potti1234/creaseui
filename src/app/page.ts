@@ -24,6 +24,7 @@ import * as CopyFeedback from '@/docs/copy-feedback'
 import * as BehaviorDemo from '@/docs/behavior-demo'
 import { tutorialChapter } from '@/docs/tutorial/chapters'
 import * as CodeBlock from '@/ui/code-block'
+import * as Markdown from '@/lib/markdown'
 import type { AppRoute } from '@/route'
 import { renderer } from '@/site/config'
 
@@ -88,6 +89,9 @@ export const GettingStarted = taggedStruct('GettingStartedPage', {
 export const Theming = taggedStruct('ThemingPage', {
   codeBlock: CodeBlock.Model,
 })
+export const BehaviorDocs = taggedStruct('BehaviorDocsPage', {
+  markdown: Markdown.Model,
+})
 export const LintDocs = taggedStruct('LintDocsPage', {
   codeBlock: CodeBlock.Model,
   rule: S.String,
@@ -107,6 +111,7 @@ export const Page = S.Union([
   CatalogDocs,
   GettingStarted,
   LintDocs,
+  BehaviorDocs,
   Theming,
   Tutorial,
   NotFound,
@@ -174,6 +179,8 @@ export const init = (route: AppRoute): Page =>
           behaviorDemo: BehaviorDemo.init(),
         }),
       Theming: () => Theming({ codeBlock: CodeBlock.init() }),
+      Behaviors: () => BehaviorDocs({ markdown: Markdown.init() }),
+      BehaviorDocs: () => BehaviorDocs({ markdown: Markdown.init() }),
       LintRules: () => LintDocs({ codeBlock: CodeBlock.init(), rule: '' }),
       LintRule: ({ rule }) => LintDocs({ codeBlock: CodeBlock.init(), rule }),
       TutorialIndex: () => Tutorial({ chapter: 'short' }),

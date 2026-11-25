@@ -256,9 +256,9 @@ Source: [`src/ui/calendar.ts`](../src/ui/calendar.ts)
 | `reflectDisabledDates` | value | `reflectDisabledDates: value` |
 | `reflectDisabledDaysOfWeek` | value | `reflectDisabledDaysOfWeek: value` |
 | `dropToDays` | value | `dropToDays: value` |
-| `CalendarViewOptions` | type | `CalendarViewOptions = Readonly<{ captionLayout?: 'label' \| 'dropdown'; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>` |
+| `CalendarViewOptions` | type | `CalendarViewOptions = Readonly<{ captionLayout?: 'label' \| 'dropdown'; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarPrimitive.CalendarRange; weekNumbers?: boolean; }>` |
 | `calendarView` | function | `calendarView<Msg>(attributes: CalendarPrimitive.CalendarAttributes, options: CalendarViewOptions, h: HtmlBuilder<Msg>): Html` |
-| `CalendarProps` | type | `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' \| 'dropdown'; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarBehavior…` |
+| `CalendarProps` | type | `CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' \| 'dropdown'; class?: string; direction?: 'ltr' \| 'rtl'; range?: CalendarPrimitiv…` |
 | `calendar` | function | `calendar<Msg>(props: CalendarProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Card
@@ -450,8 +450,8 @@ Source: [`src/ui/color-picker.ts`](../src/ui/color-picker.ts)
 | `colorPickerEyeDropper` | function | `colorPickerEyeDropper<Msg>(props: ColorPickerEyeDropperProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `colorPickerFormatSelect` | function | `colorPickerFormatSelect<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `colorPickerInput` | function | `colorPickerInput<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `colorPickerContent` | function | `colorPickerContent<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html` |
-| `ColorPickerProps` | type | `ColorPickerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?: string; contentClass?: string; }>` |
+| `colorPickerContent` | function | `colorPickerContent<Msg>(props: ChannelProps<Msg> & Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; }>, h: HtmlBuilder<Msg>): Html` |
+| `ColorPickerProps` | type | `ColorPickerProps<Msg> = Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?…` |
 | `colorPicker` | function | `colorPicker<Msg>(props: ColorPickerProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 
 ## Combobox
@@ -770,8 +770,8 @@ Source: [`src/ui/field.ts`](../src/ui/field.ts)
 | --- | --- | --- |
 | `ControlFieldParts` | re-export | `export { ControlFieldParts } from '@/lib/field'` |
 | `FieldError` | re-export | `export { FieldError } from '@/lib/field'` |
-| `fieldSetLegendId` | value | `fieldSetLegendId: value` |
-| `fieldSetDescriptionId` | value | `fieldSetDescriptionId: value` |
+| `fieldSetLegendId` | re-export | `export { fieldSetLegendId } from '@/lib/field'` |
+| `fieldSetDescriptionId` | re-export | `export { fieldSetDescriptionId } from '@/lib/field'` |
 | `FieldSetProps` | type | `FieldSetProps = Slot & Readonly<{ isDisabled?: boolean; id?: string; hasDescription?: boolean; }>` |
 | `fieldSet` | function | `fieldSet<Msg>(props: FieldSetProps, h: HtmlBuilder<Msg>): Html` |
 | `FieldLegendProps` | type | `FieldLegendProps = Slot & Readonly<{ variant?: 'legend' \| 'label'; id?: string; }>` |
@@ -1544,6 +1544,12 @@ Source: [`src/ui/resizable.ts`](../src/ui/resizable.ts)
 | `resizable` | function | `resizable<Msg>(props: ResizableProps<Msg>, h: HtmlBuilder<Msg>): Html` |
 | `ResizableGroupProps` | type | `ResizableGroupProps<Msg> = Readonly<{ model: GroupModel; toParentMessage: (message: GroupMessage) => Msg; panels: ReadonlyArray<Html \| string>; direction?: 'horizontal' \| 'vertical'; rtl?: boolean; minSize?: number; extent: number; withHandles?: boolean; disa…` |
 | `resizableGroup` | function | `resizableGroup<Msg>(props: ResizableGroupProps<Msg>, h: HtmlBuilder<Msg>): Html` |
+| `BoxResizeMessage` | re-export | `export { BoxResizeMessage } from '@/lib/box-resizer'` |
+| `BoxResizeModel` | re-export | `export { BoxResizeModel } from '@/lib/box-resizer'` |
+| `initBoxResize` | re-export | `export { initBoxResize } from '@/lib/box-resizer'` |
+| `resizableBox` | re-export | `export { resizableBox } from '@/lib/box-resizer'` |
+| `updateBoxResize` | re-export | `export { updateBoxResize } from '@/lib/box-resizer'` |
+| `ResizableBoxProps` | re-export | `export { type ResizableBoxProps } from '@/lib/box-resizer'` |
 
 ## Scroll Area
 
@@ -1583,7 +1589,7 @@ Source: [`src/ui/select.ts`](../src/ui/select.ts)
 | `SelectSize` | type | `SelectSize = 'sm' \| 'default'` |
 | `SelectItemConfig` | type | `SelectItemConfig = Readonly<{ content?: Html \| string; searchText?: string; class?: string; isDisabled?: boolean; }>` |
 | `SelectProps` | type | `SelectProps<Item, Value extends string, Msg> = Readonly<{ model: Model; maybeSelectedValue: Option.Option<Value>; toParentMessage: (message: Message) => Msg; items: ReadonlyArray<Item>; itemToValue: (item: Item) => Value; itemToLabel: (item: Item) => string; …` |
-| `SelectBundle` | type | `SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value, Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
+| `SelectBundle` | type | `SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>` |
 | `create` | function | `create<Value extends string = string>(): SelectBundle<Value>` |
 | `update` | value | `update: value` |
 | `select` | value | `select: value` |
@@ -2163,7 +2169,7 @@ Source: [`src/ui/tree-list.ts`](../src/ui/tree-list.ts)
 | `UpdateReturn` | re-export | `export { UpdateReturn } from '@/lib/tree-list'` |
 | `TreeListVariant` | re-export | `export { TreeListVariant } from '@/lib/tree-list'` |
 | `VisibleItem` | re-export | `export { VisibleItem } from '@/lib/tree-list'` |
-| `ViewInputs` | type | `ViewInputs = Readonly<{ items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' \| 'rtl'; class?: string; }>` |
+| `ViewInputs` | type | `ViewInputs = Readonly<{ reorderable?: boolean; items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' \| 'rtl'; class…` |
 | `view` | value | `view: value` |
 | `TreeListProps` | type | `TreeListProps<Msg> = ViewInputs & Readonly<{ model: TreeListBehavior.Model; toParentMessage: (message: TreeListBehavior.Message) => Msg; }>` |
 | `treeList` | function | `treeList<Msg>(props: TreeListProps<Msg>, h: HtmlBuilder<Msg>): Html` |

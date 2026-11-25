@@ -6,6 +6,8 @@ import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 
+import { isComposing } from './text-dom'
+
 export const Model = Schema.Struct({
   id: Schema.String,
   maybeCurrentKey: Schema.Option(Schema.String),
@@ -220,8 +222,7 @@ export const keyDirection = (
     event.ctrlKey ||
     event.metaKey ||
     event.shiftKey ||
-    event.isComposing ||
-    event.keyCode === 229 ||
+    isComposing(event) ||
     field.getAttribute('aria-expanded') === 'true' ||
     field.hasAttribute('data-open') ||
     field.hasAttribute('readonly') ||

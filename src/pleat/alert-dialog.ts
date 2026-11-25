@@ -2,7 +2,7 @@ import { Style, When } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
 import type { ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
-import { Dialog as DialogPrimitive } from '@foldkit/ui'
+import * as DialogPrimitive from '@/lib/behaviors/dialog'
 
 import { buttonVisualStyles } from './button'
 import { overlayStyles } from './overlay-tokens'

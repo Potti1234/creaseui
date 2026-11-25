@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { Listbox } from '@foldkit/ui'
+import * as Listbox from '@/lib/behaviors/anchored-listbox'
 
 import * as MultiSelector from '../src/lib/multi-selector.ts'
 import { filterOptions } from '../src/lib/multi-selector-view.ts'

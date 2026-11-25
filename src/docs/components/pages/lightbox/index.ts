@@ -18,7 +18,7 @@ export const lightboxPage = authoredPage({
     styling:
       'The scrim keeps a single dark surface behind the media; controls sit on translucent circles at the edges and corners so they stay readable over any image.',
     accessibility:
-      'The nested Dialog supplies Escape dismissal and focus containment. The current media alt text doubles as the dialog label; prev/next controls disable at the gallery bounds, and arrow keys pan a zoomed image or navigate when unzoomed.',
+      'The shared CreaseUI Dialog supplies Escape dismissal, focus containment, and page scroll locking. The current media alt text doubles as the dialog label; prev/next controls disable at the gallery bounds, and arrow keys pan a zoomed image or navigate when unzoomed.',
     keyboard: [
       ['Escape', 'Closes the lightbox and restores focus to the trigger.'],
       [

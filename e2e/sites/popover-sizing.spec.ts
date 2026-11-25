@@ -81,3 +81,34 @@ for (const width of [1280, 390, 320]) {
     await expect(panel).toHaveCount(0)
   })
 }
+
+test('popover preserves the renderer portal and returns focus after dismissal', async ({
+  page,
+}, testInfo) => {
+  await page.goto('/docs/components/popover')
+  const trigger = page
+    .locator('#with-form')
+    .getByRole('button', { name: 'Open Popover', exact: true })
+  const panel = page.locator('[data-slot="popover-content"]')
+  const backdrop = page.locator('[data-slot="popover-backdrop"]')
+
+  await trigger.click()
+  await expect(panel.locator('input').first()).toBeFocused()
+  await expect(panel).toHaveAttribute('data-placement', /^(top|bottom)$/)
+  expect(
+    await panel.evaluate(
+      element => element.parentElement?.id === 'foldkit-portal-root',
+    ),
+  ).toBe(testInfo.project.name === 'tailwind')
+  await page.keyboard.press('Escape')
+  await expect(panel).toHaveCount(0)
+  await expect(backdrop).toHaveCount(0)
+  await expect(trigger).toBeFocused()
+
+  await trigger.click()
+  await expect(panel.locator('input').first()).toBeFocused()
+  await page.mouse.click(2, 2)
+  await expect(panel).toHaveCount(0)
+  await expect(backdrop).toHaveCount(0)
+  await expect(trigger).toBeFocused()
+})

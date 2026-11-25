@@ -8,7 +8,7 @@ import * as Dom from 'foldkit/dom'
 import * as Calendar from 'foldkit/calendar'
 import { defineMessageUnion } from 'foldkit/message'
 
-import { Popover as PopoverPrimitive } from '@foldkit/ui'
+import * as PopoverPrimitive from '@/lib/behaviors/popover'
 
 import { parseDateInput } from '@/lib/date-parse'
 import {
@@ -59,6 +59,7 @@ export const Model = S.Struct({
   pendingDateInput: S.Option(S.String),
   isDateInputInvalid: S.Boolean,
   isDateInputFocused: S.Boolean,
+  openedDateFromInput: S.optionalKey(S.Boolean),
   pendingTimeInput: S.Option(S.String),
   isTimeInputInvalid: S.Boolean,
   isTimeInputFocused: S.Boolean,
@@ -307,6 +308,7 @@ const openDatePickerKeepingFocus = (
 ): { model: Model; commands: ReadonlyArray<Command.Command<Message>> } => ({
   model: {
     ...model,
+    ...(!model.datePicker.popover.isOpen ? { openedDateFromInput: true } : {}),
     datePicker: {
       ...model.datePicker,
       popover: { ...model.datePicker.popover, isOpen: true },
@@ -317,6 +319,7 @@ const openDatePickerKeepingFocus = (
 
 const closeDatePicker = (model: Model): Model => ({
   ...model,
+  openedDateFromInput: false,
   datePicker: {
     ...model.datePicker,
     popover: { ...model.datePicker.popover, isOpen: false },
@@ -509,24 +512,33 @@ export const update = (model: Model, message: Message): UpdateReturn => {
         model.datePicker,
         message.message,
       )
+      const commands = Command.mapMessages(result.commands ?? [], message =>
+        Message.GotDatePickerMessage({ message }),
+      )
+      const next = {
+        ...model,
+        datePicker: result.model,
+        ...(model.datePicker.popover.isOpen && !result.model.popover.isOpen
+          ? { openedDateFromInput: false }
+          : {}),
+      }
       switch (result.outMessage?._tag) {
         case 'SelectedDate':
-          return commitDate(
-            { ...model, datePicker: result.model },
-            result.outMessage.date,
-            false,
-          )
+          return {
+            ...commitDate(next, result.outMessage.date, false),
+            commands,
+          }
         case 'ClearedDate':
           return {
             model: {
-              ...model,
-              datePicker: result.model,
+              ...next,
               value: Option.none(),
             },
+            commands,
             outMessage: OutMessage.ChangedValue({ value: Option.none() }),
           }
         default:
-          return { model: { ...model, datePicker: result.model } }
+          return { model: next, commands }
       }
     }
     case 'GotTimePopoverMessage': {
@@ -679,13 +691,14 @@ export const update = (model: Model, message: Message): UpdateReturn => {
       const requested = model.datePicker.popover.isOpen
         ? PopoverPrimitive.Message.RequestedClose()
         : PopoverPrimitive.Message.RequestedOpen()
-      const lifted = DatePickerPrimitive.update(
-        model.datePicker,
-        DatePickerPrimitive.Message.GotPopoverMessage({
-          message: requested,
+      return update(
+        model,
+        Message.GotDatePickerMessage({
+          message: DatePickerPrimitive.Message.GotPopoverMessage({
+            message: requested,
+          }),
         }),
       )
-      return { model: { ...model, datePicker: lifted.model } }
     }
     case 'ClearedInput':
       return {

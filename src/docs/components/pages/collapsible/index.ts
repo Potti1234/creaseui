@@ -12,8 +12,9 @@ export const collapsiblePage = authoredPage({
     description:
       'Shows or hides one region of content from a controlled disclosure button.',
     architecture:
-      'Collapsible adapts Foldkit’s stateless Disclosure helper. Store isOpen in the parent Model and return the next value through onToggle; no child submodel is needed.',
-    apiHref: 'https://foldkit.dev/ui/disclosure',
+      'Collapsible uses the shared CreaseUI Disclosure behavior. Store isOpen in the parent Model and apply the next value received through onToggle.',
+    apiHref:
+      'https://github.com/Potti1234/creaseui/blob/main/src/ui/collapsible.ts',
     styling:
       'Use the renderer-specific typed trigger and content styling hooks for the two rendered regions. Height animation is coordinated by the primitive without hidden application state.',
     accessibility:

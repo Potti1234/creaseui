@@ -4,8 +4,7 @@
    sort menu, view panel, header/row menus, pagination, delete dialog) comes
    from dataTable({ variant: 'faceted' }). StyleX renderer. */
 
-import type { Listbox } from '@foldkit/ui'
-import { Listbox as ListboxLib } from '@foldkit/ui'
+import * as Listbox from '@/lib/behaviors/anchored-listbox'
 import { Option, Schema as S } from 'effect'
 import { Command } from 'foldkit'
 import type { Update } from 'foldkit'
@@ -399,15 +398,15 @@ export const init = (view: ActiveView = 'data-table'): Model => ({
   draftStatus: 'todo',
   draftPriority: 'low',
   draftHours: '',
-  draftLabelSelect: ListboxLib.init({
+  draftLabelSelect: Listbox.init({
     id: 'tablecn-draft-label',
     isAnimated: true,
   }) as Listbox.Model,
-  draftStatusSelect: ListboxLib.init({
+  draftStatusSelect: Listbox.init({
     id: 'tablecn-draft-status',
     isAnimated: true,
   }) as Listbox.Model,
-  draftPrioritySelect: ListboxLib.init({
+  draftPrioritySelect: Listbox.init({
     id: 'tablecn-draft-priority',
     isAnimated: true,
   }) as Listbox.Model,
@@ -429,7 +428,7 @@ const liftTable = (
   }
 }
 
-const sheetListbox = ListboxLib.create<string, string>()
+const sheetListbox = Listbox.create<string>()
 
 const sheetField = (
   model: Model,

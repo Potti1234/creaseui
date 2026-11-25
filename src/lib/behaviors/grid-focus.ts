@@ -12,18 +12,45 @@ export const GridCell = Schema.Struct({
 })
 export type GridCell = typeof GridCell.Type
 
+const MoveContext = Schema.Struct({
+  reason: Schema.Literals(['keyboard', 'programmatic', 'focus']),
+  shift: Schema.Boolean,
+})
+type MoveContext = typeof MoveContext.Type
+
 export const Model = Schema.Struct({
   id: Schema.String,
   maybeActiveCell: Schema.Option(GridCell),
+  revealVersion: Schema.optional(Schema.Number),
+  pendingReveal: Schema.optional(GridCell),
+  pendingMoveContext: Schema.optional(MoveContext),
 })
 export type Model = typeof Model.Type
 
 export const Message = defineMessageUnion({
-  MovedFocus: { cell: GridCell },
+  MovedFocus: { cell: GridCell, context: Schema.optional(MoveContext) },
   FocusedCell: { cell: GridCell },
   CompletedFocusCell: {},
+  RevealedCell: { version: Schema.Number },
+  CanceledReveal: { version: Schema.Number },
 })
 export type Message = typeof Message.Type
+
+export const OutMessage = defineMessageUnion({
+  RequestedReveal: { cell: GridCell, version: Schema.Number },
+  ActiveCellMoved: {
+    from: Schema.Option(GridCell),
+    cell: GridCell,
+    context: MoveContext,
+  },
+})
+export type OutMessage = typeof OutMessage.Type
+
+type UpdateReturn = Update.ReturnWithOutMessage<Model, Message, OutMessage>
+type FocusOptions = Readonly<{
+  requiresReveal?: (cell: GridCell) => boolean
+  notifyMove?: boolean
+}>
 
 export const init = (config: Readonly<{ id: string }>): Model => ({
   id: config.id,
@@ -42,8 +69,80 @@ const cellSelector = (id: string, cell: GridCell): string =>
 const sameCell = (a: GridCell, b: GridCell): boolean =>
   a.row === b.row && a.column === b.column
 
+/** Only the cells whose active state changed, in leave-then-enter order. */
+export const byCell = (
+  previous: Option.Option<GridCell>,
+  next: Option.Option<GridCell>,
+): ReadonlyArray<Readonly<{ cell: GridCell; isActive: boolean }>> => {
+  if (
+    Option.isSome(previous) &&
+    Option.exists(next, cell => sameCell(previous.value, cell))
+  )
+    return []
+  return [
+    ...Option.match(previous, {
+      onNone: () => [],
+      onSome: cell => [{ cell, isActive: false }],
+    }),
+    ...Option.match(next, {
+      onNone: () => [],
+      onSome: cell => [{ cell, isActive: true }],
+    }),
+  ]
+}
+
 export const isActive = (model: Model, cell: GridCell): boolean =>
   Option.exists(model.maybeActiveCell, active => sameCell(active, cell))
+
+let nextActiveCellId = 0
+
+/** Keep DOM focus on a grid root while revealing its mounted active descendant. */
+export const observeActiveDescendant = (
+  root: HTMLElement,
+  reveal: (cell: HTMLElement) => void,
+): (() => void) => {
+  let previous: HTMLElement | undefined
+  let previousAddress: string | undefined
+  const sync = () => {
+    const cell = Array.from(
+      root.querySelectorAll<HTMLElement>(
+        '[role="gridcell"][data-focused="true"]',
+      ),
+    ).find(candidate => candidate.closest('[role="grid"]') === root)
+    const address =
+      cell && JSON.stringify([cell.dataset.rowIndex, cell.dataset.columnId])
+    if (cell === previous && address === previousAddress) return
+    previous = cell
+    previousAddress = address
+    if (cell === undefined) {
+      root.removeAttribute('aria-activedescendant')
+      return
+    }
+    reveal(cell)
+    if (!cell.id) {
+      let id: string
+      do {
+        id = `crease-grid-active-${++nextActiveCellId}`
+      } while (root.ownerDocument.getElementById(id))
+      cell.id = id
+    }
+    root.setAttribute('aria-activedescendant', cell.id)
+  }
+  const Observer = root.ownerDocument.defaultView?.MutationObserver
+  if (Observer === undefined) return () => {}
+  const observer = new Observer(sync)
+  observer.observe(root, {
+    subtree: true,
+    childList: true,
+    attributes: true,
+    attributeFilter: ['data-focused', 'data-row-index', 'data-column-id'],
+  })
+  sync()
+  return () => {
+    observer.disconnect()
+    root.removeAttribute('aria-activedescendant')
+  }
+}
 
 export const FocusCell = Command.define('FocusCell', {
   args: { id: Schema.String, cell: GridCell },
@@ -55,22 +154,88 @@ export const FocusCell = Command.define('FocusCell', {
     ),
 })
 
+const setActiveCell = (
+  model: Model,
+  cell: GridCell,
+  context: MoveContext,
+  notifyMove = false,
+): UpdateReturn => {
+  const next = Option.some(cell)
+  return {
+    model: {
+      ...model,
+      pendingReveal: undefined,
+      pendingMoveContext: undefined,
+      maybeActiveCell: next,
+    },
+    ...(!notifyMove || isActive(model, cell)
+      ? {}
+      : {
+          outMessage: OutMessage.ActiveCellMoved({
+            from: model.maybeActiveCell,
+            cell,
+            context,
+          }),
+        }),
+  }
+}
+
 export const focus = (
   model: Model,
   cell: GridCell,
-): Update.Return<Model, Message> => ({
-  model: { ...model, maybeActiveCell: Option.some(cell) },
-  commands: [FocusCell({ id: model.id, cell })],
-})
+  options: FocusOptions = {},
+  context: MoveContext = { reason: 'programmatic', shift: false },
+): UpdateReturn => {
+  if (options.requiresReveal?.(cell)) {
+    const version = (model.revealVersion ?? 0) + 1
+    return {
+      model: {
+        ...model,
+        revealVersion: version,
+        pendingReveal: cell,
+        pendingMoveContext: options.notifyMove ? context : undefined,
+      },
+      outMessage: OutMessage.RequestedReveal({ cell, version }),
+    }
+  }
+  return {
+    ...setActiveCell(model, cell, context, options.notifyMove),
+    commands: [FocusCell({ id: model.id, cell })],
+  }
+}
 
 export const update = (
   model: Model,
   message: Message,
-): Update.Return<Model, Message> =>
-  Message.match<Update.Return<Model, Message>>(message, {
-    MovedFocus: ({ cell }) => focus(model, cell),
-    FocusedCell: ({ cell }) => ({
-      model: { ...model, maybeActiveCell: Option.some(cell) },
+  options: FocusOptions = {},
+): UpdateReturn =>
+  Message.match<UpdateReturn>(message, {
+    MovedFocus: ({ cell, context }) => focus(model, cell, options, context),
+    FocusedCell: ({ cell }) =>
+      setActiveCell(
+        model,
+        cell,
+        { reason: 'focus', shift: false },
+        options.notifyMove,
+      ),
+    RevealedCell: ({ version }) =>
+      version === model.revealVersion && model.pendingReveal !== undefined
+        ? focus(
+            model,
+            model.pendingReveal,
+            { notifyMove: model.pendingMoveContext !== undefined },
+            model.pendingMoveContext,
+          )
+        : { model },
+    CanceledReveal: ({ version }) => ({
+      model:
+        version === model.revealVersion
+          ? {
+              ...model,
+              pendingReveal: undefined,
+              pendingMoveContext: undefined,
+            }
+          : model,
     }),
     CompletedFocusCell: () => ({ model }),
   })
@@ -84,6 +249,7 @@ export type NavigationInput = Readonly<{
   direction?: 'ltr' | 'rtl'
   pageSize?: number
   isDisabled?: (cell: GridCell) => boolean
+  focusDisabledWithArrows?: boolean
 }>
 
 type GridInput = Pick<NavigationInput, 'rows' | 'columns' | 'isDisabled'>
@@ -112,6 +278,7 @@ export const navigate = ({
   direction = 'ltr',
   pageSize = 10,
   isDisabled = () => false,
+  focusDisabledWithArrows = false,
 }: NavigationInput): Option.Option<GridCell> => {
   if (rows <= 0 || columns <= 0) return Option.none()
   if (pressedKey === 'Home' || pressedKey === 'End') {
@@ -139,7 +306,8 @@ export const navigate = ({
   else row += step
   while (row >= 0 && row < rows && column >= 0 && column < columns) {
     const cell = { row, column }
-    if (!isDisabled(cell)) return Option.some(cell)
+    if ((focusDisabledWithArrows && !page) || !isDisabled(cell))
+      return Option.some(cell)
     if (horizontal) column += step
     else row += step
   }
@@ -155,7 +323,7 @@ export type CellInfo = Readonly<{
 }>
 
 export type ViewInputs = GridInput &
-  Pick<NavigationInput, 'direction' | 'pageSize'> &
+  Pick<NavigationInput, 'direction' | 'pageSize' | 'focusDisabledWithArrows'> &
   Readonly<{
     toView: (cells: ReadonlyArray<CellInfo>) => Html
   }>
@@ -183,14 +351,24 @@ export const create = (): Bundle => ({
             h.Tabindex(isTabStop ? 0 : -1),
             h.OnFocus(Message.FocusedCell({ cell })),
             h.OnKeyDownPreventDefault((pressedKey, modifiers) =>
-              isDisabled
+              isDisabled && !inputs.focusDisabledWithArrows
                 ? Option.none()
                 : navigate({
                     ...inputs,
-                    currentCell: cell,
+                    currentCell: model.pendingReveal ?? cell,
                     pressedKey,
                     ctrl: modifiers.ctrlKey || modifiers.metaKey,
-                  }).pipe(Option.map(cell => Message.MovedFocus({ cell }))),
+                  }).pipe(
+                    Option.map(cell =>
+                      Message.MovedFocus({
+                        cell,
+                        context: {
+                          reason: 'keyboard',
+                          shift: modifiers.shiftKey,
+                        },
+                      }),
+                    ),
+                  ),
             ),
           ]),
         }

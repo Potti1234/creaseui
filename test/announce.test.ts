@@ -4,6 +4,28 @@ import { inertHtml } from 'foldkit/html'
 import * as Announce from '../src/lib/behaviors/announce.ts'
 
 describe('Announce', () => {
+  it('keeps the two live regions mounted and routes text by priority', () => {
+    const h = inertHtml
+    const expected = (polite: string, assertive: string) => [
+      h.div(Announce.liveRegionAttributes('polite', h), [polite]),
+      h.div(Announce.liveRegionAttributes('assertive', h), [assertive]),
+    ]
+    assert.deepEqual(
+      Announce.prepareAnnouncements(Announce.init(), h),
+      expected('', ''),
+    )
+    assert.deepEqual(
+      Announce.prepareAnnouncements({ text: 'Saved', priority: 'polite' }, h),
+      expected('Saved', ''),
+    )
+    assert.deepEqual(
+      Announce.prepareAnnouncements(
+        { text: 'Failed', priority: 'assertive' },
+        h,
+      ),
+      expected('', 'Failed'),
+    )
+  })
   it('describes list results, loading and removals', () => {
     assert.equal(
       Announce.describeList({ type: 'results', count: 0 }),

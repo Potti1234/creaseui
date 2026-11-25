@@ -17,7 +17,7 @@ import { tokens } from './tokens'
 
 /* Ported from Meta Astryx TransferList.tsx (packages/lab) — dual-panel
    collection input. Behavior logic mirrors ui/transfer-list.ts (reordering
-   delegates to the foldkit DragAndDrop primitive); only the styling surface
+   delegates to the shared DragAndDrop behavior); only the styling surface
    differs (stylex tokens + container queries). */
 
 // =============================================================================
@@ -47,7 +47,7 @@ export const Model = S.Struct({
   /** Ordered selected values — the single source of truth (astryx `value`). */
   value: S.Array(S.String),
   query: S.String,
-  /** Reorder session, delegated to the foldkit DragAndDrop primitive. */
+  /** Reorder session, delegated to the shared DragAndDrop behavior. */
   dnd: Dnd.Model,
   /** Latest text for the polite aria-live region (astryx useAnnounce). */
   announcement: S.String,

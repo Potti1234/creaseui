@@ -1,3 +1,4 @@
+import { behaviorsFor } from '@/docs/behavior-metadata'
 import assert from 'node:assert/strict'
 import { existsSync, readFileSync } from 'node:fs'
 import { basename } from 'node:path'
@@ -79,9 +80,11 @@ const docsIndex = JSON.parse(
   readFileSync('public/docs-index.json', 'utf8'),
 ) as {
   componentCount: number
+  behaviors: ReadonlyArray<{ slug: string; source: string; docs: string }>
   components: ReadonlyArray<{
     slug: string
     examples: ReadonlyArray<string>
+    behaviors: Record<'tailwind' | 'stylex' | 'pleat', ReadonlyArray<string>>
     api: ReadonlyArray<{ name: string; kind: string; signature: string }>
   }>
 }
@@ -374,6 +377,52 @@ describe('component catalog coverage', () => {
         assert.ok(llmsFull.includes(`src/lib/${file.path}`))
         assert.equal(file.target, `@lib/${file.path}`)
       }
+    }
+  })
+
+  it('exposes the primitives a component composes in its behavior list', () => {
+    const popover = behaviorsFor('popover', 'tailwind').map(entry => entry.slug)
+    assert.ok(popover.includes('popup'))
+    assert.ok(popover.includes('position'))
+    assert.ok(!popover.includes('popover'))
+
+    const datePicker = behaviorsFor('date-picker', 'stylex').map(
+      entry => entry.slug,
+    )
+    assert.ok(datePicker.includes('popup'))
+    assert.ok(!datePicker.includes('date-picker'))
+    assert.ok(!datePicker.includes('calendar'))
+  })
+
+  it('publishes resolvable behavior links for every renderer', () => {
+    const behaviors = new Map(
+      docsIndex.behaviors.map(entry => [entry.slug, entry]),
+    )
+    assert.equal(behaviors.size, docsIndex.behaviors.length)
+    for (const entry of behaviors.values()) {
+      assert.ok(existsSync(entry.source), entry.source)
+      assert.equal(entry.docs, `/docs/behaviors/${entry.slug}`)
+    }
+
+    for (const component of docsIndex.components) {
+      for (const renderer of ['tailwind', 'stylex', 'pleat'] as const) {
+        const keys = component.behaviors[renderer]
+        assert.equal(new Set(keys).size, keys.length)
+        assert.ok(
+          keys.every(slug => behaviors.has(slug)),
+          `${component.slug}/${renderer}`,
+        )
+      }
+    }
+
+    const select = docsIndex.components.find(
+      component => component.slug === 'select',
+    )
+    assert.ok(select)
+    for (const keys of Object.values(select.behaviors)) {
+      assert.ok(keys.includes('anchored-listbox'))
+      assert.ok(keys.includes('typeahead'))
+      assert.ok(!keys.includes('combobox'))
     }
   })
 

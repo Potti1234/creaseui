@@ -8,12 +8,14 @@ for (const width of [390, 1440]) {
     const errors: string[] = []
     page.on('pageerror', error => errors.push(error.message))
     await page.goto('/docs/components/lightbox')
-    await page
-      .getByRole('button', { name: 'Open zoomable image', exact: true })
-      .click()
+    const trigger = page.getByRole('button', {
+      name: 'Open zoomable image',
+      exact: true,
+    })
+    await trigger.click()
     const frame = page.locator('[data-slot="lightbox-zoom-frame"]').last()
     const image = frame.locator('img')
-    await image.evaluate(element => element.decode())
+    await image.evaluate((element: HTMLImageElement) => element.decode())
     await frame.dblclick()
     await expect(frame).toHaveAttribute('aria-pressed', 'true')
 
@@ -99,6 +101,7 @@ for (const width of [390, 1440]) {
     await expect.poll(async () => (await geometry()).x).toBeCloseTo(-50, 0)
     await page.keyboard.press('Escape')
     await expect(frame).toHaveCount(0)
+    await expect(trigger).toBeFocused()
     expect(errors).toEqual([])
   })
 }

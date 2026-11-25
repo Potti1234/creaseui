@@ -893,8 +893,6 @@ export const kanbanBoard = <Message>(
                       const card = cards.get(item.key)
                       return card === undefined ? [] : [laneCard(card, item)]
                     }),
-                    gap: 'sm',
-                    grow: true,
                   },
                   h,
                 ),

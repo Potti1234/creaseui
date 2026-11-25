@@ -1,13 +1,11 @@
-import {
-  Dialog as DialogPrimitive,
-  Animation as AnimationPrimitive,
-} from '@foldkit/ui'
 import * as Command from 'foldkit/command'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Scene from 'foldkit/scene'
 import { describe, it } from 'vitest'
 
 import * as AlertDialogBehavior from '@/lib/alert-dialog'
+import * as AnimationPrimitive from '@/lib/behaviors/animation'
+import * as DialogPrimitive from '@/lib/behaviors/dialog'
 import * as StyleXAlertDialog from '@/stylex/alert-dialog'
 import * as TailwindAlertDialog from '@/ui/alert-dialog'
 
@@ -113,7 +111,7 @@ const sceneView =
         AlertDialog.alertDialog(
           {
             model: model.alertDialog,
-            toParentMessage: message => ({
+            toParentMessage: (message): Message => ({
               _tag: 'GotAlertDialogMessage',
               message,
             }),

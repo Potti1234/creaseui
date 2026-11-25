@@ -1,12 +1,16 @@
 import { Command } from 'foldkit'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import * as Scene from 'foldkit/scene'
-import { describe, it } from 'vitest'
+import { describe, it, vi } from 'vitest'
 
-import { Tabs as TabsPrimitive } from '@foldkit/ui'
+import * as TabsPrimitive from '@/lib/behaviors/tabs'
+import * as PleatTabs from '@/pleat/tabs'
 
 import * as StyleXTabs from '@/stylex/tabs'
 import * as TailwindTabs from '@/ui/tabs'
+
+// Scene's DOM does not support the cascade layers used by Pleat's stylesheet.
+vi.mock('@/pleat/style', () => ({ className: () => 'pleat-test' }))
 
 /**
  * Behavioral parity suite ported from Base UI's tabs tests
@@ -125,7 +129,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
             _tag: 'GotTabs' as const,
             message: child,
           })),
-          outMessage: next.outMessage,
+          ...(selection === undefined ? {} : { outMessage: selection }),
         }
       }
       case 'SetSelected':
@@ -160,7 +164,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
         {
           model: model.tabs,
           selectedValue: model.selected,
-          toParentMessage: message => ({ _tag: 'GotTabs', message }),
+          toParentMessage: message => ({ _tag: 'GotTabs' as const, message }),
           tabs: tabConfigs(model),
           ...overrides,
         },
@@ -292,7 +296,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                       model: model.tabs,
                       selectedValue: model.selected,
                       toParentMessage: message => ({
-                        _tag: 'GotTabs',
+                        _tag: 'GotTabs' as const,
                         message,
                       }),
                       tabs: tabConfigs(model),
@@ -584,6 +588,24 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
         )
       })
 
+      it('treats PageUp and PageDown as focus-only boundary keys in manual mode', () => {
+        Scene.scene(
+          { update, view: defaultView() },
+          Scene.given(givenManualModel({ selected: 'two', disabled: ['one'] })),
+          Scene.keydown(tab('Tab two'), 'PageDown'),
+          Scene.expectHandled(),
+          Scene.expectNoOutMessage(),
+          Scene.expect(tab('Tab three')).toHaveAttr('tabIndex', '0'),
+          resolveFocus,
+          Scene.keydown(tab('Tab three'), 'PageUp'),
+          Scene.expectHandled(),
+          Scene.expectNoOutMessage(),
+          Scene.expect(tab('Tab two')).toHaveAttr('tabIndex', '0'),
+          Scene.expect(tab('Tab two')).toHaveAttr('aria-selected', 'true'),
+          resolveFocus,
+        )
+      })
+
       ;(['Enter', ' '] as const).forEach(key => {
         it(`activates the focused tab with ${
           key === ' ' ? 'Space' : 'Enter'
@@ -627,7 +649,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                       model: model.tabs,
                       selectedValue: model.selected,
                       toParentMessage: message => ({
-                        _tag: 'GotTabs',
+                        _tag: 'GotTabs' as const,
                         message,
                       }),
                       tabs: tabConfigs(model),
@@ -774,7 +796,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                       model: model.tabs,
                       selectedValue: model.selected,
                       toParentMessage: message => ({
-                        _tag: 'GotTabs',
+                        _tag: 'GotTabs' as const,
                         message,
                       }),
                       tabs: tabConfigs(model),
@@ -845,7 +867,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                       model: model.tabs,
                       selectedValue: model.selected,
                       toParentMessage: message => ({
-                        _tag: 'GotTabs',
+                        _tag: 'GotTabs' as const,
                         message,
                       }),
                       tabs: tabConfigs(model),
@@ -886,7 +908,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                       model: model.tabs,
                       selectedValue: model.selected,
                       toParentMessage: message => ({
-                        _tag: 'GotTabs',
+                        _tag: 'GotTabs' as const,
                         message,
                       }),
                       tabs: tabConfigs(model),
@@ -928,7 +950,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                       model: model.tabs,
                       selectedValue: model.selected,
                       toParentMessage: message => ({
-                        _tag: 'GotTabs',
+                        _tag: 'GotTabs' as const,
                         message,
                       }),
                       tabs: tabConfigs(model),
@@ -979,7 +1001,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                 _tag: 'GotOuterTabs' as const,
                 message: child,
               })),
-              outMessage: next.outMessage,
+              ...(selection === undefined ? {} : { outMessage: selection }),
             }
           }
           case 'GotInnerTabs': {
@@ -998,7 +1020,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                 _tag: 'GotInnerTabs' as const,
                 message: child,
               })),
-              outMessage: next.outMessage,
+              ...(selection === undefined ? {} : { outMessage: selection }),
             }
           }
         }
@@ -1010,7 +1032,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
             model: model.outer,
             selectedValue: model.outerSelected,
             toParentMessage: message => ({
-              _tag: 'GotOuterTabs',
+              _tag: 'GotOuterTabs' as const,
               message,
             }),
             ariaLabel: 'Outer tabs',
@@ -1023,7 +1045,7 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
                     model: model.inner,
                     selectedValue: model.innerSelected,
                     toParentMessage: message => ({
-                      _tag: 'GotInnerTabs',
+                      _tag: 'GotInnerTabs' as const,
                       message,
                     }),
                     ariaLabel: 'Inner tabs',
@@ -1101,3 +1123,4 @@ const verifyRenderer = (name: string, Tabs: TabsModule) => {
 
 verifyRenderer('Tailwind', TailwindTabs)
 verifyRenderer('StyleX', StyleXTabs)
+verifyRenderer('Pleat', PleatTabs)

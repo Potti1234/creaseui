@@ -2,7 +2,7 @@
    examples and visual spec adapted to Crease UI tokens. */
 
 import { Option } from 'effect'
-import { FileDrop } from '@foldkit/ui'
+import * as FileDrop from '@/lib/behaviors/file-drop'
 import { defineView } from 'foldkit/submodel'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 

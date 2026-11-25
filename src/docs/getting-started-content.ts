@@ -1,3 +1,4 @@
+import { behaviorNavGroup } from '@/docs/behavior-metadata'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { autoCloseDetails } from '@/docs/details-nav'
 import * as Icon from '@/lib/icon'
@@ -280,7 +281,7 @@ const SETUPS: Readonly<Record<GuideRenderer, RendererSetup>> = {
   tailwind: {
     requirement:
       'The Tailwind renderer styles components with Tailwind CSS 4 utility classes, compiled by the Tailwind Vite plugin.',
-    packages: `npm install foldkit @foldkit/ui effect @effect/platform-browser tailwindcss
+    packages: `npm install foldkit effect @effect/platform-browser tailwindcss
 npm install -D vite typescript @foldkit/vite-plugin @tailwindcss/vite`,
     vite: `import { fileURLToPath } from 'node:url'
 
@@ -342,7 +343,7 @@ export const view = (h: HtmlBuilder<Message>): Html =>
   stylex: {
     requirement:
       'The StyleX renderer styles components with StyleX, compiled at build time by the StyleX unplugin. It does not need Tailwind.',
-    packages: `npm install foldkit @foldkit/ui effect @effect/platform-browser @stylexjs/stylex
+    packages: `npm install foldkit effect @effect/platform-browser @stylexjs/stylex
 npm install -D vite typescript @foldkit/vite-plugin @stylexjs/unplugin`,
     vite: `import { fileURLToPath } from 'node:url'
 
@@ -431,7 +432,7 @@ export const view = (h: HtmlBuilder<Message>): Html =>
   pleat: {
     requirement:
       'The Pleat renderer styles components with Pleat, a Foldkit-native styling library: styles are typed TypeScript values, so there is no CSS compiler plugin and no Tailwind.',
-    packages: `npm install foldkit @foldkit/ui effect @effect/platform-browser
+    packages: `npm install foldkit effect @effect/platform-browser
 npm install -D vite typescript @foldkit/vite-plugin`,
     vite: `import { fileURLToPath } from 'node:url'
 
@@ -772,6 +773,7 @@ export const view = <Msg>(
       label: group.label,
       items: group.components.map(componentLink),
     })),
+    behaviorNavGroup((href, label) => h.li([], [link(href, label)])),
     ...LINT_RULE_GROUPS.map(group => ({
       label: group.label,
       items: group.rules.map(rule => lintLink(rule.id, rule.title)),

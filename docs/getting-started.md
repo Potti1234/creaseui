@@ -6,7 +6,7 @@ edit, test, and upgrade it without a Crease runtime dependency.
 
 ## 1. Prepare the application
 
-Use Node 22 or newer, Foldkit, Foldkit UI, Effect, Vite, Tailwind CSS 4, and the
+Use Node 22 or newer, Foldkit, Effect, Vite, Tailwind CSS 4, and the
 Foldkit Vite plugin. Add a `components.json` with TypeScript output and aliases;
 the complete example is in the [registry guide](registry.md).
 

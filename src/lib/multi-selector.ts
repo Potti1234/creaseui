@@ -4,14 +4,16 @@ import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import { defineMessageUnion } from 'foldkit/message'
 
-import { Dialog, Listbox as ListboxPrimitive, Popover } from '@foldkit/ui'
+import * as ListboxPrimitive from '@/lib/behaviors/anchored-listbox'
+import * as Dialog from '@/lib/behaviors/dialog'
+import * as Popover from '@/lib/behaviors/popover'
 import * as Selection from '@/lib/behaviors/selection'
 import * as Drawer from './drawer'
 
 /* Ported from Meta Astryx MultiSelector (packages/core/src/MultiSelector/)
    — examples and visual spec adapted to Crease UI tokens.
 
-   foldkit's Multi Listbox supplies the trigger button and anchored option
+   The shared Multi Listbox supplies the trigger button and anchored option
    panel. Its Selected out-message drives the shared Selection behavior;
    this component owns the scope of select-all and its ChangedValues event. */
 
@@ -21,7 +23,7 @@ export const Model = S.Struct({
   /** The selectable option values the select-all row toggles; seeded at
    *  init and refreshed via `reflectOptions` when options change. */
   optionValues: S.Array(S.String),
-  listbox: ListboxPrimitive.Multi.Model,
+  listbox: ListboxPrimitive.Model,
   query: S.String,
   popover: Popover.Model,
   drawer: Drawer.Model,
@@ -71,7 +73,7 @@ export const init = (
     id: `${config.id}-drawer`,
     isAnimated: config.isAnimated ?? true,
   }),
-  listbox: ListboxPrimitive.Multi.init({
+  listbox: ListboxPrimitive.init({
     id: `${config.id}-listbox`,
     isAnimated: config.isAnimated ?? true,
   }),
@@ -158,7 +160,7 @@ const liftListbox = (
   }
 }
 
-const listboxBundle = ListboxPrimitive.Multi.create<string>()
+const listboxBundle = ListboxPrimitive.createMulti<string>()
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {

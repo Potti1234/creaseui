@@ -2,7 +2,7 @@ import { Option } from 'effect'
 import { reset } from '@/ui/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import * as SliderPrimitive from '@/lib/behaviors/slider'
+import * as SliderBehavior from '@/lib/behaviors/slider'
 
 import {
   initMulti,
@@ -22,19 +22,19 @@ import { foundationTokens } from './foundations-tokens.stylex'
 import { interactionTokens } from './interaction-tokens.stylex.const'
 import { tokens } from './tokens.stylex'
 
-export const Model = SliderPrimitive.Model
+export const Model = SliderBehavior.Model
 export type Model = typeof Model.Type
-export const Message = SliderPrimitive.Message
+export const Message = SliderBehavior.Message
 export type Message = typeof Message.Type
-export const OutMessage = SliderPrimitive.OutMessage
+export const OutMessage = SliderBehavior.OutMessage
 export type OutMessage = typeof OutMessage.Type
-export const init = SliderPrimitive.init
-export const update = SliderPrimitive.update
-export const reflectRange = SliderPrimitive.reflectRange
-export const snapAndClamp = SliderPrimitive.snapAndClamp
-export const subscriptions = SliderPrimitive.subscriptions
-export const subscriptionsForRoot = SliderPrimitive.subscriptionsForRoot
-export const fractionOfValue = SliderPrimitive.fractionOfValue
+export const init = SliderBehavior.init
+export const update = SliderBehavior.update
+export const reflectRange = SliderBehavior.reflectRange
+export const snapAndClamp = SliderBehavior.snapAndClamp
+export const subscriptions = SliderBehavior.subscriptions
+export const subscriptionsForRoot = SliderBehavior.subscriptionsForRoot
+export const fractionOfValue = SliderBehavior.fractionOfValue
 
 export {
   initMulti,
@@ -59,7 +59,7 @@ const styles = stylex.create({
   },
   horizontal: { height: '1.25rem', width: '100%' },
   /* Multi-thumb sliders render a zero-area track overlay per thumb so the
-     foldkit Slider primitive can measure drags against the shared track's
+     Slider behavior can measure drags against the shared track's
      geometry; it can never receive a pointer itself. */
   measureTrackWrap: {
     inset: 0,
@@ -199,7 +199,7 @@ export const slider = <Msg>(
   h.submodel({
     slotId: props.model.id,
     model: props.model,
-    view: SliderPrimitive.view,
+    view: SliderBehavior.view,
     viewInputs: {
       value: props.value,
       isDisabled: props.isDisabled ?? false,
@@ -270,7 +270,7 @@ export const slider = <Msg>(
     toParentMessage: props.toParentMessage,
   })
 
-/** An N-thumb slider on the foldkit Slider primitive: one primitive model per
+/** An N-thumb slider with one interaction model per
  * thumb, a shared track whose presses move the nearest thumb, and fills
  * between the lowest and highest values. Thumbs keep their identity and can
  * cross. `values` stays parent-owned; thumb changes arrive as `MultiOutMessage.ChangedThumbValue` out messages. */
@@ -283,14 +283,14 @@ export const multiSlider = <Msg>(
   const horizontal = orientation === 'horizontal'
   const range = { min: model.min, max: model.max, step: model.step }
   const values = normalizeMultiValues(props.values, range)
-  const span = Math.max(range.max - range.min, 1)
+  const span = range.max - range.min
   const isInteractive = props.isDisabled !== true && props.isReadOnly !== true
   const displayValues = values.map(value => toThumbValue(model, value))
   const displayFractions = displayValues.map(
-    value => ((value - range.min) / span) * 100,
+    value => fractionOfValue(value, range.min, range.max) * 100,
   )
   const minFraction =
-    ((toThumbValue(model, range.min) - range.min) / span) * 100
+    fractionOfValue(toThumbValue(model, range.min), range.min, range.max) * 100
   const segments: ReadonlyArray<readonly [number, number]> =
     displayFractions.length === 0
       ? []
@@ -346,9 +346,11 @@ export const multiSlider = <Msg>(
     h.submodel({
       slotId: thumb.id,
       model: thumb,
-      view: SliderPrimitive.view,
+      view: SliderBehavior.view,
       viewInputs: {
         value: displayValues[index] ?? range.min,
+        logicalValue: values[index] ?? range.min,
+        mirrored: model.mirrored,
         orientation: horizontal ? 'Horizontal' : 'Vertical',
         isDisabled: props.isDisabled ?? false,
         isReadOnly: props.isReadOnly ?? false,
@@ -357,10 +359,7 @@ export const multiSlider = <Msg>(
           ? {}
           : {
               formatValue: (value: number) =>
-                props.formatValue?.(
-                  model.mirrored ? model.min + model.max - value : value,
-                  index,
-                ) ?? '',
+                props.formatValue?.(value, index) ?? '',
             }),
         ...(props.name === undefined
           ? {}
@@ -369,7 +368,7 @@ export const multiSlider = <Msg>(
           h.div(
             [h.Class(className(styles.contentsWrap))],
             [
-              /* The primitive measures drag distance against the track
+              /* The behavior measures drag distance against the track
                  element it rendered, so the hidden copy must cover the same
                  box as the visual track while letting presses fall through
                  to the shared track below. */
@@ -391,11 +390,6 @@ export const multiSlider = <Msg>(
                   ...thumb,
                   h.DataAttribute('slot', 'slider-thumb'),
                   h.Class(className(styles.thumb)),
-                  /* The primitive reports the display-space value; under
-                       mirroring (RTL) report the true value instead. */
-                  ...(model.mirrored
-                    ? [h.AriaValuenow(values[index] ?? range.min)]
-                    : []),
                 ],
                 [],
               ),

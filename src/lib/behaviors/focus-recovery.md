@@ -12,3 +12,8 @@ accepted keyed DOM changes back to update. `updateCollection` applies the same
 pure recovery policy only after reconciliation, never on removal requests.
 It retains ownership of pending item targets so further removals before focus
 commits can recover again; new focus or blur facts replace that ownership.
+
+Use `keepFocus(scope, move)` when a synchronous DOM operation moves an
+already-rendered collection. It restores a surviving focused descendant if
+the move leaves focus on the page. It respects focus explicitly set by the
+operation.

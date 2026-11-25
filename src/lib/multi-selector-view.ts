@@ -1,5 +1,6 @@
 import { Option } from 'effect'
-import { Listbox, Popover } from '@foldkit/ui'
+import * as Listbox from '@/lib/behaviors/anchored-listbox'
+import * as Popover from '@/lib/behaviors/popover'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 import { foldText } from './behaviors/text-match'
@@ -17,7 +18,7 @@ export const filterOptions = (
 type ContentProps<Msg> = Readonly<{
   model: Model
   toParentMessage: (message: Message) => Msg
-  inputs: Listbox.Multi.ViewInputs<string>
+  inputs: Listbox.MultiViewInputs<string>
   options: ReadonlyArray<OptionEntry>
   label: string
   hasSearch: boolean
@@ -44,7 +45,7 @@ export const drawerTrigger = <Msg>(
   const { model, inputs, toParentMessage: send } = props
   return h.button(
     [
-      h.Id(Listbox.Multi.buttonId(model.listbox.id)),
+      h.Id(Listbox.buttonId(model.listbox.id)),
       h.Type('button'),
       h.AriaLabelledBy(props.labelId),
       h.AriaHasPopup('dialog'),

@@ -2,11 +2,15 @@ import { Option } from 'effect'
 import { Command } from 'foldkit'
 import * as Scene from 'foldkit/scene'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { RadioGroup as RadioGroupPrimitive } from '@foldkit/ui'
-import { describe, it } from 'vitest'
+import { describe, it, vi } from 'vitest'
 
+import * as RadioGroupBehavior from '@/lib/behaviors/radio-group'
+import * as PleatRadio from '@/pleat/radio-group'
 import * as StyleXRadio from '@/stylex/radio-group'
 import * as TailwindRadio from '@/ui/radio-group'
+
+// Happy DOM cannot mount Pleat's cascade layers. These scenes assert behavior.
+vi.mock('@/pleat/style', () => ({ className: () => 'pleat-scene' }))
 
 type Model = Readonly<{ value: string; radio: TailwindRadio.Model }>
 type Message = Readonly<{ _tag: 'GotRadio'; message: TailwindRadio.Message }>
@@ -97,8 +101,8 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
           'true',
         ),
         Scene.Command.resolve(
-          RadioGroupPrimitive.FocusOption,
-          RadioGroupPrimitive.Message.CompletedFocusOption(),
+          RadioGroupBehavior.FocusOption,
+          RadioGroupBehavior.Message.CompletedFocusOption(),
         ),
       )
     })
@@ -140,3 +144,4 @@ const verifyRenderer = (name: string, Radio: RadioModule) => {
 
 verifyRenderer('Tailwind', TailwindRadio)
 verifyRenderer('StyleX', StyleXRadio)
+verifyRenderer('Pleat', PleatRadio)

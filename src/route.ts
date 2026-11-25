@@ -54,6 +54,8 @@ export const AppRoute = defineRouteUnion({
   Block: { blockId: S.String },
   GettingStarted: {},
   Theming: {},
+  Behaviors: {},
+  BehaviorDocs: { behavior: S.String },
   LintRules: {},
   LintRule: { rule: S.String },
   TutorialIndex: {},
@@ -129,6 +131,19 @@ const themingRouter = pipe(
   Route.mapTo(AppRoute.Theming),
 )
 
+const behaviorDocsRouter = pipe(
+  literal('docs'),
+  slash(literal('behaviors')),
+  slash(string('behavior')),
+  Route.mapTo(AppRoute.BehaviorDocs),
+)
+
+const behaviorsRouter = pipe(
+  literal('docs'),
+  slash(literal('behaviors')),
+  Route.mapTo(AppRoute.Behaviors),
+)
+
 const lintRuleRouter = pipe(
   literal('docs'),
   slash(literal('lint')),
@@ -166,6 +181,8 @@ const routeParser = Route.oneOf(
   blocksStyleXRouter,
   gettingStartedRouter,
   themingRouter,
+  behaviorDocsRouter,
+  behaviorsRouter,
   lintRuleRouter,
   lintRulesRouter,
   tutorialChapterRouter,
@@ -205,6 +222,11 @@ export const componentDocsPath = (component: string): string =>
 export const gettingStartedPath = (): string => gettingStartedRouter()
 
 export const themingPath = (): string => themingRouter()
+
+export const behaviorsPath = (): string => behaviorsRouter()
+
+export const behaviorDocsPath = (behavior: string): string =>
+  behaviorDocsRouter({ behavior })
 
 export const lintRulesPath = (): string => lintRulesRouter()
 

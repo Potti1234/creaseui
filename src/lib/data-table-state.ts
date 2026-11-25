@@ -3,7 +3,7 @@ import { foldText } from './behaviors/text-match'
    tanstack table state from tablecn/src/app/components/tasks-table.tsx).
    Single open-popover id replaces React's per-component useState. */
 
-import { Listbox } from '@foldkit/ui'
+import * as Listbox from '@/lib/behaviors/anchored-listbox'
 import { Effect, Option, Schema as S } from 'effect'
 import type { Update } from 'foldkit'
 import { Command } from 'foldkit'
@@ -809,7 +809,7 @@ const ExportRowsCsv = Command.define('ExportDataTableRowsCsv', {
 
 type UpdateReturn = Update.Return<Model, Message>
 
-const pageSizeListbox = Listbox.create<string, string>()
+const pageSizeListbox = Listbox.create<string>()
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {

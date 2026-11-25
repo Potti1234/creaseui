@@ -1,10 +1,18 @@
 import * as Scene from 'foldkit/scene'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { describe, it } from 'vitest'
+import { describe, it, vi } from 'vitest'
 
 import type * as AccordionBehavior from '@/lib/accordion-state'
+import * as PleatAccordion from '@/pleat/accordion'
 import * as StyleXAccordion from '@/stylex/accordion'
 import * as TailwindAccordion from '@/ui/accordion'
+
+vi.mock('@/lib/disclosure', async importOriginal =>
+  (await import('./disclosure-mock')).mockDisclosureMount(importOriginal),
+)
+
+// Happy DOM cannot create Pleat's cascade layers. These scenes exercise behavior.
+vi.mock('@/pleat/style', () => ({ className: () => 'pleat-test' }))
 
 /**
  * Behavioral parity suite ported from Base UI's accordion tests
@@ -547,3 +555,4 @@ const verifyRenderer = (name: string, Accordion: AccordionModule) => {
 
 verifyRenderer('Tailwind', TailwindAccordion)
 verifyRenderer('StyleX', StyleXAccordion)
+verifyRenderer('Pleat', PleatAccordion)

@@ -1,7 +1,7 @@
 import { Style, When } from '@pleat/core'
 import { reset } from '@/ui/pleat/reset'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { Tabs as TabsPrimitive } from '@foldkit/ui'
+import * as TabsPrimitive from '@/lib/behaviors/tabs'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens'
 import { className } from './style'

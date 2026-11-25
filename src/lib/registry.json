@@ -32,6 +32,20 @@
       ]
     },
     {
+      "name": "agent-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Agent Behavior",
+      "description": "Application-owned action requests, validation, approval and reported results.",
+      "registryDependencies": ["Potti1234/creaseui/observe-behavior"],
+      "files": [
+        {
+          "path": "behaviors/agent.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/agent.ts"
+        }
+      ]
+    },
+    {
       "name": "alert-behavior",
       "type": "registry:lib",
       "title": "Foldkit Alert Semantics",
@@ -54,6 +68,74 @@
           "path": "alert-dialog.ts",
           "type": "registry:lib",
           "target": "@lib/alert-dialog.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/dialog-behavior"
+      ]
+    },
+    {
+      "name": "anchored-listbox-behavior",
+      "type": "registry:lib",
+      "title": "Anchored Listbox Behavior",
+      "description": "Shared anchored selection, typeahead, focus, dismissal and animation.",
+      "files": [
+        {
+          "path": "behaviors/anchored-listbox.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/anchored-listbox.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/animation-behavior",
+        "Potti1234/creaseui/listbox-behavior",
+        "Potti1234/creaseui/popup-behavior",
+        "Potti1234/creaseui/position-behavior",
+        "Potti1234/creaseui/typeahead-behavior"
+      ]
+    },
+    {
+      "name": "anchored-popup-behavior",
+      "type": "registry:lib",
+      "title": "Anchored Popup Behavior",
+      "description": "Compose inline popup state, positioning, dismissal, and focus in Foldkit.",
+      "registryDependencies": [
+        "Potti1234/creaseui/layer-behavior",
+        "Potti1234/creaseui/native-position-behavior",
+        "Potti1234/creaseui/popup-behavior",
+        "Potti1234/creaseui/portal-behavior"
+      ],
+      "files": [
+        {
+          "path": "behaviors/popup-behavior.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/popup-behavior.ts"
+        }
+      ]
+    },
+    {
+      "name": "animation-behavior",
+      "type": "registry:lib",
+      "title": "Animation Behavior",
+      "description": "Foldkit-native enter and exit lifecycle with generation-guarded CSS settlement.",
+      "files": [
+        {
+          "path": "behaviors/animation.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/animation.ts"
+        }
+      ]
+    },
+    {
+      "name": "announce-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Announcement Behavior",
+      "description": "Persistent live regions and versioned screen-reader announcements.",
+      "files": [
+        {
+          "path": "behaviors/announce.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/announce.ts"
         }
       ]
     },
@@ -92,6 +174,7 @@
       "title": "Avoid Keyboard",
       "description": "Keeps a footer above the on-screen keyboard with a scoped Foldkit Mount.",
       "docs": "/docs/components/avoid-keyboard",
+      "registryDependencies": ["Potti1234/creaseui/visual-viewport-behavior"],
       "files": [
         {
           "path": "behaviors/avoid-keyboard.ts",
@@ -142,8 +225,8 @@
     {
       "name": "calendar-range",
       "type": "registry:lib",
-      "title": "Calendar Range Policy",
-      "description": "Pure parent-owned range normalization and explicit instant-to-calendar-date time-zone conversion for Calendar recipes.",
+      "title": "Calendar Behavior and Range Policy",
+      "description": "Calendar grid state and navigation, parent-owned range normalization, and explicit time-zone conversion.",
       "files": [
         {
           "path": "calendar.ts",
@@ -203,6 +286,32 @@
       ]
     },
     {
+      "name": "cell-range-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Cell Range",
+      "description": "Rectangular selection, incremental changes, announcements and clipboard conversion.",
+      "files": [
+        {
+          "path": "behaviors/cell-range.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/cell-range.ts"
+        }
+      ]
+    },
+    {
+      "name": "change-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Change Behavior",
+      "description": "Validated change proposals, live edits and attributed commits.",
+      "files": [
+        {
+          "path": "behaviors/change.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/change.ts"
+        }
+      ]
+    },
+    {
       "name": "checkbox-behavior",
       "type": "registry:lib",
       "title": "Foldkit Checkbox Behavior",
@@ -254,11 +363,51 @@
           "path": "color-picker.ts",
           "type": "registry:lib",
           "target": "@lib/color-picker.ts"
+        },
+        {
+          "path": "behaviors/preview.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/preview.ts"
         }
       ],
       "registryDependencies": [
         "Potti1234/creaseui/area-behavior",
-        "Potti1234/creaseui/drag-behavior"
+        "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/popover-behavior"
+      ]
+    },
+    {
+      "name": "combobox-behavior",
+      "type": "registry:lib",
+      "title": "Combobox Behavior",
+      "description": "Shared single and multiple editable selection, keyboard navigation and anchored popup behavior.",
+      "files": [
+        {
+          "path": "behaviors/combobox.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/combobox.ts"
+        },
+        {
+          "path": "behaviors/combobox-multi.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/combobox-multi.ts"
+        },
+        {
+          "path": "behaviors/combobox-shared.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/combobox-shared.ts"
+        },
+        {
+          "path": "behaviors/combobox.LICENSE.txt",
+          "type": "registry:file",
+          "target": "@lib/behaviors/combobox.LICENSE.txt"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/animation-behavior",
+        "Potti1234/creaseui/listbox-behavior",
+        "Potti1234/creaseui/position-behavior",
+        "Potti1234/creaseui/text-dom-behavior"
       ]
     },
     {
@@ -267,19 +416,16 @@
       "title": "Foldkit Command Query Policy",
       "description": "Skin-neutral command query normalization and application-provided search-text filtering.",
       "registryDependencies": [
+        "Potti1234/creaseui/announce-behavior",
         "Potti1234/creaseui/listbox-behavior",
-        "Potti1234/creaseui/text-match-behavior"
+        "Potti1234/creaseui/text-match-behavior",
+        "Potti1234/creaseui/combobox-behavior"
       ],
       "files": [
         {
           "path": "command.ts",
           "type": "registry:lib",
           "target": "@lib/command.ts"
-        },
-        {
-          "path": "behaviors/announce.ts",
-          "type": "registry:lib",
-          "target": "@lib/behaviors/announce.ts"
         }
       ]
     },
@@ -320,9 +466,12 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/announce-behavior",
         "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/cell-range-behavior",
         "Potti1234/creaseui/date-parse-behavior",
-        "Potti1234/creaseui/grid-focus-behavior"
+        "Potti1234/creaseui/grid-focus-behavior",
+        "Potti1234/creaseui/ui-sdk-license"
       ]
     },
     {
@@ -349,7 +498,8 @@
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-range-input-behavior",
         "Potti1234/creaseui/slider-behavior",
-        "Potti1234/creaseui/text-match-behavior"
+        "Potti1234/creaseui/text-match-behavior",
+        "Potti1234/creaseui/anchored-listbox-behavior"
       ]
     },
     {
@@ -366,7 +516,8 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/date-parse-behavior",
-        "Potti1234/creaseui/date-picker-behavior"
+        "Potti1234/creaseui/date-picker-behavior",
+        "Potti1234/creaseui/popover-behavior"
       ]
     },
     {
@@ -386,9 +537,10 @@
       "name": "date-picker-behavior",
       "type": "registry:lib",
       "title": "Date Picker Behavior",
-      "description": "Foldkit DatePicker lifecycle with shared Calendar keyboard behavior.",
+      "description": "Composes Calendar navigation and Popover lifecycle with parent-owned date selection.",
       "registryDependencies": [
-        "Potti1234/creaseui/calendar-range"
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "files": [
         {
@@ -411,7 +563,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/calendar-range"
+        "Potti1234/creaseui/calendar-range",
+        "Potti1234/creaseui/popover-behavior"
       ]
     },
     {
@@ -430,14 +583,20 @@
         "Potti1234/creaseui/calendar-range",
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-picker-behavior",
-        "Potti1234/creaseui/time-parse-behavior"
+        "Potti1234/creaseui/time-parse-behavior",
+        "Potti1234/creaseui/popover-behavior"
       ]
     },
     {
       "name": "dialog-behavior",
       "type": "registry:lib",
       "title": "Foldkit Dialog Behavior",
-      "description": "Native dialog lifecycle and focus management.",
+      "description": "Shared dialog visibility and animation with native modal focus management.",
+      "registryDependencies": [
+        "Potti1234/creaseui/animation-behavior",
+        "Potti1234/creaseui/modal-behavior",
+        "Potti1234/creaseui/popup-behavior"
+      ],
       "files": [
         {
           "path": "behaviors/dialog.ts",
@@ -447,10 +606,24 @@
       ]
     },
     {
+      "name": "disclosure-behavior",
+      "type": "registry:lib",
+      "title": "Disclosure Behavior",
+      "description": "Controlled trigger, panel, and height animation attributes for Foldkit disclosures.",
+      "files": [
+        {
+          "path": "disclosure.ts",
+          "type": "registry:lib",
+          "target": "@lib/disclosure.ts"
+        }
+      ]
+    },
+    {
       "name": "drag-and-drop-behavior",
       "type": "registry:lib",
       "title": "Foldkit Drag and Drop Behavior",
       "description": "Headless pointer and keyboard drag-and-drop Submodel and attribute bundles for sortable lists.",
+      "registryDependencies": ["Potti1234/creaseui/drag-behavior"],
       "files": [
         {
           "path": "behaviors/drag-and-drop.ts",
@@ -485,6 +658,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/dialog-behavior",
         "Potti1234/creaseui/drag-behavior",
         "Potti1234/creaseui/velocity-behavior"
       ]
@@ -547,6 +721,24 @@
           "path": "file-input.ts",
           "type": "registry:lib",
           "target": "@lib/file-input.ts"
+        },
+        {
+          "path": "behaviors/file-drop.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/file-drop.ts"
+        }
+      ]
+    },
+    {
+      "name": "findable-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Findable Content",
+      "description": "Feature detection and beforematch bindings for browser-searchable collapsed content.",
+      "files": [
+        {
+          "path": "behaviors/findable.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/findable.ts"
         }
       ]
     },
@@ -577,6 +769,19 @@
       ]
     },
     {
+      "name": "gesture-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Gesture Calculations",
+      "description": "Release distance, damped springs, and radial stroke sectors.",
+      "files": [
+        {
+          "path": "behaviors/gesture.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/gesture.ts"
+        }
+      ]
+    },
+    {
       "name": "grid-focus-behavior",
       "type": "registry:lib",
       "title": "Grid Focus Behavior",
@@ -586,6 +791,20 @@
           "path": "behaviors/grid-focus.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/grid-focus.ts"
+        }
+      ]
+    },
+    {
+      "name": "history-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Change History",
+      "description": "Attributed change recording, coalescing, undo, and redo.",
+      "registryDependencies": ["Potti1234/creaseui/observe-behavior"],
+      "files": [
+        {
+          "path": "behaviors/history.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/history.ts"
         }
       ]
     },
@@ -602,7 +821,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/hover-intent-behavior"
+        "Potti1234/creaseui/hover-intent-behavior",
+        "Potti1234/creaseui/native-position-behavior"
       ]
     },
     {
@@ -641,11 +861,39 @@
       "type": "registry:lib",
       "title": "Foldkit Input Behavior",
       "description": "Skin-neutral controlled input semantics and deterministic label and description linkage shared by Crease renderers.",
+      "registryDependencies": ["Potti1234/creaseui/input-hints-behavior"],
       "files": [
         {
           "path": "input.ts",
           "type": "registry:lib",
           "target": "@lib/input.ts"
+        }
+      ]
+    },
+    {
+      "name": "input-hints-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Input Hints",
+      "description": "Native mobile keyboard, autofill, and text correction attributes selected by field purpose.",
+      "files": [
+        {
+          "path": "behaviors/input-hints.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/input-hints.ts"
+        }
+      ]
+    },
+    {
+      "name": "input-history-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Input History Behavior",
+      "description": "Navigate earlier input entries with edge-aware keyboard bindings.",
+      "registryDependencies": ["Potti1234/creaseui/text-dom-behavior"],
+      "files": [
+        {
+          "path": "behaviors/input-history.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/input-history.ts"
         }
       ]
     },
@@ -680,6 +928,7 @@
       "type": "registry:lib",
       "title": "Layer Behavior",
       "description": "Standalone scoped mount for Escape, outside-press, and window-blur dismissal.",
+      "registryDependencies": ["Potti1234/creaseui/text-dom-behavior"],
       "files": [
         {
           "path": "behaviors/layer.ts",
@@ -714,7 +963,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/viewport-behavior"
+        "Potti1234/creaseui/viewport-behavior",
+        "Potti1234/creaseui/dialog-behavior"
       ]
     },
     {
@@ -723,7 +973,8 @@
       "title": "List Input Behavior",
       "description": "Shared Foldkit behavior and helpers for List Input.",
       "registryDependencies": [
-        "Potti1234/creaseui/command-behavior",
+        "Potti1234/creaseui/announce-behavior",
+        "Potti1234/creaseui/change-behavior",
         "Potti1234/creaseui/focus-recovery-behavior",
         "Potti1234/creaseui/reorder-behavior"
       ],
@@ -749,7 +1000,8 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/roving-focus-behavior",
-        "Potti1234/creaseui/tree-list-behavior"
+        "Potti1234/creaseui/tree-list-behavior",
+        "Potti1234/creaseui/typeahead-behavior"
       ]
     },
     {
@@ -855,6 +1107,22 @@
           "type": "registry:lib",
           "target": "@lib/mobile-nav.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/dialog-behavior"
+      ]
+    },
+    {
+      "name": "modal-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Modal Behavior",
+      "description": "Native dialog focus, Escape handling, and scroll lock with Foldkit Commands and Mounts.",
+      "files": [
+        {
+          "path": "behaviors/modal.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/modal.ts"
+        }
       ]
     },
     {
@@ -867,6 +1135,24 @@
           "path": "more-menu.ts",
           "type": "registry:lib",
           "target": "@lib/more-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "motion-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Motion Behavior",
+      "description": "Reusable enter and exit presence, transition state, and findable content.",
+      "registryDependencies": [
+        "Potti1234/creaseui/animation-behavior",
+        "Potti1234/creaseui/findable-behavior",
+        "Potti1234/creaseui/popup-behavior"
+      ],
+      "files": [
+        {
+          "path": "behaviors/motion.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/motion.ts"
         }
       ]
     },
@@ -884,7 +1170,10 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/drawer-behavior",
-        "Potti1234/creaseui/selection-behavior"
+        "Potti1234/creaseui/selection-behavior",
+        "Potti1234/creaseui/anchored-listbox-behavior",
+        "Potti1234/creaseui/dialog-behavior",
+        "Potti1234/creaseui/popover-behavior"
       ]
     },
     {
@@ -901,7 +1190,24 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/multi-selector-behavior",
-        "Potti1234/creaseui/text-match-behavior"
+        "Potti1234/creaseui/text-match-behavior",
+        "Potti1234/creaseui/anchored-listbox-behavior",
+        "Potti1234/creaseui/popover-behavior"
+      ]
+    },
+    {
+      "name": "native-position-behavior",
+      "type": "registry:lib",
+      "title": "Native Position Behavior",
+      "description": "Shared floating positioning for inline elements, points and live rectangles.",
+      "dependencies": ["@floating-ui/dom@1.8.0"],
+      "registryDependencies": ["Potti1234/creaseui/text-dom-behavior"],
+      "files": [
+        {
+          "path": "behaviors/position-native.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/position-native.ts"
+        }
       ]
     },
     {
@@ -940,6 +1246,20 @@
       ]
     },
     {
+      "name": "observe-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Observe Behavior",
+      "description": "Typed change records with scopes, phase filtering and redaction.",
+      "registryDependencies": ["Potti1234/creaseui/change-behavior"],
+      "files": [
+        {
+          "path": "behaviors/observe.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/observe.ts"
+        }
+      ]
+    },
+    {
       "name": "overflow-list-behavior",
       "type": "registry:lib",
       "title": "Overflow List Behavior",
@@ -958,7 +1278,10 @@
       "title": "Overlay Boundary Behavior",
       "description": "Shared Foldkit behavior and helpers for Overlay Boundary.",
       "registryDependencies": [
-        "Potti1234/creaseui/position-behavior"
+        "Potti1234/creaseui/position-behavior",
+        "Potti1234/creaseui/anchored-listbox-behavior",
+        "Potti1234/creaseui/combobox-behavior",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "files": [
         {
@@ -982,6 +1305,19 @@
       ]
     },
     {
+      "name": "parts-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Part Helpers",
+      "description": "Stable compound part IDs and ordered DOM part lookup.",
+      "files": [
+        {
+          "path": "behaviors/parts.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/parts.ts"
+        }
+      ]
+    },
+    {
       "name": "pointer-kind",
       "type": "registry:lib",
       "title": "Pointer Kind",
@@ -1000,6 +1336,12 @@
       "type": "registry:lib",
       "title": "Foldkit Popover Behavior",
       "description": "Anchored popup lifecycle, dismissal and focus management.",
+      "registryDependencies": [
+        "Potti1234/creaseui/animation-behavior",
+        "Potti1234/creaseui/layer-behavior",
+        "Potti1234/creaseui/popup-behavior",
+        "Potti1234/creaseui/position-behavior"
+      ],
       "files": [
         {
           "path": "behaviors/popover.ts",
@@ -1022,12 +1364,39 @@
       ]
     },
     {
+      "name": "popup-controller-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Popup Controller",
+      "description": "Correlated popup requests and typed outcomes over a Foldkit message boundary.",
+      "files": [
+        {
+          "path": "behaviors/popup-controller.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/popup-controller.ts"
+        }
+      ]
+    },
+    {
+      "name": "portal-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Portal Behavior",
+      "description": "Native top-layer activation and scoped overlay relocation.",
+      "files": [
+        {
+          "path": "behaviors/portal.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/portal.ts"
+        }
+      ]
+    },
+    {
       "name": "position-behavior",
       "type": "registry:lib",
       "title": "Position Behavior",
-      "description": "Foldkit Anchor mount and floating positioning for elements, points and live rectangles.",
-      "dependencies": [
-        "@floating-ui/dom@1.8.0"
+      "description": "Foldkit mounts for floating positioning, anchored surfaces, and containing-root portals.",
+      "registryDependencies": [
+        "Potti1234/creaseui/native-position-behavior",
+        "Potti1234/creaseui/portal-behavior"
       ],
       "files": [
         {
@@ -1109,6 +1478,29 @@
           "path": "resizable.ts",
           "type": "registry:lib",
           "target": "@lib/resizable.ts"
+        },
+        {
+          "path": "box-resizer.ts",
+          "type": "registry:lib",
+          "target": "@lib/box-resizer.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/resize-behavior",
+        "Potti1234/creaseui/ui-sdk-license"
+      ]
+    },
+    {
+      "name": "resize-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Resize Behavior",
+      "description": "Shared resize drafts, pointer binding, geometry, and size announcements.",
+      "files": [
+        {
+          "path": "behaviors/resize.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/resize.ts"
         }
       ],
       "registryDependencies": [
@@ -1125,6 +1517,28 @@
           "path": "behaviors/roving-focus.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/roving-focus.ts"
+        }
+      ]
+    },
+    {
+      "name": "scroll-picker-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Scroll Picker",
+      "description": "Centred-item selection, pointer and wheel observation, and keyboard snapping.",
+      "registryDependencies": [
+        "Potti1234/creaseui/gesture-behavior",
+        "Potti1234/creaseui/ui-sdk-license"
+      ],
+      "files": [
+        {
+          "path": "behaviors/scroll-picker.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/scroll-picker.ts"
+        },
+        {
+          "path": "behaviors/scroll-picker-dom.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/scroll-picker-dom.ts"
         }
       ]
     },
@@ -1154,6 +1568,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/dialog-behavior",
         "Potti1234/creaseui/velocity-behavior"
       ]
     },
@@ -1205,7 +1620,7 @@
       "name": "slider-behavior",
       "type": "registry:lib",
       "title": "Foldkit Slider Behavior",
-      "description": "Skin-neutral @foldkit/ui slider seam with bound, step, and range update normalization and a multi-thumb submodel.",
+      "description": "Shared slider range and step normalization with keyboard and pointer interaction state.",
       "files": [
         {
           "path": "behaviors/slider.ts",
@@ -1253,12 +1668,10 @@
           "path": "behaviors/stick-to-bottom.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/stick-to-bottom.ts"
-        },
-        {
-          "path": "behaviors/ui-sdk-LICENSE.txt",
-          "type": "registry:file",
-          "target": "@lib/behaviors/ui-sdk-LICENSE.txt"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/ui-sdk-license"
       ]
     },
     {
@@ -1292,6 +1705,20 @@
       ]
     },
     {
+      "name": "tabs-behavior",
+      "type": "registry:lib",
+      "title": "Tabs Behavior",
+      "description": "Controlled tab selection and shared roving focus for Foldkit.",
+      "registryDependencies": ["Potti1234/creaseui/roving-focus-behavior"],
+      "files": [
+        {
+          "path": "behaviors/tabs.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/tabs.ts"
+        }
+      ]
+    },
+    {
       "name": "tanstack-table-state-behavior",
       "type": "registry:lib",
       "title": "Tanstack Table State Behavior",
@@ -1301,6 +1728,19 @@
           "path": "tanstack-table-state.ts",
           "type": "registry:lib",
           "target": "@lib/tanstack-table-state.ts"
+        }
+      ]
+    },
+    {
+      "name": "text-dom-behavior",
+      "type": "registry:lib",
+      "title": "DOM Text Behavior",
+      "description": "Typeahead labels, locale resolution, and keyboard composition detection.",
+      "files": [
+        {
+          "path": "behaviors/text-dom.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/text-dom.ts"
         }
       ]
     },
@@ -1354,6 +1794,9 @@
           "type": "registry:lib",
           "target": "@lib/time-input.ts"
         }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/anchored-listbox-behavior"
       ]
     },
     {
@@ -1395,6 +1838,7 @@
         }
       ],
       "registryDependencies": [
+        "Potti1234/creaseui/animation-behavior",
         "Potti1234/creaseui/focus-recovery-behavior"
       ]
     },
@@ -1427,7 +1871,8 @@
         }
       ],
       "registryDependencies": [
-        "Potti1234/creaseui/focus-recovery-behavior"
+        "Potti1234/creaseui/focus-recovery-behavior",
+        "Potti1234/creaseui/combobox-behavior"
       ]
     },
     {
@@ -1451,6 +1896,10 @@
       "type": "registry:lib",
       "title": "Foldkit Tooltip Interaction Behavior",
       "description": "Shared hover and focus ownership with command-based open and close delays and stale-timer protection.",
+      "registryDependencies": [
+        "Potti1234/creaseui/hover-intent-behavior",
+        "Potti1234/creaseui/position-behavior"
+      ],
       "files": [
         {
           "path": "behaviors/tooltip.ts",
@@ -1473,6 +1922,23 @@
       ],
       "registryDependencies": [
         "Potti1234/creaseui/nav-menu-behavior"
+      ]
+    },
+    {
+      "name": "transfer-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Transfer Behavior",
+      "description": "Pointer and keyboard transfer across lists and grids with grouped drafts and previews.",
+      "registryDependencies": [
+        "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/reorder-behavior"
+      ],
+      "files": [
+        {
+          "path": "behaviors/transfer.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/transfer.ts"
+        }
       ]
     },
     {
@@ -1521,13 +1987,42 @@
           "target": "@lib/tree-list.ts"
         },
         {
+          "path": "behaviors/tree-reorder.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/tree-reorder.ts"
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/tree-collection-behavior",
+        "Potti1234/creaseui/drag-behavior",
+        "Potti1234/creaseui/parts-behavior",
+        "Potti1234/creaseui/typeahead-behavior"
+      ]
+    },
+    {
+      "name": "typeahead-behavior",
+      "type": "registry:lib",
+      "title": "Typeahead Behavior",
+      "description": "Shared timed matching and navigation for composite widgets.",
+      "files": [
+        {
           "path": "behaviors/typeahead.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/typeahead.ts"
         }
-      ],
-      "registryDependencies": [
-        "Potti1234/creaseui/tree-collection-behavior"
+      ]
+    },
+    {
+      "name": "ui-sdk-license",
+      "type": "registry:lib",
+      "title": "UI SDK License",
+      "description": "License notice for shared behaviors adapted from UI SDK.",
+      "files": [
+        {
+          "path": "behaviors/ui-sdk-LICENSE.txt",
+          "type": "registry:file",
+          "target": "@lib/behaviors/ui-sdk-LICENSE.txt"
+        }
       ]
     },
     {
@@ -1583,11 +2078,41 @@
           "path": "virtual-data-table-state.ts",
           "type": "registry:lib",
           "target": "@lib/virtual-data-table-state.ts"
-        },
+        }
+      ],
+      "registryDependencies": [
+        "Potti1234/creaseui/virtualizer-behavior"
+      ]
+    },
+    {
+      "name": "virtualizer-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Virtualizer Behavior",
+      "description": "Shared window layout, scroll observation and keyed row rendering for Foldkit.",
+      "registryDependencies": ["Potti1234/creaseui/findable-behavior"],
+      "files": [
         {
           "path": "behaviors/virtualizer.ts",
           "type": "registry:lib",
           "target": "@lib/behaviors/virtualizer.ts"
+        },
+        {
+          "path": "behaviors/virtualizer-layout.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/virtualizer-layout.ts"
+        }
+      ]
+    },
+    {
+      "name": "visual-viewport-behavior",
+      "type": "registry:lib",
+      "title": "Foldkit Visual Viewport",
+      "description": "Reports visible viewport size, offset and zoom through a scoped binding.",
+      "files": [
+        {
+          "path": "behaviors/visual-viewport.ts",
+          "type": "registry:lib",
+          "target": "@lib/behaviors/visual-viewport.ts"
         }
       ]
     }

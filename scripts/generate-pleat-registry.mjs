@@ -13,7 +13,6 @@ const packageVersions = {
 }
 const frameworkPackages = new Set([
   '@effect/platform-browser',
-  '@foldkit/ui',
   '@pleat/core',
   '@pleat/foldkit',
   'effect',

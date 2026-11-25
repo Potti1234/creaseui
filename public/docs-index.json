@@ -4,9 +4,590 @@
     "src/ui/registry.json",
     "src/ui/*.ts",
     "src/lib/registry.json",
-    "src/lib/behaviors/*.ts"
+    "src/lib/behaviors/*.ts",
+    "src/stylex/registry.json",
+    "src/pleat/registry.json",
+    "scripts/behavior-catalog.mjs"
   ],
   "componentCount": 128,
+  "behaviors": [
+    {
+      "slug": "roving-focus",
+      "title": "Roving Focus",
+      "group": "Focus and keyboard",
+      "kind": "primitive",
+      "description": "Gives a composite one Tab stop and moves focus between enabled items.",
+      "docs": "/docs/behaviors/roving-focus",
+      "source": "src/lib/behaviors/roving-focus.ts"
+    },
+    {
+      "slug": "grid-focus",
+      "title": "Grid Focus",
+      "group": "Focus and keyboard",
+      "kind": "primitive",
+      "description": "Navigates by row and column, including cells outside the rendered window.",
+      "docs": "/docs/behaviors/grid-focus",
+      "source": "src/lib/behaviors/grid-focus.ts"
+    },
+    {
+      "slug": "spatial-focus",
+      "title": "Spatial Focus",
+      "group": "Focus and keyboard",
+      "kind": "primitive",
+      "description": "Finds the next focus target from its position on screen.",
+      "docs": "/docs/behaviors/spatial-focus",
+      "source": "src/lib/behaviors/spatial-focus.ts"
+    },
+    {
+      "slug": "focus-recovery",
+      "title": "Focus Recovery",
+      "group": "Focus and keyboard",
+      "kind": "primitive",
+      "description": "Restores focus when an item is removed or moves to a different collection.",
+      "docs": "/docs/behaviors/focus-recovery",
+      "source": "src/lib/behaviors/focus-recovery.ts"
+    },
+    {
+      "slug": "shortcuts",
+      "title": "Shortcuts",
+      "group": "Focus and keyboard",
+      "kind": "primitive",
+      "description": "Matches and formats keyboard shortcuts across platforms.",
+      "docs": "/docs/behaviors/shortcuts",
+      "source": "src/lib/behaviors/shortcuts.ts"
+    },
+    {
+      "slug": "typeahead",
+      "title": "Typeahead",
+      "group": "Focus and keyboard",
+      "kind": "primitive",
+      "description": "Finds options by typed prefix and clears the search after a delay.",
+      "docs": "/docs/behaviors/typeahead",
+      "source": "src/lib/behaviors/typeahead.ts"
+    },
+    {
+      "slug": "input-history",
+      "title": "Input History",
+      "group": "Focus and keyboard",
+      "kind": "primitive",
+      "description": "Recalls earlier input values from the keyboard.",
+      "docs": "/docs/behaviors/input-history",
+      "source": "src/lib/behaviors/input-history.ts"
+    },
+    {
+      "slug": "input-hints",
+      "title": "Input Hints",
+      "group": "Focus and keyboard",
+      "kind": "primitive",
+      "description": "Selects mobile keyboard and autofill hints by field purpose.",
+      "docs": "/docs/behaviors/input-hints",
+      "source": "src/lib/behaviors/input-hints.ts"
+    },
+    {
+      "slug": "parts",
+      "title": "Parts",
+      "group": "Focus and keyboard",
+      "kind": "primitive",
+      "description": "Builds stable part IDs and reads mounted parts in DOM order.",
+      "docs": "/docs/behaviors/parts",
+      "source": "src/lib/behaviors/parts.ts"
+    },
+    {
+      "slug": "text-dom",
+      "title": "Text Dom",
+      "group": "Focus and keyboard",
+      "kind": "primitive",
+      "description": "Resolves typeahead labels, locale, and keyboard composition.",
+      "docs": "/docs/behaviors/text-dom",
+      "source": "src/lib/behaviors/text-dom.ts"
+    },
+    {
+      "slug": "text-match",
+      "title": "Text Match",
+      "group": "Focus and keyboard",
+      "kind": "primitive",
+      "description": "Ranks search results and identifies matching text for highlighting.",
+      "docs": "/docs/behaviors/text-match",
+      "source": "src/lib/behaviors/text-match.ts"
+    },
+    {
+      "slug": "selection",
+      "title": "Selection",
+      "group": "Selection and lists",
+      "kind": "primitive",
+      "description": "Tracks selected keys and computes single, multiple, and range changes.",
+      "docs": "/docs/behaviors/selection",
+      "source": "src/lib/behaviors/selection.ts"
+    },
+    {
+      "slug": "listbox",
+      "title": "Listbox",
+      "group": "Selection and lists",
+      "kind": "primitive",
+      "description": "Calculates option navigation and typeahead targets for listbox views.",
+      "docs": "/docs/behaviors/listbox",
+      "source": "src/lib/behaviors/listbox.ts"
+    },
+    {
+      "slug": "anchored-listbox",
+      "title": "Anchored Listbox",
+      "group": "Selection and lists",
+      "kind": "primitive",
+      "description": "Manages a listbox popup, active option, selection intent, and focus.",
+      "docs": "/docs/behaviors/anchored-listbox",
+      "source": "src/lib/behaviors/anchored-listbox.ts"
+    },
+    {
+      "slug": "cell-range",
+      "title": "Cell Range",
+      "group": "Selection and lists",
+      "kind": "primitive",
+      "description": "Tracks a rectangular selection of grid cells.",
+      "docs": "/docs/behaviors/cell-range",
+      "source": "src/lib/behaviors/cell-range.ts"
+    },
+    {
+      "slug": "lasso",
+      "title": "Lasso",
+      "group": "Selection and lists",
+      "kind": "primitive",
+      "description": "Selects items intersecting a rectangle drawn with the pointer.",
+      "docs": "/docs/behaviors/lasso",
+      "source": "src/lib/behaviors/lasso.ts"
+    },
+    {
+      "slug": "virtualizer",
+      "title": "Virtualizer",
+      "group": "Selection and lists",
+      "kind": "primitive",
+      "description": "Tracks scroll and measurement state and computes the visible row window.",
+      "docs": "/docs/behaviors/virtualizer",
+      "source": "src/lib/behaviors/virtualizer.ts"
+    },
+    {
+      "slug": "stick-to-bottom",
+      "title": "Stick To Bottom",
+      "group": "Selection and lists",
+      "kind": "primitive",
+      "description": "Follows appended content while preserving the reader’s position when they scroll back.",
+      "docs": "/docs/behaviors/stick-to-bottom",
+      "source": "src/lib/behaviors/stick-to-bottom.ts"
+    },
+    {
+      "slug": "scroll-picker",
+      "title": "Scroll Picker",
+      "group": "Selection and lists",
+      "kind": "primitive",
+      "description": "Keeps a scrollable wheel aligned to its selected option.",
+      "docs": "/docs/behaviors/scroll-picker",
+      "source": "src/lib/behaviors/scroll-picker.ts"
+    },
+    {
+      "slug": "tree-collection",
+      "title": "Tree Collection",
+      "group": "Selection and lists",
+      "kind": "primitive",
+      "description": "Looks up tree relationships, visible rows, and checked states.",
+      "docs": "/docs/behaviors/tree-collection",
+      "source": "src/lib/behaviors/tree-collection.ts"
+    },
+    {
+      "slug": "popup",
+      "title": "Popup",
+      "group": "Popups and layers",
+      "kind": "primitive",
+      "description": "Tracks open state, dismissal reasons, and presence through exit.",
+      "docs": "/docs/behaviors/popup",
+      "source": "src/lib/behaviors/popup.ts"
+    },
+    {
+      "slug": "popup-behavior",
+      "title": "Popup Behavior",
+      "group": "Popups and layers",
+      "kind": "primitive",
+      "description": "Connects popup state to trigger, panel, and close attributes.",
+      "docs": "/docs/behaviors/popup-behavior",
+      "source": "src/lib/behaviors/popup-behavior.ts"
+    },
+    {
+      "slug": "modal",
+      "title": "Modal",
+      "group": "Popups and layers",
+      "kind": "primitive",
+      "description": "Manages native modal focus, Escape, and scroll locking.",
+      "docs": "/docs/behaviors/modal",
+      "source": "src/lib/behaviors/modal.ts"
+    },
+    {
+      "slug": "portal",
+      "title": "Portal",
+      "group": "Popups and layers",
+      "kind": "primitive",
+      "description": "Moves floating surfaces to the top layer or a scoped overlay root.",
+      "docs": "/docs/behaviors/portal",
+      "source": "src/lib/behaviors/portal.ts"
+    },
+    {
+      "slug": "popup-controller",
+      "title": "Popup Controller",
+      "group": "Popups and layers",
+      "kind": "primitive",
+      "description": "Requests a model-owned popup and correlates its result.",
+      "docs": "/docs/behaviors/popup-controller",
+      "source": "src/lib/behaviors/popup-controller.ts"
+    },
+    {
+      "slug": "hover-intent",
+      "title": "Hover Intent",
+      "group": "Popups and layers",
+      "kind": "primitive",
+      "description": "Opens and closes a surface after deliberate hover or focus changes.",
+      "docs": "/docs/behaviors/hover-intent",
+      "source": "src/lib/behaviors/hover-intent.ts"
+    },
+    {
+      "slug": "layer",
+      "title": "Layer",
+      "group": "Popups and layers",
+      "kind": "primitive",
+      "description": "Orders floating surfaces so Escape and outside interaction dismiss the right layer.",
+      "docs": "/docs/behaviors/layer",
+      "source": "src/lib/behaviors/layer.ts"
+    },
+    {
+      "slug": "position",
+      "title": "Position",
+      "group": "Popups and layers",
+      "kind": "primitive",
+      "description": "Positions floating elements beside anchors, points, or live rectangles.",
+      "docs": "/docs/behaviors/position",
+      "source": "src/lib/behaviors/position.ts"
+    },
+    {
+      "slug": "overlay-boundary",
+      "title": "Overlay Boundary",
+      "group": "Popups and layers",
+      "kind": "primitive",
+      "description": "Keeps theme variables and direction available when a popup uses a portal.",
+      "docs": "/docs/behaviors/overlay-boundary",
+      "source": "src/lib/overlay-boundary.ts"
+    },
+    {
+      "slug": "disclosure",
+      "title": "Disclosure",
+      "group": "Popups and layers",
+      "kind": "primitive",
+      "description": "Builds trigger and panel attributes from parent-owned expanded state.",
+      "docs": "/docs/behaviors/disclosure",
+      "source": "src/lib/disclosure.ts"
+    },
+    {
+      "slug": "animation",
+      "title": "Animation",
+      "group": "Popups and layers",
+      "kind": "primitive",
+      "description": "Tracks CSS entry and exit phases and ignores stale completions.",
+      "docs": "/docs/behaviors/animation",
+      "source": "src/lib/behaviors/animation.ts"
+    },
+    {
+      "slug": "motion",
+      "title": "Motion",
+      "group": "Popups and layers",
+      "kind": "primitive",
+      "description": "Coordinates a mounted view with its animation and presence lifecycle.",
+      "docs": "/docs/behaviors/motion",
+      "source": "src/lib/behaviors/motion.ts"
+    },
+    {
+      "slug": "drag",
+      "title": "Drag",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Tracks pointer capture, drag thresholds, movement samples, and cancellation.",
+      "docs": "/docs/behaviors/drag",
+      "source": "src/lib/behaviors/drag.ts"
+    },
+    {
+      "slug": "drag-and-drop",
+      "title": "Drag And Drop",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Tracks pointer or keyboard dragging and emits a drop or cancellation intent.",
+      "docs": "/docs/behaviors/drag-and-drop",
+      "source": "src/lib/behaviors/drag-and-drop.ts"
+    },
+    {
+      "slug": "reorder",
+      "title": "Reorder",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Keeps a draft list or grid order until a move is committed or canceled.",
+      "docs": "/docs/behaviors/reorder",
+      "source": "src/lib/behaviors/reorder.ts"
+    },
+    {
+      "slug": "tree-reorder",
+      "title": "Tree Reorder",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Reorders and nests tree branches with their descendants.",
+      "docs": "/docs/behaviors/tree-reorder",
+      "source": "src/lib/behaviors/tree-reorder.ts"
+    },
+    {
+      "slug": "transfer",
+      "title": "Transfer",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Moves selected items within or between collections.",
+      "docs": "/docs/behaviors/transfer",
+      "source": "src/lib/behaviors/transfer.ts"
+    },
+    {
+      "slug": "move",
+      "title": "Move",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Tracks pointer and keyboard movement of a freely positioned item.",
+      "docs": "/docs/behaviors/move",
+      "source": "src/lib/behaviors/move.ts"
+    },
+    {
+      "slug": "resize",
+      "title": "Resize",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Computes size changes from resize handles and configured bounds.",
+      "docs": "/docs/behaviors/resize",
+      "source": "src/lib/behaviors/resize.ts"
+    },
+    {
+      "slug": "swipe-actions",
+      "title": "Swipe Actions",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Reveals row actions and recognizes gestures that commit a swipe.",
+      "docs": "/docs/behaviors/swipe-actions",
+      "source": "src/lib/behaviors/swipe-actions.ts"
+    },
+    {
+      "slug": "hold-repeat",
+      "title": "Hold Repeat",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Runs actions after a press is held and repeats them while held.",
+      "docs": "/docs/behaviors/hold-repeat",
+      "source": "src/lib/behaviors/hold-repeat.ts"
+    },
+    {
+      "slug": "velocity",
+      "title": "Velocity",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Estimates release velocity from recent pointer samples.",
+      "docs": "/docs/behaviors/velocity",
+      "source": "src/lib/behaviors/velocity.ts"
+    },
+    {
+      "slug": "gesture",
+      "title": "Gesture",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Projects release travel, samples springs, and classifies strokes.",
+      "docs": "/docs/behaviors/gesture",
+      "source": "src/lib/behaviors/gesture.ts"
+    },
+    {
+      "slug": "findable",
+      "title": "Findable",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Reveals collapsed content when native browser search matches.",
+      "docs": "/docs/behaviors/findable",
+      "source": "src/lib/behaviors/findable.ts"
+    },
+    {
+      "slug": "rubber-band",
+      "title": "Rubber Band",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Adds resistance when a gesture moves past its allowed bounds.",
+      "docs": "/docs/behaviors/rubber-band",
+      "source": "src/lib/behaviors/rubber-band.ts"
+    },
+    {
+      "slug": "area",
+      "title": "Area",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Maps input to a bounded value along two axes.",
+      "docs": "/docs/behaviors/area",
+      "source": "src/lib/behaviors/area.ts"
+    },
+    {
+      "slug": "spans",
+      "title": "Spans",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Draws, moves, resizes, and places ranges on tracks.",
+      "docs": "/docs/behaviors/spans",
+      "source": "src/lib/behaviors/spans.ts"
+    },
+    {
+      "slug": "preview",
+      "title": "Preview",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Holds a temporary value while a user explores a control.",
+      "docs": "/docs/behaviors/preview",
+      "source": "src/lib/behaviors/preview.ts"
+    },
+    {
+      "slug": "viewport",
+      "title": "Viewport",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Pans and zooms a surface and transforms between screen and content coordinates.",
+      "docs": "/docs/behaviors/viewport",
+      "source": "src/lib/behaviors/viewport.ts"
+    },
+    {
+      "slug": "connect",
+      "title": "Connect",
+      "group": "Direct manipulation",
+      "kind": "primitive",
+      "description": "Tracks connection gestures between ports.",
+      "docs": "/docs/behaviors/connect",
+      "source": "src/lib/behaviors/connect.ts"
+    },
+    {
+      "slug": "inline-edit",
+      "title": "Inline Edit",
+      "group": "Forms and values",
+      "kind": "primitive",
+      "description": "Tracks in-place edit, commit, and cancel state.",
+      "docs": "/docs/behaviors/inline-edit",
+      "source": "src/lib/behaviors/inline-edit.ts"
+    },
+    {
+      "slug": "file-drop",
+      "title": "File Drop",
+      "group": "Forms and values",
+      "kind": "primitive",
+      "description": "Tracks file drag state and validates files selected or dropped by the user.",
+      "docs": "/docs/behaviors/file-drop",
+      "source": "src/lib/behaviors/file-drop.ts"
+    },
+    {
+      "slug": "announce",
+      "title": "Announce",
+      "group": "Platform and state",
+      "kind": "primitive",
+      "description": "Queues live-region announcements for assistive technology.",
+      "docs": "/docs/behaviors/announce",
+      "source": "src/lib/behaviors/announce.ts"
+    },
+    {
+      "slug": "avoid-keyboard",
+      "title": "Avoid Keyboard",
+      "group": "Platform and state",
+      "kind": "primitive",
+      "description": "Keeps focused controls visible above an on-screen keyboard.",
+      "docs": "/docs/behaviors/avoid-keyboard",
+      "source": "src/lib/behaviors/avoid-keyboard.ts"
+    },
+    {
+      "slug": "visual-viewport",
+      "title": "Visual Viewport",
+      "group": "Platform and state",
+      "kind": "primitive",
+      "description": "Observes visible viewport size, offsets, and zoom.",
+      "docs": "/docs/behaviors/visual-viewport",
+      "source": "src/lib/behaviors/visual-viewport.ts"
+    },
+    {
+      "slug": "pointer-kind",
+      "title": "Pointer Kind",
+      "group": "Platform and state",
+      "kind": "primitive",
+      "description": "Observes coarse and fine pointer capabilities and hover support.",
+      "docs": "/docs/behaviors/pointer-kind",
+      "source": "src/lib/behaviors/pointer-kind.ts"
+    },
+    {
+      "slug": "preference",
+      "title": "Preference",
+      "group": "Platform and state",
+      "kind": "primitive",
+      "description": "Tracks a serializable preference value across changes.",
+      "docs": "/docs/behaviors/preference",
+      "source": "src/lib/behaviors/preference.ts"
+    },
+    {
+      "slug": "color-scheme",
+      "title": "Color Scheme",
+      "group": "Platform and state",
+      "kind": "primitive",
+      "description": "Resolves light, dark, and system preferences.",
+      "docs": "/docs/behaviors/color-scheme",
+      "source": "src/lib/behaviors/color-scheme.ts"
+    },
+    {
+      "slug": "storage",
+      "title": "Storage",
+      "group": "Platform and state",
+      "kind": "primitive",
+      "description": "Reads and writes browser preferences through Foldkit effects.",
+      "docs": "/docs/behaviors/storage",
+      "source": "src/lib/behaviors/storage.ts"
+    },
+    {
+      "slug": "history",
+      "title": "History",
+      "group": "Platform and state",
+      "kind": "primitive",
+      "description": "Records application changes that can be undone or redone.",
+      "docs": "/docs/behaviors/history",
+      "source": "src/lib/behaviors/history.ts"
+    },
+    {
+      "slug": "change",
+      "title": "Change",
+      "group": "Platform and state",
+      "kind": "primitive",
+      "description": "Validates a proposed change and reports the accepted value with its source.",
+      "docs": "/docs/behaviors/change",
+      "source": "src/lib/behaviors/change.ts"
+    },
+    {
+      "slug": "undo-stack",
+      "title": "Undo Stack",
+      "group": "Platform and state",
+      "kind": "primitive",
+      "description": "Manages reversible operations and bounds their history.",
+      "docs": "/docs/behaviors/undo-stack",
+      "source": "src/lib/behaviors/undo-stack.ts"
+    },
+    {
+      "slug": "observe",
+      "title": "Observe",
+      "group": "Platform and state",
+      "kind": "primitive",
+      "description": "Exposes application state and change facts for inspection.",
+      "docs": "/docs/behaviors/observe",
+      "source": "src/lib/behaviors/observe.ts"
+    },
+    {
+      "slug": "agent",
+      "title": "Agent",
+      "group": "Platform and state",
+      "kind": "primitive",
+      "description": "Coordinates component actions and applies validated changes through the owning application.",
+      "docs": "/docs/behaviors/agent",
+      "source": "src/lib/behaviors/agent.ts"
+    }
+  ],
   "components": [
     {
       "slug": "accordion",
@@ -16,6 +597,7 @@
       "source": "src/ui/accordion.ts",
       "install": "npx creaseui add accordion",
       "dependencies": [
+        "Potti1234/creaseui/disclosure-behavior",
         "Potti1234/creaseui/accordion-state",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
@@ -105,7 +687,18 @@
           "kind": "function",
           "signature": "accordion<Msg>(props: AccordionProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "disclosure"
+        ],
+        "stylex": [
+          "disclosure"
+        ],
+        "pleat": [
+          "disclosure"
+        ]
+      }
     },
     {
       "slug": "action-bar",
@@ -171,7 +764,24 @@
           "kind": "function",
           "signature": "actionBarSeparator<Msg>(props: Readonly<{ class?: string; }>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "layer",
+          "roving-focus",
+          "text-dom"
+        ],
+        "stylex": [
+          "layer",
+          "roving-focus",
+          "text-dom"
+        ],
+        "pleat": [
+          "layer",
+          "roving-focus",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "alert-dialog",
@@ -184,7 +794,8 @@
         "Potti1234/creaseui/alert-dialog-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/dialog-behavior"
       ],
       "examples": [
         "Basic",
@@ -216,7 +827,24 @@
           "kind": "function",
           "signature": "alertDialog<Msg>(props: AlertDialogProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "modal",
+          "popup"
+        ],
+        "stylex": [
+          "animation",
+          "modal",
+          "popup"
+        ],
+        "pleat": [
+          "animation",
+          "modal",
+          "popup"
+        ]
+      }
     },
     {
       "slug": "alert",
@@ -285,7 +913,12 @@
           "kind": "function",
           "signature": "alertDescription<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "aspect-ratio",
@@ -314,7 +947,12 @@
           "kind": "function",
           "signature": "aspectRatio<Msg>(props: AspectRatioProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "attachment",
@@ -393,7 +1031,12 @@
           "kind": "function",
           "signature": "attachmentTrigger<Msg>(props: Readonly<{ onClick: Msg; label: string; class?: string; }>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "avatar-group",
@@ -463,7 +1106,12 @@
           "kind": "function",
           "signature": "avatarStatusDot<Msg>(props: AvatarStatusDotProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "avatar",
@@ -579,7 +1227,12 @@
           "kind": "function",
           "signature": "avatarGroupCount<Msg>(props: AvatarGroupCountProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "badge",
@@ -623,7 +1276,12 @@
           "kind": "function",
           "signature": "badge<Msg>(props: BadgeProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "banner",
@@ -633,6 +1291,7 @@
       "source": "src/ui/banner.ts",
       "install": "npx creaseui add banner",
       "dependencies": [
+        "Potti1234/creaseui/disclosure-behavior",
         "Potti1234/creaseui/banner-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/crease-theme",
@@ -717,7 +1376,18 @@
           "kind": "function",
           "signature": "banner<Msg>(props: BannerProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "disclosure"
+        ],
+        "stylex": [
+          "disclosure"
+        ],
+        "pleat": [
+          "disclosure"
+        ]
+      }
     },
     {
       "slug": "blockquote",
@@ -746,7 +1416,12 @@
           "kind": "function",
           "signature": "blockquote<Msg>(props: BlockquoteProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "breadcrumb",
@@ -841,7 +1516,12 @@
           "kind": "function",
           "signature": "breadcrumbEllipsis<Msg>(props: BreadcrumbEllipsisProps = {}, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "bubble",
@@ -898,7 +1578,12 @@
           "kind": "function",
           "signature": "bubbleReactions<Msg>(props: ChildrenProps & Readonly<{ side?: 'top' | 'bottom'; align?: 'start' | 'end'; ariaLabel?: string; }>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "button-group",
@@ -967,7 +1652,12 @@
           "kind": "function",
           "signature": "buttonGroupText<Msg>(props: ButtonGroupTextProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "button",
@@ -1030,7 +1720,12 @@
           "kind": "function",
           "signature": "buttonLink<Msg>(props: ButtonLinkProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "calendar",
@@ -1143,7 +1838,7 @@
         {
           "name": "CalendarViewOptions",
           "kind": "type",
-          "signature": "CalendarViewOptions = Readonly<{ captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>"
+          "signature": "CalendarViewOptions = Readonly<{ captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarPrimitive.CalendarRange; weekNumbers?: boolean; }>"
         },
         {
           "name": "calendarView",
@@ -1153,14 +1848,19 @@
         {
           "name": "CalendarProps",
           "kind": "type",
-          "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior…"
+          "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarPrimitiv…"
         },
         {
           "name": "calendar",
           "kind": "function",
           "signature": "calendar<Msg>(props: CalendarProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "card",
@@ -1227,7 +1927,12 @@
           "kind": "value",
           "signature": "cardFooter: value"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "carousel",
@@ -1269,7 +1974,18 @@
           "kind": "function",
           "signature": "carousel<Msg>(props: CarouselProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "roving-focus"
+        ],
+        "stylex": [
+          "roving-focus"
+        ],
+        "pleat": [
+          "roving-focus"
+        ]
+      }
     },
     {
       "slug": "center",
@@ -1313,7 +2029,12 @@
           "kind": "function",
           "signature": "center<Msg>(props: CenterProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "chart",
@@ -1509,7 +2230,12 @@
           "kind": "function",
           "signature": "donutChart<Msg>(props: DonutChartProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "chat-reasoning",
@@ -1581,7 +2307,12 @@
           "kind": "function",
           "signature": "chatReasoning<Msg>(props: ChatReasoningProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "checkbox",
@@ -1619,7 +2350,12 @@
           "kind": "function",
           "signature": "checkbox<Msg>(props: CheckboxProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "circular-progress",
@@ -1630,7 +2366,8 @@
       "install": "npx creaseui add circular-progress",
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/progress-normalization"
       ],
       "examples": [
         "Circular Progress",
@@ -1662,7 +2399,12 @@
           "kind": "function",
           "signature": "circularProgress<Msg>(props: CircularProgressProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "code-block",
@@ -1760,7 +2502,12 @@
           "kind": "function",
           "signature": "codeBlock<Msg>(props: CodeBlockProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "code",
@@ -1800,7 +2547,12 @@
           "kind": "function",
           "signature": "code<Msg>(props: CodeProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "collapsible",
@@ -1810,6 +2562,7 @@
       "source": "src/ui/collapsible.ts",
       "install": "npx creaseui add collapsible",
       "dependencies": [
+        "Potti1234/creaseui/disclosure-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -1833,7 +2586,18 @@
           "kind": "function",
           "signature": "collapsible<Msg>(props: CollapsibleProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "disclosure"
+        ],
+        "stylex": [
+          "disclosure"
+        ],
+        "pleat": [
+          "disclosure"
+        ]
+      }
     },
     {
       "slug": "color-picker",
@@ -1997,19 +2761,54 @@
         {
           "name": "colorPickerContent",
           "kind": "function",
-          "signature": "colorPickerContent<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html"
+          "signature": "colorPickerContent<Msg>(props: ChannelProps<Msg> & Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; }>, h: HtmlBuilder<Msg>): Html"
         },
         {
           "name": "ColorPickerProps",
           "kind": "type",
-          "signature": "ColorPickerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?: string; contentClass?: string; }>"
+          "signature": "ColorPickerProps<Msg> = Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?…"
         },
         {
           "name": "colorPicker",
           "kind": "function",
           "signature": "colorPicker<Msg>(props: ColorPickerProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "area",
+          "drag",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "preview",
+          "text-dom"
+        ],
+        "stylex": [
+          "animation",
+          "area",
+          "drag",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "preview",
+          "text-dom"
+        ],
+        "pleat": [
+          "animation",
+          "area",
+          "drag",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "preview",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "combobox",
@@ -2023,7 +2822,8 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/overlay-boundary-behavior",
         "Potti1234/creaseui/text-match-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/combobox-behavior"
       ],
       "examples": [
         "Demo",
@@ -2145,7 +2945,42 @@
           "kind": "value",
           "signature": "combobox: value"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "listbox",
+          "overlay-boundary",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "text-match",
+          "typeahead"
+        ],
+        "stylex": [
+          "animation",
+          "listbox",
+          "overlay-boundary",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "text-match",
+          "typeahead"
+        ],
+        "pleat": [
+          "animation",
+          "listbox",
+          "overlay-boundary",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "text-match",
+          "typeahead"
+        ]
+      }
     },
     {
       "slug": "command",
@@ -2159,7 +2994,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/shortcuts-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/combobox-behavior"
       ],
       "examples": [
         "Demo",
@@ -2260,7 +3096,45 @@
           "kind": "value",
           "signature": "commandPalette: value"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "announce",
+          "listbox",
+          "portal",
+          "position",
+          "roving-focus",
+          "shortcuts",
+          "text-dom",
+          "text-match",
+          "typeahead"
+        ],
+        "stylex": [
+          "animation",
+          "announce",
+          "listbox",
+          "portal",
+          "position",
+          "roving-focus",
+          "shortcuts",
+          "text-dom",
+          "text-match",
+          "typeahead"
+        ],
+        "pleat": [
+          "animation",
+          "announce",
+          "listbox",
+          "portal",
+          "position",
+          "roving-focus",
+          "shortcuts",
+          "text-dom",
+          "text-match",
+          "typeahead"
+        ]
+      }
     },
     {
       "slug": "context-menu",
@@ -2361,7 +3235,21 @@
           "kind": "function",
           "signature": "contextMenu<Item extends string, Msg>(props: ContextMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "popup",
+          "shortcuts"
+        ],
+        "stylex": [
+          "popup",
+          "shortcuts"
+        ],
+        "pleat": [
+          "popup",
+          "shortcuts"
+        ]
+      }
     },
     {
       "slug": "data-grid",
@@ -2388,7 +3276,30 @@
           "kind": "function",
           "signature": "dataGrid<Row>(props: Readonly<{ model: DataGrid.Model; config: DataGridConfig<Row>; }>, h: HtmlBuilder<DataGrid.Message>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "announce",
+          "cell-range",
+          "grid-focus",
+          "inline-edit",
+          "undo-stack"
+        ],
+        "stylex": [
+          "announce",
+          "cell-range",
+          "grid-focus",
+          "inline-edit",
+          "undo-stack"
+        ],
+        "pleat": [
+          "announce",
+          "cell-range",
+          "grid-focus",
+          "inline-edit",
+          "undo-stack"
+        ]
+      }
     },
     {
       "slug": "data-table",
@@ -2398,6 +3309,7 @@
       "source": "src/ui/data-table.ts",
       "install": "npx creaseui add data-table",
       "dependencies": [
+        "Potti1234/creaseui/checkbox-behavior",
         "Potti1234/creaseui/button",
         "Potti1234/creaseui/calendar",
         "Potti1234/creaseui/checkbox",
@@ -2439,7 +3351,54 @@
           "kind": "function",
           "signature": "dataTable<Row, Msg>(props: DataTableProps<Row, Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "anchored-listbox",
+          "animation",
+          "input-hints",
+          "layer",
+          "listbox",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "text-match",
+          "typeahead"
+        ],
+        "stylex": [
+          "anchored-listbox",
+          "animation",
+          "input-hints",
+          "layer",
+          "listbox",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "text-match",
+          "typeahead"
+        ],
+        "pleat": [
+          "anchored-listbox",
+          "animation",
+          "input-hints",
+          "layer",
+          "listbox",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "text-match",
+          "typeahead"
+        ]
+      }
     },
     {
       "slug": "date-input",
@@ -2456,7 +3415,8 @@
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-picker-behavior",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "examples": [
         "Date Input",
@@ -2537,7 +3497,33 @@
           "kind": "function",
           "signature": "dateInput<Msg>(props: DateInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "stylex": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "pleat": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "date-picker",
@@ -2672,7 +3658,36 @@
           "kind": "function",
           "signature": "datePicker<Msg>(props: DatePickerProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "layer",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "stylex": [
+          "animation",
+          "layer",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "pleat": [
+          "animation",
+          "layer",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "date-range-input",
@@ -2688,7 +3703,8 @@
         "Potti1234/creaseui/date-parse-behavior",
         "Potti1234/creaseui/date-range-input-behavior",
         "Potti1234/creaseui/icons",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "examples": [
         "Date Range Input",
@@ -2776,7 +3792,33 @@
           "kind": "function",
           "signature": "dateRangeInput<Msg>(props: DateRangeInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "stylex": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "pleat": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "date-time-input",
@@ -2794,7 +3836,8 @@
         "Potti1234/creaseui/date-time-input-behavior",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/time-parse-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/popover-behavior"
       ],
       "examples": [
         "Date Time Input",
@@ -2887,7 +3930,33 @@
           "kind": "function",
           "signature": "dateTimeInput<Msg>(props: DateTimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "stylex": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "pleat": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "dialog",
@@ -3022,7 +4091,24 @@
           "kind": "function",
           "signature": "dialog<Msg>(props: DialogProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "modal",
+          "popup"
+        ],
+        "stylex": [
+          "animation",
+          "modal",
+          "popup"
+        ],
+        "pleat": [
+          "animation",
+          "modal",
+          "popup"
+        ]
+      }
     },
     {
       "slug": "direction",
@@ -3049,7 +4135,12 @@
           "kind": "function",
           "signature": "direction<Msg>(props: Readonly<{ direction: Direction; children: ReadonlyArray<Html | string>; class?: string; }>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "drawer",
@@ -3061,7 +4152,8 @@
       "dependencies": [
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/drawer-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/dialog-behavior"
       ],
       "examples": [
         "Activity goal",
@@ -3172,7 +4264,30 @@
           "kind": "function",
           "signature": "drawer<Msg>(props: DrawerProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "drag",
+          "modal",
+          "popup",
+          "velocity"
+        ],
+        "stylex": [
+          "animation",
+          "drag",
+          "modal",
+          "popup",
+          "velocity"
+        ],
+        "pleat": [
+          "animation",
+          "drag",
+          "modal",
+          "popup",
+          "velocity"
+        ]
+      }
     },
     {
       "slug": "dropdown-menu",
@@ -3305,7 +4420,21 @@
           "kind": "function",
           "signature": "dropdownMenu<Item extends string, Msg>(props: DropdownMenuProps<Item, Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "popup",
+          "shortcuts"
+        ],
+        "stylex": [
+          "popup",
+          "shortcuts"
+        ],
+        "pleat": [
+          "popup",
+          "shortcuts"
+        ]
+      }
     },
     {
       "slug": "empty",
@@ -3374,7 +4503,12 @@
           "kind": "value",
           "signature": "emptyContent: value"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "field-status",
@@ -3413,7 +4547,12 @@
           "kind": "function",
           "signature": "fieldStatus<Msg>(props: FieldStatusProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "field",
@@ -3457,13 +4596,13 @@
         },
         {
           "name": "fieldSetLegendId",
-          "kind": "value",
-          "signature": "fieldSetLegendId: value"
+          "kind": "re-export",
+          "signature": "export { fieldSetLegendId } from '@/lib/field'"
         },
         {
           "name": "fieldSetDescriptionId",
-          "kind": "value",
-          "signature": "fieldSetDescriptionId: value"
+          "kind": "re-export",
+          "signature": "export { fieldSetDescriptionId } from '@/lib/field'"
         },
         {
           "name": "FieldSetProps",
@@ -3570,7 +4709,12 @@
           "kind": "function",
           "signature": "fieldError<Msg>(props: FieldErrorProps = {}, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "file-input",
@@ -3651,7 +4795,18 @@
           "kind": "function",
           "signature": "fileInput<Msg>(props: FileInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "file-drop"
+        ],
+        "stylex": [
+          "file-drop"
+        ],
+        "pleat": [
+          "file-drop"
+        ]
+      }
     },
     {
       "slug": "form",
@@ -3747,7 +4902,12 @@
           "kind": "function",
           "signature": "formMessage<Msg>(props: FormMessageProps = {}, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "grid",
@@ -3818,7 +4978,12 @@
           "kind": "function",
           "signature": "gridSpan<Msg>(props: GridSpanProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "heading",
@@ -3870,7 +5035,12 @@
           "kind": "function",
           "signature": "heading<Msg>(props: HeadingProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "hover-card",
@@ -4001,7 +5171,24 @@
           "kind": "function",
           "signature": "hoverCard<Msg>(props: HoverCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "hover-intent",
+          "position",
+          "text-dom"
+        ],
+        "stylex": [
+          "hover-intent",
+          "position",
+          "text-dom"
+        ],
+        "pleat": [
+          "hover-intent",
+          "position",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "icon",
@@ -4048,7 +5235,12 @@
           "kind": "function",
           "signature": "icon<Msg>(props: IconProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "indicator",
@@ -4110,7 +5302,12 @@
           "kind": "function",
           "signature": "radioIndicator<Msg>(props: RadioIndicatorProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "info-tip",
@@ -4197,7 +5394,29 @@
           "kind": "function",
           "signature": "infoTip<Msg>(props: InfoTipProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "hover-intent",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "stylex": [
+          "hover-intent",
+          "overlay-boundary",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "pleat": [
+          "hover-intent",
+          "overlay-boundary",
+          "portal",
+          "position",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "input-group",
@@ -4296,7 +5515,12 @@
           "kind": "function",
           "signature": "inputGroupTextarea<Msg>(props: InputGroupTextareaProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "input-otp",
@@ -4337,7 +5561,12 @@
           "kind": "function",
           "signature": "inputOtpSeparator<Msg>(h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "input",
@@ -4378,7 +5607,18 @@
           "kind": "function",
           "signature": "input<Msg>(props: InputProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "input-hints"
+        ],
+        "stylex": [
+          "input-hints"
+        ],
+        "pleat": [
+          "input-hints"
+        ]
+      }
     },
     {
       "slug": "item",
@@ -4511,7 +5751,12 @@
           "kind": "function",
           "signature": "itemSeparator<Msg>(props: ItemSeparatorProps = {}, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "kbd",
@@ -4543,7 +5788,12 @@
           "kind": "function",
           "signature": "kbdGroup<Msg>(props: Slot, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "label",
@@ -4572,7 +5822,12 @@
           "kind": "function",
           "signature": "label<Msg>(props: LabelProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "lightbox",
@@ -4585,7 +5840,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/lightbox-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/dialog-behavior"
       ],
       "examples": [
         "Lightbox",
@@ -4664,7 +5920,27 @@
           "kind": "function",
           "signature": "lightbox<Msg>(props: LightboxProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "modal",
+          "popup",
+          "viewport"
+        ],
+        "stylex": [
+          "animation",
+          "modal",
+          "popup",
+          "viewport"
+        ],
+        "pleat": [
+          "animation",
+          "modal",
+          "popup",
+          "viewport"
+        ]
+      }
     },
     {
       "slug": "link",
@@ -4714,7 +5990,29 @@
           "kind": "function",
           "signature": "link<Msg>(props: LinkProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "hover-intent",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "stylex": [
+          "hover-intent",
+          "overlay-boundary",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "pleat": [
+          "hover-intent",
+          "overlay-boundary",
+          "portal",
+          "position",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "list-input",
@@ -4808,7 +6106,27 @@
           "kind": "function",
           "signature": "listInput<T, Msg>(props: ListInputProps<T, Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "announce",
+          "change",
+          "focus-recovery",
+          "reorder"
+        ],
+        "stylex": [
+          "announce",
+          "change",
+          "focus-recovery",
+          "reorder"
+        ],
+        "pleat": [
+          "announce",
+          "change",
+          "focus-recovery",
+          "reorder"
+        ]
+      }
     },
     {
       "slug": "list",
@@ -4864,7 +6182,12 @@
           "kind": "function",
           "signature": "listItem<Msg>(props: ListItemProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "log-stream",
@@ -4950,7 +6273,18 @@
           "kind": "function",
           "signature": "logStream<Msg>(props: LogStreamProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "stick-to-bottom"
+        ],
+        "stylex": [
+          "stick-to-bottom"
+        ],
+        "pleat": [
+          "stick-to-bottom"
+        ]
+      }
     },
     {
       "slug": "map-arc",
@@ -4983,7 +6317,12 @@
           "kind": "re-export",
           "signature": "export { MapArcProps } from '@/lib/map-layers'"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "map-cluster",
@@ -5011,7 +6350,12 @@
           "kind": "re-export",
           "signature": "export { MapClusterLayerProps } from '@/lib/map-layers'"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "map-controls",
@@ -5040,7 +6384,12 @@
           "kind": "function",
           "signature": "mapControls<Msg>(props: MapControlsProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "map-geojson",
@@ -5068,7 +6417,12 @@
           "kind": "re-export",
           "signature": "export { MapGeoJSONProps } from '@/lib/map-layers'"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "map-localization",
@@ -5106,7 +6460,12 @@
           "kind": "re-export",
           "signature": "export { MapTranslations } from '@/lib/map-style'"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "map-marker",
@@ -5150,7 +6509,12 @@
           "kind": "function",
           "signature": "markerTooltip<Msg>(props: Readonly<{ children: ReadonlyArray<Html | string>; }>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "map-popup",
@@ -5179,7 +6543,12 @@
           "kind": "function",
           "signature": "mapPopup<Msg>(props: MapPopupProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "map-route",
@@ -5207,7 +6576,12 @@
           "kind": "re-export",
           "signature": "export { MapRouteProps } from '@/lib/map-layers'"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "map-styles",
@@ -5250,7 +6624,12 @@
           "kind": "re-export",
           "signature": "export { MapPalette } from '@/lib/map-style'"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "map",
@@ -5304,7 +6683,12 @@
           "kind": "function",
           "signature": "map<Msg>(props: MapProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "markdown",
@@ -5433,7 +6817,12 @@
           "kind": "function",
           "signature": "markdown<Msg>(props: MarkdownProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "marker",
@@ -5483,7 +6872,12 @@
           "kind": "function",
           "signature": "markerContent<Msg>(props: ChildrenProps & Readonly<{ shimmer?: boolean; }>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "menubar",
@@ -5567,7 +6961,24 @@
           "kind": "function",
           "signature": "menubar<Item extends string, Msg>(props: MenubarProps<Item, Msg> | LegacyMenubarProps<Item, Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "popup",
+          "roving-focus",
+          "shortcuts"
+        ],
+        "stylex": [
+          "popup",
+          "roving-focus",
+          "shortcuts"
+        ],
+        "pleat": [
+          "popup",
+          "roving-focus",
+          "shortcuts"
+        ]
+      }
     },
     {
       "slug": "message-scroller",
@@ -5670,7 +7081,18 @@
           "kind": "function",
           "signature": "messageScrollerButton<Msg>(props: Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; direction?: 'start' | 'end'; class?: string; }>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "stick-to-bottom"
+        ],
+        "stylex": [
+          "stick-to-bottom"
+        ],
+        "pleat": [
+          "stick-to-bottom"
+        ]
+      }
     },
     {
       "slug": "message",
@@ -5737,7 +7159,12 @@
           "kind": "function",
           "signature": "messageActions<Msg>(props: ChildrenProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "metadata-list",
@@ -5819,7 +7246,12 @@
           "kind": "function",
           "signature": "metadataListItem<Msg>(props: MetadataListItemProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "mobile-nav",
@@ -5832,7 +7264,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/mobile-nav-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/dialog-behavior"
       ],
       "examples": [
         "Mobile Nav",
@@ -5926,7 +7359,24 @@
           "kind": "function",
           "signature": "mobileNavToggle<Msg>(props: MobileNavToggleProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "modal",
+          "popup"
+        ],
+        "stylex": [
+          "animation",
+          "modal",
+          "popup"
+        ],
+        "pleat": [
+          "animation",
+          "modal",
+          "popup"
+        ]
+      }
     },
     {
       "slug": "more-menu",
@@ -6002,7 +7452,21 @@
           "kind": "function",
           "signature": "moreMenu<Msg>(props: MoreMenuProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "popup",
+          "shortcuts"
+        ],
+        "stylex": [
+          "popup",
+          "shortcuts"
+        ],
+        "pleat": [
+          "popup",
+          "shortcuts"
+        ]
+      }
     },
     {
       "slug": "multi-selector",
@@ -6019,7 +7483,8 @@
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/multi-selector-behavior",
         "Potti1234/creaseui/multi-selector-view-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/anchored-listbox-behavior"
       ],
       "examples": [
         "Multi Selector",
@@ -6096,7 +7561,62 @@
           "kind": "function",
           "signature": "multiSelector<Msg>(props: MultiSelectorProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "anchored-listbox",
+          "animation",
+          "drag",
+          "layer",
+          "listbox",
+          "modal",
+          "popup",
+          "portal",
+          "position",
+          "roving-focus",
+          "selection",
+          "text-dom",
+          "text-match",
+          "typeahead",
+          "velocity"
+        ],
+        "stylex": [
+          "anchored-listbox",
+          "animation",
+          "drag",
+          "layer",
+          "listbox",
+          "modal",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "roving-focus",
+          "selection",
+          "text-dom",
+          "text-match",
+          "typeahead",
+          "velocity"
+        ],
+        "pleat": [
+          "anchored-listbox",
+          "animation",
+          "drag",
+          "layer",
+          "listbox",
+          "modal",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "roving-focus",
+          "selection",
+          "text-dom",
+          "text-match",
+          "typeahead",
+          "velocity"
+        ]
+      }
     },
     {
       "slug": "native-select",
@@ -6106,6 +7626,7 @@
       "source": "src/ui/native-select.ts",
       "install": "npx creaseui add native-select",
       "dependencies": [
+        "Potti1234/creaseui/field-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/utils"
@@ -6158,7 +7679,12 @@
           "kind": "function",
           "signature": "nativeSelect<Msg>(props: NativeSelectProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "navigation-menu",
@@ -6215,7 +7741,33 @@
           "kind": "function",
           "signature": "navigationMenuDisclosure<Msg>(props: NavigationMenuDisclosureProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "stylex": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "pleat": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "number-input",
@@ -6289,7 +7841,18 @@
           "kind": "function",
           "signature": "numberInput<Msg>(props: NumberInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "hold-repeat"
+        ],
+        "stylex": [
+          "hold-repeat"
+        ],
+        "pleat": [
+          "hold-repeat"
+        ]
+      }
     },
     {
       "slug": "overflow-list",
@@ -6382,7 +7945,12 @@
           "kind": "function",
           "signature": "overflowList<Msg>(props: OverflowListProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "pagination",
@@ -6468,7 +8036,12 @@
           "kind": "function",
           "signature": "paginationPages<Msg>(props: PaginationRecipeProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "popover",
@@ -6572,7 +8145,33 @@
           "kind": "function",
           "signature": "popover<Msg>(props: PopoverProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "stylex": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "pleat": [
+          "animation",
+          "layer",
+          "popup",
+          "portal",
+          "position",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "progress",
@@ -6606,7 +8205,12 @@
           "kind": "function",
           "signature": "progress<Msg>(props: ProgressProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "radio-group",
@@ -6672,7 +8276,12 @@
           "kind": "function",
           "signature": "radioGroup<Msg>(props: RadioGroupProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "resizable",
@@ -6753,8 +8362,52 @@
           "name": "resizableGroup",
           "kind": "function",
           "signature": "resizableGroup<Msg>(props: ResizableGroupProps<Msg>, h: HtmlBuilder<Msg>): Html"
+        },
+        {
+          "name": "BoxResizeMessage",
+          "kind": "re-export",
+          "signature": "export { BoxResizeMessage } from '@/lib/box-resizer'"
+        },
+        {
+          "name": "BoxResizeModel",
+          "kind": "re-export",
+          "signature": "export { BoxResizeModel } from '@/lib/box-resizer'"
+        },
+        {
+          "name": "initBoxResize",
+          "kind": "re-export",
+          "signature": "export { initBoxResize } from '@/lib/box-resizer'"
+        },
+        {
+          "name": "resizableBox",
+          "kind": "re-export",
+          "signature": "export { resizableBox } from '@/lib/box-resizer'"
+        },
+        {
+          "name": "updateBoxResize",
+          "kind": "re-export",
+          "signature": "export { updateBoxResize } from '@/lib/box-resizer'"
+        },
+        {
+          "name": "ResizableBoxProps",
+          "kind": "re-export",
+          "signature": "export { type ResizableBoxProps } from '@/lib/box-resizer'"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "drag",
+          "resize"
+        ],
+        "stylex": [
+          "drag",
+          "resize"
+        ],
+        "pleat": [
+          "drag",
+          "resize"
+        ]
+      }
     },
     {
       "slug": "scroll-area",
@@ -6783,7 +8436,12 @@
           "kind": "function",
           "signature": "scrollArea<Msg>(props: ScrollAreaProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "section",
@@ -6832,7 +8490,12 @@
           "kind": "function",
           "signature": "section<Msg>(props: SectionProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "select",
@@ -6845,7 +8508,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/overlay-boundary-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/anchored-listbox-behavior"
       ],
       "examples": [
         "Basic",
@@ -6910,7 +8574,7 @@
         {
           "name": "SelectBundle",
           "kind": "type",
-          "signature": "SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value, Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
+          "signature": "SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
         },
         {
           "name": "create",
@@ -6927,7 +8591,45 @@
           "kind": "value",
           "signature": "select: value"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "anchored-listbox",
+          "animation",
+          "listbox",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "typeahead"
+        ],
+        "stylex": [
+          "anchored-listbox",
+          "animation",
+          "listbox",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "typeahead"
+        ],
+        "pleat": [
+          "anchored-listbox",
+          "animation",
+          "listbox",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "typeahead"
+        ]
+      }
     },
     {
       "slug": "selectable-card",
@@ -6978,7 +8680,12 @@
           "kind": "function",
           "signature": "selectableCard<Msg>(props: SelectableCardProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "separator",
@@ -7009,7 +8716,12 @@
           "kind": "function",
           "signature": "separator<Msg>(props: SeparatorProps = {}, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "sheet",
@@ -7022,7 +8734,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/sheet-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/dialog-behavior"
       ],
       "examples": [
         "Basic",
@@ -7258,7 +8971,27 @@
           "kind": "function",
           "signature": "sheetSwitcher<Msg>(props: SheetSwitcherProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "modal",
+          "popup",
+          "velocity"
+        ],
+        "stylex": [
+          "animation",
+          "modal",
+          "popup",
+          "velocity"
+        ],
+        "pleat": [
+          "animation",
+          "modal",
+          "popup",
+          "velocity"
+        ]
+      }
     },
     {
       "slug": "sidebar",
@@ -7492,7 +9225,18 @@
           "kind": "function",
           "signature": "sidebarMenuSubButton<Msg>(props: SidebarMenuSubButtonProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "storage"
+        ],
+        "stylex": [
+          "storage"
+        ],
+        "pleat": [
+          "storage"
+        ]
+      }
     },
     {
       "slug": "skeleton",
@@ -7525,7 +9269,12 @@
           "kind": "function",
           "signature": "skeleton<Msg>(props: SkeletonProps = {}, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "slider",
@@ -7694,7 +9443,12 @@
           "kind": "function",
           "signature": "multiSlider<Msg>(props: MultiSliderProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "spinner",
@@ -7729,7 +9483,12 @@
           "kind": "function",
           "signature": "spinner<Msg>(props: SpinnerProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "stack",
@@ -7834,7 +9593,12 @@
           "kind": "function",
           "signature": "stackItem<Msg>(props: StackItemProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "stat",
@@ -7883,7 +9647,12 @@
           "kind": "function",
           "signature": "stat<Msg>(props: StatProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "status-dot",
@@ -7924,7 +9693,12 @@
           "kind": "function",
           "signature": "statusDot<Msg>(props: StatusDotProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "stepper",
@@ -8015,7 +9789,12 @@
           "kind": "function",
           "signature": "stepper<Msg>(props: StepperProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "switch",
@@ -8064,7 +9843,12 @@
           "kind": "re-export",
           "signature": "export { switchControl as switch } from "
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "table",
@@ -8137,7 +9921,12 @@
           "kind": "value",
           "signature": "tableCaption: value"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "tabs",
@@ -8148,6 +9937,7 @@
       "install": "npx creaseui add tabs",
       "dependencies": [
         "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/tabs-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -8242,7 +10032,18 @@
           "kind": "value",
           "signature": "tabs: value"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "roving-focus"
+        ],
+        "stylex": [
+          "roving-focus"
+        ],
+        "pleat": [
+          "roving-focus"
+        ]
+      }
     },
     {
       "slug": "text",
@@ -8333,7 +10134,12 @@
           "kind": "function",
           "signature": "text<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "textarea",
@@ -8367,7 +10173,12 @@
           "kind": "function",
           "signature": "textarea<Msg>(props: TextareaProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "thumbnail",
@@ -8404,7 +10215,12 @@
           "kind": "function",
           "signature": "thumbnail<Msg>(props: ThumbnailProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "time-input",
@@ -8485,7 +10301,45 @@
           "kind": "function",
           "signature": "timeInput<Msg>(props: TimeInputProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "anchored-listbox",
+          "animation",
+          "listbox",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "typeahead"
+        ],
+        "stylex": [
+          "anchored-listbox",
+          "animation",
+          "listbox",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "typeahead"
+        ],
+        "pleat": [
+          "anchored-listbox",
+          "animation",
+          "listbox",
+          "overlay-boundary",
+          "popup",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "typeahead"
+        ]
+      }
     },
     {
       "slug": "timer",
@@ -8556,7 +10410,12 @@
           "kind": "function",
           "signature": "timer<Msg>(props: TimerProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "timestamp",
@@ -8669,7 +10528,24 @@
           "kind": "function",
           "signature": "timestamp<Msg>(props: TimestampProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "hover-intent",
+          "position",
+          "text-dom"
+        ],
+        "stylex": [
+          "hover-intent",
+          "position",
+          "text-dom"
+        ],
+        "pleat": [
+          "hover-intent",
+          "position",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "toast",
@@ -8710,7 +10586,21 @@
           "kind": "function",
           "signature": "toast<Msg>(props: ToastProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "focus-recovery"
+        ],
+        "stylex": [
+          "animation",
+          "focus-recovery"
+        ],
+        "pleat": [
+          "animation",
+          "focus-recovery"
+        ]
+      }
     },
     {
       "slug": "toggle-group",
@@ -8796,7 +10686,18 @@
           "kind": "function",
           "signature": "toggleGroup<Msg>(props: ToggleGroupProps<string, Msg> | LegacyToggleGroupProps<string, Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "roving-focus"
+        ],
+        "stylex": [
+          "roving-focus"
+        ],
+        "pleat": [
+          "roving-focus"
+        ]
+      }
     },
     {
       "slug": "toggle",
@@ -8807,6 +10708,7 @@
       "install": "npx creaseui add toggle",
       "dependencies": [
         "class-variance-authority@^0.7.1",
+        "Potti1234/creaseui/button-behavior",
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/utils"
       ],
@@ -8839,7 +10741,12 @@
           "kind": "function",
           "signature": "toggle<Msg>(props: ToggleProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "token",
@@ -8882,7 +10789,12 @@
           "kind": "function",
           "signature": "token<Msg>(props: TokenProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "tokenizer",
@@ -8895,7 +10807,8 @@
         "Potti1234/creaseui/crease-theme",
         "Potti1234/creaseui/icons",
         "Potti1234/creaseui/tokenizer-behavior",
-        "Potti1234/creaseui/utils"
+        "Potti1234/creaseui/utils",
+        "Potti1234/creaseui/combobox-behavior"
       ],
       "examples": [
         "Tokenizer",
@@ -8968,7 +10881,41 @@
           "kind": "function",
           "signature": "tokenizer<Msg>(props: TokenizerProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "animation",
+          "focus-recovery",
+          "listbox",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "typeahead"
+        ],
+        "stylex": [
+          "animation",
+          "focus-recovery",
+          "listbox",
+          "overlay-boundary",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "typeahead"
+        ],
+        "pleat": [
+          "animation",
+          "focus-recovery",
+          "listbox",
+          "overlay-boundary",
+          "portal",
+          "position",
+          "roving-focus",
+          "text-dom",
+          "typeahead"
+        ]
+      }
     },
     {
       "slug": "toolbar",
@@ -9036,7 +10983,18 @@
           "kind": "function",
           "signature": "toolbar<Msg>(props: ToolbarProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "roving-focus"
+        ],
+        "stylex": [
+          "roving-focus"
+        ],
+        "pleat": [
+          "roving-focus"
+        ]
+      }
     },
     {
       "slug": "tooltip",
@@ -9128,7 +11086,29 @@
           "kind": "function",
           "signature": "tooltip<Msg>(props: TooltipProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "hover-intent",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "stylex": [
+          "hover-intent",
+          "overlay-boundary",
+          "portal",
+          "position",
+          "text-dom"
+        ],
+        "pleat": [
+          "hover-intent",
+          "overlay-boundary",
+          "portal",
+          "position",
+          "text-dom"
+        ]
+      }
     },
     {
       "slug": "top-nav",
@@ -9320,7 +11300,21 @@
           "kind": "function",
           "signature": "topNav<Msg>(props: TopNavProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "popup",
+          "roving-focus"
+        ],
+        "stylex": [
+          "popup",
+          "roving-focus"
+        ],
+        "pleat": [
+          "popup",
+          "roving-focus"
+        ]
+      }
     },
     {
       "slug": "transfer-list",
@@ -9411,7 +11405,27 @@
           "kind": "function",
           "signature": "transferList<Msg>(props: TransferListProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "drag",
+          "drag-and-drop",
+          "focus-recovery",
+          "input-hints"
+        ],
+        "stylex": [
+          "drag",
+          "drag-and-drop",
+          "focus-recovery",
+          "input-hints"
+        ],
+        "pleat": [
+          "drag",
+          "drag-and-drop",
+          "focus-recovery",
+          "input-hints"
+        ]
+      }
     },
     {
       "slug": "tree-list",
@@ -9518,7 +11532,7 @@
         {
           "name": "ViewInputs",
           "kind": "type",
-          "signature": "ViewInputs = Readonly<{ items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class?: string; }>"
+          "signature": "ViewInputs = Readonly<{ reorderable?: boolean; items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class…"
         },
         {
           "name": "view",
@@ -9535,7 +11549,30 @@
           "kind": "function",
           "signature": "treeList<Msg>(props: TreeListProps<Msg>, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "drag",
+          "parts",
+          "tree-collection",
+          "tree-reorder",
+          "typeahead"
+        ],
+        "stylex": [
+          "drag",
+          "parts",
+          "tree-collection",
+          "tree-reorder",
+          "typeahead"
+        ],
+        "pleat": [
+          "drag",
+          "parts",
+          "tree-collection",
+          "tree-reorder",
+          "typeahead"
+        ]
+      }
     },
     {
       "slug": "typography",
@@ -9621,7 +11658,12 @@
           "kind": "function",
           "signature": "typographyMuted<Msg>(props: TextProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "visually-hidden",
@@ -9656,7 +11698,12 @@
           "kind": "function",
           "signature": "visuallyHidden<Msg>(props: VisuallyHiddenProps, h: HtmlBuilder<Msg>): Html"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [],
+        "stylex": [],
+        "pleat": []
+      }
     },
     {
       "slug": "avoid-keyboard",
@@ -9665,7 +11712,9 @@
       "docs": "/docs/components/avoid-keyboard",
       "source": "src/lib/behaviors/avoid-keyboard.ts",
       "install": "npx creaseui add avoid-keyboard",
-      "dependencies": [],
+      "dependencies": [
+        "Potti1234/creaseui/visual-viewport-behavior"
+      ],
       "examples": [
         "Keyboard-aware footer",
         "A little breathing room"
@@ -9721,7 +11770,21 @@
           "kind": "value",
           "signature": "AvoidKeyboard: value"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "avoid-keyboard",
+          "visual-viewport"
+        ],
+        "stylex": [
+          "avoid-keyboard",
+          "visual-viewport"
+        ],
+        "pleat": [
+          "avoid-keyboard",
+          "visual-viewport"
+        ]
+      }
     },
     {
       "slug": "connect",
@@ -9871,7 +11934,18 @@
           "kind": "value",
           "signature": "view: value"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "connect"
+        ],
+        "stylex": [
+          "connect"
+        ],
+        "pleat": [
+          "connect"
+        ]
+      }
     },
     {
       "slug": "pointer-kind",
@@ -9966,7 +12040,18 @@
           "kind": "value",
           "signature": "subscriptions: value"
         }
-      ]
+      ],
+      "behaviors": {
+        "tailwind": [
+          "pointer-kind"
+        ],
+        "stylex": [
+          "pointer-kind"
+        ],
+        "pleat": [
+          "pointer-kind"
+        ]
+      }
     }
   ]
 }

@@ -3,12 +3,16 @@
    (arrows, Home/End, Enter/Space activation, 500ms typeahead buffer) adapted
    to foldkit's model/update/command structure. */
 
-import { Effect, Option, Schema as S } from 'effect'
+import { Effect, Option, Schema as S, Stream } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
 import * as Dom from 'foldkit/dom'
 import { defineMessageUnion } from 'foldkit/message'
+import * as Mount from 'foldkit/mount'
+import * as Drag from '@/lib/behaviors/drag'
 
+import * as Parts from '@/lib/behaviors/parts'
+import * as TreeReorder from '@/lib/behaviors/tree-reorder'
 import * as TreeCollection from '@/lib/behaviors/tree-collection'
 import * as Typeahead from '@/lib/behaviors/typeahead'
 
@@ -47,6 +51,13 @@ export const Model = S.Struct({
       hook performs on mount. */
   focusedId: S.Option(S.String),
   typeahead: Typeahead.Model,
+  treePlacements: S.optional(S.Array(TreeReorder.Placement)),
+  treeDraft: S.optional(
+    S.Struct({
+      id: S.String,
+      placements: S.Array(TreeReorder.Placement),
+    }),
+  ),
 })
 export type Model = typeof Model.Type
 
@@ -60,6 +71,11 @@ const TypeaheadCandidate = S.Struct({
 })
 
 export const Message = defineMessageUnion({
+  DroppedTreePointer: { placement: TreeReorder.Placement },
+  GrabbedTreeListItem: { id: S.String },
+  RepositionedTreeListItem: { placement: TreeReorder.Placement },
+  DroppedTreeListItem: {},
+  CancelledTreeListReorder: {},
   ToggledTreeListItem: { id: S.String, isExpanded: S.Boolean },
   FocusedTreeListItem: { id: S.String },
   MovedTreeListFocus: { id: S.String },
@@ -98,8 +114,181 @@ export const init = (config: InitConfig): Model => ({
 // Pure helpers shared by view (resolving keydown intents) and tests.
 // ---------------------------------------------------------------------------
 
+export const reorderedItems = (
+  items: ReadonlyArray<TreeListItemData>,
+  model: Model,
+): ReadonlyArray<TreeListItemData> =>
+  [
+    ...(model.treePlacements ?? []),
+    ...(model.treeDraft?.placements ?? []),
+  ].reduce((current, placement) => TreeReorder.place(current, placement), items)
+
+const reorderRowSelector = '[data-slot="tree-list-item"]'
+const reorderItemSelector = '[role="treeitem"][data-tree-id]'
+const treeSelector = '[data-slot="tree-list"]'
+
+export const ObserveTreeReorder = Mount.defineStream('ObserveTreeReorder', {
+  messages: [Message.DroppedTreePointer],
+  execute: ({ element }) =>
+    !(element instanceof HTMLElement)
+      ? Stream.empty
+      : Drag.observeDrag<typeof Message.DroppedTreePointer.Type>(
+          element,
+          (down, send) => {
+            if (
+              !(down.target instanceof Element) ||
+              down.pointerType !== 'mouse'
+            )
+              return
+            const row = down.target.closest<HTMLElement>(reorderRowSelector)
+            const source = row?.closest<HTMLElement>(reorderItemSelector)
+            const id = source?.dataset.treeId
+            if (
+              row === null ||
+              row === undefined ||
+              source === undefined ||
+              source === null ||
+              id === undefined ||
+              source.hasAttribute('data-tree-disabled') ||
+              row.closest(treeSelector) !== element
+            )
+              return
+            let active = false
+            return {
+              captureElement: row,
+              threshold: Drag.dragThreshold,
+              cancelOnEscape: true,
+              onStart: () => {
+                active = true
+              },
+              onMove: () => {},
+              onEnd: (event, cancelled) => {
+                if (!active || cancelled) return
+                const targetRow = element.ownerDocument
+                  .elementFromPoint(event.clientX, event.clientY)
+                  ?.closest<HTMLElement>(reorderRowSelector)
+                const target =
+                  targetRow?.closest<HTMLElement>(reorderItemSelector)
+                const targetId = target?.dataset.treeId
+                if (
+                  targetRow == null ||
+                  target == null ||
+                  targetId === undefined ||
+                  source.contains(target) ||
+                  target.closest(treeSelector) !== element
+                )
+                  return
+
+                const rect = targetRow.getBoundingClientRect()
+                const isMiddle =
+                  event.clientY > rect.top + rect.height / 3 &&
+                  event.clientY < rect.bottom - rect.height / 3
+                const nest =
+                  isMiddle && !target.hasAttribute('data-tree-disabled')
+                const parent =
+                  target.parentElement?.closest<HTMLElement>(
+                    reorderItemSelector,
+                  )
+                const siblings =
+                  target.parentElement === null
+                    ? []
+                    : Parts.elements(
+                        target.parentElement,
+                        reorderItemSelector,
+                        'data-tree-id',
+                        { direct: true },
+                      )
+                const next =
+                  siblings[
+                    siblings.findIndex(part => part.element === target) + 1
+                  ]
+                if (
+                  !nest &&
+                  event.clientY >= rect.top + rect.height / 2 &&
+                  next?.element === source
+                )
+                  return
+                send(
+                  Message.DroppedTreePointer({
+                    placement: {
+                      id,
+                      parent: nest
+                        ? targetId
+                        : (parent?.dataset.treeId ?? null),
+                      before: nest
+                        ? null
+                        : event.clientY < rect.top + rect.height / 2
+                          ? targetId
+                          : (next?.key ?? null),
+                    },
+                  }),
+                )
+              },
+            }
+          },
+        ),
+})
+
+export const reorderKey = (
+  items: ReadonlyArray<TreeListItemData>,
+  model: Model,
+  key: string,
+  modifiers: Readonly<{
+    shiftKey: boolean
+    ctrlKey: boolean
+    altKey: boolean
+    metaKey: boolean
+  }>,
+  direction: 'ltr' | 'rtl',
+): Option.Option<Message> => {
+  if (modifiers.altKey || modifiers.ctrlKey || modifiers.metaKey)
+    return Option.none()
+  const draft = model.treeDraft
+  if (draft === undefined) {
+    const id = Option.getOrUndefined(model.focusedId)
+    if (
+      key !== ' ' ||
+      !modifiers.shiftKey ||
+      id === undefined ||
+      !visibleItems(items, model).some(
+        item => item.id === id && !item.isDisabled,
+      )
+    )
+      return Option.none()
+    return Option.some(Message.GrabbedTreeListItem({ id }))
+  }
+  if (key === 'Escape' || key === 'Tab')
+    return key === 'Escape'
+      ? Option.some(Message.CancelledTreeListReorder())
+      : Option.none()
+  if (key === ' ' || key === 'Enter')
+    return Option.some(Message.DroppedTreeListItem())
+  const movement =
+    key === 'ArrowUp'
+      ? 'up'
+      : key === 'ArrowDown'
+        ? 'down'
+        : key === 'ArrowRight'
+          ? direction === 'rtl'
+            ? 'outdent'
+            : 'indent'
+          : key === 'ArrowLeft'
+            ? direction === 'rtl'
+              ? 'indent'
+              : 'outdent'
+            : undefined
+  if (movement === undefined) return Option.none()
+  const placement = TreeReorder.placementFor(items, draft.id, movement)
+  return placement === undefined
+    ? Option.some(Message.GrabbedTreeListItem({ id: draft.id }))
+    : Option.some(Message.RepositionedTreeListItem({ placement }))
+}
+
 export const isItemExpanded = (item: TreeListItemData, model: Model): boolean =>
-  model.expandedOverrides[item.id] ?? item.isExpanded === true
+  model.treeDraft?.placements.some(
+    placement => placement.parent === item.id,
+  ) === true ||
+  (model.expandedOverrides[item.id] ?? item.isExpanded === true)
 
 export const hasChildren = (item: TreeListItemData): boolean =>
   item.children !== undefined && item.children.length > 0
@@ -201,17 +390,29 @@ const NAVIGATION_KEYS: ReadonlySet<string> = new Set([
 const itemText = (item: TreeListItemData): string =>
   item.typeaheadText ?? (typeof item.label === 'string' ? item.label : '')
 
-export const itemDomId = (treeId: string, itemId: string): string =>
-  `${treeId}-item-${encodeURIComponent(itemId)}`
+export const itemDomId = (treeId: string, itemId: string): string => {
+  const separator = '-item-'
+  const prefix = treeId + separator
+  // Keep legacy IDs when the first separator identifies the tree boundary
+  // and the result is outside the framed part namespace.
+  if (
+    !treeId.startsWith('part:') &&
+    !/\s/.test(treeId) &&
+    prefix.indexOf(separator) === treeId.length
+  ) {
+    return prefix + Parts.idPart(itemId)
+  }
+  return Parts.keyedPartId(treeId, 'item', itemId)
+}
 
 export const itemActionDomId = (treeId: string, itemId: string): string =>
-  `${itemDomId(treeId, itemId)}-action`
+  Parts.keyedPartId(treeId, 'action', itemId)
 
 export const itemLabelDomId = (treeId: string, itemId: string): string =>
-  `${itemDomId(treeId, itemId)}-label`
+  Parts.keyedPartId(treeId, 'label', itemId)
 
 export const itemDescriptionDomId = (treeId: string, itemId: string): string =>
-  `${itemDomId(treeId, itemId)}-description`
+  Parts.keyedPartId(treeId, 'description', itemId)
 
 // ---------------------------------------------------------------------------
 // Keyboard resolution — pure so the view only ships the resolved intent.
@@ -374,7 +575,7 @@ export const FocusTreeListItem = Command.define('FocusTreeListItem', {
   args: { domId: S.String },
   messages: [Message.CompletedFocusTreeListItem],
   execute: ({ domId }) =>
-    Dom.focus(`[id="${domId}"]`).pipe(
+    Dom.focus(`#${CSS.escape(domId)}`).pipe(
       Effect.ignore,
       Effect.as(Message.CompletedFocusTreeListItem()),
     ),
@@ -386,7 +587,7 @@ export const ClickTreeListItemAction = Command.define(
     args: { domId: S.String },
     messages: [Message.CompletedClickTreeListItemAction],
     execute: ({ domId }) =>
-      Dom.clickElement(`[id="${domId}"]`).pipe(
+      Dom.clickElement(`#${CSS.escape(domId)}`).pipe(
         Effect.ignore,
         Effect.as(Message.CompletedClickTreeListItemAction()),
       ),
@@ -405,6 +606,71 @@ export type UpdateReturn = Update.ReturnWithOutMessage<
 
 export const update = (model: Model, message: Message): UpdateReturn => {
   switch (message._tag) {
+    case 'DroppedTreePointer': {
+      if (model.treeDraft !== undefined) return { model }
+      const { placement } = message
+      return {
+        model: {
+          ...model,
+          focusedId: Option.some(placement.id),
+          treePlacements: [...(model.treePlacements ?? []), placement],
+          expandedOverrides:
+            placement.parent === null
+              ? model.expandedOverrides
+              : { ...model.expandedOverrides, [placement.parent]: true },
+        },
+        commands: [
+          FocusTreeListItem({ domId: itemDomId(model.id, placement.id) }),
+        ],
+      }
+    }
+    case 'GrabbedTreeListItem':
+      return model.treeDraft === undefined
+        ? { model: { ...model, treeDraft: { id: message.id, placements: [] } } }
+        : { model }
+    case 'RepositionedTreeListItem': {
+      const draft = model.treeDraft
+      const { placement } = message
+      if (draft === undefined || draft.id !== placement.id) return { model }
+      return {
+        model: {
+          ...model,
+          treeDraft: { ...draft, placements: [...draft.placements, placement] },
+        },
+        commands: [FocusTreeListItem({ domId: itemDomId(model.id, draft.id) })],
+      }
+    }
+    case 'DroppedTreeListItem': {
+      if (model.treeDraft === undefined) return { model }
+      const { treeDraft, ...rest } = model
+      return {
+        model: {
+          ...rest,
+          expandedOverrides: {
+            ...rest.expandedOverrides,
+            ...Object.fromEntries(
+              treeDraft.placements.flatMap(placement =>
+                placement.parent === null ? [] : [[placement.parent, true]],
+              ),
+            ),
+          },
+          treePlacements: [
+            ...(model.treePlacements ?? []),
+            ...treeDraft.placements,
+          ],
+        },
+      }
+    }
+    case 'CancelledTreeListReorder': {
+      if (model.treeDraft === undefined) return { model }
+      const { treeDraft, ...rest } = model
+      return {
+        model: rest,
+        commands: [
+          FocusTreeListItem({ domId: itemDomId(model.id, treeDraft.id) }),
+        ],
+      }
+    }
     case 'ToggledTreeListItem': {
       const next = { ...model.expandedOverrides }
       // `isExpanded` carries the resolved next value — the view computed it

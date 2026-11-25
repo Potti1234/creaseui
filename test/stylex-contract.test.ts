@@ -144,12 +144,13 @@ describe('StyleX component authoring contract', () => {
     assert.match(stylex, /renderRadioGroup\(/u)
   })
 
-  it('keeps both Dialog skins on the canonical Foldkit submodel', () => {
+  it('keeps both Dialog skins on the shared CreaseUI submodel', () => {
     const tailwind = readFileSync('src/ui/dialog.ts', 'utf8')
     const stylex = readFileSync('src/stylex/dialog.ts', 'utf8')
 
     const behavior = readFileSync('src/lib/behaviors/dialog.ts', 'utf8')
-    assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
+    assert.match(behavior, /import \* as Popup from '\.\/popup'/u)
+    assert.match(behavior, /export const Model = S\.Struct/u)
     assert.match(
       tailwind,
       /import \* as DialogPrimitive from '@\/lib\/behaviors\/dialog'/u,
@@ -170,7 +171,10 @@ describe('StyleX component authoring contract', () => {
 
     // The shared engine wraps the Dialog submodel and adds the bottom-side
     // gesture state machine; both skins only render through DialogPrimitive.
-    assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
+    assert.match(
+      behavior,
+      /import \* as Dialog from ['"][^'"]*behaviors\/dialog['"]/u,
+    )
     for (const source of [tailwind, stylex]) {
       assert.match(source, /Model = SheetBehavior\.Model/u)
       assert.match(source, /update = SheetBehavior\.update/u)
@@ -187,7 +191,10 @@ describe('StyleX component authoring contract', () => {
     const tailwind = readFileSync('src/ui/drawer.ts', 'utf8')
     const stylex = readFileSync('src/stylex/drawer.ts', 'utf8')
 
-    assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
+    assert.match(
+      behavior,
+      /import \* as Dialog from ['"][^'"]*behaviors\/dialog['"]/u,
+    )
     assert.match(behavior, /ReleaseDecision/u)
     assert.match(behavior, /releaseVelocity/u)
     assert.match(behavior, /CancelledSwipe/u)
@@ -208,12 +215,14 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /EmblaCarousel\(/u)
   })
 
-  it('keeps Collapsible controlled on canonical Disclosure in both skins', () => {
-    const tailwind = readFileSync('src/ui/collapsible.ts', 'utf8')
-    const stylex = readFileSync('src/stylex/collapsible.ts', 'utf8')
-
-    for (const source of [tailwind, stylex]) {
-      assert.match(source, /DisclosurePrimitive\.view/u)
+  it('shares Disclosure across all renderers and keeps Collapsible controlled', () => {
+    for (const renderer of ['ui', 'stylex', 'pleat']) {
+      for (const component of ['accordion', 'banner', 'collapsible']) {
+        const source = readFileSync(`src/${renderer}/${component}.ts`, 'utf8')
+        assert.match(source, /@\/lib\/disclosure/u)
+        assert.match(source, /DisclosureBehavior\.view/u)
+      }
+      const source = readFileSync(`src/${renderer}/collapsible.ts`, 'utf8')
       assert.match(source, /isOpen: props\.isOpen/u)
       assert.match(source, /onToggle: props\.onToggle/u)
       assert.doesNotMatch(source, /export const Model/u)
@@ -276,12 +285,17 @@ describe('StyleX component authoring contract', () => {
     }
   })
 
-  it('keeps both Popover skins on the canonical Foldkit submodel', () => {
+  it('keeps both Popover skins on the shared CreaseUI submodel', () => {
     const tailwind = readFileSync('src/ui/popover.ts', 'utf8')
     const stylex = readFileSync('src/stylex/popover.ts', 'utf8')
 
     const behavior = readFileSync('src/lib/behaviors/popover.ts', 'utf8')
-    assert.match(behavior, /import \{ Popover \} from '@foldkit\/ui'/u)
+    assert.match(behavior, /import \* as Popup from '\.\/popup'/u)
+    assert.match(behavior, /import \* as Animation from '\.\/animation'/u)
+    assert.doesNotMatch(
+      behavior,
+      /import \{[^}]*\bPopover\b[^}]*\} from '@foldkit\/ui'/u,
+    )
     assert.match(
       tailwind,
       /import \* as PopoverPrimitive from '@\/lib\/behaviors\/popover'/u,
@@ -299,8 +313,14 @@ describe('StyleX component authoring contract', () => {
     const tailwind = readFileSync('src/ui/select.ts', 'utf8')
     const stylex = readFileSync('src/stylex/select.ts', 'utf8')
 
-    assert.match(tailwind, /Listbox as ListboxPrimitive/u)
-    assert.match(stylex, /Listbox as ListboxPrimitive/u)
+    assert.match(
+      tailwind,
+      /as ListboxPrimitive from '@\/lib\/behaviors\/anchored-listbox'/u,
+    )
+    assert.match(
+      stylex,
+      /as ListboxPrimitive from '@\/lib\/behaviors\/anchored-listbox'/u,
+    )
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/select['"]/u)
     assert.match(tailwind, /export const create = <\s*Value extends string/u)
     assert.match(stylex, /export const create = <\s*Value extends string/u)
@@ -318,8 +338,14 @@ describe('StyleX component authoring contract', () => {
     const tailwind = readFileSync('src/ui/combobox.ts', 'utf8')
     const stylex = readFileSync('src/stylex/combobox.ts', 'utf8')
 
-    assert.match(tailwind, /Combobox as ComboboxPrimitive/u)
-    assert.match(stylex, /Combobox as ComboboxPrimitive/u)
+    assert.match(
+      tailwind,
+      /as ComboboxPrimitive from '@\/lib\/behaviors\/combobox'/u,
+    )
+    assert.match(
+      stylex,
+      /as ComboboxPrimitive from '@\/lib\/behaviors\/combobox'/u,
+    )
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/combobox['"]/u)
     assert.match(tailwind, /export const create = <\s*Value extends string/u)
     assert.match(stylex, /export const create = <\s*Value extends string/u)
@@ -349,12 +375,12 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /window\.(?:innerWidth|innerHeight)/u)
   })
 
-  it('binds Tabs values once around the canonical roving-focus primitive', () => {
+  it('binds Tabs values once to the shared Tabs behavior', () => {
     const tailwind = readFileSync('src/ui/tabs.ts', 'utf8')
     const stylex = readFileSync('src/stylex/tabs.ts', 'utf8')
 
-    assert.match(tailwind, /Tabs as TabsPrimitive/u)
-    assert.match(stylex, /Tabs as TabsPrimitive/u)
+    assert.match(tailwind, /@\/lib\/behaviors\/tabs/u)
+    assert.match(stylex, /@\/lib\/behaviors\/tabs/u)
     assert.match(tailwind, /export const create = <\s*Value extends string/u)
     assert.match(stylex, /export const create = <\s*Value extends string/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/tabs['"]/u)
@@ -368,12 +394,12 @@ describe('StyleX component authoring contract', () => {
     )
   })
 
-  it('keeps Toggle controlled on the canonical button primitive in both skins', () => {
+  it('keeps Toggle controlled on shared native button attributes', () => {
     const tailwind = readFileSync('src/ui/toggle.ts', 'utf8')
     const stylex = readFileSync('src/stylex/toggle.ts', 'utf8')
 
-    assert.match(tailwind, /Button as ButtonPrimitive/u)
-    assert.match(stylex, /Button as ButtonPrimitive/u)
+    assert.match(tailwind, /nativeButtonAttributes/u)
+    assert.match(stylex, /nativeButtonAttributes/u)
     assert.match(tailwind, /h\.AriaPressed/u)
     assert.match(stylex, /h\.AriaPressed/u)
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/toggle['"]/u)
@@ -408,11 +434,11 @@ describe('StyleX component authoring contract', () => {
     assert.doesNotMatch(stylex, /from ['"]@\/ui\/slider['"]/u)
     assert.match(
       tailwind,
-      /\* as SliderPrimitive from '@\/lib\/behaviors\/slider'/u,
+      /\* as SliderBehavior from '@\/lib\/behaviors\/slider'/u,
     )
     assert.match(
       stylex,
-      /\* as SliderPrimitive from '@\/lib\/behaviors\/slider'/u,
+      /\* as SliderBehavior from '@\/lib\/behaviors\/slider'/u,
     )
   })
 
@@ -527,7 +553,10 @@ describe('StyleX component authoring contract', () => {
     const tailwind = readFileSync('src/ui/alert-dialog.ts', 'utf8')
     const stylex = readFileSync('src/stylex/alert-dialog.ts', 'utf8')
 
-    assert.match(behavior, /import \{ Dialog \} from '@foldkit\/ui'/u)
+    assert.match(
+      behavior,
+      /import \* as Dialog from ['"][^'"]*behaviors\/dialog['"]/u,
+    )
     assert.match(behavior, /ConfirmedAlertDialog/u)
     assert.match(behavior, /CancelledAlertDialog/u)
     assert.match(tailwind, /@\/lib\/alert-dialog/u)
@@ -557,7 +586,8 @@ describe('StyleX component authoring contract', () => {
 
     assert.match(behavior, /WaitBeforeShowingTooltip/u)
     assert.match(behavior, /WaitBeforeClosingTooltip/u)
-    assert.match(behavior, /TooltipPrimitive/u)
+    assert.match(behavior, /export const Model = S\.Struct/u)
+    assert.match(behavior, /Position\.bindAnchor/u)
     assert.match(behavior, /version/u)
     assert.match(tailwind, /@\/lib\/behaviors\/tooltip/u)
     assert.match(stylex, /@\/lib\/behaviors\/tooltip/u)

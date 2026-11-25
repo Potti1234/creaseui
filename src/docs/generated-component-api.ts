@@ -750,7 +750,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CalendarViewOptions",
       "kind": "type",
-      "signature": "CalendarViewOptions = Readonly<{ captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior.CalendarRange; weekNumbers?: boolean; }>"
+      "signature": "CalendarViewOptions = Readonly<{ captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarPrimitive.CalendarRange; weekNumbers?: boolean; }>"
     },
     {
       "name": "calendarView",
@@ -760,7 +760,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "CalendarProps",
       "kind": "type",
-      "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarBehavior…"
+      "signature": "CalendarProps<Msg> = Readonly<{ model: Model; maybeSelectedDate: Option.Option<FoldkitCalendar.CalendarDate>; toParentMessage: (message: Message) => Msg; captionLayout?: 'label' | 'dropdown'; class?: string; direction?: 'ltr' | 'rtl'; range?: CalendarPrimitiv…"
     },
     {
       "name": "calendar",
@@ -1357,12 +1357,12 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "colorPickerContent",
       "kind": "function",
-      "signature": "colorPickerContent<Msg>(props: ChannelProps<Msg>, h: HtmlBuilder<Msg>): Html"
+      "signature": "colorPickerContent<Msg>(props: ChannelProps<Msg> & Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; }>, h: HtmlBuilder<Msg>): Html"
     },
     {
       "name": "ColorPickerProps",
       "kind": "type",
-      "signature": "ColorPickerProps<Msg> = Readonly<{ model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?: string; contentClass?: string; }>"
+      "signature": "ColorPickerProps<Msg> = Readonly<{ presets?: ReadonlyArray<Picker.ColorPreset>; model: Model; toParentMessage: (message: Message) => Msg; trigger?: Html; triggerClass?: string; inline?: boolean; side?: Popover.PopoverSide; align?: Popover.PopoverAlign; class?…"
     },
     {
       "name": "colorPicker",
@@ -2428,13 +2428,13 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     },
     {
       "name": "fieldSetLegendId",
-      "kind": "value",
-      "signature": "fieldSetLegendId: value"
+      "kind": "re-export",
+      "signature": "export { fieldSetLegendId } from '@/lib/field'"
     },
     {
       "name": "fieldSetDescriptionId",
-      "kind": "value",
-      "signature": "fieldSetDescriptionId: value"
+      "kind": "re-export",
+      "signature": "export { fieldSetDescriptionId } from '@/lib/field'"
     },
     {
       "name": "FieldSetProps",
@@ -4744,6 +4744,36 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
       "name": "resizableGroup",
       "kind": "function",
       "signature": "resizableGroup<Msg>(props: ResizableGroupProps<Msg>, h: HtmlBuilder<Msg>): Html"
+    },
+    {
+      "name": "BoxResizeMessage",
+      "kind": "re-export",
+      "signature": "export { BoxResizeMessage } from '@/lib/box-resizer'"
+    },
+    {
+      "name": "BoxResizeModel",
+      "kind": "re-export",
+      "signature": "export { BoxResizeModel } from '@/lib/box-resizer'"
+    },
+    {
+      "name": "initBoxResize",
+      "kind": "re-export",
+      "signature": "export { initBoxResize } from '@/lib/box-resizer'"
+    },
+    {
+      "name": "resizableBox",
+      "kind": "re-export",
+      "signature": "export { resizableBox } from '@/lib/box-resizer'"
+    },
+    {
+      "name": "updateBoxResize",
+      "kind": "re-export",
+      "signature": "export { updateBoxResize } from '@/lib/box-resizer'"
+    },
+    {
+      "name": "ResizableBoxProps",
+      "kind": "re-export",
+      "signature": "export { type ResizableBoxProps } from '@/lib/box-resizer'"
     }
   ],
   "scroll-area": [
@@ -4844,7 +4874,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "SelectBundle",
       "kind": "type",
-      "signature": "SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value, Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
+      "signature": "SelectBundle<Value extends string> = Readonly<{ update: ReturnType<typeof ListboxPrimitive.create<Value>>['update']; select: <Item, Msg>(props: SelectProps<Item, Value, Msg>, h: HtmlBuilder<Msg>) => Html; }>"
     },
     {
       "name": "create",
@@ -6754,7 +6784,7 @@ export const componentApi: Readonly<Record<string, ReadonlyArray<ApiEntry>>> = {
     {
       "name": "ViewInputs",
       "kind": "type",
-      "signature": "ViewInputs = Readonly<{ items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class?: string; }>"
+      "signature": "ViewInputs = Readonly<{ reorderable?: boolean; items: ReadonlyArray<TreeListBehavior.TreeListItemData>; density?: TreeListBehavior.TreeListDensity; variant?: TreeListBehavior.TreeListVariant; header?: Html; ariaLabel?: string; direction?: 'ltr' | 'rtl'; class…"
     },
     {
       "name": "view",

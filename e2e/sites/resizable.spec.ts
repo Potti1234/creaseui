@@ -50,3 +50,25 @@ test('an RTL nested drag only resizes its own group', async ({ page }) => {
     .toBeGreaterThan(25)
   await expect(outer).toHaveAttribute('aria-valuenow', '50')
 })
+
+test('a box resizes with corner keys and cancels an active pointer draft', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/resizable')
+  const box = page.locator('#handle [data-slot="resizable-box"]')
+  const corner = box.getByRole('button', { name: 'Resize bottom right corner' })
+  await expect(box).toHaveCSS('width', '140px')
+  await corner.press('ArrowRight')
+  await expect(box).toHaveCSS('width', '142px')
+  const bounds = (await corner.boundingBox())!
+  await page.mouse.move(
+    bounds.x + bounds.width / 2,
+    bounds.y + bounds.height / 2,
+  )
+  await page.mouse.down()
+  await page.mouse.move(bounds.x + 24, bounds.y + 18, { steps: 4 })
+  await expect(box).not.toHaveCSS('width', '142px')
+  await page.keyboard.press('Escape')
+  await page.mouse.up()
+  await expect(box).toHaveCSS('width', '142px')
+})

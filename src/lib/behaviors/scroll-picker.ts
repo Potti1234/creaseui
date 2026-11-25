@@ -8,6 +8,7 @@ import { defineMessageUnion } from 'foldkit/message'
 import { defineView } from 'foldkit/submodel'
 
 import { observePicker } from './scroll-picker-dom'
+import { projectDistance } from './gesture'
 
 const clamp = (value: number, min: number, max: number): number =>
   Math.max(min, Math.min(max, value))
@@ -65,7 +66,7 @@ export const projectRelease = (
   offset: number,
   velocity: number,
   maxScroll: number,
-): number => clamp(offset - (velocity * 0.998) / (1 - 0.998), 0, maxScroll)
+): number => clamp(offset - projectDistance(velocity, 0.998), 0, maxScroll)
 
 export const Orientation = Schema.Literals(['vertical', 'horizontal'])
 export type Orientation = typeof Orientation.Type

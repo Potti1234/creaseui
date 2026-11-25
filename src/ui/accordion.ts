@@ -1,7 +1,7 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { defineView } from 'foldkit/submodel'
 
-import { Disclosure as DisclosurePrimitive } from '@foldkit/ui'
+import * as DisclosureBehavior from '@/lib/disclosure'
 
 import * as Icon from '@/lib/icon'
 import * as AccordionBehavior from '@/lib/accordion-state'
@@ -58,7 +58,7 @@ const render = <Msg>(
     viewInputs.items.map(item => {
       const isOpen = model.value.includes(item.value)
 
-      return DisclosurePrimitive.view(
+      return DisclosureBehavior.view(
         {
           id: itemDomId(model.id, item.value),
           isOpen,

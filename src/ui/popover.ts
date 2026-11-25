@@ -1,14 +1,9 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
 import * as PopoverPrimitive from '@/lib/behaviors/popover'
-
-import { themedAnchor, themedPopoverPanel } from '@/lib/overlay-boundary'
-
 import { cn } from '@/lib/utils'
 
-/* Ported from shadcn/ui popover.tsx on top of the foldkit Popover submodel.
-   Radix keyframe animations are finite transitions driven by foldkit's
-   data-closed phase. Pass isAnimated: true to init. */
+/* Pass isAnimated: true to init to use the Popover transition phases. */
 
 export const Model = PopoverPrimitive.Model
 export type Model = typeof Model.Type
@@ -25,7 +20,7 @@ export const RequestedOpen = PopoverPrimitive.Message.RequestedOpen
 export const RequestedClose = PopoverPrimitive.Message.RequestedClose
 
 const CONTENT_CLASS =
-  'z-50 w-max max-w-[calc(100vw-2rem)] origin-(--radix-popover-content-transform-origin) rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0 data-[closed]:scale-95'
+  'z-50 w-max max-w-[calc(100vw-2rem)] origin-(--transform-origin) rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 transition duration-200 ease-out motion-reduce:transition-none data-[closed]:opacity-0 data-[closed]:scale-95'
 
 const BACKDROP_CLASS = 'fixed inset-0 z-40'
 
@@ -67,9 +62,8 @@ export const popover = <Msg>(
     model: props.model,
     view: PopoverPrimitive.view,
     viewInputs: {
-      // Portaled panels must keep the owning theme scope (e.g. a `.dark`
-      // subtree), so the portal binds inherited variables at the detached root.
-      anchor: themedAnchor({ placement, gap: 4 }),
+      anchor: { placement, gap: 4, portal: false },
+      themedPortal: true,
       ...(props.focusSelector === undefined
         ? {}
         : { focusSelector: props.focusSelector }),
@@ -103,15 +97,6 @@ export const popover = <Msg>(
                   hp.div(
                     [
                       ...panel,
-                      hp.OnMount(
-                        themedPopoverPanel(
-                          `${props.model.id}-button`,
-                          { placement, gap: 4 },
-                          props.toParentMessage,
-                          props.focusSelector,
-                          PopoverPrimitive.arrowId(props.model.id),
-                        ),
-                      ),
                       hp.DataAttribute('slot', 'popover-content'),
                       ...(props.direction === undefined
                         ? []

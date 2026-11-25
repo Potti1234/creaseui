@@ -1,14 +1,19 @@
-import { Option } from 'effect'
+import { Option, Schema } from 'effect'
 import { Command } from 'foldkit'
 import type { HtmlBuilder } from 'foldkit/html'
 import * as Scene from 'foldkit/scene'
-import { describe, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
-import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
+import { Combobox as UpstreamCombobox } from '@foldkit/ui'
+
+import * as ComboboxPrimitive from '@/lib/behaviors/combobox'
+import * as PleatCombobox from '@/pleat/combobox'
 
 import * as StyleXCombobox from '@/stylex/combobox'
 import { AnchorThemedCombobox } from '@/lib/overlay-boundary'
 import * as TailwindCombobox from '@/ui/combobox'
+
+vi.mock('@/pleat/style', () => ({ className: () => 'pleat-test' }))
 
 /**
  * Behavioral parity suite ported from Base UI's combobox tests
@@ -416,6 +421,23 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
             'fruit-item-0',
           ),
           Scene.expect(option('apple')).toHaveAttr('data-active', ''),
+        )
+      })
+
+      it('ignores composing navigation keys and resumes on the next keypress', () => {
+        const composing = { shiftKey: false, isComposing: true }
+        Scene.scene(
+          { update, view: singleView(Single, FRUITS) },
+          Scene.given(initModel()),
+          Scene.keydown(input, 'ArrowDown', composing),
+          Scene.expectIgnored(),
+          Scene.expect(listbox).toBeAbsent(),
+          Scene.keydown(input, 'ArrowDown'),
+          ...resolveOpenedMounts,
+          Scene.expect(input).toHaveAttr(
+            'aria-activedescendant',
+            'fruit-item-0',
+          ),
         )
       })
 
@@ -1473,3 +1495,27 @@ const verifyRenderer = (name: string, Combobox: ComboboxModule) => {
 
 verifyRenderer('Tailwind', TailwindCombobox)
 verifyRenderer('StyleX', StyleXCombobox)
+
+verifyRenderer('Pleat', PleatCombobox)
+
+it('decodes persisted upstream single and multi Combobox models', () => {
+  const upstream = UpstreamCombobox.init({
+    id: 'persisted',
+    isAnimated: true,
+    isModal: true,
+    immediate: true,
+  })
+  const model = {
+    ...upstream,
+    isOpen: true,
+    maybeActiveItemIndex: Option.some(2),
+    inputValue: 'pe',
+  }
+  const saved = Schema.encodeSync(UpstreamCombobox.Model)(model)
+  expect(Schema.decodeUnknownSync(ComboboxPrimitive.Model)(saved)).toEqual(
+    model,
+  )
+  expect(
+    Schema.decodeUnknownSync(ComboboxPrimitive.Multi.Model)(saved),
+  ).toEqual(model)
+})

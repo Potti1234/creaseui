@@ -23,6 +23,18 @@ const modelAt = (path: string) => {
 }
 
 describe('application scenes', () => {
+  it('shows the not-found page at the former Field behavior URL', () => {
+    Scene.scene(
+      { update, view },
+      Scene.given(modelAt('/docs/behaviors/field')),
+      Scene.expect(Scene.text('No page at /docs/behaviors/field.')).toExist(),
+      Scene.Mount.resolve(
+        { name: 'site-header-nav' },
+        Message.CompletedScrollToTop(),
+      ),
+    )
+  })
+
   it('renders the landing route with accessible navigation and one heading', () => {
     Scene.scene(
       { update, view },

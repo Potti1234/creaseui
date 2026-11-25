@@ -95,16 +95,19 @@ const renderToggleGroup = <Value extends string, Msg>(
 ): Html => {
   const orderedItems =
     props.direction === 'rtl' ? [...props.items].reverse() : props.items
-  const firstEnabled = orderedItems.find(
-    item => item.isDisabled !== true,
+  const keys = orderedItems.map(item => item.value)
+  const isDisabled = (_value: Value, index: number) =>
+    orderedItems[index]?.isDisabled === true
+  const selected = orderedItems.find(
+    item =>
+      item.isDisabled !== true && props.selectedValues.includes(item.value),
   )?.value
   const focusedValue =
-    orderedItems.find(
-      item =>
-        item.isDisabled !== true && props.selectedValues.includes(item.value),
-    )?.value ??
-    firstEnabled ??
-    orderedItems[0]?.value
+    RovingFocus.tabStop(RovingFocus.init({ id: props.model.rovingFocus.id }), {
+      keys,
+      isDisabled,
+      ...(selected === undefined ? {} : { preferredKey: selected }),
+    }) ?? orderedItems[0]?.value
 
   if (focusedValue === undefined) {
     return h.div(
@@ -118,7 +121,7 @@ const renderToggleGroup = <Value extends string, Msg>(
     model: props.model.rovingFocus,
     view: bundle.view,
     viewInputs: {
-      keys: orderedItems.map(item => item.value),
+      keys,
       preferredKey: focusedValue,
       orientation: props.orientation === 'vertical' ? 'Vertical' : 'Horizontal',
       isDisabled: value =>

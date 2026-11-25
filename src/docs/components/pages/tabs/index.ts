@@ -12,12 +12,13 @@ export const tabsPage = authoredPage({
       'Switches between related panels while coordinating roving focus, keyboard navigation, and an application-owned selected value.',
     architecture:
       'Bind the domain value once with Tabs.create<Value>(). The child Model owns only roving focus and activation mode; the parent or route owns the selected value and passes it back every render. Delegate child Messages through the bound update, map Commands, and persist the typed Selected OutMessage.',
-    apiHref: 'https://foldkit.dev/ui/tabs',
+    apiHref:
+      'https://github.com/Potti1234/creaseui/blob/main/src/lib/behaviors/tabs.ts',
     composition: 'Tabs\n├── TabsList\n│   └── TabsTrigger\n└── TabsContent',
     styling:
       'Use the default contained treatment for settings and the line variant for section-level navigation. Keep labels short enough to scan as one set.',
     accessibility:
-      'Foldkit owns deterministic tab/tabpanel relationships and roving focus. Disabled tabs are skipped, manual mode separates focus from activation, and horizontal RTL order mirrors arrow navigation. ariaLabel distinguishes the set when nearby headings are insufficient.',
+      'The local Tabs behavior provides deterministic tab/tabpanel relationships and roving focus. Disabled tabs are skipped, manual mode separates focus from activation, and horizontal RTL order mirrors arrow navigation. ariaLabel distinguishes the set when nearby headings are insufficient.',
     keyboard: [
       ['Arrow keys', 'Moves focus between enabled tabs.'],
       ['Home / End', 'Moves to the first or last enabled tab.'],

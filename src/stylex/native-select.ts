@@ -1,7 +1,7 @@
 import { reset } from '@/ui/stylex/reset'
 import * as stylex from '@stylexjs/stylex'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { Select as SelectPrimitive } from '@foldkit/ui'
+import { nativeSelectParts } from '@/lib/field'
 import * as Icon from '@/lib/icon'
 import type { ComponentLayoutStyle } from './contracts'
 import { foundationTokens } from './foundations-tokens.stylex'
@@ -135,80 +135,68 @@ export type NativeSelectProps<Msg> = Readonly<{
 export const nativeSelect = <Msg>(
   p: NativeSelectProps<Msg>,
   h: HtmlBuilder<Msg>,
-): Html =>
-  SelectPrimitive.view(
-    {
-      id: p.id,
-      value: p.value,
-      onChange: p.onChange,
-      isDisabled: p.isDisabled ?? false,
-      isInvalid: p.isInvalid ?? false,
-      ...(p.name === undefined ? {} : { name: p.name }),
-      hasDescription: p.description !== undefined,
-      toView: ({ select, label, description }) => {
-        const element = h.span(
-          [
-            h.DataAttribute('slot', 'native-select-wrapper'),
-            h.Class(className(styles.wrapper, p.layoutStyle)),
-          ],
-          [
-            h.select(
-              [
-                ...select,
-                ...(p.direction === undefined ? [] : [h.Dir(p.direction)]),
-                h.DataAttribute('slot', 'native-select'),
-                h.DataAttribute('size', p.size ?? 'default'),
-                h.Class(
-                  className(
-                    reset.input,
-                    styles.control,
-                    p.isInvalid && styles.invalid,
-                    p.isDisabled && styles.disabled,
-                  ),
-                ),
-              ],
-              [
-                ...p.options.map(o => nativeSelectOption(o, h)),
-                ...(p.groups ?? []).map(g => nativeSelectOptGroup(g, h)),
-              ],
+): Html => {
+  const { select, label, description } = nativeSelectParts(p, h)
+  const element = h.span(
+    [
+      h.DataAttribute('slot', 'native-select-wrapper'),
+      h.Class(className(styles.wrapper, p.layoutStyle)),
+    ],
+    [
+      h.select(
+        [
+          ...select,
+          ...(p.direction === undefined ? [] : [h.Dir(p.direction)]),
+          h.DataAttribute('slot', 'native-select'),
+          h.DataAttribute('size', p.size ?? 'default'),
+          h.Class(
+            className(
+              reset.input,
+              styles.control,
+              p.isInvalid && styles.invalid,
+              p.isDisabled && styles.disabled,
             ),
-            h.span(
-              [
-                h.DataAttribute('slot', 'native-select-icon'),
-                h.Class(className(styles.icon)),
-              ],
-              [Icon.chevronDown({}, h)],
-            ),
-          ],
-        )
-        return p.label === undefined && p.description === undefined
-          ? element
-          : h.div(
-              [h.Class(className(styles.field))],
-              [
-                ...(p.label === undefined
-                  ? []
-                  : [
-                      h.label(
-                        [...label, h.Class(className(styles.label))],
-                        [p.label],
-                      ),
-                    ]),
-                element,
-                ...(p.description === undefined
-                  ? []
-                  : [
-                      h.p(
-                        [
-                          ...description,
-                          h.Class(className(reset.text, styles.description)),
-                        ],
-                        [p.description],
-                      ),
-                    ]),
-              ],
-            )
-      },
-    },
-    h,
+          ),
+        ],
+        [
+          ...p.options.map(o => nativeSelectOption(o, h)),
+          ...(p.groups ?? []).map(g => nativeSelectOptGroup(g, h)),
+        ],
+      ),
+      h.span(
+        [
+          h.DataAttribute('slot', 'native-select-icon'),
+          h.Class(className(styles.icon)),
+        ],
+        [Icon.chevronDown({}, h)],
+      ),
+    ],
   )
+  return p.label === undefined && p.description === undefined
+    ? element
+    : h.div(
+        [h.Class(className(styles.field))],
+        [
+          ...(p.label === undefined
+            ? []
+            : [
+                h.label(
+                  [...label, h.Class(className(styles.label))],
+                  [p.label],
+                ),
+              ]),
+          element,
+          ...(p.description === undefined
+            ? []
+            : [
+                h.p(
+                  [
+                    ...description,
+                    h.Class(className(reset.text, styles.description)),
+                  ],
+                  [p.description],
+                ),
+              ]),
+        ],
+      )
+}

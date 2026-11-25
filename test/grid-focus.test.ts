@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { Option } from 'effect'
+import { Window } from 'happy-dom'
 import * as Grid from '../src/lib/behaviors/grid-focus.ts'
 
 const move = (input: Partial<Grid.NavigationInput> = {}) =>
@@ -12,6 +13,143 @@ const move = (input: Partial<Grid.NavigationInput> = {}) =>
     ...input,
   })
 describe('GridFocus', () => {
+  it('selects only the cells whose active flag changed', () => {
+    const from = { row: 1, column: 2 }
+    const to = { row: 2, column: 2 }
+    assert.deepEqual(
+      Grid.byCell(Option.some(from), Option.some({ ...from })),
+      [],
+    )
+    assert.deepEqual(Grid.byCell(Option.some(from), Option.some(to)), [
+      { cell: from, isActive: false },
+      { cell: to, isActive: true },
+    ])
+    assert.deepEqual(Grid.byCell(Option.none(), Option.some(to)), [
+      { cell: to, isActive: true },
+    ])
+    assert.deepEqual(Grid.byCell(Option.some(from), Option.none()), [
+      { cell: from, isActive: false },
+    ])
+  })
+
+  it('reports one move fact with original keyboard context after reveal', () => {
+    const from = { row: 1, column: 0 }
+    const cell = { row: 9, column: 0 }
+    const model = Grid.focus(Grid.init({ id: 'grid' }), from).model
+    const context = { reason: 'keyboard', shift: true } as const
+    const moved = Grid.update(
+      model,
+      Grid.Message.MovedFocus({ cell, context }),
+      {
+        requiresReveal: () => true,
+        notifyMove: true,
+      },
+    )
+    const ready = Grid.update(
+      moved.model,
+      Grid.Message.RevealedCell({ version: 1 }),
+    )
+    assert.deepEqual(
+      ready.outMessage,
+      Grid.OutMessage.ActiveCellMoved({
+        from: Option.some(from),
+        cell,
+        context,
+      }),
+    )
+    assert.equal(
+      Grid.update(ready.model, Grid.Message.FocusedCell({ cell })).outMessage,
+      undefined,
+    )
+  })
+  it('reveals a newly mounted active descendant before publishing it', async () => {
+    const window = new Window()
+    try {
+      const root = window.document.createElement('div')
+      root.setAttribute('role', 'grid')
+      window.document.body.append(root)
+      const revealed: HTMLElement[] = []
+      const stop = Grid.observeActiveDescendant(
+        // Happy DOM supplies a separate declaration of the browser element.
+        // eslint-disable-next-line no-restricted-syntax
+        root as unknown as HTMLElement,
+        cell => {
+          assert.equal(root.hasAttribute('aria-activedescendant'), false)
+          revealed.push(cell)
+        },
+      )
+      const cell = window.document.createElement('div')
+      cell.setAttribute('role', 'gridcell')
+      cell.dataset.focused = 'true'
+      assert.equal(root.hasAttribute('aria-activedescendant'), false)
+      root.append(cell)
+      await window.happyDOM.waitUntilComplete()
+      assert.deepEqual(revealed, [cell])
+      assert.ok(cell.id)
+      assert.equal(root.getAttribute('aria-activedescendant'), cell.id)
+      cell.remove()
+      await window.happyDOM.waitUntilComplete()
+      assert.equal(root.hasAttribute('aria-activedescendant'), false)
+      stop()
+      root.append(cell)
+      await window.happyDOM.waitUntilComplete()
+      assert.equal(revealed.length, 1)
+    } finally {
+      await window.happyDOM.close()
+    }
+  })
+  it('can reach disabled cells by arrow while keeping an enabled tab stop', () => {
+    const cell = { row: 1, column: 2 }
+    const isDisabled = (target: Grid.GridCell) => target.column === 2
+    assert.deepEqual(move({ isDisabled }), Option.none())
+    assert.deepEqual(
+      move({ isDisabled, focusDisabledWithArrows: true }),
+      Option.some(cell),
+    )
+    const model = Grid.focus(Grid.init({ id: 'grid' }), cell).model
+    assert.deepEqual(
+      Grid.tabStop(model, { rows: 4, columns: 3, isDisabled }),
+      Option.some({ row: 0, column: 0 }),
+    )
+  })
+
+  it('waits for the latest reveal before moving focus', () => {
+    const model = Grid.init({ id: 'grid' })
+    const options = { requiresReveal: () => true }
+    const first = Grid.focus(model, { row: 10, column: 0 }, options)
+    const cell = { row: 11, column: 0 }
+    const second = Grid.update(
+      first.model,
+      Grid.Message.MovedFocus({ cell }),
+      options,
+    )
+    assert.equal(first.commands, undefined)
+    assert.deepEqual(second.model.maybeActiveCell, Option.none())
+    assert.deepEqual(
+      second.outMessage,
+      Grid.OutMessage.RequestedReveal({ cell, version: 2 }),
+    )
+    const ready = Grid.Message.RevealedCell({ version: 2 })
+    assert.equal(
+      Grid.update(second.model, Grid.Message.RevealedCell({ version: 1 }))
+        .commands,
+      undefined,
+    )
+    const completed = Grid.update(second.model, ready)
+    assert.deepEqual(completed.commands?.[0]?.args, { id: 'grid', cell })
+    assert.equal(Grid.isActive(completed.model, cell), true)
+    assert.equal(Grid.update(completed.model, ready).commands, undefined)
+    const canceled = Grid.update(
+      second.model,
+      Grid.Message.CanceledReveal({ version: 2 }),
+    )
+    assert.equal(Grid.update(canceled.model, ready).commands, undefined)
+    const focused = Grid.update(
+      second.model,
+      Grid.Message.FocusedCell({ cell: { row: 0, column: 0 } }),
+    )
+    assert.equal(Grid.update(focused.model, ready).commands, undefined)
+  })
   it('moves without wrapping, skips disabled cells and reverses RTL arrows', () => {
     assert.deepEqual(move(), Option.some({ row: 1, column: 2 }))
     assert.deepEqual(

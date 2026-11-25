@@ -96,6 +96,7 @@ export const update = (model: Model, message: Message): UpdateReturn =>
         !last.reverted &&
         sameControl(last, change) &&
         last.source === change.source &&
+        last.attribution === change.attribution &&
         last.reason === change.reason &&
         change.reason !== 'item-press' &&
         change.reason !== 'imperative'
@@ -227,3 +228,99 @@ const show = (value: unknown): string =>
 
 export const describeEntry = (entry: Entry): string =>
   `${entry.source === 'agent' ? 'Agent' : 'You'} set ${entry.label ?? entry.component} to ${show(entry.value)}`
+
+const StagedChange = Schema.Struct({
+  ...AppliedChange.fields,
+  before: Schema.Unknown,
+  revision: Schema.Number,
+})
+export const Stage = Schema.Array(StagedChange)
+export type Stage = typeof Stage.Type
+
+type Suggestion = Omit<AppliedChange, 'key'> & Readonly<{ key?: string }>
+type Control = Pick<AppliedChange, 'ref' | 'key'>
+
+type StageAccess<Model> = Readonly<{
+  /** Return undefined for missing, unavailable or redacted controls. */
+  read: (
+    model: Model,
+    control: Control,
+  ) => Readonly<{ value: unknown; revision: number }> | undefined
+  /** Apply through parent policy. Bump the control revision on every write. */
+  write: (model: Model, change: AppliedChange) => Model
+}>
+
+/** Apply suggestions in a parent update and retain the accepted rollback data.
+ * Keep the returned stage in the parent model. To accept, discard the stage.
+ */
+export const stageChanges = <Model>(
+  model: Model,
+  suggestions: ReadonlyArray<Suggestion>,
+  access: StageAccess<Model>,
+): Readonly<{ model: Model; stage: Stage; failed: ReadonlyArray<Control> }> => {
+  // One suggestion per control. The last proposed value wins.
+  const proposals = new Map<string, AppliedChange>()
+  for (const { ref, key = 'value', value } of suggestions) {
+    proposals.set(JSON.stringify([ref, key]), { ref, key, value })
+  }
+
+  const stage: Array<Stage[number]> = []
+  const failed: Array<Control> = []
+  for (const proposal of proposals.values()) {
+    const { ref, key, value } = proposal
+    const control = { ref, key }
+    const before = access.read(model, control)
+    if (before && Object.is(before.value, value)) continue
+    const next = before ? access.write(model, proposal) : model
+    const after = before && access.read(next, control)
+    if (
+      !before ||
+      !after ||
+      !(after.revision > before.revision) ||
+      Object.is(before.value, after.value)
+    ) {
+      failed.push(control)
+      continue
+    }
+    model = next
+    stage.push({
+      ...control,
+      value: after.value,
+      before: before.value,
+      revision: after.revision,
+    })
+  }
+  return { model, stage, failed }
+}
+
+/** Roll back still-owned values in reverse order. Clear the stage in the same
+ * parent update. Per-control revisions must survive removal and replacement
+ * so a newly mounted control cannot inherit a previous control's stage.
+ */
+export const rollbackStage = <Model>(
+  model: Model,
+  stage: Stage,
+  access: StageAccess<Model>,
+): Readonly<{ model: Model; failed: ReadonlyArray<Control> }> => {
+  const failed: Array<Control> = []
+  for (const { ref, key, before, revision } of [...stage].reverse()) {
+    const control = { ref, key }
+    const current = access.read(model, control)
+    if (!current || current.revision !== revision) {
+      failed.push(control)
+      continue
+    }
+    const next = access.write(model, { ...control, value: before })
+    const restored = access.read(next, control)
+    if (
+      !restored ||
+      !(restored.revision > revision) ||
+      !Object.is(restored.value, before)
+    ) {
+      failed.push(control)
+      continue
+    }
+    model = next
+  }
+  return { model, failed }
+}

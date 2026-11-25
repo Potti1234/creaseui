@@ -13,7 +13,7 @@ import { input } from '@/ui/input'
 /* Ported from Meta Astryx TransferList.tsx (packages/lab) — a controlled
    dual-panel collection input for choosing and ordering values. astryx's
    ReactNode option metadata ports to plain strings (the row renders only the
-   label). Reordering delegates to the foldkit DragAndDrop primitive: the
+   label). Reordering delegates to the shared DragAndDrop behavior: the
    selected panel is one sortable container, pointer tracking + collision
    detection + keyboard moves + edge auto-scroll run through its document
    subscriptions, and its Reordered/Cancelled out-messages apply astryx's
@@ -48,7 +48,7 @@ export const Model = S.Struct({
   /** Ordered selected values — the single source of truth (astryx `value`). */
   value: S.Array(S.String),
   query: S.String,
-  /** Reorder session, delegated to the foldkit DragAndDrop primitive. */
+  /** Reorder session, delegated to the shared DragAndDrop behavior. */
   dnd: Dnd.Model,
   /** Latest text for the polite aria-live region (astryx useAnnounce). */
   announcement: S.String,

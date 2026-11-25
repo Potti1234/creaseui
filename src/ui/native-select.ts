@@ -1,6 +1,6 @@
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Select as SelectPrimitive } from '@foldkit/ui'
+import { nativeSelectParts } from '@/lib/field'
 
 import * as Icon from '@/lib/icon'
 import { cn } from '@/lib/utils'
@@ -98,74 +98,55 @@ export const nativeSelect = <Msg>(
   props: NativeSelectProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return SelectPrimitive.view(
-    {
-      id: props.id,
-      value: props.value,
-      onChange: props.onChange,
-      isDisabled: props.isDisabled ?? false,
-      isInvalid: props.isInvalid ?? false,
-      ...(props.name === undefined ? {} : { name: props.name }),
-      hasDescription: props.description !== undefined,
-      toView: ({ select: selectAttributes, label, description }) => {
-        const selectElement = h.span(
-          [
-            h.DataAttribute('slot', 'native-select-wrapper'),
-            h.Class(WRAPPER_CLASS),
-          ],
-          [
-            h.select(
-              [
-                ...selectAttributes,
-                ...(props.direction === undefined
-                  ? []
-                  : [h.Dir(props.direction)]),
-                h.DataAttribute('slot', 'native-select'),
-                h.DataAttribute('size', props.size ?? 'default'),
-                h.Class(cn(SELECT_CLASS, props.class)),
-              ],
-              [
-                ...props.options.map(option =>
-                  nativeSelectOption<Msg>(option, h),
-                ),
-                ...(props.groups ?? []).map(group =>
-                  nativeSelectOptGroup<Msg>(group, h),
-                ),
-              ],
-            ),
-            h.span(
-              [
-                h.DataAttribute('slot', 'native-select-icon'),
-                h.Class(ICON_CLASS),
-              ],
-              [Icon.chevronDown<Msg>({ class: 'size-4' }, h)],
-            ),
-          ],
-        )
+  const {
+    select: selectAttributes,
+    label,
+    description,
+  } = nativeSelectParts(props, h)
+  const selectElement = h.span(
+    [h.DataAttribute('slot', 'native-select-wrapper'), h.Class(WRAPPER_CLASS)],
+    [
+      h.select(
+        [
+          ...selectAttributes,
+          ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+          h.DataAttribute('slot', 'native-select'),
+          h.DataAttribute('size', props.size ?? 'default'),
+          h.Class(cn(SELECT_CLASS, props.class)),
+        ],
+        [
+          ...props.options.map(option => nativeSelectOption<Msg>(option, h)),
+          ...(props.groups ?? []).map(group =>
+            nativeSelectOptGroup<Msg>(group, h),
+          ),
+        ],
+      ),
+      h.span(
+        [h.DataAttribute('slot', 'native-select-icon'), h.Class(ICON_CLASS)],
+        [Icon.chevronDown<Msg>({ class: 'size-4' }, h)],
+      ),
+    ],
+  )
 
-        if (props.label === undefined && props.description === undefined) {
-          return selectElement
-        }
+  if (props.label === undefined && props.description === undefined) {
+    return selectElement
+  }
 
-        return h.div(
-          [h.Class('grid gap-2')],
-          [
-            ...(props.label === undefined
-              ? []
-              : [h.label([...label, h.Class(LABEL_CLASS)], [props.label])]),
-            selectElement,
-            ...(props.description === undefined
-              ? []
-              : [
-                  h.p(
-                    [...description, h.Class(DESCRIPTION_CLASS)],
-                    [props.description],
-                  ),
-                ]),
-          ],
-        )
-      },
-    },
-    h,
+  return h.div(
+    [h.Class('grid gap-2')],
+    [
+      ...(props.label === undefined
+        ? []
+        : [h.label([...label, h.Class(LABEL_CLASS)], [props.label])]),
+      selectElement,
+      ...(props.description === undefined
+        ? []
+        : [
+            h.p(
+              [...description, h.Class(DESCRIPTION_CLASS)],
+              [props.description],
+            ),
+          ]),
+    ],
   )
 }

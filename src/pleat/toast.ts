@@ -199,8 +199,7 @@ export type ToastProps<Msg> = Readonly<{
   expanded?: boolean
 }>
 
-/** Mirrors the upstream Toast view's animation attributes so the entry
- *  participates in the primitive's enter/leave lifecycle. */
+/** Reflect the entry's enter and leave phases in its data attributes. */
 const animationAttributes = <Msg>(
   entry: Entry,
   h: HtmlBuilder<Msg>,

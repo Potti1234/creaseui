@@ -1,8 +1,13 @@
-import { Option, Schema as S, Stream } from 'effect'
+import { Option, Schema as S } from 'effect'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 
-import * as DragBehavior from '@/lib/behaviors/drag'
+import {
+  clampTo,
+  observeResize,
+  percentDelta,
+  resizeBox,
+} from '@/lib/behaviors/resize'
 
 const Drag = S.Struct({ start: S.Number, initialSize: S.Number })
 export const Model = S.Struct({
@@ -23,8 +28,18 @@ export const Message = defineMessageUnion({
 })
 export type Message = typeof Message.Type
 
-export const clampTo = (value: number, min: number, max: number): number =>
-  Math.max(min, Math.min(max, value))
+export { clampTo } from '@/lib/behaviors/resize'
+
+const resizePane = (
+  size: number,
+  delta: number,
+  minimum: number,
+  maximum: number,
+): number =>
+  resizeBox({ x: 0, y: 0, width: size, height: 1 }, 'e', delta, 0, {
+    min: { width: minimum, height: 1 },
+    max: { width: maximum, height: 1 },
+  }).width
 const clamp = (value: number): number => clampTo(value, 10, 90)
 export const init = (id: string, firstSize = 50): Model => ({
   id,
@@ -46,17 +61,21 @@ export const update = (model: Model, message: Message): Model => {
         onNone: () => model,
         onSome: drag => ({
           ...model,
-          firstSize: clamp(
-            drag.initialSize +
-              ((message.position - drag.start) / Math.max(1, message.extent)) *
-                100,
+          firstSize: resizePane(
+            drag.initialSize,
+            percentDelta(drag.start, message.position, message.extent),
+            10,
+            90,
           ),
         }),
       })
     case 'EndedResize':
       return { ...model, drag: Option.none() }
     case 'NudgedResize':
-      return { ...model, firstSize: clamp(model.firstSize + message.delta) }
+      return {
+        ...model,
+        firstSize: resizePane(model.firstSize, message.delta, 10, 90),
+      }
   }
 }
 
@@ -125,9 +144,10 @@ const resizePair = (
   const before = sizes[handle]
   const after = sizes[handle + 1]
   if (before === undefined || after === undefined) return next
-  const bounded = Math.max(minSize - before, Math.min(after - minSize, delta))
-  next[handle] = before + bounded
-  next[handle + 1] = after - bounded
+  const total = before + after
+  const resized = resizePane(before, delta, minSize, total - minSize)
+  next[handle] = resized
+  next[handle + 1] = total - resized
   return next
 }
 
@@ -163,8 +183,7 @@ export const updateGroup = (
             sizes: resizePair(
               base,
               drag.handle,
-              ((message.position - drag.start) / Math.max(1, message.extent)) *
-                100,
+              percentDelta(drag.start, message.position, message.extent),
               message.minSize,
             ),
           }
@@ -222,32 +241,24 @@ const resizeCoordinates = (group: HTMLElement) => {
 export const ObserveResize = Mount.defineStream('ObserveResize', {
   messages: [Message.StartedResize, Message.DraggedResize, Message.EndedResize],
   execute: ({ element }) =>
-    !(element instanceof HTMLElement)
-      ? Stream.empty
-      : DragBehavior.observeDrag<
-          Extract<
-            Message,
-            { _tag: 'StartedResize' | 'DraggedResize' | 'EndedResize' }
-          >
-        >(element, (down, send) => {
-          const handle = targetHandle(element, down)
-          if (!handle || !isEnabled(handle)) return
-          const { position, extent } = resizeCoordinates(element)
-          send(Message.StartedResize({ position: position(down) }))
-          return {
-            captureElement: handle,
-            onMove: sample => {
-              if (isEnabled(handle))
-                send(
-                  Message.DraggedResize({
-                    position: position(sample.event),
-                    extent: extent(),
-                  }),
-                )
-            },
-            onEnd: () => send(Message.EndedResize()),
-          }
-        }),
+    observeResize<Exclude<Message, { _tag: 'NudgedResize' }>>(element, down => {
+      if (!(element instanceof HTMLElement)) return
+      const handle = targetHandle(element, down)
+      if (!handle || !isEnabled(handle)) return
+      const { position, extent } = resizeCoordinates(element)
+      return {
+        handle,
+        start: () => Message.StartedResize({ position: position(down) }),
+        move: ({ event }) =>
+          isEnabled(handle)
+            ? Message.DraggedResize({
+                position: position(event),
+                extent: extent(),
+              })
+            : undefined,
+        finish: () => Message.EndedResize(),
+      }
+    }),
 })
 
 export const ObserveGroupResize = Mount.defineStream('ObserveGroupResize', {
@@ -257,42 +268,31 @@ export const ObserveGroupResize = Mount.defineStream('ObserveGroupResize', {
     GroupMessage.EndedGroupResize,
   ],
   execute: ({ element }) =>
-    !(element instanceof HTMLElement)
-      ? Stream.empty
-      : DragBehavior.observeDrag<
-          Extract<
-            GroupMessage,
-            {
-              _tag:
-                | 'StartedGroupResize'
-                | 'DraggedGroupResize'
-                | 'EndedGroupResize'
-            }
-          >
-        >(element, (down, send) => {
-          const handle = targetHandle(element, down)
-          const index = handle?.dataset.resizableIndex
-          if (!handle || index === undefined || !isEnabled(handle)) return
-          const { position, extent } = resizeCoordinates(element)
-          send(
+    observeResize<Exclude<GroupMessage, { _tag: 'NudgedGroupResize' }>>(
+      element,
+      down => {
+        if (!(element instanceof HTMLElement)) return
+        const handle = targetHandle(element, down)
+        const index = handle?.dataset.resizableIndex
+        if (!handle || index === undefined || !isEnabled(handle)) return
+        const { position, extent } = resizeCoordinates(element)
+        return {
+          handle,
+          start: () =>
             GroupMessage.StartedGroupResize({
               handle: Number(index),
               position: position(down),
             }),
-          )
-          return {
-            captureElement: handle,
-            onMove: sample => {
-              if (isEnabled(handle))
-                send(
-                  GroupMessage.DraggedGroupResize({
-                    position: position(sample.event),
-                    extent: extent(),
-                    minSize: Number(element.dataset.resizableMinSize),
-                  }),
-                )
-            },
-            onEnd: () => send(GroupMessage.EndedGroupResize()),
-          }
-        }),
+          move: ({ event }) =>
+            isEnabled(handle)
+              ? GroupMessage.DraggedGroupResize({
+                  position: position(event),
+                  extent: extent(),
+                  minSize: Number(element.dataset.resizableMinSize),
+                })
+              : undefined,
+          finish: () => GroupMessage.EndedGroupResize(),
+        }
+      },
+    ),
 })

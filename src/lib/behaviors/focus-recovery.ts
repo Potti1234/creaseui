@@ -15,6 +15,33 @@ export type Model = typeof Model.Type
 export const Message = defineMessageUnion({ CompletedRecoverFocus: {} })
 export type Message = typeof Message.Type
 
+/** Preserve an active descendant through a synchronous move of existing nodes. */
+export const keepFocus = <Value>(scope: Element, move: () => Value): Value => {
+  const doc = scope.ownerDocument
+  const realm = doc.defaultView
+  const root = scope.getRootNode() as Document | ShadowRoot
+  let active = root.activeElement
+  if (!active || !scope.contains(active)) return move()
+  while (active.shadowRoot?.activeElement)
+    active = active.shadowRoot.activeElement
+  if (!realm || !(active instanceof realm.HTMLElement)) return move()
+
+  try {
+    return move()
+  } finally {
+    const currentRoot = active.getRootNode() as Document | ShadowRoot
+    const current = currentRoot.activeElement
+    const documentFocus = doc.activeElement
+    if (
+      active.isConnected &&
+      current !== active &&
+      (current === null || current === doc.body) &&
+      (documentFocus === null || documentFocus === doc.body)
+    )
+      active.focus({ preventScroll: true })
+  }
+}
+
 export const RecoverFocus = Command.define('RecoverFocus', {
   args: { targetId: Schema.String, lostId: Schema.String },
   messages: [Message.CompletedRecoverFocus],

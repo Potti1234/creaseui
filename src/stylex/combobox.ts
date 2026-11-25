@@ -3,7 +3,7 @@ import { reset } from '@/ui/stylex/reset'
 import { Option } from 'effect'
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
-import { Combobox as ComboboxPrimitive } from '@foldkit/ui'
+import * as ComboboxPrimitive from '@/lib/behaviors/combobox'
 
 import * as Icon from '@/lib/icon'
 import * as stylex from '@stylexjs/stylex'
@@ -51,19 +51,19 @@ const cn = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
 /* shadcn's combobox is a Popover + Command composition rather than a
-   standalone primitive. This ports that look onto foldkit's single-select,
+   standalone primitive. This ports that look onto the shared single-select,
    config-driven Combobox submodel.
 
-   Command's selected/highlighted state is driven by foldkit's data-active
-   attribute, and its disabled input/item styles use foldkit's data-disabled
+   Command's selected/highlighted state is driven by the data-active
+   attribute, and its disabled input/item styles use the data-disabled
    and aria-disabled signals. Popup animation uses a finite data-closed
    transition; pass isAnimated: true to init.
 
-   PORT NOTE: foldkit Combobox only accepts strings as its internal items, so
+   PORT NOTE: the Combobox behavior only accepts strings as its internal items, so
    arbitrary consumer items are projected through itemToValue before being
    handed to the primitive. Values must be unique.
 
-   PORT NOTE: foldkit Combobox exposes its input-wrapper suffix as a toggle
+   PORT NOTE: the Combobox behavior exposes its input-wrapper suffix as a toggle
    button rather than an arbitrary decorative slot. The search icon uses that
    button and is visually ordered before the input. Per-item data attributes
    are not exposed, so command-item is placed on the inner content span. */
@@ -131,7 +131,7 @@ export type ComboboxProps<Item, Value extends string, Msg> = Readonly<{
   formName?: string
   direction?: 'ltr' | 'rtl'
   /**
-   * Renders foldkit's input-wrapper suffix as a toggle button (chevron),
+   * Renders the input-wrapper suffix as a toggle button (chevron),
    * matching shadcn's trigger-style combobox where a button opens the popup.
    */
   trigger?: Readonly<{

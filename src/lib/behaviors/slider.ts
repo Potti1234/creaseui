@@ -1,37 +1,56 @@
-import { Slider as SliderPrimitive } from '@foldkit/ui'
-import { Schema as S } from 'effect'
+import { Function, Option, Result, Schema as S, Stream } from 'effect'
 import type { Update } from 'foldkit'
 import * as Command from 'foldkit/command'
+import { childAttributes, type ChildAttribute, type Html } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
+import { defineTaggedUnion } from 'foldkit/schema'
+import { defineView, type Reflect } from 'foldkit/submodel'
 import * as Subscription from 'foldkit/subscription'
 
-/* Slider keeps the @foldkit/ui primitive (see README). This module is the
-   seam components consume it through, plus the range policy and the
-   multi-thumb composition the primitive does not ship. */
-export const Model = SliderPrimitive.Model
+const DragState = defineTaggedUnion({
+  Idle: {},
+  Dragging: { originValue: S.Number },
+})
+
+export const Model = S.Struct({
+  id: S.String,
+  min: S.Number,
+  max: S.Number,
+  step: S.Number,
+  dragState: DragState,
+})
 export type Model = typeof Model.Type
-export const Message = SliderPrimitive.Message
+
+const Navigation = S.Literals([
+  'StepDecrement',
+  'StepIncrement',
+  'PageDecrement',
+  'PageIncrement',
+  'Min',
+  'Max',
+])
+
+export const Message = defineMessageUnion({
+  PressedThumb: { originValue: S.Number },
+  PressedPointer: { value: S.Number, originValue: S.Number },
+  MovedDragPointer: { value: S.Number },
+  ReleasedDragPointer: {},
+  CancelledDrag: {},
+  PressedKeyboardNavigation: { direction: Navigation, value: S.Number },
+})
 export type Message = typeof Message.Type
-export const OutMessage = SliderPrimitive.OutMessage
+
+export const OutMessage = defineMessageUnion({
+  ChangedValue: { value: S.Number },
+})
 export type OutMessage = typeof OutMessage.Type
-export const Orientation = SliderPrimitive.Orientation
-export type Orientation = typeof Orientation.Type
-export const ThumbAlignment = SliderPrimitive.ThumbAlignment
-export type ThumbAlignment = typeof ThumbAlignment.Type
-export type InitConfig = SliderPrimitive.InitConfig
-export type ViewInputs = SliderPrimitive.ViewInputs
-export type SliderAttributes = SliderPrimitive.SliderAttributes
-export const {
-  init,
-  update,
-  view,
-  reflectRange,
-  snapAndClamp,
-  fractionOfValue,
-  valueFromPointer,
-  subscriptions,
-  subscriptionsForRoot,
-} = SliderPrimitive
+
+export type InitConfig = Readonly<{
+  id: string
+  min: number
+  max: number
+  step: number
+}>
 
 export type NormalizedRange = Readonly<{
   min: number
@@ -53,9 +72,8 @@ const clamp = (value: number, min: number, max: number): number =>
   Math.max(min, Math.min(Number.isFinite(value) ? value : min, max))
 
 const decimalPlaces = (value: number): number => {
-  const exponent = value.toString().match(/e-(\d+)$/u)?.[1]
-  if (exponent !== undefined) return Number(exponent)
-  return value.toString().split('.')[1]?.length ?? 0
+  const [mantissa = '', exponent = '0'] = value.toString().split('e')
+  return Math.max(0, (mantissa.split('.')[1]?.length ?? 0) - Number(exponent))
 }
 
 export const snapRangeValue = (
@@ -64,11 +82,11 @@ export const snapRangeValue = (
 ): number => {
   const snapped =
     range.min + Math.round((value - range.min) / range.step) * range.step
-  const precision = Math.max(
-    decimalPlaces(range.min),
-    decimalPlaces(range.step),
+  const precision = Math.min(
+    100,
+    Math.max(decimalPlaces(range.min), decimalPlaces(range.step)),
   )
-  return Number(clamp(snapped, range.min, range.max).toFixed(precision))
+  return clamp(Number(snapped.toFixed(precision)), range.min, range.max)
 }
 
 export const normalizeRangeValues = (
@@ -105,19 +123,419 @@ export const updateMultiValue = (
   return values.map((value, i) => (i === index ? next : value))
 }
 
-// ---------------------------------------------------------------------------
-// Multi-thumb Slider on the foldkit Slider primitive. Each thumb owns a
-// single-thumb primitive Model and renders only the primitive's thumb part;
-// an invisible zero-area track element per thumb feeds its drag measurement.
-// A track press is routed to the nearest thumb by the view, which passes the
-// resolved index plus that thumb's current display value so the press can be
-// re-dispatched as the thumb's own PressedPointer — the same message its
-// track part would emit. `mirrored` maps values across the range at this
-// boundary so the horizontal-only primitive renders flipped for RTL.
-// ---------------------------------------------------------------------------
+export const init = ({ id, min, max, step }: InitConfig): Model => ({
+  id,
+  ...normalizeRange(min, max, step),
+  dragState: DragState.Idle(),
+})
+
+export const snapAndClamp = (
+  value: number,
+  min: number,
+  max: number,
+  step: number,
+): number => snapRangeValue(value, normalizeRange(min, max, step))
+
+export const fractionOfValue = (
+  value: number,
+  min: number,
+  max: number,
+): number => (max <= min ? 0 : clamp((value - min) / (max - min), 0, 1))
+
+export const reflectRange: Reflect<
+  Model,
+  Readonly<{ min: number; max: number }>
+> = Function.dual(
+  2,
+  (model: Model, range: Readonly<{ min: number; max: number }>): Model => ({
+    ...model,
+    ...normalizeRange(range.min, range.max, model.step),
+  }),
+)
+
+const navigationSteps = {
+  StepDecrement: -1,
+  StepIncrement: 1,
+  PageDecrement: -10,
+  PageIncrement: 10,
+} as const
+
+export const update = (
+  model: Model,
+  message: Message,
+): Update.ReturnWithOutMessage<Model, Message, OutMessage> =>
+  updateThumb(model, message, false)
+
+const updateThumb = (
+  model: Model,
+  message: Message,
+  mirrored: boolean,
+): Update.ReturnWithOutMessage<Model, Message, OutMessage> => {
+  const { dragState, min, max, step } = model
+  const mirror = (value: number) => (mirrored ? min + max - value : value)
+  // Snap on the logical grid even when the display axis is reversed.
+  const snap = (value: number) => mirror(snapRangeValue(mirror(value), model))
+  const changed = (next: Model, value: number) => ({
+    model: next,
+    outMessage: OutMessage.ChangedValue({ value }),
+  })
+  switch (message._tag) {
+    case 'PressedThumb':
+    case 'PressedPointer': {
+      if (dragState._tag === 'Dragging') return { model }
+      const next = {
+        ...model,
+        dragState: DragState.Dragging({ originValue: message.originValue }),
+      }
+      if (message._tag === 'PressedThumb') return { model: next }
+      const value = snap(message.value)
+      return value === message.originValue
+        ? { model: next }
+        : changed(next, value)
+    }
+    case 'MovedDragPointer':
+      return dragState._tag === 'Dragging'
+        ? changed(model, snap(message.value))
+        : { model }
+    case 'ReleasedDragPointer':
+      return dragState._tag === 'Dragging'
+        ? { model: { ...model, dragState: DragState.Idle() } }
+        : { model }
+    case 'CancelledDrag':
+      return dragState._tag === 'Dragging'
+        ? changed(
+            { ...model, dragState: DragState.Idle() },
+            dragState.originValue,
+          )
+        : { model }
+    case 'PressedKeyboardNavigation': {
+      const { value, direction } = message
+      const next =
+        direction === 'Min'
+          ? min
+          : direction === 'Max'
+            ? max
+            : snap(value + navigationSteps[direction] * step)
+      return next === value ? { model } : changed(model, next)
+    }
+  }
+}
+
+const findTrack = (id: string, root: Document | ShadowRoot): Element | null =>
+  root.querySelector(`[data-slider-track-id="${CSS.escape(id)}"]`)
+
+export const valueFromPointer = (
+  clientX: number,
+  clientY: number,
+  track: Element,
+  min: number,
+  max: number,
+): number => {
+  const vertical =
+    track.getAttribute('data-orientation') === 'vertical' ||
+    track.hasAttribute('data-vertical')
+  const rect = track.getBoundingClientRect()
+  const size = vertical ? rect.height : rect.width
+  if (size === 0) return min
+  const position = vertical ? rect.bottom - clientY : clientX - rect.left
+  const id = track.getAttribute('data-slider-track-id')
+  const thumbRect =
+    id !== null && track.getAttribute('data-thumb-alignment') === 'edge'
+      ? (track.getRootNode() as Document | ShadowRoot)
+          .getElementById(`${id}-thumb`)
+          ?.getBoundingClientRect()
+      : undefined
+  const inset =
+    thumbRect === undefined
+      ? 0
+      : (vertical ? thumbRect.height : thumbRect.width) / 2
+  const travel = size - 2 * inset
+  const fraction = travel > 0 ? (position - inset) / travel : position / size
+  return min + clamp(fraction, 0, 1) * (max - min)
+}
+
+const ownerDocument = (root: Document | ShadowRoot): Document =>
+  root.nodeType === 9 ? (root as Document) : (root as ShadowRoot).ownerDocument
+
+export const subscriptionsForRoot = (
+  getTrackRoot: () => Document | ShadowRoot,
+) =>
+  Subscription.make<Model, Message>()(entry => ({
+    dragPointer: entry(
+      { active: S.Boolean, id: S.String, min: S.Number, max: S.Number },
+      {
+        modelToDependencies: ({ dragState, id, min, max }) => ({
+          active: dragState._tag === 'Dragging',
+          id,
+          min,
+          max,
+        }),
+        dependenciesToStream: ({ active, id, min, max }) => {
+          if (!active) return Stream.empty
+          const root = getTrackRoot()
+          const owner = ownerDocument(root)
+          const moves = Stream.fromEventListener<PointerEvent>(
+            owner,
+            'pointermove',
+          ).pipe(
+            Stream.filterMap(event => {
+              const track = findTrack(id, root)
+              return track === null
+                ? Result.fail(undefined)
+                : Result.succeed(
+                    Message.MovedDragPointer({
+                      value: valueFromPointer(
+                        event.clientX,
+                        event.clientY,
+                        track,
+                        min,
+                        max,
+                      ),
+                    }),
+                  )
+            }),
+          )
+          const releases = Stream.fromEventListener(owner, 'pointerup').pipe(
+            Stream.map(() => Message.ReleasedDragPointer()),
+          )
+          const cancels = Stream.fromEventListener(owner, 'pointercancel').pipe(
+            Stream.map(() => Message.ReleasedDragPointer()),
+          )
+          return Stream.merge(moves, Stream.merge(releases, cancels))
+        },
+      },
+    ),
+    dragEscape: entry(
+      { active: S.Boolean },
+      {
+        modelToDependencies: model => ({
+          active: model.dragState._tag === 'Dragging',
+        }),
+        dependenciesToStream: ({ active }) =>
+          active
+            ? Stream.fromEventListener<KeyboardEvent>(
+                ownerDocument(getTrackRoot()),
+                'keydown',
+              ).pipe(
+                Stream.filter(event => event.key === 'Escape'),
+                Stream.map(() => Message.CancelledDrag()),
+              )
+            : Stream.empty,
+      },
+    ),
+  }))
+
+export const subscriptions = subscriptionsForRoot(() => document)
+
+export const Orientation = S.Literals(['Horizontal', 'Vertical'])
+export type Orientation = typeof Orientation.Type
+export const ThumbAlignment = S.Literals(['Center', 'Edge'])
+export type ThumbAlignment = typeof ThumbAlignment.Type
+
+export type SliderAttributes = Readonly<
+  Record<
+    'root' | 'track' | 'filledTrack' | 'thumb' | 'label' | 'hiddenInput',
+    readonly ChildAttribute[]
+  >
+>
+
+export type ViewInputs = Readonly<{
+  value: number
+  toView: (attributes: SliderAttributes) => Html
+  orientation?: Orientation
+  thumbAlignment?: ThumbAlignment
+  thumbSize?: string
+  ariaLabel?: string
+  ariaLabelledBy?: string
+  formatValue?: (value: number) => string
+  isDisabled?: boolean
+  isReadOnly?: boolean
+  name?: string
+  mirrored?: boolean
+  logicalValue?: number
+  getTrackRoot?: () => Document | ShadowRoot
+}>
+
+const navigationKeys: ReadonlyMap<string, typeof Navigation.Type> = new Map([
+  ['ArrowLeft', 'StepDecrement'],
+  ['ArrowDown', 'StepDecrement'],
+  ['ArrowRight', 'StepIncrement'],
+  ['ArrowUp', 'StepIncrement'],
+  ['PageDown', 'PageDecrement'],
+  ['PageUp', 'PageIncrement'],
+  ['Home', 'Min'],
+  ['End', 'Max'],
+])
+
+const reverseNavigation = {
+  StepDecrement: 'StepIncrement',
+  StepIncrement: 'StepDecrement',
+  PageDecrement: 'PageIncrement',
+  PageIncrement: 'PageDecrement',
+  Min: 'Max',
+  Max: 'Min',
+} as const
+
+export const view = defineView<Model, Message, ViewInputs>(
+  (model, inputs, h) => {
+    const {
+      value,
+      isDisabled,
+      isReadOnly,
+      name,
+      formatValue,
+      mirrored = false,
+    } = inputs
+    const { id, min, max } = model
+    const logicalValue = inputs.logicalValue ?? value
+    const vertical = inputs.orientation === 'Vertical'
+    const orientation = vertical ? 'vertical' : 'horizontal'
+    const edge = inputs.thumbAlignment === 'Edge'
+    const thumbSize = inputs.thumbSize ?? '0.75rem'
+    const fraction = fractionOfValue(value, min, max)
+    const percent = `${Math.round(fraction * 10000) / 100}%`
+    const thumbPosition = edge
+      ? `calc((100% - ${thumbSize}) * ${fraction})`
+      : percent
+    const fillSize = edge
+      ? `calc(${thumbPosition} + ${thumbSize} / 2)`
+      : percent
+    const labelId = `${id}-label`
+    const interactive = !isDisabled && !isReadOnly
+    const state = [
+      ...(model.dragState._tag === 'Dragging'
+        ? [h.DataAttribute('dragging', '')]
+        : []),
+      ...(isDisabled ? [h.DataAttribute('disabled', '')] : []),
+      ...(isReadOnly ? [h.DataAttribute('readonly', '')] : []),
+    ]
+    const axis = [
+      h.DataAttribute('orientation', orientation),
+      h.DataAttribute(orientation, ''),
+    ]
+    return inputs.toView({
+      root: childAttributes([
+        h.DataAttribute('slider-id', id),
+        ...axis,
+        ...state,
+      ]),
+      track: childAttributes([
+        h.DataAttribute('slider-track-id', id),
+        h.DataAttribute('thumb-alignment', edge ? 'edge' : 'center'),
+        h.Style({ position: 'relative', touchAction: 'none' }),
+        ...axis,
+        ...state,
+        ...(interactive
+          ? [
+              h.OnPointerDown(
+                (_type, button, _x, _y, _time, clientX, clientY) => {
+                  if (button !== 0) return Option.none()
+                  const track = findTrack(
+                    id,
+                    inputs.getTrackRoot?.() ?? document,
+                  )
+                  return track === null
+                    ? Option.none()
+                    : Option.some(
+                        Message.PressedPointer({
+                          value: valueFromPointer(
+                            clientX,
+                            clientY,
+                            track,
+                            min,
+                            max,
+                          ),
+                          originValue: value,
+                        }),
+                      )
+                },
+              ),
+            ]
+          : []),
+      ]),
+      filledTrack: childAttributes([
+        h.Style({
+          position: 'absolute',
+          pointerEvents: 'none',
+          ...(vertical
+            ? {
+                bottom: '0',
+                left: '0',
+                right: '0',
+                height: fillSize,
+                width: '100%',
+              }
+            : { left: '0', top: '0', bottom: '0', width: fillSize }),
+        }),
+        ...state,
+      ]),
+      thumb: childAttributes([
+        h.Id(`${id}-thumb`),
+        h.Role('slider'),
+        h.Tabindex(0),
+        h.AriaOrientation(orientation),
+        h.AriaValuemin(min),
+        h.AriaValuemax(max),
+        h.AriaValuenow(logicalValue),
+        inputs.ariaLabel === undefined
+          ? h.AriaLabelledBy(inputs.ariaLabelledBy ?? labelId)
+          : h.AriaLabel(inputs.ariaLabel),
+        ...(formatValue === undefined
+          ? []
+          : [h.AriaValuetext(formatValue(logicalValue))]),
+        ...(isDisabled ? [h.AriaDisabled(true)] : []),
+        ...(isReadOnly ? [h.AriaReadonly(true)] : []),
+        h.Style({
+          position: 'absolute',
+          touchAction: 'none',
+          ...(vertical
+            ? {
+                bottom: thumbPosition,
+                left: '50%',
+                transform: edge ? 'translateX(-50%)' : 'translate(-50%, 50%)',
+              }
+            : {
+                left: thumbPosition,
+                ...(edge ? {} : { transform: 'translateX(-50%)' }),
+              }),
+        }),
+        ...state,
+        ...(interactive
+          ? [
+              h.OnPointerDown((_type, button) =>
+                button === 0
+                  ? Option.some(Message.PressedThumb({ originValue: value }))
+                  : Option.none(),
+              ),
+              h.OnKeyDownPreventDefault(key => {
+                const direction = navigationKeys.get(key)
+                if (direction === undefined) return Option.none()
+                const useLogicalDirection =
+                  mirrored && key !== 'ArrowLeft' && key !== 'ArrowRight'
+                return Option.some(
+                  Message.PressedKeyboardNavigation({
+                    direction: useLogicalDirection
+                      ? reverseNavigation[direction]
+                      : direction,
+                    value,
+                  }),
+                )
+              }),
+            ]
+          : []),
+      ]),
+      label: childAttributes([h.Id(labelId)]),
+      hiddenInput: childAttributes(
+        name === undefined
+          ? []
+          : [h.Type('hidden'), h.Name(name), h.Value(String(logicalValue))],
+      ),
+    })
+  },
+)
 
 export const MultiMessage = defineMessageUnion({
-  GotThumbMessage: { index: S.Number, message: SliderPrimitive.Message },
+  GotThumbMessage: { index: S.Number, message: Message },
   PressedTrack: {
     index: S.Number,
     value: S.Number,
@@ -137,7 +555,7 @@ export const MultiModel = S.Struct({
   max: S.Number,
   step: S.Number,
   mirrored: S.Boolean,
-  thumbs: S.Array(SliderPrimitive.Model),
+  thumbs: S.Array(Model),
 })
 export type MultiModel = typeof MultiModel.Type
 
@@ -165,7 +583,7 @@ export const initMulti = (
     step: range.step,
     mirrored: config.mirrored ?? false,
     thumbs: Array.from({ length: Math.max(1, config.thumbs) }, (_, index) =>
-      SliderPrimitive.init({
+      init({
         id: `${config.id}-thumb-${String(index)}`,
         min: range.min,
         max: range.max,
@@ -180,7 +598,8 @@ export const reflectMultiRange = (
   range: Readonly<{ min: number; max: number }>,
 ): MultiModel => ({
   ...model,
-  thumbs: model.thumbs.map(thumb => SliderPrimitive.reflectRange(thumb, range)),
+  ...normalizeRange(range.min, range.max, model.step),
+  thumbs: model.thumbs.map(thumb => reflectRange(thumb, range)),
 })
 
 /** The value the primitive layer works in: identity normally, mirrored across
@@ -192,11 +611,11 @@ export const toThumbValue = (model: MultiModel, value: number): number =>
 const liftThumb = (
   model: MultiModel,
   index: number,
-  inner: SliderPrimitive.Message,
+  inner: Message,
 ): MultiUpdate => {
   const thumb = model.thumbs[index]
   if (thumb === undefined) return { model }
-  const next = SliderPrimitive.update(thumb, inner)
+  const next = updateThumb(thumb, inner, model.mirrored)
   return {
     model: {
       ...model,
@@ -233,7 +652,7 @@ export const updateMulti = (
       return liftThumb(
         model,
         message.index,
-        SliderPrimitive.Message.PressedPointer({
+        Message.PressedPointer({
           value: message.value,
           originValue: message.originValue,
         }),
@@ -241,8 +660,8 @@ export const updateMulti = (
   }
 }
 
-const FALLBACK_THUMB = SliderPrimitive.init({
-  id: 'foldkit-multi-slider-fallback-thumb',
+const FALLBACK_THUMB = init({
+  id: 'crease-multi-slider-fallback-thumb',
   min: 0,
   max: 1,
   step: 1,
@@ -261,10 +680,8 @@ export const multiThumbSubscriptions = <ParentModel, Msg>(
   Subscription.aggregate<ParentModel, Msg>()(
     ...Array.from({ length: Math.max(0, config.thumbCount) }, (_, index) =>
       Subscription.lift({
-        [`${config.id}Thumb${String(index)}Pointer`]:
-          SliderPrimitive.subscriptions.dragPointer,
-        [`${config.id}Thumb${String(index)}Escape`]:
-          SliderPrimitive.subscriptions.dragEscape,
+        [`${config.id}Thumb${String(index)}Pointer`]: subscriptions.dragPointer,
+        [`${config.id}Thumb${String(index)}Escape`]: subscriptions.dragEscape,
       })<ParentModel, Msg>({
         toChildModel: parentModel =>
           config.toChildModel(parentModel).thumbs[index] ??

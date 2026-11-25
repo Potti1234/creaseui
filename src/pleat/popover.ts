@@ -11,7 +11,6 @@ import type {
   ComponentLayoutStyle,
 } from './contracts'
 import * as Button from './button'
-import { themedAnchor, themedPopoverPanel } from './overlay-boundary'
 import { className } from './style'
 import { complexTokens } from './complex-tokens'
 import { tokens } from './tokens'
@@ -57,9 +56,7 @@ const isStaticStyle = (value: unknown): value is Style.Style =>
 const cn = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
-/* Ported from shadcn/ui popover.tsx on top of the foldkit Popover submodel.
-   Radix keyframe animations are finite transitions driven by foldkit's
-   data-closed phase. Pass isAnimated: true to init. */
+/* Pass isAnimated: true to init to use the Popover transition phases. */
 
 export const Model = PopoverPrimitive.Model
 export type Model = typeof Model.Type
@@ -146,7 +143,8 @@ export const popover = <Msg>(
     model: props.model,
     view: PopoverPrimitive.view,
     viewInputs: {
-      anchor: themedAnchor({ placement, gap: 4 }),
+      anchor: { placement, gap: 4, portal: false },
+      themedPortal: props.portal === 'themed',
       ...(props.focusSelector === undefined
         ? {}
         : { focusSelector: props.focusSelector }),
@@ -185,18 +183,6 @@ export const popover = <Msg>(
                   hp.div(
                     [
                       ...panel,
-                      ...(props.portal === 'themed'
-                        ? [
-                            hp.OnMount(
-                              themedPopoverPanel(
-                                `${props.model.id}-button`,
-                                { placement, gap: 4 },
-                                props.toParentMessage,
-                                props.focusSelector,
-                              ),
-                            ),
-                          ]
-                        : []),
                       hp.DataAttribute('slot', 'popover-content'),
                       ...(props.direction === undefined
                         ? []

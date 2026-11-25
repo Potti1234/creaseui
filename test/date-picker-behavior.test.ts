@@ -38,6 +38,33 @@ describe('DatePicker behavior', () => {
     assert.equal(Picker.close(opened.model).model.popover.isOpen, false)
   })
 
+  it('routes animation through its owned popover and keeps newer opens after a stale leave', () => {
+    const initial = Picker.init({
+      id: 'animated-picker',
+      today: date(4),
+      isAnimated: true,
+    })
+    const opened = Picker.open(initial)
+    const closed = Picker.close(opened.model)
+    const reopened = Picker.open(closed.model)
+    const stale = Picker.update(
+      reopened.model,
+      Picker.Message.GotPopoverMessage({
+        message: {
+          _tag: 'GotAnimationMessage',
+          message: {
+            _tag: 'CompletedWaitForPaint',
+            generation: closed.model.popover.animation.transitionGeneration,
+          },
+        },
+      }),
+    )
+    assert.equal(closed.model.popover.animation.transitionState, 'LeaveStart')
+    assert.equal(stale.model.popover.isOpen, true)
+    assert.equal(stale.model.popover.animation.transitionState, 'EnterStart')
+    assert.deepEqual(stale.commands, [])
+  })
+
   it('applies the same Home/End and RTL grid fixes', () => {
     assert.deepEqual(
       Picker.update(init(), key('Home')).model.calendar.maybeFocusedDate,

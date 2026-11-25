@@ -20,7 +20,7 @@ MIT licensed.
 
 The adapted TreeCollection module is distributed with the
 [UI SDK license](src/lib/behaviors/tree-collection.LICENSE.txt).
-The adapted StickToBottom module is distributed with the
+The adapted StickToBottom, Cell Range and Resize modules are distributed with the
 [UI SDK license](src/lib/behaviors/ui-sdk-LICENSE.txt).
 
 Exact source packages for icon adapters are recorded in

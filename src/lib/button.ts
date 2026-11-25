@@ -1,4 +1,3 @@
-import { Button as ButtonPrimitive } from '@foldkit/ui'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 
 export type ButtonType = 'button' | 'submit' | 'reset'
@@ -85,6 +84,24 @@ const content = <Msg>(
       ]),
 ]
 
+export const nativeButtonAttributes = <Msg>(
+  props: Pick<
+    ButtonBehaviorProps<Msg>,
+    'type' | 'isDisabled' | 'isAutofocus' | 'onClick'
+  >,
+  h: HtmlBuilder<Msg>,
+): ReadonlyArray<Attribute<Msg>> => [
+  h.Type(props.type ?? 'button'),
+  h.Tabindex(0),
+  ...(props.isDisabled === true
+    ? [h.AriaDisabled(true), h.DataAttribute('disabled', '')]
+    : []),
+  ...(props.onClick === undefined || props.isDisabled === true
+    ? []
+    : [h.OnClick(props.onClick)]),
+  ...(props.isAutofocus === true ? [h.Autofocus(true)] : []),
+]
+
 export const renderButton = <Msg>(
   props: ButtonBehaviorProps<Msg>,
   visualAttributes: ReadonlyArray<Attribute<Msg> | ChildAttribute>,
@@ -92,48 +109,33 @@ export const renderButton = <Msg>(
 ): Html => {
   const isDisabled = props.isDisabled === true || props.isLoading === true
 
-  return ButtonPrimitive.view(
-    {
-      ...(props.onClick === undefined ? {} : { onClick: props.onClick }),
-      isDisabled,
-      type: props.type ?? 'button',
-      isAutofocus: props.isAutofocus ?? false,
-      toView: ({ button: primitiveAttributes }) =>
-        h.button(
-          [
-            ...primitiveAttributes,
-            h.DataAttribute('slot', props.slot ?? 'button'),
-            h.DataAttribute(
-              'state',
-              props.isLoading === true ? 'loading' : 'idle',
-            ),
-            ...(props.dataSize === undefined
-              ? []
-              : [h.DataAttribute('size', props.dataSize)]),
-            ...(isDisabled ? [h.Disabled(true)] : []),
-            ...(props.id === undefined ? [] : [h.Id(props.id)]),
-            ...(props.ariaLabel === undefined
-              ? []
-              : [h.AriaLabel(props.ariaLabel)]),
-            ...(props.ariaExpanded === undefined
-              ? []
-              : [h.AriaExpanded(props.ariaExpanded)]),
-            ...(props.ariaControls === undefined
-              ? []
-              : [h.AriaControls(props.ariaControls)]),
-            ...(props.ariaHasPopup === undefined
-              ? []
-              : [h.AriaHasPopup(props.ariaHasPopup)]),
-            ...(props.name === undefined ? [] : [h.Name(props.name)]),
-            ...(props.value === undefined ? [] : [h.Value(props.value)]),
-            ...(props.form === undefined ? [] : [h.FormAttr(props.form)]),
-            ...(props.buttonAttributes ?? []),
-            ...visualAttributes,
-          ],
-          content(props, h),
-        ),
-    },
-    h,
+  return h.button(
+    [
+      ...nativeButtonAttributes({ ...props, isDisabled }, h),
+      h.DataAttribute('slot', props.slot ?? 'button'),
+      h.DataAttribute('state', props.isLoading === true ? 'loading' : 'idle'),
+      ...(props.dataSize === undefined
+        ? []
+        : [h.DataAttribute('size', props.dataSize)]),
+      ...(isDisabled ? [h.Disabled(true)] : []),
+      ...(props.id === undefined ? [] : [h.Id(props.id)]),
+      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+      ...(props.ariaExpanded === undefined
+        ? []
+        : [h.AriaExpanded(props.ariaExpanded)]),
+      ...(props.ariaControls === undefined
+        ? []
+        : [h.AriaControls(props.ariaControls)]),
+      ...(props.ariaHasPopup === undefined
+        ? []
+        : [h.AriaHasPopup(props.ariaHasPopup)]),
+      ...(props.name === undefined ? [] : [h.Name(props.name)]),
+      ...(props.value === undefined ? [] : [h.Value(props.value)]),
+      ...(props.form === undefined ? [] : [h.FormAttr(props.form)]),
+      ...(props.buttonAttributes ?? []),
+      ...visualAttributes,
+    ],
+    content(props, h),
   )
 }
 

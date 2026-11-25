@@ -141,6 +141,23 @@ test('add/remove emit announcements and item out messages', () => {
   )
 })
 
+test('an action policy can veto removal before its intent and announcement', () => {
+  const model = init({ id: 'li' })
+  const request = Message.RemoveRequested({
+    index: 0,
+    itemName: 'guest',
+    position: 1,
+    context: { reason: 'delete-press', source: 'keyboard' },
+  })
+  const answer = update(model, request, {
+    beforeRemove: ({ index }, details) => {
+      assert.equal(details.source, 'keyboard')
+      if (index === 0) details.cancel()
+    },
+  })
+  assert.deepEqual(answer, { model })
+})
+
 test('immediate move announces the destination; boundary announces in place', () => {
   const model = init({ id: 'li' })
   const moved = update(

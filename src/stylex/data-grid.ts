@@ -17,11 +17,7 @@ import { icon } from '@/ui/stylex/composition/icon'
 import * as Icon from '@/lib/icon'
 import * as Calendar from '@/ui/stylex/calendar'
 import * as DataGrid from '@/lib/data-grid'
-import type {
-  DataGridColumn,
-  DataGridConfig,
-  FileCellData,
-} from '@/lib/data-grid'
+import type { DataGridColumn, DataGridConfig } from '@/lib/data-grid'
 
 const st = stylex.create({
   c2: {
@@ -1919,22 +1915,10 @@ export const dataGrid = <Row>(
     Math.ceil((model.scrollTop + viewHeight) / rowH) + OVERSCAN,
   )
   const gridWidth = columns.reduce((acc, c) => acc + c.width, SELECT_COL_WIDTH)
-  const isSelected = (row: number, column: string): boolean =>
-    model.selectionAnchor.row !== -1 &&
-    row >= Math.min(model.selectionAnchor.row, model.selectionEnd.row) &&
-    row <= Math.max(model.selectionAnchor.row, model.selectionEnd.row) &&
-    columns
-      .slice(
-        Math.min(
-          columns.findIndex(c => c.id === model.selectionAnchor.column),
-          columns.findIndex(c => c.id === model.selectionEnd.column),
-        ),
-        Math.max(
-          columns.findIndex(c => c.id === model.selectionAnchor.column),
-          columns.findIndex(c => c.id === model.selectionEnd.column),
-        ) + 1,
-      )
-      .some(c => c.id === column)
+  const selection = DataGrid.selection(
+    model,
+    columns.map(column => column.id),
+  )
 
   return h.div(
     [
@@ -1946,6 +1930,7 @@ export const dataGrid = <Row>(
       searchOverlay(model, config, h),
       contextMenu(model, h),
       gridToolbar(model, config, h),
+      DataGrid.selectionAnnouncement(selection.text, h),
       h.div(
         [
           h.Role('grid'),
@@ -1955,29 +1940,8 @@ export const dataGrid = <Row>(
           h.Class(className(st.c136)),
           /* mount on the scroller: scroll events don't bubble, and toolbar
              inputs outside it can't leak ctrl/meta combos into grid keys */
-          h.OnMount(
-            DataGrid.gridKeysMount(mount => {
-              if (mount._tag === 'GridKeydown')
-                return DataGrid.Message.GridKey({
-                  key: mount.key,
-                  ctrl: mount.ctrl,
-                  shift: mount.shift,
-                  meta: mount.meta,
-                })
-              if (mount._tag === 'GridContextMenu')
-                return DataGrid.Message.OpenedContextMenu({
-                  x: mount.x,
-                  y: mount.y,
-                  row: mount.row,
-                  column: mount.column,
-                })
-              if (mount._tag === 'GridViewportHeight')
-                return DataGrid.Message.SetViewportHeight({
-                  height: mount.height,
-                })
-              return DataGrid.Message.Scrolled({ scrollTop: mount.scrollTop })
-            }),
-          ),
+          ...DataGrid.gridClipboardAttributes(model, config, people, h),
+          h.OnMount(DataGrid.gridKeysMount(DataGrid.gridMountMessage)),
         ],
         [
           /* header */
@@ -2199,7 +2163,7 @@ export const dataGrid = <Row>(
                     const isEditing =
                       DataGrid.editingCell(model).row === rowIndex &&
                       DataGrid.editingCell(model).column === column.id
-                    const inSelection = isSelected(rowIndex, column.id)
+                    const inSelection = selection.contains(rowIndex, column.id)
                     return h.div(
                       [
                         h.Role('gridcell'),

@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { Schema } from 'effect'
+import { Window } from 'happy-dom'
 
-import * as Observe from '../src/lib/behaviors/observe.ts'
+import * as Observe from '@/lib/behaviors/observe'
 
 const change = (input: Partial<Parameters<typeof Observe.change>[0]> = {}) =>
   Observe.change({
@@ -55,5 +56,34 @@ describe('Observe changes', () => {
       true,
     )
     assert.deepEqual(Observe.filter(item, { within: () => false }), [])
+  })
+
+  it('resolves exact refs in the caller scope and follows DOM replacement', async () => {
+    const window = new Window()
+    try {
+      const { document } = window
+      const outside = document.createElement('button')
+      const scope = document.createElement('section')
+      const control = document.createElement('input')
+      const ref = 'panel/choice["a"]'
+      outside.setAttribute('data-observe-ref', ref)
+      control.setAttribute('data-observe-ref', ref)
+      scope.setAttribute('data-observe-ref', 'panel')
+      document.body.append(outside, scope)
+      scope.append(control)
+      const testElement: unknown = scope
+      const root = testElement as Element
+
+      assert.equal(Observe.elementOf(root, ref), control)
+      assert.equal(Observe.elementOf(root, 'panel'), scope)
+      assert.equal(Observe.elementOf(root, 'panel/choice'), null)
+      control.remove()
+      assert.equal(Observe.elementOf(root, ref), null)
+      const replacement = control.cloneNode()
+      scope.append(replacement)
+      assert.equal(Observe.elementOf(root, ref), replacement)
+    } finally {
+      await window.happyDOM.close()
+    }
   })
 })

@@ -3,7 +3,6 @@ import { Command } from 'foldkit'
 import * as Scene from 'foldkit/scene'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 import { Animation as AnimationPrimitive } from '@foldkit/ui'
-import * as ToastPrimitive from '@foldkit/ui/toast'
 import { describe, it } from 'vitest'
 
 import * as ToastBehavior from '@/lib/toast'
@@ -18,9 +17,8 @@ import * as TailwindToast from '@/ui/toast'
  * content/title/description/action/close/arrow part suites — checked at
  * base-ui HEAD).
  *
- * creaseui's toast component is a recipe alias over the Sonner-style
- * notification engine in `@/lib/toast`, which adapts `@foldkit/ui`'s
- * `Toast` primitive: the parent owns the Model, `show`/`updateToast`/
+ * CreaseUI owns the notification lifecycle in `@/lib/toast`.
+ * The parent owns the Model. `show`/`updateToast`/
  * `dismiss`/`dismissAll` return versioned timer Commands, and the view
  * renders one <section> live region per active position holding
  * role=status|alert articles. Base UI's fake-timer cases are ported by
@@ -28,7 +26,7 @@ import * as TailwindToast from '@/ui/toast'
  * directly — the pending Command IS the timer, so "auto-dismisses after
  * N ms" reads as "resolving that Command starts the leave animation".
  *
- * The primitive drives a full enter/leave animation lifecycle per entry:
+ * Each entry has its own enter/leave animation lifecycle:
  * `show` schedules `WaitForPaint` (+ `WaitForAnimationSettled` after it)
  * for the enter transition and a `WaitBeforeDismissal` for non-sticky
  * entries; dismissal schedules the same paint/settle pair for the leave
@@ -47,7 +45,7 @@ import * as TailwindToast from '@/ui/toast'
  *  - Real pointer capture and hover geometry are covered by browser tests;
  *    horizontal thresholds, cancellation, and queue promotion have model
  *    tests. The scene DSL has no native pointer streams or layout geometry.
- *    Vertical and multi-direction swipes remain outside the primitive API.
+ *    Toast supports horizontal swipes.
  *  - ToastPositioner anchoring/`--toast-index` offsets, ToastArrow, and
  *    ToastPortal — creaseui positions each entry into a named position
  *    section instead of floating-ui anchoring, and renders no portal.
@@ -55,11 +53,11 @@ import * as TailwindToast from '@/ui/toast'
  *    hand-off to the next toast, Escape-scoped-to-portals — no real focus
  *    in the DSL.
  *  - ending/transitionStatus animation phases, `updateKey`, and
- *    onRemove-vs-onClose staging — the primitive's per-entry leave
+ *    onRemove-vs-onClose staging — the per-entry leave
  *    animation covers the same lifecycle; DismissedToast fires on
  *    TransitionedOut as removal.
  *  - `add` accepting a caller-specified id / upsert-by-add — the
- *    primitive generates ids as `${modelId}-entry-${nextEntryKey}`;
+ *    Toast generates ids as `${modelId}-entry-${nextEntryKey}`;
  *    `updateToast` is the update path. "returns a toast id" has no
  *    scene-visible analogue.
  *  - `update(id, fn)` function-updater form — `updateToast` takes a
@@ -311,7 +309,10 @@ const makeView =
         Toast.toast(
           {
             model: model.toasts,
-            toParentMessage: message => ({ _tag: 'GotToastMessage', message }),
+            toParentMessage: message => ({
+              _tag: 'GotToastMessage',
+              message,
+            }),
             ariaLabel: 'Notifications',
             ...(props?.pausePolicy === undefined
               ? {}
@@ -323,8 +324,8 @@ const makeView =
     )
 
 /** Rebuilds the Entry `show` produces so OutMessage assertions compare the
- *  full payload, not just the title. `Default` maps to the primitive's
- *  `Info` variant on the entry while the payload keeps the crease variant. */
+ *  full payload. `Default` maps to `Info` on the entry while the payload
+ *  keeps the Crease variant. */
 const entryOf = (
   id: string,
   input: ToastBehavior.ShowInput,
@@ -343,7 +344,7 @@ const entryOf = (
       : Option.some(Duration.fromInputUnsafe(input.duration ?? '4 seconds')),
   pendingDismissVersion: 0,
   isHovered: false,
-  swipeState: ToastPrimitive.SwipeState.Idle(),
+  swipeState: ToastBehavior.SwipeState.Idle(),
   swipeVersion: 0,
   payload: {
     title: input.title,
@@ -358,7 +359,7 @@ const entryOf = (
   },
 })
 
-/** The entry snapshot the primitive's `DismissedToast` carries — the toast
+/** The entry snapshot that `DismissedToast` carries — the toast
  *  mid-leave (`isShowing: false`, `LeaveAnimating`, generation 2), which is
  *  the state the entry is in when its leave transition settles. */
 const leavingEntryOf = (
@@ -454,8 +455,8 @@ const dismissTimerFires =
       )
     }
     return Scene.Command.resolve(
-      ToastPrimitive.WaitBeforeDismissal,
-      ToastPrimitive.Message.CompletedWaitBeforeDismissal({ entryId, version }),
+      ToastBehavior.WaitBeforeDismissal,
+      ToastBehavior.Message.CompletedWaitBeforeDismissal({ entryId, version }),
     )(simulation)
   }
 
@@ -480,7 +481,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.expect(toastLocator).toExist(),
           Scene.expect(toastLocator).toContainText('Saved'),
           Scene.Command.expectHas(
-            ToastPrimitive.WaitBeforeDismissal({
+            ToastBehavior.WaitBeforeDismissal({
               entryId: 'toasts-entry-0',
               version: 0,
               duration: Duration.millis(4000),
@@ -626,7 +627,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.expectHandled(),
           Scene.expect(toastLocator).toExist(),
           Scene.Command.expectHas(
-            ToastPrimitive.WaitBeforeDismissal({
+            ToastBehavior.WaitBeforeDismissal({
               entryId: 'toasts-entry-0',
               version: 0,
               duration: Duration.millis(1000),
@@ -740,7 +741,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           // A completion for the superseded v0 timer is ignored.
           Scene.Subscription.emit({
             _tag: 'GotToastMessage',
-            message: ToastPrimitive.Message.CompletedWaitBeforeDismissal({
+            message: ToastBehavior.Message.CompletedWaitBeforeDismissal({
               entryId: 'toasts-entry-0',
               version: 0,
             }),
@@ -751,7 +752,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.expectHandled(),
           // updateToast bumps pendingDismissVersion and reschedules under v2.
           Scene.Command.expectExact(
-            ToastPrimitive.WaitBeforeDismissal({
+            ToastBehavior.WaitBeforeDismissal({
               entryId: 'toasts-entry-0',
               version: 2,
               duration: Duration.millis(4000),
@@ -778,7 +779,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           Scene.click(Scene.role('button', { name: 'arm first timer' })),
           Scene.expectHandled(),
           Scene.Command.expectHas(
-            ToastPrimitive.WaitBeforeDismissal({
+            ToastBehavior.WaitBeforeDismissal({
               entryId: 'toasts-entry-0',
               version: 1,
               duration: Duration.millis(1000),
@@ -828,9 +829,6 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
         )
       })
 
-      // Upstream behavior change: the Toast primitive emits DismissedToast
-      // for every entry once its leave transition settles, so bulk
-      // dismissals are observable per-toast now.
       it('emits a dismissal message for every toast closed by dismissAll', () => {
         toastScene(
           { update, view: makeView(Toast) },
@@ -892,7 +890,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           // paused entry stays rendered.
           Scene.Subscription.emit({
             _tag: 'GotToastMessage',
-            message: ToastPrimitive.Message.CompletedWaitBeforeDismissal({
+            message: ToastBehavior.Message.CompletedWaitBeforeDismissal({
               entryId: 'toasts-entry-0',
               version: 0,
             }),
@@ -930,7 +928,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
           // HoveredEntry and LeftEntry each bumped the version, so the
           // re-armed timer runs under v2.
           Scene.Command.expectHas(
-            ToastPrimitive.WaitBeforeDismissal({
+            ToastBehavior.WaitBeforeDismissal({
               entryId: 'toasts-entry-0',
               version: 2,
               duration: Duration.millis(1000),
@@ -1201,7 +1199,7 @@ const verifyRenderer = (name: string, Toast: ToastModule) => {
       it('exposes drag state and movement while retaining the expanded stack', () => {
         const entry = {
           ...entryOf('toasts-entry-0', STICKY_INFO),
-          swipeState: ToastPrimitive.SwipeState.Dragging({
+          swipeState: ToastBehavior.SwipeState.Dragging({
             pointerId: 1,
             startX: 100,
             currentX: 130,

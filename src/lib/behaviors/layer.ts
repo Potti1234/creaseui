@@ -3,6 +3,8 @@ import type { HtmlBuilder } from 'foldkit/html'
 import { defineMessageUnion } from 'foldkit/message'
 import * as Mount from 'foldkit/mount'
 
+import { isComposing } from './text-dom'
+
 /** The integrated submodel remains available for full popovers, including
  * focus restoration, scroll lock, positioning and enter/exit transitions. */
 export const DismissReason = S.Literals([
@@ -229,8 +231,7 @@ const begin = (doc: Document): Resources => {
     if (
       event.key !== 'Escape' ||
       event.defaultPrevented ||
-      event.isComposing ||
-      event.keyCode === 229 ||
+      isComposing(event) ||
       event.repeat
     )
       return

@@ -73,6 +73,8 @@ export const treeListFixtures: Readonly<
 > = [
   {
     title: 'Tree List',
+    description:
+      'Press Shift+Space on a file or folder to pick it up. Use the arrows to move or change its nesting, Enter to drop, or Escape to cancel.',
     trees: [{ variant: 'lineGuides', ariaLabel: 'Project files' }],
     items: showcaseItems,
   },

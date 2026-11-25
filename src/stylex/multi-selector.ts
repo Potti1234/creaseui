@@ -3,7 +3,7 @@ import * as stylex from '@stylexjs/stylex'
 
 import { childAttributes, type Html, type HtmlBuilder } from 'foldkit/html'
 
-import { Listbox as ListboxPrimitive } from '@foldkit/ui'
+import * as ListboxPrimitive from '@/lib/behaviors/anchored-listbox'
 
 import * as Icon from '@/lib/icon'
 import {
@@ -48,7 +48,7 @@ export {
   update,
 }
 
-const listboxBundle = ListboxPrimitive.Multi.create<string>()
+const listboxBundle = ListboxPrimitive.createMulti<string>()
 
 const styles = stylex.create({
   field: {
@@ -510,7 +510,7 @@ export const multiSelector = <Msg>(
     ? h.label(
         [
           h.Id(labelId),
-          h.For(ListboxPrimitive.Multi.buttonId(model.listbox.id)),
+          h.For(ListboxPrimitive.buttonId(model.listbox.id)),
           h.Class(className(styles.labelHidden)),
         ],
         [props.label],
@@ -518,7 +518,7 @@ export const multiSelector = <Msg>(
     : h.label(
         [
           h.Id(labelId),
-          h.For(ListboxPrimitive.Multi.buttonId(model.listbox.id)),
+          h.For(ListboxPrimitive.buttonId(model.listbox.id)),
           h.Class(className(styles.label)),
         ],
         [
@@ -603,7 +603,7 @@ export const multiSelector = <Msg>(
 
   const statusType = props.status?.type
 
-  const viewInputs: ListboxPrimitive.Multi.ViewInputs<string> = {
+  const viewInputs: ListboxPrimitive.MultiViewInputs<string> = {
     items: [
       ...(props.hasSelectAll === true ? [SELECT_ALL_VALUE] : []),
       ...flatOptions.map(option => option.value),

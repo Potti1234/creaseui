@@ -1,3 +1,4 @@
+import { behaviorList, behaviorNavGroup } from '@/docs/behavior-metadata'
 import { Style, When } from '@pleat/core'
 import { Stream } from 'effect'
 import { Mount, Subscription } from 'foldkit'
@@ -1084,22 +1085,21 @@ export const componentPage = <Msg>(
         ),
       ],
     )
+  const secondaryNavItem = (href: string, label: string) =>
+    h.li(
+      [],
+      [
+        h.a(
+          [h.Href(href), h.Class(className(reset.link, styles.navLink))],
+          [label],
+        ),
+      ],
+    )
   const lintNavGroups = () =>
     LINT_RULE_GROUPS.map(group => ({
       label: group.label,
       items: group.rules.map(rule =>
-        h.li(
-          [],
-          [
-            h.a(
-              [
-                h.Href(lintRulePath(rule.id)),
-                h.Class(className(reset.link, styles.navLink)),
-              ],
-              [rule.title],
-            ),
-          ],
-        ),
+        secondaryNavItem(lintRulePath(rule.id), rule.title),
       ),
     }))
   const navGroups = () => [
@@ -1107,6 +1107,7 @@ export const componentPage = <Msg>(
       label: group.label,
       items: group.components.map(navItem),
     })),
+    behaviorNavGroup(secondaryNavItem),
     ...lintNavGroups(),
   ]
   const position = COMPONENT_NAV_ORDER.findIndex(name => name === config.name)
@@ -1114,6 +1115,10 @@ export const componentPage = <Msg>(
   const next = COMPONENT_NAV_ORDER[position + 1]
   const toc = [
     ['architecture', 'Architecture'],
+    ['behaviors', 'Behaviors'],
+    ...(config.implementation === undefined
+      ? []
+      : [['implementation', 'Implementation'] as const]),
     ['installation', 'Installation'],
     ['usage', 'Usage'],
     ...(config.sections ?? []).map(section => [section.id, section.title]),
@@ -1365,6 +1370,18 @@ export const componentPage = <Msg>(
                   ),
                 ],
               ),
+              section('behaviors', 'Behaviors', [
+                behaviorList(toSlug(config.name), config.renderer, h),
+              ]),
+              ...(config.implementation === undefined
+                ? []
+                : [
+                    section(
+                      'implementation',
+                      'Implementation',
+                      config.implementation,
+                    ),
+                  ]),
               section('installation', 'Installation', [
                 h.div(
                   [h.Class(className(styles.stackTight))],

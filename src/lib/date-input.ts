@@ -12,17 +12,13 @@ import { parseDateInput } from '@/lib/date-parse'
 /* Ported from Meta Astryx DateInput (packages/core/src/DateInput/) — examples
    and visual spec adapted to Crease UI tokens.
 
-   The popover + calendar state live in an embedded foldkit DatePicker.Model,
+   The popover + calendar state live in an embedded DatePicker.Model,
    whose slices this component drives directly (DatePicker.view renders its own
    trigger, which does not fit the input-wrapper layout). The committed date
    and pending text live here in the Model; `reflect` syncs the value when it
    derives from external state, and `ChangedValue` is the onChange OutMessage.
 
-   PORT NOTE: Astryx's input click / ArrowDown open the popover while keeping
-   focus in the input (popover.show({ skipAutoFocus: true })). foldkit's
-   Popover always issues FocusPanel on open, so this port sets `isOpen` on the
-   embedded popover model directly for those paths, trading the enter
-   animation for astryx's keep-focus-in-input semantics. */
+   Input click and ArrowDown open the popover immediately and keep focus in the input so typing can continue. */
 
 export const Model = S.Struct({
   id: S.String,
@@ -33,6 +29,7 @@ export const Model = S.Struct({
   pendingInput: S.Option(S.String),
   isInputInvalid: S.Boolean,
   isInputFocused: S.Boolean,
+  openedFromInput: S.optionalKey(S.Boolean),
   datePicker: DatePickerPrimitive.Model,
 })
 export type Model = typeof Model.Type
@@ -180,10 +177,10 @@ const isDateSelectable = (
   )
 }
 
-/** astryx skipAutoFocus open: show the panel without moving focus out of the
- *  input (foldkit's FocusPanel command is bypassed on purpose). */
+/** Show the calendar immediately and keep focus in the date input. */
 const openKeepingFocus = (model: Model): Model => ({
   ...model,
+  openedFromInput: true,
   datePicker: {
     ...model.datePicker,
     popover: { ...model.datePicker.popover, isOpen: true },
@@ -194,6 +191,7 @@ const openKeepingFocus = (model: Model): Model => ({
  *  it to the popover's trigger button. */
 const closeKeepingFocus = (model: Model): Model => ({
   ...model,
+  openedFromInput: false,
   datePicker: {
     ...model.datePicker,
     calendar: { ...model.datePicker.calendar, viewMode: 'Days' },
@@ -252,7 +250,11 @@ const liftDatePicker = (
   const popoverClosed =
     model.datePicker.popover.isOpen && !result.model.popover.isOpen
   return {
-    model: { ...model, datePicker: result.model },
+    model: {
+      ...model,
+      datePicker: result.model,
+      ...(popoverClosed ? { openedFromInput: false } : {}),
+    },
     ...(commands.length === 0 && !popoverClosed
       ? {}
       : {

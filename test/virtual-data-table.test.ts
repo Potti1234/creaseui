@@ -38,13 +38,14 @@ describe('VirtualList data table', () => {
     assert.doesNotThrow(() => JSON.stringify(selected))
   })
 
-  it('uses Foldkit VirtualList without depending on TanStack', () => {
+  it('uses the shared virtualizer without depending on TanStack', () => {
     const source = readFileSync('src/stylex/virtual/data-table.ts', 'utf8')
     const playground = readFileSync(
       'src/demo/blocks-stylex/tanstack-table-page.ts',
       'utf8',
     )
 
+    assert.match(source, /@\/lib\/behaviors\/virtualizer/u)
     assert.match(source, /VirtualList\.view<Row>\(\)/u)
     assert.match(source, /virtual-data-table/u)
     assert.doesNotMatch(source, /@tanstack/u)

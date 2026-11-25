@@ -1,7 +1,7 @@
 import { type VariantProps, cva } from 'class-variance-authority'
 import type { Html, HtmlBuilder } from 'foldkit/html'
 
-import { Button as ButtonPrimitive } from '@foldkit/ui'
+import { nativeButtonAttributes } from '@/lib/button'
 
 import { cn } from '@/lib/utils'
 
@@ -47,39 +47,35 @@ export const toggle = <Msg>(
   props: ToggleProps<Msg>,
   h: HtmlBuilder<Msg>,
 ): Html => {
-  return ButtonPrimitive.view(
-    {
-      onClick: props.onToggle,
-      isDisabled: props.isDisabled ?? false,
-      type: 'button',
-      toView: ({ button }) =>
-        h.button(
-          [
-            ...button,
-            h.DataAttribute('slot', 'toggle'),
-            h.DataAttribute('size', props.size ?? 'default'),
-            h.AriaPressed(props.isPressed ? 'true' : 'false'),
-            ...(props.id === undefined ? [] : [h.Id(props.id)]),
-            ...(props.ariaLabel === undefined
-              ? []
-              : [h.AriaLabel(props.ariaLabel)]),
-            ...(props.describedBy === undefined
-              ? []
-              : [h.AriaDescribedBy(props.describedBy)]),
-            ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
-            h.Class(
-              cn(
-                toggleVariants({
-                  variant: props.variant ?? 'default',
-                  size: props.size ?? 'default',
-                }),
-                props.class,
-              ),
-            ),
-          ],
-          [...props.children],
+  return h.button(
+    [
+      ...nativeButtonAttributes(
+        {
+          onClick: props.onToggle,
+          isDisabled: props.isDisabled ?? false,
+          type: 'button',
+        },
+        h,
+      ),
+      h.DataAttribute('slot', 'toggle'),
+      h.DataAttribute('size', props.size ?? 'default'),
+      h.AriaPressed(props.isPressed ? 'true' : 'false'),
+      ...(props.id === undefined ? [] : [h.Id(props.id)]),
+      ...(props.ariaLabel === undefined ? [] : [h.AriaLabel(props.ariaLabel)]),
+      ...(props.describedBy === undefined
+        ? []
+        : [h.AriaDescribedBy(props.describedBy)]),
+      ...(props.direction === undefined ? [] : [h.Dir(props.direction)]),
+      h.Class(
+        cn(
+          toggleVariants({
+            variant: props.variant ?? 'default',
+            size: props.size ?? 'default',
+          }),
+          props.class,
         ),
-    },
-    h,
+      ),
+    ],
+    [...props.children],
   )
 }

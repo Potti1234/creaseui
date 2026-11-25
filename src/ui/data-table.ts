@@ -1,6 +1,6 @@
 import { Option } from 'effect'
 import type { Html, HtmlBuilder } from 'foldkit/html'
-import { Checkbox as CheckboxPrimitive } from '@foldkit/ui'
+import { checkboxControlAttributes } from '@/lib/checkbox'
 
 import {
   type FilterVariant,
@@ -118,44 +118,34 @@ const selectionControl = <Msg>(
     onToggle: (isChecked: boolean) => Msg
   }>,
   h: HtmlBuilder<Msg>,
-): Html =>
-  CheckboxPrimitive.view(
-    {
-      id: props.id,
-      isChecked: props.isChecked,
-      isIndeterminate: props.isIndeterminate ?? false,
-      isDisabled: props.isDisabled ?? false,
-      onToggle: props.onToggle,
-      toView: ({ checkbox }) =>
-        h.button(
-          [
-            ...checkbox,
-            h.Type('button'),
-            h.AriaLabel(props.label),
-            h.Class(
-              'inline-flex size-10 items-center justify-center bg-transparent disabled:opacity-50',
+): Html => {
+  const { label, ...control } = props
+  return h.button(
+    [
+      ...checkboxControlAttributes(control, h),
+      h.AriaLabel(label),
+      h.Class(
+        'inline-flex size-10 items-center justify-center bg-transparent disabled:opacity-50',
+      ),
+    ],
+    [
+      h.span(
+        [
+          h.Class(
+            cn(
+              'inline-flex size-4 items-center justify-center rounded-[4px] border border-input bg-background text-primary-foreground',
+              (props.isChecked || props.isIndeterminate === true) &&
+                'border-primary bg-primary',
             ),
-          ],
-          [
-            h.span(
-              [
-                h.Class(
-                  cn(
-                    'inline-flex size-4 items-center justify-center rounded-[4px] border border-input bg-background text-primary-foreground',
-                    (props.isChecked || props.isIndeterminate === true) &&
-                      'border-primary bg-primary',
-                  ),
-                ),
-              ],
-              props.isChecked || props.isIndeterminate === true
-                ? [Icon.check<Msg>({ class: 'size-3' }, h)]
-                : [],
-            ),
-          ],
-        ),
-    },
-    h,
+          ),
+        ],
+        props.isChecked || props.isIndeterminate === true
+          ? [Icon.check<Msg>({ class: 'size-3' }, h)]
+          : [],
+      ),
+    ],
   )
+}
 
 const columnAlignClass = (align: DataTableColumn<unknown>['align']) =>
   align === undefined ? undefined : `text-${align}`

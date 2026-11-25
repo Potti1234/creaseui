@@ -63,3 +63,59 @@ test('Sidebar disclosure hides and restores ordered navigation links', async ({
   await expect(current).toHaveAttribute('aria-current', 'page')
   await expect(preview.getByRole('tree')).toHaveCount(0)
 })
+
+test('Tree List moves whole branches and cancels a nesting draft', async ({
+  page,
+}) => {
+  await page.goto('/docs/components/tree-list')
+  const tree = page
+    .getByRole('tree', { name: 'Project files', exact: true })
+    .first()
+  const item = (name: string) =>
+    tree.getByRole('treeitem', { name, exact: true })
+  const app = item('App.ts')
+  await app.focus()
+  await expect(app).toBeFocused()
+  await page.keyboard.press('Shift+Space')
+  await page.keyboard.press('ArrowRight')
+  await expect(app).toHaveAttribute('aria-level', '3')
+  await expect(item('Button.ts')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(app).toHaveAttribute('aria-level', '2')
+  await expect(app).toBeFocused()
+  await page.keyboard.press('Shift+Space')
+  await page.keyboard.press('ArrowRight')
+  await expect(app).toHaveAttribute('aria-level', '3')
+  await page.keyboard.press('Enter')
+  await expect(app).toBeFocused()
+  await expect(app).toHaveAttribute('aria-level', '3')
+})
+
+test('Tree List accepts a mouse drop into another branch', async ({ page }) => {
+  await page.goto('/docs/components/tree-list')
+  const tree = page
+    .getByRole('tree', { name: 'Project files', exact: true })
+    .first()
+  const row = (name: string) =>
+    tree
+      .getByRole('treeitem', { name, exact: true })
+      .locator('[data-slot="tree-list-item"]')
+      .first()
+  await expect(row('App.ts')).toBeVisible()
+  const source = (await row('App.ts').boundingBox())!
+  const target = (await row('components').boundingBox())!
+  await page.mouse.move(
+    source.x + source.width / 2,
+    source.y + source.height / 2,
+  )
+  await page.mouse.down()
+  await page.mouse.move(
+    target.x + target.width / 2,
+    target.y + target.height / 2,
+    { steps: 8 },
+  )
+  await page.mouse.up()
+  await expect(
+    tree.getByRole('treeitem', { name: 'App.ts', exact: true }),
+  ).toHaveAttribute('aria-level', '3')
+})

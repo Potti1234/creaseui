@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { Option } from 'effect'
+import { Context, Option } from 'effect'
+import * as FoldkitCalendar from '@foldkit/ui/calendar'
+import {
+  __clearRuntime,
+  __htmlBuilder,
+  __setRuntime,
+} from '../node_modules/foldkit/dist/html/index.js'
 import * as Calendar from '@/lib/behaviors/calendar'
 
 const date = (day: number, month = 6) => ({ year: 2025, month, day })
@@ -13,6 +19,82 @@ const init = (disabledDates: ReadonlyArray<ReturnType<typeof date>> = []) =>
   )
 
 describe('Calendar behavior', () => {
+  it('preserves the model, commands, and out messages of the existing navigation API', () => {
+    const config = {
+      id: 'calendar',
+      today: date(4),
+      initialViewDate: date(31, 5),
+      minDate: date(1, 5),
+      disabledDates: [date(1)],
+    }
+    let model = Calendar.init(config)
+    assert.deepEqual(model, FoldkitCalendar.init(config))
+    for (const message of [
+      key('ArrowRight'),
+      key('PageDown'),
+      Calendar.Message.FocusedGrid(),
+      key('Enter'),
+      Calendar.Message.ClickedHeading(),
+      key('ArrowDown'),
+      Calendar.Message.ClickedHeading(),
+      Calendar.Message.PagedYears({ direction: 1 }),
+      Calendar.Message.SelectedYear({ year: 2034 }),
+      Calendar.Message.SelectedMonth({ month: 2 }),
+      Calendar.Message.ClickedPreviousMonthButton(),
+      Calendar.Message.BlurredGrid(),
+    ]) {
+      const result = Calendar.update(model, message)
+      const expected = FoldkitCalendar.update(model, message)
+      assert.deepEqual(result.model, expected.model)
+      assert.deepEqual(result.outMessage, expected.outMessage)
+      assert.deepEqual(
+        result.commands?.map(({ name, args }) => ({ name, args })),
+        expected.commands?.map(({ name, args }) => ({ name, args })),
+      )
+      model = result.model
+    }
+  })
+
+  it('preserves grid attributes and controlled selection in every view mode', () => {
+    const h = __htmlBuilder<Calendar.Message>()
+    const baseModel = Calendar.update(
+      init([date(1)]),
+      Calendar.Message.FocusedGrid(),
+    ).model
+    const attributes = (view: typeof Calendar.view, model: Calendar.Model) => {
+      let result: Calendar.CalendarAttributes | undefined
+      view(
+        model,
+        {
+          maybeSelectedDate: Option.some(date(5)),
+          toView: value => {
+            result = value
+            return null
+          },
+        },
+        h,
+      )
+      assert.ok(result)
+      return result
+    }
+
+    __setRuntime(() => undefined, Context.empty())
+    try {
+      for (const viewMode of ['Days', 'Months', 'Years'] as const) {
+        const model = { ...baseModel, viewMode }
+        const actual = attributes(Calendar.view, model)
+        const expected = attributes(FoldkitCalendar.view, model)
+        // Compare attributes and cell metadata with handler identity omitted.
+        assert.deepEqual(
+          JSON.parse(JSON.stringify(actual)),
+          JSON.parse(JSON.stringify(expected)),
+        )
+      }
+    } finally {
+      __clearRuntime()
+    }
+  })
+
   it('mirrors only horizontal grid keys in RTL', () => {
     assert.equal(
       Calendar.mirrorNavigationKeyForRtl(key('ArrowLeft')).key,

@@ -2,7 +2,7 @@ import { Option } from 'effect'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import * as Mount from 'foldkit/mount'
 
-import { Dialog as DialogPrimitive } from '@foldkit/ui'
+import * as DialogPrimitive from '@/lib/behaviors/dialog'
 
 import * as DrawerBehavior from '@/lib/drawer'
 import { cn } from '@/lib/utils'
@@ -155,9 +155,7 @@ const popupStyle = (model: Model): Record<string, string> => {
   const movement = DrawerBehavior.swipeMovement(model)
   const snapOffset = DrawerBehavior.snapPointOffsetFor(model)
   const nestedCount = Object.keys(model.nestedDrawerHeights).length
-  const leaving =
-    model.dialog.animation.transitionState === 'LeaveStart' ||
-    model.dialog.animation.transitionState === 'LeaveAnimating'
+  const leaving = DialogPrimitive.isLeaving(model.dialog)
   return {
     '--drawer-swipe-movement-x': `${String(movement.x)}px`,
     '--drawer-swipe-movement-y': `${String(movement.y)}px`,

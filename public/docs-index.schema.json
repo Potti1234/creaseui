@@ -2,10 +2,35 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "./docs-index.schema.json",
   "type": "object",
-  "required": ["generatedFrom", "componentCount", "components"],
+  "required": ["generatedFrom", "componentCount", "components", "behaviors"],
   "properties": {
     "generatedFrom": { "type": "array", "items": { "type": "string" } },
     "componentCount": { "type": "integer", "minimum": 1 },
+    "behaviors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "slug",
+          "title",
+          "group",
+          "kind",
+          "description",
+          "docs",
+          "source"
+        ],
+        "properties": {
+          "slug": { "type": "string" },
+          "title": { "type": "string" },
+          "group": { "type": "string" },
+          "kind": { "const": "primitive" },
+          "description": { "type": "string" },
+          "docs": { "type": "string" },
+          "source": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
     "components": {
       "type": "array",
       "items": {
@@ -19,7 +44,8 @@
           "install",
           "dependencies",
           "examples",
-          "api"
+          "api",
+          "behaviors"
         ],
         "properties": {
           "slug": { "type": "string" },
@@ -30,6 +56,16 @@
           "install": { "type": "string" },
           "dependencies": { "type": "array", "items": { "type": "string" } },
           "examples": { "type": "array", "items": { "type": "string" } },
+          "behaviors": {
+            "type": "object",
+            "required": ["tailwind", "stylex", "pleat"],
+            "properties": {
+              "tailwind": { "$ref": "#/$defs/behaviorSlugs" },
+              "stylex": { "$ref": "#/$defs/behaviorSlugs" },
+              "pleat": { "$ref": "#/$defs/behaviorSlugs" }
+            },
+            "additionalProperties": false
+          },
           "api": {
             "type": "array",
             "items": {
@@ -46,6 +82,13 @@
         },
         "additionalProperties": false
       }
+    }
+  },
+  "$defs": {
+    "behaviorSlugs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
     }
   },
   "additionalProperties": false

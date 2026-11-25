@@ -2,13 +2,11 @@ import { reset } from '@/ui/stylex/reset'
 import { Option } from 'effect'
 import type { Attribute, ChildAttribute, Html, HtmlBuilder } from 'foldkit/html'
 import * as Mount from 'foldkit/mount'
-import type { Anchor } from '@foldkit/ui'
 
 import * as HoverCardBehavior from '@/lib/hover-card'
 import * as stylex from '@stylexjs/stylex'
 import type { StaticStyles } from '@stylexjs/stylex'
 import { overlayStyles } from './overlay-tokens.stylex'
-import { themedAnchor } from './overlay-boundary'
 import type {
   ButtonVariant,
   ButtonSize,
@@ -68,7 +66,7 @@ const CONTENT_CLASS = overlayStyles.panel
 export type HoverCardSide = 'top' | 'right' | 'bottom' | 'left'
 export type HoverCardAlign = 'start' | 'center' | 'end'
 
-type Placement = NonNullable<Anchor.AnchorConfig['placement']>
+type Placement = HoverCardBehavior.HoverCardPlacement
 const PLACEMENTS: Readonly<
   Record<HoverCardSide, Readonly<Record<HoverCardAlign, Placement>>>
 > = {
@@ -171,15 +169,14 @@ export const hoverCard = <Msg>(
                   Mount.mapMessage(
                     HoverCardBehavior.AnchorHoverCard({
                       buttonId: triggerId,
-                      anchor: themedAnchor({
+                      anchor: {
                         placement:
                           PLACEMENTS[props.side ?? 'bottom'][
                             props.align ?? 'center'
                           ],
                         gap: 8,
                         padding: 8,
-                        portal: false,
-                      }),
+                      },
                     }),
                     props.toParentMessage,
                   ),

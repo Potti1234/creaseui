@@ -34,7 +34,7 @@ const isStaticStyle = (value: unknown): value is Style.Style =>
 const cn = (...values: ReadonlyArray<unknown>): string =>
   className(...values.filter(isStaticStyle))
 
-/* Ported from shadcn/ui tooltip.tsx on top of foldkit Tooltip.
+/* Ported from shadcn/ui tooltip.tsx using the shared CreaseUI Tooltip behavior.
 
    Foldkit's floating anchor may flip a panel to avoid collisions. The arrow is
    styled from the anchor's runtime data-placement, so it follows that flip. */
