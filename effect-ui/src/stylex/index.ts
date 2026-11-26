@@ -1,4 +1,15 @@
 import type { Html } from '@effect/ui/html'
+import { chart, dataTable, dataGrid } from './data-styles.stylex'
+import { EChart as RenderEChart } from '../ui/chart'
+import { ChartContainer as RenderChartContainer } from '../ui/chart'
+import { ChartLegend as RenderChartLegend } from '../ui/chart'
+import { ChartTooltipContent as RenderChartTooltipContent } from '../ui/chart'
+import { BarChart as RenderBarChart } from '../ui/chart'
+import { AreaChart as RenderAreaChart } from '../ui/chart'
+import { InteractiveAreaChart as RenderInteractiveAreaChart } from '../ui/chart'
+import { DonutChart as RenderDonutChart } from '../ui/chart'
+import { DataTable as RenderDataTable } from '../ui/data-table'
+import { DataGrid as RenderDataGrid } from '../ui/data-grid'
 import {
   command,
   multiSelector,
@@ -694,6 +705,62 @@ export const ButtonGroup = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderButtonGroup<Msg, R>>[1],
 ) => RenderButtonGroup(h, options, partClasses(buttonGroup))
+
+export const EChart = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderEChart<Msg, R>>[1],
+) => RenderEChart<Msg, R>(h, options, partClasses(chart))
+
+export const ChartContainer = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderChartContainer<Msg, R>>[1],
+) => RenderChartContainer<Msg, R>(h, options, partClasses(chart))
+
+export const ChartLegend = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderChartLegend<Msg, R>>[1],
+) => RenderChartLegend<Msg, R>(h, options, partClasses(chart))
+
+export const ChartTooltipContent = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderChartTooltipContent<Msg, R>>[1],
+) => RenderChartTooltipContent<Msg, R>(h, options, partClasses(chart))
+
+export const BarChart = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderBarChart<Msg>>[1],
+) => RenderBarChart<Msg>(h, options, partClasses(chart))
+
+export const AreaChart = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderAreaChart<Msg>>[1],
+) => RenderAreaChart<Msg>(h, options, partClasses(chart))
+
+export const InteractiveAreaChart = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderInteractiveAreaChart<Msg>>[1],
+) => RenderInteractiveAreaChart<Msg>(h, options, partClasses(chart))
+
+export const DonutChart = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderDonutChart<Msg>>[1],
+) => RenderDonutChart<Msg>(h, options, partClasses(chart))
+
+export const DataTable = <Row, Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderDataTable<Row, Msg, R>>[1],
+) => RenderDataTable<Row, Msg, R>(h, options, partClasses(dataTable))
+
+export const DataGrid = <Row, Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderDataGrid<Row, Msg, R>>[1],
+) =>
+  RenderDataGrid<Row, Msg, R>(
+    h,
+    options,
+    partClasses(dataGrid),
+    partClasses(menu),
+  )
 
 export const Command = <Msg, R = never>(
   h: Html.H<Msg>,

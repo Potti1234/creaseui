@@ -100,6 +100,18 @@ export { ListInput } from './list-input'
 export { Tokenizer } from './tokenizer'
 export { TransferList } from './transfer-list'
 export { TreeList } from './tree-list'
+export {
+  EChart,
+  ChartContainer,
+  ChartLegend,
+  ChartTooltipContent,
+  BarChart,
+  AreaChart,
+  InteractiveAreaChart,
+  DonutChart,
+} from './chart'
+export { DataTable } from './data-table'
+export { DataGrid } from './data-grid'
 export { CodeBlock } from './code-block'
 export { Markdown } from './markdown'
 export { OverflowList } from './overflow-list'

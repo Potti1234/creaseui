@@ -133,6 +133,7 @@ import {
 import { CalendarDate, CalendarRange } from './behaviors/calendar'
 import { ToastBehavior } from './behaviors/toast'
 import { ContentExamples } from './preview-content'
+import { DataExamples } from './preview-data'
 import { SelectorExamples } from './preview-selectors'
 import '#theme'
 import './preview.css'
@@ -406,6 +407,7 @@ const Preview = Html.component({
       h.div.class('examples').children(
         ContentExamples(h, {}),
         SelectorExamples(h, {}),
+        DataExamples(h, {}),
         h.section.class('example').children(
           h.h2.children('Layout and progress'),
           Carousel(h, {

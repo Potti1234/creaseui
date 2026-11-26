@@ -3965,6 +3965,103 @@
       ]
     },
     {
+      "name": "effect-chart-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "echarts@6.1.0",
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/chart.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/chart.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-chart",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-chart-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/chart.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/chart.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-data-table-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/data-table.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/data-table.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-data-table",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-popover-behavior",
+        "@crease-effect/effect-table-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-data-table-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/data-table.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/data-table.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-data-grid-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/data-grid.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/data-grid.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-data-grid",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-popover-behavior",
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-data-grid-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/data-grid.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/data-grid.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -4092,13 +4189,17 @@
         "@crease-effect/effect-list-input",
         "@crease-effect/effect-tokenizer",
         "@crease-effect/effect-transfer-list",
-        "@crease-effect/effect-tree-list"
+        "@crease-effect/effect-tree-list",
+        "@crease-effect/effect-chart",
+        "@crease-effect/effect-data-table",
+        "@crease-effect/effect-data-grid"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
         { "path": "src/stylex/styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/styles.stylex.ts" },
         { "path": "src/stylex/content-styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/content-styles.stylex.ts" },
-        { "path": "src/stylex/selector-styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/selector-styles.stylex.ts" }
+        { "path": "src/stylex/selector-styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/selector-styles.stylex.ts" },
+        { "path": "src/stylex/data-styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/data-styles.stylex.ts" }
       ]
     },
     {
@@ -4228,13 +4329,17 @@
         "@crease-effect/effect-list-input",
         "@crease-effect/effect-tokenizer",
         "@crease-effect/effect-transfer-list",
-        "@crease-effect/effect-tree-list"
+        "@crease-effect/effect-tree-list",
+        "@crease-effect/effect-chart",
+        "@crease-effect/effect-data-table",
+        "@crease-effect/effect-data-grid"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },
         { "path": "src/pleat/styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/styles.ts" },
         { "path": "src/pleat/content-styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/content-styles.ts" },
-        { "path": "src/pleat/selector-styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/selector-styles.ts" }
+        { "path": "src/pleat/selector-styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/selector-styles.ts" },
+        { "path": "src/pleat/data-styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/data-styles.ts" }
       ]
     }
   ]
