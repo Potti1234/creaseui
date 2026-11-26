@@ -2,7 +2,7 @@
 
 The port covers Button, Dialog, Combobox, Calendar, Select, Popover, Checkbox, and Switch. The headless behaviors can be installed and composed independently. Tailwind, StyleX, and Pleat use the same Effect UI views and event contracts. Dialog, Popover, and Select support controlled or local open state. Consumers own the selected values in Combobox, Calendar, and Select and the checked values in Checkbox and Switch.
 
-This package uses Effect 4.1.5 and pins both Effect UI packages to snapshot `4d6d7ec`. It has its own lockfile because the Foldkit application still requires Effect 4.0.0-rc.117.
+This package uses Effect 4.1.5 and pins both Effect UI packages to snapshot `8986cd7`. It has its own lockfile because the Foldkit application still requires Effect 4.0.0-rc.117.
 
 ## Preview locally
 

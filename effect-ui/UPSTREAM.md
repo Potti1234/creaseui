@@ -86,6 +86,9 @@ assertion, also failed on unmodified upstream `efdee07` and is tracked in
 Reported upstream as [Effect UI #278](https://github.com/Effect-TS/ui/issues/278)
 with a standalone reproduction and the tested
 [fix commit](https://github.com/Potti1234/ui/commit/771d9a8ad14e799c07f1811f1afd748def774ff9).
+Effect UI released its fix in the `8986cd7` snapshot. Both repro inputs now
+emit the expected value. [Merged upstream fix](https://github.com/Effect-TS/ui/pull/279)
+
 Reproduced on [`77dcd92`](https://github.com/Effect-TS/ui/commit/77dcd92f378930583e43debe36be7a203100d351),
 [`efdee07`](https://github.com/Effect-TS/ui/commit/efdee07133b4a64442a68cba69ef8c95cef33a95),
 and [`4d6d7ec`](https://github.com/Effect-TS/ui/commit/4d6d7ec50244582eaf334d40aa6d17afeb5369c6)
@@ -106,9 +109,9 @@ node effect-ui/repros/numberfield-apostrophe.mjs
 node effect-ui/repros/numberfield-apostrophe.mjs --curly
 ```
 
-The first command that runs the repro fails at `HtmlScene.emitted`. The
-curly-apostrophe control prints `NumberField accepted 1’234.25 as 1234.25`.
-Both upstream NumberField suites passed with the patch (20 tests), along
+Both runs print that NumberField accepted the input as `1234.25` on
+`8986cd7`. The straight-apostrophe run failed at `HtmlScene.emitted` on
+`4d6d7ec`. Both upstream NumberField suites passed with the proposed patch (20 tests), along
 with type-check and lint. The new document test covers both keyboard and
 paste and verifies that `en-US` continues to reject both apostrophes.
 [Standalone repro](repros/numberfield-apostrophe.mjs)
