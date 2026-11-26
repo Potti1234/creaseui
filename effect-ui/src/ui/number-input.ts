@@ -34,6 +34,8 @@ export const NumberInput = <Msg, R = never>(
     invalid = status?.type === 'error',
     placeholder,
     onClear,
+    isIntegerOnly,
+    formatValue,
     className,
     ...options
   }: Omit<Options<Msg>, 'view' | 'fallback'> & {
@@ -48,6 +50,8 @@ export const NumberInput = <Msg, R = never>(
     readonly invalid?: boolean
     readonly placeholder?: string
     readonly onClear?: NoInfer<Msg>
+    readonly isIntegerOnly?: boolean
+    readonly formatValue?: (value: number) => string
     readonly className?: string
   },
   styles: typeof tailwind = tailwind,
@@ -56,12 +60,22 @@ export const NumberInput = <Msg, R = never>(
   const descriptionId =
     description === undefined ? undefined : `${id}-description`
   const statusId = `${id}-status`
+  const integerOnly = isIntegerOnly ?? options.props.integerOnly
   return NumberInputBehavior(h, {
     ...options,
+    props: {
+      ...options.props,
+      integerOnly,
+      customDisplay: formatValue !== undefined,
+    },
     view: field =>
       field
         .root(
-          h.div.class(styles.root, className).attr('data-slot', 'number-input'),
+          field.observe(
+            h.div
+              .class(styles.root, className)
+              .attr('data-slot', 'number-input'),
+          ),
         )
         .children(
           h.label
@@ -85,18 +99,34 @@ export const NumberInput = <Msg, R = never>(
                     })
                     .children('−')
                 : undefined,
-              field.input(
-                h.input.class(styles.input).attrs({
-                  id,
-                  placeholder,
-                  'data-slot': 'number-input-control',
-                  'aria-describedby':
-                    [descriptionId, status === undefined ? undefined : statusId]
-                      .filter(Boolean)
-                      .join(' ') || undefined,
-                  'aria-invalid': invalid ? 'true' : undefined,
-                }),
-              ),
+              field
+                .input(
+                  h.input.class(styles.input).attrs({
+                    id,
+                    placeholder,
+                    'data-slot': 'number-input-control',
+                    'aria-describedby':
+                      [
+                        descriptionId,
+                        status === undefined ? undefined : statusId,
+                      ]
+                        .filter(Boolean)
+                        .join(' ') || undefined,
+                    'aria-invalid': invalid ? 'true' : undefined,
+                  }),
+                )
+                .attrs({
+                  ...(integerOnly
+                    ? {
+                        'data-number-input-draft': field.inputValue,
+                        inputmode: 'numeric',
+                      }
+                    : {}),
+                  ...(formatValue === undefined || field.focused
+                    ? {}
+                    : { 'aria-valuetext': field.displayValue(formatValue) }),
+                })
+                .value(field.displayValue(formatValue)),
               units === undefined
                 ? undefined
                 : h.span.class(styles.affix).children(units),

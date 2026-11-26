@@ -20,6 +20,7 @@ export const InputOtp = <Msg, R = never>(
     groupClassName,
     slotClassName,
     separator,
+    pattern,
     ...options
   }: Omit<Options<Msg>, 'view' | 'fallback'> & {
     readonly ariaLabel?: string
@@ -27,6 +28,7 @@ export const InputOtp = <Msg, R = never>(
     readonly className?: string
     readonly groupClassName?: string
     readonly slotClassName?: string
+    readonly pattern?: RegExp
     readonly separator?: (
       index: number,
     ) => View.Content<NoInfer<Msg>, R> | undefined
@@ -35,8 +37,15 @@ export const InputOtp = <Msg, R = never>(
 ) =>
   InputOtpBehavior(h, {
     ...options,
-    view: otp =>
-      otp
+    props:
+      pattern === undefined
+        ? options.props
+        : {
+            ...options.props,
+            pattern: { source: pattern.source, flags: pattern.flags },
+          },
+    view: otp => {
+      const slots = otp
         .root(
           h.div.class(styles.root, className).attrs({
             'data-slot': 'input-otp',
@@ -61,5 +70,9 @@ export const InputOtp = <Msg, R = never>(
               }),
             ]).flat(),
           ),
-        ),
+        )
+      return otp.guard === null
+        ? slots
+        : otp.guard(h.div.style({ display: 'contents' })).children(slots)
+    },
   })
