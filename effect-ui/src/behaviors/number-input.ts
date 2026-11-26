@@ -154,6 +154,7 @@ export const NumberInputBehavior = Html.component({
   },
   parts: (p, model) => {
     const { integerOnly, customDisplay, ...props } = p.props
+    const step = Number(props.step)
     const observe = p.part('div', element =>
       integerOnly || customDisplay
         ? element
@@ -171,10 +172,7 @@ export const NumberInputBehavior = Html.component({
       props: {
         ...props,
         step:
-          integerOnly &&
-          (props.step === undefined ||
-            props.step <= 0 ||
-            !Number.isInteger(props.step))
+          integerOnly && (!Number.isInteger(step) || step <= 0)
             ? 1
             : props.step,
       },
