@@ -905,24 +905,32 @@ const Preview = Html.component({
                 showRemoveOn: 'always',
                 onRemove: Message.RemovedThumbnail(),
               }),
-          FileInput(h, {
-            id: 'catalog-files',
-            label: 'Catalog files',
-            mode: 'dropzone',
-            props: { accept: ['text/plain', '.txt'], multiple: true },
-            maxFiles: 2,
-            maxSize: 1024,
-            files: model.fileNames.map(name => ({ name })),
-            ...(model.fileError === null
-              ? {}
-              : { status: { type: 'error', message: model.fileError } }),
-            onFiles: ({ accepted, errors }) =>
-              Message.PickedFiles({
-                names: accepted.map(file => file.name),
-                error: errors[0] ?? null,
+          h.form
+            .attrs({
+              id: 'catalog-upload-form',
+              enctype: 'multipart/form-data',
+            })
+            .children(
+              FileInput(h, {
+                id: 'catalog-files',
+                name: 'catalog-file',
+                label: 'Catalog files',
+                mode: 'dropzone',
+                props: { accept: ['text/plain', '.txt'], multiple: true },
+                maxFiles: 2,
+                maxSize: 1024,
+                files: model.fileNames.map(name => ({ name })),
+                ...(model.fileError === null
+                  ? {}
+                  : { status: { type: 'error', message: model.fileError } }),
+                onFiles: ({ accepted, errors }) =>
+                  Message.PickedFiles({
+                    names: accepted.map(file => file.name),
+                    error: errors[0] ?? null,
+                  }),
+                onRejected: () => Message.RejectedFiles(),
               }),
-            onRejected: () => Message.RejectedFiles(),
-          }),
+            ),
           Toast(h, {
             props: {},
             position: 'bottom-end',

@@ -6,7 +6,7 @@ import {
 } from '@effect/ui-kit'
 import { Schema } from 'effect'
 
-export { PopoverBehavior as HoverCardButtonBehavior } from './popover'
+export { FocusPopoverBehavior as HoverCardButtonBehavior } from './focus-popover'
 
 const Props = Schema.Struct({
   ...PreviewCardProps.fields,

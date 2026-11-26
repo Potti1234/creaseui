@@ -58,7 +58,7 @@ export const HoverCard = <Msg, R = never>(
     closeDelay = 180,
     disabled,
   } = options
-  const wrap = h.div.class(styles.root).attr('data-slot', 'hover-card')
+  const wrap = h.span.class(styles.root).attr('data-slot', 'hover-card')
   const panel = h.div
     .class(styles.panel, className)
     .attr('data-slot', 'hover-card-content')
@@ -88,9 +88,12 @@ export const HoverCard = <Msg, R = never>(
   return HoverCardButtonBehavior(h, {
     ...options,
     view: card =>
-      wrap.children(
+      card.focusScope(wrap).children(
         card.trigger({
-          element: options.trigger.attrs(triggerAttrs),
+          element: options.trigger.attrs({
+            ...triggerAttrs,
+            'data-focus-popover-trigger': '',
+          }),
           openOnHover: true,
           disabled,
           delay,

@@ -21,9 +21,6 @@ const partial = new Map([
   ['input-otp', 'Custom character patterns that accept whitespace'],
   ['sheet', 'Panel switcher and custom header layout'],
   ['number-input', 'Integer-only stepping with fractional bounds'],
-  ['hover-card', 'Automatic opening from keyboard focus on button triggers'],
-  ['info-tip', 'Automatic opening from keyboard focus'],
-  ['file-input', 'Native multipart form submission'],
   ['toast', 'Swipe dismissal and the collapsed overlapping stack'],
   ['stepper', 'Legacy staggered connector transitions'],
 ])

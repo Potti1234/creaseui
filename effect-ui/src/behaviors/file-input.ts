@@ -1,12 +1,9 @@
 import type { View } from '@effect/ui'
 import type { Html } from '@effect/ui/html'
-import { FileDrop, type FileDropRejectReason } from '@effect/ui-kit'
+import type { FileDrop, FileDropRejectReason } from '@effect/ui-kit'
+import { FileInputFormBehavior, limitSelectedFiles } from './file-input-form'
 
-export const formatFileSize = (bytes: number): string => {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
+export { formatFileSize } from './file-input-form'
 
 export const validateFileLimits = (
   files: readonly File[],
@@ -18,19 +15,8 @@ export const validateFileLimits = (
     readonly maxFiles?: number | undefined
   },
 ) => {
-  const errors: string[] = []
-  const accepted = files.filter(file => {
-    if (maxSize === undefined || file.size <= maxSize) return true
-    errors.push(
-      `"${file.name}" exceeds the ${formatFileSize(maxSize)} size limit`,
-    )
-    return false
-  })
-  const capacity =
-    maxFiles === undefined ? accepted.length : Math.max(0, Math.trunc(maxFiles))
-  if (accepted.length > capacity)
-    errors.push(`You can upload up to ${capacity} files`)
-  return { accepted: accepted.slice(0, capacity), errors }
+  const selection = limitSelectedFiles(files, { maxSize, maxFiles })
+  return { accepted: selection.files, errors: selection.errors }
 }
 
 type Classes = Partial<
@@ -54,6 +40,8 @@ export type FileInputProps<Msg, R = never> = Pick<
   'props' | 'key'
 > & {
   readonly id: string
+  readonly name?: string
+  readonly form?: string
   readonly label: View.Input<Msg, R>
   readonly files?: readonly { readonly name: string; readonly size?: number }[]
   readonly mode?: 'dropzone' | 'input'
@@ -85,6 +73,8 @@ export const FileInputBehavior = <Msg, R = never>(
   h: Html.H<Msg>,
   {
     id,
+    name,
+    form,
     label,
     props,
     mode = 'input',
@@ -112,12 +102,13 @@ export const FileInputBehavior = <Msg, R = never>(
   const hintId = mode === 'input' ? undefined : `${id}-hint`
   const statusId = status === undefined ? undefined : `${id}-status`
   const namesId = files.length === 0 ? undefined : `${id}-names`
-  return FileDrop(h, {
-    props: { ...props, disabled: busy || props?.disabled },
+  const inputId = name === undefined ? undefined : `${id}-form-files`
+  const disabled = busy || props?.disabled
+  return FileInputFormBehavior(h, {
+    props: { ...props, disabled, inputId, maxSize, maxFiles },
     key,
     onEmit: {
-      Picked: ({ files }) =>
-        onFiles?.(validateFileLimits(files, { maxSize, maxFiles })),
+      Accepted: ({ files, errors }) => onFiles?.({ accepted: files, errors }),
       Rejected: ({ files, reason }) => onRejected?.({ files, reason }),
     },
     view: drop =>
@@ -129,6 +120,17 @@ export const FileInputBehavior = <Msg, R = never>(
           'aria-busy': busy ? 'true' : undefined,
         })
         .children(
+          inputId === undefined
+            ? undefined
+            : h.input.attrs({
+                id: inputId,
+                name,
+                form,
+                type: 'file',
+                hidden: '',
+                multiple: props?.multiple ? '' : undefined,
+                disabled: disabled ? '' : undefined,
+              }),
           h.label
             .class(labelHidden ? styles.hiddenLabel : styles.label)
             .attrs({ id: labelId, for: id })

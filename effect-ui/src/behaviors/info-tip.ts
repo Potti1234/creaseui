@@ -2,9 +2,9 @@ import type { View } from '@effect/ui'
 import type { Html } from '@effect/ui/html'
 
 import { IconBehavior } from './icon'
-import { PopoverBehavior } from './popover'
+import { FocusPopoverBehavior } from './focus-popover'
 
-type Options<Msg> = Parameters<typeof PopoverBehavior<Msg>>[1]
+type Options<Msg> = Parameters<typeof FocusPopoverBehavior<Msg>>[1]
 export type InfoTipProps<Msg, R = never> = Omit<
   Options<Msg>,
   'view' | 'fallback'
@@ -27,7 +27,7 @@ export const InfoTipBehavior = <Msg, R = never>(
   }: InfoTipProps<NoInfer<Msg>, R>,
   styles: Classes = {},
 ) =>
-  PopoverBehavior(h, {
+  FocusPopoverBehavior(h, {
     ...options,
     props: {
       side: 'top',
@@ -36,15 +36,15 @@ export const InfoTipBehavior = <Msg, R = never>(
       ...options.props,
     },
     view: tip =>
-      h.span
-        .class(styles.root)
-        .attr('data-slot', 'info-tip')
+      tip
+        .focusScope(h.span.class(styles.root).attr('data-slot', 'info-tip'))
         .children(
           tip.trigger({
             element: h.button
               .class(styles.trigger, className)
               .attrs({
                 'data-slot': 'info-tip-trigger',
+                'data-focus-popover-trigger': '',
                 'aria-label': label,
                 'data-size': size,
               })
