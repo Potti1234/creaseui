@@ -755,6 +755,177 @@ export const toggle = stylex.create({
   },
 })
 
+export const slider = stylex.create({
+  root: {
+    display: 'grid',
+    minWidth: 0,
+    gap: 6,
+    paddingInline: 8,
+    opacity: { default: 1, ':is([data-disabled])': 0.5 },
+  },
+  caption: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: 8,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+  },
+  value: {
+    color: 'var(--muted-foreground)',
+    fontVariantNumeric: 'tabular-nums',
+  },
+  control: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: {
+      default: 'flex-start',
+      ':is([data-orientation=vertical])': 'center',
+    },
+    height: { default: 32, ':is([data-orientation=vertical])': 176 },
+    width: { default: '100%', ':is([data-orientation=vertical])': 32 },
+    touchAction: {
+      default: 'none',
+      ':is([data-readonly],[data-disabled])': 'auto',
+    },
+    userSelect: 'none',
+  },
+  track: {
+    position: 'relative',
+    overflow: 'hidden',
+    borderRadius: 999,
+    backgroundColor: 'var(--muted)',
+    height: { default: 6, ':is([data-orientation=vertical])': '100%' },
+    width: { default: '100%', ':is([data-orientation=vertical])': 6 },
+  },
+  indicator: {
+    position: 'absolute',
+    backgroundColor: 'var(--primary)',
+    top: { default: 0, ':is([data-orientation=vertical])': 'auto' },
+    bottom: {
+      default: 0,
+      ':is([data-orientation=vertical])': 'var(--slider-indicator-start)',
+    },
+    left: {
+      default: 'var(--slider-indicator-start)',
+      ':is([data-orientation=vertical])': 0,
+    },
+    width: {
+      default: 'var(--slider-indicator-size)',
+      ':is([data-orientation=vertical])': '100%',
+    },
+    height: {
+      default: '100%',
+      ':is([data-orientation=vertical])': 'var(--slider-indicator-size)',
+    },
+  },
+  thumb: {
+    position: 'absolute',
+    top: { default: '50%', ':is([data-orientation=vertical])': 'auto' },
+    bottom: {
+      default: 'auto',
+      ':is([data-orientation=vertical])': 'var(--slider-thumb-position)',
+    },
+    left: {
+      default: 'var(--slider-thumb-position)',
+      ':is([data-orientation=vertical])': '50%',
+    },
+    transform: {
+      default: 'translate(-50%, -50%)',
+      ':is([data-orientation=vertical])': 'translate(-50%, 50%)',
+    },
+    width: 16,
+    height: 16,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--primary)',
+    backgroundColor: 'var(--background)',
+    outlineStyle: 'none',
+    boxShadow: {
+      default: '0 1px 2px rgb(0 0 0 / 8%)',
+      ':is(:focus-visible,:has(:focus-visible))':
+        '0 0 0 4px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+  },
+})
+
+export const radioGroup = stylex.create({
+  group: {
+    display: { default: 'grid', ':is([data-layout=horizontal])': 'flex' },
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  control: {
+    display: 'grid',
+    placeItems: 'center',
+    flexShrink: 0,
+    width: 16,
+    height: 16,
+    padding: 0,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 999,
+    outlineStyle: 'none',
+    borderColor: {
+      default: 'var(--input)',
+      ':is([data-checked])': 'var(--primary)',
+      ':focus-visible': 'var(--ring)',
+      ':is([aria-invalid=true])': 'var(--destructive)',
+    },
+    backgroundColor: 'var(--background)',
+    boxShadow: {
+      default: '0 1px 2px rgb(0 0 0 / 5%)',
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: { default: 1, ':disabled': 0.5 },
+    cursor: { default: 'pointer', ':disabled': 'not-allowed' },
+  },
+  indicator: {
+    display: { default: 'block', ':is([data-ending-style])': 'none' },
+    width: 8,
+    height: 8,
+    borderRadius: 999,
+    backgroundColor: 'var(--primary)',
+  },
+})
+
+export const input = stylex.create({
+  field: { display: 'grid', gap: 8 },
+  label: { fontSize: '0.875rem', fontWeight: 500, lineHeight: 1 },
+  description: { fontSize: '0.875rem', color: 'var(--muted-foreground)' },
+  control: {
+    height: 32,
+    width: '100%',
+    minWidth: 0,
+    padding: '4px 10px',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderColor: {
+      default: 'var(--input)',
+      ':focus-visible': 'var(--ring)',
+      ':is([aria-invalid=true])': 'var(--destructive)',
+    },
+    backgroundColor: 'var(--background)',
+    color: {
+      default: 'var(--foreground)',
+      '::placeholder': 'var(--muted-foreground)',
+    },
+    fontFamily: 'inherit',
+    fontSize: { default: '1rem', '@media (min-width: 768px)': '0.875rem' },
+    outlineStyle: 'none',
+    boxShadow: {
+      default: '0 1px 2px rgb(0 0 0 / 5%)',
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: { default: 1, ':disabled': 0.5 },
+    cursor: { default: 'text', ':disabled': 'not-allowed' },
+  },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {

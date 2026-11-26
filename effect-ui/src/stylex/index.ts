@@ -10,8 +10,11 @@ import { Calendar as RenderCalendar } from '../ui/calendar'
 import { Checkbox as RenderCheckbox } from '../ui/checkbox'
 import { Combobox as RenderCombobox } from '../ui/combobox'
 import { Dialog as RenderDialog } from '../ui/dialog'
+import { Input as RenderInput } from '../ui/input'
 import { Popover as RenderPopover } from '../ui/popover'
 import { Select as RenderSelect } from '../ui/select'
+import { RadioGroup as RenderRadioGroup } from '../ui/radio-group'
+import { Slider as RenderSlider } from '../ui/slider'
 import { Switch as RenderSwitch } from '../ui/switch'
 import { Tabs as RenderTabs } from '../ui/tabs'
 import { Tooltip as RenderTooltip } from '../ui/tooltip'
@@ -29,8 +32,11 @@ import {
   combobox,
   controls,
   dialog,
+  input,
   popover,
   select,
+  radioGroup,
+  slider,
   switchControl,
   tabs,
   tooltip,
@@ -141,3 +147,19 @@ export const Toggle = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderToggle<Msg, R>>[1],
 ) => RenderToggle(h, options, partClasses(toggle))
+
+export const Input = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderInput<Msg, R>>[1],
+) => RenderInput(h, options, partClasses(input))
+
+export const RadioGroup = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderRadioGroup<Msg, R>>[1],
+) =>
+  RenderRadioGroup(h, options, partClasses({ ...choiceField, ...radioGroup }))
+
+export const Slider = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderSlider<Msg>>[1],
+) => RenderSlider(h, options, partClasses(slider))

@@ -467,6 +467,99 @@
       ]
     },
     {
+      "name": "effect-input-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-radio-group-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/radio-group.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/radio-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-radio-group",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-radio-group-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/radio-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/radio-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-slider-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/slider.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/slider.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-slider",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-slider-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/slider.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/slider.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -486,7 +579,10 @@
         "@crease-effect/effect-collapsible",
         "@crease-effect/effect-progress",
         "@crease-effect/effect-separator",
-        "@crease-effect/effect-toggle"
+        "@crease-effect/effect-toggle",
+        "@crease-effect/effect-input",
+        "@crease-effect/effect-radio-group",
+        "@crease-effect/effect-slider"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -512,7 +608,10 @@
         "@crease-effect/effect-collapsible",
         "@crease-effect/effect-progress",
         "@crease-effect/effect-separator",
-        "@crease-effect/effect-toggle"
+        "@crease-effect/effect-toggle",
+        "@crease-effect/effect-input",
+        "@crease-effect/effect-radio-group",
+        "@crease-effect/effect-slider"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

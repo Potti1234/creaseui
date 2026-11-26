@@ -735,6 +735,167 @@ export const toggle = {
   ),
 }
 
+const verticalSlider = When.data('orientation', 'vertical')
+const sliderFocus = {
+  boxShadow: '0 0 0 4px color-mix(in oklab, var(--ring) 50%, transparent)',
+}
+
+export const slider = {
+  root: Style.make({
+    display: 'grid',
+    minWidth: 0,
+    gap: 6,
+    paddingInline: 8,
+  }).pipe(Style.when(When.data('disabled'), { opacity: 0.5 })),
+  caption: Style.make({
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: 8,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+  }),
+  value: Style.make({
+    color: 'var(--muted-foreground)',
+    fontVariantNumeric: 'tabular-nums',
+  }),
+  control: Style.make({
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    height: 32,
+    width: '100%',
+    touchAction: 'none',
+    userSelect: 'none',
+  }).pipe(
+    Style.when(verticalSlider, {
+      justifyContent: 'center',
+      height: 176,
+      width: 32,
+    }),
+    Style.when(When.data('disabled'), { touchAction: 'auto' }),
+    Style.when(When.data('readonly'), { touchAction: 'auto' }),
+  ),
+  track: Style.make({
+    position: 'relative',
+    overflow: 'hidden',
+    borderRadius: 999,
+    backgroundColor: 'var(--muted)',
+    height: 6,
+    width: '100%',
+  }).pipe(Style.when(verticalSlider, { height: '100%', width: 6 })),
+  indicator: Style.make({
+    position: 'absolute',
+    backgroundColor: 'var(--primary)',
+    top: 0,
+    bottom: 0,
+    left: 'var(--slider-indicator-start)',
+    width: 'var(--slider-indicator-size)',
+    height: '100%',
+  }).pipe(
+    Style.when(verticalSlider, {
+      top: 'auto',
+      bottom: 'var(--slider-indicator-start)',
+      left: 0,
+      width: '100%',
+      height: 'var(--slider-indicator-size)',
+    }),
+  ),
+  thumb: Style.make({
+    position: 'absolute',
+    top: '50%',
+    left: 'var(--slider-thumb-position)',
+    transform: 'translate(-50%, -50%)',
+    width: 16,
+    height: 16,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--primary)',
+    backgroundColor: 'var(--background)',
+    outlineStyle: 'none',
+    boxShadow: '0 1px 2px rgb(0 0 0 / 8%)',
+  }).pipe(
+    Style.when(verticalSlider, {
+      top: 'auto',
+      bottom: 'var(--slider-thumb-position)',
+      left: '50%',
+      transform: 'translate(-50%, 50%)',
+    }),
+    Style.when(When.focusVisible, sliderFocus),
+    Style.when(When.has(When.focusVisible), sliderFocus),
+  ),
+}
+
+export const radioGroup = {
+  group: Style.make({ display: 'grid', gap: 12 }).pipe(
+    Style.when(When.data('layout', 'horizontal'), {
+      display: 'flex',
+      flexWrap: 'wrap',
+    }),
+  ),
+  control: Style.make({
+    display: 'grid',
+    placeItems: 'center',
+    flexShrink: 0,
+    width: 16,
+    height: 16,
+    padding: 0,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 999,
+    borderColor: 'var(--input)',
+    backgroundColor: 'var(--background)',
+    outlineStyle: 'none',
+    boxShadow: '0 1px 2px rgb(0 0 0 / 5%)',
+    cursor: 'pointer',
+  }).pipe(
+    Style.when(When.checked, { borderColor: 'var(--primary)' }),
+    Style.when(When.focusVisible, choiceFocus),
+    Style.when(When.invalid, { borderColor: 'var(--destructive)' }),
+    Style.when(When.disabled, { opacity: 0.5, cursor: 'not-allowed' }),
+  ),
+  indicator: Style.make({
+    width: 8,
+    height: 8,
+    borderRadius: 999,
+    backgroundColor: 'var(--primary)',
+  }).pipe(Style.when(When.data('ending-style'), { display: 'none' })),
+}
+
+export const input = {
+  field: Style.make({ display: 'grid', gap: 8 }),
+  label: Style.make({ fontSize: '0.875rem', fontWeight: 500, lineHeight: 1 }),
+  description: Style.make({
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  }),
+  control: Style.make({
+    height: 32,
+    width: '100%',
+    minWidth: 0,
+    padding: '4px 10px',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderColor: 'var(--input)',
+    backgroundColor: 'var(--background)',
+    color: 'var(--foreground)',
+    fontFamily: 'inherit',
+    fontSize: '1rem',
+    outlineStyle: 'none',
+    boxShadow: '0 1px 2px rgb(0 0 0 / 5%)',
+    cursor: 'text',
+  }).pipe(
+    Style.when(When.pseudoElement('::placeholder'), {
+      color: 'var(--muted-foreground)',
+    }),
+    Style.when(When.media('(min-width: 768px)'), { fontSize: '0.875rem' }),
+    Style.when(When.focusVisible, choiceFocus),
+    Style.when(When.invalid, { borderColor: 'var(--destructive)' }),
+    Style.when(When.disabled, { opacity: 0.5, cursor: 'not-allowed' }),
+  ),
+}
+
 export const tooltip = {
   root: Style.make({ display: 'inline-block' }),
   positioner: Style.make({

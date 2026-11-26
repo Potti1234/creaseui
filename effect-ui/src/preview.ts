@@ -11,10 +11,13 @@ import {
   Collapsible,
   Combobox,
   Dialog,
+  Input,
   Popover,
   Progress,
+  RadioGroup,
   Select,
   Separator,
+  Slider,
   Switch,
   Tabs,
   Toggle,
@@ -33,6 +36,10 @@ const Message = UiSchema.TaggedEnum({
   ToggledAlerts: { checked: Schema.Boolean },
   SelectedSettingsTab: { value: Schema.String },
   ToggledPin: { pressed: Schema.Boolean },
+  UpdatedProfileName: { value: Schema.String },
+  PickedFrequency: { value: Schema.String },
+  MovedVolume: { value: Schema.Number },
+  MovedRange: { value: Schema.Array(Schema.Number) },
 })
 
 const fruits = [
@@ -61,6 +68,10 @@ const Preview = Html.component({
     alerts: Schema.Boolean,
     settingsTab: Schema.String,
     pinned: Schema.Boolean,
+    profileName: Schema.String,
+    frequency: Schema.String,
+    volume: Schema.Number,
+    range: Schema.Array(Schema.Number),
   }),
 }).make({
   init: () => ({
@@ -72,6 +83,10 @@ const Preview = Html.component({
     alerts: false,
     settingsTab: 'profile',
     pinned: false,
+    profileName: 'Ada',
+    frequency: 'daily',
+    volume: 40,
+    range: [20, 70],
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -82,6 +97,10 @@ const Preview = Html.component({
     ToggledAlerts: ($, { checked }) => $.evolve({ alerts: checked }),
     SelectedSettingsTab: ($, { value }) => $.evolve({ settingsTab: value }),
     ToggledPin: ($, { pressed }) => $.evolve({ pinned: pressed }),
+    UpdatedProfileName: ($, { value }) => $.evolve({ profileName: value }),
+    PickedFrequency: ($, { value }) => $.evolve({ frequency: value }),
+    MovedVolume: ($, { value }) => $.evolve({ volume: value }),
+    MovedRange: ($, { value }) => $.evolve({ range: value }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
@@ -293,6 +312,85 @@ const Preview = Html.component({
           }).children('Pin item'),
           Separator(h),
           h.div.children('Recent items'),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Input and Radio Group'),
+          h.form.class('example-label').children(
+            Input(h, {
+              id: 'profile-name',
+              label: 'Profile name',
+              description: 'Shown on your profile.',
+              element: h.input.attrs({
+                name: 'profileName',
+                autocomplete: 'name',
+              }),
+              props: { value: model.profileName },
+              onUpdate: Message.UpdatedProfileName,
+            }),
+            RadioGroup(h, {
+              id: 'summary-frequency',
+              ariaLabel: 'Summary frequency',
+              props: { value: model.frequency, name: 'frequency' },
+              items: [
+                { value: 'daily', label: 'Daily' },
+                { value: 'hourly', label: 'Hourly', disabled: true },
+                {
+                  value: 'weekly',
+                  label: 'Weekly',
+                  description: 'Send on Monday.',
+                },
+              ],
+              onEmit: { Picked: Message.PickedFrequency },
+            }),
+          ),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Slider'),
+          h.form.class('example-label').children(
+            Slider(h, {
+              key: 'volume',
+              label: 'Volume',
+              showValue: true,
+              name: 'volume',
+              props: { value: model.volume },
+              onEmit: {
+                Moved: ({ value }) =>
+                  typeof value === 'number'
+                    ? Message.MovedVolume({ value })
+                    : undefined,
+                Committed: () => undefined,
+              },
+            }),
+            Slider(h, {
+              key: 'volume-limit',
+              label: 'Volume limit',
+              showValue: true,
+              name: 'limit',
+              readOnly: true,
+              props: { value: 80 },
+            }),
+            Slider(h, {
+              key: 'range',
+              label: 'Frequency range',
+              thumbLabels: ['Minimum frequency', 'Maximum frequency'],
+              showValue: true,
+              name: 'range',
+              props: {
+                value: model.range,
+                orientation: 'vertical',
+                step: 5,
+                minStepsBetweenValues: 2,
+                thumbCollisionBehavior: 'none',
+              },
+              onEmit: {
+                Moved: ({ value }) =>
+                  typeof value === 'number'
+                    ? undefined
+                    : Message.MovedRange({ value }),
+                Committed: () => undefined,
+              },
+            }),
+          ),
         ),
       ),
     ),
