@@ -10,6 +10,7 @@
     "build": "tsc --noEmit && vite build && vite build --mode stylex && vite build --mode pleat",
     "test": "node --import tsx --test test/*.test.ts",
     "migration:status": "node scripts/migration-status.mjs",
+    "docs:validate": "tsx scripts/validate-docs-pages.ts",
     "registry:build": "npx --yes shadcn@latest build registry.json --cwd .. --output effect-ui/.registry"
   },
   "dependencies": {
