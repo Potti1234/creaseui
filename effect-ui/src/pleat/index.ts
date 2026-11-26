@@ -1,4 +1,9 @@
 import type { Html } from '@effect/ui/html'
+import { codeBlock, markdown, overflowList, lightbox } from './content-styles'
+import { CodeBlock as RenderCodeBlock } from '../ui/code-block'
+import { Markdown as RenderMarkdown } from '../ui/markdown'
+import { OverflowList as RenderOverflowList } from '../ui/overflow-list'
+import { Lightbox as RenderLightbox } from '../ui/lightbox'
 import { Style } from '@pleat/core'
 
 import { Accordion as RenderAccordion } from '../ui/accordion'
@@ -672,6 +677,26 @@ export const ButtonGroup = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderButtonGroup<Msg, R>>[1],
 ) => RenderButtonGroup(h, options, partClasses(buttonGroup))
+
+export const CodeBlock = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderCodeBlock<Msg>>[1],
+) => RenderCodeBlock<Msg>(h, options, partClasses(codeBlock))
+
+export const Markdown = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMarkdown<Msg>>[1],
+) => RenderMarkdown<Msg>(h, options, partClasses(markdown), CodeBlock)
+
+export const OverflowList = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderOverflowList<Msg, R>>[1],
+) => RenderOverflowList<Msg, R>(h, options, partClasses(overflowList))
+
+export const Lightbox = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderLightbox<Msg, R>>[1],
+) => RenderLightbox<Msg, R>(h, options, partClasses(lightbox))
 
 export const Carousel = <Msg, R = never>(
   h: Html.H<Msg>,

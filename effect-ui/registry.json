@@ -3632,6 +3632,138 @@
       ]
     },
     {
+      "name": "effect-code-block-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/code-block.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/code-block.ts"
+        },
+        {
+          "path": "src/behaviors/code-tokenization.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/code-tokenization.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-code-block",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-code-block-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/code-block.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/code-block.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-markdown-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/markdown.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/markdown.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-markdown",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-code-block",
+        "@crease-effect/effect-heading-behavior",
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/effect-link-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-markdown-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/markdown.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/markdown.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-overflow-list-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/overflow-list.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/overflow-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-overflow-list",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-overflow-list-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/overflow-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/overflow-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-lightbox-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/lightbox.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/lightbox.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-lightbox",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-lightbox-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/lightbox.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/lightbox.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -3749,11 +3881,16 @@
         "@crease-effect/effect-resizable",
         "@crease-effect/effect-stepper",
         "@crease-effect/effect-color-picker",
-        "@crease-effect/effect-sidebar"
+        "@crease-effect/effect-sidebar",
+        "@crease-effect/effect-code-block",
+        "@crease-effect/effect-markdown",
+        "@crease-effect/effect-overflow-list",
+        "@crease-effect/effect-lightbox"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
-        { "path": "src/stylex/styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/styles.stylex.ts" }
+        { "path": "src/stylex/styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/styles.stylex.ts" },
+        { "path": "src/stylex/content-styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/content-styles.stylex.ts" }
       ]
     },
     {
@@ -3873,11 +4010,16 @@
         "@crease-effect/effect-resizable",
         "@crease-effect/effect-stepper",
         "@crease-effect/effect-color-picker",
-        "@crease-effect/effect-sidebar"
+        "@crease-effect/effect-sidebar",
+        "@crease-effect/effect-code-block",
+        "@crease-effect/effect-markdown",
+        "@crease-effect/effect-overflow-list",
+        "@crease-effect/effect-lightbox"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },
-        { "path": "src/pleat/styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/styles.ts" }
+        { "path": "src/pleat/styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/styles.ts" },
+        { "path": "src/pleat/content-styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/content-styles.ts" }
       ]
     }
   ]

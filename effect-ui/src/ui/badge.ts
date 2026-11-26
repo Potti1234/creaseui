@@ -1,4 +1,4 @@
-import type { Html } from '@effect/ui/html'
+import { Html } from '@effect/ui/html'
 
 import { BadgeBehavior, type BadgeProps } from '../behaviors/badge'
 
@@ -8,11 +8,11 @@ const tailwind = {
 
 export const Badge = <Msg, R = never>(
   h: Html.H<Msg>,
-  {
-    className,
-    ...options
-  }: BadgeProps<NoInfer<Msg>, R> & { readonly className?: string },
+  { className, ...options }: BadgeProps<NoInfer<Msg>, R>,
   styles: typeof tailwind = tailwind,
 ) => {
-  return BadgeBehavior(h, options).class(styles.root, className)
+  return BadgeBehavior<Msg, R>(h, {
+    ...options,
+    className: Html.classNames(styles.root, className),
+  })
 }

@@ -1,7 +1,11 @@
 import type { View } from '@effect/ui'
 import type { Html } from '@effect/ui/html'
 
-import { StepperBehavior, stepProgress } from '../behaviors/stepper'
+import {
+  StepperBehavior,
+  stepConnectorTimings,
+  stepProgress,
+} from '../behaviors/stepper'
 import { IconBehavior, type IconName } from '../behaviors/icon'
 
 type Options<Msg> = Parameters<typeof StepperBehavior<Msg>>[1]
@@ -55,7 +59,7 @@ const tailwind = {
     'relative flex min-h-4 min-w-4 items-center data-[orientation=vertical]:justify-center',
   trackMarker:
     'absolute start-0 top-1/2 -translate-y-1/2 rounded-full bg-background data-[orientation=vertical]:start-1/2 data-[orientation=vertical]:top-0 data-[orientation=vertical]:-translate-x-1/2 data-[orientation=vertical]:translate-y-0',
-  fill: 'absolute inset-0 origin-left scale-x-0 rounded-[inherit] bg-primary transition-transform duration-(--step-duration) motion-reduce:transition-none rtl:origin-right data-filled:scale-x-100 data-[orientation=vertical]:origin-top data-[orientation=vertical]:scale-x-100 data-[orientation=vertical]:scale-y-0 data-[orientation=vertical]:data-filled:scale-y-100 data-[status=success]:bg-success data-[status=warning]:bg-warning data-[status=error]:bg-destructive',
+  fill: 'absolute inset-0 origin-left scale-x-0 rounded-[inherit] bg-primary transition-transform duration-(--step-duration) delay-(--step-delay) ease-linear motion-reduce:transition-none rtl:data-[orientation=horizontal]:origin-right data-filled:scale-x-100 data-[orientation=vertical]:origin-top data-[orientation=vertical]:scale-x-100 data-[orientation=vertical]:scale-y-0 data-[orientation=vertical]:data-filled:scale-y-100 data-[status=success]:bg-success data-[status=warning]:bg-warning data-[status=error]:bg-destructive',
   step: 'flex w-full min-w-0 items-center gap-2 rounded-md border-0 bg-transparent p-1 text-start text-sm text-foreground outline-none data-[density=balanced]:p-2 data-[density=spacious]:p-3 focus-visible:ring-2 focus-visible:ring-ring enabled:hover:bg-muted',
   indicator:
     'grid size-4 shrink-0 place-items-center rounded-full border border-input text-[10px] font-semibold data-[progress=completed]:border-primary data-[progress=completed]:bg-primary data-[progress=completed]:text-primary-foreground data-[progress=in-progress]:border-primary data-[progress=in-progress]:text-primary',
@@ -97,6 +101,11 @@ export const Stepper = <Msg, R = never>(
     },
     view: stepper => {
       const selected = steps[stepper.active]
+      const onTrack = indicatorPosition === 'on-track'
+      const vertical = orientation === 'vertical'
+      const railInset = { compact: '4px', balanced: '8px', spacious: '12px' }[
+        density
+      ]
       const relative = (delta: -1 | 1) => {
         let target = stepper.active + delta
         while (steps[target]?.disabled) target += delta
@@ -131,6 +140,7 @@ export const Stepper = <Msg, R = never>(
         .children(
           h.ol
             .class(styles.list)
+            .style(onTrack ? { gap: '0' } : {})
             .attrs({
               'aria-label': label,
               'data-slot': 'stepper-list',
@@ -171,9 +181,10 @@ export const Stepper = <Msg, R = never>(
                   'data-density': density,
                 }
                 const words = [
-                  indicatorPosition === 'separated' ? mark : undefined,
+                  !onTrack ? mark : undefined,
                   h.span
                     .class(styles.text)
+                    .style(onTrack && !vertical ? { textAlign: 'center' } : {})
                     .children(
                       h.span
                         .class(styles.title)
@@ -188,31 +199,119 @@ export const Stepper = <Msg, R = never>(
                             .children(step.description),
                     ),
                 ]
-                const rail = h.div
-                  .class(styles.track)
-                  .attrs({
-                    'aria-hidden': 'true',
-                    'data-orientation': orientation,
-                  })
-                  .children(
-                    h.span
-                      .class(styles.fill)
-                      .style({
-                        '--step-duration':
-                          Math.abs(stepper.active - stepper.previous) === 1
-                            ? '300ms'
-                            : '0ms',
-                      })
-                      .attrs({
-                        'data-orientation': orientation,
-                        'data-status': status,
-                        'data-filled':
-                          progress !== 'not-started' ? '' : undefined,
-                      }),
-                  )
+                const timings = stepConnectorTimings({
+                  active: stepper.active,
+                  previous: stepper.previous,
+                  index,
+                  orientation,
+                  onTrack,
+                  hasContent: step.content !== undefined,
+                })
+                const connector = (
+                  segment: keyof typeof timings,
+                  filled: boolean,
+                  visible = true,
+                ) =>
+                  h.div
+                    .class(styles.track)
+                    .style(
+                      onTrack
+                        ? {
+                            borderRadius: '0',
+                            visibility: visible ? 'visible' : 'hidden',
+                            ...(vertical
+                              ? segment === 'entry'
+                                ? { height: railInset }
+                                : { flex: '1 1 0', minHeight: '8px' }
+                              : { flex: '1 1 0', minWidth: '2px' }),
+                          }
+                        : {},
+                    )
+                    .attrs({
+                      'aria-hidden': 'true',
+                      'data-slot': 'stepper-connector',
+                      'data-segment': segment,
+                      'data-orientation': orientation,
+                    })
+                    .children(
+                      h.span
+                        .class(styles.fill)
+                        .style({
+                          '--step-duration': timings[segment].duration,
+                          '--step-delay': timings[segment].delay,
+                        })
+                        .attrs({
+                          'data-orientation': orientation,
+                          'data-status': status,
+                          'data-filled': filled ? '' : undefined,
+                        }),
+                    )
+                const marker =
+                  mark === undefined
+                    ? undefined
+                    : h.span
+                        .class(styles.trackMarker)
+                        .style({
+                          position: 'static',
+                          flexShrink: '0',
+                          transform: 'none',
+                          translate: 'none',
+                        })
+                        .attr('aria-hidden', 'true')
+                        .children(mark)
+                const onTrackRail = () =>
+                  h.div
+                    .class(styles.onTrack)
+                    .attr('data-orientation', orientation)
+                    .style(
+                      vertical
+                        ? {
+                            width: '16px',
+                            flexShrink: '0',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                          }
+                        : {},
+                    )
+                const rail = onTrack
+                  ? onTrackRail().children(
+                      connector('entry', index <= stepper.active, index > 0),
+                      marker,
+                      connector(
+                        'rail',
+                        index < stepper.active,
+                        index < steps.length - 1,
+                      ),
+                    )
+                  : connector('entry', index <= stepper.active)
+                const stepLabel = buttons
+                  ? stepper
+                      .pick(
+                        h.button
+                          .class(styles.step)
+                          .attrs(attributes)
+                          .disabled(step.disabled === true),
+                        index,
+                      )
+                      .children(words)
+                  : h.div.class(styles.step).attrs(attributes).children(words)
+                const content =
+                  step.content === undefined
+                    ? undefined
+                    : h.div
+                        .class(styles.content)
+                        .attr('data-slot', 'stepper-content')
+                        .children(step.content)
+                const verticalOnTrack = onTrack && vertical
+                const rowStyle = { display: 'flex', gap: '4px' }
                 return h.li
                   .key(step.key)
                   .class(styles.item)
+                  .style(
+                    verticalOnTrack
+                      ? { flexDirection: 'column', gap: '0' }
+                      : {},
+                  )
                   .attrs({
                     'data-slot': 'stepper-item',
                     'data-orientation': orientation,
@@ -223,45 +322,36 @@ export const Stepper = <Msg, R = never>(
                     'aria-label': stepper.compact ? step.label : undefined,
                   })
                   .children(
-                    indicatorPosition !== 'on-track' || stepper.compact
-                      ? rail
-                      : h.div
-                          .class(styles.onTrack)
-                          .attr('data-orientation', orientation)
+                    verticalOnTrack
+                      ? h.div
+                          .style(rowStyle)
                           .children(
                             rail,
-                            mark === undefined
-                              ? undefined
-                              : h.span
-                                  .class(styles.trackMarker)
-                                  .attr('data-orientation', orientation)
-                                  .children(mark),
-                          ),
-                    stepper.compact
-                      ? undefined
-                      : h.div.class(styles.text).children(
-                          buttons
-                            ? stepper
-                                .pick(
-                                  h.button
-                                    .class(styles.step)
-                                    .attrs(attributes)
-                                    .disabled(step.disabled === true),
-                                  index,
-                                )
-                                .children(words)
-                            : h.div
-                                .class(styles.step)
-                                .attrs(attributes)
-                                .children(words),
-                          step.content === undefined
-                            ? undefined
-                            : h.div
-                                .class(styles.content)
-                                .attr('data-slot', 'stepper-content')
-                                .children(step.content),
-                          step.endContent,
-                        ),
+                            h.div
+                              .class(styles.text)
+                              .children(stepLabel, step.endContent),
+                          )
+                      : rail,
+                    verticalOnTrack
+                      ? content === undefined
+                        ? undefined
+                        : h.div
+                            .style(rowStyle)
+                            .children(
+                              onTrackRail().children(
+                                connector(
+                                  'content',
+                                  index < stepper.active,
+                                  index < steps.length - 1,
+                                ),
+                              ),
+                              h.div.class(styles.text).children(content),
+                            )
+                      : stepper.compact
+                        ? undefined
+                        : h.div
+                            .class(styles.text)
+                            .children(stepLabel, content, step.endContent),
                   )
               }),
             ),
