@@ -15,6 +15,10 @@ type VisualOptions = {
   readonly weekNumbers?: boolean
   readonly previousMonthLabel?: string
   readonly nextMonthLabel?: string
+  readonly previousYearsPageLabel?: string
+  readonly nextYearsPageLabel?: string
+  readonly daysHeadingButtonLabel?: string
+  readonly monthsHeadingButtonLabel?: string
 }
 
 export const calendarClasses = {
@@ -44,6 +48,26 @@ const visualWeek = (dates: readonly DateTime.Utc[]) => {
   )
 }
 
+const captionStyle = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '0.25rem',
+  backgroundColor: 'transparent',
+  color: 'inherit',
+  border: '0',
+  borderRadius: 'calc(var(--radius) - 2px)',
+  fontFamily: 'inherit',
+  minHeight: '2rem',
+  paddingInline: '0.375rem',
+  cursor: 'pointer',
+} satisfies Html.Style
+
+const row = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+  gap: '0.25rem',
+} satisfies Html.Style
+
 export const calendarView = <Msg>(
   h: Html.H<Msg>,
   calendar: CalendarParts | RangeParts,
@@ -54,103 +78,285 @@ export const calendarView = <Msg>(
     weekNumbers,
     previousMonthLabel,
     nextMonthLabel,
+    previousYearsPageLabel,
+    nextYearsPageLabel,
+    daysHeadingButtonLabel,
+    monthsHeadingButtonLabel,
   }: VisualOptions,
   styles: typeof calendarClasses,
   {
     min,
     max,
     disabled,
-  }: Pick<CalendarOptions<Msg>['props'], 'min' | 'max' | 'disabled'>,
+    locale,
+  }: Pick<CalendarOptions<Msg>['props'], 'min' | 'max' | 'disabled' | 'locale'>,
 ) => {
   const rtl = direction === 'rtl'
-  return calendar
-    .root(
-      h.div
-        .class(styles.root, className)
-        .attrs({ 'data-slot': 'calendar', dir: direction }),
+  const captionChevron = h
+    .el('svg')
+    .attrs({
+      viewBox: '0 0 16 16',
+      width: '14',
+      height: '14',
+      fill: 'none',
+      stroke: 'var(--muted-foreground, currentColor)',
+      'stroke-width': '1.5',
+      'stroke-linecap': 'round',
+      'stroke-linejoin': 'round',
+      'aria-hidden': 'true',
+    })
+    .children(h.el('path').attr('d', 'm4 6 4 4 4-4'))
+  const root = calendar.root(
+    h.div.class(styles.root, className).attrs({
+      'data-slot': 'calendar',
+      dir: direction,
+      'data-calendar-mode': calendar.navigation.mode,
+    }),
+  )
+  const navigation = calendar.navigation
+  const earlier = rtl ? '›' : '‹'
+  const later = rtl ? '‹' : '›'
+  if (navigation.mode !== 'days') {
+    const months = navigation.mode === 'months'
+    const yearNumber = new Intl.NumberFormat(locale, { useGrouping: false })
+    const shortMonth = new Intl.DateTimeFormat(locale, {
+      timeZone: 'UTC',
+      month: 'short',
+    })
+    const longMonth = new Intl.DateTimeFormat(locale, {
+      timeZone: 'UTC',
+      month: 'long',
+      year: 'numeric',
+    })
+    const cells = months
+      ? navigation.months.map(({ date, selected, unavailable, today }) => {
+          const value = new Date(date + 'T00:00:00Z')
+          return {
+            key: date,
+            label: shortMonth.format(value),
+            name: longMonth.format(value),
+            selected,
+            unavailable,
+            today,
+            message: navigation.pickMonth(date),
+          }
+        })
+      : navigation.years.map(({ year, selected, unavailable, today }) => ({
+          key: String(year),
+          label: yearNumber.format(year),
+          name: yearNumber.format(year),
+          selected,
+          unavailable,
+          today,
+          message: navigation.pickYear(year),
+        }))
+    const selectedIndex = cells.findIndex(
+      cell => cell.selected && !cell.unavailable,
     )
-    .children(
-      h.div
-        .class(styles.header)
-        .children(
-          calendar
-            .previous(
-              h.button
-                .class(styles.navigation)
-                .attr('aria-label', previousMonthLabel ?? 'Previous month'),
-            )
-            .children(rtl ? '›' : '‹'),
-          calendar.heading(h.h2.class(styles.month)).children(calendar.title),
-          calendar
-            .next(
-              h.button
-                .class(styles.navigation)
-                .attr('aria-label', nextMonthLabel ?? 'Next month'),
-            )
-            .children(rtl ? '‹' : '›'),
+    const first =
+      selectedIndex < 0
+        ? cells.findIndex(cell => !cell.unavailable)
+        : selectedIndex
+    const label = months ? 'Choose a month' : 'Choose a year'
+    return root.children(
+      h.div.class(styles.header).children(
+        months
+          ? undefined
+          : navigation
+              .button(
+                h.button
+                  .class(styles.navigation)
+                  .attr(
+                    'aria-label',
+                    previousYearsPageLabel ?? 'Previous years',
+                  )
+                  .disabled(!navigation.canPreviousPage),
+                navigation.page(navigation.year - 12),
+              )
+              .children(earlier),
+        h.h2.class(styles.month).children(
+          months
+            ? navigation
+                .button(
+                  h.button
+                    .class(styles.month)
+                    .style(captionStyle)
+                    .attrs({
+                      'aria-label':
+                        monthsHeadingButtonLabel ??
+                        `Choose year, ${yearNumber.format(navigation.year)}`,
+                      'aria-haspopup': 'grid',
+                    }),
+                  navigation.show('years'),
+                )
+                .children(yearNumber.format(navigation.year), captionChevron)
+            : `${yearNumber.format(navigation.firstYear)}–${yearNumber.format(navigation.lastYear)}`,
         ),
-      captionLayout === 'dropdown'
-        ? calendar.monthPicker(
-            h.input
-              .class(styles.monthPicker)
-              .attrs({
-                type: 'month',
-                'aria-label': 'Choose month and year',
-                'data-slot': 'calendar-month-picker',
-                min: min?.slice(0, 7),
-                max: max?.slice(0, 7),
-                disabled: disabled ? '' : undefined,
-              })
-              .value(DateTime.formatIsoDateUtc(calendar.month).slice(0, 7)),
-          )
-        : undefined,
-      calendar.grid(h.table.class(styles.table)).children(
-        h.thead.children(
-          h.tr.children(
-            weekNumbers
-              ? h.th
-                  .class(styles.weekday)
-                  .attrs({ scope: 'col', 'aria-label': 'Week number' })
-                  .children('Wk')
-              : undefined,
-            calendar.weekdays.map(({ short }, index) =>
-              calendar
-                .weekday({
-                  element: h.th.key(String(index)).class(styles.weekday),
-                  index,
-                })
-                .children(short),
-            ),
+        months
+          ? undefined
+          : navigation
+              .button(
+                h.button
+                  .class(styles.navigation)
+                  .attr('aria-label', nextYearsPageLabel ?? 'Next years')
+                  .disabled(!navigation.canNextPage),
+                navigation.page(navigation.year + 12),
+              )
+              .children(later),
+      ),
+      navigation
+        .grid(
+          h.div
+            .key(
+              months
+                ? `months-${navigation.year}`
+                : `years-${navigation.firstYear}`,
+            )
+            .attrs({
+              role: 'grid',
+              'aria-label': label,
+              'data-slot': months
+                ? 'calendar-month-grid'
+                : 'calendar-year-grid',
+            })
+            .style({
+              minWidth: '15.75rem',
+              display: 'grid',
+              rowGap: '0.25rem',
+            }),
+        )
+        .children(
+          Array.from({ length: Math.ceil(cells.length / 3) }, (_, index) =>
+            h.div
+              .key(String(index))
+              .attr('role', 'row')
+              .style(row)
+              .children(
+                cells.slice(index * 3, index * 3 + 3).map((cell, column) =>
+                  navigation
+                    .button(
+                      h.button
+                        .key(cell.key)
+                        .class(styles.day)
+                        .attrs({
+                          role: 'gridcell',
+                          'data-calendar-choice': '',
+                          'aria-label': cell.name,
+                          'aria-selected': String(cell.selected),
+                          'aria-current': cell.today ? 'date' : undefined,
+                          'data-selected': cell.selected ? '' : undefined,
+                          'data-disabled': cell.unavailable ? '' : undefined,
+                          tabindex: index * 3 + column === first ? '0' : '-1',
+                        })
+                        .disabled(cell.unavailable)
+                        .style({ width: '100%' }),
+                      cell.message,
+                    )
+                    .children(cell.label),
+                ),
+              ),
           ),
         ),
-        h.tbody.children(
-          calendar.weeks.map(week =>
-            h.tr.key(String(week[0]?.epochMilliseconds)).children(
-              weekNumbers
-                ? h.th
-                    .class(styles.weekday)
-                    .attr('scope', 'row')
-                    .children(String(visualWeek(week)))
-                : undefined,
-              week.map(date => {
-                const iso = DateTime.formatIsoDateUtc(date)
-                return calendar
-                  .cell({ date, element: h.td.key(iso).class(styles.cell) })
-                  .children(
-                    calendar
-                      .day({
-                        date,
-                        unavailable: calendar.unavailable(date),
-                        element: h.button.key(iso).class(styles.day),
-                      })
-                      .children(String(DateTime.toPartsUtc(date).day)),
-                  )
-              }),
-            ),
+      navigation
+        .button(
+          h.button.class(styles.month).style(captionStyle),
+          navigation.show('days'),
+        )
+        .children('Back to calendar'),
+    )
+  }
+  return root.children(
+    h.div.class(styles.header).children(
+      calendar
+        .previous(
+          h.button
+            .class(styles.navigation)
+            .attr('aria-label', previousMonthLabel ?? 'Previous month'),
+        )
+        .children(earlier),
+      calendar.heading(h.h2.class(styles.month)).children(
+        captionLayout === 'label' || disabled
+          ? calendar.title
+          : navigation
+              .caption(
+                h.button.class(styles.month).style(captionStyle).attrs({
+                  'aria-haspopup': 'grid',
+                  'aria-label': daysHeadingButtonLabel,
+                  'data-slot': 'calendar-caption-trigger',
+                }),
+              )
+              .children(calendar.title, captionChevron),
+      ),
+      calendar
+        .next(
+          h.button
+            .class(styles.navigation)
+            .attr('aria-label', nextMonthLabel ?? 'Next month'),
+        )
+        .children(later),
+    ),
+    captionLayout === 'dropdown'
+      ? calendar.monthPicker(
+          h.input
+            .class(styles.monthPicker)
+            .attrs({
+              type: 'month',
+              'aria-label': 'Choose month and year',
+              'data-slot': 'calendar-month-picker',
+              min: min?.slice(0, 7),
+              max: max?.slice(0, 7),
+              disabled: disabled ? '' : undefined,
+            })
+            .value(DateTime.formatIsoDateUtc(calendar.month).slice(0, 7)),
+        )
+      : undefined,
+    calendar.grid(h.table.class(styles.table)).children(
+      h.thead.children(
+        h.tr.children(
+          weekNumbers
+            ? h.th
+                .class(styles.weekday)
+                .attrs({ scope: 'col', 'aria-label': 'Week number' })
+                .children('Wk')
+            : undefined,
+          calendar.weekdays.map(({ short }, index) =>
+            calendar
+              .weekday({
+                element: h.th.key(String(index)).class(styles.weekday),
+                index,
+              })
+              .children(short),
           ),
         ),
       ),
-    )
+      h.tbody.children(
+        calendar.weeks.map(week =>
+          h.tr.key(String(week[0]?.epochMilliseconds)).children(
+            weekNumbers
+              ? h.th
+                  .class(styles.weekday)
+                  .attr('scope', 'row')
+                  .children(String(visualWeek(week)))
+              : undefined,
+            week.map(date => {
+              const iso = DateTime.formatIsoDateUtc(date)
+              return calendar
+                .cell({ date, element: h.td.key(iso).class(styles.cell) })
+                .children(
+                  calendar
+                    .day({
+                      date,
+                      unavailable: calendar.unavailable(date),
+                      element: h.button.key(iso).class(styles.day),
+                    })
+                    .children(String(DateTime.toPartsUtc(date).day)),
+                )
+            }),
+          ),
+        ),
+      ),
+    ),
+  )
 }
 
 export const Calendar = <Msg>(

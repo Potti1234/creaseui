@@ -18,11 +18,6 @@ const partial = new Map([
     'data-grid',
     'Date and select editors, column dragging, and cell action menu',
   ],
-  ['calendar', 'Dedicated month and year grids'],
-  [
-    'date-input',
-    'Built-in adaptive bottom sheet and custom typed display format',
-  ],
   ['input-otp', 'Custom character patterns that accept whitespace'],
   ['sheet', 'Panel switcher and custom header layout'],
   ['number-input', 'Integer-only stepping with fractional bounds'],

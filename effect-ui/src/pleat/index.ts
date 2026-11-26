@@ -635,7 +635,7 @@ export const MapMarkerTooltip = <Msg, R = never>(
 export const DateInput = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderDateInput<Msg, R>>[1],
-) => RenderDateInput(h, options, partClasses(dateInput))
+) => RenderDateInput(h, options, partClasses(dateInput), partClasses(calendar))
 
 export const TimeInput = <Msg, R = never>(
   h: Html.H<Msg>,
