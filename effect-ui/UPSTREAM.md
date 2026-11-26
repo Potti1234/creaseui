@@ -116,6 +116,25 @@ with type-check and lint. The new document test covers both keyboard and
 paste and verifies that `en-US` continues to reject both apostrophes.
 [Standalone repro](repros/numberfield-apostrophe.mjs)
 
+### Tooltip rejects native links as triggers
+
+Reported as [Effect UI #283](https://github.com/Effect-TS/ui/issues/283) with a
+[tested patch](https://github.com/Potti1234/ui/commit/fc0963b67058aaa51a8b6aa48b636c4086df8210).
+On `8986cd7`, applying the Tooltip trigger part to an `<a>` throws
+`/Tooltip: a part for <button> was given <a>`. The Foldkit Link component
+uses native link triggers to describe linked labels.
+
+```sh
+node effect-ui/repros/tooltip-link-trigger.mjs
+node effect-ui/repros/tooltip-link-trigger.mjs --button
+```
+
+The first run fails at render time, and the button control opens its
+tooltip on keyboard focus. The patch preserves the native `href` and
+description, opens the tooltip on keyboard focus, and leaves navigation
+uncanceled when the link is activated. Both Tooltip suites passed with the
+patch (30 tests), along with type-check and lint. [Standalone repro](repros/tooltip-link-trigger.mjs)
+
 ## Foldkit regressions to carry into the port
 
 The [original Foldkit notes](../docs/foldkit-upstream-findings.md) and the
@@ -131,7 +150,7 @@ we have verified in the Effect UI port so far. [Foldkit fork PR #1](https://gith
 | A right-placed Popover overflowed at a 390 px viewport.                                                               | On `77dcd92`, the ported Popover flipped and stayed inside the viewport at 390 px and 1,100 px in Chromium across Tailwind, StyleX, and Pleat. Escape dismissed the popup and returned focus to its trigger.                                                                                                                                                                                                                                                                                        |
 | Typing on a closed Select trigger did not match an option.                                                            | On `77dcd92` and `efdee07`, `HtmlScene` picked the enabled match without opening and emitted nothing for a disabled-only match. The ported trigger also passed closed typeahead and keyboard opening checks in Chromium across all three renderers. The old readonly ARIA report was dismissed after checking the attribute belonged to the listbox. [Upstream Select test](https://github.com/Effect-TS/ui/blob/efdee07133b4a64442a68cba69ef8c95cef33a95/packages/ui-kit/test/Select.test.ts#L409) |
 | A readonly Slider thumb intercepted arrow keys without editing. The Foldkit notes record a key handling fix in 0.163. | Recheck when porting Slider. Establish the expected focus and page-scroll behavior before treating a difference as a defect.                                                                                                                                                                                                                                                                                                                                                                        |
-| Tooltip sometimes stopped opening after rapid hover and a preview remount.                                            | The original symptom was intermittent. Exercise remount and timer cleanup during the Tooltip port and collect a repeatable sequence if it recurs.                                                                                                                                                                                                                                                                                                                                                   |
+| Tooltip sometimes stopped opening after rapid hover and a preview remount.                                            | On `8986cd7`, Chromium verified hover, keyboard focus, Escape dismissal, and reopening after a reload in Tailwind, StyleX, and Pleat. The original same-page remount sequence still needs a repeatable case.                                                                                                                                                                                                                                                                                        |
 | Deferred Foldkit renders could overwrite newer native input or starve rendering during sustained message traffic.     | A Chromium smoke check on `77dcd92` passed rapid edits and caret retention in the ported Combobox. The deterministic Foldkit queue-budget regression still needs an Effect UI equivalent. [Foldkit patch notes](../patches/README.md) · [Foldkit timing test](../scene/foldkit-deferred-input.scene.test.ts)                                                                                                                                                                                        |
 
 ## Effect UI compatibility observations

@@ -476,6 +476,41 @@ export const popover = stylex.create({
   description: { margin: 0, color: 'var(--muted-foreground)' },
 })
 
+export const tooltip = stylex.create({
+  root: { display: 'inline-block' },
+  positioner: {
+    width: 'max-content',
+    margin: 0,
+    borderWidth: 0,
+    padding: 0,
+    overflow: 'visible',
+    backgroundColor: 'transparent',
+    visibility: { default: 'visible', ':is([data-anchor-hidden])': 'hidden' },
+  },
+  popup: {
+    position: 'relative',
+    maxWidth: 'min(18rem, calc(100vw - 1rem))',
+    padding: '6px 12px',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    transformOrigin: 'var(--transform-origin)',
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+    fontSize: '0.75rem',
+    textWrap: 'balance',
+  },
+  arrow: {
+    width: 8,
+    height: 8,
+    borderRadius: 2,
+    transform: 'rotate(45deg)',
+    backgroundColor: 'var(--primary)',
+    top: { default: 'auto', ':is([data-side=bottom])': -4 },
+    right: { default: 'auto', ':is([data-side=left])': -4 },
+    bottom: { default: 'auto', ':is([data-side=top])': -4 },
+    left: { default: 'auto', ':is([data-side=right])': -4 },
+  },
+})
+
 export const calendar = stylex.create({
   root: {
     width: 'fit-content',

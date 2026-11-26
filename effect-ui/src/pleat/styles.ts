@@ -484,6 +484,41 @@ export const popover = {
   description: Style.make({ margin: 0, color: 'var(--muted-foreground)' }),
 }
 
+export const tooltip = {
+  root: Style.make({ display: 'inline-block' }),
+  positioner: Style.make({
+    width: 'max-content',
+    margin: 0,
+    borderWidth: 0,
+    padding: 0,
+    overflow: 'visible',
+    backgroundColor: 'transparent',
+  }).pipe(Style.when(When.data('anchor-hidden'), { visibility: 'hidden' })),
+  popup: Style.make({
+    position: 'relative',
+    maxWidth: 'min(18rem, calc(100vw - 1rem))',
+    padding: '6px 12px',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    transformOrigin: 'var(--transform-origin)',
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+    fontSize: '0.75rem',
+    textWrap: 'balance',
+  }),
+  arrow: Style.make({
+    width: 8,
+    height: 8,
+    borderRadius: 2,
+    transform: 'rotate(45deg)',
+    backgroundColor: 'var(--primary)',
+  }).pipe(
+    Style.when(When.data('side', 'top'), { bottom: -4 }),
+    Style.when(When.data('side', 'right'), { left: -4 }),
+    Style.when(When.data('side', 'bottom'), { top: -4 }),
+    Style.when(When.data('side', 'left'), { right: -4 }),
+  ),
+}
+
 export const calendar = {
   root: Style.make({
     width: 'fit-content',

@@ -250,6 +250,37 @@
       ]
     },
     {
+      "name": "effect-tooltip-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@8986cd7",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@8986cd7"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/tooltip.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/tooltip.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tooltip",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-tooltip-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/tooltip.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/tooltip.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -262,7 +293,8 @@
         "@crease-effect/effect-select",
         "@crease-effect/effect-popover",
         "@crease-effect/effect-checkbox",
-        "@crease-effect/effect-switch"
+        "@crease-effect/effect-switch",
+        "@crease-effect/effect-tooltip"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -281,7 +313,8 @@
         "@crease-effect/effect-select",
         "@crease-effect/effect-popover",
         "@crease-effect/effect-checkbox",
-        "@crease-effect/effect-switch"
+        "@crease-effect/effect-switch",
+        "@crease-effect/effect-tooltip"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

@@ -11,6 +11,7 @@ import {
   Popover,
   Select,
   Switch,
+  Tooltip,
 } from '#components'
 import { CalendarDate } from './behaviors/calendar'
 import '#theme'
@@ -171,6 +172,16 @@ const Preview = Html.component({
                 ),
             }),
           ),
+        ),
+        h.section.class('example example-compact').children(
+          h.h2.children('Tooltip'),
+          Tooltip(h, {
+            props: { delay: 250 },
+            trigger: Button(h, { variant: 'outline' }).children(
+              'Retention details',
+            ),
+            content: 'Archived items are kept for 30 days.',
+          }),
         ),
       ),
     ),

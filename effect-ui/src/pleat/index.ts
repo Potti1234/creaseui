@@ -12,6 +12,7 @@ import { Dialog as RenderDialog } from '../ui/dialog'
 import { Popover as RenderPopover } from '../ui/popover'
 import { Select as RenderSelect } from '../ui/select'
 import { Switch as RenderSwitch } from '../ui/switch'
+import { Tooltip as RenderTooltip } from '../ui/tooltip'
 import {
   buttonSizes,
   buttonVariants,
@@ -24,6 +25,7 @@ import {
   popover,
   select,
   switchControl,
+  tooltip,
 } from './styles'
 
 const buttonClasses: NonNullable<Parameters<typeof RenderButton>[2]> = (
@@ -94,3 +96,8 @@ export const Switch = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderSwitch<Msg, R>>[1],
 ) => RenderSwitch(h, options, partClasses({ ...choiceField, ...switchControl }))
+
+export const Tooltip = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderTooltip<Msg, R>>[1],
+) => RenderTooltip(h, options, partClasses(tooltip))
