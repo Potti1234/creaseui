@@ -10,6 +10,8 @@ import { Calendar as RenderCalendar } from '../ui/calendar'
 import { Checkbox as RenderCheckbox } from '../ui/checkbox'
 import { Combobox as RenderCombobox } from '../ui/combobox'
 import { Dialog as RenderDialog } from '../ui/dialog'
+import { Field as RenderField } from '../ui/field'
+import { Fieldset as RenderFieldset } from '../ui/fieldset'
 import { Input as RenderInput } from '../ui/input'
 import { Popover as RenderPopover } from '../ui/popover'
 import { Select as RenderSelect } from '../ui/select'
@@ -32,6 +34,8 @@ import {
   combobox,
   controls,
   dialog,
+  field,
+  fieldset,
   input,
   popover,
   select,
@@ -163,3 +167,13 @@ export const Slider = <Msg>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderSlider<Msg>>[1],
 ) => RenderSlider(h, options, partClasses(slider))
+
+export const Field = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderField<Msg, R>>[1],
+) => RenderField(h, options, partClasses(field))
+
+export const Fieldset = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderFieldset<Msg, R>>[1],
+) => RenderFieldset(h, options, partClasses(fieldset))

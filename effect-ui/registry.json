@@ -560,6 +560,68 @@
       ]
     },
     {
+      "name": "effect-field-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/field.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/field.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-field",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-field-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/field.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/field.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-fieldset-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/fieldset.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/fieldset.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-fieldset",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-fieldset-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/fieldset.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/fieldset.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -582,7 +644,9 @@
         "@crease-effect/effect-toggle",
         "@crease-effect/effect-input",
         "@crease-effect/effect-radio-group",
-        "@crease-effect/effect-slider"
+        "@crease-effect/effect-slider",
+        "@crease-effect/effect-field",
+        "@crease-effect/effect-fieldset"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -611,7 +675,9 @@
         "@crease-effect/effect-toggle",
         "@crease-effect/effect-input",
         "@crease-effect/effect-radio-group",
-        "@crease-effect/effect-slider"
+        "@crease-effect/effect-slider",
+        "@crease-effect/effect-field",
+        "@crease-effect/effect-fieldset"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

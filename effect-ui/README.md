@@ -1,6 +1,6 @@
 # CreaseUI for Effect UI
 
-The port covers Accordion, Button, Calendar, Checkbox, Collapsible, Combobox, Dialog, Input, Popover, Progress, Radio Group, Select, Separator, Slider, Switch, Tabs, Toggle, and Tooltip. The behaviors can be installed and composed independently. Tailwind, StyleX, and Pleat use the same Effect UI views and event contracts.
+The port covers Accordion, Button, Calendar, Checkbox, Collapsible, Combobox, Dialog, Field, Fieldset, Input, Popover, Progress, Radio Group, Select, Separator, Slider, Switch, Tabs, Toggle, and Tooltip. The behaviors can be installed and composed independently. Tailwind, StyleX, and Pleat use the same Effect UI views and event contracts.
 
 This package uses Effect 4.1.5 and pins both Effect UI packages to snapshot `5ea1d77`. It has its own lockfile because the Foldkit application still requires Effect 4.0.0-rc.117.
 
@@ -33,7 +33,8 @@ npx shadcn@latest add @crease-effect/effect-button @crease-effect/effect-dialog 
   @crease-effect/effect-tooltip @crease-effect/effect-tabs @crease-effect/effect-accordion \
   @crease-effect/effect-collapsible @crease-effect/effect-progress \
   @crease-effect/effect-separator @crease-effect/effect-toggle \
-  @crease-effect/effect-input @crease-effect/effect-radio-group @crease-effect/effect-slider
+  @crease-effect/effect-input @crease-effect/effect-radio-group @crease-effect/effect-slider \
+  @crease-effect/effect-field @crease-effect/effect-fieldset
 npx shadcn@latest add @crease-effect/stylex-effect-components
 npx shadcn@latest add @crease-effect/pleat-effect-components
 ```
@@ -53,6 +54,8 @@ Tabs takes the active `value` from the parent and emits `Selected`. The styled v
 Collapsible accepts `defaultOpen` for local state or `open` with a `Toggled` handler for controlled state. Progress accepts a numeric value or `null` for indeterminate progress. Supply a distinct `key` or `id` when rendering multiple progress bars in one parent. Toggle takes `pressed` and emits the next value through `onToggle`. Separator is decorative by default and exposes separator semantics with `decorative: false`.
 
 Input binds `props.value` and sends edits through `onUpdate`. Supply a native `element` for attributes such as `type`, `name`, and `autocomplete`. Radio Group takes labeled items, emits `Picked`, and supports the kit's disabled and read-only states. Slider emits `Moved` and `Committed` for a number or an array of numbers. Give each range thumb a label with `thumbLabels`. The styled slider's `readOnly` mode keeps the value focusable and includes it in form submission.
+
+Use `Field` to pair a control with its label, help, error, and validation state. In the `control` callback, decorate a single control with `field.control`. For a field with several controls, pass `group: true` and decorate each with `field.member`. `Fieldset` supplies the native legend and shares its disabled state with nested fields.
 
 ## Upstream reproduction
 

@@ -11,6 +11,8 @@ import {
   Collapsible,
   Combobox,
   Dialog,
+  Field,
+  Fieldset,
   Input,
   Popover,
   Progress,
@@ -37,6 +39,7 @@ const Message = UiSchema.TaggedEnum({
   SelectedSettingsTab: { value: Schema.String },
   ToggledPin: { pressed: Schema.Boolean },
   UpdatedProfileName: { value: Schema.String },
+  UpdatedContactEmail: { value: Schema.String },
   PickedFrequency: { value: Schema.String },
   MovedVolume: { value: Schema.Number },
   MovedRange: { value: Schema.Array(Schema.Number) },
@@ -69,6 +72,7 @@ const Preview = Html.component({
     settingsTab: Schema.String,
     pinned: Schema.Boolean,
     profileName: Schema.String,
+    contactEmail: Schema.String,
     frequency: Schema.String,
     volume: Schema.Number,
     range: Schema.Array(Schema.Number),
@@ -84,6 +88,7 @@ const Preview = Html.component({
     settingsTab: 'profile',
     pinned: false,
     profileName: 'Ada',
+    contactEmail: '',
     frequency: 'daily',
     volume: 40,
     range: [20, 70],
@@ -98,6 +103,7 @@ const Preview = Html.component({
     SelectedSettingsTab: ($, { value }) => $.evolve({ settingsTab: value }),
     ToggledPin: ($, { pressed }) => $.evolve({ pinned: pressed }),
     UpdatedProfileName: ($, { value }) => $.evolve({ profileName: value }),
+    UpdatedContactEmail: ($, { value }) => $.evolve({ contactEmail: value }),
     PickedFrequency: ($, { value }) => $.evolve({ frequency: value }),
     MovedVolume: ($, { value }) => $.evolve({ volume: value }),
     MovedRange: ($, { value }) => $.evolve({ range: value }),
@@ -389,6 +395,62 @@ const Preview = Html.component({
                     : Message.MovedRange({ value }),
                 Committed: () => undefined,
               },
+            }),
+          ),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Field and Fieldset'),
+          h.form.class('example-label').children(
+            Fieldset(h, {
+              id: 'contact-settings',
+              legend: 'Contact settings',
+              content: Field(h, {
+                props: {
+                  id: 'contact-email',
+                  invalid: model.contactEmail.trim() === '',
+                },
+                label: 'Contact email',
+                layout: 'responsive',
+                description: 'Used for account notifications.',
+                error: 'Enter an email address.',
+                control: field =>
+                  Input(h, {
+                    id: 'contact-email',
+                    element: field.control(
+                      h.input.attrs({
+                        type: 'email',
+                        name: 'contactEmail',
+                        autocomplete: 'email',
+                      }),
+                    ),
+                    props: {
+                      value: model.contactEmail,
+                      disabled: field.disabled,
+                    },
+                    onUpdate: Message.UpdatedContactEmail,
+                  }),
+              }),
+            }),
+            Fieldset(h, {
+              id: 'billing-settings',
+              legend: 'Billing settings',
+              props: { disabled: true },
+              content: Field(h, {
+                props: { id: 'billing-email', invalid: true },
+                label: 'Billing email',
+                error: 'Enter a billing email.',
+                control: field =>
+                  Input(h, {
+                    id: 'billing-email',
+                    element: field.control(
+                      h.input.attrs({ type: 'email', name: 'billingEmail' }),
+                    ),
+                    props: {
+                      value: 'billing@example.com',
+                      disabled: field.disabled,
+                    },
+                  }),
+              }),
             }),
           ),
         ),

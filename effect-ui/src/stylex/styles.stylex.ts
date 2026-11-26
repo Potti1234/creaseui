@@ -926,6 +926,71 @@ export const input = stylex.create({
   },
 })
 
+export const field = stylex.create({
+  root: {
+    display: 'grid',
+    minWidth: 0,
+    gap: 8,
+    gridTemplateColumns: {
+      default: 'minmax(0, 1fr)',
+      ':is([data-layout=horizontal])': 'minmax(0, 1fr) minmax(0, 2fr)',
+      '@media (min-width: 768px)': {
+        default: null,
+        ':is([data-layout=responsive])': 'minmax(0, 1fr) minmax(0, 2fr)',
+      },
+    },
+    alignItems: {
+      default: 'stretch',
+      ':is([data-layout=horizontal])': 'center',
+      '@media (min-width: 768px)': {
+        default: null,
+        ':is([data-layout=responsive])': 'center',
+      },
+    },
+  },
+  label: {
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    lineHeight: 1,
+    opacity: { default: 1, ':is([data-disabled])': 0.5 },
+  },
+  description: {
+    gridColumn: '1 / -1',
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  },
+  error: {
+    gridColumn: '1 / -1',
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--destructive)',
+  },
+})
+
+export const fieldset = stylex.create({
+  root: {
+    display: 'grid',
+    minWidth: 0,
+    gap: 16,
+    margin: 0,
+    padding: 0,
+    borderWidth: 0,
+  },
+  legend: {
+    marginBlockEnd: 8,
+    padding: 0,
+    fontSize: '1rem',
+    fontWeight: 500,
+    opacity: { default: 1, ':is([data-disabled])': 0.5 },
+  },
+  description: {
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {

@@ -896,6 +896,68 @@ export const input = {
   ),
 }
 
+const horizontalField = {
+  gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 2fr)',
+  alignItems: 'center',
+} as const
+
+export const field = {
+  root: Style.make({
+    display: 'grid',
+    gridTemplateColumns: 'minmax(0, 1fr)',
+    minWidth: 0,
+    gap: 8,
+  }).pipe(
+    Style.when(When.data('layout', 'horizontal'), horizontalField),
+    Style.when(
+      When.all(
+        When.data('layout', 'responsive'),
+        When.media('(min-width: 768px)'),
+      ),
+      horizontalField,
+    ),
+  ),
+  label: Style.make({
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    lineHeight: 1,
+  }).pipe(Style.when(When.data('disabled'), { opacity: 0.5 })),
+  description: Style.make({
+    gridColumn: '1 / -1',
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  }),
+  error: Style.make({
+    gridColumn: '1 / -1',
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--destructive)',
+  }),
+}
+
+export const fieldset = {
+  root: Style.make({
+    display: 'grid',
+    minWidth: 0,
+    gap: 16,
+    margin: 0,
+    padding: 0,
+    borderWidth: 0,
+  }),
+  legend: Style.make({
+    marginBlockEnd: 8,
+    padding: 0,
+    fontSize: '1rem',
+    fontWeight: 500,
+  }).pipe(Style.when(When.data('disabled'), { opacity: 0.5 })),
+  description: Style.make({
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  }),
+}
+
 export const tooltip = {
   root: Style.make({ display: 'inline-block' }),
   positioner: Style.make({
