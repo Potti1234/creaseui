@@ -58,3 +58,37 @@ node repro.mjs --direct
 The failure reproduces in `HtmlPlay` on Node 24.11.1. For the issue body, include
 the [repro source](repros/button-inside-part.mjs) as a code block so maintainers
 can run it independently of the CreaseUI branch.
+
+## Foldkit regressions to carry into the port
+
+The [original Foldkit notes](../docs/foldkit-upstream-findings.md) and the
+[browser hardening log](../checklist-hardening.md) preserve the original repros
+and status. The four fixes for input seeding, anchoring, typeahead, and hover
+sync were merged in the CreaseUI author's Foldkit fork. The table records what
+we have verified in the Effect UI port so far. [Foldkit fork PR #1](https://github.com/Potti1234/foldkit/pull/1)
+
+| Foldkit finding                                                                                                       | Effect UI evidence and next check                                                                                                                                                                                                                                                                            |
+| --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Combobox Enter with zero matches threw a schema validation error. The Foldkit notes record a bounds fix in 0.163.     | On `77dcd92`, Chromium could type a no-match query and press Enter without losing the committed selection or throwing. Keep this check with Combobox's empty-state coverage.                                                                                                                                 |
+| A preselected Combobox displayed its placeholder until it opened and closed.                                          | On `77dcd92`, the CreaseUI adapter showed the committed label on first render. The adapter derives the input text from the selected item's label when no draft exists.                                                                                                                                       |
+| A right-placed Popover overflowed at a 390 px viewport.                                                               | Recheck when porting Popover. Cover right-side placement, flipping or shifting at the viewport edge, and clipping ancestors.                                                                                                                                                                                 |
+| Typing on a closed Select trigger did not match an option.                                                            | Recheck when porting Select, including disabled options. The old readonly ARIA report was dismissed after checking the attribute belonged to the listbox.                                                                                                                                                    |
+| A readonly Slider thumb intercepted arrow keys without editing. The Foldkit notes record a key handling fix in 0.163. | Recheck when porting Slider. Establish the expected focus and page-scroll behavior before treating a difference as a defect.                                                                                                                                                                                 |
+| Tooltip sometimes stopped opening after rapid hover and a preview remount.                                            | The original symptom was intermittent. Exercise remount and timer cleanup during the Tooltip port and collect a repeatable sequence if it recurs.                                                                                                                                                            |
+| Deferred Foldkit renders could overwrite newer native input or starve rendering during sustained message traffic.     | A Chromium smoke check on `77dcd92` passed rapid edits and caret retention in the ported Combobox. The deterministic Foldkit queue-budget regression still needs an Effect UI equivalent. [Foldkit patch notes](../patches/README.md) · [Foldkit timing test](../scene/foldkit-deferred-input.scene.test.ts) |
+
+## Effect UI compatibility observations
+
+- The public preview distributes commit-pinned snapshots. The local registry
+  installation successfully resolved both snapshot URLs and Effect 4.1.5.
+  [Snapshot instructions](https://github.com/Effect-TS/ui#snapshots)
+- The kit's Dialog uses a native top-layer portal. During Chromium verification
+  the portal's textbox was visible and focused while Playwright's visibility
+  wait on the outer `dialog` timed out. Use the visible popup content to test
+  opening, `:popover-open` to test portal state, and the trigger to test focus
+  restoration. [Dialog implementation](https://github.com/Effect-TS/ui/blob/77dcd92f378930583e43debe36be7a203100d351/packages/ui-kit/src/Dialog.ts)
+- Calendar has no dedicated kit primitive in the checked snapshot. CreaseUI's
+  port uses Effect UI parts and typed focus commands. The older
+  `foldkit/calendar` date utilities and range and month/year modes remain
+  relevant when carrying the rest of the date controls across.
+  [Kit catalog](https://ui.effect.website/#the-ui-kit)
