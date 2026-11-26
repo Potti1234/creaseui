@@ -92,6 +92,17 @@ import {
   MoreMenu,
   MobileNav,
   TopNav,
+  Message as ChatMessage,
+  MessageGroup,
+  ChatReasoning,
+  MessageScroller,
+  LogStream,
+  Attachment,
+  AttachmentGroup,
+  SelectableCard,
+  Timer,
+  Timestamp,
+  Banner,
   Button,
   ButtonLink,
   Calendar,
@@ -172,6 +183,8 @@ const Message = UiSchema.TaggedEnum({
     menu: Schema.NullOr(Schema.String),
   },
   SetSelectionActions: { open: Schema.Boolean },
+  ChatEntryAdded: {},
+  SelectedChatCard: { selected: Schema.Boolean },
 })
 
 const fruits = [
@@ -265,6 +278,8 @@ const Preview = Html.component({
     moreMenu: Schema.NullOr(Schema.String),
     productMenu: Schema.NullOr(Schema.String),
     selectionActions: Schema.Boolean,
+    chatEntries: Schema.Number,
+    chatCardSelected: Schema.Boolean,
   }),
 }).make({
   init: () => ({
@@ -315,6 +330,8 @@ const Preview = Html.component({
     moreMenu: null,
     productMenu: null,
     selectionActions: false,
+    chatEntries: 12,
+    chatCardSelected: false,
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -368,11 +385,139 @@ const Preview = Html.component({
     RejectedFiles: $ => $.evolve({ fileError: 'Choose a plain text file.' }),
     OpenedNavigationMenu: ($, { area, menu }) => $.evolve({ [area]: menu }),
     SetSelectionActions: ($, { open }) => $.evolve({ selectionActions: open }),
+    ChatEntryAdded: $ => $.evolve({ chatEntries: count => count + 1 }),
+    SelectedChatCard: ($, { selected }) =>
+      $.evolve({ chatCardSelected: selected }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          h.h2.children('Conversation'),
+          MessageGroup(h, {
+            label: 'Review conversation',
+            children: [
+              ChatMessage(h, {
+                align: 'end',
+                children: message => [
+                  message.content({
+                    children: [
+                      message.author({ children: ['Reviewer'] }),
+                      Bubble(h, {
+                        align: 'end',
+                        children: ['Please check this example.'],
+                      }),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
+          ChatReasoning(h, {
+            key: 'preview-reasoning',
+            props: {},
+            label: 'Thinking',
+            duration: '12s',
+            preview: 'Checking the details',
+            children: ['Checked the form controls and keyboard navigation.'],
+          }),
+          AttachmentGroup(h, {
+            label: 'Conversation files',
+            children: [
+              Attachment(h, {
+                children: attachment => [
+                  attachment.media({
+                    children: [Icon(h, { name: 'file', size: 'sm' })],
+                  }),
+                  attachment.content({
+                    children: [
+                      attachment.title({ children: ['Review notes'] }),
+                      attachment.description({ children: ['Plain text'] }),
+                    ],
+                  }),
+                  attachment.trigger({
+                    label: 'Open review notes',
+                    onClick: Message.Pressed(),
+                  }),
+                ],
+              }),
+            ],
+          }),
+          Button(h, {
+            variant: 'outline',
+            onPress: Message.ChatEntryAdded(),
+          }).children('Add review entry'),
+          MessageScroller(h, {
+            id: 'review-feed',
+            label: 'Review entries',
+            height: '10rem',
+            edge: 'both',
+            children: Array.from({ length: model.chatEntries }, (_, index) =>
+              h.p.key(String(index)).children(`Review entry ${index + 1}`),
+            ),
+          }),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Review status'),
+          SelectableCard(h, {
+            key: 'review-card',
+            label: 'Select review status',
+            props: { checked: model.chatCardSelected },
+            children: [
+              h.div
+                .style({ display: 'grid', gap: '4px', justifyItems: 'start' })
+                .children(
+                  h.strong.children('Keyboard review'),
+                  Link(h, {
+                    href: '#catalog-metadata',
+                    children: ['Review details'],
+                  }),
+                ),
+            ],
+            onEmit: {
+              Toggled: ({ checked }) =>
+                Message.SelectedChatCard({ selected: checked === true }),
+            },
+          }),
+          LogStream(h, {
+            id: 'review-log',
+            label: 'Review log',
+            maxHeight: 120,
+            variant: 'terminal',
+            entries: [
+              {
+                id: 'started',
+                timestamp: '09:20',
+                level: 'info',
+                message: 'Review started',
+              },
+              {
+                id: 'retry',
+                timestamp: '09:21',
+                level: 'warn',
+                message: 'File skipped',
+                detail: 'Choose a file smaller than one kilobyte.',
+              },
+            ],
+          }),
+          Timer(h, { props: { start: 0, now: 125_000 } }),
+          Timestamp(h, {
+            id: 'review-finished',
+            props: { value: '2028-03-02T09:30:00Z', format: 'date' },
+            tooltipEntries: [
+              { label: 'UTC', timezoneID: 'UTC', isCopyable: true },
+            ],
+          }),
+          Banner(h, {
+            id: 'review-banner',
+            title: 'Review changes ready',
+            status: 'success',
+            dismissible: true,
+            dismissLabel: 'Dismiss review banner',
+            children: ['Changes include the new keyboard navigation.'],
+          }),
+        ),
         h.section.class('example').children(
           h.h2.children('Navigation and actions'),
           NavigationMenu(h, {

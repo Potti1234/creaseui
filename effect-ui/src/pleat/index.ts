@@ -49,6 +49,17 @@ import { FieldStatus as RenderFieldStatus } from '../ui/field-status'
 import { Indicator as RenderIndicator } from '../ui/indicator'
 import { InputGroup as RenderInputGroup } from '../ui/input-group'
 import { ButtonGroup as RenderButtonGroup } from '../ui/button-group'
+import { Message as RenderMessage } from '../ui/message'
+import { MessageGroup as RenderMessageGroup } from '../ui/message'
+import { ChatReasoning as RenderChatReasoning } from '../ui/chat-reasoning'
+import { MessageScroller as RenderMessageScroller } from '../ui/message-scroller'
+import { LogStream as RenderLogStream } from '../ui/log-stream'
+import { Attachment as RenderAttachment } from '../ui/attachment'
+import { AttachmentGroup as RenderAttachmentGroup } from '../ui/attachment'
+import { SelectableCard as RenderSelectableCard } from '../ui/selectable-card'
+import { Timer as RenderTimer } from '../ui/timer'
+import { Timestamp as RenderTimestamp } from '../ui/timestamp'
+import { Banner as RenderBanner } from '../ui/banner'
 import { ActionBar as RenderActionBar } from '../ui/action-bar'
 import { Menubar as RenderMenubar } from '../ui/menubar'
 import { NavigationMenu as RenderNavigationMenu } from '../ui/navigation-menu'
@@ -138,6 +149,14 @@ import {
   indicator,
   inputGroup,
   buttonGroup,
+  message,
+  chatReasoning,
+  messageScroller,
+  logStream,
+  attachment,
+  selectableCard,
+  timestamp,
+  banner,
   actionBar,
   menubar,
   navigationMenu,
@@ -642,6 +661,61 @@ export const ButtonGroup = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderButtonGroup<Msg, R>>[1],
 ) => RenderButtonGroup(h, options, partClasses(buttonGroup))
+
+export const Message = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMessage<Msg, R>>[1],
+) => RenderMessage(h, options, partClasses(message))
+
+export const MessageGroup = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMessageGroup<Msg, R>>[1],
+) => RenderMessageGroup(h, options, partClasses(message))
+
+export const ChatReasoning = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderChatReasoning<Msg, R>>[1],
+) => RenderChatReasoning(h, options, partClasses(chatReasoning))
+
+export const MessageScroller = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMessageScroller<Msg, R>>[1],
+) => RenderMessageScroller(h, options, partClasses(messageScroller))
+
+export const LogStream = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderLogStream<Msg, R>>[1],
+) => RenderLogStream(h, options, partClasses(logStream), MessageScroller)
+
+export const Attachment = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderAttachment<Msg, R>>[1],
+) => RenderAttachment(h, options, partClasses(attachment))
+
+export const AttachmentGroup = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderAttachmentGroup<Msg, R>>[1],
+) => RenderAttachmentGroup(h, options, partClasses(attachment))
+
+export const SelectableCard = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderSelectableCard<Msg, R>>[1],
+) => RenderSelectableCard(h, options, partClasses(selectableCard))
+
+export const Timer = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderTimer<Msg>>[1],
+) => RenderTimer(h, options)
+
+export const Timestamp = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderTimestamp<Msg>>[1],
+) => RenderTimestamp(h, options, partClasses(timestamp), HoverCard)
+
+export const Banner = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderBanner<Msg, R>>[1],
+) => RenderBanner(h, options, partClasses(banner))
 
 export const ActionBar = <Msg, R = never>(
   h: Html.H<Msg>,

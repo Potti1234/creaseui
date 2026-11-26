@@ -5215,6 +5215,766 @@ export const topNav = stylex.create({
   },
 })
 
+export const message = stylex.create({
+  root: {
+    display: 'flex',
+    position: 'relative',
+    width: '100%',
+    minWidth: 0,
+    gap: 8,
+    fontSize: '0.875rem',
+    flexDirection: {
+      default: null,
+      ':is([data-align=end])': 'row-reverse',
+    },
+  },
+  group: {
+    display: 'flex',
+    minWidth: 0,
+    flexDirection: 'column',
+    gap: 8,
+  },
+  avatar: {
+    display: 'flex',
+    width: 'fit-content',
+    minWidth: 32,
+    flexShrink: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    overflow: 'hidden',
+    borderRadius: 999,
+    backgroundColor: 'var(--muted)',
+  },
+  content: {
+    display: 'flex',
+    width: '100%',
+    minWidth: 0,
+    flexDirection: 'column',
+    gap: 10,
+    overflowWrap: 'break-word',
+    alignItems: {
+      default: null,
+      ':is([data-align=end])': 'flex-end',
+    },
+  },
+  header: {
+    display: 'flex',
+    maxWidth: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    paddingInline: 12,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+  },
+  author: {
+    display: 'flex',
+    maxWidth: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    paddingInline: 12,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+  },
+  footer: {
+    display: 'flex',
+    maxWidth: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    paddingInline: 12,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+    justifyContent: {
+      default: null,
+      ':is([data-align=end])': 'flex-end',
+    },
+  },
+  metadata: {
+    display: 'flex',
+    maxWidth: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    paddingInline: 12,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+  },
+  actions: {
+    display: 'flex',
+    maxWidth: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    paddingInline: 12,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--foreground)',
+    gap: 8,
+  },
+})
+
+export const chatReasoning = stylex.create({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    minWidth: 0,
+    marginBlockStart: 8,
+  },
+  trigger: {
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    borderRadius: 4,
+    color: 'var(--muted-foreground)',
+    cursor: 'pointer',
+    display: 'flex',
+    minHeight: 24,
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 6,
+    paddingBlock: 2,
+    paddingInline: 4,
+    textAlign: 'start',
+    fontSize: '0.75rem',
+    outline: {
+      default: 'none',
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    userSelect: 'none',
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  label: {
+    flexShrink: 0,
+    fontWeight: 500,
+    whiteSpace: 'nowrap',
+    animationDuration: '2s',
+    animationIterationCount: 'infinite',
+    animationName: {
+      default: null,
+      ':is([data-streaming])': progressPulse,
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+  },
+  duration: {
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+    fontVariantNumeric: 'tabular-nums',
+  },
+  preview: {
+    minWidth: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  panel: {
+    marginBlockStart: 6,
+    borderInlineStart: '2px solid var(--border)',
+    paddingInlineStart: 12,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+    display: {
+      default: null,
+      ':is([hidden])': 'none',
+    },
+    visibility: {
+      default: null,
+      ':is([data-ending-style])': 'hidden',
+    },
+  },
+})
+
+export const messageScroller = stylex.create({
+  root: {
+    position: 'relative',
+    display: 'flex',
+    height: '100%',
+    minHeight: 0,
+    minWidth: 0,
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  scrollArea: {
+    minHeight: 0,
+    flexGrow: 1,
+    flexBasis: 0,
+  },
+  viewport: {
+    height: '100%',
+    minWidth: 0,
+    overscrollBehavior: 'contain',
+    outline: {
+      default: 'none',
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    visibility: {
+      default: null,
+      ':is([data-pending])': 'hidden',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': -2,
+    },
+  },
+  content: {
+    display: 'flex',
+    minHeight: '100%',
+    minWidth: 0,
+    flexDirection: 'column',
+    gap: 16,
+  },
+  button: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    position: 'absolute',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 10,
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'var(--background)',
+      ':hover': 'var(--muted)',
+    },
+    color: 'var(--foreground)',
+    paddingInline: 8,
+    paddingBlock: 4,
+    fontSize: '0.75rem',
+    boxShadow: '0 1px 3px rgb(0 0 0 / 11%)',
+    top: {
+      default: null,
+      ':is([data-scroll-edge=start])': 8,
+    },
+    bottom: {
+      default: null,
+      ':is([data-scroll-edge=end])': 8,
+    },
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+})
+
+export const logStream = stylex.create({
+  root: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--border)',
+      ':is([data-variant=terminal])': '#292929',
+    },
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'var(--card)',
+      ':is([data-variant=terminal])': '#101010',
+    },
+    color: {
+      default: 'var(--card-foreground)',
+      ':is([data-variant=terminal])': '#ededed',
+    },
+  },
+  row: {
+    display: 'grid',
+    width: '100%',
+    minWidth: 0,
+    alignItems: 'baseline',
+    gap: 8,
+    borderWidth: 0,
+    borderBottom:
+      '1px solid color-mix(in oklab, currentColor 10%, transparent)',
+    backgroundColor: 'transparent',
+    paddingInline: 8,
+    paddingBlock: 4,
+    textAlign: 'start',
+    fontFamily: 'var(--font-mono, monospace)',
+    fontSize: '0.75rem',
+    color: 'inherit',
+  },
+  expander: {
+    cursor: 'pointer',
+    backgroundColor: {
+      default: null,
+      ':hover': 'color-mix(in oklab, currentColor 5%, transparent)',
+    },
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': -2,
+    },
+  },
+  timestamp: {
+    whiteSpace: 'nowrap',
+    fontVariantNumeric: 'tabular-nums',
+    opacity: 0.7,
+  },
+  level: {
+    fontWeight: 600,
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+    color: {
+      default: null,
+      ':is([data-level=warn])': 'var(--warning)',
+      ':is([data-level=error])': 'var(--destructive)',
+    },
+    opacity: {
+      default: null,
+      ':is([data-level=debug])': 0.6,
+    },
+  },
+  source: {
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    opacity: 0.7,
+  },
+  message: {
+    minWidth: 0,
+    overflowWrap: 'break-word',
+    whiteSpace: 'pre-wrap',
+  },
+  details: {
+    margin: 0,
+    paddingInline: 8,
+    paddingBlock: 4,
+    whiteSpace: 'pre-wrap',
+    overflowWrap: 'break-word',
+    opacity: 0.85,
+    fontSize: '0.75rem',
+    visibility: {
+      default: null,
+      ':is([data-ending-style])': 'hidden',
+    },
+  },
+})
+
+export const attachment = stylex.create({
+  root: {
+    borderWidth: 1,
+    borderStyle: {
+      default: 'solid',
+      ':is([data-state=idle])': 'dashed',
+    },
+    borderColor: {
+      default: 'var(--border)',
+      ':is([data-state=error])':
+        'color-mix(in oklab, var(--destructive) 30%, transparent)',
+    },
+    position: 'relative',
+    display: 'flex',
+    width: {
+      default: 'fit-content',
+      ':is([data-orientation=vertical])': 120,
+    },
+    maxWidth: '100%',
+    minWidth: 0,
+    flexShrink: 0,
+    scrollSnapAlign: 'start',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: {
+      default: 8,
+      ':is([data-size=xs])': 6,
+    },
+    borderRadius: {
+      default: 12,
+      ':is([data-size=xs])': 8,
+    },
+    backgroundColor: 'var(--card)',
+    color: 'var(--card-foreground)',
+    padding: {
+      default: 8,
+      ':is([data-size=sm])': 6,
+      ':is([data-size=xs])': 4,
+    },
+    fontSize: {
+      default: '0.875rem',
+      ':is([data-size=sm])': '0.75rem',
+      ':is([data-size=xs])': '0.75rem',
+    },
+    flexDirection: {
+      default: null,
+      ':is([data-orientation=vertical])': 'column',
+    },
+  },
+  group: {
+    display: 'flex',
+    minWidth: 0,
+    scrollSnapType: 'x mandatory',
+    gap: 12,
+    overflowX: 'auto',
+    overscrollBehaviorX: 'contain',
+    paddingBlock: 4,
+  },
+  media: {
+    position: 'relative',
+    display: 'flex',
+    aspectRatio: '1',
+    width: {
+      default: 40,
+      ':is([data-size=sm])': 32,
+      ':is([data-size=xs])': 28,
+      ':is([data-orientation=vertical])': '100%',
+    },
+    flexShrink: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    borderRadius: 8,
+    backgroundColor: 'var(--muted)',
+    color: {
+      default: null,
+      ':is([data-state=error])': 'var(--destructive)',
+    },
+    opacity: {
+      default: null,
+      ':is([data-variant=image]:not([data-state=done]))': 0.6,
+    },
+  },
+  content: {
+    minWidth: 0,
+    maxWidth: '100%',
+    flexGrow: 1,
+    lineHeight: 1.25,
+    width: {
+      default: null,
+      ':is([data-orientation=vertical])': '100%',
+    },
+    paddingInline: {
+      default: null,
+      ':is([data-orientation=vertical])': 4,
+    },
+  },
+  actions: {
+    position: {
+      default: 'relative',
+      ':is([data-orientation=vertical])': 'absolute',
+    },
+    zIndex: 20,
+    display: 'flex',
+    flexShrink: 0,
+    alignItems: 'center',
+    insetInlineEnd: {
+      default: null,
+      ':is([data-orientation=vertical])': 12,
+    },
+    insetBlockStart: {
+      default: null,
+      ':is([data-orientation=vertical])': 12,
+    },
+    gap: {
+      default: null,
+      ':is([data-orientation=vertical])': 4,
+    },
+  },
+  action: {
+    borderWidth: 0,
+    backgroundColor: {
+      default: 'var(--background)',
+      ':hover': 'var(--muted)',
+    },
+    borderRadius: 4,
+    color: 'var(--foreground)',
+    cursor: 'pointer',
+    display: 'grid',
+    width: 24,
+    height: 24,
+    placeItems: 'center',
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  title: {
+    display: 'block',
+    minWidth: 0,
+    maxWidth: '100%',
+    fontWeight: 500,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  description: {
+    display: 'block',
+    marginBlockStart: 2,
+    minWidth: 0,
+    maxWidth: '100%',
+    fontSize: '0.75rem',
+    color: {
+      default: 'var(--muted-foreground)',
+      ':is([data-state=error])': 'var(--destructive)',
+    },
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  trigger: {
+    borderWidth: 0,
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'color-mix(in oklab, var(--foreground) 5%, transparent)',
+    },
+    borderRadius: 'inherit',
+    color: 'var(--foreground)',
+    cursor: 'pointer',
+    position: 'absolute',
+    inset: 0,
+    zIndex: 10,
+    outline: {
+      default: 'none',
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+})
+
+export const selectableCard = stylex.create({
+  root: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    position: 'relative',
+    isolation: 'isolate',
+    minWidth: 0,
+    borderRadius: 12,
+    backgroundColor: 'var(--card)',
+    color: 'var(--card-foreground)',
+    opacity: {
+      default: null,
+      ':is([data-disabled])': 0.5,
+    },
+  },
+  control: {
+    borderWidth: 0,
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'color-mix(in oklab, var(--foreground) 5%, transparent)',
+    },
+    borderRadius: 'inherit',
+    color: 'var(--foreground)',
+    cursor: {
+      default: 'pointer',
+      ':disabled': 'default',
+    },
+    position: 'absolute',
+    inset: 0,
+    zIndex: 10,
+    outline: {
+      default: 'none',
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  content: {
+    position: 'relative',
+    minWidth: 0,
+  },
+})
+
+export const timestamp = stylex.create({
+  root: {
+    display: 'inline-flex',
+    flexShrink: 0,
+  },
+  trigger: {
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    borderRadius: 4,
+    color: 'var(--foreground)',
+    cursor: 'pointer',
+    padding: 0,
+    outline: {
+      default: 'none',
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    textDecoration: {
+      default: null,
+      ':hover': 'underline',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  rows: {
+    display: 'grid',
+    gap: 4,
+  },
+  row: {
+    display: 'flex',
+    minWidth: 0,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    fontSize: '0.75rem',
+  },
+  value: {
+    minWidth: 0,
+    overflowWrap: 'break-word',
+  },
+  label: {
+    display: 'block',
+    fontWeight: 600,
+  },
+  copy: {
+    borderWidth: 0,
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--muted)',
+    },
+    borderRadius: 4,
+    color: 'var(--foreground)',
+    cursor: 'pointer',
+    display: 'inline-grid',
+    width: 28,
+    height: 28,
+    flexShrink: 0,
+    placeItems: 'center',
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  feedback: {
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+  },
+})
+
+export const banner = stylex.create({
+  root: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    display: 'grid',
+    minWidth: 0,
+    overflow: 'hidden',
+    borderRadius: {
+      default: 'var(--radius)',
+      ':is([data-container=section])': 0,
+    },
+    backgroundColor: 'var(--card)',
+    color: 'var(--card-foreground)',
+    fontSize: '0.875rem',
+    borderInlineWidth: {
+      default: null,
+      ':is([data-container=section])': 0,
+    },
+    boxShadow: {
+      default: null,
+      ':is([data-elevation=low])': '0 1px 2px rgb(0 0 0 / 8%)',
+      ':is([data-elevation=med])': '0 3px 8px rgb(0 0 0 / 10%)',
+      ':is([data-elevation=high])': '0 8px 16px rgb(0 0 0 / 14%)',
+    },
+  },
+  header: {
+    display: 'flex',
+    minWidth: 0,
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    gap: 8,
+    padding: 12,
+    backgroundColor: {
+      default: null,
+      ':is([data-status=info])':
+        'color-mix(in oklab, var(--primary) 20%, transparent)',
+      ':is([data-status=warning])':
+        'color-mix(in oklab, var(--warning) 20%, transparent)',
+      ':is([data-status=error])':
+        'color-mix(in oklab, var(--destructive) 20%, transparent)',
+      ':is([data-status=success])':
+        'color-mix(in oklab, var(--success) 20%, transparent)',
+    },
+  },
+  icon: {
+    marginBlockStart: 2,
+    flexShrink: 0,
+    color: {
+      default: null,
+      ':is([data-status=info])': 'var(--primary)',
+      ':is([data-status=warning])': 'var(--warning)',
+      ':is([data-status=error])': 'var(--destructive)',
+      ':is([data-status=success])': 'var(--success)',
+    },
+  },
+  body: {
+    display: 'grid',
+    minWidth: 136,
+    flexGrow: 1,
+    gap: 2,
+  },
+  title: {
+    fontWeight: 600,
+  },
+  description: {
+    color: 'var(--muted-foreground)',
+  },
+  end: {
+    display: 'flex',
+    flexShrink: 0,
+    alignItems: 'center',
+    gap: 4,
+  },
+  action: {
+    borderWidth: 0,
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'color-mix(in oklab, var(--foreground) 10%, transparent)',
+    },
+    borderRadius: 4,
+    color: 'var(--foreground)',
+    cursor: 'pointer',
+    display: 'inline-grid',
+    width: 28,
+    height: 28,
+    placeItems: 'center',
+    outline: {
+      default: 'none',
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  panel: {
+    minWidth: 0,
+    padding: 12,
+    visibility: {
+      default: null,
+      ':is([data-ending-style])': 'hidden',
+    },
+  },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {

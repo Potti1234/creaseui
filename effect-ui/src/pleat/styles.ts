@@ -4988,6 +4988,736 @@ export const topNav = {
   }),
 }
 
+export const message = {
+  root: Style.make({
+    display: 'flex',
+    position: 'relative',
+    width: '100%',
+    minWidth: 0,
+    gap: 8,
+    fontSize: '0.875rem',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-align=end])'), {
+      flexDirection: 'row-reverse',
+    }),
+  ),
+  group: Style.make({
+    display: 'flex',
+    minWidth: 0,
+    flexDirection: 'column',
+    gap: 8,
+  }),
+  avatar: Style.make({
+    display: 'flex',
+    width: 'fit-content',
+    minWidth: 32,
+    flexShrink: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    overflow: 'hidden',
+    borderRadius: 999,
+    backgroundColor: 'var(--muted)',
+  }),
+  content: Style.make({
+    display: 'flex',
+    width: '100%',
+    minWidth: 0,
+    flexDirection: 'column',
+    gap: 10,
+    overflowWrap: 'break-word',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-align=end])'), {
+      alignItems: 'flex-end',
+    }),
+  ),
+  header: Style.make({
+    display: 'flex',
+    maxWidth: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    paddingInline: 12,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+  }),
+  author: Style.make({
+    display: 'flex',
+    maxWidth: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    paddingInline: 12,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+  }),
+  footer: Style.make({
+    display: 'flex',
+    maxWidth: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    paddingInline: 12,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-align=end])'), {
+      justifyContent: 'flex-end',
+    }),
+  ),
+  metadata: Style.make({
+    display: 'flex',
+    maxWidth: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    paddingInline: 12,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+  }),
+  actions: Style.make({
+    display: 'flex',
+    maxWidth: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    paddingInline: 12,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--foreground)',
+    gap: 8,
+  }),
+}
+
+export const chatReasoning = {
+  root: Style.make({
+    display: 'flex',
+    flexDirection: 'column',
+    minWidth: 0,
+    marginBlockStart: 8,
+  }),
+  trigger: Style.make({
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    borderRadius: 4,
+    color: 'var(--muted-foreground)',
+    cursor: 'pointer',
+    display: 'flex',
+    minHeight: 24,
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 6,
+    paddingBlock: 2,
+    paddingInline: 4,
+    textAlign: 'start',
+    fontSize: '0.75rem',
+    outline: 'none',
+    userSelect: 'none',
+  }).pipe(
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  label: Style.make({
+    flexShrink: 0,
+    fontWeight: 500,
+    whiteSpace: 'nowrap',
+    animationDuration: '2s',
+    animationIterationCount: 'infinite',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-streaming])'), {
+      animationName: progressPulse,
+    }),
+    Style.when(When.media('(prefers-reduced-motion: reduce)'), {
+      animationName: 'none',
+    }),
+  ),
+  duration: Style.make({
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+    fontVariantNumeric: 'tabular-nums',
+  }),
+  preview: Style.make({
+    minWidth: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  }),
+  panel: Style.make({
+    marginBlockStart: 6,
+    borderInlineStart: '2px solid var(--border)',
+    paddingInlineStart: 12,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  }).pipe(
+    Style.when(When.pseudo(':is([hidden])'), {
+      display: 'none',
+    }),
+    Style.when(When.pseudo(':is([data-ending-style])'), {
+      visibility: 'hidden',
+    }),
+  ),
+}
+
+export const messageScroller = {
+  root: Style.make({
+    position: 'relative',
+    display: 'flex',
+    height: '100%',
+    minHeight: 0,
+    minWidth: 0,
+    flexDirection: 'column',
+    overflow: 'hidden',
+  }),
+  scrollArea: Style.make({
+    minHeight: 0,
+    flexGrow: 1,
+    flexBasis: 0,
+  }),
+  viewport: Style.make({
+    height: '100%',
+    minWidth: 0,
+    overscrollBehavior: 'contain',
+    outline: 'none',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-pending])'), {
+      visibility: 'hidden',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: -2,
+    }),
+  ),
+  content: Style.make({
+    display: 'flex',
+    minHeight: '100%',
+    minWidth: 0,
+    flexDirection: 'column',
+    gap: 16,
+  }),
+  button: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    position: 'absolute',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 10,
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    color: 'var(--foreground)',
+    paddingInline: 8,
+    paddingBlock: 4,
+    fontSize: '0.75rem',
+    boxShadow: '0 1px 3px rgb(0 0 0 / 11%)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-scroll-edge=start])'), {
+      top: 8,
+    }),
+    Style.when(When.pseudo(':is([data-scroll-edge=end])'), {
+      bottom: 8,
+    }),
+    Style.when(When.hover, {
+      backgroundColor: 'var(--muted)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+}
+
+export const logStream = {
+  root: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--card)',
+    color: 'var(--card-foreground)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-variant=terminal])'), {
+      borderColor: '#292929',
+      backgroundColor: '#101010',
+      color: '#ededed',
+    }),
+  ),
+  row: Style.make({
+    display: 'grid',
+    width: '100%',
+    minWidth: 0,
+    alignItems: 'baseline',
+    gap: 8,
+    borderWidth: 0,
+    borderBottom:
+      '1px solid color-mix(in oklab, currentColor 10%, transparent)',
+    backgroundColor: 'transparent',
+    paddingInline: 8,
+    paddingBlock: 4,
+    textAlign: 'start',
+    fontFamily: 'var(--font-mono, monospace)',
+    fontSize: '0.75rem',
+    color: 'inherit',
+  }),
+  expander: Style.make({
+    cursor: 'pointer',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'color-mix(in oklab, currentColor 5%, transparent)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: -2,
+    }),
+  ),
+  timestamp: Style.make({
+    whiteSpace: 'nowrap',
+    fontVariantNumeric: 'tabular-nums',
+    opacity: 0.7,
+  }),
+  level: Style.make({
+    fontWeight: 600,
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-level=warn])'), {
+      color: 'var(--warning)',
+    }),
+    Style.when(When.pseudo(':is([data-level=error])'), {
+      color: 'var(--destructive)',
+    }),
+    Style.when(When.pseudo(':is([data-level=debug])'), {
+      opacity: 0.6,
+    }),
+  ),
+  source: Style.make({
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    opacity: 0.7,
+  }),
+  message: Style.make({
+    minWidth: 0,
+    overflowWrap: 'break-word',
+    whiteSpace: 'pre-wrap',
+  }),
+  details: Style.make({
+    margin: 0,
+    paddingInline: 8,
+    paddingBlock: 4,
+    whiteSpace: 'pre-wrap',
+    overflowWrap: 'break-word',
+    opacity: 0.85,
+    fontSize: '0.75rem',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-ending-style])'), {
+      visibility: 'hidden',
+    }),
+  ),
+}
+
+export const attachment = {
+  root: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    position: 'relative',
+    display: 'flex',
+    width: 'fit-content',
+    maxWidth: '100%',
+    minWidth: 0,
+    flexShrink: 0,
+    scrollSnapAlign: 'start',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 8,
+    borderRadius: 12,
+    backgroundColor: 'var(--card)',
+    color: 'var(--card-foreground)',
+    padding: 8,
+    fontSize: '0.875rem',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-state=error])'), {
+      borderColor: 'color-mix(in oklab, var(--destructive) 30%, transparent)',
+    }),
+    Style.when(When.pseudo(':is([data-state=idle])'), {
+      borderStyle: 'dashed',
+    }),
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      width: 120,
+      flexDirection: 'column',
+    }),
+    Style.when(When.pseudo(':is([data-size=sm])'), {
+      padding: 6,
+      fontSize: '0.75rem',
+    }),
+    Style.when(When.pseudo(':is([data-size=xs])'), {
+      gap: 6,
+      padding: 4,
+      fontSize: '0.75rem',
+      borderRadius: 8,
+    }),
+  ),
+  group: Style.make({
+    display: 'flex',
+    minWidth: 0,
+    scrollSnapType: 'x mandatory',
+    gap: 12,
+    overflowX: 'auto',
+    overscrollBehaviorX: 'contain',
+    paddingBlock: 4,
+  }),
+  media: Style.make({
+    position: 'relative',
+    display: 'flex',
+    aspectRatio: '1',
+    width: 40,
+    flexShrink: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    borderRadius: 8,
+    backgroundColor: 'var(--muted)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-size=sm])'), {
+      width: 32,
+    }),
+    Style.when(When.pseudo(':is([data-size=xs])'), {
+      width: 28,
+    }),
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      width: '100%',
+    }),
+    Style.when(When.pseudo(':is([data-state=error])'), {
+      color: 'var(--destructive)',
+    }),
+    Style.when(
+      When.pseudo(':is([data-variant=image]:not([data-state=done]))'),
+      {
+        opacity: 0.6,
+      },
+    ),
+  ),
+  content: Style.make({
+    minWidth: 0,
+    maxWidth: '100%',
+    flexGrow: 1,
+    lineHeight: 1.25,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      width: '100%',
+      paddingInline: 4,
+    }),
+  ),
+  actions: Style.make({
+    position: 'relative',
+    zIndex: 20,
+    display: 'flex',
+    flexShrink: 0,
+    alignItems: 'center',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      position: 'absolute',
+      insetInlineEnd: 12,
+      insetBlockStart: 12,
+      gap: 4,
+    }),
+  ),
+  action: Style.make({
+    borderWidth: 0,
+    backgroundColor: 'var(--background)',
+    borderRadius: 4,
+    color: 'var(--foreground)',
+    cursor: 'pointer',
+    display: 'grid',
+    width: 24,
+    height: 24,
+    placeItems: 'center',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'var(--muted)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  title: Style.make({
+    display: 'block',
+    minWidth: 0,
+    maxWidth: '100%',
+    fontWeight: 500,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  }),
+  description: Style.make({
+    display: 'block',
+    marginBlockStart: 2,
+    minWidth: 0,
+    maxWidth: '100%',
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-state=error])'), {
+      color: 'var(--destructive)',
+    }),
+  ),
+  trigger: Style.make({
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    borderRadius: 'inherit',
+    color: 'var(--foreground)',
+    cursor: 'pointer',
+    position: 'absolute',
+    inset: 0,
+    zIndex: 10,
+    outline: 'none',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'color-mix(in oklab, var(--foreground) 5%, transparent)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+}
+
+export const selectableCard = {
+  root: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    position: 'relative',
+    isolation: 'isolate',
+    minWidth: 0,
+    borderRadius: 12,
+    backgroundColor: 'var(--card)',
+    color: 'var(--card-foreground)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-disabled])'), {
+      opacity: 0.5,
+    }),
+  ),
+  control: Style.make({
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    borderRadius: 'inherit',
+    color: 'var(--foreground)',
+    cursor: 'pointer',
+    position: 'absolute',
+    inset: 0,
+    zIndex: 10,
+    outline: 'none',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'color-mix(in oklab, var(--foreground) 5%, transparent)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+    Style.when(When.disabled, {
+      cursor: 'default',
+    }),
+  ),
+  content: Style.make({
+    position: 'relative',
+    minWidth: 0,
+  }),
+}
+
+export const timestamp = {
+  root: Style.make({
+    display: 'inline-flex',
+    flexShrink: 0,
+  }),
+  trigger: Style.make({
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    borderRadius: 4,
+    color: 'var(--foreground)',
+    cursor: 'pointer',
+    padding: 0,
+    outline: 'none',
+  }).pipe(
+    Style.when(When.hover, {
+      textDecoration: 'underline',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  rows: Style.make({
+    display: 'grid',
+    gap: 4,
+  }),
+  row: Style.make({
+    display: 'flex',
+    minWidth: 0,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    fontSize: '0.75rem',
+  }),
+  value: Style.make({
+    minWidth: 0,
+    overflowWrap: 'break-word',
+  }),
+  label: Style.make({
+    display: 'block',
+    fontWeight: 600,
+  }),
+  copy: Style.make({
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    borderRadius: 4,
+    color: 'var(--foreground)',
+    cursor: 'pointer',
+    display: 'inline-grid',
+    width: 28,
+    height: 28,
+    flexShrink: 0,
+    placeItems: 'center',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'var(--muted)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  feedback: Style.make({
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+  }),
+}
+
+export const banner = {
+  root: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    display: 'grid',
+    minWidth: 0,
+    overflow: 'hidden',
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--card)',
+    color: 'var(--card-foreground)',
+    fontSize: '0.875rem',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-container=section])'), {
+      borderRadius: 0,
+      borderInlineWidth: 0,
+    }),
+    Style.when(When.pseudo(':is([data-elevation=low])'), {
+      boxShadow: '0 1px 2px rgb(0 0 0 / 8%)',
+    }),
+    Style.when(When.pseudo(':is([data-elevation=med])'), {
+      boxShadow: '0 3px 8px rgb(0 0 0 / 10%)',
+    }),
+    Style.when(When.pseudo(':is([data-elevation=high])'), {
+      boxShadow: '0 8px 16px rgb(0 0 0 / 14%)',
+    }),
+  ),
+  header: Style.make({
+    display: 'flex',
+    minWidth: 0,
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    gap: 8,
+    padding: 12,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-status=info])'), {
+      backgroundColor: 'color-mix(in oklab, var(--primary) 20%, transparent)',
+    }),
+    Style.when(When.pseudo(':is([data-status=warning])'), {
+      backgroundColor: 'color-mix(in oklab, var(--warning) 20%, transparent)',
+    }),
+    Style.when(When.pseudo(':is([data-status=error])'), {
+      backgroundColor:
+        'color-mix(in oklab, var(--destructive) 20%, transparent)',
+    }),
+    Style.when(When.pseudo(':is([data-status=success])'), {
+      backgroundColor: 'color-mix(in oklab, var(--success) 20%, transparent)',
+    }),
+  ),
+  icon: Style.make({
+    marginBlockStart: 2,
+    flexShrink: 0,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-status=info])'), {
+      color: 'var(--primary)',
+    }),
+    Style.when(When.pseudo(':is([data-status=warning])'), {
+      color: 'var(--warning)',
+    }),
+    Style.when(When.pseudo(':is([data-status=error])'), {
+      color: 'var(--destructive)',
+    }),
+    Style.when(When.pseudo(':is([data-status=success])'), {
+      color: 'var(--success)',
+    }),
+  ),
+  body: Style.make({
+    display: 'grid',
+    minWidth: 136,
+    flexGrow: 1,
+    gap: 2,
+  }),
+  title: Style.make({
+    fontWeight: 600,
+  }),
+  description: Style.make({
+    color: 'var(--muted-foreground)',
+  }),
+  end: Style.make({
+    display: 'flex',
+    flexShrink: 0,
+    alignItems: 'center',
+    gap: 4,
+  }),
+  action: Style.make({
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    borderRadius: 4,
+    color: 'var(--foreground)',
+    cursor: 'pointer',
+    display: 'inline-grid',
+    width: 28,
+    height: 28,
+    placeItems: 'center',
+    outline: 'none',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor:
+        'color-mix(in oklab, var(--foreground) 10%, transparent)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  panel: Style.make({
+    minWidth: 0,
+    padding: 12,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-ending-style])'), {
+      visibility: 'hidden',
+    }),
+  ),
+}
+
 export const tooltip = {
   root: Style.make({ display: 'inline-block' }),
   positioner: Style.make({

@@ -3159,6 +3159,316 @@
       ]
     },
     {
+      "name": "effect-message-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/message.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/message.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-message",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-message-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/message.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/message.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-chat-reasoning-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-collapsible-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/chat-reasoning.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/chat-reasoning.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-chat-reasoning",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-chat-reasoning-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/chat-reasoning.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/chat-reasoning.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-message-scroller-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/message-scroller.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/message-scroller.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-message-scroller",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-scroll-area-behavior",
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-message-scroller-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/message-scroller.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/message-scroller.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-log-stream-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-message-scroller-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/log-stream.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/log-stream.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-log-stream",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-message-scroller",
+        "@crease-effect/effect-collapsible-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-log-stream-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/log-stream.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/log-stream.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-attachment-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/attachment.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/attachment.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-attachment",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-attachment-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/attachment.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/attachment.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-selectable-card-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-checkbox-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/selectable-card.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/selectable-card.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-selectable-card",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-selectable-card-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/selectable-card.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/selectable-card.ts"
+        },
+        {
+          "path": "src/ui/selectable-card.css",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/selectable-card.css"
+        },
+        {
+          "path": "src/ui/selectable-card-styles.d.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/ui/selectable-card-styles.d.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-timer-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/timer.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/timer.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-timer",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-text-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-timer-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/timer.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/timer.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-timestamp-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/timestamp.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/timestamp.ts"
+        },
+        {
+          "path": "src/behaviors/timestamp-format.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/timestamp-format.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-timestamp",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-text-behavior",
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/effect-hover-card",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-timestamp-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/timestamp.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/timestamp.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-banner-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-collapsible-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/banner.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/banner.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-banner",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-banner-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/banner.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/banner.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -3262,7 +3572,16 @@
         "@crease-effect/effect-navigation-menu",
         "@crease-effect/effect-more-menu",
         "@crease-effect/effect-mobile-nav",
-        "@crease-effect/effect-top-nav"
+        "@crease-effect/effect-top-nav",
+        "@crease-effect/effect-message",
+        "@crease-effect/effect-chat-reasoning",
+        "@crease-effect/effect-message-scroller",
+        "@crease-effect/effect-log-stream",
+        "@crease-effect/effect-attachment",
+        "@crease-effect/effect-selectable-card",
+        "@crease-effect/effect-timer",
+        "@crease-effect/effect-timestamp",
+        "@crease-effect/effect-banner"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -3372,7 +3691,16 @@
         "@crease-effect/effect-navigation-menu",
         "@crease-effect/effect-more-menu",
         "@crease-effect/effect-mobile-nav",
-        "@crease-effect/effect-top-nav"
+        "@crease-effect/effect-top-nav",
+        "@crease-effect/effect-message",
+        "@crease-effect/effect-chat-reasoning",
+        "@crease-effect/effect-message-scroller",
+        "@crease-effect/effect-log-stream",
+        "@crease-effect/effect-attachment",
+        "@crease-effect/effect-selectable-card",
+        "@crease-effect/effect-timer",
+        "@crease-effect/effect-timestamp",
+        "@crease-effect/effect-banner"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },
