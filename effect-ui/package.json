@@ -17,7 +17,9 @@
     "@effect/ui-kit": "https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77",
     "@pleat/core": "file:../packages/pleat-core",
     "@stylexjs/stylex": "^0.19.2",
+    "echarts": "6.1.0",
     "effect": "4.1.5",
+    "embla-carousel": "8.6.0",
     "maplibre-gl": "6.13.0"
   },
   "devDependencies": {
