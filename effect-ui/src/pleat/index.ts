@@ -1,4 +1,18 @@
 import type { Html } from '@effect/ui/html'
+import {
+  command,
+  multiSelector,
+  listInput,
+  tokenizer,
+  transferList,
+  treeList,
+} from './selector-styles'
+import { Command as RenderCommand } from '../ui/command'
+import { MultiSelector as RenderMultiSelector } from '../ui/multi-selector'
+import { ListInput as RenderListInput } from '../ui/list-input'
+import { Tokenizer as RenderTokenizer } from '../ui/tokenizer'
+import { TransferList as RenderTransferList } from '../ui/transfer-list'
+import { TreeList as RenderTreeList } from '../ui/tree-list'
 import { codeBlock, markdown, overflowList, lightbox } from './content-styles'
 import { CodeBlock as RenderCodeBlock } from '../ui/code-block'
 import { Markdown as RenderMarkdown } from '../ui/markdown'
@@ -677,6 +691,38 @@ export const ButtonGroup = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderButtonGroup<Msg, R>>[1],
 ) => RenderButtonGroup(h, options, partClasses(buttonGroup))
+
+export const Command = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderCommand<Msg, R>>[1],
+) => RenderCommand<Msg, R>(h, options, partClasses(command))
+
+export const MultiSelector = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMultiSelector<Msg>>[1],
+) => RenderMultiSelector<Msg>(h, options, partClasses(multiSelector))
+
+export const ListInput = <T, Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderListInput<T, Msg, R>>[1],
+) => RenderListInput<T, Msg, R>(h, options, partClasses(listInput))
+
+export const Tokenizer = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderTokenizer<Msg, R>>[1],
+) => RenderTokenizer<Msg, R>(h, options, partClasses(tokenizer))
+
+export const TransferList = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderTransferList<Msg, R>>[1],
+) => RenderTransferList<Msg, R>(h, options, partClasses(transferList))
+
+export const TreeList = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderTreeList<Msg, R>>[1],
+) => RenderTreeList<Msg, R>(h, options, partClasses(treeList))
+
+export const CommandPalette = Command
 
 export const CodeBlock = <Msg>(
   h: Html.H<Msg>,

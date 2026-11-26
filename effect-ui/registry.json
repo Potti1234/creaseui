@@ -3764,6 +3764,207 @@
       ]
     },
     {
+      "name": "effect-command-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/command.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/command.ts"
+        },
+        {
+          "path": "src/behaviors/command-text-match.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/command-text-match.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-command",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-command-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/command.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/command.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-multi-selector-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/multi-selector.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/multi-selector.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-multi-selector",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-multi-selector-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/multi-selector.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/multi-selector.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-list-input-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/list-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/list-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-list-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-list-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/list-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/list-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tokenizer-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/tokenizer.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/tokenizer.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tokenizer",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-tokenizer-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/tokenizer.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/tokenizer.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-transfer-list-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/transfer-list.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/transfer-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-transfer-list",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-transfer-list-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/transfer-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/transfer-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tree-list-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/tree-list.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/tree-list.ts"
+        },
+        {
+          "path": "src/behaviors/tree-list-reorder.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/tree-list-reorder.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tree-list",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-tree-list-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/tree-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/tree-list.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -3885,12 +4086,19 @@
         "@crease-effect/effect-code-block",
         "@crease-effect/effect-markdown",
         "@crease-effect/effect-overflow-list",
-        "@crease-effect/effect-lightbox"
+        "@crease-effect/effect-lightbox",
+        "@crease-effect/effect-command",
+        "@crease-effect/effect-multi-selector",
+        "@crease-effect/effect-list-input",
+        "@crease-effect/effect-tokenizer",
+        "@crease-effect/effect-transfer-list",
+        "@crease-effect/effect-tree-list"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
         { "path": "src/stylex/styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/styles.stylex.ts" },
-        { "path": "src/stylex/content-styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/content-styles.stylex.ts" }
+        { "path": "src/stylex/content-styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/content-styles.stylex.ts" },
+        { "path": "src/stylex/selector-styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/selector-styles.stylex.ts" }
       ]
     },
     {
@@ -4014,12 +4222,19 @@
         "@crease-effect/effect-code-block",
         "@crease-effect/effect-markdown",
         "@crease-effect/effect-overflow-list",
-        "@crease-effect/effect-lightbox"
+        "@crease-effect/effect-lightbox",
+        "@crease-effect/effect-command",
+        "@crease-effect/effect-multi-selector",
+        "@crease-effect/effect-list-input",
+        "@crease-effect/effect-tokenizer",
+        "@crease-effect/effect-transfer-list",
+        "@crease-effect/effect-tree-list"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },
         { "path": "src/pleat/styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/styles.ts" },
-        { "path": "src/pleat/content-styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/content-styles.ts" }
+        { "path": "src/pleat/content-styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/content-styles.ts" },
+        { "path": "src/pleat/selector-styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/selector-styles.ts" }
       ]
     }
   ]

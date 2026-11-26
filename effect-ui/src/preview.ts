@@ -133,6 +133,7 @@ import {
 import { CalendarDate, CalendarRange } from './behaviors/calendar'
 import { ToastBehavior } from './behaviors/toast'
 import { ContentExamples } from './preview-content'
+import { SelectorExamples } from './preview-selectors'
 import '#theme'
 import './preview.css'
 
@@ -404,6 +405,7 @@ const Preview = Html.component({
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
         ContentExamples(h, {}),
+        SelectorExamples(h, {}),
         h.section.class('example').children(
           h.h2.children('Layout and progress'),
           Carousel(h, {
