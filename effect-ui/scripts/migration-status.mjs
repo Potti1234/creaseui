@@ -13,11 +13,8 @@ const registry = new Map(
   read('../registry.json').items.map(item => [item.name, item]),
 )
 const partial = new Map([
-  ['data-table', 'Date and numeric facet controls and row actions layout'],
-  [
-    'data-grid',
-    'Date and select editors, column dragging, and cell action menu',
-  ],
+  ['data-table', 'Row value submenu and floating default bulk action bar'],
+  ['data-grid', 'Insert above/below in context menu and sort toolbar panel'],
   ['input-otp', 'Custom character patterns that accept whitespace'],
   ['sheet', 'Required pane dismissal policy'],
   ['number-input', 'Integer-only stepping with fractional bounds'],

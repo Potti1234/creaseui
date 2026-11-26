@@ -113,6 +113,7 @@ const Props = Schema.Struct({
   historyLimit: Schema.optional(Schema.Number),
   disableEditing: Schema.optional(Schema.Boolean),
   today: Schema.optional(CalendarDate),
+  locale: Schema.optional(Schema.String),
 })
 type Props = typeof Props.Type
 
@@ -1250,15 +1251,37 @@ const GridMount = Mount.makeStream(
 
 const FitEditor = Mount.makeStream(
   'CreaseFitGridEditor',
-  { args: {} },
-  (editor: HTMLDivElement) =>
+  { args: { floating: Schema.Boolean } },
+  (editor: HTMLDivElement, { floating }) =>
     Stream.callback<never>(() =>
       Effect.gen(function* () {
         const viewport = editor.closest<HTMLElement>(
           '[data-slot="data-grid-viewport"]',
         )
         if (viewport === null) return
+        const cell = editor.closest('[data-grid-column]')
+        const page = editor.ownerDocument.documentElement
+        const window = editor.ownerDocument.defaultView
         const fit = () => {
+          if (floating && cell !== null && window !== null) {
+            const margin = 4
+            const anchor = cell.getBoundingClientRect()
+            const above = anchor.top - margin
+            const below = page.clientHeight - anchor.bottom - margin
+            editor.style.position = 'fixed'
+            editor.style.insetInlineStart = 'auto'
+            editor.style.minWidth = '0'
+            const under = editor.scrollHeight <= below || below >= above
+            editor.style.maxHeight = `${Math.max(0, (under ? below : above) - margin)}px`
+            const width = editor.offsetWidth
+            const left =
+              window.getComputedStyle(cell).direction === 'rtl'
+                ? anchor.right - width
+                : anchor.left
+            editor.style.left = `${Math.max(margin, Math.min(page.clientWidth - width - margin, left))}px`
+            editor.style.top = `${under ? anchor.bottom + margin : anchor.top - editor.offsetHeight - margin}px`
+            return
+          }
           editor.style.translate = ''
           const container = viewport.getBoundingClientRect()
           editor.style.maxHeight = `${Math.max(0, container.height - 8)}px`
@@ -1281,12 +1304,20 @@ const FitEditor = Mount.makeStream(
             observer.observe(viewport)
             observer.observe(editor)
             viewport.addEventListener('scroll', fit, { passive: true })
+            if (floating) {
+              window?.addEventListener('resize', fit)
+              window?.addEventListener('scroll', fit, { passive: true })
+            }
             fit()
           }),
           () =>
             Effect.sync(() => {
               observer.disconnect()
               viewport.removeEventListener('scroll', fit)
+              if (floating) {
+                window?.removeEventListener('resize', fit)
+                window?.removeEventListener('scroll', fit)
+              }
             }),
         )
         return yield* Effect.never
@@ -1496,7 +1527,9 @@ export const DataGridBehavior = Html.component({
           : undefined,
       ),
     )
-    const fitEditor = p.part('div', element => element.onMount(FitEditor()))
+    const fitEditor = p.part('div', (element, floating = false) =>
+      element.onMount(FitEditor({ floating })),
+    )
     const scroll =
       focus === null || state.focusVersion === 0
         ? undefined
@@ -1556,6 +1589,7 @@ export const DataGridBehavior = Html.component({
               props: {
                 value: dateValue,
                 today: p.props.today ?? new Date().toISOString().slice(0, 10),
+                locale: p.props.locale,
               },
               onEmit: {
                 Picked: ({ date }) => Message.ValuePicked({ value: date }),

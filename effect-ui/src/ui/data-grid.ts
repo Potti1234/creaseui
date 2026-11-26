@@ -49,6 +49,7 @@ export type DataGridProps<Row, Msg, R = never> = Omit<
   readonly historyLimit?: number
   readonly disableEditing?: boolean
   readonly today?: string
+  readonly locale?: string
   readonly className?: string
 }
 
@@ -187,6 +188,7 @@ export const DataGrid = <Row, Msg, R = never>(
     historyLimit,
     disableEditing,
     today,
+    locale,
     className,
     ...options
   }: DataGridProps<Row, NoInfer<Msg>, R>,
@@ -265,6 +267,7 @@ export const DataGrid = <Row, Msg, R = never>(
       historyLimit,
       disableEditing,
       today,
+      locale,
     },
     view: parts => {
       const { state, virtual, context } = parts
@@ -449,6 +452,7 @@ export const DataGrid = <Row, Msg, R = never>(
                 role: 'group',
                 'aria-label': label,
               }),
+              true,
             )
             .children(
               calendarView(
@@ -456,7 +460,7 @@ export const DataGrid = <Row, Msg, R = never>(
                 parts.dateCalendar,
                 { direction },
                 calendarStyles,
-                {},
+                { locale },
               ),
             )
         const attrs = { 'data-grid-editor-input': '', 'aria-label': label }
@@ -484,6 +488,7 @@ export const DataGrid = <Row, Msg, R = never>(
                 'data-slot': 'data-grid-editor',
                 'data-grid-option-editor': '',
               }),
+              true,
             )
             .children(
               multiple
@@ -503,6 +508,9 @@ export const DataGrid = <Row, Msg, R = never>(
                   role: 'listbox',
                   'aria-label': label,
                   'aria-multiselectable': multiple ? 'true' : undefined,
+                  tabindex: choices.length === 0 ? '0' : undefined,
+                  'data-grid-editor-input':
+                    !multiple && choices.length === 0 ? '' : undefined,
                 })
                 .style({ display: 'grid' })
                 .children(
@@ -524,7 +532,12 @@ export const DataGrid = <Row, Msg, R = never>(
                           ? Message.OptionToggled({ value: option })
                           : Message.ValuePicked({ value: option }),
                       )
-                      .children(checked ? '✓ ' : undefined, option)
+                      .children(
+                        checked
+                          ? h.span.attr('aria-hidden', 'true').children('✓')
+                          : undefined,
+                        option,
+                      )
                   }),
                   choices.length === 0
                     ? h.span

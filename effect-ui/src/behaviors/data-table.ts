@@ -507,6 +507,7 @@ export const DataTableBehavior = Html.component({
     state: Schema.optional(DataTableState),
     facets: Schema.optional(Schema.Array(Facet)),
     today: Schema.optional(CalendarDate),
+    locale: Schema.optional(Schema.String),
   }),
   model: Schema.Struct({
     state: DataTableState,
@@ -710,6 +711,7 @@ export const DataTableBehavior = Html.component({
                     value: dateValue,
                     today:
                       p.props.today ?? new Date().toISOString().slice(0, 10),
+                    locale: p.props.locale,
                     initialMonth:
                       facet?._tag === 'Date' ? facet.initialMonth : undefined,
                   },

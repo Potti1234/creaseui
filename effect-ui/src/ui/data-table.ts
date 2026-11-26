@@ -1,11 +1,14 @@
 import type { View } from '@effect/ui'
 import type { Html } from '@effect/ui/html'
+import { Schema } from 'effect'
 
+import { CalendarDate } from '../behaviors/calendar'
 import {
   DataTableAction,
   DataTableBehavior,
   projectDataTable,
   type DataTableConfig,
+  type DataTableFacet,
   type DataTableMechanicsColumn,
   type DataTableMode,
   type FilterVariant,
@@ -13,6 +16,7 @@ import {
 } from '../behaviors/data-table'
 import { PopoverBehavior } from '../behaviors/popover'
 import { TableBehavior } from '../behaviors/table'
+import { calendarClasses, calendarView } from './calendar'
 export * from '../behaviors/data-table'
 
 type Options<Msg> = Parameters<typeof DataTableBehavior<Msg>>[1]
@@ -111,6 +115,47 @@ export const dataTableClasses = {
 }
 export type DataTableClasses = typeof dataTableClasses
 
+const isDate = Schema.is(CalendarDate)
+const numberBounds = <Row, Msg, R>(
+  column: DataTableColumn<Row, Msg, R>,
+  rows: readonly Row[],
+) => {
+  const supplied =
+    column.rangeMin !== undefined || column.rangeMax !== undefined
+  let observedMin = Infinity
+  let observedMax = -Infinity
+  if (!supplied && column.getNumber !== undefined) {
+    for (const row of rows) {
+      const value = column.getNumber(row)
+      if (!Number.isFinite(value)) continue
+      observedMin = Math.min(value, observedMin)
+      observedMax = Math.max(value, observedMax)
+    }
+  }
+  const left =
+    column.rangeMin ?? (Number.isFinite(observedMin) ? observedMin : 0)
+  const right =
+    column.rangeMax ?? (Number.isFinite(observedMax) ? observedMax : 100)
+  const min = Number.isFinite(left) ? left : 0
+  const max = Number.isFinite(right) && right >= min ? right : min
+  const step = column.rangeStep ?? 1
+  return { min, max, step: Number.isFinite(step) && step > 0 ? step : 1 }
+}
+
+const initialDateMonth = <Row, Msg, R>(
+  column: DataTableColumn<Row, Msg, R>,
+  rows: readonly Row[],
+) => {
+  const read = column.getDate
+  if (read === undefined) return
+  for (const row of rows) {
+    const date = new Date(read(row))
+    if (Number.isNaN(date.getTime())) continue
+    const iso = date.toISOString().slice(0, 10)
+    if (isDate(iso)) return iso
+  }
+}
+
 export const DataTable = <Row, Msg, R = never>(
   h: Html.H<Msg>,
   {
@@ -143,6 +188,7 @@ export const DataTable = <Row, Msg, R = never>(
     ...options
   }: DataTableProps<Row, NoInfer<Msg>, R>,
   styles: DataTableClasses = dataTableClasses,
+  calendarStyles: typeof calendarClasses = calendarClasses,
 ) => {
   const config: DataTableConfig<Row> = {
     columns,
@@ -152,6 +198,26 @@ export const DataTable = <Row, Msg, R = never>(
     ...(isRowSelectable === undefined ? {} : { isRowSelectable }),
   }
   const faceted = variant === 'faceted'
+  const facetTrigger = (column: string) => `${id}-facet-${column}`
+  const calendarAndRangeFacets = faceted
+    ? columns.flatMap<DataTableFacet>(column => {
+        const shared = {
+          column: column.key,
+          triggerId: facetTrigger(column.key),
+        }
+        if (column.filterVariant === 'range')
+          return [{ _tag: 'Numeric', ...shared, ...numberBounds(column, rows) }]
+        if (column.filterVariant === 'date')
+          return [
+            {
+              _tag: 'Date',
+              ...shared,
+              initialMonth: initialDateMonth(column, rows),
+            },
+          ]
+        return []
+      })
+    : []
   const sortable = (column: DataTableColumn<Row, Msg, R>) =>
     column.sortable ??
     (column.sortValue !== undefined || (faceted && column.get !== undefined))
@@ -204,6 +270,7 @@ export const DataTable = <Row, Msg, R = never>(
   return DataTableBehavior(h, {
     ...options,
     key: options.key ?? id,
+    props: { ...options.props, facets: calendarAndRangeFacets },
     view: parts => {
       const state = parts.state
       const projection = projectDataTable({
@@ -261,7 +328,7 @@ export const DataTable = <Row, Msg, R = never>(
               )
 
       const facets = faceted
-        ? columns.flatMap(column => {
+        ? columns.flatMap<View.Content<Msg, R>>(column => {
             if (column.filterVariant === undefined) return []
             const { key, header } = column
             if (column.filterVariant === 'options') {
@@ -302,65 +369,233 @@ export const DataTable = <Row, Msg, R = never>(
                 ),
               ]
             }
-            const number = column.filterVariant === 'range'
             const range = state.rangeFilters[key]
-            const date = state.dateFilters[key]
-            const active = number
-              ? range?.min != null || range?.max != null
-              : Boolean(date?.from || date?.to)
+            const dates = state.dateFilters[key]
+            const summary =
+              column.filterVariant === 'range'
+                ? range?.min != null && range.max != null
+                  ? `${range.min} – ${range.max}`
+                  : range?.min != null
+                    ? `≥ ${range.min}`
+                    : range?.max != null
+                      ? `≤ ${range.max}`
+                      : undefined
+                : dates?.from && dates.to
+                  ? `${dates.from} – ${dates.to}`
+                  : dates?.from
+                    ? `After ${dates.from}`
+                    : dates?.to
+                      ? `Before ${dates.to}`
+                      : undefined
             return [
-              popover(
-                `filter-${key}`,
-                `Filter ${header}`,
-                active ? header : `+ ${header}`,
-                [
-                  h.span.class(styles.panelLabel).children(`Filter ${header}`),
-                  ...(['min', 'max'] as const).map((endpoint, index) => {
-                    const label = number
-                      ? index === 0
-                        ? 'Minimum'
-                        : 'Maximum'
-                      : index === 0
-                        ? 'From'
-                        : 'To'
-                    const dateEnd = index === 0 ? 'from' : 'to'
-                    const element = h.input
-                      .class(styles.input)
-                      .attrs({
-                        type: number ? 'number' : 'date',
-                        min:
-                          column.rangeMin === undefined
-                            ? undefined
-                            : String(column.rangeMin),
-                        max:
-                          column.rangeMax === undefined
-                            ? undefined
-                            : String(column.rangeMax),
-                        step:
-                          column.rangeStep === undefined
-                            ? undefined
-                            : String(column.rangeStep),
-                      })
-                      .value(
-                        number
-                          ? String(range?.[endpoint] ?? '')
-                          : (date?.[dateEnd] ?? ''),
-                      )
-                    return h.label
-                      .key(endpoint)
-                      .class(styles.filterField)
-                      .children(
-                        label,
-                        number
-                          ? parts.range(element, key, endpoint)
-                          : parts.date(element, key, dateEnd),
-                      )
-                  }),
-                ],
-              ),
+              parts.facetPopover.trigger({
+                element: h.button
+                  .key(key)
+                  .class(styles.button)
+                  .attrs({
+                    id: facetTrigger(key),
+                    'aria-label': `Filter ${header}`,
+                  })
+                  .children(
+                    summary === undefined
+                      ? `+ ${header}`
+                      : `${header} · ${summary}`,
+                  ),
+              }),
             ]
           })
         : []
+      const facet = parts.facet
+      const facetColumn =
+        facet === undefined
+          ? undefined
+          : columns.find(column => column.key === facet.column)
+      const facetLabel = `Filter ${facetColumn?.header ?? 'column'}`
+      const facetPanel =
+        facet === undefined
+          ? undefined
+          : parts.facetPopover
+              .portal(h.dialog.attr('aria-label', facetLabel))
+              ?.children(
+                parts.facetPopover.backdrop(h.div),
+                parts.facetPopover.positioner(h.div).children(
+                  parts.facetPopover
+                    .popup(
+                      h.div.class(styles.panel).attrs({
+                        dir: direction,
+                        'data-slot': 'data-table-facet-panel',
+                      }),
+                    )
+                    .children(
+                      h.span.class(styles.panelLabel).children(facetLabel),
+                      facet._tag === 'Numeric'
+                        ? (() => {
+                            const range = state.rangeFilters[facet.column]
+                            const slider = parts.facetSlider
+                            return [
+                              h.div
+                                .style({
+                                  display: 'grid',
+                                  gridTemplateColumns:
+                                    'repeat(2, minmax(0, 1fr))',
+                                  width: 'min(14rem, 75vw)',
+                                })
+                                .children(
+                                  (['min', 'max'] as const).map(endpoint =>
+                                    h.label
+                                      .key(endpoint)
+                                      .class(styles.filterField)
+                                      .children(
+                                        endpoint === 'min'
+                                          ? 'Minimum'
+                                          : 'Maximum',
+                                        parts.range(
+                                          h.input
+                                            .class(styles.input)
+                                            .style({ width: '100%' })
+                                            .attrs({
+                                              type: 'number',
+                                              min: String(facet.min),
+                                              max: String(facet.max),
+                                              step: String(facet.step),
+                                              placeholder: String(
+                                                facet[endpoint],
+                                              ),
+                                            })
+                                            .value(
+                                              String(range?.[endpoint] ?? ''),
+                                            ),
+                                          facet.column,
+                                          endpoint,
+                                        ),
+                                      ),
+                                  ),
+                                ),
+                              slider
+                                .root(
+                                  h.div
+                                    .attr('aria-label', facetLabel)
+                                    .style({ paddingInline: '0.75rem' }),
+                                )
+                                .children(
+                                  slider
+                                    .control(
+                                      h.div.style({
+                                        position: 'relative',
+                                        height: '2rem',
+                                        minWidth: '10rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        touchAction: 'none',
+                                      }),
+                                    )
+                                    .children(
+                                      slider
+                                        .track(
+                                          h.div.style({
+                                            position: 'relative',
+                                            width: '100%',
+                                            height: '0.375rem',
+                                            borderRadius: '1rem',
+                                            background: 'var(--muted)',
+                                          }),
+                                        )
+                                        .children(
+                                          slider.indicator(
+                                            h.div.style({
+                                              position: 'absolute',
+                                              insetBlock: '0',
+                                              left: 'var(--slider-indicator-start)',
+                                              width:
+                                                'var(--slider-indicator-size)',
+                                              background: 'var(--primary)',
+                                              borderRadius: '1rem',
+                                            }),
+                                          ),
+                                        ),
+                                      slider.values.map((_, index) =>
+                                        slider.thumb({
+                                          index,
+                                          element: h.div
+                                            .key(String(index))
+                                            .style({
+                                              position: 'absolute',
+                                              top: '50%',
+                                              left: 'var(--slider-thumb-position)',
+                                              translate: '-50% -50%',
+                                              width: '1rem',
+                                              height: '1rem',
+                                              borderRadius: '50%',
+                                              border:
+                                                '1px solid var(--primary)',
+                                              background: 'var(--background)',
+                                              boxShadow:
+                                                slider.activeThumbIndex ===
+                                                index
+                                                  ? '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)'
+                                                  : undefined,
+                                            }),
+                                          input: h.input.attr(
+                                            'aria-label',
+                                            `${index === 0 ? 'Minimum' : 'Maximum'} ${facetColumn?.header ?? 'value'}`,
+                                          ),
+                                        }),
+                                      ),
+                                    ),
+                                ),
+                              range?.min != null || range?.max != null
+                                ? button(
+                                    'Clear',
+                                    DataTableAction.RangeSet({
+                                      column: facet.column,
+                                      min: null,
+                                      max: null,
+                                    }),
+                                  )
+                                : undefined,
+                            ]
+                          })()
+                        : (() => {
+                            const dates = state.dateFilters[facet.column]
+                            return [
+                              calendarView(
+                                h,
+                                parts.facetCalendar,
+                                { direction },
+                                calendarStyles,
+                                { locale: options.props?.locale },
+                              ),
+                              ...(['from', 'to'] as const).map(endpoint =>
+                                h.label
+                                  .key(endpoint)
+                                  .class(styles.filterField)
+                                  .children(
+                                    endpoint === 'from' ? 'From' : 'To',
+                                    parts.date(
+                                      h.input
+                                        .class(styles.input)
+                                        .attr('type', 'date')
+                                        .value(dates?.[endpoint] ?? ''),
+                                      facet.column,
+                                      endpoint,
+                                    ),
+                                  ),
+                              ),
+                              dates?.from || dates?.to
+                                ? button(
+                                    'Clear',
+                                    DataTableAction.DateSet({
+                                      column: facet.column,
+                                      from: '',
+                                      to: '',
+                                    }),
+                                  )
+                                : undefined,
+                            ]
+                          })(),
+                    ),
+                ),
+              )
       const toolbar =
         displaySearch ||
         faceted ||
@@ -383,6 +618,7 @@ export const DataTable = <Row, Msg, R = never>(
                     )
                   : undefined,
                 facets,
+                facetPanel,
                 projection.filterCount > 0
                   ? button('Clear filters', DataTableAction.ClearedFilters())
                   : undefined,

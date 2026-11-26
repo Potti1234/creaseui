@@ -4032,6 +4032,9 @@
     {
       "name": "effect-data-table-behavior",
       "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar-behavior"
+      ],
       "dependencies": [
         "effect@4.1.5",
         "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
@@ -4049,6 +4052,7 @@
       "name": "effect-data-table",
       "type": "registry:ui",
       "registryDependencies": [
+        "@crease-effect/effect-calendar",
         "@crease-effect/effect-popover-behavior",
         "@crease-effect/effect-table-behavior",
         "@crease-effect/crease-theme",
@@ -4065,6 +4069,9 @@
     {
       "name": "effect-data-grid-behavior",
       "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar-behavior"
+      ],
       "dependencies": [
         "effect@4.1.5",
         "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
@@ -4082,6 +4089,7 @@
       "name": "effect-data-grid",
       "type": "registry:ui",
       "registryDependencies": [
+        "@crease-effect/effect-calendar",
         "@crease-effect/effect-popover-behavior",
         "@crease-effect/effect-dropdown-menu",
         "@crease-effect/crease-theme",

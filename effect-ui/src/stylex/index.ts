@@ -757,7 +757,13 @@ export const DonutChart = <Msg>(
 export const DataTable = <Row, Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderDataTable<Row, Msg, R>>[1],
-) => RenderDataTable<Row, Msg, R>(h, options, partClasses(dataTable))
+) =>
+  RenderDataTable<Row, Msg, R>(
+    h,
+    options,
+    partClasses(dataTable),
+    partClasses(calendar),
+  )
 
 export const DataGrid = <Row, Msg, R = never>(
   h: Html.H<Msg>,
@@ -768,6 +774,7 @@ export const DataGrid = <Row, Msg, R = never>(
     options,
     partClasses(dataGrid),
     partClasses(menu),
+    partClasses(calendar),
   )
 
 export const Command = <Msg, R = never>(
