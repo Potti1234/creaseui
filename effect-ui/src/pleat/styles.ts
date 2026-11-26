@@ -1,4 +1,4 @@
-import { Style, When } from '@pleat/core'
+import { Global, Style, When } from '@pleat/core'
 export const controls = {
   box: Style.make({ boxSizing: 'border-box' }),
   button: Style.make({
@@ -609,6 +609,130 @@ export const accordion = {
     Style.when(reducedMotion, { transitionDuration: '0ms' }),
   ),
   content: Style.make({ paddingBlockEnd: 10 }),
+}
+
+export const collapsible = {
+  panel: Style.make({
+    height: 'var(--collapsible-panel-height, auto)',
+    transitionProperty: 'height',
+    transitionDuration: '200ms',
+  }).pipe(
+    Style.when(When.data('css-hidden'), { display: 'none' }),
+    Style.when(When.data('starting-style'), { height: 0, overflow: 'hidden' }),
+    Style.when(When.data('ending-style'), { height: 0, overflow: 'hidden' }),
+    Style.when(reducedMotion, { transitionDuration: '0ms' }),
+  ),
+}
+
+const progressPulse = Global.keyframes('effect-progress-pulse', {
+  '50%': { opacity: 0.5 },
+})
+
+export const progress = {
+  root: Style.make({ display: 'grid', gap: 6 }),
+  caption: Style.make({
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: 8,
+    fontSize: '0.875rem',
+  }),
+  value: Style.make({
+    color: 'var(--muted-foreground)',
+    fontVariantNumeric: 'tabular-nums',
+  }),
+  track: Style.make({
+    width: '100%',
+    height: 8,
+    overflow: 'hidden',
+    borderRadius: 999,
+    backgroundColor: 'color-mix(in oklab, var(--primary) 20%, transparent)',
+  }),
+  indicator: Style.make({
+    width: '0%',
+    height: '100%',
+    borderRadius: 999,
+    backgroundColor: 'var(--primary)',
+    transitionProperty: 'width',
+    transitionDuration: '150ms',
+  }).pipe(
+    Style.when(When.data('indeterminate'), { width: '40%' }),
+    Style.when(
+      When.all(
+        When.data('indeterminate'),
+        When.media('(prefers-reduced-motion: no-preference)'),
+      ),
+      {
+        animationName: progressPulse,
+        animationDuration: '2s',
+        animationTimingFunction: 'cubic-bezier(0.4, 0, 0.6, 1)',
+        animationIterationCount: 'infinite',
+      },
+    ),
+    Style.when(reducedMotion, { transitionDuration: '0ms' }),
+  ),
+}
+
+export const separator = {
+  line: Style.make({
+    flexShrink: 0,
+    backgroundColor: 'var(--border)',
+    width: '100%',
+    height: 1,
+  }).pipe(
+    Style.when(When.data('orientation', 'vertical'), {
+      width: 1,
+      height: '100%',
+    }),
+  ),
+}
+
+export const toggle = {
+  control: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    height: 36,
+    minWidth: 36,
+    paddingInline: 8,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'transparent',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'transparent',
+    color: 'var(--foreground)',
+    fontFamily: 'inherit',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    whiteSpace: 'nowrap',
+    outlineStyle: 'none',
+    cursor: 'pointer',
+    transitionProperty: 'color, background-color, box-shadow',
+    transitionDuration: '150ms',
+  }).pipe(
+    Style.when(When.data('size', 'sm'), {
+      height: 32,
+      minWidth: 32,
+      paddingInline: 6,
+    }),
+    Style.when(When.data('size', 'lg'), {
+      height: 40,
+      minWidth: 40,
+      paddingInline: 10,
+    }),
+    Style.when(When.data('variant', 'outline'), {
+      borderColor: 'var(--input)',
+      boxShadow: '0 1px 2px rgb(0 0 0 / 5%)',
+    }),
+    Style.when(When.hover, { backgroundColor: 'var(--muted)' }),
+    Style.when(When.data('pressed'), {
+      backgroundColor: 'var(--accent)',
+      color: 'var(--accent-foreground)',
+    }),
+    Style.when(When.focusVisible, { boxShadow: choiceFocus.boxShadow }),
+    Style.when(When.disabled, { opacity: 0.5, cursor: 'not-allowed' }),
+    Style.when(reducedMotion, { transitionDuration: '0ms' }),
+  ),
 }
 
 export const tooltip = {

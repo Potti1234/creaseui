@@ -7,12 +7,16 @@ import {
   Button,
   Calendar,
   Checkbox,
+  Collapsible,
   Combobox,
   Dialog,
   Popover,
+  Progress,
   Select,
+  Separator,
   Switch,
   Tabs,
+  Toggle,
   Tooltip,
 } from '#components'
 import { CalendarDate } from './behaviors/calendar'
@@ -27,6 +31,7 @@ const Message = UiSchema.TaggedEnum({
   ToggledSummary: { checked: Schema.Boolean },
   ToggledAlerts: { checked: Schema.Boolean },
   SelectedSettingsTab: { value: Schema.String },
+  ToggledPin: { pressed: Schema.Boolean },
 })
 
 const fruits = [
@@ -54,6 +59,7 @@ const Preview = Html.component({
     summary: Schema.Boolean,
     alerts: Schema.Boolean,
     settingsTab: Schema.String,
+    pinned: Schema.Boolean,
   }),
 }).make({
   init: () => ({
@@ -64,6 +70,7 @@ const Preview = Html.component({
     summary: false,
     alerts: false,
     settingsTab: 'profile',
+    pinned: false,
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -73,6 +80,7 @@ const Preview = Html.component({
     ToggledSummary: ($, { checked }) => $.evolve({ summary: checked }),
     ToggledAlerts: ($, { checked }) => $.evolve({ alerts: checked }),
     SelectedSettingsTab: ($, { value }) => $.evolve({ settingsTab: value }),
+    ToggledPin: ($, { pressed }) => $.evolve({ pinned: pressed }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
@@ -240,6 +248,42 @@ const Preview = Html.component({
               },
             ],
           }),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Collapsible'),
+          Collapsible(h, {
+            props: { keepMounted: 'css' },
+            trigger: Button(h, { variant: 'outline' }).children(
+              'Show storage details',
+            ),
+            content: h.p.children('Files are stored in your workspace.'),
+          }),
+        ),
+        h.section
+          .class('example')
+          .children(
+            h.h2.children('Progress'),
+            Progress(h, {
+              key: 'files-uploaded',
+              props: { value: 3, max: 5 },
+              label: 'Files uploaded',
+              showValue: true,
+            }),
+            Progress(h, {
+              key: 'preparing-report',
+              props: { value: null },
+              label: 'Preparing report',
+            }),
+          ),
+        h.section.class('example').children(
+          h.h2.children('Toggle and Separator'),
+          Toggle(h, {
+            props: { pressed: model.pinned },
+            onToggle: Message.ToggledPin,
+            variant: 'outline',
+          }).children('Pin item'),
+          Separator(h),
+          h.div.children('Recent items'),
         ),
       ),
     ),

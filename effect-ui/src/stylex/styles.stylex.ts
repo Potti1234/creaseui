@@ -623,6 +623,138 @@ export const accordion = stylex.create({
   content: { paddingBlockEnd: 10 },
 })
 
+export const collapsible = stylex.create({
+  panel: {
+    display: { default: null, ':is([data-css-hidden])': 'none' },
+    height: {
+      default: 'var(--collapsible-panel-height, auto)',
+      ':is([data-starting-style],[data-ending-style])': 0,
+    },
+    overflow: {
+      default: 'visible',
+      ':is([data-starting-style],[data-ending-style])': 'hidden',
+    },
+    transitionProperty: 'height',
+    transitionDuration: {
+      default: '200ms',
+      '@media (prefers-reduced-motion: reduce)': '0ms',
+    },
+  },
+})
+
+const progressPulse = stylex.keyframes({
+  '50%': { opacity: 0.5 },
+})
+
+export const progress = stylex.create({
+  root: { display: 'grid', gap: 6 },
+  caption: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    gap: 8,
+    fontSize: '0.875rem',
+  },
+  value: {
+    color: 'var(--muted-foreground)',
+    fontVariantNumeric: 'tabular-nums',
+  },
+  track: {
+    width: '100%',
+    height: 8,
+    overflow: 'hidden',
+    borderRadius: 999,
+    backgroundColor: 'color-mix(in oklab, var(--primary) 20%, transparent)',
+  },
+  indicator: {
+    width: { default: '0%', ':is([data-indeterminate])': '40%' },
+    height: '100%',
+    borderRadius: 999,
+    backgroundColor: 'var(--primary)',
+    transitionProperty: 'width',
+    transitionDuration: {
+      default: '150ms',
+      '@media (prefers-reduced-motion: reduce)': '0ms',
+    },
+    animationName: {
+      default: 'none',
+      '@media (prefers-reduced-motion: no-preference)': {
+        default: 'none',
+        ':is([data-indeterminate])': progressPulse,
+      },
+    },
+    animationDuration: '2s',
+    animationTimingFunction: 'cubic-bezier(0.4, 0, 0.6, 1)',
+    animationIterationCount: 'infinite',
+  },
+})
+
+export const separator = stylex.create({
+  line: {
+    flexShrink: 0,
+    backgroundColor: 'var(--border)',
+    width: { default: '100%', ':is([data-orientation=vertical])': 1 },
+    height: { default: 1, ':is([data-orientation=vertical])': '100%' },
+  },
+})
+
+export const toggle = stylex.create({
+  control: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    height: {
+      default: 36,
+      ':is([data-size=sm])': 32,
+      ':is([data-size=lg])': 40,
+    },
+    minWidth: {
+      default: 36,
+      ':is([data-size=sm])': 32,
+      ':is([data-size=lg])': 40,
+    },
+    paddingInline: {
+      default: 8,
+      ':is([data-size=sm])': 6,
+      ':is([data-size=lg])': 10,
+    },
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'transparent',
+      ':is([data-variant=outline])': 'var(--input)',
+    },
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--muted)',
+      ':is([data-pressed])': 'var(--accent)',
+    },
+    color: {
+      default: 'var(--foreground)',
+      ':is([data-pressed])': 'var(--accent-foreground)',
+    },
+    fontFamily: 'inherit',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    whiteSpace: 'nowrap',
+    outlineStyle: 'none',
+    boxShadow: {
+      default: 'none',
+      ':is([data-variant=outline])': '0 1px 2px rgb(0 0 0 / 5%)',
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: { default: 1, ':disabled': 0.5 },
+    cursor: { default: 'pointer', ':disabled': 'not-allowed' },
+    transitionProperty: 'color, background-color, box-shadow',
+    transitionDuration: {
+      default: '150ms',
+      '@media (prefers-reduced-motion: reduce)': '0ms',
+    },
+  },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {

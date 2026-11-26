@@ -343,6 +343,130 @@
       ]
     },
     {
+      "name": "effect-collapsible-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@8986cd7",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@8986cd7"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/collapsible.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/collapsible.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-collapsible",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-collapsible-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/collapsible.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/collapsible.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-progress-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@8986cd7",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@8986cd7"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/progress.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/progress.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-progress",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-progress-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/progress.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/progress.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-separator-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@8986cd7",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@8986cd7"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/separator.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/separator.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-separator",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-separator-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/separator.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/separator.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toggle-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@8986cd7",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@8986cd7"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/toggle.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/toggle.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toggle",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-toggle-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/toggle.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/toggle.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -358,7 +482,11 @@
         "@crease-effect/effect-switch",
         "@crease-effect/effect-tooltip",
         "@crease-effect/effect-tabs",
-        "@crease-effect/effect-accordion"
+        "@crease-effect/effect-accordion",
+        "@crease-effect/effect-collapsible",
+        "@crease-effect/effect-progress",
+        "@crease-effect/effect-separator",
+        "@crease-effect/effect-toggle"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -380,7 +508,11 @@
         "@crease-effect/effect-switch",
         "@crease-effect/effect-tooltip",
         "@crease-effect/effect-tabs",
-        "@crease-effect/effect-accordion"
+        "@crease-effect/effect-accordion",
+        "@crease-effect/effect-collapsible",
+        "@crease-effect/effect-progress",
+        "@crease-effect/effect-separator",
+        "@crease-effect/effect-toggle"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

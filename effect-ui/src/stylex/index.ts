@@ -15,6 +15,10 @@ import { Select as RenderSelect } from '../ui/select'
 import { Switch as RenderSwitch } from '../ui/switch'
 import { Tabs as RenderTabs } from '../ui/tabs'
 import { Tooltip as RenderTooltip } from '../ui/tooltip'
+import { Collapsible as RenderCollapsible } from '../ui/collapsible'
+import { Progress as RenderProgress } from '../ui/progress'
+import { Separator as RenderSeparator } from '../ui/separator'
+import { Toggle as RenderToggle } from '../ui/toggle'
 import {
   accordion,
   buttonSizes,
@@ -30,6 +34,10 @@ import {
   switchControl,
   tabs,
   tooltip,
+  collapsible,
+  progress,
+  separator,
+  toggle,
 } from './styles.stylex'
 
 const buttonClasses: NonNullable<Parameters<typeof RenderButton>[2]> = (
@@ -113,3 +121,23 @@ export const Accordion = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderAccordion<Msg, R>>[1],
 ) => RenderAccordion(h, options, partClasses(accordion))
+
+export const Collapsible = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderCollapsible<Msg, R>>[1],
+) => RenderCollapsible(h, options, partClasses(collapsible))
+
+export const Progress = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderProgress<Msg>>[1],
+) => RenderProgress(h, options, partClasses(progress))
+
+export const Separator = <Msg>(
+  h: Html.H<Msg>,
+  options?: Parameters<typeof RenderSeparator<Msg>>[1],
+) => RenderSeparator(h, options, partClasses(separator))
+
+export const Toggle = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderToggle<Msg, R>>[1],
+) => RenderToggle(h, options, partClasses(toggle))
