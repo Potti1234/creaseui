@@ -484,6 +484,133 @@ export const popover = {
   description: Style.make({ margin: 0, color: 'var(--muted-foreground)' }),
 }
 
+const verticalTabs = When.data('orientation', 'vertical')
+const lineTabs = When.data('variant', 'line')
+const activeTab = When.data('active')
+
+export const tabs = {
+  root: Style.make({ display: 'flex', minWidth: 0, gap: 12 }).pipe(
+    Style.when(When.data('orientation', 'horizontal'), {
+      flexDirection: 'column',
+    }),
+  ),
+  list: Style.make({
+    display: 'inline-flex',
+    flexShrink: 0,
+    alignSelf: 'flex-start',
+    width: 'fit-content',
+    maxWidth: '100%',
+    overflowX: 'auto',
+    gap: 4,
+    padding: 4,
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--muted)',
+  }).pipe(
+    Style.when(verticalTabs, { flexDirection: 'column' }),
+    Style.when(lineTabs, { borderRadius: 0, backgroundColor: 'transparent' }),
+  ),
+  tab: Style.make({
+    position: 'relative',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 6,
+    minHeight: 32,
+    padding: '4px 8px',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'transparent',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'transparent',
+    color: 'var(--muted-foreground)',
+    fontFamily: 'inherit',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    whiteSpace: 'nowrap',
+    outlineStyle: 'none',
+    cursor: 'pointer',
+  }).pipe(
+    Style.when(When.hover, { color: 'var(--foreground)' }),
+    Style.when(When.focusVisible, { borderColor: 'var(--ring)' }),
+    Style.when(activeTab, {
+      backgroundColor: 'var(--background)',
+      color: 'var(--foreground)',
+      boxShadow: '0 1px 2px rgb(0 0 0 / 8%)',
+    }),
+    Style.when(When.all(lineTabs, activeTab), {
+      backgroundColor: 'transparent',
+      boxShadow: 'none',
+      textDecorationLine: 'underline',
+      textDecorationThickness: 2,
+      textUnderlineOffset: 4,
+    }),
+    Style.when(When.disabled, { opacity: 0.5, cursor: 'not-allowed' }),
+  ),
+  labelHidden: Style.make({
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+  }),
+  panel: Style.make({ minWidth: 0, flexGrow: 1, outlineStyle: 'none' }).pipe(
+    Style.when(When.focusVisible, { boxShadow: '0 0 0 2px var(--ring)' }),
+  ),
+}
+
+export const accordion = {
+  item: Style.make({
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: 'var(--border)',
+  }).pipe(Style.when(When.lastChild, { borderBottomWidth: 0 })),
+  header: Style.make({ display: 'flex', margin: 0 }),
+  trigger: Style.make({
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 16,
+    flexGrow: 1,
+    minHeight: 40,
+    padding: '10px 0',
+    borderWidth: 0,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'transparent',
+    color: 'var(--foreground)',
+    textAlign: 'start',
+    fontFamily: 'inherit',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    outlineStyle: 'none',
+    cursor: 'pointer',
+  }).pipe(
+    Style.when(When.hover, { textDecorationLine: 'underline' }),
+    Style.when(When.focusVisible, { boxShadow: choiceFocus.boxShadow }),
+    Style.when(When.disabled, { opacity: 0.5, cursor: 'not-allowed' }),
+  ),
+  icon: Style.make({
+    marginBlockStart: 2,
+    flexShrink: 0,
+    color: 'var(--muted-foreground)',
+    transitionProperty: 'transform',
+    transitionDuration: '200ms',
+  }).pipe(
+    Style.when(When.data('open'), { transform: 'rotate(180deg)' }),
+    Style.when(reducedMotion, { transitionDuration: '0ms' }),
+  ),
+  panel: Style.make({
+    fontSize: '0.875rem',
+    height: 'var(--accordion-panel-height, auto)',
+    transitionProperty: 'height',
+    transitionDuration: '200ms',
+  }).pipe(
+    Style.when(When.data('starting-style'), { height: 0, overflow: 'hidden' }),
+    Style.when(When.data('ending-style'), { height: 0, overflow: 'hidden' }),
+    Style.when(reducedMotion, { transitionDuration: '0ms' }),
+  ),
+  content: Style.make({ paddingBlockEnd: 10 }),
+}
+
 export const tooltip = {
   root: Style.make({ display: 'inline-block' }),
   positioner: Style.make({

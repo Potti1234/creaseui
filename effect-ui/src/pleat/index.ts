@@ -1,6 +1,7 @@
 import type { Html } from '@effect/ui/html'
 import { Style } from '@pleat/core'
 
+import { Accordion as RenderAccordion } from '../ui/accordion'
 import {
   Button as RenderButton,
   ButtonLink as RenderButtonLink,
@@ -12,8 +13,10 @@ import { Dialog as RenderDialog } from '../ui/dialog'
 import { Popover as RenderPopover } from '../ui/popover'
 import { Select as RenderSelect } from '../ui/select'
 import { Switch as RenderSwitch } from '../ui/switch'
+import { Tabs as RenderTabs } from '../ui/tabs'
 import { Tooltip as RenderTooltip } from '../ui/tooltip'
 import {
+  accordion,
   buttonSizes,
   buttonVariants,
   calendar,
@@ -25,6 +28,7 @@ import {
   popover,
   select,
   switchControl,
+  tabs,
   tooltip,
 } from './styles'
 
@@ -101,3 +105,13 @@ export const Tooltip = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderTooltip<Msg, R>>[1],
 ) => RenderTooltip(h, options, partClasses(tooltip))
+
+export const Tabs = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderTabs<Msg, R>>[1],
+) => RenderTabs(h, options, partClasses(tabs))
+
+export const Accordion = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderAccordion<Msg, R>>[1],
+) => RenderAccordion(h, options, partClasses(accordion))

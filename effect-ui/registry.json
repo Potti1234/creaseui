@@ -281,6 +281,68 @@
       ]
     },
     {
+      "name": "effect-tabs-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@8986cd7",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@8986cd7"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/tabs.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/tabs.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tabs",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-tabs-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/tabs.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/tabs.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-accordion-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@8986cd7",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@8986cd7"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/accordion.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/accordion.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-accordion",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-accordion-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/accordion.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/accordion.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -294,7 +356,9 @@
         "@crease-effect/effect-popover",
         "@crease-effect/effect-checkbox",
         "@crease-effect/effect-switch",
-        "@crease-effect/effect-tooltip"
+        "@crease-effect/effect-tooltip",
+        "@crease-effect/effect-tabs",
+        "@crease-effect/effect-accordion"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -314,7 +378,9 @@
         "@crease-effect/effect-popover",
         "@crease-effect/effect-checkbox",
         "@crease-effect/effect-switch",
-        "@crease-effect/effect-tooltip"
+        "@crease-effect/effect-tooltip",
+        "@crease-effect/effect-tabs",
+        "@crease-effect/effect-accordion"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

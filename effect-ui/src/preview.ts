@@ -3,6 +3,7 @@ import { BrowserHost, Html } from '@effect/ui/html'
 import { Effect, Layer, Schema } from 'effect'
 
 import {
+  Accordion,
   Button,
   Calendar,
   Checkbox,
@@ -11,6 +12,7 @@ import {
   Popover,
   Select,
   Switch,
+  Tabs,
   Tooltip,
 } from '#components'
 import { CalendarDate } from './behaviors/calendar'
@@ -24,6 +26,7 @@ const Message = UiSchema.TaggedEnum({
   PickedTheme: { value: Schema.NullOr(Schema.String) },
   ToggledSummary: { checked: Schema.Boolean },
   ToggledAlerts: { checked: Schema.Boolean },
+  SelectedSettingsTab: { value: Schema.String },
 })
 
 const fruits = [
@@ -50,6 +53,7 @@ const Preview = Html.component({
     theme: Schema.NullOr(Schema.String),
     summary: Schema.Boolean,
     alerts: Schema.Boolean,
+    settingsTab: Schema.String,
   }),
 }).make({
   init: () => ({
@@ -59,6 +63,7 @@ const Preview = Html.component({
     theme: 'light',
     summary: false,
     alerts: false,
+    settingsTab: 'profile',
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -67,6 +72,7 @@ const Preview = Html.component({
     PickedTheme: ($, { value }) => $.evolve({ theme: value }),
     ToggledSummary: ($, { checked }) => $.evolve({ summary: checked }),
     ToggledAlerts: ($, { checked }) => $.evolve({ alerts: checked }),
+    SelectedSettingsTab: ($, { value }) => $.evolve({ settingsTab: value }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
@@ -181,6 +187,58 @@ const Preview = Html.component({
               'Retention details',
             ),
             content: 'Archived items are kept for 30 days.',
+          }),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Tabs'),
+          Tabs(h, {
+            ariaLabel: 'Settings',
+            props: { value: model.settingsTab },
+            tabs: [
+              {
+                value: 'profile',
+                label: 'Profile',
+                content: 'Update your profile.',
+              },
+              {
+                value: 'billing',
+                label: 'Billing',
+                content: 'Billing is unavailable.',
+                disabled: true,
+              },
+              {
+                value: 'privacy',
+                label: 'Privacy',
+                content: 'Manage how information is shared.',
+              },
+            ],
+            onEmit: {
+              Selected: ({ value }) => Message.SelectedSettingsTab({ value }),
+            },
+          }),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Accordion'),
+          Accordion(h, {
+            props: { defaultValue: ['delivery'] },
+            items: [
+              {
+                value: 'delivery',
+                trigger: 'When will it arrive?',
+                content: 'Delivery takes three to five days.',
+              },
+              {
+                value: 'return',
+                trigger: 'Can I return it?',
+                content: 'Returns are accepted within 30 days.',
+              },
+              {
+                value: 'status',
+                trigger: 'Where is my order?',
+                content: 'Tracking is unavailable.',
+                disabled: true,
+              },
+            ],
           }),
         ),
       ),

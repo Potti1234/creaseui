@@ -476,6 +476,153 @@ export const popover = stylex.create({
   description: { margin: 0, color: 'var(--muted-foreground)' },
 })
 
+export const tabs = stylex.create({
+  root: {
+    display: 'flex',
+    flexDirection: {
+      default: 'row',
+      ':is([data-orientation=horizontal])': 'column',
+    },
+    minWidth: 0,
+    gap: 12,
+  },
+  list: {
+    display: 'inline-flex',
+    flexDirection: {
+      default: 'row',
+      ':is([data-orientation=vertical])': 'column',
+    },
+    flexShrink: 0,
+    alignSelf: 'flex-start',
+    width: 'fit-content',
+    maxWidth: '100%',
+    overflowX: 'auto',
+    gap: 4,
+    padding: 4,
+    borderRadius: { default: 'var(--radius)', ':is([data-variant=line])': '0' },
+    backgroundColor: {
+      default: 'var(--muted)',
+      ':is([data-variant=line])': 'transparent',
+    },
+  },
+  tab: {
+    position: 'relative',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 6,
+    minHeight: 32,
+    padding: '4px 8px',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: { default: 'transparent', ':focus-visible': 'var(--ring)' },
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'transparent',
+      ':is([data-active]):not([data-variant=line])': 'var(--background)',
+    },
+    color: {
+      default: 'var(--muted-foreground)',
+      ':hover': 'var(--foreground)',
+      ':is([data-active])': 'var(--foreground)',
+    },
+    boxShadow: {
+      default: 'none',
+      ':is([data-active]):not([data-variant=line])':
+        '0 1px 2px rgb(0 0 0 / 8%)',
+    },
+    fontFamily: 'inherit',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    whiteSpace: 'nowrap',
+    textDecorationLine: {
+      default: 'none',
+      ':is([data-variant=line][data-active])': 'underline',
+    },
+    textDecorationThickness: 2,
+    textUnderlineOffset: 4,
+    outlineStyle: 'none',
+    opacity: { default: 1, ':is([data-disabled])': 0.5 },
+    cursor: { default: 'pointer', ':is([data-disabled])': 'not-allowed' },
+  },
+  labelHidden: {
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+  },
+  panel: {
+    minWidth: 0,
+    flexGrow: 1,
+    outlineStyle: 'none',
+    boxShadow: { default: 'none', ':focus-visible': '0 0 0 2px var(--ring)' },
+  },
+})
+
+export const accordion = stylex.create({
+  item: {
+    borderBottomWidth: { default: 1, ':last-child': 0 },
+    borderBottomStyle: 'solid',
+    borderBottomColor: 'var(--border)',
+  },
+  header: { display: 'flex', margin: 0 },
+  trigger: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 16,
+    flexGrow: 1,
+    minHeight: 40,
+    padding: '10px 0',
+    borderWidth: 0,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'transparent',
+    color: 'var(--foreground)',
+    textAlign: 'start',
+    fontFamily: 'inherit',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    textDecorationLine: { default: 'none', ':hover': 'underline' },
+    outlineStyle: 'none',
+    boxShadow: {
+      default: 'none',
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: { default: 1, ':disabled': 0.5 },
+    cursor: { default: 'pointer', ':disabled': 'not-allowed' },
+  },
+  icon: {
+    marginBlockStart: 2,
+    flexShrink: 0,
+    color: 'var(--muted-foreground)',
+    transform: { default: 'none', ':is([data-open])': 'rotate(180deg)' },
+    transitionProperty: 'transform',
+    transitionDuration: {
+      default: '200ms',
+      '@media (prefers-reduced-motion: reduce)': '0ms',
+    },
+  },
+  panel: {
+    fontSize: '0.875rem',
+    height: {
+      default: 'var(--accordion-panel-height, auto)',
+      ':is([data-starting-style],[data-ending-style])': 0,
+    },
+    overflow: {
+      default: 'visible',
+      ':is([data-starting-style],[data-ending-style])': 'hidden',
+    },
+    transitionProperty: 'height',
+    transitionDuration: {
+      default: '200ms',
+      '@media (prefers-reduced-motion: reduce)': '0ms',
+    },
+  },
+  content: { paddingBlockEnd: 10 },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {
