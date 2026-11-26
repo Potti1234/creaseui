@@ -2,10 +2,20 @@ import type { Html as HtmlTypes } from '@effect/ui/html'
 import { BrowserHost, Html } from '@effect/ui/html'
 import { Effect, Layer, Schema } from 'effect'
 
-import { examples } from './examples'
-import { contentExamples } from './content-examples'
+import { CodeBlock } from '#components'
+import {
+  behaviors,
+  componentBehaviors,
+  type BehaviorEntry,
+} from '../../../src/docs/generated-behavior-docs'
+import { componentDocsPages } from './component-pages'
 import { guides } from './guides'
-import { DocsMessage, type DocsGuide } from './types'
+import { pageMetadata } from './page-metadata'
+import {
+  DocsMessage,
+  type DocsExampleImplementation,
+  type DocsGuide,
+} from './types'
 import {
   catalogGroups,
   catalogOrder,
@@ -13,7 +23,6 @@ import {
   componentPath,
   docsRenderer,
   docsRoute,
-  legacyDocsOnly,
   rendererChoices,
   rendererPath,
 } from './routes'
@@ -38,13 +47,58 @@ const pageTitle =
 document.title = `${pageTitle} · CreaseUI for Effect UI`
 
 type DocHtml = HtmlTypes.H<DocsMessage>
+
+type ExampleMetadata = Readonly<{
+  title: string
+  description?: string
+  sectionId?: string
+  heroOnly?: boolean
+  keepIdsCanonical?: boolean
+  previewClass?: string
+  previewLayout?: 'full-bleed'
+}>
+
+type PageMetadata = Readonly<{
+  slug: string
+  title: string
+  kind: 'helper' | 'submodel' | 'recipe'
+  description: string
+  architecture?: string
+  usage?: string
+  styling?: string
+  accessibility?: string
+  keyboard?: ReadonlyArray<readonly [string, string]>
+  composition?: string
+  sections?: ReadonlyArray<
+    Readonly<{ id: string; title: string; description: string; code?: string }>
+  >
+  apiHref?: string
+  apiDescription?: string
+  examples: ReadonlyArray<ExampleMetadata>
+}>
+
+const metadataBySlug = pageMetadata as unknown as Record<string, PageMetadata>
+const behaviorBySlug = new Map(behaviors.map(entry => [entry.slug, entry]))
+const effectText = (value: string): string =>
+  value.replaceAll('Foldkit', 'Effect UI').replaceAll('foldkit', 'effect-ui')
+
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+
 const docsMain = (h: DocHtml) =>
   h.main.class('docs-main').attrs({ id: 'docs-main', tabindex: '-1' })
+
 const guideLinks = [
-  { href: '/docs/getting-started', label: 'Getting Started' },
+  { href: '/docs/getting-started', label: 'Get Started' },
   { href: '/docs/theming', label: 'Theming' },
   { href: '/docs/behaviors', label: 'Behaviors' },
+  { href: '/docs/lint', label: 'Lint rules' },
+  { href: '/docs/tutorial', label: 'Tutorial' },
 ]
+
 const componentLink = (
   h: DocHtml,
   { title, slug }: (typeof catalogOrder)[number],
@@ -70,6 +124,29 @@ const groupedEntries = (query: string) => {
   })
 }
 
+const behaviorLinks = (h: DocHtml) => {
+  const primitives = behaviors
+    .filter(entry => entry.kind === 'primitive')
+    .slice()
+    .sort((left, right) => left.title.localeCompare(right.title, 'en'))
+  return h.div.class('docs-nav-group').children(
+    h.h2.class('docs-nav-group-title').children('Behaviors'),
+    h.ul.children(
+      primitives.map(entry =>
+        h.li.key(entry.slug).children(
+          h.a
+            .class('docs-nav-link')
+            .attrs({
+              href: entry.docs,
+              'aria-current': guidePath === entry.docs ? 'page' : undefined,
+            })
+            .children(entry.title),
+        ),
+      ),
+    ),
+  )
+}
+
 const sidebar = (
   h: DocHtml,
   query: string,
@@ -77,7 +154,7 @@ const sidebar = (
 ) =>
   h.nav
     .class('docs-component-nav')
-    .attr('aria-label', 'Components')
+    .attr('aria-label', 'Documentation')
     .children(
       h.div.class('docs-nav-group').children(
         h.h2.class('docs-nav-group-title').children('Guides'),
@@ -117,6 +194,7 @@ const sidebar = (
             ),
           ),
       ),
+      behaviorLinks(h),
       groups.length === 0
         ? h.p
             .attr('role', 'status')
@@ -124,7 +202,7 @@ const sidebar = (
         : undefined,
     )
 
-const docsHeader = (h: DocHtml) =>
+const docsHeader = (h: DocHtml, dark: boolean) =>
   h.header.class('docs-header').children(
     h.div.class('docs-frame', 'docs-header-content').children(
       h.a.class('docs-brand').attr('href', catalogPath).children('CreaseUI'),
@@ -133,24 +211,38 @@ const docsHeader = (h: DocHtml) =>
         .attr('aria-label', 'Documentation')
         .children(
           h.a.attr('href', catalogPath).children('Components'),
+          h.a.attr('href', '/docs/behaviors').children('Behaviors'),
           h.a.attr('href', '/').children('Preview'),
         ),
-      h.nav
-        .class('docs-renderers')
-        .attr('aria-label', 'Renderer')
-        .children(
-          rendererChoices.map(({ value, label }) => {
-            const href = rendererPath(location, renderer, value)
-            return href === undefined
-              ? h.span.children(label)
-              : h.a
-                  .attrs({
-                    href,
-                    'aria-current': value === renderer ? 'true' : undefined,
-                  })
-                  .children(label)
-          }),
-        ),
+      h.div.class('docs-header-actions').children(
+        h.nav
+          .class('docs-renderers')
+          .attr('aria-label', 'Renderer')
+          .children(
+            rendererChoices.map(({ value, label }) => {
+              const href = rendererPath(location, renderer, value)
+              return href === undefined
+                ? h.span.children(label)
+                : h.a
+                    .attrs({
+                      href,
+                      'aria-current': value === renderer ? 'true' : undefined,
+                    })
+                    .children(label)
+            }),
+          ),
+        h.button
+          .class('docs-theme-toggle')
+          .attrs({
+            type: 'button',
+            'aria-label': dark
+              ? 'Switch to light theme'
+              : 'Switch to dark theme',
+            title: dark ? 'Switch to light theme' : 'Switch to dark theme',
+          })
+          .on('click', DocsMessage.ToggledTheme())
+          .children(dark ? '☀' : '☾'),
+      ),
     ),
   )
 
@@ -180,8 +272,150 @@ const catalog = (h: DocHtml, groups: ReturnType<typeof groupedEntries>) =>
       : undefined,
   )
 
+const sectionHeading = (h: DocHtml, id: string, title: string) =>
+  h.h2.class('docs-section-heading').children(
+    title,
+    h.a
+      .class('docs-heading-link')
+      .attrs({ href: `#${id}`, 'aria-label': `Link to ${title}` })
+      .children('#'),
+  )
+
+const codePanel = (
+  h: DocHtml,
+  id: string,
+  code: string,
+  language = 'typescript',
+) => {
+  const inputId = `${id}-toggle`
+  return h.div.class('docs-code-panel').children(
+    h.input.class('docs-code-checkbox').attrs({
+      id: inputId,
+      type: 'checkbox',
+    }),
+    h.div.class('docs-code-clip').children(
+      CodeBlock(h, {
+        id: `${id}-code`,
+        language,
+        props: { code },
+        width: '100%',
+        container: 'section',
+      }),
+    ),
+    h.label
+      .class('docs-code-expander')
+      .attrs({ for: inputId })
+      .children(
+        h.span.class('docs-view-code').children('View Code'),
+        h.span.class('docs-hide-code').children('Hide Code'),
+      ),
+  )
+}
+
+const exampleCardWithSource = (
+  h: DocHtml,
+  slug: string,
+  meta: ExampleMetadata,
+  index: number,
+  instance: 'hero' | 'section',
+  implementation: DocsExampleImplementation,
+) => {
+  const idPrefix = `docs-${slug}-${String(index)}-${instance}`
+  return h.div
+    .class('docs-example-card')
+    .attr('data-layout', meta.previewLayout)
+    .children(
+      h.div
+        .class('docs-example-stage', meta.previewClass)
+        .attr('data-example-preview', '')
+        .children(
+          implementation.view(h, { exampleIndex: index, instance, idPrefix }),
+        ),
+      codePanel(h, idPrefix, implementation.source),
+    )
+}
+
+const behaviorListFor = (h: DocHtml, slug: string) => {
+  const keys = componentBehaviors[slug]?.[renderer] ?? []
+  const related = keys.flatMap(key => {
+    const entry = behaviorBySlug.get(key)
+    return entry?.kind === 'primitive' ? [entry] : []
+  })
+  return related.length === 0
+    ? h.p.class('docs-muted').children('No shared behaviors.')
+    : h.ul
+        .class('docs-compact-list')
+        .children(
+          related.map(entry =>
+            h.li
+              .key(entry.slug)
+              .children(
+                h.a
+                  .class('docs-inline-link')
+                  .attr('href', entry.docs)
+                  .children(entry.title),
+                h.span.class('docs-muted').children(` ${entry.description}`),
+              ),
+          ),
+        )
+}
+
+const implementationSections = (h: DocHtml, slug: string) => {
+  const entries = behaviors.filter(entry => entry.owner === slug)
+  if (entries.length === 0) return undefined
+  return h.section
+    .attr('id', 'implementation')
+    .class('docs-section')
+    .children(
+      sectionHeading(h, 'implementation', 'Implementation'),
+      entries.map((entry: BehaviorEntry) =>
+        h.article
+          .key(entry.slug)
+          .class('docs-implementation-entry')
+          .children(
+            h.h3.children(entry.title),
+            h.p.class('docs-muted').children(entry.description),
+            h.a
+              .class('docs-inline-link')
+              .attr(
+                'href',
+                `https://github.com/Potti1234/creaseui/blob/codex/effect-ui-port/effect-ui/src/behaviors/${entry.slug}.ts`,
+              )
+              .children('View implementation source'),
+          ),
+      ),
+    )
+}
+
+const migrationNotice = (h: DocHtml, missing: number, expected: number) =>
+  missing === 0
+    ? undefined
+    : h.div
+        .class('docs-pending')
+        .children(
+          h.p.children(
+            `${String(missing)} of ${String(expected)} live examples for this page are still awaiting their Effect UI port.`,
+          ),
+        )
+
 const component = (h: DocHtml, slug: string, title: string) => {
-  const example = examples[slug] ?? contentExamples[slug]
+  const metadata = metadataBySlug[slug]
+  const docs = componentDocsPages[slug]
+  const entries = (metadata?.examples ?? []).map((meta, index) => {
+    const implementation = docs?.examples[index]
+    return {
+      meta,
+      index,
+      implementation:
+        implementation?.title === meta.title ? implementation : undefined,
+    }
+  })
+  const missing = entries.filter(
+    entry => entry.implementation === undefined,
+  ).length
+  const visibleEntries = entries.filter(entry => entry.meta.heroOnly !== true)
+  const heroEntry =
+    entries.find(entry => entry.meta.heroOnly === true) ?? entries[0]
   const index = catalogOrder.findIndex(entry => entry.slug === slug)
   const previous = catalogOrder[index - 1]
   const next = catalogOrder[index + 1]
@@ -195,54 +429,283 @@ const component = (h: DocHtml, slug: string, title: string) => {
             entry.title,
           )
 
-  return docsMain(h).children(
-    h.nav
-      .class('docs-breadcrumb')
-      .attr('aria-label', 'Breadcrumb')
-      .children(
-        h.a.attr('href', catalogPath).children('Components'),
-        h.span.attr('aria-hidden', 'true').children('/'),
-        h.span.attr('aria-current', 'page').children(title),
-      ),
-    h.h1.children(title),
-    example === undefined
-      ? h.div
-          .class('docs-pending')
-          .children(
-            legacyDocsOnly.has(slug)
-              ? h.p.children(
-                  'This is a legacy Foldkit entry. Its Effect UI registry item and live example are pending.',
-                )
-              : [
-                  h.p.children('A live docs example is pending.'),
-                  h.p.children(
-                    'Registry item ',
-                    h.code.children(`effect-${slug}`),
-                  ),
-                ],
-          )
-      : h.div.children(
-          h.p.class('docs-description').children(example.description),
-          h.section
-            .class('docs-example')
-            .attr('aria-label', `${title} live example`)
-            .children(
-              h.h2.children('Preview'),
-              h.div.class('docs-example-stage').children(example.view(h)),
-              example.source === undefined
-                ? undefined
-                : h.details
-                    .class('docs-source')
-                    .children(
-                      h.summary.children('Effect UI code'),
-                      h.pre.children(h.code.children(example.source)),
-                    ),
-            ),
+  if (metadata === undefined) {
+    return docsMain(h).children(
+      h.h1.children(title),
+      h.div
+        .class('docs-pending')
+        .children(h.p.children('Metadata for this component is missing.')),
+    )
+  }
+
+  const toc = [
+    ['architecture', 'Architecture'],
+    ['behaviors', 'Behaviors'],
+    ['implementation', 'Implementation'],
+    ['installation', 'Installation'],
+    ['usage', 'Usage'],
+    ...(metadata.sections ?? []).map(
+      section => [section.id, section.title] as const,
+    ),
+    ['composition', 'Composition'],
+    ...visibleEntries.map(
+      ({ meta }) =>
+        [meta.sectionId ?? slugify(meta.title), meta.title] as const,
+    ),
+    ...(metadata.styling === undefined
+      ? []
+      : [['styling', 'Styling'] as const]),
+    ...(metadata.keyboard === undefined
+      ? []
+      : [['keyboard-interaction', 'Keyboard'] as const]),
+    ...(metadata.accessibility === undefined
+      ? []
+      : [['accessibility', 'Accessibility'] as const]),
+    ['api-reference', 'API Reference'],
+  ]
+
+  const usage =
+    docs?.usage ??
+    `// Effect UI usage documentation for ${title} is being migrated.\n// The live examples below are the authoritative reference.`
+
+  return h.div.class('docs-component-grid').children(
+    docsMain(h).children(
+      h.nav
+        .class('docs-breadcrumb')
+        .attr('aria-label', 'Breadcrumb')
+        .children(
+          h.a.attr('href', '/docs/getting-started').children('Docs'),
+          h.span.attr('aria-hidden', 'true').children('/'),
+          h.a.attr('href', catalogPath).children('Components'),
+          h.span.attr('aria-hidden', 'true').children('/'),
+          h.span.attr('aria-current', 'page').children(title),
         ),
-    h.nav
-      .class('docs-pager')
-      .attr('aria-label', 'Adjacent components')
-      .children(pageLink(previous, 'prev'), pageLink(next, 'next')),
+      h.header.class('docs-page-header').children(
+        h.h1.children(title),
+        h.p.class('docs-description').children(metadata.description),
+        h.div.class('docs-page-meta').children(
+          h.span
+            .class('docs-kind-badge')
+            .children(
+              metadata.kind === 'helper'
+                ? 'Stateless helper'
+                : metadata.kind === 'submodel'
+                  ? 'Stateful component'
+                  : 'Composed recipe',
+            ),
+          h.span.class('docs-muted').children('Installed as source'),
+          h.a
+            .class('docs-inline-link')
+            .attr(
+              'href',
+              metadata.apiHref?.includes('foldkit.dev') === true
+                ? 'https://github.com/Effect-TS/ui'
+                : (metadata.apiHref ?? 'https://github.com/Effect-TS/ui'),
+            )
+            .children(metadata.apiDescription ?? 'API reference'),
+        ),
+      ),
+      migrationNotice(h, missing, entries.length),
+      heroEntry?.implementation === undefined
+        ? undefined
+        : h.div
+            .class('docs-hero')
+            .children(
+              exampleCardWithSource(
+                h,
+                slug,
+                heroEntry.meta,
+                heroEntry.index,
+                'hero',
+                heroEntry.implementation,
+              ),
+            ),
+      h.section
+        .attr('id', 'architecture')
+        .class('docs-architecture')
+        .children(
+          h.div.children(
+            h.h2.children('How it fits Effect UI'),
+            h.p
+              .class('docs-muted')
+              .children(
+                effectText(
+                  metadata.architecture ??
+                    'Architecture documentation is pending.',
+                ),
+              ),
+          ),
+          h.code.children(metadata.kind),
+        ),
+      h.section
+        .attr('id', 'behaviors')
+        .class('docs-section')
+        .children(
+          sectionHeading(h, 'behaviors', 'Behaviors'),
+          behaviorListFor(h, slug),
+        ),
+      implementationSections(h, slug),
+      h.section
+        .attr('id', 'installation')
+        .class('docs-section')
+        .children(
+          sectionHeading(h, 'installation', 'Installation'),
+          h.p
+            .class('docs-muted')
+            .children(
+              'CLI (npm / pnpm / yarn / bun) · Manual: copy the registry-owned source into your app',
+            ),
+          codePanel(
+            h,
+            `docs-${slug}-installation`,
+            `npx shadcn@latest add @crease-effect/effect-${slug}`,
+            'bash',
+          ),
+        ),
+      h.section
+        .attr('id', 'usage')
+        .class('docs-section')
+        .children(
+          sectionHeading(h, 'usage', 'Usage'),
+          codePanel(h, `docs-${slug}-usage`, usage),
+        ),
+      (metadata.sections ?? []).map(section =>
+        h.section
+          .key(section.id)
+          .attr('id', section.id)
+          .class('docs-section')
+          .children(
+            sectionHeading(h, section.id, section.title),
+            h.p.class('docs-muted').children(effectText(section.description)),
+            section.code === undefined
+              ? undefined
+              : codePanel(h, `docs-${slug}-${section.id}`, section.code),
+          ),
+      ),
+      (docs?.composition ?? metadata.composition)
+        ? h.section
+            .attr('id', 'composition')
+            .class('docs-section')
+            .children(
+              sectionHeading(h, 'composition', 'Composition'),
+              codePanel(
+                h,
+                `docs-${slug}-composition`,
+                docs?.composition ?? metadata.composition ?? '',
+              ),
+            )
+        : undefined,
+      visibleEntries.map(({ meta, index: exampleIndex, implementation }) => {
+        const id = meta.sectionId ?? slugify(meta.title)
+        return h.section
+          .key(id)
+          .attr('id', id)
+          .class('docs-section', 'docs-example-section')
+          .children(
+            sectionHeading(h, id, meta.title),
+            meta.description === undefined
+              ? undefined
+              : h.p
+                  .class('docs-example-description')
+                  .children(meta.description),
+            implementation === undefined
+              ? h.div
+                  .class('docs-pending')
+                  .children(
+                    h.p.children('This live Effect UI example is pending.'),
+                  )
+              : exampleCardWithSource(
+                  h,
+                  slug,
+                  meta,
+                  exampleIndex,
+                  'section',
+                  implementation,
+                ),
+          )
+      }),
+      metadata.styling === undefined
+        ? undefined
+        : h.section
+            .attr('id', 'styling')
+            .class('docs-section')
+            .children(
+              sectionHeading(h, 'styling', 'Styling'),
+              h.p.class('docs-muted').children(effectText(metadata.styling)),
+            ),
+      metadata.keyboard === undefined
+        ? undefined
+        : h.section
+            .attr('id', 'keyboard-interaction')
+            .class('docs-section')
+            .children(
+              sectionHeading(h, 'keyboard-interaction', 'Keyboard interaction'),
+              h.dl
+                .class('docs-keyboard-list')
+                .children(
+                  metadata.keyboard.map(([key, behavior]) =>
+                    h.div
+                      .key(key)
+                      .children(h.dt.children(key), h.dd.children(behavior)),
+                  ),
+                ),
+            ),
+      metadata.accessibility === undefined
+        ? undefined
+        : h.section
+            .attr('id', 'accessibility')
+            .class('docs-section')
+            .children(
+              sectionHeading(h, 'accessibility', 'Accessibility'),
+              h.p
+                .class('docs-muted')
+                .children(effectText(metadata.accessibility)),
+            ),
+      h.section
+        .attr('id', 'api-reference')
+        .class('docs-section')
+        .children(
+          sectionHeading(h, 'api-reference', 'API Reference'),
+          docs?.apiEntries === undefined || docs.apiEntries.length === 0
+            ? h.p
+                .class('docs-muted')
+                .children(
+                  'Accurate Effect UI API entries are being generated for this component.',
+                )
+            : h.div.class('docs-api-table').children(
+                docs.apiEntries.map(entry =>
+                  h.div
+                    .key(entry.name)
+                    .class('docs-api-entry')
+                    .children(
+                      h.h3.children(entry.name),
+                      h.p.class('docs-muted').children(entry.kind),
+                      h.pre.children(h.code.children(entry.signature)),
+                    ),
+                ),
+              ),
+        ),
+      h.nav
+        .class('docs-pager')
+        .attr('aria-label', 'Adjacent components')
+        .children(pageLink(previous, 'prev'), pageLink(next, 'next')),
+    ),
+    h.aside
+      .class('docs-toc')
+      .children(
+        h.nav
+          .attr('aria-label', 'On this page')
+          .children(
+            h.p.class('docs-toc-title').children('On this page'),
+            h.ul.children(
+              toc.map(([id, label]) =>
+                h.li
+                  .key(id)
+                  .children(h.a.attr('href', `#${id}`).children(label)),
+              ),
+            ),
+          ),
+      ),
   )
 }
 
@@ -261,25 +724,37 @@ const notFound = (h: DocHtml) =>
     h.p.children(h.a.attr('href', catalogPath).children('Browse components')),
   )
 
+const initialDark = (() => {
+  try {
+    const stored = window.localStorage.getItem('creaseui-effect-docs-theme')
+    if (stored === 'dark') return true
+    if (stored === 'light') return false
+  } catch {
+    // Ignore unavailable storage and use the system preference.
+  }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+})()
+
 const Docs = Html.component({
   name: 'CreaseEffectDocs',
-  model: Schema.Struct({ query: Schema.String }),
+  model: Schema.Struct({ query: Schema.String, dark: Schema.Boolean }),
   message: DocsMessage,
 }).make({
-  init: () => ({ query: '' }),
+  init: () => ({ query: '', dark: initialDark }),
   update: {
     Filtered: ($, { query }) => $.evolve({ query }),
+    ToggledTheme: $ => $.evolve({ dark: value => !value }),
   },
-  view: (h, { query }) => {
+  view: (h, { query, dark }) => {
     const groups = groupedEntries(query)
     return h.div
-      .class('effect-docs')
+      .class('effect-docs', dark ? 'dark' : 'light')
       .children(
         h.a
           .class('docs-skip')
           .attr('href', '#docs-main')
           .children('Skip to content'),
-        docsHeader(h),
+        docsHeader(h, dark),
         h.div
           .class('docs-frame', 'docs-layout')
           .children(
@@ -287,7 +762,7 @@ const Docs = Html.component({
             h.details
               .class('docs-mobile-nav')
               .children(
-                h.summary.children('Browse components'),
+                h.summary.children('Browse docs'),
                 sidebar(h, query, groups),
               ),
             guide !== undefined
@@ -303,5 +778,5 @@ const Docs = Html.component({
 })
 
 const root = document.getElementById('root')
-if (root !== null)
-  Layer.launch(BrowserHost.mount(Docs, {}, root)).pipe(Effect.runFork)
+if (root === null) throw new Error('Missing docs root')
+Layer.launch(BrowserHost.mount(Docs, {}, root)).pipe(Effect.runFork)
