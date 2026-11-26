@@ -37,6 +37,6 @@ StyleX consumers need their StyleX compiler enabled. Pleat consumers need a Type
 
 ## Upstream reproduction
 
-The [upstream findings](UPSTREAM.md) include tested snapshot SHAs, a standalone reproduction, a passing control, and an issue draft.
+The [upstream findings](UPSTREAM.md) include tested snapshot SHAs, standalone reproductions, and an issue draft. The [contribution workflow](CONTRIBUTING.md) records how to report a finding and send the corresponding fix to Effect UI.
 
 The remaining migration includes the rest of the catalog and docs site, the Foldkit consumer lint tools, multi-select Combobox, and Calendar's range and month/year selection modes.
