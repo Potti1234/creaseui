@@ -3470,6 +3470,168 @@
       ]
     },
     {
+      "name": "effect-carousel-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "embla-carousel@8.6.0",
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/carousel.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/carousel.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-carousel",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-carousel-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/carousel.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/carousel.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-resizable-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/resizable.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/resizable.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-resizable",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-resizable-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/resizable.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/resizable.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-stepper-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/stepper.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/stepper.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-stepper",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-stepper-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/stepper.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/stepper.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-color-picker-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/color-picker.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/color-picker.ts"
+        },
+        {
+          "path": "src/behaviors/color-math.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/color-math.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-color-picker",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-color-picker-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/color-picker.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/color-picker.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-sidebar-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/sidebar.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/sidebar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-sidebar",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-sidebar-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/sidebar.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/sidebar.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -3582,7 +3744,12 @@
         "@crease-effect/effect-selectable-card",
         "@crease-effect/effect-timer",
         "@crease-effect/effect-timestamp",
-        "@crease-effect/effect-banner"
+        "@crease-effect/effect-banner",
+        "@crease-effect/effect-carousel",
+        "@crease-effect/effect-resizable",
+        "@crease-effect/effect-stepper",
+        "@crease-effect/effect-color-picker",
+        "@crease-effect/effect-sidebar"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -3701,7 +3868,12 @@
         "@crease-effect/effect-selectable-card",
         "@crease-effect/effect-timer",
         "@crease-effect/effect-timestamp",
-        "@crease-effect/effect-banner"
+        "@crease-effect/effect-banner",
+        "@crease-effect/effect-carousel",
+        "@crease-effect/effect-resizable",
+        "@crease-effect/effect-stepper",
+        "@crease-effect/effect-color-picker",
+        "@crease-effect/effect-sidebar"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

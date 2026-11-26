@@ -5718,6 +5718,994 @@ export const banner = {
   ),
 }
 
+export const carousel = {
+  root: Style.make({
+    position: 'relative',
+    minHeight: 0,
+    minWidth: 0,
+  }),
+  viewport: Style.make({
+    minHeight: 0,
+    minWidth: 0,
+    overflow: 'hidden',
+    borderRadius: 'inherit',
+    outline: 'none',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      height: '100%',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: -2,
+    }),
+  ),
+  rail: Style.make({
+    display: 'flex',
+    minHeight: 0,
+    touchAction: 'pan-y',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      height: '100%',
+      flexDirection: 'column',
+      touchAction: 'pan-x',
+    }),
+  ),
+  slide: Style.make({
+    boxSizing: 'border-box',
+    minHeight: 0,
+    minWidth: 0,
+    flexShrink: 0,
+    flexGrow: 0,
+    paddingInlineStart: 16,
+  }).pipe(
+    Style.when(When.pseudo(':first-child'), {
+      paddingInlineStart: 0,
+    }),
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      paddingInlineStart: 0,
+      paddingBlockStart: 16,
+    }),
+    Style.when(When.pseudo(':is([data-orientation=vertical]:first-child)'), {
+      paddingBlockStart: 0,
+    }),
+  ),
+  controls: Style.make({
+    display: 'flex',
+    marginBlockStart: 8,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 4,
+  }),
+  button: Style.make({
+    display: 'inline-grid',
+    height: 32,
+    width: 32,
+    placeItems: 'center',
+    flexShrink: 0,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    color: 'var(--foreground)',
+    backgroundColor: 'var(--background)',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'var(--muted)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+    Style.when(When.disabled, {
+      opacity: 0.5,
+    }),
+  ),
+  status: Style.make({
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+  }),
+}
+
+export const resizable = {
+  root: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    display: 'grid',
+    height: '100%',
+    minHeight: 0,
+    width: '100%',
+    minWidth: 0,
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 2px)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-dragging])'), {
+      userSelect: 'none',
+    }),
+  ),
+  panel: Style.make({
+    minHeight: 0,
+    minWidth: 0,
+    overflow: 'auto',
+    overscrollBehavior: 'contain',
+  }),
+  handle: Style.make({
+    display: 'grid',
+    position: 'relative',
+    minHeight: 0,
+    minWidth: 0,
+    placeItems: 'center',
+    touchAction: 'none',
+    backgroundColor: 'var(--border)',
+    outline: 'none',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-direction=horizontal])'), {
+      cursor: 'col-resize',
+    }),
+    Style.when(When.pseudo(':is([data-direction=vertical])'), {
+      cursor: 'row-resize',
+    }),
+    Style.when(When.pseudo(':is([aria-disabled=true])'), {
+      cursor: 'default',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  grip: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    display: 'grid',
+    zIndex: 1,
+    width: 12,
+    height: 20,
+    placeItems: 'center',
+    borderRadius: 4,
+    backgroundColor: 'var(--background)',
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-direction=vertical])'), {
+      width: 20,
+      height: 12,
+    }),
+  ),
+}
+
+export const stepper = {
+  root: Style.make({
+    display: 'grid',
+    minWidth: 0,
+    gap: 8,
+  }),
+  list: Style.make({
+    display: 'flex',
+    minWidth: 0,
+    margin: 0,
+    padding: 0,
+    listStyle: 'none',
+    gap: 8,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      flexDirection: 'column',
+    }),
+  ),
+  item: Style.make({
+    display: 'flex',
+    minWidth: 0,
+    flex: '1 1 0%',
+    flexDirection: 'column',
+    gap: 4,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      flexDirection: 'row',
+    }),
+    Style.when(When.pseudo(':is([data-disabled])'), {
+      opacity: 0.5,
+    }),
+  ),
+  track: Style.make({
+    position: 'relative',
+    height: 4,
+    width: '100%',
+    flexShrink: 0,
+    overflow: 'hidden',
+    borderRadius: 999,
+    backgroundColor: 'var(--border)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      height: 'auto',
+      width: 4,
+    }),
+  ),
+  onTrack: Style.make({
+    position: 'relative',
+    display: 'flex',
+    minHeight: 16,
+    minWidth: 16,
+    alignItems: 'center',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      alignItems: 'stretch',
+      justifyContent: 'center',
+    }),
+  ),
+  trackMarker: Style.make({
+    position: 'absolute',
+    insetInlineStart: 0,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    borderRadius: 999,
+    backgroundColor: 'var(--background)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      insetInlineStart: '50%',
+      top: 0,
+      transform: 'translateX(-50%)',
+    }),
+  ),
+  fill: Style.make({
+    position: 'absolute',
+    inset: 0,
+    transformOrigin: 'left',
+    transform: 'scaleX(0)',
+    borderRadius: 'inherit',
+    backgroundColor: 'var(--primary)',
+    transition: 'transform var(--step-duration, 0ms) linear',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-filled])'), {
+      transform: 'scaleX(1)',
+    }),
+    Style.when(When.pseudo(':is([data-orientation=vertical])'), {
+      transformOrigin: 'top',
+      transform: 'scaleY(0)',
+    }),
+    Style.when(When.pseudo(':is([data-orientation=vertical][data-filled])'), {
+      transform: 'scaleY(1)',
+    }),
+    Style.when(When.pseudo(':dir(rtl)'), {
+      transformOrigin: 'right',
+    }),
+    Style.when(When.pseudo(':is([data-status=success])'), {
+      backgroundColor: 'var(--success)',
+    }),
+    Style.when(When.pseudo(':is([data-status=warning])'), {
+      backgroundColor: 'var(--warning)',
+    }),
+    Style.when(When.pseudo(':is([data-status=error])'), {
+      backgroundColor: 'var(--destructive)',
+    }),
+    Style.when(When.media('(prefers-reduced-motion: reduce)'), {
+      transition: 'none',
+    }),
+  ),
+  step: Style.make({
+    display: 'flex',
+    width: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 8,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    padding: 4,
+    textAlign: 'start',
+    fontSize: '0.875rem',
+    color: 'var(--foreground)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-density=balanced])'), {
+      padding: 8,
+    }),
+    Style.when(When.pseudo(':is([data-density=spacious])'), {
+      padding: 12,
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+    Style.when(When.pseudo(':is(button:hover)'), {
+      backgroundColor: 'var(--muted)',
+    }),
+  ),
+  indicator: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    display: 'grid',
+    height: 16,
+    width: 16,
+    flexShrink: 0,
+    placeItems: 'center',
+    borderRadius: 999,
+    fontSize: 10,
+    fontWeight: 600,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-progress=completed])'), {
+      borderColor: 'var(--primary)',
+      backgroundColor: 'var(--primary)',
+      color: 'var(--primary-foreground)',
+    }),
+    Style.when(When.pseudo(':is([data-progress=in-progress])'), {
+      borderColor: 'var(--primary)',
+      color: 'var(--primary)',
+    }),
+  ),
+  text: Style.make({
+    minWidth: 0,
+    flexGrow: 1,
+  }),
+  title: Style.make({
+    display: 'block',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  }),
+  description: Style.make({
+    display: 'block',
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+  }),
+  content: Style.make({
+    minWidth: 0,
+    paddingInline: 8,
+    paddingBlockEnd: 8,
+    fontSize: '0.875rem',
+  }),
+  compact: Style.make({
+    display: 'flex',
+    minWidth: 0,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    paddingInline: 4,
+    fontSize: '0.875rem',
+  }),
+  control: Style.make({
+    display: 'inline-grid',
+    height: 24,
+    width: 24,
+    placeItems: 'center',
+    flexShrink: 0,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    color: 'var(--foreground)',
+    backgroundColor: 'var(--background)',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+  }).pipe(
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+    Style.when(When.disabled, {
+      opacity: 0.5,
+    }),
+  ),
+}
+
+export const colorPicker = {
+  root: Style.make({
+    position: 'relative',
+    display: 'inline-flex',
+    minWidth: 0,
+  }),
+  trigger: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    display: 'flex',
+    minHeight: 36,
+    alignItems: 'center',
+    gap: 8,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    paddingInline: 10,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    color: 'var(--foreground)',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'var(--accent)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+    Style.when(When.disabled, {
+      opacity: 0.5,
+    }),
+  ),
+  triggerSwatch: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    height: 20,
+    width: 20,
+    flexShrink: 0,
+    borderRadius: 4,
+    overflow: 'hidden',
+  }),
+  swatch: Style.make({
+    display: 'block',
+    height: '100%',
+    width: '100%',
+  }),
+  panel: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    display: 'grid',
+    width: 288,
+    maxWidth: 'min(var(--available-width, 100vw), calc(100vw - 2rem))',
+    maxHeight: 'var(--available-height)',
+    overflow: 'auto',
+    gap: 12,
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--popover)',
+    color: 'var(--popover-foreground)',
+    padding: 12,
+    fontSize: '0.875rem',
+    boxShadow: '0 8px 20px rgb(0 0 0 / 14%)',
+    outline: 'none',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-ending-style])'), {
+      visibility: 'hidden',
+    }),
+    Style.when(When.pseudo(':is([data-inline])'), {
+      boxShadow: 'none',
+    }),
+  ),
+  area: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    position: 'relative',
+    height: 176,
+    width: '100%',
+    cursor: 'crosshair',
+    touchAction: 'none',
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    outline: 'none',
+    userSelect: 'none',
+  }).pipe(
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+    Style.when(When.pseudo(':is([aria-disabled=true])'), {
+      cursor: 'default',
+      opacity: 0.5,
+    }),
+  ),
+  handle: Style.make({
+    position: 'absolute',
+    pointerEvents: 'none',
+    width: 16,
+    height: 16,
+    transform: 'translate(-50%, -50%)',
+    border: '2px solid white',
+    borderRadius: 999,
+    boxShadow: '0 1px 4px rgb(0 0 0 / 20%)',
+  }),
+  slider: Style.make({
+    display: 'grid',
+    minWidth: 0,
+    gap: 4,
+  }),
+  sliderLabel: Style.make({
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+  }),
+  sliderControl: Style.make({
+    position: 'relative',
+    display: 'flex',
+    height: 20,
+    alignItems: 'center',
+    touchAction: 'none',
+  }),
+  track: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    height: 16,
+    width: '100%',
+    borderRadius: 999,
+  }),
+  thumb: Style.make({
+    width: 14,
+    height: 14,
+    border: '1px solid rgb(0 0 0 / 25%)',
+    borderRadius: 999,
+    backgroundColor: 'white',
+    boxShadow: '0 1px 3px rgb(0 0 0 / 20%)',
+  }).pipe(
+    Style.when(When.pseudo(':focus-within'), {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  inputs: Style.make({
+    display: 'flex',
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 8,
+  }),
+  input: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    minWidth: 0,
+    height: 32,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    paddingInline: 8,
+    fontSize: '0.75rem',
+    color: 'var(--foreground)',
+    outline: 'none',
+    flexGrow: 1,
+    fontFamily: 'var(--font-mono, monospace)',
+  }).pipe(
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+    Style.when(When.pseudo(':is([aria-invalid=true])'), {
+      borderColor: 'var(--destructive)',
+    }),
+  ),
+  format: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    minWidth: 0,
+    height: 32,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    paddingInline: 4,
+    fontSize: '0.75rem',
+    color: 'var(--foreground)',
+    outline: 'none',
+    fontWeight: 500,
+  }).pipe(
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  sample: Style.make({
+    display: 'inline-grid',
+    height: 32,
+    width: 32,
+    placeItems: 'center',
+    flexShrink: 0,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    color: 'var(--foreground)',
+    backgroundColor: 'var(--background)',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'var(--accent)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  presets: Style.make({
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 6,
+  }),
+  preset: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    display: 'block',
+    height: 24,
+    width: 24,
+    borderRadius: 4,
+    overflow: 'hidden',
+    padding: 0,
+  }).pipe(
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+    Style.when(When.pseudo(':is([aria-pressed=true])'), {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  error: Style.make({
+    fontSize: '0.75rem',
+    color: 'var(--destructive)',
+  }),
+}
+
+export const sidebar = {
+  root: Style.make({
+    display: 'flex',
+    width: '100%',
+    minWidth: 0,
+    alignItems: 'stretch',
+    gap: 8,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-side=right])'), {
+      flexDirection: 'row-reverse',
+    }),
+    Style.when(When.pseudo(':is([data-variant=inset])'), {
+      backgroundColor: 'var(--sidebar)',
+    }),
+  ),
+  panel: Style.make({
+    display: 'flex',
+    position: 'relative',
+    minWidth: 0,
+    flexShrink: 0,
+    flexDirection: 'column',
+    width: 'var(--sidebar-width)',
+    backgroundColor: 'var(--sidebar)',
+    color: 'var(--sidebar-foreground)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-side=left])'), {
+      borderInlineEnd: '1px solid var(--sidebar-border)',
+    }),
+    Style.when(When.pseudo(':is([data-side=right])'), {
+      borderInlineStart: '1px solid var(--sidebar-border)',
+    }),
+    Style.when(When.pseudo(':is([data-icon-only])'), {
+      width: 'var(--sidebar-icon-width)',
+    }),
+    Style.when(When.pseudo(':is([data-variant=floating])'), {
+      borderWidth: 1,
+      borderStyle: 'solid',
+      borderColor: 'var(--sidebar-border)',
+      margin: 8,
+      borderRadius: 'var(--radius)',
+    }),
+    Style.when(When.pseudo(':is([data-variant=inset])'), {
+      margin: 8,
+      borderRadius: 'var(--radius)',
+    }),
+    Style.when(When.pseudo(':is([data-presentation=application])'), {
+      minHeight: '100svh',
+    }),
+  ),
+  inset: Style.make({
+    display: 'flex',
+    position: 'relative',
+    minWidth: 0,
+    flexGrow: 1,
+    flexDirection: 'column',
+    gap: 8,
+    padding: 8,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-variant=inset])'), {
+      marginBlock: 8,
+      borderRadius: 'var(--radius)',
+      backgroundColor: 'var(--background)',
+    }),
+  ),
+  header: Style.make({
+    display: 'flex',
+    minWidth: 0,
+    flexDirection: 'column',
+    gap: 8,
+    padding: 8,
+  }),
+  footer: Style.make({
+    display: 'flex',
+    minWidth: 0,
+    flexDirection: 'column',
+    gap: 8,
+    padding: 8,
+    marginBlockStart: 'auto',
+  }),
+  content: Style.make({
+    display: 'flex',
+    minWidth: 0,
+    flexDirection: 'column',
+    gap: 8,
+    padding: 8,
+    minHeight: 0,
+    flexGrow: 1,
+    overflow: 'auto',
+  }),
+  group: Style.make({
+    display: 'grid',
+    minWidth: 0,
+    gap: 4,
+  }),
+  groupLabel: Style.make({
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    paddingInline: 8,
+    paddingBlock: 4,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--sidebar-foreground)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-icon-only])'), {
+      position: 'absolute',
+      width: 1,
+      height: 1,
+      overflow: 'hidden',
+      clipPath: 'inset(50%)',
+      whiteSpace: 'nowrap',
+    }),
+  ),
+  menu: Style.make({
+    display: 'grid',
+    minWidth: 0,
+    margin: 0,
+    padding: 0,
+    listStyle: 'none',
+    gap: 2,
+  }),
+  menuItem: Style.make({
+    position: 'relative',
+    minWidth: 0,
+  }),
+  menuButton: Style.make({
+    display: 'flex',
+    height: 'auto',
+    minHeight: 32,
+    width: '100%',
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 8,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    paddingInline: 8,
+    paddingBlock: 4,
+    textAlign: 'start',
+    fontSize: '0.875rem',
+    color: 'inherit',
+    textDecoration: 'none',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'var(--sidebar-accent)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--sidebar-ring)',
+      outlineOffset: 2,
+    }),
+    Style.when(When.pseudo(':is([data-active])'), {
+      backgroundColor: 'var(--sidebar-accent)',
+      fontWeight: 500,
+    }),
+    Style.when(When.pseudo(':is([data-variant=outline])'), {
+      boxShadow: 'inset 0 0 0 1px var(--sidebar-border)',
+    }),
+    Style.when(When.pseudo(':is([data-variant=primary])'), {
+      backgroundColor: 'var(--primary)',
+      color: 'var(--primary-foreground)',
+    }),
+    Style.when(When.pseudo(':is([data-size=sm])'), {
+      minHeight: 28,
+    }),
+    Style.when(When.pseudo(':is([data-size=lg])'), {
+      minHeight: 40,
+    }),
+    Style.when(When.pseudo(':is([data-icon-only])'), {
+      justifyContent: 'center',
+    }),
+    Style.when(When.pseudo(':is([aria-disabled=true])'), {
+      opacity: 0.5,
+    }),
+    Style.when(When.disabled, {
+      opacity: 0.5,
+    }),
+  ),
+  menuText: Style.make({
+    minWidth: 0,
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-icon-only])'), {
+      position: 'absolute',
+      width: 1,
+      height: 1,
+      overflow: 'hidden',
+      clipPath: 'inset(50%)',
+      whiteSpace: 'nowrap',
+    }),
+  ),
+  menuIcon: Style.make({
+    display: 'inline-grid',
+    width: 16,
+    height: 16,
+    flexShrink: 0,
+    placeItems: 'center',
+  }),
+  menuBadge: Style.make({
+    marginInlineStart: 'auto',
+    flexShrink: 0,
+    paddingInline: 4,
+    fontSize: '0.75rem',
+    fontVariantNumeric: 'tabular-nums',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-icon-only])'), {
+      display: 'none',
+    }),
+  ),
+  menuAction: Style.make({
+    display: 'inline-grid',
+    height: 28,
+    width: 28,
+    placeItems: 'center',
+    flexShrink: 0,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    color: 'inherit',
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-icon-only])'), {
+      display: 'none',
+    }),
+    Style.when(When.hover, {
+      backgroundColor: 'var(--sidebar-accent)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--sidebar-ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  menuSub: Style.make({
+    display: 'grid',
+    minWidth: 0,
+    margin: 0,
+    marginInlineStart: 12,
+    padding: 0,
+    paddingInlineStart: 8,
+    listStyle: 'none',
+    gap: 2,
+    borderInlineStart: '1px solid var(--sidebar-border)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-icon-only])'), {
+      display: 'none',
+    }),
+  ),
+  separator: Style.make({
+    marginBlock: 4,
+    height: 1,
+    backgroundColor: 'var(--sidebar-border)',
+  }),
+  input: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--sidebar-border)',
+    minWidth: 0,
+    height: 32,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    paddingInline: 8,
+    fontSize: '0.875rem',
+    color: 'var(--foreground)',
+    outline: 'none',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-icon-only])'), {
+      display: 'none',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--sidebar-ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  skeleton: Style.make({
+    height: 12,
+    borderRadius: 4,
+    backgroundColor: 'var(--sidebar-accent)',
+  }),
+  toggle: Style.make({
+    display: 'inline-grid',
+    height: 32,
+    width: 32,
+    placeItems: 'center',
+    flexShrink: 0,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    color: 'var(--foreground)',
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    alignSelf: 'flex-start',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'var(--muted)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  rail: Style.make({
+    position: 'absolute',
+    insetBlock: 0,
+    zIndex: 1,
+    width: 8,
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    padding: 0,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-side=left])'), {
+      insetInlineEnd: -4,
+      cursor: 'w-resize',
+    }),
+    Style.when(When.pseudo(':is([data-side=right])'), {
+      insetInlineStart: -4,
+      cursor: 'e-resize',
+    }),
+    Style.when(When.hover, {
+      backgroundColor: 'var(--sidebar-border)',
+    }),
+  ),
+  backdrop: Style.make({
+    position: 'fixed',
+    inset: 0,
+    backgroundColor: 'rgb(0 0 0 / 50%)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-ending-style])'), {
+      visibility: 'hidden',
+    }),
+  ),
+  viewport: Style.make({
+    display: 'flex',
+    position: 'fixed',
+    inset: 0,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-side=right])'), {
+      justifyContent: 'flex-end',
+    }),
+  ),
+  drawer: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    display: 'flex',
+    position: 'relative',
+    height: '100%',
+    width: '100%',
+    minWidth: 0,
+    minHeight: 0,
+    maxWidth: 'var(--sidebar-mobile-width)',
+    flexDirection: 'column',
+    gap: 8,
+    overflow: 'hidden',
+    backgroundColor: 'var(--sidebar)',
+    padding: 8,
+    color: 'var(--sidebar-foreground)',
+    boxShadow: '0 8px 24px rgb(0 0 0 / 16%)',
+    outline: 'none',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-ending-style])'), {
+      visibility: 'hidden',
+    }),
+  ),
+  drawerHeader: Style.make({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    paddingInline: 8,
+  }),
+  drawerTitle: Style.make({
+    margin: 0,
+    fontSize: '1rem',
+    fontWeight: 600,
+  }),
+}
+
 export const tooltip = {
   root: Style.make({ display: 'inline-block' }),
   positioner: Style.make({

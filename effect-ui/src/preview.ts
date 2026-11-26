@@ -103,6 +103,11 @@ import {
   Timer,
   Timestamp,
   Banner,
+  Carousel,
+  ResizableGroup,
+  Stepper,
+  ColorPicker,
+  Sidebar,
   Button,
   ButtonLink,
   Calendar,
@@ -185,6 +190,7 @@ const Message = UiSchema.TaggedEnum({
   SetSelectionActions: { open: Schema.Boolean },
   ChatEntryAdded: {},
   SelectedChatCard: { selected: Schema.Boolean },
+  PickedStep: { index: Schema.Number },
 })
 
 const fruits = [
@@ -280,6 +286,7 @@ const Preview = Html.component({
     selectionActions: Schema.Boolean,
     chatEntries: Schema.Number,
     chatCardSelected: Schema.Boolean,
+    currentStep: Schema.Number,
   }),
 }).make({
   init: () => ({
@@ -332,6 +339,7 @@ const Preview = Html.component({
     selectionActions: false,
     chatEntries: 12,
     chatCardSelected: false,
+    currentStep: 0,
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -388,11 +396,117 @@ const Preview = Html.component({
     ChatEntryAdded: $ => $.evolve({ chatEntries: count => count + 1 }),
     SelectedChatCard: ($, { selected }) =>
       $.evolve({ chatCardSelected: selected }),
+    PickedStep: ($, { index }) => $.evolve({ currentStep: index }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          h.h2.children('Layout and progress'),
+          Carousel(h, {
+            id: 'review-carousel',
+            label: 'Review slides',
+            items: ['Draft', 'Review', 'Publish'].map(text => ({
+              key: text,
+              content: h.div
+                .style({ padding: '1rem', backgroundColor: 'var(--muted)' })
+                .children(text),
+            })),
+          }),
+          h.div.style({ height: '6rem' }).children(
+            ResizableGroup(h, {
+              id: 'review-resizable',
+              withHandle: true,
+              panels: [
+                {
+                  key: 'preview',
+                  label: 'Preview',
+                  content: h.p
+                    .style({ padding: '0.5rem' })
+                    .children('Preview pane'),
+                },
+                {
+                  key: 'source',
+                  label: 'Source',
+                  content: h.p
+                    .style({ padding: '0.5rem' })
+                    .children('Source pane'),
+                },
+              ],
+            }),
+          ),
+          Stepper(h, {
+            id: 'review-stepper',
+            activeStep: model.currentStep,
+            buttons: true,
+            minimumStepWidth: 112,
+            label: 'Review progress',
+            steps: ['Draft', 'Review', 'Publish'].map(label => ({
+              key: label,
+              label,
+            })),
+            onEmit: { Picked: ({ index }) => Message.PickedStep({ index }) },
+          }),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Workspace appearance'),
+          ColorPicker(h, {
+            id: 'accent-color',
+            label: 'Accent color',
+            name: 'accent',
+            props: { defaultValue: '#3366ff' },
+            presets: [
+              { label: 'Warm red', value: '#ce4646' },
+              { label: 'Deep blue', value: '#3366ff' },
+            ],
+          }),
+          Sidebar(h, {
+            props: {
+              id: 'preview-sidebar',
+              storageKey: 'crease_preview_sidebar',
+            },
+            label: 'Preview workspace',
+            presentation: 'contained',
+            collapsible: 'icon',
+            variant: 'floating',
+            width: '9rem',
+            iconWidth: '2.75rem',
+            rail: true,
+            navigation: sidebar =>
+              sidebar.content({
+                children: [
+                  sidebar.groupLabel({ children: ['Workspace'] }),
+                  sidebar.menu({
+                    children: [
+                      sidebar.item({
+                        key: 'catalog',
+                        children: [
+                          sidebar.link({
+                            href: '#catalog-metadata',
+                            label: 'Catalog',
+                            active: true,
+                            icon: Icon(h, { name: 'list', size: 'sm' }),
+                          }),
+                        ],
+                      }),
+                      sidebar.item({
+                        key: 'files',
+                        children: [
+                          sidebar.link({
+                            href: '#catalog-files',
+                            label: 'Files',
+                            icon: Icon(h, { name: 'file', size: 'sm' }),
+                          }),
+                        ],
+                      }),
+                    ],
+                  }),
+                ],
+              }),
+            children: [h.p.children('Workspace content')],
+          }),
+        ),
         h.section.class('example').children(
           h.h2.children('Conversation'),
           MessageGroup(h, {

@@ -49,6 +49,12 @@ import { FieldStatus as RenderFieldStatus } from '../ui/field-status'
 import { Indicator as RenderIndicator } from '../ui/indicator'
 import { InputGroup as RenderInputGroup } from '../ui/input-group'
 import { ButtonGroup as RenderButtonGroup } from '../ui/button-group'
+import { Carousel as RenderCarousel } from '../ui/carousel'
+import { Resizable as RenderResizable } from '../ui/resizable'
+import { ResizableGroup as RenderResizableGroup } from '../ui/resizable'
+import { Stepper as RenderStepper } from '../ui/stepper'
+import { ColorPicker as RenderColorPicker } from '../ui/color-picker'
+import { Sidebar as RenderSidebar } from '../ui/sidebar'
 import { Message as RenderMessage } from '../ui/message'
 import { MessageGroup as RenderMessageGroup } from '../ui/message'
 import { ChatReasoning as RenderChatReasoning } from '../ui/chat-reasoning'
@@ -149,6 +155,11 @@ import {
   indicator,
   inputGroup,
   buttonGroup,
+  carousel,
+  resizable,
+  stepper,
+  colorPicker,
+  sidebar,
   message,
   chatReasoning,
   messageScroller,
@@ -661,6 +672,36 @@ export const ButtonGroup = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderButtonGroup<Msg, R>>[1],
 ) => RenderButtonGroup(h, options, partClasses(buttonGroup))
+
+export const Carousel = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderCarousel<Msg, R>>[1],
+) => RenderCarousel(h, options, partClasses(carousel))
+
+export const Resizable = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderResizable<Msg, R>>[1],
+) => RenderResizable(h, options, partClasses(resizable))
+
+export const ResizableGroup = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderResizableGroup<Msg, R>>[1],
+) => RenderResizableGroup(h, options, partClasses(resizable))
+
+export const Stepper = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderStepper<Msg, R>>[1],
+) => RenderStepper(h, options, partClasses(stepper))
+
+export const ColorPicker = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderColorPicker<Msg>>[1],
+) => RenderColorPicker(h, options, partClasses(colorPicker))
+
+export const Sidebar = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderSidebar<Msg, R>>[1],
+) => RenderSidebar(h, options, partClasses(sidebar))
 
 export const Message = <Msg, R = never>(
   h: Html.H<Msg>,

@@ -25,6 +25,7 @@ const partial = new Map([
   ['info-tip', 'Automatic opening from keyboard focus'],
   ['file-input', 'Native multipart form submission'],
   ['toast', 'Swipe dismissal and the collapsed overlapping stack'],
+  ['stepper', 'Legacy staggered connector transitions'],
 ])
 const renderers = ['stylex-effect-components', 'pleat-effect-components']
 const hasFiles = item =>
