@@ -1,6 +1,8 @@
 # CreaseUI for Effect UI
 
-The port covers Accordion, Button, Calendar, Checkbox, Collapsible, Combobox, Dialog, Field, Fieldset, Input, Popover, Progress, Radio Group, Select, Separator, Slider, Switch, Tabs, Toggle, and Tooltip. The behaviors can be installed and composed independently. Tailwind, StyleX, and Pleat use the same Effect UI views and event contracts.
+The [registry](registry.json) lists the installable components. The behaviors can be installed and composed independently. Tailwind, StyleX, and Pleat use the same Effect UI views and event contracts.
+
+Run `npm --prefix effect-ui run migration:status` from the repository root to see which original catalog entries have an installable Effect UI component and standalone behavior. The report also lists known partial ports. Append `-- --check` to require full catalog coverage.
 
 This package uses Effect 4.1.5 and pins both Effect UI packages to snapshot `5ea1d77`. It has its own lockfile because the Foldkit application still requires Effect 4.0.0-rc.117.
 

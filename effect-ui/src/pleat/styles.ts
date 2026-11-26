@@ -958,6 +958,262 @@ export const fieldset = {
   }),
 }
 
+const foundationSpin = Global.keyframes('effect-spinner', {
+  to: { transform: 'rotate(360deg)' },
+})
+
+export const aspectRatio = {
+  root: Style.make({
+    position: 'relative',
+    width: '100%',
+  }),
+}
+
+export const blockquote = {
+  root: Style.make({
+    margin: 0,
+    borderInlineStartWidth: 2,
+    borderInlineStartStyle: 'solid',
+    borderInlineStartColor: 'var(--border)',
+    paddingInlineStart: 16,
+    overflowWrap: 'break-word',
+    color: 'var(--muted-foreground)',
+  }),
+  cite: Style.make({
+    display: 'block',
+    marginBlockStart: 8,
+    fontSize: '0.75rem',
+    lineHeight: '1.25rem',
+    fontStyle: 'normal',
+  }),
+}
+
+export const badge = {
+  root: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+    height: 20,
+    width: 'fit-content',
+    flexShrink: 0,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'transparent',
+    borderRadius: 999,
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+    paddingInline: 8,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    whiteSpace: 'nowrap',
+    outlineStyle: 'none',
+  }).pipe(
+    Style.when(When.focusVisible, {
+      boxShadow: '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    }),
+    Style.when(When.data('variant', 'secondary'), {
+      backgroundColor: 'var(--secondary)',
+      color: 'var(--secondary-foreground)',
+    }),
+    Style.when(When.data('variant', 'destructive'), {
+      backgroundColor:
+        'color-mix(in oklab, var(--destructive) 10%, transparent)',
+      color: 'var(--destructive)',
+    }),
+    Style.when(When.data('variant', 'outline'), {
+      borderColor: 'var(--border)',
+      backgroundColor: 'transparent',
+      color: 'var(--foreground)',
+    }),
+    Style.when(When.data('variant', 'ghost'), {
+      backgroundColor: 'transparent',
+      color: 'var(--foreground)',
+    }),
+    Style.when(When.all(When.data('variant', 'ghost'), When.hover), {
+      backgroundColor: 'var(--muted)',
+    }),
+    Style.when(When.data('variant', 'link'), {
+      backgroundColor: 'transparent',
+      color: 'var(--primary)',
+    }),
+    Style.when(When.all(When.data('variant', 'link'), When.hover), {
+      textDecorationLine: 'underline',
+    }),
+  ),
+}
+
+export const kbd = {
+  root: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+    minWidth: 20,
+    height: 20,
+    paddingInline: 4,
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    fontFamily: 'inherit',
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    pointerEvents: 'none',
+    userSelect: 'none',
+  }),
+  group: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+  }),
+}
+
+export const label = {
+  root: Style.make({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: '0.875rem',
+    lineHeight: 1,
+    fontWeight: 500,
+    userSelect: 'none',
+  }).pipe(
+    Style.when(When.data('disabled', 'true'), {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+    }),
+  ),
+}
+
+export const visuallyHidden = {
+  root: Style.make({
+    position: 'absolute',
+    top: 0,
+    insetInlineStart: 0,
+    width: 1,
+    height: 1,
+    padding: 0,
+    margin: -1,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+    borderWidth: 0,
+    pointerEvents: 'none',
+    userSelect: 'none',
+  }),
+}
+
+export const statusDot = {
+  root: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 8,
+    height: 8,
+    flexShrink: 0,
+    borderRadius: 999,
+    backgroundColor: 'var(--success)',
+    color: 'oklch(0.985 0 0)',
+    animationDuration: '2s',
+    animationIterationCount: 'infinite',
+    animationTimingFunction: 'cubic-bezier(0.4, 0, 0.6, 1)',
+  }).pipe(
+    Style.when(When.data('variant', 'warning'), {
+      backgroundColor: 'var(--warning)',
+      color: 'oklch(0.205 0 0)',
+    }),
+    Style.when(When.data('variant', 'error'), {
+      backgroundColor: 'var(--destructive)',
+    }),
+    Style.when(When.data('variant', 'accent'), {
+      backgroundColor: 'var(--primary)',
+      color: 'var(--primary-foreground)',
+    }),
+    Style.when(When.data('variant', 'neutral'), {
+      backgroundColor: 'var(--muted-foreground)',
+      color: 'var(--background)',
+    }),
+    Style.when(When.data('pulsing'), {
+      animationName: progressPulse,
+    }),
+    Style.when(reducedMotion, {
+      animationName: 'none',
+    }),
+  ),
+}
+
+export const skeleton = {
+  root: Style.make({
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--accent)',
+    animationName: progressPulse,
+    animationDuration: '2s',
+    animationIterationCount: 'infinite',
+    animationTimingFunction: 'cubic-bezier(0.4, 0, 0.6, 1)',
+  }).pipe(
+    Style.when(When.data('shape', 'text'), {
+      borderRadius: 'calc(var(--radius) - 4px)',
+    }),
+    Style.when(When.data('shape', 'circle'), {
+      borderRadius: 999,
+    }),
+    Style.when(When.data('size', 'sm'), {
+      height: 12,
+      width: 96,
+    }),
+    Style.when(When.data('size', 'md'), {
+      height: 16,
+      width: 128,
+    }),
+    Style.when(When.data('size', 'lg'), {
+      height: 48,
+      width: 48,
+    }),
+    Style.when(reducedMotion, {
+      animationName: 'none',
+    }),
+  ),
+}
+
+export const spinner = {
+  root: Style.make({
+    display: 'inline-block',
+    width: 16,
+    height: 16,
+    flexShrink: 0,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderStyle: 'solid',
+    borderColor: 'currentColor',
+    borderTopColor: 'transparent',
+    animationName: foundationSpin,
+    animationDuration: '1s',
+    animationIterationCount: 'infinite',
+    animationTimingFunction: 'linear',
+  }).pipe(
+    Style.when(When.data('size', 'sm'), {
+      height: 12,
+      width: 12,
+    }),
+    Style.when(When.data('size', 'lg'), {
+      height: 24,
+      width: 24,
+    }),
+    Style.when(When.data('size', 'xl'), {
+      height: 32,
+      width: 32,
+    }),
+    Style.when(When.data('tone', 'muted'), {
+      color: 'var(--muted-foreground)',
+    }),
+    Style.when(When.data('tone', 'primary'), {
+      color: 'var(--primary)',
+    }),
+    Style.when(reducedMotion, {
+      animationName: 'none',
+    }),
+  ),
+}
+
 export const tooltip = {
   root: Style.make({ display: 'inline-block' }),
   positioner: Style.make({

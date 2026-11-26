@@ -2,6 +2,15 @@ import type { Html } from '@effect/ui/html'
 import * as stylex from '@stylexjs/stylex'
 
 import { Accordion as RenderAccordion } from '../ui/accordion'
+import { AspectRatio as RenderAspectRatio } from '../ui/aspect-ratio'
+import { Blockquote as RenderBlockquote } from '../ui/blockquote'
+import { Badge as RenderBadge } from '../ui/badge'
+import { Kbd as RenderKbd } from '../ui/kbd'
+import { Label as RenderLabel } from '../ui/label'
+import { VisuallyHidden as RenderVisuallyHidden } from '../ui/visually-hidden'
+import { StatusDot as RenderStatusDot } from '../ui/status-dot'
+import { Skeleton as RenderSkeleton } from '../ui/skeleton'
+import { Spinner as RenderSpinner } from '../ui/spinner'
 import {
   Button as RenderButton,
   ButtonLink as RenderButtonLink,
@@ -26,6 +35,15 @@ import { Separator as RenderSeparator } from '../ui/separator'
 import { Toggle as RenderToggle } from '../ui/toggle'
 import {
   accordion,
+  aspectRatio,
+  blockquote,
+  badge,
+  kbd,
+  label,
+  visuallyHidden,
+  statusDot,
+  skeleton,
+  spinner,
   buttonSizes,
   buttonVariants,
   calendar,
@@ -177,3 +195,52 @@ export const Fieldset = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderFieldset<Msg, R>>[1],
 ) => RenderFieldset(h, options, partClasses(fieldset))
+
+export const AspectRatio = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderAspectRatio<Msg, R>>[1],
+) => RenderAspectRatio(h, options, partClasses(aspectRatio))
+
+export const Blockquote = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderBlockquote<Msg, R>>[1],
+) => RenderBlockquote(h, options, partClasses(blockquote))
+
+export const Badge = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderBadge<Msg, R>>[1],
+) => RenderBadge(h, options, partClasses(badge))
+
+export const Kbd = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderKbd<Msg, R>>[1],
+) => RenderKbd(h, options, partClasses(kbd))
+
+export const Label = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderLabel<Msg, R>>[1],
+) => RenderLabel(h, options, partClasses(label))
+
+export const VisuallyHidden = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderVisuallyHidden<Msg, R>>[1],
+) => RenderVisuallyHidden(h, options, partClasses(visuallyHidden))
+
+export const StatusDot = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderStatusDot<Msg, R>>[1],
+) => RenderStatusDot(h, options, partClasses(statusDot))
+
+export const Skeleton = <Msg>(
+  h: Html.H<Msg>,
+  options?: Parameters<typeof RenderSkeleton<Msg>>[1],
+) => RenderSkeleton(h, options, partClasses(skeleton))
+
+export const Spinner = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderSpinner<Msg>>[1],
+) => RenderSpinner(h, options, partClasses(spinner))
+
+export { Center } from '../ui/center'
+
+export { Direction } from '../ui/direction'

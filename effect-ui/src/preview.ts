@@ -4,6 +4,17 @@ import { Effect, Layer, Schema } from 'effect'
 
 import {
   Accordion,
+  AspectRatio,
+  Blockquote,
+  Badge,
+  Kbd,
+  Label,
+  VisuallyHidden,
+  StatusDot,
+  Skeleton,
+  Spinner,
+  Center,
+  Direction,
   Button,
   ButtonLink,
   Calendar,
@@ -397,6 +408,52 @@ const Preview = Html.component({
               },
             }),
           ),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Layout and status'),
+          Badge(h, { variant: 'outline', children: ['Draft'] }),
+          Label(h, {
+            for: 'foundation-reference',
+            required: true,
+            children: ['Reference'],
+          }),
+          h.input
+            .class('example-input')
+            .attrs({ id: 'foundation-reference', required: '' }),
+          Direction(h, {
+            key: 'shortcuts-rtl',
+            direction: 'rtl',
+            children: [
+              Kbd(h, {
+                group: true,
+                children: [
+                  Kbd(h, { children: ['Ctrl'] }),
+                  Kbd(h, { children: ['K'] }),
+                ],
+              }),
+            ],
+          }),
+          Blockquote(h, {
+            children: ['Plans are saved automatically.'],
+            cite: 'Workspace settings',
+          }),
+          AspectRatio(h, {
+            ratio: 4,
+            children: [
+              Center(h, {
+                height: '100%',
+                children: [
+                  Spinner(h, { label: 'Loading' }),
+                  VisuallyHidden(h, { children: ['Loading preview'] }),
+                ],
+              }),
+            ],
+          }),
+          h.div.children(
+            StatusDot(h, { variant: 'success', label: 'Online' }),
+            ' Online',
+          ),
+          Skeleton(h, { shape: 'text', size: 'md' }),
         ),
         h.section.class('example').children(
           h.h2.children('Field and Fieldset'),

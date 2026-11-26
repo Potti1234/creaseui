@@ -991,6 +991,246 @@ export const fieldset = stylex.create({
   },
 })
 
+const foundationSpin = stylex.keyframes({ to: { transform: 'rotate(360deg)' } })
+
+export const aspectRatio = stylex.create({
+  root: {
+    position: 'relative',
+    width: '100%',
+  },
+})
+
+export const blockquote = stylex.create({
+  root: {
+    margin: 0,
+    borderInlineStartWidth: 2,
+    borderInlineStartStyle: 'solid',
+    borderInlineStartColor: 'var(--border)',
+    paddingInlineStart: 16,
+    overflowWrap: 'break-word',
+    color: 'var(--muted-foreground)',
+  },
+  cite: {
+    display: 'block',
+    marginBlockStart: 8,
+    fontSize: '0.75rem',
+    lineHeight: '1.25rem',
+    fontStyle: 'normal',
+  },
+})
+
+export const badge = stylex.create({
+  root: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+    height: 20,
+    width: 'fit-content',
+    flexShrink: 0,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'transparent',
+      ':is([data-variant=outline])': 'var(--border)',
+    },
+    borderRadius: 999,
+    backgroundColor: {
+      default: 'var(--primary)',
+      ':is([data-variant=secondary])': 'var(--secondary)',
+      ':is([data-variant=destructive])':
+        'color-mix(in oklab, var(--destructive) 10%, transparent)',
+      ':is([data-variant=outline])': 'transparent',
+      ':is([data-variant=ghost])': 'transparent',
+      ':is([data-variant=ghost]):hover': 'var(--muted)',
+      ':is([data-variant=link])': 'transparent',
+    },
+    color: {
+      default: 'var(--primary-foreground)',
+      ':is([data-variant=secondary])': 'var(--secondary-foreground)',
+      ':is([data-variant=destructive])': 'var(--destructive)',
+      ':is([data-variant=outline])': 'var(--foreground)',
+      ':is([data-variant=ghost])': 'var(--foreground)',
+      ':is([data-variant=link])': 'var(--primary)',
+    },
+    paddingInline: 8,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    whiteSpace: 'nowrap',
+    outlineStyle: 'none',
+    boxShadow: {
+      default: null,
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    textDecorationLine: {
+      default: null,
+      ':is([data-variant=link]):hover': 'underline',
+    },
+  },
+})
+
+export const kbd = stylex.create({
+  root: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+    minWidth: 20,
+    height: 20,
+    paddingInline: 4,
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    backgroundColor: 'var(--muted)',
+    color: 'var(--muted-foreground)',
+    fontFamily: 'inherit',
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    pointerEvents: 'none',
+    userSelect: 'none',
+  },
+  group: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+  },
+})
+
+export const label = stylex.create({
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: '0.875rem',
+    lineHeight: 1,
+    fontWeight: 500,
+    userSelect: 'none',
+    opacity: {
+      default: null,
+      ':is([data-disabled=true])': 0.5,
+    },
+    cursor: {
+      default: null,
+      ':is([data-disabled=true])': 'not-allowed',
+    },
+  },
+})
+
+export const visuallyHidden = stylex.create({
+  root: {
+    position: 'absolute',
+    top: 0,
+    insetInlineStart: 0,
+    width: 1,
+    height: 1,
+    padding: 0,
+    margin: -1,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+    borderWidth: 0,
+    pointerEvents: 'none',
+    userSelect: 'none',
+  },
+})
+
+export const statusDot = stylex.create({
+  root: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 8,
+    height: 8,
+    flexShrink: 0,
+    borderRadius: 999,
+    backgroundColor: {
+      default: 'var(--success)',
+      ':is([data-variant=warning])': 'var(--warning)',
+      ':is([data-variant=error])': 'var(--destructive)',
+      ':is([data-variant=accent])': 'var(--primary)',
+      ':is([data-variant=neutral])': 'var(--muted-foreground)',
+    },
+    color: {
+      default: 'oklch(0.985 0 0)',
+      ':is([data-variant=warning])': 'oklch(0.205 0 0)',
+      ':is([data-variant=accent])': 'var(--primary-foreground)',
+      ':is([data-variant=neutral])': 'var(--background)',
+    },
+    animationDuration: '2s',
+    animationIterationCount: 'infinite',
+    animationTimingFunction: 'cubic-bezier(0.4, 0, 0.6, 1)',
+    animationName: {
+      default: null,
+      ':is([data-pulsing])': progressPulse,
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+  },
+})
+
+export const skeleton = stylex.create({
+  root: {
+    borderRadius: {
+      default: 'calc(var(--radius) - 2px)',
+      ':is([data-shape=text])': 'calc(var(--radius) - 4px)',
+      ':is([data-shape=circle])': 999,
+    },
+    backgroundColor: 'var(--accent)',
+    animationName: {
+      default: progressPulse,
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+    animationDuration: '2s',
+    animationIterationCount: 'infinite',
+    animationTimingFunction: 'cubic-bezier(0.4, 0, 0.6, 1)',
+    height: {
+      default: null,
+      ':is([data-size=sm])': 12,
+      ':is([data-size=md])': 16,
+      ':is([data-size=lg])': 48,
+    },
+    width: {
+      default: null,
+      ':is([data-size=sm])': 96,
+      ':is([data-size=md])': 128,
+      ':is([data-size=lg])': 48,
+    },
+  },
+})
+
+export const spinner = stylex.create({
+  root: {
+    display: 'inline-block',
+    width: {
+      default: 16,
+      ':is([data-size=sm])': 12,
+      ':is([data-size=lg])': 24,
+      ':is([data-size=xl])': 32,
+    },
+    height: {
+      default: 16,
+      ':is([data-size=sm])': 12,
+      ':is([data-size=lg])': 24,
+      ':is([data-size=xl])': 32,
+    },
+    flexShrink: 0,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderStyle: 'solid',
+    borderColor: 'currentColor',
+    borderTopColor: 'transparent',
+    animationName: {
+      default: foundationSpin,
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+    animationDuration: '1s',
+    animationIterationCount: 'infinite',
+    animationTimingFunction: 'linear',
+    color: {
+      default: null,
+      ':is([data-tone=muted])': 'var(--muted-foreground)',
+      ':is([data-tone=primary])': 'var(--primary)',
+    },
+  },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {

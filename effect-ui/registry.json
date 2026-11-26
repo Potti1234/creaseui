@@ -622,6 +622,337 @@
       ]
     },
     {
+      "name": "effect-aspect-ratio-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/aspect-ratio.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/aspect-ratio.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-aspect-ratio",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-aspect-ratio-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/aspect-ratio.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/aspect-ratio.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-blockquote-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/blockquote.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/blockquote.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-blockquote",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-blockquote-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/blockquote.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/blockquote.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-badge-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/badge.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/badge.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-badge",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-badge-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/badge.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/badge.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-kbd-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/kbd.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/kbd.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-kbd",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-kbd-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/kbd.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/kbd.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-label-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/label.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/label.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-label",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-label-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/label.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/label.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-visually-hidden-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/visually-hidden.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/visually-hidden.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-visually-hidden",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-visually-hidden-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/visually-hidden.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/visually-hidden.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-status-dot-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/status-dot.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/status-dot.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-status-dot",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-status-dot-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/status-dot.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/status-dot.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-skeleton-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/skeleton.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/skeleton.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-skeleton",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-skeleton-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/skeleton.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/skeleton.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-spinner-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/spinner.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/spinner.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-spinner",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-spinner-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/spinner.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/spinner.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-center-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/center.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/center.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-center",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-center-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/center.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/center.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-direction-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/direction.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/direction.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-direction",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-direction-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/direction.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/direction.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -646,7 +977,18 @@
         "@crease-effect/effect-radio-group",
         "@crease-effect/effect-slider",
         "@crease-effect/effect-field",
-        "@crease-effect/effect-fieldset"
+        "@crease-effect/effect-fieldset",
+        "@crease-effect/effect-aspect-ratio",
+        "@crease-effect/effect-blockquote",
+        "@crease-effect/effect-badge",
+        "@crease-effect/effect-kbd",
+        "@crease-effect/effect-label",
+        "@crease-effect/effect-visually-hidden",
+        "@crease-effect/effect-status-dot",
+        "@crease-effect/effect-skeleton",
+        "@crease-effect/effect-spinner",
+        "@crease-effect/effect-center",
+        "@crease-effect/effect-direction"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -677,7 +1019,18 @@
         "@crease-effect/effect-radio-group",
         "@crease-effect/effect-slider",
         "@crease-effect/effect-field",
-        "@crease-effect/effect-fieldset"
+        "@crease-effect/effect-fieldset",
+        "@crease-effect/effect-aspect-ratio",
+        "@crease-effect/effect-blockquote",
+        "@crease-effect/effect-badge",
+        "@crease-effect/effect-kbd",
+        "@crease-effect/effect-label",
+        "@crease-effect/effect-visually-hidden",
+        "@crease-effect/effect-status-dot",
+        "@crease-effect/effect-skeleton",
+        "@crease-effect/effect-spinner",
+        "@crease-effect/effect-center",
+        "@crease-effect/effect-direction"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

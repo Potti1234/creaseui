@@ -9,6 +9,7 @@
     "dev:pleat": "vite --host 127.0.0.1 --mode pleat",
     "build": "tsc --noEmit && vite build && vite build --mode stylex && vite build --mode pleat",
     "test": "node --import tsx --test test/*.test.ts",
+    "migration:status": "node scripts/migration-status.mjs",
     "registry:build": "npx --yes shadcn@latest build registry.json --cwd .. --output effect-ui/.registry"
   },
   "dependencies": {
