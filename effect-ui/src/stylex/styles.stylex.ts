@@ -6229,7 +6229,7 @@ export const stepper = stylex.create({
     transformOrigin: {
       default: 'left',
       ':is([data-orientation=vertical])': 'top',
-      ':dir(rtl)': 'right',
+      ':is([data-orientation=horizontal]:dir(rtl))': 'right',
     },
     transform: {
       default: 'scaleX(0)',
@@ -6245,7 +6245,8 @@ export const stepper = stylex.create({
       ':is([data-status=error])': 'var(--destructive)',
     },
     transition: {
-      default: 'transform var(--step-duration, 0ms) linear',
+      default:
+        'transform var(--step-duration, 0ms) linear var(--step-delay, 0ms)',
       '@media (prefers-reduced-motion: reduce)': 'none',
     },
   },

@@ -10,6 +10,41 @@ export const stepProgress = (index: number, active: number): StepperProgress =>
       ? 'completed'
       : 'not-started'
 
+const connectorSpanMs = 300
+const toTime = (share: number) =>
+  `${Math.round(connectorSpanMs * share * 10_000) / 10_000}ms`
+
+/** The departing and arriving segments share one forward step's timeline. */
+export const stepConnectorTimings = ({
+  active,
+  previous,
+  index,
+  orientation,
+  onTrack,
+  hasContent,
+}: {
+  readonly active: number
+  readonly previous: number
+  readonly index: number
+  readonly orientation: 'horizontal' | 'vertical'
+  readonly onTrack: boolean
+  readonly hasContent: boolean
+}) => {
+  const timing = (span: number, offset: number, share: number) =>
+    active === previous + 1 && span === previous
+      ? { duration: toTime(share), delay: toTime(offset) }
+      : { duration: '0ms', delay: '0ms' }
+  const arrival = !onTrack ? 1 : orientation === 'horizontal' ? 0.5 : 0.3
+  const departure = 1 - arrival
+  const rail =
+    hasContent && orientation === 'vertical' ? departure * 0.25 : departure
+  return {
+    entry: timing(index - 1, departure, arrival),
+    rail: timing(index, 0, rail),
+    content: timing(index, rail, departure - rail),
+  }
+}
+
 const Message = UiSchema.TaggedEnum({
   Measured: { width: Schema.Number },
   SeenActive: { index: Schema.Number },

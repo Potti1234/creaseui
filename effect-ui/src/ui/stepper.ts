@@ -257,7 +257,10 @@ export const Stepper = <Msg, R = never>(
                           transform: 'none',
                           translate: 'none',
                         })
-                        .attr('aria-hidden', 'true')
+                        .attrs({
+                          'aria-hidden': 'true',
+                          'data-slot': 'stepper-track-marker',
+                        })
                         .children(mark)
                 const onTrackRail = () =>
                   h.div

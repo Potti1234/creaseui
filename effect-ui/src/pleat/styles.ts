@@ -5957,7 +5957,8 @@ export const stepper = {
     transform: 'scaleX(0)',
     borderRadius: 'inherit',
     backgroundColor: 'var(--primary)',
-    transition: 'transform var(--step-duration, 0ms) linear',
+    transition:
+      'transform var(--step-duration, 0ms) linear var(--step-delay, 0ms)',
   }).pipe(
     Style.when(When.pseudo(':is([data-filled])'), {
       transform: 'scaleX(1)',
@@ -5969,7 +5970,7 @@ export const stepper = {
     Style.when(When.pseudo(':is([data-orientation=vertical][data-filled])'), {
       transform: 'scaleY(1)',
     }),
-    Style.when(When.pseudo(':dir(rtl)'), {
+    Style.when(When.pseudo(':is([data-orientation=horizontal]:dir(rtl))'), {
       transformOrigin: 'right',
     }),
     Style.when(When.pseudo(':is([data-status=success])'), {

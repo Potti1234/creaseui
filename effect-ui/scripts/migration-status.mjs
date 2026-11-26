@@ -22,7 +22,6 @@ const partial = new Map([
   ['sheet', 'Required pane dismissal policy'],
   ['number-input', 'Integer-only stepping with fractional bounds'],
   ['toast', 'Per-notification placement within one provider'],
-  ['stepper', 'Legacy staggered connector transitions'],
 ])
 const renderers = ['stylex-effect-components', 'pleat-effect-components']
 const hasFiles = item =>
