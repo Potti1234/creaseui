@@ -44,7 +44,12 @@ export const Tooltip = <Msg, R = never>(
         .class(styles.root)
         .attr('data-slot', 'tooltip')
         .children(
-          tooltip.trigger(trigger.attr('data-slot', 'tooltip-trigger')),
+          tooltip.trigger(
+            trigger.attr(
+              'data-slot',
+              trigger.elementAttrs['data-slot'] ?? 'tooltip-trigger',
+            ),
+          ),
           tooltip
             .positioner(h.div.class(styles.positioner))
             .children(

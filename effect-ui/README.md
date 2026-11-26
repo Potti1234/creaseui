@@ -63,6 +63,14 @@ Combobox takes a single value or an array of values for multiple selection. Its 
 
 The Calendar registry item also exports `RangeCalendar`. Both use date-only ISO strings and emit `Picked` when the selection is complete. Set `captionLayout: 'dropdown'` to show the browser's month and year picker, or use the previous and next month buttons. Set `weekNumbers` to show ISO week numbers.
 
+Date Input and Date Time Input expose localized editing while keeping the date and time in ISO form values. Date Picker and Date Range Input close their calendar panels after selection. A Date Range Input can submit separate start and end names and offer named presets.
+
+Input Group decorates native builders in its `control` callback. Give a decorative add-on `focusControlId` to forward a pointer press to the associated input. Number Input links its attached or detached Field Status through `aria-describedby`.
+
+Hover Card uses the kit's Preview Card for links and a hover-enabled Popover for buttons. Give each Hover Card or Info Tip a stable `key` when rendering several in the same parent. File Input uses File Drop for the native picker and drag-and-drop, with optional size and count validation. Process the accepted File values at the application boundary.
+
+Wrap notification senders in Toast and use `$.send(ToastBehavior, message)` from their Effect UI updates. The kit owns dismissal, timeouts, focus, and live announcements. The provider supports six viewport positions.
+
 The ten map registry items use the existing MapLibre styles, localization, layers, and overlays. The map mounts its worker and stylesheet on demand. It emits viewport, feature, and marker events through `toMessage` and releases the MapLibre instance when removed. The worker URL import uses Vite's `?worker&url` convention.
 
 ## Upstream reproduction

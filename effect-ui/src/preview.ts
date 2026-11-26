@@ -74,6 +74,18 @@ import {
   Icon,
   Indicator,
   InputGroup,
+  Link,
+  Pagination,
+  Thumbnail,
+  HoverCard,
+  InfoTip,
+  Item,
+  ItemGroup,
+  List,
+  Marker,
+  MetadataList,
+  FileInput,
+  Toast,
   Button,
   ButtonLink,
   Calendar,
@@ -97,6 +109,7 @@ import {
   Tooltip,
 } from '#components'
 import { CalendarDate, CalendarRange } from './behaviors/calendar'
+import { ToastBehavior } from './behaviors/toast'
 import '#theme'
 import './preview.css'
 
@@ -141,6 +154,13 @@ const Message = UiSchema.TaggedEnum({
   CommittedStart: { value: Schema.NullOr(CalendarDate) },
   CommittedTime: { value: Schema.NullOr(Schema.String) },
   CommittedRange: { value: Schema.NullOr(CalendarRange) },
+  ChangedPage: { page: Schema.Number },
+  RemovedThumbnail: {},
+  PickedFiles: {
+    names: Schema.Array(Schema.String),
+    error: Schema.NullOr(Schema.String),
+  },
+  RejectedFiles: {},
 })
 
 const fruits = [
@@ -156,6 +176,32 @@ const themes = [
   { value: 'system', label: 'System' },
 ]
 const today = new Date().toISOString().slice(0, 10)
+
+const ToastMessage = UiSchema.TaggedEnum({ Posted: {} })
+const PostNotification = Html.component({
+  name: 'CreaseToastPreview',
+  model: Schema.Null,
+  message: ToastMessage,
+}).make({
+  init: () => null,
+  update: {
+    Posted: $ =>
+      $.send(ToastBehavior, {
+        _tag: 'RequestedAdd',
+        toast: {
+          id: 'preview-saved',
+          title: 'Preview saved',
+          description: 'Your settings were saved.',
+          type: 'success',
+          timeout: 0,
+        },
+      }),
+  },
+  view: h =>
+    Button(h, { variant: 'outline', onPress: ToastMessage.Posted() }).children(
+      'Save preview settings',
+    ),
+})
 
 const Preview = Html.component({
   name: 'CreaseUiPreview',
@@ -199,6 +245,10 @@ const Preview = Html.component({
     scheduledDate: Schema.NullOr(CalendarDate),
     scheduledTime: Schema.NullOr(Schema.String),
     scheduledRange: Schema.NullOr(CalendarRange),
+    currentPage: Schema.Number,
+    thumbnailRemoved: Schema.Boolean,
+    fileNames: Schema.Array(Schema.String),
+    fileError: Schema.NullOr(Schema.String),
   }),
 }).make({
   init: () => ({
@@ -240,6 +290,10 @@ const Preview = Html.component({
     scheduledDate: '2028-02-29',
     scheduledTime: '09:00',
     scheduledRange: null,
+    currentPage: 1,
+    thumbnailRemoved: false,
+    fileNames: [],
+    fileError: null,
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -286,11 +340,147 @@ const Preview = Html.component({
     CommittedStart: ($, { value }) => $.evolve({ scheduledDate: value }),
     CommittedTime: ($, { value }) => $.evolve({ scheduledTime: value }),
     CommittedRange: ($, { value }) => $.evolve({ scheduledRange: value }),
+    ChangedPage: ($, { page }) => $.evolve({ currentPage: page }),
+    RemovedThumbnail: $ => $.evolve({ thumbnailRemoved: true }),
+    PickedFiles: ($, { names, error }) =>
+      $.evolve({ fileNames: names, fileError: error }),
+    RejectedFiles: $ => $.evolve({ fileError: 'Choose a plain text file.' }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          h.h2.children('Catalog information'),
+          Link(h, { href: '#catalog-metadata', children: ['View metadata'] }),
+          Link(h, {
+            href: 'https://ui.effect.website/',
+            external: true,
+            children: ['Effect UI'],
+          }),
+          HoverCard(h, {
+            kind: 'link',
+            key: 'metadata-hover-card',
+            props: {},
+            delay: 0,
+            trigger: h.a
+              .attr('href', '#catalog-metadata')
+              .children('Metadata preview'),
+            content:
+              'Metadata includes the collection, owner, and latest status.',
+          }),
+          HoverCard(h, {
+            key: 'context-hover-card',
+            props: {},
+            delay: 0,
+            ariaLabel: 'Catalog context',
+            trigger: h.button.children('Catalog context'),
+            content: 'The catalog includes stable components.',
+          }),
+          InfoTip(h, {
+            key: 'catalog-info-tip',
+            props: {},
+            label: 'About the catalog',
+            content: 'Filter by the project name.',
+          }),
+          ItemGroup(h, {
+            label: 'Catalog entries',
+            entries: [
+              {
+                key: 'item-calendar',
+                children: [
+                  Item(h, {
+                    variant: 'outline',
+                    children: item => [
+                      item.title({ children: ['Calendar'] }),
+                      item.description({ children: ['Date selection'] }),
+                    ],
+                  }),
+                ],
+              },
+              {
+                key: 'item-map',
+                separatorBefore: true,
+                children: [Item(h, { children: ['Map'] })],
+              },
+            ],
+          }),
+          Marker(h, {
+            purpose: 'status',
+            variant: 'separator',
+            children: ['Two entries'],
+          }),
+          List(h, {
+            id: 'catalog-list',
+            header: 'Steps to publish',
+            listStyle: 'decimal',
+            start: 2,
+            hasDividers: true,
+            items: [
+              { key: 'review', label: 'Review', selected: true },
+              { key: 'publish', label: 'Publish' },
+            ],
+          }),
+          MetadataList(h, {
+            id: 'catalog-metadata',
+            maxNumOfItems: 1,
+            title: 'Catalog metadata',
+            items: [
+              {
+                key: 'collection',
+                label: 'Collection',
+                definition: 'Components',
+              },
+              {
+                key: 'owner',
+                label: 'Owner',
+                definition: 'Documentation team',
+              },
+            ],
+          }),
+          Pagination(h, {
+            page: model.currentPage,
+            totalPages: 8,
+            ariaLabel: 'Catalog pages',
+            navigation: {
+              kind: 'action',
+              onNavigate: page => Message.ChangedPage({ page }),
+            },
+          }),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Files and notifications'),
+          model.thumbnailRemoved
+            ? undefined
+            : Thumbnail(h, {
+                label: 'Catalog image',
+                showRemoveOn: 'always',
+                onRemove: Message.RemovedThumbnail(),
+              }),
+          FileInput(h, {
+            id: 'catalog-files',
+            label: 'Catalog files',
+            mode: 'dropzone',
+            props: { accept: ['text/plain', '.txt'], multiple: true },
+            maxFiles: 2,
+            maxSize: 1024,
+            files: model.fileNames.map(name => ({ name })),
+            ...(model.fileError === null
+              ? {}
+              : { status: { type: 'error', message: model.fileError } }),
+            onFiles: ({ accepted, errors }) =>
+              Message.PickedFiles({
+                names: accepted.map(file => file.name),
+                error: errors[0] ?? null,
+              }),
+            onRejected: () => Message.RejectedFiles(),
+          }),
+          Toast(h, {
+            props: {},
+            position: 'bottom-end',
+            children: [PostNotification(h, {})],
+          }),
+        ),
         h.section.class('example').children(
           h.h2.children('Scheduling'),
           DateTimeInput(h, {

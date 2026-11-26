@@ -49,6 +49,18 @@ import { FieldStatus as RenderFieldStatus } from '../ui/field-status'
 import { Indicator as RenderIndicator } from '../ui/indicator'
 import { InputGroup as RenderInputGroup } from '../ui/input-group'
 import { ButtonGroup as RenderButtonGroup } from '../ui/button-group'
+import { Link as RenderLink } from '../ui/link'
+import { Pagination as RenderPagination } from '../ui/pagination'
+import { Thumbnail as RenderThumbnail } from '../ui/thumbnail'
+import { HoverCard as RenderHoverCard } from '../ui/hover-card'
+import { InfoTip as RenderInfoTip } from '../ui/info-tip'
+import { Item as RenderItem } from '../ui/item'
+import { ItemGroup as RenderItemGroup } from '../ui/item'
+import { List as RenderList } from '../ui/list'
+import { Marker as RenderMarker } from '../ui/marker'
+import { MetadataList as RenderMetadataList } from '../ui/metadata-list'
+import { FileInput as RenderFileInput } from '../ui/file-input'
+import { Toast as RenderToast } from '../ui/toast'
 import { Avatar as RenderAvatar } from '../ui/avatar'
 import { AlertDialog as RenderAlertDialog } from '../ui/alert-dialog'
 import { AspectRatio as RenderAspectRatio } from '../ui/aspect-ratio'
@@ -120,6 +132,17 @@ import {
   indicator,
   inputGroup,
   buttonGroup,
+  link,
+  pagination,
+  thumbnail,
+  hoverCard,
+  infoTip,
+  item,
+  list,
+  marker,
+  metadataList,
+  fileInput,
+  toast,
   avatar,
   alertDialog,
   aspectRatio,
@@ -607,3 +630,65 @@ export const ButtonGroup = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderButtonGroup<Msg, R>>[1],
 ) => RenderButtonGroup(h, options, partClasses(buttonGroup))
+
+export const Link = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderLink<Msg, R>>[1],
+) => RenderLink(h, options, partClasses(link), Tooltip)
+
+export const Pagination = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderPagination<Msg, R>>[1],
+) => RenderPagination(h, options, partClasses(pagination))
+
+export const Thumbnail = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderThumbnail<Msg>>[1],
+) => RenderThumbnail(h, options, partClasses(thumbnail))
+
+export const HoverCard = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderHoverCard<Msg, R>>[1],
+) => RenderHoverCard(h, options, partClasses(hoverCard))
+
+export const InfoTip = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderInfoTip<Msg, R>>[1],
+) => RenderInfoTip(h, options, partClasses(infoTip))
+
+export const Item = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderItem<Msg, R>>[1],
+) => RenderItem(h, options, partClasses(item))
+
+export const ItemGroup = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderItemGroup<Msg, R>>[1],
+) => RenderItemGroup(h, options, partClasses(item))
+
+export const List = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderList<Msg, R>>[1],
+) => RenderList(h, options, partClasses(list))
+
+export const Marker = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMarker<Msg, R>>[1],
+) => RenderMarker(h, options, partClasses(marker))
+
+export const MetadataList = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMetadataList<Msg, R>>[1],
+) => RenderMetadataList(h, options, partClasses(metadataList))
+
+export const FileInput = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderFileInput<Msg, R>>[1],
+) => RenderFileInput(h, options, partClasses(fileInput))
+
+export const Toast = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderToast<Msg, R>>[1],
+) => RenderToast(h, options, partClasses(toast))
+
+export { PaginationItem, paginationItems } from '../ui/pagination'

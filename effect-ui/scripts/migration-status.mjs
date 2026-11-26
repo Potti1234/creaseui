@@ -21,6 +21,10 @@ const partial = new Map([
   ['input-otp', 'Custom character patterns'],
   ['sheet', 'Panel switcher and custom header layout'],
   ['number-input', 'Arbitrary display formatter and strict integer mode'],
+  ['hover-card', 'Automatic opening from keyboard focus on button triggers'],
+  ['info-tip', 'Automatic opening from keyboard focus'],
+  ['file-input', 'Native multipart form submission'],
+  ['toast', 'Swipe dismissal and the collapsed overlapping stack'],
 ])
 const renderers = ['stylex-effect-components', 'pleat-effect-components']
 const hasFiles = item =>

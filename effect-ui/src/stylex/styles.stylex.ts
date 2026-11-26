@@ -3929,6 +3929,873 @@ export const buttonGroup = stylex.create({
   },
 })
 
+export const link = stylex.create({
+  root: {
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    padding: 0,
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 2,
+    font: 'inherit',
+    color: 'inherit',
+    textDecoration: {
+      default: 'none',
+      ':is([data-underline])': 'underline',
+      ':hover': 'underline',
+    },
+    textAlign: 'start',
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+    pointerEvents: {
+      default: null,
+      ':is([aria-disabled=true])': 'none',
+    },
+    opacity: {
+      default: null,
+      ':is([aria-disabled=true])': 0.5,
+    },
+  },
+  newTabLabel: {
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+  },
+})
+
+export const pagination = stylex.create({
+  root: {
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'center',
+  },
+  content: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    margin: 0,
+    listStyle: 'none',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    padding: 0,
+  },
+  link: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'transparent',
+      ':is([aria-current=page])': 'var(--input)',
+    },
+    display: 'inline-flex',
+    minHeight: 36,
+    minWidth: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--accent)',
+    },
+    paddingInline: 8,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    textDecoration: 'none',
+    color: 'var(--foreground)',
+    outline: {
+      default: 'none',
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+    pointerEvents: {
+      default: null,
+      ':is([aria-disabled=true])': 'none',
+    },
+    opacity: {
+      default: null,
+      ':is([aria-disabled=true])': 0.5,
+    },
+  },
+  ellipsis: {
+    display: 'inline-grid',
+    minHeight: 36,
+    minWidth: 36,
+    placeItems: 'center',
+  },
+})
+
+export const thumbnail = stylex.create({
+  root: {
+    position: 'relative',
+    isolation: 'isolate',
+    display: 'inline-flex',
+    width: 64,
+    flexShrink: 0,
+    flexDirection: 'column',
+    opacity: {
+      default: null,
+      ':is([data-disabled])': 0.5,
+    },
+  },
+  media: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    position: 'relative',
+    aspectRatio: '1',
+    width: '100%',
+    minWidth: 0,
+    overflow: 'hidden',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'var(--muted)',
+      ':is([data-loading])': 'var(--accent)',
+    },
+  },
+  img: {
+    display: 'block',
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  open: {
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    padding: 0,
+    cursor: 'pointer',
+    display: 'block',
+    width: '100%',
+    height: '100%',
+    borderRadius: 'inherit',
+    textAlign: 'start',
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': -2,
+    },
+  },
+  remove: {
+    borderWidth: 0,
+    backgroundColor: {
+      default: 'rgb(0 0 0 / 40%)',
+      ':hover': 'rgb(0 0 0 / 60%)',
+    },
+    padding: 0,
+    cursor: 'pointer',
+    position: 'absolute',
+    insetInlineEnd: 4,
+    insetBlockStart: 4,
+    zIndex: 1,
+    display: 'inline-grid',
+    width: 20,
+    height: 20,
+    placeItems: 'center',
+    borderRadius: 4,
+    color: 'white',
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  overlay: {
+    position: 'absolute',
+    inset: 0,
+    display: 'grid',
+    placeItems: 'center',
+    borderRadius: 'inherit',
+    backgroundColor: 'rgb(0 0 0 / 40%)',
+    color: 'white',
+  },
+  placeholder: {
+    display: 'grid',
+    width: '100%',
+    height: '100%',
+    placeItems: 'center',
+    color: 'var(--muted-foreground)',
+  },
+  spinner: {
+    display: 'inline-flex',
+  },
+})
+
+export const hoverCard = stylex.create({
+  root: {
+    display: 'inline-flex',
+    position: 'relative',
+  },
+  panel: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    width: 256,
+    maxWidth: 'min(var(--available-width), calc(100vw - 2rem))',
+    maxHeight: 'var(--available-height)',
+    overflow: 'auto',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    padding: 16,
+    backgroundColor: 'var(--popover)',
+    color: 'var(--popover-foreground)',
+    fontSize: '0.875rem',
+    boxShadow: '0 8px 24px rgb(0 0 0 / 14%)',
+    visibility: {
+      default: null,
+      ':is([data-ending-style])': 'hidden',
+    },
+  },
+})
+
+export const infoTip = stylex.create({
+  root: {
+    display: 'inline-flex',
+    flexShrink: 0,
+    alignItems: 'center',
+    verticalAlign: 'middle',
+  },
+  trigger: {
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    padding: 2,
+    cursor: 'pointer',
+    display: 'inline-grid',
+    placeItems: 'center',
+    borderRadius: '50%',
+    color: {
+      default: 'var(--muted-foreground)',
+      ':hover': 'var(--foreground)',
+    },
+    fontSize: {
+      default: null,
+      ':is([data-size=xsm])': 12,
+      ':is([data-size=sm])': 14,
+      ':is([data-size=md])': 16,
+      ':is([data-size=lg])': 18,
+    },
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  panel: {
+    position: 'relative',
+    maxWidth: 'min(18rem, calc(100vw - 1rem))',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+    paddingInline: 12,
+    paddingBlock: 6,
+    fontSize: '0.75rem',
+    textWrap: 'balance',
+    visibility: {
+      default: null,
+      ':is([data-ending-style])': 'hidden',
+    },
+  },
+  arrow: {
+    width: 8,
+    height: 8,
+    transform: 'rotate(45deg)',
+    borderRadius: 2,
+    backgroundColor: 'var(--primary)',
+    bottom: {
+      default: null,
+      ':is([data-side=top])': -4,
+    },
+    top: {
+      default: null,
+      ':is([data-side=bottom])': -4,
+    },
+    right: {
+      default: null,
+      ':is([data-side=left])': -4,
+    },
+    left: {
+      default: null,
+      ':is([data-side=right])': -4,
+    },
+  },
+})
+
+export const item = stylex.create({
+  root: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'transparent',
+      ':is([data-variant=outline])': 'var(--border)',
+    },
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    boxSizing: 'border-box',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    fontSize: '0.875rem',
+    textDecoration: 'none',
+    color: 'var(--foreground)',
+    outline: {
+      default: 'none',
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    backgroundColor: {
+      default: null,
+      ':is([data-variant=muted])': 'var(--muted)',
+      ':is([data-element=a]:hover)': 'var(--accent)',
+    },
+    padding: {
+      default: null,
+      ':is([data-size=default])': 12,
+    },
+    gap: {
+      default: null,
+      ':is([data-size=default])': 12,
+      ':is([data-size=sm])': 10,
+      ':is([data-size=xs])': 8,
+    },
+    paddingInline: {
+      default: null,
+      ':is([data-size=sm])': 12,
+      ':is([data-size=xs])': 10,
+    },
+    paddingBlock: {
+      default: null,
+      ':is([data-size=sm])': 10,
+      ':is([data-size=xs])': 8,
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  media: {
+    display: 'flex',
+    flexShrink: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    width: {
+      default: null,
+      ':is([data-variant=icon])': 32,
+      ':is([data-variant=image])': 40,
+    },
+    height: {
+      default: null,
+      ':is([data-variant=icon])': 32,
+      ':is([data-variant=image])': 40,
+    },
+    borderRadius: {
+      default: null,
+      ':is([data-variant=icon])': 4,
+      ':is([data-variant=image])': 4,
+    },
+    backgroundColor: {
+      default: null,
+      ':is([data-variant=icon])': 'var(--muted)',
+    },
+    overflow: {
+      default: null,
+      ':is([data-variant=image])': 'hidden',
+    },
+  },
+  content: {
+    display: 'flex',
+    flexGrow: 1,
+    minWidth: 0,
+    flexDirection: 'column',
+    gap: 4,
+  },
+  title: {
+    display: 'flex',
+    width: 'fit-content',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: '0.875rem',
+    lineHeight: 1.35,
+    fontWeight: 500,
+  },
+  description: {
+    margin: 0,
+    display: '-webkit-box',
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+    textWrap: 'balance',
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  },
+  actions: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+  },
+  header: {
+    display: 'flex',
+    flexBasis: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  footer: {
+    display: 'flex',
+    flexBasis: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  group: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  listItem: {
+    display: 'contents',
+  },
+  separator: {
+    height: 1,
+    width: '100%',
+    flexShrink: 0,
+    backgroundColor: 'var(--border)',
+  },
+})
+
+export const list = stylex.create({
+  root: {
+    display: 'flex',
+    minWidth: 0,
+    flexDirection: 'column',
+  },
+  header: {
+    marginBlockEnd: 8,
+  },
+  list: {
+    margin: 0,
+  },
+  item: {
+    borderRadius: {
+      default: 'calc(var(--radius) - 2px)',
+      ':is([data-dividers])': 0,
+    },
+    paddingInline: {
+      default: 8,
+      ':is([data-density=spacious])': 12,
+    },
+    backgroundColor: {
+      default: null,
+      ':is([aria-current=true])':
+        'color-mix(in oklab, var(--primary) 10%, transparent)',
+    },
+    opacity: {
+      default: null,
+      ':is([aria-disabled=true])': 0.5,
+    },
+    borderBottom: {
+      default: null,
+      ':is([data-dividers])': '1px solid var(--border)',
+    },
+    borderBottomWidth: {
+      default: null,
+      ':is([data-dividers]:last-child)': 0,
+    },
+    paddingBlock: {
+      default: null,
+      ':is([data-density=compact])': 4,
+      ':is([data-density=balanced])': 8,
+      ':is([data-density=spacious])': 12,
+    },
+    marginInlineStart: {
+      default: null,
+      ':is([data-edge-compensation=inline])':
+        'calc(-1 * min(0.5rem, var(--container-padding-inline-start, 0px)))',
+    },
+    marginInlineEnd: {
+      default: null,
+      ':is([data-edge-compensation=inline])':
+        'calc(-1 * min(0.5rem, var(--container-padding-inline-end, 0px)))',
+    },
+  },
+  row: {
+    display: 'flex',
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 8,
+  },
+  control: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    color: 'inherit',
+    display: 'flex',
+    minWidth: 0,
+    flexGrow: 1,
+    flexDirection: 'column',
+    borderRadius: 4,
+    padding: 0,
+    textAlign: 'start',
+    fontSize: '0.875rem',
+    textDecoration: 'none',
+    outline: {
+      default: 'none',
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  description: {
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+  },
+  side: {
+    display: 'inline-flex',
+    flexShrink: 0,
+  },
+})
+
+export const marker = stylex.create({
+  root: {
+    display: 'flex',
+    minHeight: 16,
+    width: '100%',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+    textAlign: 'start',
+    borderBottom: {
+      default: null,
+      ':is([data-variant=border])': '1px solid var(--border)',
+    },
+    paddingBlockEnd: {
+      default: null,
+      ':is([data-variant=border])': 8,
+    },
+  },
+  icon: {
+    width: 16,
+    height: 16,
+    flexShrink: 0,
+  },
+  content: {
+    display: 'inline-flex',
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 8,
+    overflowWrap: 'break-word',
+    textAlign: {
+      default: null,
+      ':is([data-variant=separator])': 'center',
+    },
+    animationDuration: '2s',
+    animationIterationCount: 'infinite',
+    animationName: {
+      default: null,
+      ':is([data-shimmer])': progressPulse,
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+  },
+  line: {
+    height: 1,
+    minWidth: 0,
+    flexGrow: 1,
+    backgroundColor: 'var(--border)',
+  },
+})
+
+export const metadataList = stylex.create({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  title: {
+    marginBlockEnd: 12,
+  },
+  list: {
+    display: {
+      default: 'grid',
+      ':is([data-layout=horizontal])': 'flex',
+    },
+    gridTemplateColumns: {
+      default: 'minmax(0,1fr)',
+      ':is([data-layout=grid-multi])':
+        'repeat(auto-fill,minmax(min(17.5rem,100%),1fr))',
+    },
+    margin: 0,
+    padding: 0,
+    alignItems: 'baseline',
+    columnGap: 16,
+    rowGap: 8,
+    flexWrap: {
+      default: null,
+      ':is([data-layout=horizontal])': 'wrap',
+    },
+    gap: {
+      default: null,
+      ':is([data-layout=horizontal])': 16,
+    },
+  },
+  item: {
+    display: {
+      default: 'contents',
+      ':is([data-stacked])': 'flex',
+    },
+    minWidth: {
+      default: null,
+      ':is([data-stacked])': 0,
+    },
+    flexDirection: {
+      default: null,
+      ':is([data-stacked])': 'column',
+    },
+    gap: {
+      default: null,
+      ':is([data-stacked])': 2,
+    },
+  },
+  term: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    margin: 0,
+    fontWeight: 500,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  },
+  definition: {
+    margin: 0,
+    minWidth: 0,
+    overflowWrap: 'break-word',
+    fontSize: '0.875rem',
+  },
+  icon: {
+    display: 'inline-flex',
+    flexShrink: 0,
+    alignItems: 'center',
+  },
+  toggle: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    color: 'var(--primary)',
+    cursor: 'pointer',
+    alignSelf: 'flex-start',
+    paddingInline: 0,
+    paddingBlock: 8,
+    textAlign: 'start',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    borderRadius: 4,
+    textDecoration: {
+      default: null,
+      ':hover': 'underline',
+    },
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+})
+
+export const fileInput = stylex.create({
+  root: {
+    display: 'grid',
+    minWidth: 0,
+    gap: 6,
+    fontSize: '0.875rem',
+  },
+  label: {
+    fontWeight: 500,
+  },
+  hiddenLabel: {
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+  },
+  description: {
+    color: 'var(--muted-foreground)',
+  },
+  zone: {
+    borderWidth: 1,
+    borderStyle: {
+      default: 'solid',
+      ':is([data-mode=dropzone])': 'dashed',
+    },
+    borderColor: {
+      default: 'var(--border)',
+      ':is([data-drag-over])': 'var(--primary)',
+    },
+    display: 'flex',
+    minWidth: 0,
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 8,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'var(--background)',
+      ':is([data-drag-over])': 'var(--accent)',
+    },
+    padding: {
+      default: 8,
+      ':is([data-mode=dropzone])': 16,
+    },
+    minHeight: {
+      default: null,
+      ':is([data-mode=dropzone])': 96,
+    },
+    justifyContent: {
+      default: null,
+      ':is([data-mode=dropzone])': 'center',
+    },
+    opacity: {
+      default: null,
+      ':is([data-disabled])': 0.5,
+    },
+  },
+  trigger: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    display: 'inline-flex',
+    minHeight: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'var(--background)',
+      ':hover': 'var(--accent)',
+    },
+    color: 'var(--foreground)',
+    paddingInline: 12,
+    fontWeight: 500,
+    outline: {
+      default: 'none',
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  hint: {
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+  },
+  names: {
+    minWidth: 0,
+    overflowWrap: 'break-word',
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+  },
+  status: {
+    fontSize: '0.75rem',
+    color: {
+      default: null,
+      ':is([data-type=error])': 'var(--destructive)',
+      ':is([data-type=warning])': 'var(--warning)',
+      ':is([data-type=success])': 'var(--success)',
+    },
+  },
+})
+
+export const toast = stylex.create({
+  viewport: {},
+  root: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--popover)',
+    color: 'var(--popover-foreground)',
+    fontSize: '0.875rem',
+    boxShadow: '0 4px 12px rgb(0 0 0 / 12%)',
+    outline: {
+      default: 'none',
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  content: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 8,
+    padding: 12,
+  },
+  text: {
+    minWidth: 0,
+    flexGrow: 1,
+  },
+  title: {
+    display: 'block',
+    fontWeight: 500,
+  },
+  description: {
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  },
+  icon: {
+    marginBlockStart: 2,
+    flexShrink: 0,
+    color: {
+      default: 'var(--primary)',
+      ':is([data-type=error])': 'var(--destructive)',
+      ':is([data-type=warning])': 'var(--warning)',
+      ':is([data-type=success])': 'var(--success)',
+    },
+  },
+  button: {
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--accent)',
+    },
+    borderWidth: 0,
+    color: 'inherit',
+    display: 'inline-flex',
+    minHeight: 24,
+    flexShrink: 0,
+    alignItems: 'center',
+    paddingInline: 4,
+    fontSize: '0.75rem',
+    borderRadius: 4,
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {

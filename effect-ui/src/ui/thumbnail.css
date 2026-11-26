@@ -1,0 +1,28 @@
+@media (hover: hover) and (pointer: fine) {
+  [data-slot='thumbnail'][data-remove-on='hover']:not(:hover, :focus-within)
+    [data-slot='thumbnail-remove'] {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot='thumbnail-media'][data-loading] {
+    animation: crease-thumbnail-pulse 1.8s ease-in-out infinite;
+  }
+
+  [data-slot='thumbnail-overlay'] svg {
+    animation: crease-thumbnail-spin 1s linear infinite;
+  }
+}
+
+@keyframes crease-thumbnail-pulse {
+  50% {
+    opacity: 0.65;
+  }
+}
+
+@keyframes crease-thumbnail-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

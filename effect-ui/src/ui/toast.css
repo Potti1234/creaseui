@@ -1,0 +1,58 @@
+[data-slot='toast-viewport'] {
+  position: fixed;
+  inset: auto;
+  width: min(24rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: auto;
+  background: transparent;
+  color: inherit;
+}
+
+[data-slot='toast-viewport'][data-position^='top'] {
+  inset-block-start: 1rem;
+}
+
+[data-slot='toast-viewport'][data-position^='bottom'] {
+  inset-block-end: 1rem;
+}
+
+[data-slot='toast-viewport'][data-position$='start'] {
+  inset-inline-start: 1rem;
+}
+
+[data-slot='toast-viewport'][data-position$='end'] {
+  inset-inline-end: 1rem;
+}
+
+[data-slot='toast-viewport'][data-position$='center'] {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+[data-slot='toast-viewport'] > [data-slot='toast'] + [data-slot='toast'] {
+  margin-block-start: 0.5rem;
+}
+
+[data-slot='toast'][data-limited] {
+  display: none;
+}
+
+[data-slot='toast'] {
+  transition:
+    opacity 150ms ease,
+    translate 150ms ease;
+}
+
+[data-slot='toast']:is([data-starting-style], [data-ending-style]) {
+  opacity: 0;
+  translate: 0 0.25rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='toast'] {
+    transition: none;
+  }
+}
