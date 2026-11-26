@@ -1,6 +1,6 @@
 # CreaseUI for Effect UI
 
-The port covers Button, Dialog, Combobox, Calendar, Select, and Popover. The headless behaviors can be installed and composed independently. Tailwind, StyleX, and Pleat use the same Effect UI views and event contracts. Dialog, Popover, and Select support controlled or local open state. Consumers own the selected values in Combobox, Calendar, and Select.
+The port covers Button, Dialog, Combobox, Calendar, Select, Popover, Checkbox, and Switch. The headless behaviors can be installed and composed independently. Tailwind, StyleX, and Pleat use the same Effect UI views and event contracts. Dialog, Popover, and Select support controlled or local open state. Consumers own the selected values in Combobox, Calendar, and Select and the checked values in Checkbox and Switch.
 
 This package uses Effect 4.1.5 and pins both Effect UI packages to snapshot `4d6d7ec`. It has its own lockfile because the Foldkit application still requires Effect 4.0.0-rc.117.
 
@@ -26,7 +26,7 @@ Build the registry with `npm --prefix effect-ui run registry:build`. With the Ta
 ```
 
 ```sh
-npx shadcn@latest add @crease-effect/effect-button @crease-effect/effect-dialog @crease-effect/effect-combobox @crease-effect/effect-calendar @crease-effect/effect-select @crease-effect/effect-popover
+npx shadcn@latest add @crease-effect/effect-button @crease-effect/effect-dialog @crease-effect/effect-combobox @crease-effect/effect-calendar @crease-effect/effect-select @crease-effect/effect-popover @crease-effect/effect-checkbox @crease-effect/effect-switch
 npx shadcn@latest add @crease-effect/stylex-effect-components
 npx shadcn@latest add @crease-effect/pleat-effect-components
 ```
@@ -36,6 +36,8 @@ The first command installs the Tailwind views. The other two install the corresp
 StyleX consumers need their StyleX compiler enabled. Pleat consumers need a TypeScript and bundler alias from `@pleat/core` to the installed `lib/pleat/core/src/index.ts`, using their configured `lib` path. When server rendering Pleat views, prepend `Sheet.styleTag(rendered.html)` to the document head.
 
 Select uses the kit's keyboard navigation, typeahead, disabled options, form integration, and multi-select. Pass `alignItemWithTrigger` in `props` for item-aligned placement. The styled view accepts grouping and item rendering callbacks. Popover exposes the kit's placement, collision, dismissal, and focus options. Pass `props: {}` for local disclosure or supply `open` and handle `RequestedOpen` and `RequestedClose` in the parent.
+
+Checkbox and Switch render labels linked to the native button and optional descriptions. Pass `checked` in `props` and handle Checkbox's `Toggled` event or Switch's `onToggle` callback. The styled controls submit an empty string when unchecked by default, matching the Foldkit versions. Supply `uncheckedValue` to choose a different value.
 
 ## Upstream reproduction
 

@@ -225,6 +225,109 @@ export const combobox = {
 
 const reducedMotion = When.media('(prefers-reduced-motion: reduce)')
 
+export const choiceField = {
+  field: Style.make({ display: 'flex', alignItems: 'flex-start', gap: 8 }),
+  text: Style.make({ display: 'grid', gap: 4 }),
+  label: Style.make({
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    lineHeight: 1,
+    userSelect: 'none',
+  }),
+  description: Style.make({
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  }),
+}
+
+const choiceFocus = {
+  borderColor: 'var(--ring)',
+  boxShadow: '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+}
+
+export const checkbox = {
+  control: Style.make({
+    display: 'grid',
+    placeItems: 'center',
+    flexShrink: 0,
+    width: 16,
+    height: 16,
+    padding: 0,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    borderColor: 'var(--input)',
+    backgroundColor: 'var(--background)',
+    color: 'var(--foreground)',
+    fontSize: '0.75rem',
+    lineHeight: 1,
+    outlineStyle: 'none',
+    boxShadow: '0 1px 2px rgb(0 0 0 / 5%)',
+    cursor: 'pointer',
+  }).pipe(
+    Style.when(When.checked, {
+      borderColor: 'var(--primary)',
+      backgroundColor: 'var(--primary)',
+      color: 'var(--primary-foreground)',
+    }),
+    Style.when(When.indeterminate, {
+      borderColor: 'var(--primary)',
+      backgroundColor: 'var(--primary)',
+      color: 'var(--primary-foreground)',
+    }),
+    Style.when(When.focusVisible, choiceFocus),
+    Style.when(When.invalid, { borderColor: 'var(--destructive)' }),
+    Style.when(When.disabled, { opacity: 0.5, cursor: 'not-allowed' }),
+  ),
+}
+
+const smallChoice = When.data('size', 'sm')
+
+export const switchControl = {
+  control: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    flexShrink: 0,
+    width: 32,
+    height: 20,
+    padding: 0,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 999,
+    borderColor: 'transparent',
+    backgroundColor: 'var(--input)',
+    outlineStyle: 'none',
+    cursor: 'pointer',
+    transitionProperty: 'background-color',
+    transitionDuration: '150ms',
+  }).pipe(
+    Style.when(smallChoice, { width: 24, height: 16 }),
+    Style.when(When.data('checked'), { backgroundColor: 'var(--primary)' }),
+    Style.when(When.focusVisible, choiceFocus),
+    Style.when(When.invalid, { borderColor: 'var(--destructive)' }),
+    Style.when(When.disabled, { opacity: 0.5, cursor: 'not-allowed' }),
+    Style.when(reducedMotion, { transitionDuration: '0ms' }),
+  ),
+  thumb: Style.make({
+    display: 'block',
+    pointerEvents: 'none',
+    width: 16,
+    height: 16,
+    marginInlineStart: 0,
+    borderRadius: 999,
+    backgroundColor: 'var(--background)',
+    transitionProperty: 'margin-inline-start',
+    transitionDuration: '150ms',
+  }).pipe(
+    Style.when(smallChoice, { width: 12, height: 12 }),
+    Style.when(When.data('checked'), { marginInlineStart: 14 }),
+    Style.when(When.all(When.data('checked'), smallChoice), {
+      marginInlineStart: 10,
+    }),
+    Style.when(reducedMotion, { transitionDuration: '0ms' }),
+  ),
+}
+
 export const select = {
   label: Style.make({ fontSize: '0.875rem', fontWeight: 500 }),
   trigger: Style.make({

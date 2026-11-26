@@ -1,6 +1,8 @@
 export { Button, ButtonLink } from './button'
 export { Calendar } from './calendar'
+export { Checkbox } from './checkbox'
 export { Combobox } from './combobox'
 export { Dialog } from './dialog'
 export { Popover } from './popover'
 export { Select } from './select'
+export { Switch } from './switch'

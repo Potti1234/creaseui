@@ -6,19 +6,24 @@ import {
   ButtonLink as RenderButtonLink,
 } from '../ui/button'
 import { Calendar as RenderCalendar } from '../ui/calendar'
+import { Checkbox as RenderCheckbox } from '../ui/checkbox'
 import { Combobox as RenderCombobox } from '../ui/combobox'
 import { Dialog as RenderDialog } from '../ui/dialog'
 import { Popover as RenderPopover } from '../ui/popover'
 import { Select as RenderSelect } from '../ui/select'
+import { Switch as RenderSwitch } from '../ui/switch'
 import {
   buttonSizes,
   buttonVariants,
   calendar,
+  checkbox,
+  choiceField,
   combobox,
   controls,
   dialog,
   popover,
   select,
+  switchControl,
 } from './styles.stylex'
 
 const buttonClasses: NonNullable<Parameters<typeof RenderButton>[2]> = (
@@ -77,3 +82,13 @@ export const Select = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderSelect<Msg, R>>[1],
 ) => RenderSelect(h, options, partClasses(select))
+
+export const Checkbox = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderCheckbox<Msg, R>>[1],
+) => RenderCheckbox(h, options, partClasses({ ...choiceField, ...checkbox }))
+
+export const Switch = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderSwitch<Msg, R>>[1],
+) => RenderSwitch(h, options, partClasses({ ...choiceField, ...switchControl }))

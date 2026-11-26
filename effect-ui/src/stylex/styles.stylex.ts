@@ -335,6 +335,110 @@ export const select = stylex.create({
   separator: { marginBlock: 4, height: 1, backgroundColor: 'var(--border)' },
 })
 
+export const choiceField = stylex.create({
+  field: { display: 'flex', alignItems: 'flex-start', gap: 8 },
+  text: { display: 'grid', gap: 4 },
+  label: {
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    lineHeight: 1,
+    userSelect: 'none',
+  },
+  description: { fontSize: '0.875rem', color: 'var(--muted-foreground)' },
+})
+
+export const checkbox = stylex.create({
+  control: {
+    display: 'grid',
+    placeItems: 'center',
+    flexShrink: 0,
+    width: 16,
+    height: 16,
+    padding: 0,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    borderColor: {
+      default: 'var(--input)',
+      ':is([data-checked],[data-indeterminate])': 'var(--primary)',
+      ':focus-visible': 'var(--ring)',
+      ':is([aria-invalid=true])': 'var(--destructive)',
+    },
+    backgroundColor: {
+      default: 'var(--background)',
+      ':is([data-checked],[data-indeterminate])': 'var(--primary)',
+    },
+    color: {
+      default: 'var(--foreground)',
+      ':is([data-checked],[data-indeterminate])': 'var(--primary-foreground)',
+    },
+    fontSize: '0.75rem',
+    lineHeight: 1,
+    outlineStyle: 'none',
+    boxShadow: {
+      default: '0 1px 2px rgb(0 0 0 / 5%)',
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: { default: 1, ':disabled': 0.5 },
+    cursor: { default: 'pointer', ':disabled': 'not-allowed' },
+  },
+})
+
+export const switchControl = stylex.create({
+  control: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    flexShrink: 0,
+    width: { default: 32, ':is([data-size=sm])': 24 },
+    height: { default: 20, ':is([data-size=sm])': 16 },
+    padding: 0,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 999,
+    borderColor: {
+      default: 'transparent',
+      ':focus-visible': 'var(--ring)',
+      ':is([aria-invalid=true])': 'var(--destructive)',
+    },
+    backgroundColor: {
+      default: 'var(--input)',
+      ':is([data-checked])': 'var(--primary)',
+    },
+    outlineStyle: 'none',
+    boxShadow: {
+      default: 'none',
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: { default: 1, ':disabled': 0.5 },
+    cursor: { default: 'pointer', ':disabled': 'not-allowed' },
+    transitionProperty: 'background-color',
+    transitionDuration: {
+      default: '150ms',
+      '@media (prefers-reduced-motion: reduce)': '0ms',
+    },
+  },
+  thumb: {
+    display: 'block',
+    pointerEvents: 'none',
+    width: { default: 16, ':is([data-size=sm])': 12 },
+    height: { default: 16, ':is([data-size=sm])': 12 },
+    marginInlineStart: {
+      default: 0,
+      ':is([data-checked])': 14,
+      ':is([data-checked][data-size=sm])': 10,
+    },
+    borderRadius: 999,
+    backgroundColor: 'var(--background)',
+    transitionProperty: 'margin-inline-start',
+    transitionDuration: {
+      default: '150ms',
+      '@media (prefers-reduced-motion: reduce)': '0ms',
+    },
+  },
+})
+
 export const popover = stylex.create({
   popup: {
     display: 'grid',

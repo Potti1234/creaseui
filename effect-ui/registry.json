@@ -188,6 +188,68 @@
       ]
     },
     {
+      "name": "effect-checkbox-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@4d6d7ec",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@4d6d7ec"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/checkbox.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/checkbox.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-checkbox",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-checkbox-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/checkbox.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/checkbox.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-switch-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@4d6d7ec",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@4d6d7ec"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/switch.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/switch.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-switch",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-switch-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/switch.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/switch.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -198,7 +260,9 @@
         "@crease-effect/effect-combobox",
         "@crease-effect/effect-calendar",
         "@crease-effect/effect-select",
-        "@crease-effect/effect-popover"
+        "@crease-effect/effect-popover",
+        "@crease-effect/effect-checkbox",
+        "@crease-effect/effect-switch"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -215,7 +279,9 @@
         "@crease-effect/effect-combobox",
         "@crease-effect/effect-calendar",
         "@crease-effect/effect-select",
-        "@crease-effect/effect-popover"
+        "@crease-effect/effect-popover",
+        "@crease-effect/effect-checkbox",
+        "@crease-effect/effect-switch"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

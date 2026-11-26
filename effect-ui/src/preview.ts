@@ -5,10 +5,12 @@ import { Effect, Layer, Schema } from 'effect'
 import {
   Button,
   Calendar,
+  Checkbox,
   Combobox,
   Dialog,
   Popover,
   Select,
+  Switch,
 } from '#components'
 import { CalendarDate } from './behaviors/calendar'
 import '#theme'
@@ -19,6 +21,8 @@ const Message = UiSchema.TaggedEnum({
   PickedFruit: { value: Schema.NullOr(Schema.String) },
   PickedDate: { value: CalendarDate },
   PickedTheme: { value: Schema.NullOr(Schema.String) },
+  ToggledSummary: { checked: Schema.Boolean },
+  ToggledAlerts: { checked: Schema.Boolean },
 })
 
 const fruits = [
@@ -43,14 +47,25 @@ const Preview = Html.component({
     fruit: Schema.NullOr(Schema.String),
     date: Schema.NullOr(CalendarDate),
     theme: Schema.NullOr(Schema.String),
+    summary: Schema.Boolean,
+    alerts: Schema.Boolean,
   }),
 }).make({
-  init: () => ({ presses: 0, fruit: 'banana', date: null, theme: 'light' }),
+  init: () => ({
+    presses: 0,
+    fruit: 'banana',
+    date: null,
+    theme: 'light',
+    summary: false,
+    alerts: false,
+  }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
     PickedFruit: ($, { value }) => $.evolve({ fruit: value }),
     PickedDate: ($, { value }) => $.evolve({ date: value }),
     PickedTheme: ($, { value }) => $.evolve({ theme: value }),
+    ToggledSummary: ($, { checked }) => $.evolve({ summary: checked }),
+    ToggledAlerts: ($, { checked }) => $.evolve({ alerts: checked }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
@@ -118,6 +133,26 @@ const Preview = Html.component({
             },
           }),
           h.output.children(`Selected theme: ${model.theme ?? 'None'}`),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Checkbox and Switch'),
+          h.form.class('example-label').children(
+            Checkbox(h, {
+              id: 'weekly-summary',
+              label: 'Weekly summary',
+              description: 'Get one email each week.',
+              props: { checked: model.summary, name: 'summary' },
+              onEmit: {
+                Toggled: ({ checked }) => Message.ToggledSummary({ checked }),
+              },
+            }),
+            Switch(h, {
+              id: 'email-alerts',
+              label: 'Email alerts',
+              props: { checked: model.alerts, name: 'alerts' },
+              onToggle: Message.ToggledAlerts,
+            }),
+          ),
         ),
         h.section.class('example').children(
           h.h2.children('Popover'),
