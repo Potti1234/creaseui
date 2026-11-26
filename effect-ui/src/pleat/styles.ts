@@ -2483,6 +2483,139 @@ export const menu = {
   }),
 }
 
+export const drawer = {
+  backdrop: Style.make({
+    position: 'fixed',
+    inset: 0,
+    backgroundColor: 'rgb(0 0 0 / 50%)',
+    opacity: 'calc(1 - var(--drawer-swipe-progress, 0))',
+    transition: 'opacity 200ms',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-starting-style],[data-ending-style])'), {
+      opacity: 0,
+    }),
+    Style.when(When.pseudo(':is([data-swiping])'), {
+      transition: 'none',
+    }),
+    Style.when(When.media('(prefers-reduced-motion: reduce)'), {
+      transition: 'none',
+    }),
+  ),
+  viewport: Style.make({
+    position: 'fixed',
+    inset: 0,
+    display: 'flex',
+    paddingBottom: 'var(--drawer-keyboard-inset, 0px)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-side="top"])'), {
+      alignItems: 'start',
+    }),
+    Style.when(When.pseudo(':is([data-side="bottom"])'), {
+      alignItems: 'end',
+    }),
+    Style.when(When.pseudo(':is([data-side="left"])'), {
+      justifyContent: 'start',
+    }),
+    Style.when(When.pseudo(':is([data-side="right"])'), {
+      justifyContent: 'end',
+    }),
+  ),
+  popup: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    position: 'relative',
+    display: 'grid',
+    gap: 16,
+    minHeight: 0,
+    maxHeight: '100dvh',
+    width: '100%',
+    overflow: 'hidden',
+    backgroundColor: 'var(--background)',
+    color: 'var(--foreground)',
+    padding: 20,
+    boxShadow: '0 10px 30px rgb(0 0 0 / 20%)',
+    outline: 'none',
+    translate: 'var(--crease-drawer-translate)',
+    transitionProperty: 'translate',
+    transitionDuration: 'calc(var(--drawer-swipe-strength, 1) * 320ms)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-starting-style],[data-ending-style])'), {
+      translate: 'var(--crease-drawer-exit)',
+    }),
+    Style.when(When.pseudo(':is([data-swiping])'), {
+      transition: 'none',
+    }),
+    Style.when(When.media('(prefers-reduced-motion: reduce)'), {
+      transition: 'none',
+    }),
+    Style.when(When.pseudo(':is([data-side="top"])'), {
+      borderBottomLeftRadius: 'var(--radius)',
+      borderBottomRightRadius: 'var(--radius)',
+    }),
+    Style.when(When.pseudo(':is([data-side="bottom"])'), {
+      borderTopLeftRadius: 'var(--radius)',
+      borderTopRightRadius: 'var(--radius)',
+    }),
+    Style.when(When.pseudo(':is([data-side="left"],[data-side="right"])'), {
+      height: '100%',
+      maxWidth: '24rem',
+    }),
+  ),
+  handle: Style.make({
+    height: 6,
+    width: 48,
+    marginInline: 'auto',
+    borderRadius: 999,
+    backgroundColor:
+      'color-mix(in oklab, var(--muted-foreground) 45%, transparent)',
+  }),
+  header: Style.make({
+    display: 'grid',
+    gap: 6,
+  }),
+  title: Style.make({
+    margin: 0,
+    fontSize: '1.125rem',
+    fontWeight: 600,
+  }),
+  description: Style.make({
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  }),
+  content: Style.make({
+    minHeight: 0,
+    overflow: 'auto',
+    overscrollBehavior: 'contain',
+  }),
+  footer: Style.make({
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'end',
+    gap: 8,
+  }),
+  close: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    paddingInline: 12,
+    height: 32,
+    fontSize: '0.875rem',
+    cursor: 'pointer',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'var(--muted)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+}
+
 export const tooltip = {
   root: Style.make({ display: 'inline-block' }),
   positioner: Style.make({

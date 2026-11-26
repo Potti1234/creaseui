@@ -2572,6 +2572,150 @@ export const menu = stylex.create({
   },
 })
 
+export const drawer = stylex.create({
+  backdrop: {
+    position: 'fixed',
+    inset: 0,
+    backgroundColor: 'rgb(0 0 0 / 50%)',
+    opacity: {
+      default: 'calc(1 - var(--drawer-swipe-progress, 0))',
+      ':is([data-starting-style])': 0,
+      ':is([data-ending-style])': 0,
+    },
+    transition: {
+      default: 'opacity 200ms',
+      ':is([data-swiping])': 'none',
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+  },
+  viewport: {
+    position: 'fixed',
+    inset: 0,
+    display: 'flex',
+    paddingBottom: 'var(--drawer-keyboard-inset, 0px)',
+    alignItems: {
+      default: null,
+      ':is([data-side="top"])': 'start',
+      ':is([data-side="bottom"])': 'end',
+    },
+    justifyContent: {
+      default: null,
+      ':is([data-side="left"])': 'start',
+      ':is([data-side="right"])': 'end',
+    },
+  },
+  popup: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    position: 'relative',
+    display: 'grid',
+    gap: 16,
+    minHeight: 0,
+    maxHeight: '100dvh',
+    width: '100%',
+    overflow: 'hidden',
+    backgroundColor: 'var(--background)',
+    color: 'var(--foreground)',
+    padding: 20,
+    boxShadow: '0 10px 30px rgb(0 0 0 / 20%)',
+    outline: 'none',
+    translate: {
+      default: 'var(--crease-drawer-translate)',
+      ':is([data-starting-style])': 'var(--crease-drawer-exit)',
+      ':is([data-ending-style])': 'var(--crease-drawer-exit)',
+    },
+    transitionProperty: 'translate',
+    transitionDuration: 'calc(var(--drawer-swipe-strength, 1) * 320ms)',
+    transition: {
+      default: null,
+      ':is([data-swiping])': 'none',
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+    borderBottomLeftRadius: {
+      default: null,
+      ':is([data-side="top"])': 'var(--radius)',
+    },
+    borderBottomRightRadius: {
+      default: null,
+      ':is([data-side="top"])': 'var(--radius)',
+    },
+    borderTopLeftRadius: {
+      default: null,
+      ':is([data-side="bottom"])': 'var(--radius)',
+    },
+    borderTopRightRadius: {
+      default: null,
+      ':is([data-side="bottom"])': 'var(--radius)',
+    },
+    height: {
+      default: null,
+      ':is([data-side="left"])': '100%',
+      ':is([data-side="right"])': '100%',
+    },
+    maxWidth: {
+      default: null,
+      ':is([data-side="left"])': '24rem',
+      ':is([data-side="right"])': '24rem',
+    },
+  },
+  handle: {
+    height: 6,
+    width: 48,
+    marginInline: 'auto',
+    borderRadius: 999,
+    backgroundColor:
+      'color-mix(in oklab, var(--muted-foreground) 45%, transparent)',
+  },
+  header: {
+    display: 'grid',
+    gap: 6,
+  },
+  title: {
+    margin: 0,
+    fontSize: '1.125rem',
+    fontWeight: 600,
+  },
+  description: {
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  },
+  content: {
+    minHeight: 0,
+    overflow: 'auto',
+    overscrollBehavior: 'contain',
+  },
+  footer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'end',
+    gap: 8,
+  },
+  close: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'var(--background)',
+      ':hover': 'var(--muted)',
+    },
+    paddingInline: 12,
+    height: 32,
+    fontSize: '0.875rem',
+    cursor: 'pointer',
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {

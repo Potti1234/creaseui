@@ -1724,6 +1724,69 @@
       ]
     },
     {
+      "name": "effect-drawer-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/drawer.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/drawer.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-drawer",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-drawer-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/drawer.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/drawer.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-sheet-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/sheet.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/sheet.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-sheet",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-drawer",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-sheet-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/sheet.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/sheet.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -1784,7 +1847,9 @@
         "@crease-effect/effect-breadcrumb",
         "@crease-effect/effect-avatar-group",
         "@crease-effect/effect-dropdown-menu",
-        "@crease-effect/effect-context-menu"
+        "@crease-effect/effect-context-menu",
+        "@crease-effect/effect-drawer",
+        "@crease-effect/effect-sheet"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -1851,7 +1916,9 @@
         "@crease-effect/effect-breadcrumb",
         "@crease-effect/effect-avatar-group",
         "@crease-effect/effect-dropdown-menu",
-        "@crease-effect/effect-context-menu"
+        "@crease-effect/effect-context-menu",
+        "@crease-effect/effect-drawer",
+        "@crease-effect/effect-sheet"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

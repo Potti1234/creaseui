@@ -46,6 +46,8 @@ import {
   AvatarStatusDot,
   DropdownMenu,
   ContextMenu,
+  Drawer,
+  Sheet,
   Button,
   ButtonLink,
   Calendar,
@@ -102,6 +104,10 @@ const Message = UiSchema.TaggedEnum({
   },
   PickedMenuItem: { value: Schema.String },
   ToggledArchivedItems: { checked: Schema.Boolean },
+  SetPanel: {
+    panel: Schema.Literals(['drawerOpen', 'sheetOpen']),
+    open: Schema.Boolean,
+  },
 })
 
 const fruits = [
@@ -151,6 +157,8 @@ const Preview = Html.component({
     rowOpen: Schema.Boolean,
     lastMenuItem: Schema.String,
     showArchived: Schema.Boolean,
+    drawerOpen: Schema.Boolean,
+    sheetOpen: Schema.Boolean,
   }),
 }).make({
   init: () => ({
@@ -183,6 +191,8 @@ const Preview = Html.component({
     rowOpen: false,
     lastMenuItem: '',
     showArchived: false,
+    drawerOpen: false,
+    sheetOpen: false,
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -217,11 +227,55 @@ const Preview = Html.component({
     PickedMenuItem: ($, { value }) => $.evolve({ lastMenuItem: value }),
     ToggledArchivedItems: ($, { checked }) =>
       $.evolve({ showArchived: checked }),
+    SetPanel: ($, { panel, open }) => $.evolve({ [panel]: open }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          h.h2.children('Workspace panels'),
+          Drawer(h, {
+            key: 'downloads',
+            props: { open: model.drawerOpen },
+            title: 'Downloads',
+            description: 'Files exported from this workspace.',
+            trigger: Button(h, { variant: 'outline' }).children(
+              'Show downloads',
+            ),
+            content: () =>
+              h.div
+                .style({ minHeight: '8rem' })
+                .children('Your downloads appear here.'),
+            onEmit: {
+              RequestedOpen: () =>
+                Message.SetPanel({ panel: 'drawerOpen', open: true }),
+              RequestedClose: () =>
+                Message.SetPanel({ panel: 'drawerOpen', open: false }),
+              Settled: () => undefined,
+              Snapped: () => undefined,
+            },
+          }),
+          Sheet(h, {
+            key: 'preferences',
+            side: 'right',
+            props: { open: model.sheetOpen },
+            title: 'Preferences',
+            description: 'Manage this workspace.',
+            trigger: Button(h, { variant: 'outline' }).children(
+              'Show preferences',
+            ),
+            content: () => h.p.children('Notifications are enabled.'),
+            onEmit: {
+              RequestedOpen: () =>
+                Message.SetPanel({ panel: 'sheetOpen', open: true }),
+              RequestedClose: () =>
+                Message.SetPanel({ panel: 'sheetOpen', open: false }),
+              Settled: () => undefined,
+              Snapped: () => undefined,
+            },
+          }),
+        ),
         h.section.class('example').children(
           h.h2.children('Project menus'),
           DropdownMenu(h, {

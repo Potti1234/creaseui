@@ -58,3 +58,5 @@ export {
 } from './avatar-group'
 export { DropdownMenu } from './dropdown-menu'
 export { ContextMenu } from './context-menu'
+export { Drawer } from './drawer'
+export { Sheet } from './sheet'

@@ -2,6 +2,8 @@ import type { Html } from '@effect/ui/html'
 import * as stylex from '@stylexjs/stylex'
 
 import { Accordion as RenderAccordion } from '../ui/accordion'
+import { Drawer as RenderDrawer } from '../ui/drawer'
+import { Sheet as RenderSheet } from '../ui/sheet'
 import { DropdownMenu as RenderDropdownMenu } from '../ui/dropdown-menu'
 import { ContextMenu as RenderContextMenu } from '../ui/context-menu'
 import { ScrollArea as RenderScrollArea } from '../ui/scroll-area'
@@ -63,6 +65,7 @@ import { Separator as RenderSeparator } from '../ui/separator'
 import { Toggle as RenderToggle } from '../ui/toggle'
 import {
   accordion,
+  drawer,
   menu,
   scrollArea,
   toolbar,
@@ -423,3 +426,13 @@ export const ContextMenu = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderContextMenu<Msg, R>>[1],
 ) => RenderContextMenu(h, options, partClasses(menu))
+
+export const Drawer = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderDrawer<Msg, R>>[1],
+) => RenderDrawer(h, options, partClasses(drawer))
+
+export const Sheet = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderSheet<Msg, R>>[1],
+) => RenderSheet(h, options, partClasses(drawer))
