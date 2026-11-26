@@ -59,8 +59,10 @@ Input binds `props.value` and sends edits through `onUpdate`. Supply a native `e
 
 Use `Field` to pair a control with its label, help, error, and validation state. In the `control` callback, decorate a single control with `field.control`. For a field with several controls, pass `group: true` and decorate each with `field.member`. `Fieldset` supplies the native legend and shares its disabled state with nested fields.
 
+Combobox takes a single value or an array of values for multiple selection. Its `Picked` event reports the next selection and removable chips show selected items. Give an item a `group` string to display it under a labeled group. Number Input uses the kit's locale-aware formatting and emits edits through `Updated` and commits through `Committed`. Input OTP takes an Effect `Redacted<string>` and uses the kit's character validation and slot navigation.
+
 ## Upstream reproduction
 
 The [upstream findings](UPSTREAM.md) include the published issue, tested fix, snapshot SHAs, and standalone reproduction. The [contribution workflow](CONTRIBUTING.md) records how to report a finding and share the corresponding fix with Effect UI.
 
-The remaining migration includes the rest of the catalog and docs site, the Foldkit consumer lint tools, multi-select Combobox, and Calendar's range and month/year selection modes.
+The catalog report tracks remaining component work. The docs site and the Foldkit consumer lint tools also still require migration.

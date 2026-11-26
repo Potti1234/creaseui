@@ -953,6 +953,161 @@
       ]
     },
     {
+      "name": "effect-toggle-group-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/toggle-group.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/toggle-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toggle-group",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-toggle-group-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/toggle-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/toggle-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-input-otp-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/input-otp.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/input-otp.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-input-otp",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-input-otp-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/input-otp.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/input-otp.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-number-input-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/number-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/number-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-number-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-number-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/number-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/number-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-avatar-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/avatar.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/avatar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-avatar",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-avatar-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/avatar.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/avatar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-alert-dialog-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/alert-dialog.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/alert-dialog.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-alert-dialog",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-alert-dialog-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/alert-dialog.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/alert-dialog.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -988,7 +1143,12 @@
         "@crease-effect/effect-skeleton",
         "@crease-effect/effect-spinner",
         "@crease-effect/effect-center",
-        "@crease-effect/effect-direction"
+        "@crease-effect/effect-direction",
+        "@crease-effect/effect-toggle-group",
+        "@crease-effect/effect-input-otp",
+        "@crease-effect/effect-number-input",
+        "@crease-effect/effect-avatar",
+        "@crease-effect/effect-alert-dialog"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -1030,7 +1190,12 @@
         "@crease-effect/effect-skeleton",
         "@crease-effect/effect-spinner",
         "@crease-effect/effect-center",
-        "@crease-effect/effect-direction"
+        "@crease-effect/effect-direction",
+        "@crease-effect/effect-toggle-group",
+        "@crease-effect/effect-input-otp",
+        "@crease-effect/effect-number-input",
+        "@crease-effect/effect-avatar",
+        "@crease-effect/effect-alert-dialog"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

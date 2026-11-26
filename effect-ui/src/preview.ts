@@ -1,6 +1,6 @@
 import { UiSchema } from '@effect/ui'
 import { BrowserHost, Html } from '@effect/ui/html'
-import { Effect, Layer, Schema } from 'effect'
+import { Effect, Layer, Redacted, Schema } from 'effect'
 
 import {
   Accordion,
@@ -15,6 +15,11 @@ import {
   Spinner,
   Center,
   Direction,
+  ToggleGroup,
+  InputOtp,
+  NumberInput,
+  Avatar,
+  AlertDialog,
   Button,
   ButtonLink,
   Calendar,
@@ -43,6 +48,7 @@ import './preview.css'
 const Message = UiSchema.TaggedEnum({
   Pressed: {},
   PickedFruit: { value: Schema.NullOr(Schema.String) },
+  PickedFruits: { value: Schema.Array(Schema.String) },
   PickedDate: { value: CalendarDate },
   PickedTheme: { value: Schema.NullOr(Schema.String) },
   ToggledSummary: { checked: Schema.Boolean },
@@ -54,13 +60,18 @@ const Message = UiSchema.TaggedEnum({
   PickedFrequency: { value: Schema.String },
   MovedVolume: { value: Schema.Number },
   MovedRange: { value: Schema.Array(Schema.Number) },
+  FormattedText: { value: Schema.Array(Schema.String) },
+  UpdatedSeats: { value: Schema.NullOr(Schema.Number) },
+  UpdatedOtp: { value: Schema.Redacted(Schema.String) },
+  SetArchiveOpen: { open: Schema.Boolean },
+  Archived: {},
 })
 
 const fruits = [
-  { value: 'apple', label: 'Apple' },
-  { value: 'banana', label: 'Banana' },
-  { value: 'pear', label: 'Pear' },
-  { value: 'plum', label: 'Plum', disabled: true },
+  { value: 'apple', label: 'Apple', group: 'Orchard' },
+  { value: 'banana', label: 'Banana', group: 'Tropical' },
+  { value: 'pear', label: 'Pear', group: 'Orchard' },
+  { value: 'plum', label: 'Plum', group: 'Orchard', disabled: true },
 ]
 const themes = [
   { value: 'light', label: 'Light' },
@@ -76,6 +87,7 @@ const Preview = Html.component({
   model: Schema.Struct({
     presses: Schema.Number,
     fruit: Schema.NullOr(Schema.String),
+    fruits: Schema.Array(Schema.String),
     date: Schema.NullOr(CalendarDate),
     theme: Schema.NullOr(Schema.String),
     summary: Schema.Boolean,
@@ -87,11 +99,17 @@ const Preview = Html.component({
     frequency: Schema.String,
     volume: Schema.Number,
     range: Schema.Array(Schema.Number),
+    textFormats: Schema.Array(Schema.String),
+    seats: Schema.NullOr(Schema.Number),
+    otp: Schema.Redacted(Schema.String),
+    archiveOpen: Schema.Boolean,
+    archived: Schema.Boolean,
   }),
 }).make({
   init: () => ({
     presses: 0,
     fruit: 'banana',
+    fruits: ['banana'],
     date: null,
     theme: 'light',
     summary: false,
@@ -103,10 +121,16 @@ const Preview = Html.component({
     frequency: 'daily',
     volume: 40,
     range: [20, 70],
+    textFormats: ['bold'],
+    seats: 2,
+    otp: Redacted.make(''),
+    archiveOpen: false,
+    archived: false,
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
     PickedFruit: ($, { value }) => $.evolve({ fruit: value }),
+    PickedFruits: ($, { value }) => $.evolve({ fruits: value }),
     PickedDate: ($, { value }) => $.evolve({ date: value }),
     PickedTheme: ($, { value }) => $.evolve({ theme: value }),
     ToggledSummary: ($, { checked }) => $.evolve({ summary: checked }),
@@ -118,11 +142,103 @@ const Preview = Html.component({
     PickedFrequency: ($, { value }) => $.evolve({ frequency: value }),
     MovedVolume: ($, { value }) => $.evolve({ volume: value }),
     MovedRange: ($, { value }) => $.evolve({ range: value }),
+    FormattedText: ($, { value }) => $.evolve({ textFormats: value }),
+    UpdatedSeats: ($, { value }) => $.evolve({ seats: value }),
+    UpdatedOtp: ($, { value }) => $.evolve({ otp: value }),
+    SetArchiveOpen: ($, { open }) => $.evolve({ archiveOpen: open }),
+    Archived: $ => $.evolve({ archiveOpen: false, archived: true }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          h.h2.children('Formatting'),
+          ToggleGroup(h, {
+            ariaLabel: 'Text formatting',
+            props: {
+              multiple: true,
+              value: model.textFormats,
+              items: [
+                { value: 'bold' },
+                { value: 'italic' },
+                { value: 'underline', disabled: true },
+              ],
+            },
+            onEmit: {
+              Toggled: ({ value }) => Message.FormattedText({ value }),
+            },
+            variant: 'outline',
+            renderItem: value => ({
+              children: [value[0]?.toUpperCase() + value.slice(1)],
+            }),
+          }),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Booking'),
+          NumberInput(h, {
+            id: 'booking-seats',
+            label: ['Seats'],
+            description: ['Choose up to eight seats.'],
+            props: {
+              value: model.seats,
+              min: 1,
+              max: 8,
+              step: 1,
+              name: 'seats',
+            },
+            onEmit: {
+              Updated: ({ value }) => Message.UpdatedSeats({ value }),
+              Committed: () => undefined,
+            },
+          }),
+          InputOtp(h, {
+            ariaLabel: 'Booking code',
+            props: {
+              value: model.otp,
+              length: 6,
+              validationType: 'numeric',
+              name: 'booking-code',
+            },
+            onEmit: {
+              Updated: ({ value }) => Message.UpdatedOtp({ value }),
+              Completed: () => undefined,
+              Rejected: () => undefined,
+            },
+            separator: index =>
+              index === 3
+                ? h.span.attr('aria-hidden', 'true').children('–')
+                : undefined,
+          }),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Workspace'),
+          Avatar(h, {
+            props: {},
+            alt: 'Ada Lovelace',
+            fallbackContent: ['AL'],
+            tone: 'accent',
+          }),
+          AlertDialog(h, {
+            props: { open: model.archiveOpen },
+            trigger: Button(h, { variant: 'outline' }).children(
+              'Archive workspace',
+            ),
+            title: 'Archive workspace?',
+            description: 'You can restore the workspace from Settings.',
+            actionLabel: 'Archive',
+            actionVariant: 'destructive',
+            onAction: Message.Archived(),
+            onEmit: {
+              RequestedOpen: () => Message.SetArchiveOpen({ open: true }),
+              RequestedClose: () => Message.SetArchiveOpen({ open: false }),
+              Settled: () => undefined,
+            },
+          }),
+          model.archived
+            ? h.p.attr('role', 'status').children('Workspace archived')
+            : undefined,
+        ),
         h.section
           .class('example example-compact')
           .children(
@@ -155,9 +271,34 @@ const Preview = Html.component({
             label: 'Fruit',
             placeholder: 'Choose fruit',
             props: { items: fruits, value: model.fruit },
-            onEmit: { Picked: Message.PickedFruit },
+            onEmit: {
+              Picked: ({ value }) =>
+                value === null || typeof value === 'string'
+                  ? Message.PickedFruit({ value })
+                  : undefined,
+            },
           }),
           h.output.children(`Selected fruit: ${model.fruit ?? 'None'}`),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Multiple fruits'),
+          Combobox(h, {
+            key: 'many-fruits',
+            label: 'Fruits',
+            placeholder: 'Add fruits',
+            props: {
+              items: fruits,
+              value: model.fruits,
+              multiple: true,
+              name: 'fruits',
+            },
+            onEmit: {
+              Picked: ({ value }) =>
+                value !== null && typeof value !== 'string'
+                  ? Message.PickedFruits({ value })
+                  : undefined,
+            },
+          }),
         ),
         h.section.class('example').children(
           h.h2.children('Calendar'),

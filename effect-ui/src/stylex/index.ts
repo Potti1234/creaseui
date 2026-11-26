@@ -2,6 +2,11 @@ import type { Html } from '@effect/ui/html'
 import * as stylex from '@stylexjs/stylex'
 
 import { Accordion as RenderAccordion } from '../ui/accordion'
+import { ToggleGroup as RenderToggleGroup } from '../ui/toggle-group'
+import { InputOtp as RenderInputOtp } from '../ui/input-otp'
+import { NumberInput as RenderNumberInput } from '../ui/number-input'
+import { Avatar as RenderAvatar } from '../ui/avatar'
+import { AlertDialog as RenderAlertDialog } from '../ui/alert-dialog'
 import { AspectRatio as RenderAspectRatio } from '../ui/aspect-ratio'
 import { Blockquote as RenderBlockquote } from '../ui/blockquote'
 import { Badge as RenderBadge } from '../ui/badge'
@@ -35,6 +40,11 @@ import { Separator as RenderSeparator } from '../ui/separator'
 import { Toggle as RenderToggle } from '../ui/toggle'
 import {
   accordion,
+  toggleGroup,
+  inputOtp,
+  numberInput,
+  avatar,
+  alertDialog,
   aspectRatio,
   blockquote,
   badge,
@@ -244,3 +254,28 @@ export const Spinner = <Msg>(
 export { Center } from '../ui/center'
 
 export { Direction } from '../ui/direction'
+
+export const ToggleGroup = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderToggleGroup<Msg, R>>[1],
+) => RenderToggleGroup(h, options, partClasses(toggleGroup))
+
+export const InputOtp = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderInputOtp<Msg, R>>[1],
+) => RenderInputOtp(h, options, partClasses(inputOtp))
+
+export const NumberInput = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderNumberInput<Msg, R>>[1],
+) => RenderNumberInput(h, options, partClasses(numberInput))
+
+export const Avatar = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderAvatar<Msg, R>>[1],
+) => RenderAvatar(h, options, partClasses(avatar))
+
+export const AlertDialog = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderAlertDialog<Msg, R>>[1],
+) => RenderAlertDialog(h, options, partClasses(alertDialog))

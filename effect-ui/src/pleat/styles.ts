@@ -136,12 +136,46 @@ export const dialog = {
 }
 
 export const combobox = {
+  groupLabel: Style.make({
+    paddingInline: 8,
+    paddingBlock: 6,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+  }),
+  chips: Style.make({
+    display: 'flex',
+    flexGrow: 1,
+    flexWrap: 'wrap',
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 4,
+  }),
+  chip: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+    borderRadius: 4,
+    backgroundColor: 'var(--muted)',
+    paddingInline: 6,
+    paddingBlock: 2,
+    fontSize: '0.75rem',
+  }),
+  chipRemove: Style.make({
+    display: 'grid',
+    placeItems: 'center',
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    outlineOffset: 1,
+  }).pipe(Style.when(When.hover, { backgroundColor: 'var(--background)' })),
   group: Style.make({
     display: 'flex',
     alignItems: 'center',
     width: '100%',
     minWidth: 0,
-    height: 36,
+    minHeight: 36,
+    paddingBlock: 2,
     paddingInline: 10,
     borderWidth: 1,
     borderStyle: 'solid',
@@ -1210,6 +1244,435 @@ export const spinner = {
     }),
     Style.when(reducedMotion, {
       animationName: 'none',
+    }),
+  ),
+}
+
+export const toggleGroup = {
+  root: Style.make({
+    display: 'inline-flex',
+    width: 'fit-content',
+    alignItems: 'center',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation="vertical"])'), {
+      flexDirection: 'column',
+      alignItems: 'stretch',
+    }),
+    Style.when(When.pseudo(':is([data-arrangement="wrapped"])'), {
+      flexWrap: 'wrap',
+      gap: 4,
+    }),
+  ),
+  item: Style.make({
+    height: 36,
+    borderRadius: 0,
+    paddingInline: 12,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    cursor: 'pointer',
+    display: 'inline-flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-size="sm"])'), {
+      height: 32,
+    }),
+    Style.when(When.pseudo(':is([data-size="default"])'), {
+      height: 36,
+    }),
+    Style.when(When.pseudo(':is([data-size="lg"])'), {
+      height: 40,
+    }),
+    Style.when(When.hover, {
+      backgroundColor: 'var(--muted)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+      zIndex: 10,
+    }),
+    Style.when(When.disabled, {
+      opacity: 0.5,
+    }),
+    Style.when(When.pseudo(':is([data-pressed])'), {
+      backgroundColor: 'var(--accent)',
+      color: 'var(--accent-foreground)',
+    }),
+  ),
+  outline: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+  }),
+  separated: Style.make({
+    borderRadius: 'calc(var(--radius) - 2px)',
+  }),
+  horizontal: Style.make({}).pipe(
+    Style.when(When.firstChild, {
+      borderStartStartRadius: 'calc(var(--radius) - 2px)',
+      borderEndStartRadius: 'calc(var(--radius) - 2px)',
+    }),
+    Style.when(When.lastChild, {
+      borderStartEndRadius: 'calc(var(--radius) - 2px)',
+      borderEndEndRadius: 'calc(var(--radius) - 2px)',
+    }),
+    Style.when(
+      When.all(When.not(When.firstChild), When.data('variant', 'outline')),
+      {
+        borderInlineStartWidth: 0,
+      },
+    ),
+  ),
+  vertical: Style.make({}).pipe(
+    Style.when(When.firstChild, {
+      borderStartStartRadius: 'calc(var(--radius) - 2px)',
+      borderStartEndRadius: 'calc(var(--radius) - 2px)',
+    }),
+    Style.when(When.lastChild, {
+      borderEndStartRadius: 'calc(var(--radius) - 2px)',
+      borderEndEndRadius: 'calc(var(--radius) - 2px)',
+    }),
+    Style.when(
+      When.all(When.not(When.firstChild), When.data('variant', 'outline')),
+      {
+        borderTopWidth: 0,
+      },
+    ),
+  ),
+}
+
+export const inputOtp = {
+  root: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+  }),
+  group: Style.make({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+  }),
+  slot: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    width: 36,
+    height: 36,
+    textAlign: 'center',
+    fontSize: '0.875rem',
+    fontVariantNumeric: 'tabular-nums',
+    outline: 'none',
+  }).pipe(
+    Style.when(When.focus, {
+      borderColor: 'var(--ring)',
+      boxShadow: '0 0 0 3px color-mix(in oklab, var(--ring) 35%, transparent)',
+    }),
+    Style.when(When.disabled, {
+      opacity: 0.5,
+    }),
+    Style.when(When.pseudo(':is([aria-invalid="true"])'), {
+      borderColor: 'var(--destructive)',
+    }),
+  ),
+}
+
+export const numberInput = {
+  root: Style.make({
+    display: 'grid',
+    minWidth: 0,
+    gap: 6,
+    fontSize: '0.875rem',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-disabled])'), {
+      opacity: 0.5,
+    }),
+  ),
+  label: Style.make({
+    fontWeight: 500,
+  }),
+  hiddenLabel: Style.make({
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    padding: 0,
+    margin: -1,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+    borderWidth: 0,
+  }),
+  group: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    display: 'flex',
+    alignItems: 'center',
+    minWidth: 0,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-size="sm"])'), {
+      height: 28,
+    }),
+    Style.when(When.pseudo(':is([data-size="md"])'), {
+      height: 32,
+    }),
+    Style.when(When.pseudo(':is([data-size="lg"])'), {
+      height: 36,
+    }),
+    Style.when(When.focusWithin, {
+      borderColor: 'var(--ring)',
+      boxShadow: '0 0 0 3px color-mix(in oklab, var(--ring) 35%, transparent)',
+    }),
+    Style.when(When.pseudo(':has([aria-invalid="true"])'), {
+      borderColor: 'var(--destructive)',
+    }),
+  ),
+  input: Style.make({
+    minWidth: 0,
+    flexGrow: 1,
+    backgroundColor: 'transparent',
+    paddingInline: 10,
+    fontVariantNumeric: 'tabular-nums',
+    outline: 'none',
+  }),
+  affix: Style.make({
+    flexShrink: 0,
+    paddingInline: 6,
+    color: 'var(--muted-foreground)',
+  }),
+  stepper: Style.make({
+    height: '100%',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 0,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    cursor: 'pointer',
+    display: 'grid',
+    placeItems: 'center',
+    width: 32,
+    flexShrink: 0,
+    color: 'var(--muted-foreground)',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'var(--muted)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+    Style.when(When.disabled, {
+      opacity: 0.5,
+    }),
+  ),
+  description: Style.make({
+    color: 'var(--muted-foreground)',
+  }),
+}
+
+export const avatar = {
+  root: Style.make({
+    position: 'relative',
+    display: 'inline-flex',
+    width: 32,
+    height: 32,
+    flexShrink: 0,
+    userSelect: 'none',
+    borderRadius: 999,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-size="sm"])'), {
+      width: 24,
+      height: 24,
+    }),
+    Style.when(When.pseudo(':is([data-size="lg"])'), {
+      width: 40,
+      height: 40,
+    }),
+  ),
+  image: Style.make({
+    aspectRatio: '1',
+    width: '100%',
+    height: '100%',
+    borderRadius: 999,
+    objectFit: 'cover',
+  }),
+  fallback: Style.make({
+    position: 'absolute',
+    inset: 0,
+    display: 'grid',
+    placeItems: 'center',
+    borderRadius: 999,
+    backgroundColor: 'var(--muted)',
+    color: 'var(--foreground)',
+    fontSize: '0.875rem',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-size="sm"])'), {
+      fontSize: '0.75rem',
+    }),
+    Style.when(When.pseudo(':is([data-tone="accent"])'), {
+      backgroundColor: 'color-mix(in oklab, var(--primary) 15%, transparent)',
+      color: 'var(--primary)',
+      fontWeight: 500,
+    }),
+  ),
+  badge: Style.make({
+    position: 'absolute',
+    insetInlineEnd: 0,
+    bottom: 0,
+    zIndex: 10,
+    display: 'grid',
+    placeItems: 'center',
+    width: 10,
+    height: 10,
+    borderRadius: 999,
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+    boxShadow: '0 0 0 2px var(--background)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-size="sm"])'), {
+      width: 8,
+      height: 8,
+    }),
+    Style.when(When.pseudo(':is([data-size="lg"])'), {
+      width: 12,
+      height: 12,
+    }),
+  ),
+}
+
+export const alertDialog = {
+  backdrop: Style.make({
+    position: 'fixed',
+    inset: 0,
+    backgroundColor: 'rgb(0 0 0 / 50%)',
+    transition: 'opacity 200ms',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-starting-style], [data-ending-style])'), {
+      opacity: 0,
+    }),
+    Style.when(When.media('(prefers-reduced-motion: reduce)'), {
+      transition: 'none',
+    }),
+  ),
+  viewport: Style.make({
+    position: 'fixed',
+    inset: 0,
+    display: 'grid',
+    placeItems: 'center',
+    overflowY: 'auto',
+    padding: 16,
+  }),
+  popup: Style.make({
+    position: 'relative',
+    display: 'grid',
+    gap: 16,
+    width: '100%',
+    maxWidth: '32rem',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--background)',
+    color: 'var(--foreground)',
+    padding: 24,
+    boxShadow: '0 10px 30px rgb(0 0 0 / 20%)',
+    outline: 'none',
+    transition: 'opacity 200ms, scale 200ms',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-starting-style], [data-ending-style])'), {
+      opacity: 0,
+      scale: 0.95,
+    }),
+    Style.when(When.pseudo(':is([data-size="sm"])'), {
+      maxWidth: '20rem',
+    }),
+    Style.when(When.media('(prefers-reduced-motion: reduce)'), {
+      transition: 'none',
+    }),
+  ),
+  header: Style.make({
+    display: 'grid',
+    gap: 6,
+  }),
+  title: Style.make({
+    fontSize: '1.125rem',
+    fontWeight: 600,
+    margin: 0,
+  }),
+  description: Style.make({
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+    margin: 0,
+  }),
+  media: Style.make({
+    display: 'grid',
+    placeItems: 'center',
+    width: 64,
+    height: 64,
+    marginBottom: 8,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--muted)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-tone="destructive"])'), {
+      backgroundColor:
+        'color-mix(in oklab, var(--destructive) 10%, transparent)',
+      color: 'var(--destructive)',
+    }),
+  ),
+  footer: Style.make({
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end',
+    gap: 8,
+  }),
+  cancel: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    height: 36,
+    paddingInline: 12,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    cursor: 'pointer',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'var(--muted)',
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+    Style.when(When.disabled, {
+      opacity: 0.5,
+    }),
+  ),
+  action: Style.make({
+    height: 36,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 12,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    cursor: 'pointer',
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+  }).pipe(
+    Style.when(When.hover, {
+      opacity: 0.9,
+    }),
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+    Style.when(When.disabled, {
+      opacity: 0.5,
+    }),
+    Style.when(When.pseudo(':is([data-tone="destructive"])'), {
+      backgroundColor: 'var(--destructive)',
+      color: 'white',
     }),
   ),
 }

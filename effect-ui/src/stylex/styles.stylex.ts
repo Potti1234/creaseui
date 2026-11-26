@@ -131,12 +131,47 @@ export const dialog = stylex.create({
 })
 
 export const combobox = stylex.create({
+  groupLabel: {
+    paddingInline: 8,
+    paddingBlock: 6,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+  },
+  chips: {
+    display: 'flex',
+    flexGrow: 1,
+    flexWrap: 'wrap',
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 4,
+  },
+  chip: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+    borderRadius: 4,
+    backgroundColor: 'var(--muted)',
+    paddingInline: 6,
+    paddingBlock: 2,
+    fontSize: '0.75rem',
+  },
+  chipRemove: {
+    display: 'grid',
+    placeItems: 'center',
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    outlineOffset: 1,
+    backgroundColor: { default: 'transparent', ':hover': 'var(--background)' },
+  },
   group: {
     display: 'flex',
     alignItems: 'center',
     width: '100%',
     minWidth: 0,
-    height: 36,
+    minHeight: 36,
+    paddingBlock: 2,
     paddingInline: 10,
     borderWidth: 1,
     borderStyle: 'solid',
@@ -1227,6 +1262,481 @@ export const spinner = stylex.create({
       default: null,
       ':is([data-tone=muted])': 'var(--muted-foreground)',
       ':is([data-tone=primary])': 'var(--primary)',
+    },
+  },
+})
+
+export const toggleGroup = stylex.create({
+  root: {
+    display: 'inline-flex',
+    width: 'fit-content',
+    alignItems: {
+      default: 'center',
+      ':is([data-orientation="vertical"])': 'stretch',
+    },
+    flexDirection: {
+      default: null,
+      ':is([data-orientation="vertical"])': 'column',
+    },
+    flexWrap: {
+      default: null,
+      ':is([data-arrangement="wrapped"])': 'wrap',
+    },
+    gap: {
+      default: null,
+      ':is([data-arrangement="wrapped"])': 4,
+    },
+  },
+  item: {
+    height: {
+      default: 36,
+      ':is([data-size="sm"])': 32,
+      ':is([data-size="default"])': 36,
+      ':is([data-size="lg"])': 40,
+    },
+    borderRadius: 0,
+    paddingInline: 12,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    cursor: 'pointer',
+    display: 'inline-flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    backgroundColor: {
+      default: null,
+      ':hover': 'var(--muted)',
+      ':is([data-pressed])': 'var(--accent)',
+    },
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+    zIndex: {
+      default: null,
+      ':focus-visible': 10,
+    },
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+    color: {
+      default: null,
+      ':is([data-pressed])': 'var(--accent-foreground)',
+    },
+  },
+  outline: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+  },
+  separated: {
+    borderRadius: 'calc(var(--radius) - 2px)',
+  },
+  horizontal: {
+    borderStartStartRadius: {
+      default: null,
+      ':first-child': 'calc(var(--radius) - 2px)',
+    },
+    borderEndStartRadius: {
+      default: null,
+      ':first-child': 'calc(var(--radius) - 2px)',
+    },
+    borderStartEndRadius: {
+      default: null,
+      ':last-child': 'calc(var(--radius) - 2px)',
+    },
+    borderEndEndRadius: {
+      default: null,
+      ':last-child': 'calc(var(--radius) - 2px)',
+    },
+    borderInlineStartWidth: {
+      default: null,
+      ':not(:first-child)[data-variant="outline"]': 0,
+    },
+  },
+  vertical: {
+    borderStartStartRadius: {
+      default: null,
+      ':first-child': 'calc(var(--radius) - 2px)',
+    },
+    borderStartEndRadius: {
+      default: null,
+      ':first-child': 'calc(var(--radius) - 2px)',
+    },
+    borderEndStartRadius: {
+      default: null,
+      ':last-child': 'calc(var(--radius) - 2px)',
+    },
+    borderEndEndRadius: {
+      default: null,
+      ':last-child': 'calc(var(--radius) - 2px)',
+    },
+    borderTopWidth: {
+      default: null,
+      ':not(:first-child)[data-variant="outline"]': 0,
+    },
+  },
+})
+
+export const inputOtp = stylex.create({
+  root: {
+    display: 'inline-flex',
+    alignItems: 'center',
+  },
+  group: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+  },
+  slot: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--input)',
+      ':focus': 'var(--ring)',
+      ':is([aria-invalid="true"])': 'var(--destructive)',
+    },
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    width: 36,
+    height: 36,
+    textAlign: 'center',
+    fontSize: '0.875rem',
+    fontVariantNumeric: 'tabular-nums',
+    outline: 'none',
+    boxShadow: {
+      default: null,
+      ':focus': '0 0 0 3px color-mix(in oklab, var(--ring) 35%, transparent)',
+    },
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+  },
+})
+
+export const numberInput = stylex.create({
+  root: {
+    display: 'grid',
+    minWidth: 0,
+    gap: 6,
+    fontSize: '0.875rem',
+    opacity: {
+      default: null,
+      ':is([data-disabled])': 0.5,
+    },
+  },
+  label: {
+    fontWeight: 500,
+  },
+  hiddenLabel: {
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    padding: 0,
+    margin: -1,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+    borderWidth: 0,
+  },
+  group: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--input)',
+      ':focus-within': 'var(--ring)',
+      ':has([aria-invalid="true"])': 'var(--destructive)',
+    },
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    display: 'flex',
+    alignItems: 'center',
+    minWidth: 0,
+    height: {
+      default: null,
+      ':is([data-size="sm"])': 28,
+      ':is([data-size="md"])': 32,
+      ':is([data-size="lg"])': 36,
+    },
+    boxShadow: {
+      default: null,
+      ':focus-within':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 35%, transparent)',
+    },
+  },
+  input: {
+    minWidth: 0,
+    flexGrow: 1,
+    backgroundColor: 'transparent',
+    paddingInline: 10,
+    fontVariantNumeric: 'tabular-nums',
+    outline: 'none',
+  },
+  affix: {
+    flexShrink: 0,
+    paddingInline: 6,
+    color: 'var(--muted-foreground)',
+  },
+  stepper: {
+    height: '100%',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 0,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    cursor: 'pointer',
+    display: 'grid',
+    placeItems: 'center',
+    width: 32,
+    flexShrink: 0,
+    color: 'var(--muted-foreground)',
+    backgroundColor: {
+      default: null,
+      ':hover': 'var(--muted)',
+    },
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+  },
+  description: {
+    color: 'var(--muted-foreground)',
+  },
+})
+
+export const avatar = stylex.create({
+  root: {
+    position: 'relative',
+    display: 'inline-flex',
+    width: {
+      default: 32,
+      ':is([data-size="sm"])': 24,
+      ':is([data-size="lg"])': 40,
+    },
+    height: {
+      default: 32,
+      ':is([data-size="sm"])': 24,
+      ':is([data-size="lg"])': 40,
+    },
+    flexShrink: 0,
+    userSelect: 'none',
+    borderRadius: 999,
+  },
+  image: {
+    aspectRatio: '1',
+    width: '100%',
+    height: '100%',
+    borderRadius: 999,
+    objectFit: 'cover',
+  },
+  fallback: {
+    position: 'absolute',
+    inset: 0,
+    display: 'grid',
+    placeItems: 'center',
+    borderRadius: 999,
+    backgroundColor: {
+      default: 'var(--muted)',
+      ':is([data-tone="accent"])':
+        'color-mix(in oklab, var(--primary) 15%, transparent)',
+    },
+    color: {
+      default: 'var(--foreground)',
+      ':is([data-tone="accent"])': 'var(--primary)',
+    },
+    fontSize: {
+      default: '0.875rem',
+      ':is([data-size="sm"])': '0.75rem',
+    },
+    fontWeight: {
+      default: null,
+      ':is([data-tone="accent"])': 500,
+    },
+  },
+  badge: {
+    position: 'absolute',
+    insetInlineEnd: 0,
+    bottom: 0,
+    zIndex: 10,
+    display: 'grid',
+    placeItems: 'center',
+    width: {
+      default: 10,
+      ':is([data-size="sm"])': 8,
+      ':is([data-size="lg"])': 12,
+    },
+    height: {
+      default: 10,
+      ':is([data-size="sm"])': 8,
+      ':is([data-size="lg"])': 12,
+    },
+    borderRadius: 999,
+    backgroundColor: 'var(--primary)',
+    color: 'var(--primary-foreground)',
+    boxShadow: '0 0 0 2px var(--background)',
+  },
+})
+
+export const alertDialog = stylex.create({
+  backdrop: {
+    position: 'fixed',
+    inset: 0,
+    backgroundColor: 'rgb(0 0 0 / 50%)',
+    transition: {
+      default: 'opacity 200ms',
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+    opacity: {
+      default: null,
+      ':is([data-starting-style])': 0,
+      ':is([data-ending-style])': 0,
+    },
+  },
+  viewport: {
+    position: 'fixed',
+    inset: 0,
+    display: 'grid',
+    placeItems: 'center',
+    overflowY: 'auto',
+    padding: 16,
+  },
+  popup: {
+    position: 'relative',
+    display: 'grid',
+    gap: 16,
+    width: '100%',
+    maxWidth: {
+      default: '32rem',
+      ':is([data-size="sm"])': '20rem',
+    },
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--background)',
+    color: 'var(--foreground)',
+    padding: 24,
+    boxShadow: '0 10px 30px rgb(0 0 0 / 20%)',
+    outline: 'none',
+    transition: {
+      default: 'opacity 200ms, scale 200ms',
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+    opacity: {
+      default: null,
+      ':is([data-starting-style])': 0,
+      ':is([data-ending-style])': 0,
+    },
+    scale: {
+      default: null,
+      ':is([data-starting-style])': 0.95,
+      ':is([data-ending-style])': 0.95,
+    },
+  },
+  header: {
+    display: 'grid',
+    gap: 6,
+  },
+  title: {
+    fontSize: '1.125rem',
+    fontWeight: 600,
+    margin: 0,
+  },
+  description: {
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+    margin: 0,
+  },
+  media: {
+    display: 'grid',
+    placeItems: 'center',
+    width: 64,
+    height: 64,
+    marginBottom: 8,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'var(--muted)',
+      ':is([data-tone="destructive"])':
+        'color-mix(in oklab, var(--destructive) 10%, transparent)',
+    },
+    color: {
+      default: null,
+      ':is([data-tone="destructive"])': 'var(--destructive)',
+    },
+  },
+  footer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end',
+    gap: 8,
+  },
+  cancel: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'var(--background)',
+      ':hover': 'var(--muted)',
+    },
+    height: 36,
+    paddingInline: 12,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    cursor: 'pointer',
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+  },
+  action: {
+    height: 36,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    paddingInline: 12,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    cursor: 'pointer',
+    backgroundColor: {
+      default: 'var(--primary)',
+      ':is([data-tone="destructive"])': 'var(--destructive)',
+    },
+    color: {
+      default: 'var(--primary-foreground)',
+      ':is([data-tone="destructive"])': 'white',
+    },
+    opacity: {
+      default: null,
+      ':hover': 0.9,
+      ':disabled': 0.5,
+    },
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
     },
   },
 })

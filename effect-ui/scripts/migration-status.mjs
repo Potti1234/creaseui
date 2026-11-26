@@ -14,7 +14,11 @@ const registry = new Map(
 )
 const partial = new Map([
   ['calendar', 'Range, month, and year selection'],
-  ['combobox', 'Multiple selection'],
+  ['input-otp', 'Custom character patterns'],
+  [
+    'number-input',
+    'Arbitrary display formatter, strict integer mode, and attached field status',
+  ],
 ])
 const renderers = ['stylex-effect-components', 'pleat-effect-components']
 const missing = [...catalog].sort().filter(name => {
