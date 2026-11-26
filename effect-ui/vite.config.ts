@@ -1,16 +1,40 @@
 import { fileURLToPath } from 'node:url'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 
 import stylex from '@stylexjs/unplugin'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 
 const fromRoot = (path: string) => fileURLToPath(new URL(path, import.meta.url))
+
+const docsRouting = (): Plugin => {
+  const route = (
+    request: IncomingMessage,
+    _response: ServerResponse,
+    next: () => void,
+  ) => {
+    const pathname = request.url?.split('?')[0] ?? ''
+    if (/^\/docs(?:\/[^.?]*)?$/.test(pathname)) request.url = '/docs/index.html'
+    next()
+  }
+  return {
+    name: 'crease-effect-docs-routing',
+    configureServer: server => {
+      server.middlewares.use(route)
+    },
+    configurePreviewServer: server => {
+      server.middlewares.use(route)
+    },
+  }
+}
 
 export default defineConfig(({ mode }) => {
   const renderer = mode === 'stylex' || mode === 'pleat' ? mode : 'tailwind'
   return {
-    plugins:
-      renderer === 'stylex'
+    cacheDir: fromRoot(`./node_modules/.vite/${renderer}`),
+    plugins: [
+      docsRouting(),
+      ...(renderer === 'stylex'
         ? [
             stylex.vite({
               styleResolution: 'property-specificity',
@@ -19,7 +43,8 @@ export default defineConfig(({ mode }) => {
           ]
         : renderer === 'tailwind'
           ? [tailwindcss()]
-          : [],
+          : []),
+    ],
     resolve: {
       alias: {
         '#components': fromRoot(
@@ -31,6 +56,14 @@ export default defineConfig(({ mode }) => {
       },
       dedupe: ['effect'],
     },
-    build: { outDir: `dist/${renderer}` },
+    build: {
+      outDir: `dist/${renderer}`,
+      rolldownOptions: {
+        input: {
+          preview: fromRoot('./index.html'),
+          docs: fromRoot('./docs/index.html'),
+        },
+      },
+    },
   }
 })
