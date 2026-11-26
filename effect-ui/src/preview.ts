@@ -48,6 +48,11 @@ import {
   ContextMenu,
   Drawer,
   Sheet,
+  CircularProgress,
+  Stat,
+  Bubble,
+  BubbleGroup,
+  Token,
   Button,
   ButtonLink,
   Calendar,
@@ -108,6 +113,7 @@ const Message = UiSchema.TaggedEnum({
     panel: Schema.Literals(['drawerOpen', 'sheetOpen']),
     open: Schema.Boolean,
   },
+  RemovedActivityToken: {},
 })
 
 const fruits = [
@@ -159,6 +165,7 @@ const Preview = Html.component({
     showArchived: Schema.Boolean,
     drawerOpen: Schema.Boolean,
     sheetOpen: Schema.Boolean,
+    activityTokenRemoved: Schema.Boolean,
   }),
 }).make({
   init: () => ({
@@ -193,6 +200,7 @@ const Preview = Html.component({
     showArchived: false,
     drawerOpen: false,
     sheetOpen: false,
+    activityTokenRemoved: false,
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -228,11 +236,59 @@ const Preview = Html.component({
     ToggledArchivedItems: ($, { checked }) =>
       $.evolve({ showArchived: checked }),
     SetPanel: ($, { panel, open }) => $.evolve({ [panel]: open }),
+    RemovedActivityToken: $ => $.evolve({ activityTokenRemoved: true }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          h.h2.children('Activity signals'),
+          Stat(h, {
+            label: 'Review requests',
+            value: '64',
+            delta: { direction: 'up', value: '8' },
+            description: 'Compared with last week',
+          }),
+          HStack(h, {
+            gap: 3,
+            children: [
+              CircularProgress(h, {
+                key: 'activity-review',
+                label: 'Reviews completed',
+                value: 64,
+                showValue: true,
+              }),
+              CircularProgress(h, {
+                key: 'activity-sync',
+                label: 'Syncing status',
+                value: null,
+                size: 'sm',
+              }),
+            ],
+          }),
+          BubbleGroup(h, {
+            children: [
+              Bubble(h, {
+                variant: 'outline',
+                children: ['Please review today’s changes.'],
+              }),
+              Bubble(h, {
+                variant: 'muted',
+                align: 'end',
+                children: ['I’ll take a look.'],
+              }),
+            ],
+          }),
+          model.activityTokenRemoved
+            ? undefined
+            : Token(h, {
+                label: 'Needs review',
+                color: 'blue',
+                href: '#project-activity',
+                onRemove: Message.RemovedActivityToken(),
+              }),
+        ),
         h.section.class('example').children(
           h.h2.children('Workspace panels'),
           Drawer(h, {

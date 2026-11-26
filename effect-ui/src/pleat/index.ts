@@ -2,6 +2,11 @@ import type { Html } from '@effect/ui/html'
 import { Style } from '@pleat/core'
 
 import { Accordion as RenderAccordion } from '../ui/accordion'
+import { CircularProgress as RenderCircularProgress } from '../ui/circular-progress'
+import { Stat as RenderStat } from '../ui/stat'
+import { Bubble as RenderBubble } from '../ui/bubble'
+import { Token as RenderToken } from '../ui/token'
+import { BubbleGroup as RenderBubbleGroup } from '../ui/bubble'
 import { Drawer as RenderDrawer } from '../ui/drawer'
 import { Sheet as RenderSheet } from '../ui/sheet'
 import { DropdownMenu as RenderDropdownMenu } from '../ui/dropdown-menu'
@@ -65,6 +70,10 @@ import { Separator as RenderSeparator } from '../ui/separator'
 import { Toggle as RenderToggle } from '../ui/toggle'
 import {
   accordion,
+  circularProgress,
+  stat,
+  bubble,
+  token,
   drawer,
   menu,
   scrollArea,
@@ -438,3 +447,28 @@ export const Sheet = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderSheet<Msg, R>>[1],
 ) => RenderSheet(h, options, partClasses(drawer))
+
+export const CircularProgress = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderCircularProgress<Msg, R>>[1],
+) => RenderCircularProgress(h, options, partClasses(circularProgress))
+
+export const Stat = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderStat<Msg, R>>[1],
+) => RenderStat(h, options, partClasses(stat))
+
+export const Bubble = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderBubble<Msg, R>>[1],
+) => RenderBubble(h, options, partClasses(bubble))
+
+export const Token = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderToken<Msg, R>>[1],
+) => RenderToken(h, options, partClasses(token))
+
+export const BubbleGroup = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderBubbleGroup<Msg, R>>[1],
+) => RenderBubbleGroup(h, options, partClasses(bubble))

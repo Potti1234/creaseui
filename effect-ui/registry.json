@@ -1787,6 +1787,127 @@
       ]
     },
     {
+      "name": "effect-circular-progress-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/circular-progress.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/circular-progress.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-circular-progress",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-circular-progress-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/circular-progress.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/circular-progress.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-stat-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/stat.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/stat.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-stat",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-stat-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/stat.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/stat.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-bubble-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/bubble.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/bubble.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-bubble",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-bubble-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/bubble.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/bubble.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-token-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/token.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/token.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-token",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-token-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/token.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/token.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -1849,7 +1970,11 @@
         "@crease-effect/effect-dropdown-menu",
         "@crease-effect/effect-context-menu",
         "@crease-effect/effect-drawer",
-        "@crease-effect/effect-sheet"
+        "@crease-effect/effect-sheet",
+        "@crease-effect/effect-circular-progress",
+        "@crease-effect/effect-stat",
+        "@crease-effect/effect-bubble",
+        "@crease-effect/effect-token"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -1918,7 +2043,11 @@
         "@crease-effect/effect-dropdown-menu",
         "@crease-effect/effect-context-menu",
         "@crease-effect/effect-drawer",
-        "@crease-effect/effect-sheet"
+        "@crease-effect/effect-sheet",
+        "@crease-effect/effect-circular-progress",
+        "@crease-effect/effect-stat",
+        "@crease-effect/effect-bubble",
+        "@crease-effect/effect-token"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },
