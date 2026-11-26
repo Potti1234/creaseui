@@ -44,6 +44,11 @@ import {
 import { ToggleGroup as RenderToggleGroup } from '../ui/toggle-group'
 import { InputOtp as RenderInputOtp } from '../ui/input-otp'
 import { NumberInput as RenderNumberInput } from '../ui/number-input'
+import { Icon as RenderIcon } from '../ui/icon'
+import { FieldStatus as RenderFieldStatus } from '../ui/field-status'
+import { Indicator as RenderIndicator } from '../ui/indicator'
+import { InputGroup as RenderInputGroup } from '../ui/input-group'
+import { ButtonGroup as RenderButtonGroup } from '../ui/button-group'
 import { Avatar as RenderAvatar } from '../ui/avatar'
 import { AlertDialog as RenderAlertDialog } from '../ui/alert-dialog'
 import { AspectRatio as RenderAspectRatio } from '../ui/aspect-ratio'
@@ -110,6 +115,11 @@ import {
   toggleGroup,
   inputOtp,
   numberInput,
+  icon,
+  fieldStatus,
+  indicator,
+  inputGroup,
+  buttonGroup,
   avatar,
   alertDialog,
   aspectRatio,
@@ -342,7 +352,7 @@ export const InputOtp = <Msg, R = never>(
 export const NumberInput = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderNumberInput<Msg, R>>[1],
-) => RenderNumberInput(h, options, partClasses(numberInput))
+) => RenderNumberInput(h, options, partClasses(numberInput), FieldStatus)
 
 export const Avatar = <Msg, R = never>(
   h: Html.H<Msg>,
@@ -572,3 +582,30 @@ export const BubbleGroup = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderBubbleGroup<Msg, R>>[1],
 ) => RenderBubbleGroup(h, options, partClasses(bubble))
+
+export { hasIcon, iconNames } from '../ui/icon'
+
+export const Icon = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderIcon<Msg>>[1],
+) => RenderIcon(h, options, partClasses(icon))
+
+export const FieldStatus = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderFieldStatus<Msg, R>>[1],
+) => RenderFieldStatus(h, options, partClasses(fieldStatus))
+
+export const Indicator = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderIndicator<Msg, R>>[1],
+) => RenderIndicator(h, options, partClasses(indicator))
+
+export const InputGroup = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderInputGroup<Msg, R>>[1],
+) => RenderInputGroup(h, options, partClasses(inputGroup))
+
+export const ButtonGroup = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderButtonGroup<Msg, R>>[1],
+) => RenderButtonGroup(h, options, partClasses(buttonGroup))

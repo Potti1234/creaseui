@@ -3543,6 +3543,256 @@ export const dateRangeInput = {
   ),
 }
 
+export const icon = {
+  root: Style.make({
+    display: 'inline-block',
+    flexShrink: 0,
+    verticalAlign: 'middle',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-rotation])'), {
+      transition: 'transform 150ms',
+    }),
+    Style.when(When.media('(prefers-reduced-motion: reduce)'), {
+      transition: 'none',
+    }),
+  ),
+}
+
+export const fieldStatus = {
+  root: Style.make({
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 4,
+    paddingInline: 8,
+    paddingBlockEnd: 8,
+    fontSize: '0.75rem',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-variant="attached"])'), {
+      pointerEvents: 'none',
+      marginBlockStart: -6,
+      borderBottomLeftRadius: 'var(--radius)',
+      borderBottomRightRadius: 'var(--radius)',
+      paddingBlockStart: 14,
+    }),
+    Style.when(When.pseudo(':is([data-variant="detached"])'), {
+      marginBlockStart: 4,
+      borderRadius: 'var(--radius)',
+      paddingBlockStart: 8,
+    }),
+    Style.when(When.pseudo(':is([data-type="warning"])'), {
+      color: 'var(--warning)',
+      backgroundColor: 'color-mix(in oklab, var(--warning) 20%, transparent)',
+    }),
+    Style.when(When.pseudo(':is([data-type="error"])'), {
+      color: 'var(--destructive)',
+      backgroundColor:
+        'color-mix(in oklab, var(--destructive) 20%, transparent)',
+    }),
+    Style.when(When.pseudo(':is([data-type="success"])'), {
+      color: 'var(--success)',
+      backgroundColor: 'color-mix(in oklab, var(--success) 20%, transparent)',
+    }),
+  ),
+  icon: Style.make({
+    display: 'inline-flex',
+    height: 16,
+    flexShrink: 0,
+    alignItems: 'center',
+  }),
+}
+
+export const indicator = {
+  root: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    display: 'inline-grid',
+    width: 16,
+    height: 16,
+    flexShrink: 0,
+    placeItems: 'center',
+    borderRadius: 4,
+    color: 'var(--primary)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-size="sm"])'), {
+      width: 14,
+      height: 14,
+    }),
+    Style.when(When.pseudo(':is([data-kind="radio"])'), {
+      borderRadius: '50%',
+    }),
+    Style.when(When.pseudo(':is([data-kind="check"])'), {
+      borderColor: 'transparent',
+    }),
+    Style.when(
+      When.pseudo(
+        ':is([data-kind=checkbox][data-checked=checked],[data-kind=checkbox][data-checked=indeterminate],[data-kind=radio][data-checked=checked])',
+      ),
+      {
+        borderColor: 'var(--primary)',
+        backgroundColor: 'var(--primary)',
+        color: 'var(--primary-foreground)',
+      },
+    ),
+    Style.when(When.pseudo(':is([data-disabled])'), {
+      opacity: 0.5,
+    }),
+  ),
+  dot: Style.make({
+    width: 8,
+    height: 8,
+    borderRadius: '50%',
+    backgroundColor: 'currentColor',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-size="sm"])'), {
+      width: 6,
+      height: 6,
+    }),
+  ),
+}
+
+export const inputGroup = {
+  root: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    display: 'grid',
+    minWidth: 0,
+    backgroundColor: 'var(--background)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    boxShadow: '0 1px 2px rgb(0 0 0 / 5%)',
+  }).pipe(
+    Style.when(When.pseudo(':focus-within'), {
+      borderColor: 'var(--ring)',
+      boxShadow: '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    }),
+    Style.when(When.pseudo(':has([aria-invalid=true])'), {
+      borderColor: 'var(--destructive)',
+    }),
+    Style.when(When.pseudo(':is([data-radius="xl"])'), {
+      borderRadius: 16,
+    }),
+    Style.when(When.pseudo(':is([data-radius="full"])'), {
+      borderRadius: 999,
+    }),
+    Style.when(When.pseudo(':is([data-disabled])'), {
+      opacity: 0.5,
+    }),
+    Style.when(When.pseudo(':is([data-invalid])'), {
+      borderColor: 'var(--destructive)',
+    }),
+  ),
+  row: Style.make({
+    display: 'flex',
+    alignItems: 'center',
+    minWidth: 0,
+  }),
+  addon: Style.make({
+    display: 'flex',
+    flexShrink: 0,
+    alignItems: 'center',
+    gap: 8,
+    paddingInline: 12,
+    paddingBlock: 6,
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    userSelect: 'none',
+  }),
+  control: Style.make({
+    minHeight: 32,
+    minWidth: 0,
+    flexGrow: 1,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    paddingInline: 10,
+    paddingBlock: 4,
+    fontSize: '1rem',
+    outline: 'none',
+  }).pipe(
+    Style.when(When.media('(min-width: 768px)'), {
+      fontSize: '0.875rem',
+    }),
+  ),
+  text: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  }),
+  button: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingInline: 8,
+    fontSize: '0.875rem',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-size="xs"])'), {
+      height: 24,
+    }),
+    Style.when(When.pseudo(':is([data-size="sm"])'), {
+      height: 32,
+    }),
+    Style.when(When.pseudo(':is([data-size="icon-xs"])'), {
+      width: 24,
+      height: 24,
+    }),
+    Style.when(When.pseudo(':is([data-size="icon-sm"])'), {
+      width: 32,
+      height: 32,
+    }),
+    Style.when(When.hover, {
+      backgroundColor: 'var(--muted)',
+    }),
+  ),
+}
+
+export const buttonGroup = {
+  root: Style.make({
+    display: 'flex',
+    width: 'fit-content',
+    minWidth: 0,
+    alignItems: 'stretch',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation="vertical"])'), {
+      flexDirection: 'column',
+    }),
+    Style.when(When.pseudo(':has(>[data-slot=button-group])'), {
+      gap: 8,
+    }),
+  ),
+  separator: Style.make({
+    position: 'relative',
+    flexShrink: 0,
+    alignSelf: 'stretch',
+    backgroundColor: 'var(--input)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation="horizontal"])'), {
+      height: 1,
+    }),
+    Style.when(When.pseudo(':is([data-orientation="vertical"])'), {
+      width: 1,
+    }),
+  ),
+  text: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--muted)',
+    paddingInline: 16,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+  }),
+}
+
 export const tooltip = {
   root: Style.make({ display: 'inline-block' }),
   positioner: Style.make({

@@ -20,10 +20,7 @@ const partial = new Map([
   ],
   ['input-otp', 'Custom character patterns'],
   ['sheet', 'Panel switcher and custom header layout'],
-  [
-    'number-input',
-    'Arbitrary display formatter, strict integer mode, and attached field status',
-  ],
+  ['number-input', 'Arbitrary display formatter and strict integer mode'],
 ])
 const renderers = ['stylex-effect-components', 'pleat-effect-components']
 const hasFiles = item =>

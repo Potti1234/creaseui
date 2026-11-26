@@ -2,6 +2,8 @@ import type { View } from '@effect/ui'
 import type { Html } from '@effect/ui/html'
 
 import { NumberInputBehavior } from '../behaviors/number-input'
+import type { FieldStatusProps } from '../behaviors/field-status'
+import { FieldStatus } from './field-status'
 
 type Options<Msg> = Parameters<typeof NumberInputBehavior<Msg>>[1]
 
@@ -25,10 +27,11 @@ export const NumberInput = <Msg, R = never>(
     label,
     hideLabel = false,
     description,
+    status,
     units,
     size = 'md',
     steppers = true,
-    invalid = false,
+    invalid = status?.type === 'error',
     placeholder,
     onClear,
     className,
@@ -38,6 +41,7 @@ export const NumberInput = <Msg, R = never>(
     readonly label: View.Children<NoInfer<Msg>, R>
     readonly hideLabel?: boolean
     readonly description?: View.Children<NoInfer<Msg>, R>
+    readonly status?: Omit<FieldStatusProps<NoInfer<Msg>, R>, 'id'> | undefined
     readonly units?: string
     readonly size?: 'sm' | 'md' | 'lg'
     readonly steppers?: boolean
@@ -47,8 +51,12 @@ export const NumberInput = <Msg, R = never>(
     readonly className?: string
   },
   styles: typeof tailwind = tailwind,
-) =>
-  NumberInputBehavior(h, {
+  renderStatus: typeof FieldStatus = FieldStatus,
+) => {
+  const descriptionId =
+    description === undefined ? undefined : `${id}-description`
+  const statusId = `${id}-status`
+  return NumberInputBehavior(h, {
     ...options,
     view: field =>
       field
@@ -83,7 +91,9 @@ export const NumberInput = <Msg, R = never>(
                   placeholder,
                   'data-slot': 'number-input-control',
                   'aria-describedby':
-                    description === undefined ? undefined : `${id}-description`,
+                    [descriptionId, status === undefined ? undefined : statusId]
+                      .filter(Boolean)
+                      .join(' ') || undefined,
                   'aria-invalid': invalid ? 'true' : undefined,
                 }),
               ),
@@ -110,11 +120,15 @@ export const NumberInput = <Msg, R = never>(
                     .children('+')
                 : undefined,
             ),
+          status === undefined
+            ? undefined
+            : renderStatus(h, { ...status, id: statusId }),
           description === undefined
             ? undefined
             : h.div
                 .class(styles.description)
-                .attr('id', `${id}-description`)
+                .attr('id', descriptionId)
                 .children(description),
         ),
   })
+}

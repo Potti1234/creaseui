@@ -3667,6 +3667,268 @@ export const dateRangeInput = stylex.create({
   },
 })
 
+export const icon = stylex.create({
+  root: {
+    display: 'inline-block',
+    flexShrink: 0,
+    verticalAlign: 'middle',
+    transition: {
+      default: null,
+      ':is([data-rotation])': 'transform 150ms',
+      '@media (prefers-reduced-motion: reduce)': 'none',
+    },
+  },
+})
+
+export const fieldStatus = stylex.create({
+  root: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 4,
+    paddingInline: 8,
+    paddingBlockEnd: 8,
+    fontSize: '0.75rem',
+    pointerEvents: {
+      default: null,
+      ':is([data-variant="attached"])': 'none',
+    },
+    marginBlockStart: {
+      default: null,
+      ':is([data-variant="attached"])': -6,
+      ':is([data-variant="detached"])': 4,
+    },
+    borderBottomLeftRadius: {
+      default: null,
+      ':is([data-variant="attached"])': 'var(--radius)',
+    },
+    borderBottomRightRadius: {
+      default: null,
+      ':is([data-variant="attached"])': 'var(--radius)',
+    },
+    paddingBlockStart: {
+      default: null,
+      ':is([data-variant="attached"])': 14,
+      ':is([data-variant="detached"])': 8,
+    },
+    borderRadius: {
+      default: null,
+      ':is([data-variant="detached"])': 'var(--radius)',
+    },
+    color: {
+      default: null,
+      ':is([data-type="warning"])': 'var(--warning)',
+      ':is([data-type="error"])': 'var(--destructive)',
+      ':is([data-type="success"])': 'var(--success)',
+    },
+    backgroundColor: {
+      default: null,
+      ':is([data-type="warning"])':
+        'color-mix(in oklab, var(--warning) 20%, transparent)',
+      ':is([data-type="error"])':
+        'color-mix(in oklab, var(--destructive) 20%, transparent)',
+      ':is([data-type="success"])':
+        'color-mix(in oklab, var(--success) 20%, transparent)',
+    },
+  },
+  icon: {
+    display: 'inline-flex',
+    height: 16,
+    flexShrink: 0,
+    alignItems: 'center',
+  },
+})
+
+export const indicator = stylex.create({
+  root: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--input)',
+      ':is([data-kind="check"])': 'transparent',
+      ':is([data-kind=checkbox][data-checked=checked],[data-kind=checkbox][data-checked=indeterminate],[data-kind=radio][data-checked=checked])':
+        'var(--primary)',
+    },
+    display: 'inline-grid',
+    width: {
+      default: 16,
+      ':is([data-size="sm"])': 14,
+    },
+    height: {
+      default: 16,
+      ':is([data-size="sm"])': 14,
+    },
+    flexShrink: 0,
+    placeItems: 'center',
+    borderRadius: {
+      default: 4,
+      ':is([data-kind="radio"])': '50%',
+    },
+    color: {
+      default: 'var(--primary)',
+      ':is([data-kind=checkbox][data-checked=checked],[data-kind=checkbox][data-checked=indeterminate],[data-kind=radio][data-checked=checked])':
+        'var(--primary-foreground)',
+    },
+    backgroundColor: {
+      default: null,
+      ':is([data-kind=checkbox][data-checked=checked],[data-kind=checkbox][data-checked=indeterminate],[data-kind=radio][data-checked=checked])':
+        'var(--primary)',
+    },
+    opacity: {
+      default: null,
+      ':is([data-disabled])': 0.5,
+    },
+  },
+  dot: {
+    width: {
+      default: 8,
+      ':is([data-size="sm"])': 6,
+    },
+    height: {
+      default: 8,
+      ':is([data-size="sm"])': 6,
+    },
+    borderRadius: '50%',
+    backgroundColor: 'currentColor',
+  },
+})
+
+export const inputGroup = stylex.create({
+  root: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--input)',
+      ':focus-within': 'var(--ring)',
+      ':has([aria-invalid=true])': 'var(--destructive)',
+      ':is([data-invalid])': 'var(--destructive)',
+    },
+    display: 'grid',
+    minWidth: 0,
+    backgroundColor: 'var(--background)',
+    borderRadius: {
+      default: 'calc(var(--radius) - 2px)',
+      ':is([data-radius="xl"])': 16,
+      ':is([data-radius="full"])': 999,
+    },
+    boxShadow: {
+      default: '0 1px 2px rgb(0 0 0 / 5%)',
+      ':focus-within':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: {
+      default: null,
+      ':is([data-disabled])': 0.5,
+    },
+  },
+  row: {
+    display: 'flex',
+    alignItems: 'center',
+    minWidth: 0,
+  },
+  addon: {
+    display: 'flex',
+    flexShrink: 0,
+    alignItems: 'center',
+    gap: 8,
+    paddingInline: 12,
+    paddingBlock: 6,
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    userSelect: 'none',
+  },
+  control: {
+    minHeight: 32,
+    minWidth: 0,
+    flexGrow: 1,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    paddingInline: 10,
+    paddingBlock: 4,
+    fontSize: {
+      default: '1rem',
+      '@media (min-width: 768px)': '0.875rem',
+    },
+    outline: 'none',
+  },
+  text: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  },
+  button: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingInline: 8,
+    fontSize: '0.875rem',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    borderWidth: 0,
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--muted)',
+    },
+    height: {
+      default: null,
+      ':is([data-size="xs"])': 24,
+      ':is([data-size="sm"])': 32,
+      ':is([data-size="icon-xs"])': 24,
+      ':is([data-size="icon-sm"])': 32,
+    },
+    width: {
+      default: null,
+      ':is([data-size="icon-xs"])': 24,
+      ':is([data-size="icon-sm"])': 32,
+    },
+  },
+})
+
+export const buttonGroup = stylex.create({
+  root: {
+    display: 'flex',
+    width: 'fit-content',
+    minWidth: 0,
+    alignItems: 'stretch',
+    flexDirection: {
+      default: null,
+      ':is([data-orientation="vertical"])': 'column',
+    },
+    gap: {
+      default: null,
+      ':has(>[data-slot=button-group])': 8,
+    },
+  },
+  separator: {
+    position: 'relative',
+    flexShrink: 0,
+    alignSelf: 'stretch',
+    backgroundColor: 'var(--input)',
+    height: {
+      default: null,
+      ':is([data-orientation="horizontal"])': 1,
+    },
+    width: {
+      default: null,
+      ':is([data-orientation="vertical"])': 1,
+    },
+  },
+  text: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--muted)',
+    paddingInline: 16,
+    fontSize: '0.875rem',
+    fontWeight: 500,
+  },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {

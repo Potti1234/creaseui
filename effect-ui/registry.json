@@ -1036,7 +1036,8 @@
       "type": "registry:ui",
       "registryDependencies": [
         "@crease-effect/crease-theme",
-        "@crease-effect/effect-number-input-behavior"
+        "@crease-effect/effect-number-input-behavior",
+        "@crease-effect/effect-field-status"
       ],
       "files": [
         {
@@ -2413,6 +2414,173 @@
       ]
     },
     {
+      "name": "effect-icon-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/icon.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/icon.ts"
+        },
+        {
+          "path": "src/behaviors/icon-nodes.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/icon-nodes.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-icon",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-icon-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/icon.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/icon.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-field-status-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-icon-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/field-status.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/field-status.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-field-status",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-field-status-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/field-status.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/field-status.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-indicator-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-icon-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/indicator.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/indicator.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-indicator",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-indicator-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/indicator.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/indicator.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-input-group-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/input-group.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/input-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-input-group",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-input-group-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/input-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/input-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-button-group-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/button-group.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/button-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-button-group",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-button-group-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/button-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/button-group.ts"
+        },
+        {
+          "path": "src/ui/button-group.css",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/button-group.css"
+        },
+        {
+          "path": "src/ui/button-group-styles.d.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/ui/button-group-styles.d.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -2494,7 +2662,12 @@
         "@crease-effect/effect-time-input",
         "@crease-effect/effect-date-time-input",
         "@crease-effect/effect-date-picker",
-        "@crease-effect/effect-date-range-input"
+        "@crease-effect/effect-date-range-input",
+        "@crease-effect/effect-icon",
+        "@crease-effect/effect-field-status",
+        "@crease-effect/effect-indicator",
+        "@crease-effect/effect-input-group",
+        "@crease-effect/effect-button-group"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -2582,7 +2755,12 @@
         "@crease-effect/effect-time-input",
         "@crease-effect/effect-date-time-input",
         "@crease-effect/effect-date-picker",
-        "@crease-effect/effect-date-range-input"
+        "@crease-effect/effect-date-range-input",
+        "@crease-effect/effect-icon",
+        "@crease-effect/effect-field-status",
+        "@crease-effect/effect-indicator",
+        "@crease-effect/effect-input-group",
+        "@crease-effect/effect-button-group"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

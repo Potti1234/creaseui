@@ -69,6 +69,11 @@ import {
   DateTimeInput,
   DatePicker,
   DateRangeInput,
+  ButtonGroup,
+  FieldStatus,
+  Icon,
+  Indicator,
+  InputGroup,
   Button,
   ButtonLink,
   Calendar,
@@ -936,11 +941,57 @@ const Preview = Html.component({
           }),
         ),
         h.section.class('example').children(
+          h.h2.children('Search and selection'),
+          InputGroup(h, {
+            focusControlId: 'catalog-search',
+            addOns: {
+              'inline-start': Icon(h, {
+                name: 'search',
+                size: 'sm',
+                ariaLabel: 'Search',
+              }),
+            },
+            control: group =>
+              group.input(
+                h.input.attrs({
+                  id: 'catalog-search',
+                  'aria-label': 'Search the catalog',
+                }),
+              ),
+          }),
+          FieldStatus(h, {
+            type: 'success',
+            variant: 'detached',
+            message: 'Catalog is up to date',
+          }),
+          ButtonGroup(h, {
+            ariaLabel: 'Preview actions',
+            children: group => [
+              Button(h, { variant: 'outline' }).children('Preview'),
+              Button(h, { variant: 'outline' }).children('Open'),
+              group.text({
+                children: [
+                  Indicator(h, { state: 'checked', kind: 'checkbox' }),
+                  'Available',
+                ],
+              }),
+            ],
+          }),
+        ),
+        h.section.class('example').children(
           h.h2.children('Booking'),
           NumberInput(h, {
             id: 'booking-seats',
             label: ['Seats'],
             description: ['Choose up to eight seats.'],
+            status:
+              model.seats === 8
+                ? {
+                    type: 'warning',
+                    message: 'All eight seats selected',
+                    announcement: 'status',
+                  }
+                : undefined,
             props: {
               value: model.seats,
               min: 1,
