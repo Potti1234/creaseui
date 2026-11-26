@@ -2,6 +2,13 @@ import type { Html } from '@effect/ui/html'
 import * as stylex from '@stylexjs/stylex'
 
 import { Accordion as RenderAccordion } from '../ui/accordion'
+import { Map as RenderMap } from '../ui/map'
+import { MapControls as RenderMapControls } from '../ui/map-controls'
+import { MapMarker as RenderMapMarker } from '../ui/map-marker'
+import { MapPopup as RenderMapPopup } from '../ui/map-popup'
+import { MapMarkerContent as RenderMapMarkerContent } from '../ui/map-marker'
+import { MapMarkerLabel as RenderMapMarkerLabel } from '../ui/map-marker'
+import { MapMarkerTooltip as RenderMapMarkerTooltip } from '../ui/map-marker'
 import { CircularProgress as RenderCircularProgress } from '../ui/circular-progress'
 import { Stat as RenderStat } from '../ui/stat'
 import { Bubble as RenderBubble } from '../ui/bubble'
@@ -70,6 +77,7 @@ import { Separator as RenderSeparator } from '../ui/separator'
 import { Toggle as RenderToggle } from '../ui/toggle'
 import {
   accordion,
+  mapStyles,
   circularProgress,
   stat,
   bubble,
@@ -465,6 +473,49 @@ export const Token = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderToken<Msg, R>>[1],
 ) => RenderToken(h, options, partClasses(token))
+
+export { MapMessage } from '../ui/map'
+export { MapRoute } from '../ui/map-route'
+export { MapArc, arcCoordinates } from '../ui/map-arc'
+export { MapClusterLayer } from '../ui/map-cluster'
+export { MapGeoJSON } from '../ui/map-geojson'
+export * from '../ui/map-styles'
+export * from '../ui/map-localization'
+
+export const Map = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMap<Msg, R>>[1],
+) => RenderMap(h, options, partClasses(mapStyles))
+
+export const MapControls = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMapControls<Msg>>[1],
+) => RenderMapControls(h, options, partClasses(mapStyles))
+
+export const MapMarker = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMapMarker<Msg, R>>[1],
+) => RenderMapMarker(h, options, partClasses(mapStyles))
+
+export const MapPopup = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMapPopup<Msg, R>>[1],
+) => RenderMapPopup(h, options, partClasses(mapStyles))
+
+export const MapMarkerContent = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMapMarkerContent<Msg, R>>[1],
+) => RenderMapMarkerContent(h, options, partClasses(mapStyles))
+
+export const MapMarkerLabel = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMapMarkerLabel<Msg, R>>[1],
+) => RenderMapMarkerLabel(h, options, partClasses(mapStyles))
+
+export const MapMarkerTooltip = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMapMarkerTooltip<Msg, R>>[1],
+) => RenderMapMarkerTooltip(h, options, partClasses(mapStyles))
 
 export const BubbleGroup = <Msg, R = never>(
   h: Html.H<Msg>,

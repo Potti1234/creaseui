@@ -53,6 +53,17 @@ import {
   Bubble,
   BubbleGroup,
   Token,
+  Map as MapView,
+  MapControls,
+  MapMarker,
+  MapMarkerContent,
+  MapMarkerLabel,
+  MapMarkerTooltip,
+  MapPopup,
+  MapArc,
+  MapRoute,
+  MapClusterLayer,
+  MapGeoJSON,
   Button,
   ButtonLink,
   Calendar,
@@ -114,6 +125,9 @@ const Message = UiSchema.TaggedEnum({
     open: Schema.Boolean,
   },
   RemovedActivityToken: {},
+  ToggledMapPreview: {},
+  ToggledMapPopup: {},
+  MappedEvent: { type: Schema.String, zoom: Schema.optional(Schema.Number) },
 })
 
 const fruits = [
@@ -166,6 +180,9 @@ const Preview = Html.component({
     drawerOpen: Schema.Boolean,
     sheetOpen: Schema.Boolean,
     activityTokenRemoved: Schema.Boolean,
+    mapPreview: Schema.Boolean,
+    mapPopup: Schema.Boolean,
+    mapZoom: Schema.Number,
   }),
 }).make({
   init: () => ({
@@ -201,6 +218,9 @@ const Preview = Html.component({
     drawerOpen: false,
     sheetOpen: false,
     activityTokenRemoved: false,
+    mapPreview: false,
+    mapPopup: false,
+    mapZoom: 10,
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -237,11 +257,118 @@ const Preview = Html.component({
       $.evolve({ showArchived: checked }),
     SetPanel: ($, { panel, open }) => $.evolve({ [panel]: open }),
     RemovedActivityToken: $ => $.evolve({ activityTokenRemoved: true }),
+    ToggledMapPreview: $ =>
+      $.evolve({ mapPreview: visible => !visible, mapPopup: false }),
+    ToggledMapPopup: $ => $.evolve({ mapPopup: visible => !visible }),
+    MappedEvent: ($, { type, zoom }) =>
+      type === 'MapViewportChanged' && zoom !== undefined
+        ? $.evolve({ mapZoom: zoom })
+        : $.model,
   },
   view: (h, model) =>
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          h.h2.children('Map overlays'),
+          Button(h, {
+            variant: 'outline',
+            onPress: Message.ToggledMapPreview(),
+          }).children(model.mapPreview ? 'Hide map' : 'Show map'),
+          model.mapPreview
+            ? MapView(h, {
+                key: 'berlin-map',
+                ariaLabel: 'Workspace map',
+                blank: true,
+                center: [13.405, 52.52],
+                zoom: 10,
+                language: 'de-DE',
+                toMessage: event =>
+                  Message.MappedEvent({
+                    type: event._tag,
+                    ...(event._tag === 'MapViewportChanged'
+                      ? { zoom: event.zoom }
+                      : {}),
+                  }),
+                children: [
+                  MapControls(h),
+                  MapMarker(h, {
+                    id: 'workspace-location',
+                    longitude: 13.405,
+                    latitude: 52.52,
+                    ariaLabel: 'Workspace location',
+                    draggable: true,
+                    onPress: Message.ToggledMapPopup(),
+                    children: [
+                      MapMarkerContent(h, { children: ['●'] }),
+                      MapMarkerLabel(h, { children: ['Berlin'] }),
+                      MapMarkerTooltip(h, {
+                        children: ['Open location details'],
+                      }),
+                    ],
+                  }),
+                  model.mapPopup
+                    ? MapPopup(h, {
+                        longitude: 13.405,
+                        latitude: 52.52,
+                        ariaLabel: 'Workshop location',
+                        onClose: Message.ToggledMapPopup(),
+                        children: ['Berlin workspace'],
+                      })
+                    : undefined,
+                  MapRoute(h, {
+                    id: 'city-route',
+                    coordinates: [
+                      [13.36, 52.52],
+                      [13.405, 52.52],
+                    ],
+                  }),
+                  MapArc(h, {
+                    id: 'city-arc',
+                    from: [13.39, 52.54],
+                    to: [13.42, 52.53],
+                  }),
+                  MapClusterLayer(h, {
+                    id: 'city-points',
+                    data: {
+                      type: 'FeatureCollection',
+                      features: [
+                        {
+                          type: 'Feature',
+                          properties: {},
+                          geometry: {
+                            type: 'Point',
+                            coordinates: [13.42, 52.5],
+                          },
+                        },
+                      ],
+                    },
+                  }),
+                  MapGeoJSON(h, {
+                    id: 'city-boundary',
+                    data: {
+                      type: 'Feature',
+                      properties: {},
+                      geometry: {
+                        type: 'Polygon',
+                        coordinates: [
+                          [
+                            [13.37, 52.5],
+                            [13.39, 52.5],
+                            [13.39, 52.51],
+                            [13.37, 52.5],
+                          ],
+                        ],
+                      },
+                    },
+                  }),
+                ],
+              })
+            : undefined,
+          model.mapPreview
+            ? h.output.children(`Zoom: ${Math.round(model.mapZoom)}`)
+            : undefined,
+        ),
         h.section.class('example').children(
           h.h2.children('Activity signals'),
           Stat(h, {

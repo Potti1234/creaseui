@@ -63,6 +63,8 @@ Combobox takes a single value or an array of values for multiple selection. Its 
 
 The Calendar registry item also exports `RangeCalendar`. Both use date-only ISO strings and emit `Picked` when the selection is complete. Set `captionLayout: 'dropdown'` to show the browser's month and year picker, or use the previous and next month buttons. Set `weekNumbers` to show ISO week numbers.
 
+The ten map registry items use the existing MapLibre styles, localization, layers, and overlays. The map mounts its worker and stylesheet on demand. It emits viewport, feature, and marker events through `toMessage` and releases the MapLibre instance when removed. The worker URL import uses Vite's `?worker&url` convention.
+
 ## Upstream reproduction
 
 The [upstream findings](UPSTREAM.md) include the published issue, tested fix, snapshot SHAs, and standalone reproduction. The [contribution workflow](CONTRIBUTING.md) records how to report a finding and share the corresponding fix with Effect UI.

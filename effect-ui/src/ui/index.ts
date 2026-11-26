@@ -64,3 +64,18 @@ export { CircularProgress } from './circular-progress'
 export { Stat } from './stat'
 export { Bubble, BubbleGroup } from './bubble'
 export { Token } from './token'
+export { Map, MapMessage } from './map'
+export { MapControls } from './map-controls'
+export {
+  MapMarker,
+  MapMarkerLabel,
+  MapMarkerContent,
+  MapMarkerTooltip,
+} from './map-marker'
+export { MapPopup } from './map-popup'
+export { MapRoute } from './map-route'
+export { MapArc, arcCoordinates } from './map-arc'
+export { MapClusterLayer } from './map-cluster'
+export { MapGeoJSON } from './map-geojson'
+export * from './map-styles'
+export * from './map-localization'

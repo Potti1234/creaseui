@@ -1908,6 +1908,350 @@
       ]
     },
     {
+      "name": "effect-map-style-utilities",
+      "type": "registry:lib",
+      "dependencies": [
+        "maplibre-gl@6.13.0"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-style.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-style.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-layer-utilities",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "maplibre-gl@6.13.0"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-layers.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-layers.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-style-utilities", "@crease-effect/effect-map-layer-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map.ts"
+        },
+        { "path": "src/behaviors/map-assets.d.ts", "type": "registry:lib", "target": "@ui/effect/behaviors/map-assets.d.ts" }
+      ]
+    },
+    {
+      "name": "effect-map",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-map-styles",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-controls-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-localization-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-controls.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-controls.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-controls",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-map",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-controls-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-controls.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-controls.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-marker-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-marker.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-marker.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-marker",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-map",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-marker-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-marker.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-marker.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-popup-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-localization-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-popup.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-popup.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-popup",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-map",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-popup-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-popup.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-popup.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-styles-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-style-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-styles.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-styles.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-styles",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-styles-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-styles.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-styles.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-localization-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-style-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-localization.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-localization.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-localization",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-localization-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-localization.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-localization.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-route-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-layer-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-route.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-route.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-route",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-route-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-route.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-route.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-arc-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-layer-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-arc.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-arc.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-arc",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-arc-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-arc.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-arc.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-cluster-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-layer-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-cluster.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-cluster.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-cluster",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-cluster-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-cluster.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-cluster.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-geojson-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-layer-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-geojson.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-geojson.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-geojson",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-geojson-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-geojson.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-geojson.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -1974,7 +2318,17 @@
         "@crease-effect/effect-circular-progress",
         "@crease-effect/effect-stat",
         "@crease-effect/effect-bubble",
-        "@crease-effect/effect-token"
+        "@crease-effect/effect-token",
+        "@crease-effect/effect-map",
+        "@crease-effect/effect-map-controls",
+        "@crease-effect/effect-map-marker",
+        "@crease-effect/effect-map-popup",
+        "@crease-effect/effect-map-styles",
+        "@crease-effect/effect-map-localization",
+        "@crease-effect/effect-map-route",
+        "@crease-effect/effect-map-arc",
+        "@crease-effect/effect-map-cluster",
+        "@crease-effect/effect-map-geojson"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -2047,7 +2401,17 @@
         "@crease-effect/effect-circular-progress",
         "@crease-effect/effect-stat",
         "@crease-effect/effect-bubble",
-        "@crease-effect/effect-token"
+        "@crease-effect/effect-token",
+        "@crease-effect/effect-map",
+        "@crease-effect/effect-map-controls",
+        "@crease-effect/effect-map-marker",
+        "@crease-effect/effect-map-popup",
+        "@crease-effect/effect-map-styles",
+        "@crease-effect/effect-map-localization",
+        "@crease-effect/effect-map-route",
+        "@crease-effect/effect-map-arc",
+        "@crease-effect/effect-map-cluster",
+        "@crease-effect/effect-map-geojson"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },
