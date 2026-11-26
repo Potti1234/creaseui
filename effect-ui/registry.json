@@ -208,7 +208,8 @@
       "type": "registry:ui",
       "registryDependencies": [
         "@crease-effect/crease-theme",
-        "@crease-effect/effect-checkbox-behavior"
+        "@crease-effect/effect-checkbox-behavior",
+        "@crease-effect/effect-icon-behavior"
       ],
       "files": [
         {

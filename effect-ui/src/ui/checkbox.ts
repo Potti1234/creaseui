@@ -2,13 +2,14 @@ import type { View } from '@effect/ui'
 import type { Html } from '@effect/ui/html'
 
 import { CheckboxBehavior } from '../behaviors/checkbox'
+import { IconBehavior } from '../behaviors/icon'
 
 type CheckboxOptions<Msg> = Parameters<typeof CheckboxBehavior<Msg>>[1]
 
 const tailwind = {
   field: 'flex items-start gap-2',
   control:
-    'grid size-4 shrink-0 place-items-center rounded-sm border border-input bg-background p-0 text-xs leading-none shadow-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive disabled:cursor-not-allowed disabled:opacity-50 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground data-indeterminate:border-primary data-indeterminate:bg-primary data-indeterminate:text-primary-foreground',
+    'grid size-4 shrink-0 place-items-center rounded-[4px] border border-input bg-transparent p-0 text-xs leading-none shadow-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive disabled:cursor-not-allowed disabled:opacity-50 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground data-indeterminate:border-primary data-indeterminate:bg-primary data-indeterminate:text-primary-foreground dark:bg-input/30 dark:data-checked:bg-primary dark:data-indeterminate:bg-primary',
   text: 'grid gap-1',
   label: 'text-sm leading-none font-medium select-none',
   description: 'text-sm text-muted-foreground',
@@ -59,8 +60,15 @@ export const Checkbox = <Msg, R = never>(
             .children(
               checkbox.checked || checkbox.indeterminate
                 ? checkbox
-                    .indicator(h.span)
-                    .children(checkbox.indeterminate ? '−' : '✓')
+                    .indicator(
+                      h.span.style({ display: 'grid', placeContent: 'center' }),
+                    )
+                    .children(
+                      IconBehavior(h, {
+                        name: checkbox.indeterminate ? 'minus' : 'check',
+                        size: 'xs',
+                      }),
+                    )
                 : undefined,
             ),
           label === undefined && description === undefined

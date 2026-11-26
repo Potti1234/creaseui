@@ -392,7 +392,7 @@ export const checkbox = stylex.create({
     padding: 0,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderRadius: 'calc(var(--radius) - 4px)',
+    borderRadius: 4,
     borderColor: {
       default: 'var(--input)',
       ':is([data-checked],[data-indeterminate])': 'var(--primary)',
@@ -400,7 +400,7 @@ export const checkbox = stylex.create({
       ':is([aria-invalid=true])': 'var(--destructive)',
     },
     backgroundColor: {
-      default: 'var(--background)',
+      default: 'transparent',
       ':is([data-checked],[data-indeterminate])': 'var(--primary)',
     },
     color: {
