@@ -74,7 +74,39 @@ can run it independently of the CreaseUI branch.
 The proposed fix passed the upstream type-check, lint, and 41 focused tests.
 The isolated core and kit suite passed 1,819 tests with three expected
 failures. Its one unexpected failure, the NumberField `de-CH` parsing
-assertion, also failed on unmodified upstream `efdee07`. [NumberField test](https://github.com/Effect-TS/ui/blob/efdee07133b4a64442a68cba69ef8c95cef33a95/packages/ui-kit/test/NumberField.test.ts)
+assertion, also failed on unmodified upstream `efdee07` and is tracked in
+[#278](https://github.com/Effect-TS/ui/issues/278).
+
+### NumberField rejects straight apostrophes when grouping Swiss German numbers
+
+Reported upstream as [Effect UI #278](https://github.com/Effect-TS/ui/issues/278)
+with a standalone reproduction and the tested
+[fix commit](https://github.com/Potti1234/ui/commit/771d9a8ad14e799c07f1811f1afd748def774ff9).
+Reproduced on CreaseUI's pinned snapshot [`77dcd92`](https://github.com/Effect-TS/ui/commit/77dcd92f378930583e43debe36be7a203100d351)
+and on [`efdee07`](https://github.com/Effect-TS/ui/commit/efdee07133b4a64442a68cba69ef8c95cef33a95)
+with Node 24.11.1 and Effect 4.1.5.
+
+With `locale: 'de-CH'`, entering `1'234.25` produces no `Updated` event.
+Entering `1’234.25` emits `1234.25`. The parser already accepts both
+apostrophes, but the typing and paste guard only allowed the character
+returned by `Intl.NumberFormat.formatToParts`. The patch allows both
+variants when the formatter uses an apostrophe for grouping.
+
+From this repository's root, run the standalone repro against the pinned
+snapshot.
+
+```sh
+npm --prefix effect-ui ci
+node effect-ui/repros/numberfield-apostrophe.mjs
+node effect-ui/repros/numberfield-apostrophe.mjs --curly
+```
+
+The first command that runs the repro fails at `HtmlScene.emitted`. The
+curly-apostrophe control prints `NumberField accepted 1’234.25 as 1234.25`.
+Both upstream NumberField suites passed with the patch (20 tests), along
+with type-check and lint. The new document test covers both keyboard and
+paste and verifies that `en-US` continues to reject both apostrophes.
+[Standalone repro](repros/numberfield-apostrophe.mjs)
 
 ## Foldkit regressions to carry into the port
 
