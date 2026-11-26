@@ -77,4 +77,4 @@ The ten map registry items use the existing MapLibre styles, localization, layer
 
 The [upstream findings](UPSTREAM.md) include the published issue, tested fix, snapshot SHAs, and standalone reproduction. The [contribution workflow](CONTRIBUTING.md) records how to report a finding and share the corresponding fix with Effect UI.
 
-The catalog report tracks remaining component work. The docs site and the Foldkit consumer lint tools also still require migration.
+The [migration progress](PROGRESS.md) records catalog coverage, browser verification, the new docs routes, and the remaining parity work.
