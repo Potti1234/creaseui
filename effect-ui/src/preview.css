@@ -1,0 +1,66 @@
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter Variable', system-ui, sans-serif;
+}
+
+.preview {
+  max-width: 56rem;
+  margin-inline: auto;
+  padding: 3rem clamp(1rem, 4vw, 2rem);
+}
+
+.preview h1 {
+  margin: 0 0 2rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.examples {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+}
+
+.example {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.example-compact {
+  justify-items: start;
+}
+
+.example > h2 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.example output {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.example-label {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.example-input {
+  height: 2.25rem;
+  padding-inline: 0.625rem;
+  border: 1px solid var(--input);
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--background);
+  color: var(--foreground);
+  font: inherit;
+}

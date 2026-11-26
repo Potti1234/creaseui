@@ -1,0 +1,159 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "effect-button-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@77dcd92",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@77dcd92"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/button.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/button.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-dialog-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@77dcd92",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@77dcd92"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/dialog.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/dialog.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-combobox-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@77dcd92",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@77dcd92"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/combobox.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/combobox.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-calendar-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@77dcd92"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/calendar.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/calendar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-button",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-button-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/button.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/button.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-dialog",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-dialog-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/dialog.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/dialog.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-combobox",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-combobox-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/combobox.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/combobox.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-calendar",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-calendar-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/calendar.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/calendar.ts"
+        }
+      ]
+    },
+    {
+      "name": "stylex-effect-components",
+      "type": "registry:ui",
+      "dependencies": ["@stylexjs/stylex@^0.19.2"],
+      "devDependencies": ["@stylexjs/unplugin@^0.19.2", "unplugin@^2.3.11"],
+      "registryDependencies": [
+        "@crease-effect/effect-button",
+        "@crease-effect/effect-dialog",
+        "@crease-effect/effect-combobox",
+        "@crease-effect/effect-calendar"
+      ],
+      "files": [
+        { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
+        { "path": "src/stylex/styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/styles.stylex.ts" }
+      ]
+    },
+    {
+      "name": "pleat-effect-components",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/pleat-core",
+        "@crease-effect/effect-button",
+        "@crease-effect/effect-dialog",
+        "@crease-effect/effect-combobox",
+        "@crease-effect/effect-calendar"
+      ],
+      "files": [
+        { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },
+        { "path": "src/pleat/styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/styles.ts" }
+      ]
+    }
+  ]
+}
