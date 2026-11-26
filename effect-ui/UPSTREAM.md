@@ -5,11 +5,15 @@
 ### A click handler added through `.forward()` inside a headless part runs on the parent
 
 Reported upstream as [Effect UI #274](https://github.com/Effect-TS/ui/issues/274).
+Effect UI shipped its fix in the `4d6d7ec` snapshot. Calendar navigation
+uses the kit's Button inside its owned part and has a regression test for
+the forwarded click. [Merged upstream fix](https://github.com/Effect-TS/ui/pull/276)
+
 The tested fix is linked in the issue. GitHub reported that PR creation was
 limited to collaborators and that `Potti1234` had read access on 2026-11-26.
 [Fix commit](https://github.com/Potti1234/ui/commit/7a8d34eb1fa531a3c8466a9ec8fef23f30eb573a)
 
-**Verified** on CreaseUI's pinned snapshot [`77dcd92`](https://github.com/Effect-TS/ui/commit/77dcd92f378930583e43debe36be7a203100d351)
+**Verified** on CreaseUI's former pin [`77dcd92`](https://github.com/Effect-TS/ui/commit/77dcd92f378930583e43debe36be7a203100d351)
 and on upstream snapshots [`7ef6234`](https://github.com/Effect-TS/ui/commit/7ef62340bef8776d7d3f0d0668d64525ea8d434f)
 and [`efdee07`](https://github.com/Effect-TS/ui/commit/efdee07133b4a64442a68cba69ef8c95cef33a95)
 on 2026-11-26. The repros used Node 24.11.1 and Effect 4.1.5.
@@ -34,9 +38,9 @@ node effect-ui/repros/button-inside-part.mjs --forward
 node effect-ui/repros/button-inside-part.mjs --direct
 ```
 
-The first two runs exit with `RootCrashed` at `/Parent`. The direct run prints
-`Child rendered Pressed`. Calendar uses the passing form and its test checks
-that the part handles the click before emitting the selection. [Standalone repro](repros/button-inside-part.mjs) · [Calendar regression test](test/calendar.test.ts)
+All three runs print `Child rendered Pressed` on `4d6d7ec`. On `77dcd92`, the
+first two exited with `RootCrashed` at `/Parent` and the direct run passed.
+[Standalone repro](repros/button-inside-part.mjs) · [Calendar regression test](test/calendar.test.ts)
 
 Searches of upstream issues and PRs for `p.part` with `onPress`, the error
 string, and owner routing found no matching report on 2026-11-26. The earlier
@@ -82,8 +86,9 @@ assertion, also failed on unmodified upstream `efdee07` and is tracked in
 Reported upstream as [Effect UI #278](https://github.com/Effect-TS/ui/issues/278)
 with a standalone reproduction and the tested
 [fix commit](https://github.com/Potti1234/ui/commit/771d9a8ad14e799c07f1811f1afd748def774ff9).
-Reproduced on CreaseUI's pinned snapshot [`77dcd92`](https://github.com/Effect-TS/ui/commit/77dcd92f378930583e43debe36be7a203100d351)
-and on [`efdee07`](https://github.com/Effect-TS/ui/commit/efdee07133b4a64442a68cba69ef8c95cef33a95)
+Reproduced on [`77dcd92`](https://github.com/Effect-TS/ui/commit/77dcd92f378930583e43debe36be7a203100d351),
+[`efdee07`](https://github.com/Effect-TS/ui/commit/efdee07133b4a64442a68cba69ef8c95cef33a95),
+and [`4d6d7ec`](https://github.com/Effect-TS/ui/commit/4d6d7ec50244582eaf334d40aa6d17afeb5369c6)
 with Node 24.11.1 and Effect 4.1.5.
 
 With `locale: 'de-CH'`, entering `1'234.25` produces no `Updated` event.

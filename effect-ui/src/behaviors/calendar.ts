@@ -1,5 +1,6 @@
 import { UiSchema } from '@effect/ui'
 import { Html, HtmlCommand } from '@effect/ui/html'
+import { Button } from '@effect/ui-kit'
 import { Schema } from 'effect'
 
 /** Date-only ISO values keep the model independent of the browser's time zone. */
@@ -155,12 +156,15 @@ export const CalendarBehavior = Html.component({
         cell.attr('aria-selected', date === value ? 'true' : 'false'),
       ),
       navigation: p.part('button', (button, direction: -1 | 1) =>
-        button
-          .attrs({
-            type: 'button',
-            'aria-label': direction === -1 ? 'Previous month' : 'Next month',
-          })
-          .on('click', Message.Paged({ months: direction })),
+        Button(
+          { button },
+          {
+            onPress: Message.Paged({ months: direction }),
+          },
+        ).attr(
+          'aria-label',
+          direction === -1 ? 'Previous month' : 'Next month',
+        ),
       ),
       day: p.part('button', (button, date: string) => {
         const disabled = isDisabled(p.props, date) || !isCalendarDate(date)

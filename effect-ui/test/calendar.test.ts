@@ -56,3 +56,15 @@ test('a calendar click is delivered to the part owner before emitting the select
       }),
     ).pipe(Effect.provide(TestHost.layer())),
   ))
+
+test('Calendar navigation handles a forwarded kit Button click inside its part', () =>
+  Effect.runPromise(
+    Effect.scoped(
+      Effect.gen(function* () {
+        const play = yield* HtmlPlay.make(CalendarFixture, {})
+        yield* play.click(HtmlLocator.role('button', { name: 'Next month' }))
+        yield* play.expect(HtmlLocator.role('heading')).toHaveText('March 2028')
+        yield* play.expect(HtmlLocator.role('status')).toHaveText('2028-02-29')
+      }),
+    ).pipe(Effect.provide(TestHost.layer())),
+  ))
