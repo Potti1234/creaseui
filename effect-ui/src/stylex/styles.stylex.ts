@@ -2468,6 +2468,110 @@ export const avatarGroup = stylex.create({
   },
 })
 
+export const menu = stylex.create({
+  contextTrigger: {
+    position: 'relative',
+    display: 'flex',
+    minHeight: 96,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: 'var(--border)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    outline: 'none',
+    padding: 16,
+    boxShadow: {
+      default: null,
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+  },
+  backdrop: {
+    position: 'fixed',
+    inset: 0,
+  },
+  positioner: {
+    zIndex: 50,
+    overflow: 'visible',
+    borderWidth: 0,
+    outline: 'none',
+    backgroundColor: 'transparent',
+    margin: 0,
+    padding: 0,
+  },
+  popup: {
+    maxHeight: 'var(--available-height)',
+    minWidth: 144,
+    overflow: 'auto',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--popover)',
+    padding: 4,
+    color: 'var(--popover-foreground)',
+    boxShadow: '0 8px 24px rgb(0 0 0 / 12%)',
+    outline: 'none',
+  },
+  item: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    borderRadius: 4,
+    cursor: 'default',
+    outline: 'none',
+    paddingInline: 8,
+    paddingBlock: 6,
+    fontSize: '0.875rem',
+    textDecoration: 'none',
+    color: {
+      default: 'inherit',
+      ':is([data-highlighted])': 'var(--accent-foreground)',
+      ':is([data-tone="destructive"])': 'var(--destructive)',
+    },
+    userSelect: 'none',
+    backgroundColor: {
+      default: null,
+      ':is([data-highlighted])': 'var(--accent)',
+    },
+    opacity: {
+      default: null,
+      ':is([data-disabled])': 0.5,
+    },
+    paddingInlineStart: {
+      default: null,
+      ':is([data-inset])': 28,
+    },
+  },
+  group: {},
+  groupLabel: {
+    paddingInline: 8,
+    paddingBlock: 6,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+  },
+  separator: {
+    marginInline: -4,
+    marginBlock: 4,
+    height: 1,
+    backgroundColor: 'var(--border)',
+  },
+  indicator: {
+    width: 16,
+    flexShrink: 0,
+    textAlign: 'center',
+  },
+  shortcut: {
+    marginInlineStart: 'auto',
+    paddingInlineStart: 16,
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+  },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {

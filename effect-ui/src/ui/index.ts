@@ -56,3 +56,5 @@ export {
   AvatarGroupOverflow,
   AvatarStatusDot,
 } from './avatar-group'
+export { DropdownMenu } from './dropdown-menu'
+export { ContextMenu } from './context-menu'

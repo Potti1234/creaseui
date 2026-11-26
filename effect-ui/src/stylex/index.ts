@@ -2,6 +2,8 @@ import type { Html } from '@effect/ui/html'
 import * as stylex from '@stylexjs/stylex'
 
 import { Accordion as RenderAccordion } from '../ui/accordion'
+import { DropdownMenu as RenderDropdownMenu } from '../ui/dropdown-menu'
+import { ContextMenu as RenderContextMenu } from '../ui/context-menu'
 import { ScrollArea as RenderScrollArea } from '../ui/scroll-area'
 import { Toolbar as RenderToolbar } from '../ui/toolbar'
 import { Breadcrumb as RenderBreadcrumb } from '../ui/breadcrumb'
@@ -61,6 +63,7 @@ import { Separator as RenderSeparator } from '../ui/separator'
 import { Toggle as RenderToggle } from '../ui/toggle'
 import {
   accordion,
+  menu,
   scrollArea,
   toolbar,
   breadcrumb,
@@ -410,3 +413,13 @@ export const AvatarStatusDot = <Msg>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderAvatarStatusDot<Msg>>[1],
 ) => RenderAvatarStatusDot(h, options, partClasses(avatarGroup))
+
+export const DropdownMenu = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderDropdownMenu<Msg, R>>[1],
+) => RenderDropdownMenu(h, options, partClasses(menu))
+
+export const ContextMenu = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderContextMenu<Msg, R>>[1],
+) => RenderContextMenu(h, options, partClasses(menu))

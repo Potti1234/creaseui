@@ -2382,6 +2382,107 @@ export const avatarGroup = {
   ),
 }
 
+export const menu = {
+  contextTrigger: Style.make({
+    position: 'relative',
+    display: 'flex',
+    minHeight: 96,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: 'var(--border)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    outline: 'none',
+    padding: 16,
+  }).pipe(
+    Style.when(When.focusVisible, {
+      boxShadow: '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    }),
+  ),
+  backdrop: Style.make({
+    position: 'fixed',
+    inset: 0,
+  }),
+  positioner: Style.make({
+    zIndex: 50,
+    overflow: 'visible',
+    borderWidth: 0,
+    outline: 'none',
+    backgroundColor: 'transparent',
+    margin: 0,
+    padding: 0,
+  }),
+  popup: Style.make({
+    maxHeight: 'var(--available-height)',
+    minWidth: 144,
+    overflow: 'auto',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--popover)',
+    padding: 4,
+    color: 'var(--popover-foreground)',
+    boxShadow: '0 8px 24px rgb(0 0 0 / 12%)',
+    outline: 'none',
+  }),
+  item: Style.make({
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    borderRadius: 4,
+    cursor: 'default',
+    outline: 'none',
+    paddingInline: 8,
+    paddingBlock: 6,
+    fontSize: '0.875rem',
+    textDecoration: 'none',
+    color: 'inherit',
+    userSelect: 'none',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-highlighted])'), {
+      backgroundColor: 'var(--accent)',
+      color: 'var(--accent-foreground)',
+    }),
+    Style.when(When.pseudo(':is([data-disabled])'), {
+      opacity: 0.5,
+    }),
+    Style.when(When.pseudo(':is([data-inset])'), {
+      paddingInlineStart: 28,
+    }),
+    Style.when(When.pseudo(':is([data-tone="destructive"])'), {
+      color: 'var(--destructive)',
+    }),
+  ),
+  group: Style.make({}),
+  groupLabel: Style.make({
+    paddingInline: 8,
+    paddingBlock: 6,
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+  }),
+  separator: Style.make({
+    marginInline: -4,
+    marginBlock: 4,
+    height: 1,
+    backgroundColor: 'var(--border)',
+  }),
+  indicator: Style.make({
+    width: 16,
+    flexShrink: 0,
+    textAlign: 'center',
+  }),
+  shortcut: Style.make({
+    marginInlineStart: 'auto',
+    paddingInlineStart: 16,
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+  }),
+}
+
 export const tooltip = {
   root: Style.make({ display: 'inline-block' }),
   positioner: Style.make({

@@ -1661,6 +1661,69 @@
       ]
     },
     {
+      "name": "effect-dropdown-menu-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/dropdown-menu.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/dropdown-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-dropdown-menu",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-dropdown-menu-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/dropdown-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/dropdown-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-context-menu-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/context-menu.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/context-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-context-menu",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-context-menu-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/context-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/context-menu.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -1719,7 +1782,9 @@
         "@crease-effect/effect-scroll-area",
         "@crease-effect/effect-toolbar",
         "@crease-effect/effect-breadcrumb",
-        "@crease-effect/effect-avatar-group"
+        "@crease-effect/effect-avatar-group",
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/effect-context-menu"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -1784,7 +1849,9 @@
         "@crease-effect/effect-scroll-area",
         "@crease-effect/effect-toolbar",
         "@crease-effect/effect-breadcrumb",
-        "@crease-effect/effect-avatar-group"
+        "@crease-effect/effect-avatar-group",
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/effect-context-menu"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

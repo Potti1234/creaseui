@@ -44,6 +44,8 @@ import {
   AvatarGroup,
   AvatarGroupOverflow,
   AvatarStatusDot,
+  DropdownMenu,
+  ContextMenu,
   Button,
   ButtonLink,
   Calendar,
@@ -94,6 +96,12 @@ const Message = UiSchema.TaggedEnum({
   ProjectChanged: { value: Schema.String },
   NotesChanged: { value: Schema.String },
   ProjectSaved: { value: Schema.String, notes: Schema.String },
+  SetMenu: {
+    menu: Schema.Literals(['actionsOpen', 'shareOpen', 'rowOpen']),
+    open: Schema.Boolean,
+  },
+  PickedMenuItem: { value: Schema.String },
+  ToggledArchivedItems: { checked: Schema.Boolean },
 })
 
 const fruits = [
@@ -138,6 +146,11 @@ const Preview = Html.component({
     notes: Schema.String,
     rejectedNotes: Schema.Boolean,
     projectSaved: Schema.String,
+    actionsOpen: Schema.Boolean,
+    shareOpen: Schema.Boolean,
+    rowOpen: Schema.Boolean,
+    lastMenuItem: Schema.String,
+    showArchived: Schema.Boolean,
   }),
 }).make({
   init: () => ({
@@ -165,6 +178,11 @@ const Preview = Html.component({
     notes: '',
     rejectedNotes: false,
     projectSaved: '',
+    actionsOpen: false,
+    shareOpen: false,
+    rowOpen: false,
+    lastMenuItem: '',
+    showArchived: false,
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -195,11 +213,106 @@ const Preview = Html.component({
         rejectedNotes: notes.trim() === '',
         projectSaved: notes.trim() === '' ? '' : value,
       }),
+    SetMenu: ($, { menu, open }) => $.evolve({ [menu]: open }),
+    PickedMenuItem: ($, { value }) => $.evolve({ lastMenuItem: value }),
+    ToggledArchivedItems: ($, { checked }) =>
+      $.evolve({ showArchived: checked }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          h.h2.children('Project menus'),
+          DropdownMenu(h, {
+            key: 'project-actions',
+            label: 'Project actions',
+            trigger: Button(h, { variant: 'outline' }).children(
+              'Project actions',
+            ),
+            props: {
+              open: model.actionsOpen,
+              sideOffset: 4,
+              items: [
+                { value: 'archive-filter', label: 'Show archived' },
+                { value: 'rename', label: 'Rename' },
+                { value: 'share', label: 'Share' },
+                { value: 'delete', label: 'Delete', disabled: true },
+              ],
+            },
+            decorateItem: ({ value }) => {
+              if (value === 'archive-filter')
+                return {
+                  kind: 'checkbox',
+                  checked: model.showArchived,
+                  group: 'View',
+                }
+              if (value === 'delete')
+                return { tone: 'destructive', separatorBefore: true }
+              if (value === 'share')
+                return {
+                  kind: 'submenu',
+                  render: (item, parentMenu) =>
+                    DropdownMenu(h, {
+                      key: 'share-options',
+                      label: 'Share options',
+                      submenuTrigger: h.div.children('Share'),
+                      parentMenu,
+                      props: {
+                        open: model.shareOpen,
+                        parentItem: item.value,
+                        items: [{ value: 'copy-link', label: 'Copy link' }],
+                      },
+                      onEmit: {
+                        RequestedOpen: () =>
+                          Message.SetMenu({ menu: 'shareOpen', open: true }),
+                        RequestedClose: () =>
+                          Message.SetMenu({ menu: 'shareOpen', open: false }),
+                        Picked: ({ value }) =>
+                          Message.PickedMenuItem({ value }),
+                        Highlighted: () => undefined,
+                        RequestedQuery: () => undefined,
+                        Settled: () => undefined,
+                      },
+                    }),
+                }
+              return { shortcut: 'F2', keys: 'F2' }
+            },
+            onEmit: {
+              RequestedOpen: () =>
+                Message.SetMenu({ menu: 'actionsOpen', open: true }),
+              RequestedClose: () =>
+                Message.SetMenu({ menu: 'actionsOpen', open: false }),
+              Picked: ({ value, checked }) =>
+                value === 'archive-filter'
+                  ? Message.ToggledArchivedItems({ checked: checked ?? false })
+                  : Message.PickedMenuItem({ value }),
+              Highlighted: () => undefined,
+              RequestedQuery: () => undefined,
+              Settled: () => undefined,
+            },
+          }),
+          ContextMenu(h, {
+            key: 'project-row',
+            label: 'Row actions',
+            triggerLabel: 'Project row',
+            trigger: 'Open project row actions',
+            props: {
+              open: model.rowOpen,
+              items: [{ value: 'duplicate', label: 'Duplicate' }],
+            },
+            onEmit: {
+              RequestedOpen: () =>
+                Message.SetMenu({ menu: 'rowOpen', open: true }),
+              RequestedClose: () =>
+                Message.SetMenu({ menu: 'rowOpen', open: false }),
+              Picked: ({ value }) => Message.PickedMenuItem({ value }),
+              Highlighted: () => undefined,
+              Settled: () => undefined,
+            },
+          }),
+          h.output.children(model.lastMenuItem),
+        ),
         h.section.class('example').children(
           h.h2.children('Workspace navigation'),
           Breadcrumb(h, {
