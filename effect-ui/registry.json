@@ -2951,6 +2951,214 @@
       ]
     },
     {
+      "name": "effect-action-bar-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-toolbar-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/action-bar.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/action-bar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-action-bar",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-action-bar-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/action-bar.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/action-bar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-menubar-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/menubar.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/menubar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-menubar",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-menubar-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/menubar.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/menubar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-navigation-menu-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/navigation-menu.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/navigation-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-navigation-menu",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-collapsible-behavior",
+        "@crease-effect/effect-link-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-navigation-menu-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/navigation-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/navigation-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-more-menu-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-dropdown-menu-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/more-menu.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/more-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-more-menu",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-button",
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-more-menu-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/more-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/more-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-mobile-nav-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-drawer-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/mobile-nav.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/mobile-nav.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-mobile-nav",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-drawer",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-mobile-nav-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/mobile-nav.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/mobile-nav.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-top-nav-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-navigation-menu-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/top-nav.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/top-nav.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-top-nav",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/effect-popover",
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-top-nav-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/top-nav.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/top-nav.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -3048,7 +3256,13 @@
         "@crease-effect/effect-marker",
         "@crease-effect/effect-metadata-list",
         "@crease-effect/effect-file-input",
-        "@crease-effect/effect-toast"
+        "@crease-effect/effect-toast",
+        "@crease-effect/effect-action-bar",
+        "@crease-effect/effect-menubar",
+        "@crease-effect/effect-navigation-menu",
+        "@crease-effect/effect-more-menu",
+        "@crease-effect/effect-mobile-nav",
+        "@crease-effect/effect-top-nav"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -3152,7 +3366,13 @@
         "@crease-effect/effect-marker",
         "@crease-effect/effect-metadata-list",
         "@crease-effect/effect-file-input",
-        "@crease-effect/effect-toast"
+        "@crease-effect/effect-toast",
+        "@crease-effect/effect-action-bar",
+        "@crease-effect/effect-menubar",
+        "@crease-effect/effect-navigation-menu",
+        "@crease-effect/effect-more-menu",
+        "@crease-effect/effect-mobile-nav",
+        "@crease-effect/effect-top-nav"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

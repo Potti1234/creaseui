@@ -49,6 +49,12 @@ import { FieldStatus as RenderFieldStatus } from '../ui/field-status'
 import { Indicator as RenderIndicator } from '../ui/indicator'
 import { InputGroup as RenderInputGroup } from '../ui/input-group'
 import { ButtonGroup as RenderButtonGroup } from '../ui/button-group'
+import { ActionBar as RenderActionBar } from '../ui/action-bar'
+import { Menubar as RenderMenubar } from '../ui/menubar'
+import { NavigationMenu as RenderNavigationMenu } from '../ui/navigation-menu'
+import { MoreMenu as RenderMoreMenu } from '../ui/more-menu'
+import { MobileNav as RenderMobileNav } from '../ui/mobile-nav'
+import { TopNav as RenderTopNav } from '../ui/top-nav'
 import { Link as RenderLink } from '../ui/link'
 import { Pagination as RenderPagination } from '../ui/pagination'
 import { Thumbnail as RenderThumbnail } from '../ui/thumbnail'
@@ -132,6 +138,10 @@ import {
   indicator,
   inputGroup,
   buttonGroup,
+  actionBar,
+  menubar,
+  navigationMenu,
+  topNav,
   link,
   pagination,
   thumbnail,
@@ -632,6 +642,36 @@ export const ButtonGroup = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderButtonGroup<Msg, R>>[1],
 ) => RenderButtonGroup(h, options, partClasses(buttonGroup))
+
+export const ActionBar = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderActionBar<Msg, R>>[1],
+) => RenderActionBar(h, options, partClasses(actionBar))
+
+export const Menubar = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMenubar<Msg, R>>[1],
+) => RenderMenubar(h, options, partClasses(menubar), partClasses(menu))
+
+export const NavigationMenu = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderNavigationMenu<Msg, R>>[1],
+) => RenderNavigationMenu(h, options, partClasses(navigationMenu))
+
+export const MoreMenu = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMoreMenu<Msg, R>>[1],
+) => RenderMoreMenu(h, options, Button, DropdownMenu)
+
+export const MobileNav = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderMobileNav<Msg, R>>[1],
+) => RenderMobileNav(h, options, partClasses(drawer))
+
+export const TopNav = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderTopNav<Msg, R>>[1],
+) => RenderTopNav(h, options, partClasses(topNav), DropdownMenu, Popover)
 
 export const Link = <Msg, R = never>(
   h: Html.H<Msg>,

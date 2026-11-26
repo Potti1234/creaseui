@@ -86,6 +86,12 @@ import {
   MetadataList,
   FileInput,
   Toast,
+  ActionBar,
+  Menubar,
+  NavigationMenu,
+  MoreMenu,
+  MobileNav,
+  TopNav,
   Button,
   ButtonLink,
   Calendar,
@@ -144,7 +150,7 @@ const Message = UiSchema.TaggedEnum({
   PickedMenuItem: { value: Schema.String },
   ToggledArchivedItems: { checked: Schema.Boolean },
   SetPanel: {
-    panel: Schema.Literals(['drawerOpen', 'sheetOpen']),
+    panel: Schema.Literals(['drawerOpen', 'sheetOpen', 'mobileOpen']),
     open: Schema.Boolean,
   },
   RemovedActivityToken: {},
@@ -161,6 +167,11 @@ const Message = UiSchema.TaggedEnum({
     error: Schema.NullOr(Schema.String),
   },
   RejectedFiles: {},
+  OpenedNavigationMenu: {
+    area: Schema.Literals(['editorMenu', 'moreMenu', 'productMenu']),
+    menu: Schema.NullOr(Schema.String),
+  },
+  SetSelectionActions: { open: Schema.Boolean },
 })
 
 const fruits = [
@@ -238,6 +249,7 @@ const Preview = Html.component({
     showArchived: Schema.Boolean,
     drawerOpen: Schema.Boolean,
     sheetOpen: Schema.Boolean,
+    mobileOpen: Schema.Boolean,
     activityTokenRemoved: Schema.Boolean,
     mapPreview: Schema.Boolean,
     mapPopup: Schema.Boolean,
@@ -249,6 +261,10 @@ const Preview = Html.component({
     thumbnailRemoved: Schema.Boolean,
     fileNames: Schema.Array(Schema.String),
     fileError: Schema.NullOr(Schema.String),
+    editorMenu: Schema.NullOr(Schema.String),
+    moreMenu: Schema.NullOr(Schema.String),
+    productMenu: Schema.NullOr(Schema.String),
+    selectionActions: Schema.Boolean,
   }),
 }).make({
   init: () => ({
@@ -283,6 +299,7 @@ const Preview = Html.component({
     showArchived: false,
     drawerOpen: false,
     sheetOpen: false,
+    mobileOpen: false,
     activityTokenRemoved: false,
     mapPreview: false,
     mapPopup: false,
@@ -294,6 +311,10 @@ const Preview = Html.component({
     thumbnailRemoved: false,
     fileNames: [],
     fileError: null,
+    editorMenu: null,
+    moreMenu: null,
+    productMenu: null,
+    selectionActions: false,
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -345,11 +366,173 @@ const Preview = Html.component({
     PickedFiles: ($, { names, error }) =>
       $.evolve({ fileNames: names, fileError: error }),
     RejectedFiles: $ => $.evolve({ fileError: 'Choose a plain text file.' }),
+    OpenedNavigationMenu: ($, { area, menu }) => $.evolve({ [area]: menu }),
+    SetSelectionActions: ($, { open }) => $.evolve({ selectionActions: open }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          h.h2.children('Navigation and actions'),
+          NavigationMenu(h, {
+            label: 'Preview sections',
+            layout: 'responsive',
+            entries: [
+              {
+                key: 'overview',
+                label: 'Overview',
+                href: '#navigation-overview',
+                active: true,
+              },
+              {
+                key: 'schedule',
+                label: 'Schedule',
+                href: '#scheduled-meeting-date',
+              },
+              {
+                key: 'resources',
+                label: 'Resources',
+                children: h.a
+                  .attr('href', '#catalog-metadata')
+                  .children('Metadata'),
+              },
+            ],
+          }),
+          Menubar(h, {
+            label: 'Editor menus',
+            openMenu: model.editorMenu,
+            menus: [
+              {
+                id: 'file',
+                label: 'File',
+                items: [{ value: 'new-draft', label: 'New draft' }],
+              },
+              {
+                id: 'edit',
+                label: 'Edit',
+                items: [{ value: 'undo-edit', label: 'Undo edit' }],
+              },
+            ],
+            onOpenChange: menu =>
+              Message.OpenedNavigationMenu({ area: 'editorMenu', menu }),
+            onPick: value => Message.PickedMenuItem({ value }),
+          }),
+          MoreMenu(h, {
+            key: 'catalog-overflow',
+            label: 'Catalog options',
+            props: { open: model.moreMenu === 'options' },
+            items: [
+              { value: 'duplicate-catalog', label: 'Duplicate' },
+              { type: 'divider' },
+              {
+                type: 'section',
+                title: 'Management',
+                items: [
+                  {
+                    value: 'delete-catalog',
+                    label: 'Remove catalog',
+                    variant: 'destructive',
+                  },
+                ],
+              },
+            ],
+            onEmit: {
+              RequestedOpen: () =>
+                Message.OpenedNavigationMenu({
+                  area: 'moreMenu',
+                  menu: 'options',
+                }),
+              RequestedClose: () =>
+                Message.OpenedNavigationMenu({ area: 'moreMenu', menu: null }),
+              Picked: ({ value }) => Message.PickedMenuItem({ value }),
+              Highlighted: () => undefined,
+              RequestedQuery: () => undefined,
+              Settled: () => undefined,
+            },
+          }),
+          TopNav(h, {
+            label: 'Product navigation',
+            heading: { text: 'Product', href: '#navigation-overview' },
+            openMenu: model.productMenu,
+            onOpenChange: menu =>
+              Message.OpenedNavigationMenu({ area: 'productMenu', menu }),
+            centerItems: [
+              {
+                key: 'dashboard',
+                label: 'Dashboard',
+                href: '#navigation-overview',
+                active: true,
+              },
+              {
+                key: 'guides',
+                kind: 'mega-menu',
+                label: 'Guides',
+                items: [
+                  {
+                    key: 'getting-started',
+                    label: 'Getting started',
+                    href: '#catalog-metadata',
+                    description: 'Browse the component catalog',
+                  },
+                ],
+                featured: {
+                  title: 'Release guide',
+                  description: 'Check the current migration status.',
+                },
+              },
+            ],
+          }),
+          h.div.style({ display: 'flex', justifyContent: 'flex-end' }).children(
+            MobileNav(h, {
+              props: { open: model.mobileOpen },
+              title: 'Mobile navigation',
+              width: 260,
+              trigger: h.button.children('Open mobile navigation'),
+              content: () =>
+                h.a
+                  .attr('href', '#catalog-metadata')
+                  .children('Catalog metadata'),
+              onEmit: {
+                RequestedOpen: () =>
+                  Message.SetPanel({ panel: 'mobileOpen', open: true }),
+                RequestedClose: () =>
+                  Message.SetPanel({ panel: 'mobileOpen', open: false }),
+                Settled: () => undefined,
+                Snapped: () => undefined,
+              },
+            }),
+          ),
+          Button(h, {
+            variant: 'outline',
+            onPress: Message.SetSelectionActions({ open: true }),
+          }).children('Select catalog entries'),
+          ActionBar(h, {
+            open: model.selectionActions,
+            label: 'Catalog selection actions',
+            selection: '2 selected',
+            onClose: Message.SetSelectionActions({ open: false }),
+            items: [
+              {
+                value: 'move',
+                label: 'Move selected',
+                onSelect: Message.PickedMenuItem({ value: 'move' }),
+              },
+              {
+                value: 'archive',
+                label: 'Archive selected',
+                variant: 'destructive',
+                onSelect: Message.PickedMenuItem({ value: 'archive' }),
+              },
+            ],
+          }),
+          h.output
+            .attrs({
+              id: 'navigation-overview',
+              'aria-label': 'Last navigation action',
+            })
+            .children(model.lastMenuItem),
+        ),
         h.section.class('example').children(
           h.h2.children('Catalog information'),
           Link(h, { href: '#catalog-metadata', children: ['View metadata'] }),

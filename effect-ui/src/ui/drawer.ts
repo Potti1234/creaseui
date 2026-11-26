@@ -76,6 +76,7 @@ export type DrawerOptions<Msg, R = never> = Omit<
   readonly footer?: PanelContent<Msg, R>
   readonly swipeArea?: PanelContent<Msg, R>
   readonly className?: string
+  readonly panelStyle?: Html.Style
 }
 
 export const Drawer = <Msg, R = never>(
@@ -93,10 +94,11 @@ export const Drawer = <Msg, R = never>(
     footer,
     swipeArea,
     className,
+    panelStyle,
     ...options
   }: DrawerOptions<NoInfer<Msg>, R>,
   styles: typeof drawerClasses = drawerClasses,
-  slot: 'drawer' | 'sheet' = 'drawer',
+  slot: 'drawer' | 'sheet' | 'mobile-nav' = 'drawer',
 ) =>
   DrawerBehavior(h, {
     ...options,
@@ -124,18 +126,17 @@ export const Drawer = <Msg, R = never>(
                       'data-slot': `${slot}-content`,
                     })
                     .style({
+                      ...panelStyle,
                       '--crease-drawer-translate': translated[side].open,
                       '--crease-drawer-exit': translated[side].exit,
                     }),
                 )
                 .children(
                   showSwipeHandle
-                    ? h.div
-                        .class(styles.handle)
-                        .attrs({
-                          'aria-hidden': 'true',
-                          'data-slot': `${slot}-handle`,
-                        })
+                    ? h.div.class(styles.handle).attrs({
+                        'aria-hidden': 'true',
+                        'data-slot': `${slot}-handle`,
+                      })
                     : undefined,
                   h.div
                     .class(styles.header)
