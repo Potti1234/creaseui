@@ -1298,6 +1298,247 @@
       ]
     },
     {
+      "name": "effect-card-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/card.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/card.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-card",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-card-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/card.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/card.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-alert-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/alert.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/alert.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-alert",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-alert-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/alert.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/alert.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-empty-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/empty.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/empty.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-empty",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-empty-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/empty.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/empty.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-table-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/table.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/table.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-table",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-table-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/table.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/table.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-code-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/code.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/code.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-code",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-code-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/code.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/code.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-typography-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/typography.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/typography.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-typography",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-typography-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/typography.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/typography.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-text-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/text.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/text.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-text",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-text-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/text.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/text.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-heading-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-text-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/heading.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/heading.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-heading",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-heading-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/heading.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/heading.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -1344,7 +1585,15 @@
         "@crease-effect/effect-section",
         "@crease-effect/effect-textarea",
         "@crease-effect/effect-native-select",
-        "@crease-effect/effect-form"
+        "@crease-effect/effect-form",
+        "@crease-effect/effect-card",
+        "@crease-effect/effect-alert",
+        "@crease-effect/effect-empty",
+        "@crease-effect/effect-table",
+        "@crease-effect/effect-code",
+        "@crease-effect/effect-typography",
+        "@crease-effect/effect-text",
+        "@crease-effect/effect-heading"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -1397,7 +1646,15 @@
         "@crease-effect/effect-section",
         "@crease-effect/effect-textarea",
         "@crease-effect/effect-native-select",
-        "@crease-effect/effect-form"
+        "@crease-effect/effect-form",
+        "@crease-effect/effect-card",
+        "@crease-effect/effect-alert",
+        "@crease-effect/effect-empty",
+        "@crease-effect/effect-table",
+        "@crease-effect/effect-code",
+        "@crease-effect/effect-typography",
+        "@crease-effect/effect-text",
+        "@crease-effect/effect-heading"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

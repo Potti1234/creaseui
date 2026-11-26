@@ -2,6 +2,12 @@ import type { Html } from '@effect/ui/html'
 import * as stylex from '@stylexjs/stylex'
 
 import { Accordion as RenderAccordion } from '../ui/accordion'
+import { Card as RenderCard } from '../ui/card'
+import { Alert as RenderAlert } from '../ui/alert'
+import { Empty as RenderEmpty } from '../ui/empty'
+import { Table as RenderTable } from '../ui/table'
+import { Code as RenderCode } from '../ui/code'
+import { Typography as RenderTypography } from '../ui/typography'
 import { Textarea as RenderTextarea } from '../ui/textarea'
 import { NativeSelect as RenderNativeSelect } from '../ui/native-select'
 import {
@@ -49,6 +55,12 @@ import { Separator as RenderSeparator } from '../ui/separator'
 import { Toggle as RenderToggle } from '../ui/toggle'
 import {
   accordion,
+  card,
+  alert,
+  empty,
+  table,
+  code,
+  typography,
   textarea,
   nativeSelect,
   form,
@@ -324,3 +336,37 @@ export const ErrorSummary = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderErrorSummary<Msg, R>>[1],
 ) => RenderErrorSummary(h, options, partClasses(form))
+
+export { Text } from '../ui/text'
+
+export { Heading } from '../ui/heading'
+
+export const Card = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderCard<Msg, R>>[1],
+) => RenderCard(h, options, partClasses(card))
+
+export const Alert = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderAlert<Msg, R>>[1],
+) => RenderAlert(h, options, partClasses(alert))
+
+export const Empty = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderEmpty<Msg, R>>[1],
+) => RenderEmpty(h, options, partClasses(empty))
+
+export const Table = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderTable<Msg, R>>[1],
+) => RenderTable(h, options, partClasses(table))
+
+export const Code = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderCode<Msg, R>>[1],
+) => RenderCode(h, options, partClasses(code))
+
+export const Typography = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderTypography<Msg, R>>[1],
+) => RenderTypography(h, options, partClasses(typography))

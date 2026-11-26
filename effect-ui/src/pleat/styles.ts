@@ -1820,6 +1820,343 @@ export const form = {
   }),
 }
 
+export const card = {
+  root: Style.make({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'var(--card-spacing, 1.5rem)',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    borderRadius: 'calc(var(--radius) + 2px)',
+    backgroundColor: 'var(--card)',
+    color: 'var(--card-foreground)',
+    paddingBlock: 'var(--card-spacing, 1.5rem)',
+    fontSize: '0.875rem',
+    lineHeight: '1.25rem',
+    boxShadow: '0 1px 2px rgb(0 0 0 / 5%)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-density="flush"])'), {
+      paddingBlockStart: 0,
+    }),
+    Style.when(When.pseudo(':has(>img:first-child)'), {
+      paddingBlockStart: 0,
+    }),
+  ),
+  header: Style.make({
+    display: 'grid',
+    gridAutoRows: 'min-content',
+    alignItems: 'start',
+    gap: 4,
+    paddingInline: 'var(--card-spacing, 1.5rem)',
+    containerName: 'card-header',
+    containerType: 'inline-size',
+  }).pipe(
+    Style.when(When.pseudo(':has([data-slot="card-action"])'), {
+      gridTemplateColumns: '1fr auto',
+    }),
+    Style.when(When.pseudo(':has([data-slot="card-description"])'), {
+      gridTemplateRows: 'auto auto',
+    }),
+  ),
+  title: Style.make({
+    margin: 0,
+    fontSize: 'var(--card-title-size, 1rem)',
+    lineHeight: 1.5,
+    fontWeight: 500,
+  }),
+  description: Style.make({
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  }),
+  action: Style.make({
+    gridColumnStart: '2',
+    gridRowStart: '1',
+    gridRowEnd: 'span 2',
+    alignSelf: 'start',
+    justifySelf: 'end',
+  }),
+  content: Style.make({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12,
+    paddingInline: 'var(--card-spacing, 1.5rem)',
+  }),
+  footer: Style.make({
+    display: 'flex',
+    alignItems: 'center',
+    paddingInline: 'var(--card-spacing, 1.5rem)',
+  }),
+}
+
+export const alert = {
+  root: Style.make({
+    display: 'grid',
+    gridTemplateColumns: '1fr',
+    alignItems: 'start',
+    columnGap: 12,
+    rowGap: 2,
+    width: '100%',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--card)',
+    color: 'var(--primary)',
+    paddingBlock: 12,
+    paddingInline: 16,
+    fontSize: '0.875rem',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-icon])'), {
+      gridTemplateColumns: '1rem 1fr',
+    }),
+    Style.when(When.pseudo(':is([data-severity="success"])'), {
+      color: 'var(--success)',
+    }),
+    Style.when(When.pseudo(':is([data-severity="warning"])'), {
+      color: 'var(--warning)',
+    }),
+    Style.when(When.pseudo(':is([data-severity="error"])'), {
+      color: 'var(--destructive)',
+    }),
+  ),
+  icon: Style.make({
+    gridColumnStart: '1',
+    gridRowEnd: 'span 2',
+  }),
+  title: Style.make({
+    gridColumnStart: '-2',
+    minHeight: 16,
+    fontWeight: 500,
+    letterSpacing: '-0.025em',
+  }),
+  description: Style.make({
+    gridColumnStart: '-2',
+    display: 'grid',
+    justifyItems: 'start',
+    gap: 4,
+    color: 'var(--muted-foreground)',
+  }),
+}
+
+export const empty = {
+  root: Style.make({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 24,
+    flexGrow: 1,
+    minWidth: 0,
+    borderRadius: 'var(--radius)',
+    borderStyle: 'dashed',
+    borderWidth: 0,
+    padding: 24,
+    textAlign: 'center',
+    textWrap: 'balance',
+  }).pipe(
+    Style.when(When.media('(min-width: 48rem)'), {
+      padding: 48,
+    }),
+  ),
+  header: Style.make({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 8,
+    maxWidth: '24rem',
+    textAlign: 'center',
+  }),
+  media: Style.make({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+    marginBottom: 8,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-variant="icon"])'), {
+      width: 40,
+      height: 40,
+      borderRadius: 'var(--radius)',
+      backgroundColor: 'var(--muted)',
+      color: 'var(--foreground)',
+    }),
+  ),
+  title: Style.make({
+    margin: 0,
+    fontSize: '1.125rem',
+    fontWeight: 500,
+    letterSpacing: '-0.025em',
+  }),
+  description: Style.make({
+    color: 'var(--muted-foreground)',
+    fontSize: '0.875rem',
+    lineHeight: 1.625,
+  }),
+  content: Style.make({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 16,
+    width: '100%',
+    maxWidth: '24rem',
+    minWidth: 0,
+    fontSize: '0.875rem',
+    textWrap: 'balance',
+  }),
+}
+
+export const table = {
+  container: Style.make({
+    position: 'relative',
+    width: '100%',
+    overflowX: 'auto',
+  }),
+  root: Style.make({
+    width: '100%',
+    captionSide: 'bottom',
+    borderCollapse: 'collapse',
+    fontSize: '0.875rem',
+  }),
+  header: Style.make({}),
+  body: Style.make({}),
+  footer: Style.make({
+    borderTop: '1px solid var(--border)',
+    backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)',
+    fontWeight: 500,
+  }),
+  row: Style.make({
+    borderBottom: '1px solid var(--border)',
+    transition: 'background-color 150ms',
+  }).pipe(
+    Style.when(When.hover, {
+      backgroundColor: 'color-mix(in oklab, var(--muted) 50%, transparent)',
+    }),
+    Style.when(When.pseudo(':is([data-selected])'), {
+      backgroundColor: 'var(--muted)',
+    }),
+  ),
+  head: Style.make({
+    height: 40,
+    paddingInline: 8,
+    textAlign: 'start',
+    verticalAlign: 'middle',
+    whiteSpace: 'nowrap',
+    fontWeight: 500,
+    color: 'var(--foreground)',
+  }),
+  cell: Style.make({
+    padding: 8,
+    whiteSpace: 'nowrap',
+    verticalAlign: 'middle',
+  }),
+  caption: Style.make({
+    marginTop: 16,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  }),
+}
+
+export const code = {
+  root: Style.make({
+    borderRadius: 4,
+    backgroundColor: 'var(--muted)',
+    paddingInline: 4,
+    fontFamily: 'var(--font-mono, monospace)',
+    fontSize: '0.875rem',
+    lineHeight: 'inherit',
+    overflowWrap: 'break-word',
+    color: 'var(--foreground)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-color="secondary"])'), {
+      color: 'var(--muted-foreground)',
+    }),
+    Style.when(When.pseudo(':is([data-color="inherit"])'), {
+      color: 'inherit',
+    }),
+    Style.when(When.pseudo(':is([data-size="inherit"])'), {
+      fontSize: 'inherit',
+    }),
+  ),
+}
+
+export const typography = {
+  h1: Style.make({
+    scrollMargin: 80,
+    letterSpacing: '-0.025em',
+    fontWeight: 800,
+    fontSize: '2.25rem',
+    textAlign: 'center',
+    textWrap: 'balance',
+  }),
+  h2: Style.make({
+    scrollMargin: 80,
+    letterSpacing: '-0.025em',
+    fontWeight: 600,
+    fontSize: '1.875rem',
+    borderBottom: '1px solid var(--border)',
+    paddingBottom: 8,
+  }).pipe(
+    Style.when(When.pseudo(':first-child'), {
+      marginTop: 0,
+    }),
+  ),
+  h3: Style.make({
+    scrollMargin: 80,
+    letterSpacing: '-0.025em',
+    fontWeight: 600,
+    fontSize: '1.5rem',
+  }),
+  h4: Style.make({
+    scrollMargin: 80,
+    letterSpacing: '-0.025em',
+    fontWeight: 600,
+    fontSize: '1.25rem',
+  }),
+  p: Style.make({
+    lineHeight: '1.75rem',
+  }).pipe(
+    Style.when(When.pseudo(':not(:first-child)'), {
+      marginTop: 24,
+    }),
+  ),
+  blockquote: Style.make({
+    marginInline: 0,
+    marginTop: 24,
+    borderInlineStart: '2px solid var(--border)',
+    paddingInlineStart: 24,
+    fontStyle: 'italic',
+  }),
+  'inline-code': Style.make({
+    position: 'relative',
+    borderRadius: 4,
+    backgroundColor: 'var(--muted)',
+    paddingInline: '0.3rem',
+    paddingBlock: '0.2rem',
+    fontFamily: 'var(--font-mono, monospace)',
+    fontSize: '0.875rem',
+    fontWeight: 600,
+  }),
+  lead: Style.make({
+    fontSize: '1.25rem',
+    color: 'var(--muted-foreground)',
+  }),
+  large: Style.make({
+    fontSize: '1.125rem',
+    fontWeight: 600,
+  }),
+  small: Style.make({
+    fontSize: '0.875rem',
+    lineHeight: 1,
+    fontWeight: 500,
+  }),
+  muted: Style.make({
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  }),
+}
+
 export const tooltip = {
   root: Style.make({ display: 'inline-block' }),
   positioner: Style.make({

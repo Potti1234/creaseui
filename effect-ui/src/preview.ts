@@ -30,6 +30,14 @@ import {
   ErrorSummary,
   NativeSelect,
   Textarea,
+  Card,
+  Alert,
+  Empty,
+  Table,
+  Code,
+  Text,
+  Heading,
+  Typography,
   Button,
   ButtonLink,
   Calendar,
@@ -186,6 +194,87 @@ const Preview = Html.component({
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          Heading(h, { level: 2, children: ['Project activity'] }),
+          Card(h, {
+            as: 'article',
+            id: 'project-activity',
+            size: 'sm',
+            children: card => [
+              card.header({
+                children: [
+                  card.title({ children: ['Team updates'] }),
+                  card.description({
+                    children: ['Recent changes from this workspace.'],
+                  }),
+                  card.action({
+                    children: [
+                      Badge(h, { variant: 'secondary', children: ['Live'] }),
+                    ],
+                  }),
+                ],
+              }),
+              card.content({
+                children: [
+                  Alert(h, {
+                    severity: 'info',
+                    announcement: 'status',
+                    title: 'Updates are on time.',
+                  }),
+                  Table(h, {
+                    ariaLabel: 'Activity history',
+                    children: table => [
+                      table.header({
+                        children: [
+                          table.row({
+                            children: [
+                              table.head({ children: ['Project'] }),
+                              table.head({ children: ['Status'] }),
+                            ],
+                          }),
+                        ],
+                      }),
+                      table.body({
+                        children: [
+                          table.row({
+                            selected: true,
+                            children: [
+                              table.head({
+                                scope: 'row',
+                                children: ['Workspace'],
+                              }),
+                              table.cell({
+                                children: [Code(h, { children: ['review'] })],
+                              }),
+                            ],
+                          }),
+                        ],
+                      }),
+                    ],
+                  }),
+                  Empty(h, {
+                    title: 'No drafts',
+                    description: 'Drafts show here while they’re being edited.',
+                  }),
+                ],
+              }),
+              card.footer({
+                children: [
+                  Typography(h, {
+                    variant: 'muted',
+                    children: [
+                      Text(h, {
+                        type: 'inherit',
+                        hasTabularNumbers: true,
+                        children: ['1 activity this week'],
+                      }),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ),
         h.section.class('example').children(
           h.h2.children('Project notes'),
           Form(h, {
