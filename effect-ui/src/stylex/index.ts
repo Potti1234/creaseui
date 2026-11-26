@@ -2,6 +2,12 @@ import type { Html } from '@effect/ui/html'
 import * as stylex from '@stylexjs/stylex'
 
 import { Accordion as RenderAccordion } from '../ui/accordion'
+import { Textarea as RenderTextarea } from '../ui/textarea'
+import { NativeSelect as RenderNativeSelect } from '../ui/native-select'
+import {
+  Form as RenderForm,
+  ErrorSummary as RenderErrorSummary,
+} from '../ui/form'
 import { ToggleGroup as RenderToggleGroup } from '../ui/toggle-group'
 import { InputOtp as RenderInputOtp } from '../ui/input-otp'
 import { NumberInput as RenderNumberInput } from '../ui/number-input'
@@ -40,6 +46,9 @@ import { Separator as RenderSeparator } from '../ui/separator'
 import { Toggle as RenderToggle } from '../ui/toggle'
 import {
   accordion,
+  textarea,
+  nativeSelect,
+  form,
   toggleGroup,
   inputOtp,
   numberInput,
@@ -279,3 +288,31 @@ export const AlertDialog = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderAlertDialog<Msg, R>>[1],
 ) => RenderAlertDialog(h, options, partClasses(alertDialog))
+
+export { Stack, HStack, VStack, StackItem } from '../ui/stack'
+
+export { Grid, GridSpan } from '../ui/grid'
+
+export { Section } from '../ui/section'
+
+export { formControlIds } from '../ui/form'
+
+export const Textarea = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderTextarea<Msg, R>>[1],
+) => RenderTextarea(h, options, partClasses(textarea))
+
+export const NativeSelect = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderNativeSelect<Msg, R>>[1],
+) => RenderNativeSelect(h, options, partClasses(nativeSelect))
+
+export const Form = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderForm<Msg, R>>[1],
+) => RenderForm(h, options, partClasses(form))
+
+export const ErrorSummary = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderErrorSummary<Msg, R>>[1],
+) => RenderErrorSummary(h, options, partClasses(form))

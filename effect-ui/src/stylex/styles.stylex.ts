@@ -1741,6 +1741,159 @@ export const alertDialog = stylex.create({
   },
 })
 
+export const textarea = stylex.create({
+  field: {
+    display: 'grid',
+    gap: 8,
+  },
+  label: {
+    fontWeight: 500,
+    fontSize: '0.875rem',
+  },
+  description: {
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+    margin: 0,
+  },
+  control: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--input)',
+      ':focus-visible': 'var(--ring)',
+      ':is([aria-invalid="true"])': 'var(--destructive)',
+    },
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    width: '100%',
+    minWidth: 0,
+    color: 'var(--foreground)',
+    fontSize: {
+      default: '1rem',
+      '@media (min-width: 48rem)': '0.875rem',
+    },
+    outline: 'none',
+    minHeight: 64,
+    paddingInline: 10,
+    paddingBlock: 8,
+    boxShadow: {
+      default: null,
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+    cursor: {
+      default: null,
+      ':disabled': 'not-allowed',
+    },
+  },
+})
+
+export const nativeSelect = stylex.create({
+  field: {
+    display: 'grid',
+    gap: 8,
+  },
+  label: {
+    fontWeight: 500,
+    fontSize: '0.875rem',
+  },
+  description: {
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+    margin: 0,
+  },
+  control: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--input)',
+      ':focus-visible': 'var(--ring)',
+      ':is([aria-invalid="true"])': 'var(--destructive)',
+    },
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    width: '100%',
+    minWidth: 0,
+    color: 'var(--foreground)',
+    fontSize: {
+      default: '1rem',
+      '@media (min-width: 48rem)': '0.875rem',
+    },
+    outline: 'none',
+    height: {
+      default: 36,
+      ':is([data-size="sm"])': 32,
+    },
+    appearance: 'none',
+    paddingInlineStart: 10,
+    paddingInlineEnd: 32,
+    boxShadow: {
+      default: null,
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+    cursor: {
+      default: null,
+      ':disabled': 'not-allowed',
+    },
+  },
+  wrapper: {
+    display: 'inline-flex',
+    position: 'relative',
+    minWidth: 0,
+    alignItems: 'center',
+  },
+  icon: {
+    pointerEvents: 'none',
+    display: 'grid',
+    placeItems: 'center',
+    position: 'absolute',
+    insetInlineEnd: 8,
+    width: 16,
+    height: 16,
+    color: 'var(--muted-foreground)',
+  },
+})
+
+export const form = stylex.create({
+  root: {
+    display: 'grid',
+    gap: 24,
+  },
+  summary: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'color-mix(in oklab, var(--destructive) 40%, transparent)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 5%, transparent)',
+    padding: 16,
+    fontSize: '0.875rem',
+  },
+  title: {
+    fontWeight: 500,
+    color: 'var(--foreground)',
+    margin: 0,
+  },
+  list: {
+    marginBlock: '8px 0',
+    paddingInlineStart: 20,
+    listStyleType: 'disc',
+  },
+  link: {
+    color: 'var(--foreground)',
+    textDecorationLine: 'underline',
+    textUnderlineOffset: 4,
+  },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {

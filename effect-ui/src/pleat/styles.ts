@@ -1677,6 +1677,149 @@ export const alertDialog = {
   ),
 }
 
+export const textarea = {
+  field: Style.make({
+    display: 'grid',
+    gap: 8,
+  }),
+  label: Style.make({
+    fontWeight: 500,
+    fontSize: '0.875rem',
+  }),
+  description: Style.make({
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+    margin: 0,
+  }),
+  control: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    width: '100%',
+    minWidth: 0,
+    color: 'var(--foreground)',
+    fontSize: '1rem',
+    outline: 'none',
+    minHeight: 64,
+    paddingInline: 10,
+    paddingBlock: 8,
+  }).pipe(
+    Style.when(When.focusVisible, {
+      borderColor: 'var(--ring)',
+      boxShadow: '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    }),
+    Style.when(When.disabled, {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+    }),
+    Style.when(When.pseudo(':is([aria-invalid="true"])'), {
+      borderColor: 'var(--destructive)',
+    }),
+    Style.when(When.media('(min-width: 48rem)'), {
+      fontSize: '0.875rem',
+    }),
+  ),
+}
+
+export const nativeSelect = {
+  field: Style.make({
+    display: 'grid',
+    gap: 8,
+  }),
+  label: Style.make({
+    fontWeight: 500,
+    fontSize: '0.875rem',
+  }),
+  description: Style.make({
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+    margin: 0,
+  }),
+  control: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    width: '100%',
+    minWidth: 0,
+    color: 'var(--foreground)',
+    fontSize: '1rem',
+    outline: 'none',
+    height: 36,
+    appearance: 'none',
+    paddingInlineStart: 10,
+    paddingInlineEnd: 32,
+  }).pipe(
+    Style.when(When.focusVisible, {
+      borderColor: 'var(--ring)',
+      boxShadow: '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    }),
+    Style.when(When.disabled, {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+    }),
+    Style.when(When.pseudo(':is([aria-invalid="true"])'), {
+      borderColor: 'var(--destructive)',
+    }),
+    Style.when(When.media('(min-width: 48rem)'), {
+      fontSize: '0.875rem',
+    }),
+    Style.when(When.pseudo(':is([data-size="sm"])'), {
+      height: 32,
+    }),
+  ),
+  wrapper: Style.make({
+    display: 'inline-flex',
+    position: 'relative',
+    minWidth: 0,
+    alignItems: 'center',
+  }),
+  icon: Style.make({
+    pointerEvents: 'none',
+    display: 'grid',
+    placeItems: 'center',
+    position: 'absolute',
+    insetInlineEnd: 8,
+    width: 16,
+    height: 16,
+    color: 'var(--muted-foreground)',
+  }),
+}
+
+export const form = {
+  root: Style.make({
+    display: 'grid',
+    gap: 24,
+  }),
+  summary: Style.make({
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'color-mix(in oklab, var(--destructive) 40%, transparent)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'color-mix(in oklab, var(--destructive) 5%, transparent)',
+    padding: 16,
+    fontSize: '0.875rem',
+  }),
+  title: Style.make({
+    fontWeight: 500,
+    color: 'var(--foreground)',
+    margin: 0,
+  }),
+  list: Style.make({
+    marginBlock: '8px 0',
+    paddingInlineStart: 20,
+    listStyleType: 'disc',
+  }),
+  link: Style.make({
+    color: 'var(--foreground)',
+    textDecorationLine: 'underline',
+    textUnderlineOffset: 4,
+  }),
+}
+
 export const tooltip = {
   root: Style.make({ display: 'inline-block' }),
   positioner: Style.make({

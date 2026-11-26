@@ -20,6 +20,16 @@ import {
   NumberInput,
   Avatar,
   AlertDialog,
+  Grid,
+  GridSpan,
+  HStack,
+  VStack,
+  StackItem,
+  Section,
+  Form,
+  ErrorSummary,
+  NativeSelect,
+  Textarea,
   Button,
   ButtonLink,
   Calendar,
@@ -65,6 +75,9 @@ const Message = UiSchema.TaggedEnum({
   UpdatedOtp: { value: Schema.Redacted(Schema.String) },
   SetArchiveOpen: { open: Schema.Boolean },
   Archived: {},
+  ProjectChanged: { value: Schema.String },
+  NotesChanged: { value: Schema.String },
+  ProjectSaved: { value: Schema.String, notes: Schema.String },
 })
 
 const fruits = [
@@ -104,6 +117,10 @@ const Preview = Html.component({
     otp: Schema.Redacted(Schema.String),
     archiveOpen: Schema.Boolean,
     archived: Schema.Boolean,
+    project: Schema.String,
+    notes: Schema.String,
+    rejectedNotes: Schema.Boolean,
+    projectSaved: Schema.String,
   }),
 }).make({
   init: () => ({
@@ -126,6 +143,10 @@ const Preview = Html.component({
     otp: Redacted.make(''),
     archiveOpen: false,
     archived: false,
+    project: 'plan',
+    notes: '',
+    rejectedNotes: false,
+    projectSaved: '',
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -147,11 +168,116 @@ const Preview = Html.component({
     UpdatedOtp: ($, { value }) => $.evolve({ otp: value }),
     SetArchiveOpen: ($, { open }) => $.evolve({ archiveOpen: open }),
     Archived: $ => $.evolve({ archiveOpen: false, archived: true }),
+    ProjectChanged: ($, { value }) => $.evolve({ project: value }),
+    NotesChanged: ($, { value }) =>
+      $.evolve({ notes: value, rejectedNotes: false }),
+    ProjectSaved: ($, { value, notes }) =>
+      $.evolve({
+        rejectedNotes: notes.trim() === '',
+        projectSaved: notes.trim() === '' ? '' : value,
+      }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          h.h2.children('Project notes'),
+          Form(h, {
+            key: 'project-notes',
+            element: h.form.attr('aria-label', 'Project notes'),
+            onSubmit: ({ fields }) =>
+              Message.ProjectSaved({
+                value: fields.project ?? '',
+                notes: fields.notes ?? '',
+              }),
+            children: [
+              ErrorSummary(h, {
+                id: 'project-errors',
+                title: 'Check your notes',
+                errors: model.rejectedNotes
+                  ? [
+                      {
+                        controlId: 'project-notes',
+                        message: 'Enter your project notes.',
+                      },
+                    ]
+                  : [],
+              }),
+              Section(h, {
+                variant: 'transparent',
+                padding: 0,
+                children: [
+                  Grid(h, {
+                    columns: { minWidth: 180, max: 2, repeat: 'fit' },
+                    gap: 3,
+                    children: [
+                      NativeSelect(h, {
+                        id: 'project-kind',
+                        label: 'Project',
+                        element: h.select.attrs({ name: 'project' }),
+                        value: model.project,
+                        onChange: value => Message.ProjectChanged({ value }),
+                        options: [{ value: 'plan', label: 'Planning' }],
+                        groups: [
+                          {
+                            label: 'Delivery',
+                            options: [
+                              { value: 'build', label: 'Implementation' },
+                              {
+                                value: 'review',
+                                label: 'Review',
+                                disabled: true,
+                              },
+                            ],
+                          },
+                        ],
+                      }),
+                      GridSpan(h, {
+                        columns: 'full',
+                        children: [
+                          Textarea(h, {
+                            id: 'project-notes',
+                            label: 'Notes',
+                            description: 'A short summary for your team.',
+                            value: model.notes,
+                            invalid: model.rejectedNotes,
+                            element: h.textarea.attrs({
+                              name: 'notes',
+                              rows: '3',
+                            }),
+                            onInput: value => Message.NotesChanged({ value }),
+                          }),
+                        ],
+                      }),
+                    ],
+                  }),
+                ],
+              }),
+              HStack(h, {
+                hAlign: 'between',
+                vAlign: 'center',
+                gap: 2,
+                children: [
+                  StackItem(h, {
+                    children: [
+                      h.button.attrs({ type: 'submit' }).children('Save notes'),
+                    ],
+                  }),
+                  VStack(h, {
+                    children: [
+                      h.output.children(
+                        model.projectSaved === ''
+                          ? ''
+                          : `Saved ${model.projectSaved}`,
+                      ),
+                    ],
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ),
         h.section.class('example').children(
           h.h2.children('Formatting'),
           ToggleGroup(h, {

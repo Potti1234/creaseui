@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 
 const read = path =>
   JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'))
@@ -21,16 +21,22 @@ const partial = new Map([
   ],
 ])
 const renderers = ['stylex-effect-components', 'pleat-effect-components']
+const hasFiles = item =>
+  item?.files?.length &&
+  item.files.every(file =>
+    existsSync(new URL(`../${file.path}`, import.meta.url)),
+  )
+
 const missing = [...catalog].sort().filter(name => {
   const component = `effect-${name}`
   return (
-    !registry.has(component) ||
-    !registry.has(`${component}-behavior`) ||
+    !hasFiles(registry.get(component)) ||
+    !hasFiles(registry.get(`${component}-behavior`)) ||
     renderers.some(
       renderer =>
         !registry
           .get(renderer)
-          ?.registryDependencies.includes(`@crease-effect/${component}`),
+          ?.registryDependencies?.includes(`@crease-effect/${component}`),
     )
   )
 })

@@ -894,6 +894,7 @@
     {
       "name": "effect-center-behavior",
       "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-layout-utils"],
       "dependencies": [
         "effect@4.1.5",
         "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
@@ -1108,6 +1109,195 @@
       ]
     },
     {
+      "name": "effect-layout-utils",
+      "type": "registry:lib",
+      "files": [{ "path": "src/behaviors/layout.ts", "type": "registry:lib", "target": "@ui/effect/behaviors/layout.ts" }]
+    },
+    {
+      "name": "effect-stack-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-layout-utils"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/stack.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/stack.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-stack",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-stack-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/stack.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/stack.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-grid-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-layout-utils"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/grid.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/grid.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-grid",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-grid-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/grid.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/grid.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-section-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-layout-utils"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/section.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/section.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-section",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-section-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/section.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/section.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-textarea-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/textarea.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/textarea.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-textarea",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-textarea-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/textarea.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/textarea.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-native-select-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/native-select.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/native-select.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-native-select",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-native-select-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/native-select.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/native-select.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-form-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/form.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/form.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-form",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-form-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/form.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/form.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -1148,7 +1338,13 @@
         "@crease-effect/effect-input-otp",
         "@crease-effect/effect-number-input",
         "@crease-effect/effect-avatar",
-        "@crease-effect/effect-alert-dialog"
+        "@crease-effect/effect-alert-dialog",
+        "@crease-effect/effect-stack",
+        "@crease-effect/effect-grid",
+        "@crease-effect/effect-section",
+        "@crease-effect/effect-textarea",
+        "@crease-effect/effect-native-select",
+        "@crease-effect/effect-form"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -1195,7 +1391,13 @@
         "@crease-effect/effect-input-otp",
         "@crease-effect/effect-number-input",
         "@crease-effect/effect-avatar",
-        "@crease-effect/effect-alert-dialog"
+        "@crease-effect/effect-alert-dialog",
+        "@crease-effect/effect-stack",
+        "@crease-effect/effect-grid",
+        "@crease-effect/effect-section",
+        "@crease-effect/effect-textarea",
+        "@crease-effect/effect-native-select",
+        "@crease-effect/effect-form"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },
