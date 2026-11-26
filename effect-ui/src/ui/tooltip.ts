@@ -5,6 +5,9 @@ import type { ButtonElement } from '@effect/ui-kit'
 import { TooltipBehavior } from '../behaviors/tooltip'
 
 type TooltipOptions<Msg> = Parameters<typeof TooltipBehavior<Msg>>[1]
+type TooltipTrigger<Msg, R> =
+  | ButtonElement<Msg, R>
+  | Html.Element<Msg, R, Html.EventsOf<'a'>, HTMLAnchorElement, 'a'>
 
 const tailwind = {
   root: 'inline-block',
@@ -25,7 +28,7 @@ export const Tooltip = <Msg, R = never>(
     className,
     ...options
   }: Omit<TooltipOptions<Msg>, 'view' | 'fallback'> & {
-    readonly trigger: ButtonElement<NoInfer<Msg>, R>
+    readonly trigger: TooltipTrigger<NoInfer<Msg>, R>
     readonly content:
       | View.Input<NoInfer<Msg>, R>
       | View.Children<NoInfer<Msg>, R>
@@ -48,7 +51,7 @@ export const Tooltip = <Msg, R = never>(
               tooltip
                 .popup(
                   h.div
-                    .class([styles.popup, className].filter(Boolean).join(' '))
+                    .class(styles.popup, className)
                     .attr('data-slot', 'tooltip-content'),
                 )
                 .children(

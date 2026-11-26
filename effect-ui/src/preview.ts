@@ -5,6 +5,7 @@ import { Effect, Layer, Schema } from 'effect'
 import {
   Accordion,
   Button,
+  ButtonLink,
   Calendar,
   Checkbox,
   Collapsible,
@@ -188,13 +189,23 @@ const Preview = Html.component({
           ),
         ),
         h.section.class('example example-compact').children(
-          h.h2.children('Tooltip'),
+          h.h2.attr('id', 'retention-policy').children('Tooltip'),
           Tooltip(h, {
+            key: 'retention-button',
             props: { delay: 250 },
             trigger: Button(h, { variant: 'outline' }).children(
               'Retention details',
             ),
             content: 'Archived items are kept for 30 days.',
+          }),
+          Tooltip(h, {
+            key: 'retention-link',
+            props: { delay: 250 },
+            trigger: ButtonLink(h, {
+              href: '#retention-policy',
+              variant: 'link',
+            }).children('Retention policy'),
+            content: 'Read the retention policy.',
           }),
         ),
         h.section.class('example').children(
@@ -259,22 +270,20 @@ const Preview = Html.component({
             content: h.p.children('Files are stored in your workspace.'),
           }),
         ),
-        h.section
-          .class('example')
-          .children(
-            h.h2.children('Progress'),
-            Progress(h, {
-              key: 'files-uploaded',
-              props: { value: 3, max: 5 },
-              label: 'Files uploaded',
-              showValue: true,
-            }),
-            Progress(h, {
-              key: 'preparing-report',
-              props: { value: null },
-              label: 'Preparing report',
-            }),
-          ),
+        h.section.class('example').children(
+          h.h2.children('Progress'),
+          Progress(h, {
+            key: 'files-uploaded',
+            props: { value: 3, max: 5 },
+            label: 'Files uploaded',
+            showValue: true,
+          }),
+          Progress(h, {
+            key: 'preparing-report',
+            props: { value: null },
+            label: 'Preparing report',
+          }),
+        ),
         h.section.class('example').children(
           h.h2.children('Toggle and Separator'),
           Toggle(h, {

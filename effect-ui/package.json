@@ -12,8 +12,8 @@
     "registry:build": "npx --yes shadcn@latest build registry.json --cwd .. --output effect-ui/.registry"
   },
   "dependencies": {
-    "@effect/ui": "https://pkg.pr.new/Effect-TS/ui/@effect/ui@8986cd7",
-    "@effect/ui-kit": "https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@8986cd7",
+    "@effect/ui": "https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+    "@effect/ui-kit": "https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77",
     "@pleat/core": "file:../packages/pleat-core",
     "@stylexjs/stylex": "^0.19.2",
     "effect": "4.1.5"

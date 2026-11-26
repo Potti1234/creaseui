@@ -120,6 +120,8 @@ paste and verifies that `en-US` continues to reject both apostrophes.
 
 Reported as [Effect UI #283](https://github.com/Effect-TS/ui/issues/283) with a
 [tested patch](https://github.com/Potti1234/ui/commit/fc0963b67058aaa51a8b6aa48b636c4086df8210).
+The upstream fix shipped in `5ea1d77`. [Merged upstream fix](https://github.com/Effect-TS/ui/pull/285)
+
 On `8986cd7`, applying the Tooltip trigger part to an `<a>` throws
 `/Tooltip: a part for <button> was given <a>`. The Foldkit Link component
 uses native link triggers to describe linked labels.
@@ -129,8 +131,8 @@ node effect-ui/repros/tooltip-link-trigger.mjs
 node effect-ui/repros/tooltip-link-trigger.mjs --button
 ```
 
-The first run fails at render time, and the button control opens its
-tooltip on keyboard focus. The patch preserves the native `href` and
+On `8986cd7`, the link run failed at render time and the button control
+passed. On `5ea1d77`, both open on keyboard focus. The patch preserves the native `href` and
 description, opens the tooltip on keyboard focus, and leaves navigation
 uncanceled when the link is activated. Both Tooltip suites passed with the
 patch (30 tests), along with type-check and lint. [Standalone repro](repros/tooltip-link-trigger.mjs)

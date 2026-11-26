@@ -2,7 +2,7 @@
 
 The port covers Accordion, Button, Calendar, Checkbox, Collapsible, Combobox, Dialog, Popover, Progress, Select, Separator, Switch, Tabs, Toggle, and Tooltip. The behaviors can be installed and composed independently. Tailwind, StyleX, and Pleat use the same Effect UI views and event contracts.
 
-This package uses Effect 4.1.5 and pins both Effect UI packages to snapshot `8986cd7`. It has its own lockfile because the Foldkit application still requires Effect 4.0.0-rc.117.
+This package uses Effect 4.1.5 and pins both Effect UI packages to snapshot `5ea1d77`. It has its own lockfile because the Foldkit application still requires Effect 4.0.0-rc.117.
 
 ## Preview locally
 
@@ -45,7 +45,7 @@ Select uses the kit's keyboard navigation, typeahead, disabled options, form int
 
 Checkbox and Switch render labels linked to the native button and optional descriptions. Pass `checked` in `props` and handle Checkbox's `Toggled` event or Switch's `onToggle` callback. The styled controls submit an empty string when unchecked by default, matching the Foldkit versions. Supply `uncheckedValue` to choose a different value.
 
-Tooltip takes a button builder as its trigger. The behavior exposes the kit's hover delay, placement, and visibility options. It adds the text to the trigger's accessible description by default. Set `describesTrigger: false` for a tooltip that repeats the trigger's accessible name. Native link triggers are tracked upstream. [Effect UI #283](https://github.com/Effect-TS/ui/issues/283)
+Tooltip accepts a button or a native link with an `href` as its trigger. The behavior exposes the kit's hover delay, placement, and visibility options. It adds the text to the trigger's accessible description by default. Set `describesTrigger: false` for a tooltip that repeats the trigger's accessible name. [Effect UI link-trigger fix](https://github.com/Effect-TS/ui/pull/285)
 
 Tabs takes the active `value` from the parent and emits `Selected`. The styled view activates on focus by default. Set `activateOnFocus: false` for manual activation. Effect UI keeps disabled tabs in the arrow-key focus order and prevents them from activating. Accordion can own its open values through `defaultValue` or accept `value` and emit `Toggled` to its parent. Its kit behavior also supports multiple open items and searchable closed panels via `hiddenUntilFound`.
 
