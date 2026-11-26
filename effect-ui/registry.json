@@ -2252,6 +2252,167 @@
       ]
     },
     {
+      "name": "effect-date-input-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/date-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/date-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-date-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/date-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/date-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-time-input-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/time-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/time-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-time-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-time-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/time-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/time-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-time-input-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-time-input-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/date-time-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/date-time-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-time-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-date-input",
+        "@crease-effect/effect-time-input",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-date-time-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/date-time-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/date-time-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-picker-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-calendar-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/date-picker.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/date-picker.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-picker",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-date-picker-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/date-picker.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/date-picker.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-range-input-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-calendar-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/date-range-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/date-range-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-range-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-date-range-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/date-range-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/date-range-input.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -2328,7 +2489,12 @@
         "@crease-effect/effect-map-route",
         "@crease-effect/effect-map-arc",
         "@crease-effect/effect-map-cluster",
-        "@crease-effect/effect-map-geojson"
+        "@crease-effect/effect-map-geojson",
+        "@crease-effect/effect-date-input",
+        "@crease-effect/effect-time-input",
+        "@crease-effect/effect-date-time-input",
+        "@crease-effect/effect-date-picker",
+        "@crease-effect/effect-date-range-input"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -2411,7 +2577,12 @@
         "@crease-effect/effect-map-route",
         "@crease-effect/effect-map-arc",
         "@crease-effect/effect-map-cluster",
-        "@crease-effect/effect-map-geojson"
+        "@crease-effect/effect-map-geojson",
+        "@crease-effect/effect-date-input",
+        "@crease-effect/effect-time-input",
+        "@crease-effect/effect-date-time-input",
+        "@crease-effect/effect-date-picker",
+        "@crease-effect/effect-date-range-input"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

@@ -2,6 +2,11 @@ import type { Html } from '@effect/ui/html'
 import * as stylex from '@stylexjs/stylex'
 
 import { Accordion as RenderAccordion } from '../ui/accordion'
+import { DateInput as RenderDateInput } from '../ui/date-input'
+import { TimeInput as RenderTimeInput } from '../ui/time-input'
+import { DateTimeInput as RenderDateTimeInput } from '../ui/date-time-input'
+import { DatePicker as RenderDatePicker } from '../ui/date-picker'
+import { DateRangeInput as RenderDateRangeInput } from '../ui/date-range-input'
 import { Map as RenderMap } from '../ui/map'
 import { MapControls as RenderMapControls } from '../ui/map-controls'
 import { MapMarker as RenderMapMarker } from '../ui/map-marker'
@@ -77,6 +82,11 @@ import { Separator as RenderSeparator } from '../ui/separator'
 import { Toggle as RenderToggle } from '../ui/toggle'
 import {
   accordion,
+  dateInput,
+  timeInput,
+  dateTimeInput,
+  datePicker,
+  dateRangeInput,
   mapStyles,
   circularProgress,
   stat,
@@ -516,6 +526,45 @@ export const MapMarkerTooltip = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderMapMarkerTooltip<Msg, R>>[1],
 ) => RenderMapMarkerTooltip(h, options, partClasses(mapStyles))
+
+export const DateInput = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderDateInput<Msg, R>>[1],
+) => RenderDateInput(h, options, partClasses(dateInput))
+
+export const TimeInput = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderTimeInput<Msg, R>>[1],
+) => RenderTimeInput(h, options, partClasses(timeInput))
+
+export const DateTimeInput = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderDateTimeInput<Msg, R>>[1],
+) =>
+  RenderDateTimeInput(
+    h,
+    options,
+    partClasses(dateTimeInput),
+    DateInput,
+    TimeInput,
+  )
+
+export const DatePicker = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderDatePicker<Msg, R>>[1],
+) =>
+  RenderDatePicker(h, options, partClasses(datePicker), partClasses(calendar))
+
+export const DateRangeInput = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderDateRangeInput<Msg, R>>[1],
+) =>
+  RenderDateRangeInput(
+    h,
+    options,
+    partClasses(dateRangeInput),
+    partClasses(calendar),
+  )
 
 export const BubbleGroup = <Msg, R = never>(
   h: Html.H<Msg>,

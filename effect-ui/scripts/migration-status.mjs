@@ -14,6 +14,10 @@ const registry = new Map(
 )
 const partial = new Map([
   ['calendar', 'Dedicated month and year grids'],
+  [
+    'date-input',
+    'Built-in adaptive bottom sheet and custom typed display format',
+  ],
   ['input-otp', 'Custom character patterns'],
   ['sheet', 'Panel switcher and custom header layout'],
   [

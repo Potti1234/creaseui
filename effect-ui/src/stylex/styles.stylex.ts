@@ -3191,6 +3191,482 @@ export const mapStyles = stylex.create({
   },
 })
 
+export const dateInput = stylex.create({
+  root: {
+    display: 'grid',
+    minWidth: 0,
+    gap: 6,
+    fontSize: '0.875rem',
+  },
+  label: {
+    fontWeight: 500,
+  },
+  hiddenLabel: {
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    padding: 0,
+    margin: -1,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+    borderWidth: 0,
+  },
+  row: {
+    display: 'flex',
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 4,
+  },
+  control: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--input)',
+      ':focus-visible': 'var(--ring)',
+      ':is([aria-invalid="true"])': 'var(--destructive)',
+    },
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    width: '100%',
+    height: {
+      default: 32,
+      ':is([data-size="sm"])': 28,
+      ':is([data-size="lg"])': 36,
+    },
+    minWidth: 0,
+    paddingInline: 10,
+    fontSize: {
+      default: '1rem',
+      '@media (min-width: 48rem)': '0.875rem',
+    },
+    outline: 'none',
+    boxShadow: {
+      default: null,
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+  },
+  clear: {
+    display: 'grid',
+    width: 32,
+    height: 32,
+    placeItems: 'center',
+    flexShrink: 0,
+    padding: 0,
+    borderWidth: 0,
+    borderRadius: 4,
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--muted)',
+    },
+    color: 'var(--muted-foreground)',
+    cursor: 'pointer',
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 1,
+    },
+  },
+  description: {
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  },
+})
+
+export const timeInput = stylex.create({
+  root: {
+    display: 'grid',
+    minWidth: 0,
+    gap: 6,
+    fontSize: '0.875rem',
+  },
+  label: {
+    fontWeight: 500,
+  },
+  hiddenLabel: {
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    padding: 0,
+    margin: -1,
+    overflow: 'hidden',
+    clipPath: 'inset(50%)',
+    whiteSpace: 'nowrap',
+    borderWidth: 0,
+  },
+  row: {
+    display: 'flex',
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 4,
+    flexWrap: 'wrap',
+  },
+  control: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--input)',
+      ':focus-visible': 'var(--ring)',
+      ':is([aria-invalid="true"])': 'var(--destructive)',
+    },
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    width: '100%',
+    height: {
+      default: 32,
+      ':is([data-size="sm"])': 28,
+      ':is([data-size="lg"])': 36,
+    },
+    minWidth: 0,
+    paddingInline: 10,
+    fontSize: {
+      default: '1rem',
+      '@media (min-width: 48rem)': '0.875rem',
+    },
+    outline: 'none',
+    boxShadow: {
+      default: null,
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+  },
+  clear: {
+    display: 'grid',
+    width: 32,
+    height: 32,
+    placeItems: 'center',
+    flexShrink: 0,
+    padding: 0,
+    borderWidth: 0,
+    borderRadius: 4,
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--muted)',
+    },
+    color: 'var(--muted-foreground)',
+    cursor: 'pointer',
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 1,
+    },
+  },
+  description: {
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  },
+  segment: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--input)',
+      ':focus-visible': 'var(--ring)',
+    },
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    height: 32,
+    minWidth: 0,
+    paddingInline: 8,
+    fontSize: '0.875rem',
+    outline: 'none',
+    boxShadow: {
+      default: null,
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+  },
+})
+
+export const dateTimeInput = stylex.create({
+  root: {
+    display: 'grid',
+    minWidth: 0,
+    gap: 8,
+    fontSize: '0.875rem',
+  },
+  label: {
+    fontWeight: 500,
+  },
+  row: {
+    display: 'grid',
+    minWidth: 0,
+    gap: 8,
+    gridTemplateColumns: {
+      default: null,
+      '@media (min-width: 40rem)': 'repeat(2, minmax(0, 1fr))',
+    },
+  },
+  description: {
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  },
+})
+
+export const datePicker = stylex.create({
+  root: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+    width: 'fit-content',
+    maxWidth: '100%',
+  },
+  trigger: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--input)',
+      ':focus-visible': 'var(--ring)',
+      ':is([aria-invalid="true"])': 'var(--destructive)',
+    },
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'var(--background)',
+      ':hover': 'var(--muted)',
+    },
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'start',
+    minHeight: 36,
+    minWidth: 128,
+    paddingInline: 12,
+    textAlign: 'start',
+    fontSize: '0.875rem',
+    outline: 'none',
+    boxShadow: {
+      default: null,
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+  },
+  panel: {
+    visibility: { default: 'visible', ':is([data-ending-style])': 'hidden' },
+    display: 'grid',
+    justifyItems: 'start',
+    maxHeight: 'var(--available-height)',
+    maxWidth: 'var(--available-width)',
+    overflow: 'auto',
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--popover)',
+    color: 'var(--popover-foreground)',
+    boxShadow: '0 8px 24px rgb(0 0 0 / 12%)',
+    outline: 'none',
+  },
+  clear: {
+    display: 'grid',
+    width: 32,
+    height: 32,
+    placeItems: 'center',
+    flexShrink: 0,
+    padding: 0,
+    borderWidth: 0,
+    borderRadius: 4,
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--muted)',
+    },
+    color: 'var(--muted-foreground)',
+    cursor: 'pointer',
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 1,
+    },
+  },
+  query: {
+    display: 'grid',
+    gap: 4,
+    width: '100%',
+    paddingInline: 12,
+    paddingBlock: 8,
+    fontSize: '0.875rem',
+  },
+  queryInput: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--input)',
+      ':focus-visible': 'var(--ring)',
+      ':is([aria-invalid="true"])': 'var(--destructive)',
+    },
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    width: '100%',
+    height: {
+      default: 32,
+      ':is([data-size="sm"])': 28,
+      ':is([data-size="lg"])': 36,
+    },
+    minWidth: 0,
+    paddingInline: 10,
+    fontSize: {
+      default: '1rem',
+      '@media (min-width: 48rem)': '0.875rem',
+    },
+    outline: 'none',
+    boxShadow: {
+      default: null,
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+  },
+  queryError: {
+    fontSize: '0.75rem',
+    color: 'var(--destructive)',
+  },
+})
+
+export const dateRangeInput = stylex.create({
+  root: {
+    display: 'grid',
+    minWidth: 0,
+    gap: 6,
+    fontSize: '0.875rem',
+  },
+  label: {
+    fontWeight: 500,
+  },
+  description: {
+    margin: 0,
+    fontSize: '0.875rem',
+    color: 'var(--muted-foreground)',
+  },
+  row: {
+    display: 'flex',
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 4,
+  },
+  trigger: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: {
+      default: 'var(--input)',
+      ':focus-visible': 'var(--ring)',
+      ':is([aria-invalid="true"])': 'var(--destructive)',
+    },
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: {
+      default: 'var(--background)',
+      ':hover': 'var(--muted)',
+    },
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'start',
+    minHeight: 36,
+    minWidth: 0,
+    paddingInline: 12,
+    textAlign: 'start',
+    fontSize: '0.875rem',
+    outline: 'none',
+    width: '100%',
+    boxShadow: {
+      default: null,
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+  },
+  panel: {
+    visibility: { default: 'visible', ':is([data-ending-style])': 'hidden' },
+    display: 'grid',
+    justifyItems: 'start',
+    maxHeight: 'var(--available-height)',
+    maxWidth: 'var(--available-width)',
+    overflow: 'auto',
+    borderRadius: 'var(--radius)',
+    backgroundColor: 'var(--popover)',
+    color: 'var(--popover-foreground)',
+    boxShadow: '0 8px 24px rgb(0 0 0 / 12%)',
+    outline: 'none',
+  },
+  clear: {
+    display: 'grid',
+    width: 32,
+    height: 32,
+    placeItems: 'center',
+    flexShrink: 0,
+    padding: 0,
+    borderWidth: 0,
+    borderRadius: 4,
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--muted)',
+    },
+    color: 'var(--muted-foreground)',
+    cursor: 'pointer',
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 1,
+    },
+  },
+  presets: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 4,
+    padding: 8,
+  },
+  preset: {
+    borderWidth: 0,
+    borderRadius: 4,
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--muted)',
+    },
+    paddingInline: 8,
+    paddingBlock: 4,
+    fontSize: '0.875rem',
+    cursor: 'pointer',
+    opacity: {
+      default: null,
+      ':disabled': 0.5,
+    },
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+  },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {

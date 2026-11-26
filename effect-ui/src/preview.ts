@@ -64,6 +64,11 @@ import {
   MapRoute,
   MapClusterLayer,
   MapGeoJSON,
+  DateInput,
+  TimeInput,
+  DateTimeInput,
+  DatePicker,
+  DateRangeInput,
   Button,
   ButtonLink,
   Calendar,
@@ -128,6 +133,9 @@ const Message = UiSchema.TaggedEnum({
   ToggledMapPreview: {},
   ToggledMapPopup: {},
   MappedEvent: { type: Schema.String, zoom: Schema.optional(Schema.Number) },
+  CommittedStart: { value: Schema.NullOr(CalendarDate) },
+  CommittedTime: { value: Schema.NullOr(Schema.String) },
+  CommittedRange: { value: Schema.NullOr(CalendarRange) },
 })
 
 const fruits = [
@@ -183,6 +191,9 @@ const Preview = Html.component({
     mapPreview: Schema.Boolean,
     mapPopup: Schema.Boolean,
     mapZoom: Schema.Number,
+    scheduledDate: Schema.NullOr(CalendarDate),
+    scheduledTime: Schema.NullOr(Schema.String),
+    scheduledRange: Schema.NullOr(CalendarRange),
   }),
 }).make({
   init: () => ({
@@ -221,6 +232,9 @@ const Preview = Html.component({
     mapPreview: false,
     mapPopup: false,
     mapZoom: 10,
+    scheduledDate: '2028-02-29',
+    scheduledTime: '09:00',
+    scheduledRange: null,
   }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
@@ -264,11 +278,92 @@ const Preview = Html.component({
       type === 'MapViewportChanged' && zoom !== undefined
         ? $.evolve({ mapZoom: zoom })
         : $.model,
+    CommittedStart: ($, { value }) => $.evolve({ scheduledDate: value }),
+    CommittedTime: ($, { value }) => $.evolve({ scheduledTime: value }),
+    CommittedRange: ($, { value }) => $.evolve({ scheduledRange: value }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          h.h2.children('Scheduling'),
+          DateTimeInput(h, {
+            id: 'scheduled-meeting',
+            label: 'Meeting schedule',
+            name: 'meeting',
+            timeOptionInterval: 30,
+            date: {
+              label: 'Meeting date',
+              props: { value: model.scheduledDate, locale: 'en-GB' },
+              onCommit: value => Message.CommittedStart({ value }),
+            },
+            time: {
+              label: 'Meeting time',
+              props: {
+                value: model.scheduledTime,
+                min: '08:00',
+                max: '18:00',
+                increment: 15,
+              },
+              onCommit: value => Message.CommittedTime({ value }),
+            },
+          }),
+          TimeInput(h, {
+            id: 'scheduled-segments',
+            label: 'Adjust by segment',
+            presentation: 'select',
+            props: { value: model.scheduledTime, hourFormat: '24h' },
+            onCommit: value => Message.CommittedTime({ value }),
+          }),
+          DateInput(h, {
+            id: 'scheduled-native-date',
+            label: 'Native date picker',
+            presentation: 'native-picker',
+            props: { value: model.scheduledDate },
+            onCommit: value => Message.CommittedStart({ value }),
+          }),
+          DatePicker(h, {
+            key: 'schedule-picker',
+            label: 'Choose meeting date',
+            clearable: true,
+            props: {
+              calendar: {
+                today: '2028-02-29',
+                value: model.scheduledDate,
+                locale: 'en-US',
+              },
+            },
+            onEmit: {
+              Picked: ({ date }) => Message.CommittedStart({ value: date }),
+              OpenChanged: () => undefined,
+            },
+          }),
+          DateRangeInput(h, {
+            id: 'scheduled-range',
+            label: 'Project dates',
+            clearable: true,
+            props: {
+              calendar: {
+                today: '2028-02-29',
+                value: model.scheduledRange,
+                locale: 'en-US',
+              },
+            },
+            presets: [
+              {
+                label: 'First week of March',
+                value: { start: '2028-03-01', end: '2028-03-07' },
+              },
+            ],
+            startName: 'range-start',
+            endName: 'range-end',
+            onEmit: {
+              Picked: ({ value }) => Message.CommittedRange({ value }),
+              OpenChanged: () => undefined,
+            },
+          }),
+        ),
         h.section.class('example').children(
           h.h2.children('Map overlays'),
           Button(h, {

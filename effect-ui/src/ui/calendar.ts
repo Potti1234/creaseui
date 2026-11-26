@@ -10,14 +10,14 @@ type RangeParts = Parameters<RangeOptions<never>['view']>[0]
 
 type VisualOptions = {
   readonly className?: string
-  readonly direction?: 'ltr' | 'rtl'
-  readonly captionLayout?: 'label' | 'dropdown'
+  readonly direction?: 'ltr' | 'rtl' | undefined
+  readonly captionLayout?: 'label' | 'dropdown' | undefined
   readonly weekNumbers?: boolean
   readonly previousMonthLabel?: string
   readonly nextMonthLabel?: string
 }
 
-const tailwind = {
+export const calendarClasses = {
   root: 'w-fit rounded-lg border bg-background p-3 text-foreground',
   header: 'mb-2 flex items-center justify-between gap-2',
   navigation:
@@ -44,7 +44,7 @@ const visualWeek = (dates: readonly DateTime.Utc[]) => {
   )
 }
 
-const calendarView = <Msg>(
+export const calendarView = <Msg>(
   h: Html.H<Msg>,
   calendar: CalendarParts | RangeParts,
   {
@@ -55,7 +55,7 @@ const calendarView = <Msg>(
     previousMonthLabel,
     nextMonthLabel,
   }: VisualOptions,
-  styles: typeof tailwind,
+  styles: typeof calendarClasses,
   {
     min,
     max,
@@ -156,7 +156,7 @@ const calendarView = <Msg>(
 export const Calendar = <Msg>(
   h: Html.H<Msg>,
   options: Omit<CalendarOptions<Msg>, 'view' | 'fallback'> & VisualOptions,
-  styles: typeof tailwind = tailwind,
+  styles: typeof calendarClasses = calendarClasses,
 ) =>
   CalendarBehavior(h, {
     ...options,
@@ -166,7 +166,7 @@ export const Calendar = <Msg>(
 export const RangeCalendar = <Msg>(
   h: Html.H<Msg>,
   options: Omit<RangeOptions<Msg>, 'view' | 'fallback'> & VisualOptions,
-  styles: typeof tailwind = tailwind,
+  styles: typeof calendarClasses = calendarClasses,
 ) =>
   RangeCalendarBehavior(h, {
     ...options,

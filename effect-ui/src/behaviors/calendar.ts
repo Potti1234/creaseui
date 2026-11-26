@@ -36,6 +36,14 @@ const CommonProps = {
   disabledDaysOfWeek: Schema.optional(Schema.Array(Weekday)),
 }
 const BaseProps = Schema.Struct(CommonProps)
+export const CalendarBehaviorProps = Schema.Struct({
+  ...CommonProps,
+  value: Schema.NullOr(CalendarDate),
+})
+export const RangeCalendarBehaviorProps = Schema.Struct({
+  ...CommonProps,
+  value: Schema.NullOr(CalendarRange),
+})
 
 const Month = Schema.Struct({ month: CalendarDate })
 const PickedDay = { date: CalendarDate }
@@ -106,7 +114,7 @@ const onMonthInput = ({ value }: { readonly value: string }) => {
 /** Owns the visible month and exposes the kit's calendar parts with ISO-date events. */
 export const CalendarBehavior = Html.component({
   name: 'CreaseCalendar',
-  props: Schema.Struct({ ...CommonProps, value: Schema.NullOr(CalendarDate) }),
+  props: CalendarBehaviorProps,
   model: Month,
   message: Message,
   events: DayEvents,
@@ -141,7 +149,7 @@ export const CalendarBehavior = Html.component({
 /** Range preview, anchoring, and keyboard navigation are owned by the kit. */
 export const RangeCalendarBehavior = Html.component({
   name: 'CreaseRangeCalendar',
-  props: Schema.Struct({ ...CommonProps, value: Schema.NullOr(CalendarRange) }),
+  props: RangeCalendarBehaviorProps,
   model: Month,
   message: Message,
   events: RangeEvents,
