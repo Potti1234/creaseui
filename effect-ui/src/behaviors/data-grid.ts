@@ -3,6 +3,8 @@ import { Html } from '@effect/ui/html'
 import { Menu, VirtualList, VirtualListScrollTarget } from '@effect/ui-kit'
 import { Effect, Queue, Schema, Stream } from 'effect'
 
+import { CalendarBehavior, CalendarDate } from './calendar'
+
 export const CellVariant = Schema.Literals([
   'text',
   'number',
@@ -80,7 +82,11 @@ const State = Schema.Struct({
   focus: Schema.NullOr(CellAddress),
   focusVersion: Schema.Number,
   editing: Schema.NullOr(
-    Schema.Struct({ cell: CellAddress, value: Schema.String }),
+    Schema.Struct({
+      cell: CellAddress,
+      value: Schema.String,
+      optionQuery: Schema.optional(Schema.String),
+    }),
   ),
   range: Schema.NullOr(CellRange),
   priorRanges: Schema.Array(CellRange),
@@ -106,6 +112,7 @@ const Props = Schema.Struct({
   defaultRowHeight: Schema.optional(RowHeight),
   historyLimit: Schema.optional(Schema.Number),
   disableEditing: Schema.optional(Schema.Boolean),
+  today: Schema.optional(CalendarDate),
 })
 type Props = typeof Props.Type
 
@@ -121,11 +128,12 @@ const Message = UiSchema.TaggedEnum({
   Keyed: { key: Schema.String, shift: Schema.Boolean, mod: Schema.Boolean },
   Started: { cell: CellAddress, seed: Schema.NullOr(Schema.String) },
   Drafted: { value: Schema.String },
+  OptionQueryChanged: { value: Schema.String },
   ValuePicked: { value: Schema.String },
   Saved: { move: Motion },
   Canceled: {},
   BooleanToggled: { cell: CellAddress },
-  OptionToggled: { value: Schema.String },
+  OptionToggled: { value: Schema.NullOr(Schema.String) },
   PickedFiles: { files: Schema.Array(FileCellData) },
   FileRemoved: { id: Schema.String },
   FilesRejected: {},
@@ -638,6 +646,13 @@ const step = (
       return state.editing === null
         ? state
         : { ...state, editing: { ...state.editing, value: message.value } }
+    case 'OptionQueryChanged':
+      return state.editing === null
+        ? state
+        : {
+            ...state,
+            editing: { ...state.editing, optionQuery: message.value },
+          }
     case 'ValuePicked':
       return state.editing === null
         ? state
@@ -678,9 +693,12 @@ const step = (
         .split(',')
         .map(value => value.trim())
         .filter(Boolean)
-      const next = values.includes(message.value)
-        ? values.filter(value => value !== message.value)
-        : [...values, message.value]
+      const next =
+        message.value === null
+          ? []
+          : values.includes(message.value)
+            ? values.filter(value => value !== message.value)
+            : [...values, message.value]
       const value = next.join(', ')
       return updatedCell(
         { ...state, editing: { ...state.editing, value } },
@@ -977,9 +995,11 @@ const GridMount = Mount.makeStream(
         const notify = (message: Message) => Queue.offerUnsafe(queue, message)
         const focus = (attempts = 8) => {
           const search = root.querySelector<HTMLElement>('[data-grid-search]')
-          const editor = root.querySelector<HTMLElement>(
-            '[data-grid-editor-input]',
-          )
+          const editor =
+            root.querySelector<HTMLElement>('[data-grid-editor-input]') ??
+            root.querySelector<HTMLElement>(
+              '[data-grid-date-editor] button[tabindex="0"]',
+            )
           if (args.editing && editor !== null) {
             editor.focus({ preventScroll: true })
             return
@@ -1066,6 +1086,43 @@ const GridMount = Mount.makeStream(
             event.preventDefault()
             notify(Message.Canceled())
             return
+          }
+          if (
+            args.editing &&
+            event.target instanceof HTMLElement &&
+            /^(ArrowUp|ArrowDown|Home|End)$/.test(event.key)
+          ) {
+            const list = event.target.closest('[data-grid-option-editor]')
+            const choices = Array.from(
+              list?.querySelectorAll<HTMLButtonElement>('[role="option"]') ??
+                [],
+            )
+            if (
+              choices.length > 0 &&
+              (event.target.matches('[role="option"]') ||
+                event.key === 'ArrowDown')
+            ) {
+              const active = choices.findIndex(
+                choice => choice === event.target,
+              )
+              const next =
+                event.key === 'Home'
+                  ? 0
+                  : event.key === 'End'
+                    ? choices.length - 1
+                    : Math.max(
+                        0,
+                        Math.min(
+                          choices.length - 1,
+                          active + (event.key === 'ArrowUp' ? -1 : 1),
+                        ),
+                      )
+              event.preventDefault()
+              for (const [index, choice] of choices.entries())
+                choice.tabIndex = index === next ? 0 : -1
+              choices[next]?.focus()
+              return
+            }
           }
           if (interactive(event.target) || args.editing) return
           const hit = pointerCell(root, event.target)
@@ -1426,6 +1483,9 @@ export const DataGridBehavior = Html.component({
               : undefined,
         ),
     )
+    const optionSearch = p.part('input', element =>
+      element.on('input', ({ value }) => Message.OptionQueryChanged({ value })),
+    )
     const filter = p.part('input', (element, column: string) =>
       element.on('input', ({ value }) => Message.Filtered({ column, value })),
     )
@@ -1449,6 +1509,19 @@ export const DataGridBehavior = Html.component({
       ...item,
       disabled: p.props.disableEditing === true && item.value !== 'copy',
     }))
+    const editing = state.editing
+    const editingDate =
+      editing !== null &&
+      columns.some(
+        column =>
+          column.id === editing.cell.column && column.variant === 'date',
+      )
+        ? editing
+        : null
+    const dateValue =
+      editingDate !== null && Schema.is(CalendarDate)(editingDate.value)
+        ? editingDate.value
+        : null
     return p.child(VirtualList, {
       props: {
         count: rows.length,
@@ -1474,33 +1547,49 @@ export const DataGridBehavior = Html.component({
             RequestedQuery: () => undefined,
             Settled: () => undefined,
           },
-          parts: context => ({
-            state,
-            rows,
-            columns,
-            focus,
-            found,
-            searchMatch,
-            selection,
-            menuItems,
-            nextKey: nextId(state, p.props).key,
-            root,
-            button,
-            addRow,
-            sort,
-            toggleRow,
-            cell,
-            input,
-            textarea,
-            select,
-            date,
-            search,
-            filter,
-            rowHeight,
-            fitEditor,
-            virtual,
-            context,
-          }),
+          parts: context =>
+            p.child(CalendarBehavior, {
+              key:
+                editingDate === null
+                  ? undefined
+                  : JSON.stringify(editingDate.cell),
+              props: {
+                value: dateValue,
+                today: p.props.today ?? new Date().toISOString().slice(0, 10),
+              },
+              onEmit: {
+                Picked: ({ date }) => Message.ValuePicked({ value: date }),
+              },
+              parts: dateCalendar => ({
+                state,
+                rows,
+                columns,
+                focus,
+                found,
+                searchMatch,
+                selection,
+                menuItems,
+                nextKey: nextId(state, p.props).key,
+                root,
+                button,
+                addRow,
+                sort,
+                toggleRow,
+                cell,
+                input,
+                textarea,
+                select,
+                date,
+                dateCalendar,
+                search,
+                optionSearch,
+                filter,
+                rowHeight,
+                fitEditor,
+                virtual,
+                context,
+              }),
+            }),
         }),
     })
   },

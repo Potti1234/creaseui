@@ -12,6 +12,7 @@ import {
   type RowHeightId,
 } from '../behaviors/data-grid'
 import { PopoverBehavior } from '../behaviors/popover'
+import { calendarClasses, calendarView } from './calendar'
 import { MenuPopup, menuStyles } from './dropdown-menu'
 export * from '../behaviors/data-grid'
 
@@ -47,6 +48,7 @@ export type DataGridProps<Row, Msg, R = never> = Omit<
   readonly defaultRowHeight?: RowHeightId
   readonly historyLimit?: number
   readonly disableEditing?: boolean
+  readonly today?: string
   readonly className?: string
 }
 
@@ -184,11 +186,13 @@ export const DataGrid = <Row, Msg, R = never>(
     defaultRowHeight,
     historyLimit,
     disableEditing,
+    today,
     className,
     ...options
   }: DataGridProps<Row, NoInfer<Msg>, R>,
   styles: DataGridClasses = dataGridClasses,
   contextStyles: typeof menuStyles = menuStyles,
+  calendarStyles: typeof calendarClasses = calendarClasses,
 ) => {
   const data = rows.map(row => serializeRow(row, rowKey(row), columns))
   const gridColumns = columns.map(
@@ -260,6 +264,7 @@ export const DataGrid = <Row, Msg, R = never>(
       defaultRowHeight,
       historyLimit,
       disableEditing,
+      today,
     },
     view: parts => {
       const { state, virtual, context } = parts
@@ -435,8 +440,113 @@ export const DataGrid = <Row, Msg, R = never>(
         const value = state.editing?.value ?? ''
         const file = column.variant === 'file'
         const label = `Edit ${column.header}`
+        if (column.variant === 'date')
+          return parts
+            .fitEditor(
+              h.div.class(styles.editor).attrs({
+                'data-slot': 'data-grid-editor',
+                'data-grid-date-editor': '',
+                role: 'group',
+                'aria-label': label,
+              }),
+            )
+            .children(
+              calendarView(
+                h,
+                parts.dateCalendar,
+                { direction },
+                calendarStyles,
+                {},
+              ),
+            )
         const attrs = { 'data-grid-editor-input': '', 'aria-label': label }
-        const editingOptions = value.split(',').map(value => value.trim())
+        if (column.variant === 'select' || column.variant === 'multi-select') {
+          const multiple = column.variant === 'multi-select'
+          const selected = multiple
+            ? value
+                .split(',')
+                .map(value => value.trim())
+                .filter(Boolean)
+            : [value]
+          const query = state.editing?.optionQuery ?? ''
+          const choices = (column.options ?? []).filter(option =>
+            option
+              .toLocaleLowerCase()
+              .includes(query.toLocaleLowerCase().trim()),
+          )
+          const selectedIndex = choices.findIndex(option =>
+            selected.includes(option),
+          )
+          const tabIndex = selectedIndex === -1 ? 0 : selectedIndex
+          return parts
+            .fitEditor(
+              h.div.class(styles.editor).attrs({
+                'data-slot': 'data-grid-editor',
+                'data-grid-option-editor': '',
+              }),
+            )
+            .children(
+              multiple
+                ? parts.optionSearch(
+                    h.input
+                      .class(styles.input)
+                      .attrs({
+                        ...attrs,
+                        type: 'search',
+                        placeholder: 'Filter options…',
+                      })
+                      .value(query),
+                  )
+                : undefined,
+              h.div
+                .attrs({
+                  role: 'listbox',
+                  'aria-label': label,
+                  'aria-multiselectable': multiple ? 'true' : undefined,
+                })
+                .style({ display: 'grid' })
+                .children(
+                  choices.map((option, index) => {
+                    const checked = selected.includes(option)
+                    return parts
+                      .button(
+                        h.button
+                          .key(option)
+                          .class(styles.quietButton)
+                          .attrs({
+                            role: 'option',
+                            'aria-selected': String(checked),
+                            tabindex: index === tabIndex ? '0' : '-1',
+                            'data-grid-editor-input':
+                              !multiple && index === tabIndex ? '' : undefined,
+                          }),
+                        multiple
+                          ? Message.OptionToggled({ value: option })
+                          : Message.ValuePicked({ value: option }),
+                      )
+                      .children(checked ? '✓ ' : undefined, option)
+                  }),
+                  choices.length === 0
+                    ? h.span
+                        .class(styles.panelLabel)
+                        .children('No matching options.')
+                    : undefined,
+                ),
+              multiple
+                ? h.div
+                    .class(styles.toolbarGroup)
+                    .children(
+                      selected.length > 0
+                        ? button(
+                            'Clear all',
+                            Message.OptionToggled({ value: null }),
+                          )
+                        : undefined,
+                      button('Done', Message.Saved({ move: 'none' })),
+                    )
+                : undefined,
+            )
+        }
         const input =
           column.variant === 'long-text'
             ? parts.textarea(
@@ -445,91 +555,51 @@ export const DataGrid = <Row, Msg, R = never>(
                   .attrs(attrs)
                   .value(value),
               )
-            : column.variant === 'select'
-              ? parts
-                  .select(
-                    h.select
-                      .class(styles.input, styles.editorInput)
-                      .attrs(attrs)
-                      .value(value),
-                  )
-                  .children(
-                    choose('', 'Choose an option', value === ''),
-                    (column.options ?? []).map(option =>
-                      choose(option, option, option === value),
-                    ),
-                  )
-              : column.variant === 'multi-select'
-                ? h.div
-                    .class(styles.toolbarGroup)
-                    .attrs({ role: 'group', 'aria-label': label })
-                    .children(
-                      (column.options ?? []).map((option, index) =>
-                        h.label
-                          .key(option)
-                          .class(styles.toolbarGroup)
-                          .children(
-                            parts.button(
-                              check(
-                                editingOptions.includes(option),
-                                option,
-                              ).attr(
-                                'data-grid-editor-input',
-                                index === 0 ? '' : undefined,
-                              ),
-                              Message.OptionToggled({ value: option }),
-                            ),
-                            option,
-                          ),
+            : file
+              ? h.div.class(styles.toolbarGroup).children(
+                  h.input.class(styles.input, styles.editorInput).attrs({
+                    ...attrs,
+                    type: 'file',
+                    multiple: column.maxFiles === 1 ? undefined : '',
+                    'data-grid-file-input': '',
+                  }),
+                  (row.files[column.id] ?? []).map(attachment =>
+                    h.div
+                      .key(attachment.id)
+                      .class(styles.panelRow)
+                      .children(
+                        h.span.class(styles.text).children(attachment.name),
+                        button(
+                          `Remove ${attachment.name}`,
+                          Message.FileRemoved({ id: attachment.id }),
+                        ),
                       ),
-                    )
-                : file
-                  ? h.div.class(styles.toolbarGroup).children(
-                      h.input.class(styles.input, styles.editorInput).attrs({
-                        ...attrs,
-                        type: 'file',
-                        multiple: column.maxFiles === 1 ? undefined : '',
-                        'data-grid-file-input': '',
-                      }),
-                      (row.files[column.id] ?? []).map(attachment =>
-                        h.div
-                          .key(attachment.id)
-                          .class(styles.panelRow)
-                          .children(
-                            h.span.class(styles.text).children(attachment.name),
-                            button(
-                              `Remove ${attachment.name}`,
-                              Message.FileRemoved({ id: attachment.id }),
-                            ),
-                          ),
-                      ),
-                    )
-                  : (column.variant === 'date' ? parts.date : parts.input)(
-                      h.input
-                        .class(styles.input, styles.editorInput)
-                        .attrs({
-                          ...attrs,
-                          type:
-                            column.variant === 'number' ||
-                            column.variant === 'date' ||
-                            column.variant === 'url'
-                              ? column.variant
-                              : 'text',
-                          min:
-                            column.numberMin === undefined
-                              ? undefined
-                              : String(column.numberMin),
-                          max:
-                            column.numberMax === undefined
-                              ? undefined
-                              : String(column.numberMax),
-                          step:
-                            column.numberStep === undefined
-                              ? undefined
-                              : String(column.numberStep),
-                        })
-                        .value(value),
-                    )
+                  ),
+                )
+              : parts.input(
+                  h.input
+                    .class(styles.input, styles.editorInput)
+                    .attrs({
+                      ...attrs,
+                      type:
+                        column.variant === 'number' || column.variant === 'url'
+                          ? column.variant
+                          : 'text',
+                      min:
+                        column.numberMin === undefined
+                          ? undefined
+                          : String(column.numberMin),
+                      max:
+                        column.numberMax === undefined
+                          ? undefined
+                          : String(column.numberMax),
+                      step:
+                        column.numberStep === undefined
+                          ? undefined
+                          : String(column.numberStep),
+                    })
+                    .value(value),
+                )
         return parts
           .fitEditor(
             h.div
@@ -541,13 +611,8 @@ export const DataGrid = <Row, Msg, R = never>(
             h.div
               .class(styles.toolbarGroup)
               .children(
-                button(
-                  file || column.variant === 'multi-select' ? 'Done' : 'Save',
-                  Message.Saved({ move: 'none' }),
-                ),
-                file || column.variant === 'multi-select'
-                  ? undefined
-                  : button('Cancel', Message.Canceled()),
+                button(file ? 'Done' : 'Save', Message.Saved({ move: 'none' })),
+                file ? undefined : button('Cancel', Message.Canceled()),
               ),
           )
       }

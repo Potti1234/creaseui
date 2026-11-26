@@ -1,7 +1,11 @@
 import type { View } from '@effect/ui'
 import type { Html } from '@effect/ui/html'
 
-import { ToastBehavior, type ToastItem } from '../behaviors/toast'
+import {
+  ToastBehavior,
+  TrackToastSwipe,
+  type ToastItem,
+} from '../behaviors/toast'
 import { IconBehavior, type IconName } from '../behaviors/icon'
 import './toast.css'
 
@@ -22,6 +26,14 @@ export type ToastProps<Msg, R = never> = Omit<
   readonly regionLabel?: string
   readonly closeLabel?: string
   readonly className?: string
+  readonly stacked?: boolean
+  readonly expanded?: boolean
+  readonly swipeToDismiss?:
+    | false
+    | {
+        readonly direction?: 'left' | 'right'
+        readonly threshold?: number
+      }
   readonly action?: (
     toast: ToastItem,
   ) => { readonly label: string; readonly onClick: Msg } | undefined
@@ -55,6 +67,9 @@ export const Toast = <Msg, R = never>(
     regionLabel = 'Notifications',
     closeLabel = 'Dismiss notification',
     className,
+    stacked = true,
+    expanded = false,
+    swipeToDismiss,
     action,
     ...options
   }: ToastProps<NoInfer<Msg>, R>,
@@ -62,14 +77,31 @@ export const Toast = <Msg, R = never>(
 ) =>
   ToastBehavior(h, {
     ...options,
-    view: stack =>
-      h.div.attr('data-slot', 'toast-provider').children(
+    view: stack => {
+      const provider = h.div.attr('data-slot', 'toast-provider')
+      return (
+        swipeToDismiss === false
+          ? provider
+          : provider.attr('data-swipe-enabled', '').onMount(
+              TrackToastSwipe({
+                direction:
+                  swipeToDismiss?.direction ??
+                  (swipeToDismiss !== undefined || position.endsWith('center')
+                    ? 'right'
+                    : position.endsWith('start')
+                      ? 'start'
+                      : 'end'),
+                threshold: Math.max(0, swipeToDismiss?.threshold ?? 40),
+              }),
+            )
+      ).children(
         children,
         stack
           .viewport(
             h.div.class(styles.viewport, className).attrs({
               'data-slot': 'toast-viewport',
               'data-position': position,
+              'data-stack-expanded': !stacked || expanded ? '' : undefined,
               'aria-label': regionLabel,
             }),
           )
@@ -103,26 +135,24 @@ export const Toast = <Msg, R = never>(
                             .children(
                               IconBehavior(h, { name: glyph, size: 'sm' }),
                             ),
-                      h.div
-                        .class(styles.text)
-                        .children(
-                          toast.title === undefined
-                            ? undefined
-                            : stack
-                                .title({
-                                  element: h.strong.class(styles.title),
-                                  toast,
-                                })
-                                .children(toast.title),
-                          toast.description === undefined
-                            ? undefined
-                            : stack
-                                .description({
-                                  element: h.p.class(styles.description),
-                                  toast,
-                                })
-                                .children(toast.description),
-                        ),
+                      h.div.class(styles.text).children(
+                        toast.title === undefined
+                          ? undefined
+                          : stack
+                              .title({
+                                element: h.strong.class(styles.title),
+                                toast,
+                              })
+                              .children(toast.title),
+                        toast.description === undefined
+                          ? undefined
+                          : stack
+                              .description({
+                                element: h.p.class(styles.description),
+                                toast,
+                              })
+                              .children(toast.description),
+                      ),
                       shortcut === undefined
                         ? undefined
                         : stack
@@ -135,9 +165,10 @@ export const Toast = <Msg, R = never>(
                             .children(shortcut.label),
                       stack
                         .close({
-                          element: h.button
-                            .class(styles.button)
-                            .attr('aria-label', closeLabel),
+                          element: h.button.class(styles.button).attrs({
+                            'aria-label': closeLabel,
+                            'data-toast-close': '',
+                          }),
                           toast,
                         })
                         .children(IconBehavior(h, { name: 'x', size: 'sm' })),
@@ -145,5 +176,6 @@ export const Toast = <Msg, R = never>(
                 )
             }),
           ),
-      ),
+      )
+    },
   })

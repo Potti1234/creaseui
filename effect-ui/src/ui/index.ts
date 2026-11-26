@@ -59,7 +59,7 @@ export {
 export { DropdownMenu } from './dropdown-menu'
 export { ContextMenu } from './context-menu'
 export { Drawer } from './drawer'
-export { Sheet } from './sheet'
+export { Sheet, SheetSwitcher } from './sheet'
 export { CircularProgress } from './circular-progress'
 export { Stat } from './stat'
 export { Bubble, BubbleGroup } from './bubble'

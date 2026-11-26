@@ -1,7 +1,9 @@
 import { Command, UiSchema } from '@effect/ui'
 import { Html } from '@effect/ui/html'
-import { Dialog } from '@effect/ui-kit'
+import { Dialog, Popover, Slider } from '@effect/ui-kit'
 import { Effect, Schema } from 'effect'
+
+import { CalendarDate, RangeCalendarBehavior } from './calendar'
 
 export const SortEntry = Schema.Struct({
   id: Schema.String,
@@ -13,6 +15,21 @@ const Range = Schema.Struct({
   max: Schema.NullOr(Schema.Number),
 })
 const DateRange = Schema.Struct({ from: Schema.String, to: Schema.String })
+const Facet = Schema.TaggedUnion({
+  Numeric: {
+    column: Schema.String,
+    triggerId: Schema.String,
+    min: Schema.Number,
+    max: Schema.Number,
+    step: Schema.Number,
+  },
+  Date: {
+    column: Schema.String,
+    triggerId: Schema.String,
+    initialMonth: Schema.optional(CalendarDate),
+  },
+})
+export type DataTableFacet = typeof Facet.Type
 const ArrayOfKeys = Schema.Array(Schema.String)
 
 export const DataTableState = Schema.Struct({
@@ -301,11 +318,13 @@ export const DataTableAction = UiSchema.TaggedEnum({
     endpoint: Schema.Literals(['min', 'max']),
     value: Schema.NullOr(Schema.Number),
   },
+  RangeSet: { column: Schema.String, ...Range.fields },
   DateChanged: {
     column: Schema.String,
     endpoint: Schema.Literals(['from', 'to']),
     value: Schema.String,
   },
+  DateSet: { column: Schema.String, ...DateRange.fields },
   Sorted: { id: Schema.String, extend: Schema.Boolean },
   SortingSet: { value: Schema.Array(SortEntry) },
   Selected: {
@@ -364,6 +383,15 @@ export const updateDataTable = (
           },
         },
       }
+    case 'RangeSet':
+      return {
+        ...state,
+        page: 0,
+        rangeFilters: {
+          ...state.rangeFilters,
+          [action.column]: { min: action.min, max: action.max },
+        },
+      }
     case 'DateChanged':
       return {
         ...state,
@@ -374,6 +402,15 @@ export const updateDataTable = (
             ...(state.dateFilters[action.column] ?? { from: '', to: '' }),
             [action.endpoint]: action.value,
           },
+        },
+      }
+    case 'DateSet':
+      return {
+        ...state,
+        page: 0,
+        dateFilters: {
+          ...state.dateFilters,
+          [action.column]: { from: action.from, to: action.to },
         },
       }
     case 'Sorted': {
@@ -438,6 +475,8 @@ export const updateDataTable = (
 
 const Message = UiSchema.TaggedEnum({
   Applied: { action: DataTableAction },
+  FacetOpened: { triggerId: Schema.NullOr(Schema.String) },
+  FacetClosed: {},
   DeleteOpened: { keys: ArrayOfKeys },
   DeleteClosed: {},
   DeleteConfirmed: {},
@@ -466,20 +505,32 @@ export const DataTableBehavior = Html.component({
   props: Schema.Struct({
     defaultState: Schema.optional(DataTableState),
     state: Schema.optional(DataTableState),
+    facets: Schema.optional(Schema.Array(Facet)),
+    today: Schema.optional(CalendarDate),
   }),
-  model: Schema.Struct({ state: DataTableState, deleteKeys: ArrayOfKeys }),
+  model: Schema.Struct({
+    state: DataTableState,
+    deleteKeys: ArrayOfKeys,
+    facetOpen: Schema.Boolean,
+    facetTrigger: Schema.NullOr(Schema.String),
+  }),
   message: Message,
   events: DataTableEvents,
 }).make({
   init: ({ props }) => ({
     state: props.defaultState ?? initDataTable(),
     deleteKeys: [],
+    facetOpen: false,
+    facetTrigger: null,
   }),
   update: {
     Applied: ($, { action }) => {
       const state = updateDataTable($.props.state ?? $.model.state, action)
       return $.evolve({ state }).emit(DataTableEvents.Changed({ state }))
     },
+    FacetOpened: ($, { triggerId }) =>
+      $.evolve({ facetOpen: true, facetTrigger: triggerId }),
+    FacetClosed: $ => $.evolve({ facetOpen: false }),
     DeleteOpened: ($, { keys }) => $.evolve({ deleteKeys: keys }),
     DeleteClosed: $ => $.evolve({ deleteKeys: [] }),
     DeleteConfirmed: $ =>
@@ -491,6 +542,38 @@ export const DataTableBehavior = Html.component({
     ExportRequested: ($, event) => $.emit(event),
   },
   parts: (p, model) => {
+    const state = p.props.state ?? model.state
+    const facet = p.props.facets?.find(
+      facet => facet.triggerId === model.facetTrigger,
+    )
+    const numericFacet = facet?._tag === 'Numeric' ? facet : undefined
+    const dates =
+      facet?._tag === 'Date' ? state.dateFilters[facet.column] : undefined
+    const isDate = Schema.is(CalendarDate)
+    const dateValue =
+      dates !== undefined && isDate(dates.from) && isDate(dates.to)
+        ? { start: dates.from, end: dates.to }
+        : null
+    const rangeValue =
+      numericFacet === undefined
+        ? undefined
+        : state.rangeFilters[numericFacet.column]
+    const movedRange = (value: number | readonly number[]) => {
+      if (
+        numericFacet === undefined ||
+        typeof value === 'number' ||
+        value[0] === undefined ||
+        value[1] === undefined
+      )
+        return
+      return Message.Applied({
+        action: DataTableAction.RangeSet({
+          column: numericFacet.column,
+          min: value[0] <= numericFacet.min ? null : value[0],
+          max: value[1] >= numericFacet.max ? null : value[1],
+        }),
+      })
+    }
     const button = p.part('button', (element, action: DataTableAction) =>
       element
         .attrs({ type: 'button' })
@@ -589,23 +672,83 @@ export const DataTableBehavior = Html.component({
         RequestedOpen: () => undefined,
         Settled: () => undefined,
       },
-      parts: alert => ({
-        state: p.props.state ?? model.state,
-        deleteKeys: model.deleteKeys,
-        button,
-        sort,
-        rowSelection,
-        filter,
-        range,
-        date,
-        choose,
-        edit,
-        applyValue,
-        requestExport,
-        requestDelete,
-        confirmDelete,
-        alert,
-      }),
+      parts: alert =>
+        p.child(Popover, {
+          props: {
+            open: model.facetOpen && facet !== undefined,
+            triggerId: model.facetTrigger,
+            side: 'bottom',
+            align: 'start',
+            sideOffset: 4,
+          },
+          onEmit: {
+            RequestedOpen: ({ triggerId }) =>
+              Message.FacetOpened({ triggerId }),
+            RequestedClose: () => Message.FacetClosed(),
+            Settled: () => undefined,
+          },
+          parts: facetPopover =>
+            p.child(Slider, {
+              props: {
+                value: [
+                  rangeValue?.min ?? numericFacet?.min ?? 0,
+                  rangeValue?.max ?? numericFacet?.max ?? 100,
+                ],
+                min: numericFacet?.min,
+                max: numericFacet?.max,
+                step: numericFacet?.step,
+                thumbCollisionBehavior: 'none',
+              },
+              onEmit: {
+                Moved: ({ value }) => movedRange(value),
+                Committed: () => undefined,
+              },
+              parts: facetSlider =>
+                p.child(RangeCalendarBehavior, {
+                  key: facet?._tag === 'Date' ? facet.column : undefined,
+                  props: {
+                    value: dateValue,
+                    today:
+                      p.props.today ?? new Date().toISOString().slice(0, 10),
+                    initialMonth:
+                      facet?._tag === 'Date' ? facet.initialMonth : undefined,
+                  },
+                  onEmit: {
+                    Picked: ({ start, end }) =>
+                      facet?._tag !== 'Date'
+                        ? undefined
+                        : Message.Applied({
+                            action: DataTableAction.DateSet({
+                              column: facet.column,
+                              from: start,
+                              to: end,
+                            }),
+                          }),
+                  },
+                  parts: facetCalendar => ({
+                    state,
+                    facet,
+                    facetPopover,
+                    facetSlider,
+                    facetCalendar,
+                    deleteKeys: model.deleteKeys,
+                    button,
+                    sort,
+                    rowSelection,
+                    filter,
+                    range,
+                    date,
+                    choose,
+                    edit,
+                    applyValue,
+                    requestExport,
+                    requestDelete,
+                    confirmDelete,
+                    alert,
+                  }),
+                }),
+            }),
+        }),
     })
   },
 })

@@ -19,9 +19,9 @@ const partial = new Map([
     'Date and select editors, column dragging, and cell action menu',
   ],
   ['input-otp', 'Custom character patterns that accept whitespace'],
-  ['sheet', 'Panel switcher and custom header layout'],
+  ['sheet', 'Required pane dismissal policy'],
   ['number-input', 'Integer-only stepping with fractional bounds'],
-  ['toast', 'Swipe dismissal and the collapsed overlapping stack'],
+  ['toast', 'Per-notification placement within one provider'],
   ['stepper', 'Legacy staggered connector transitions'],
 ])
 const renderers = ['stylex-effect-components', 'pleat-effect-components']

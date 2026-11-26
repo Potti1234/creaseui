@@ -55,7 +55,10 @@ import { Bubble as RenderBubble } from '../ui/bubble'
 import { Token as RenderToken } from '../ui/token'
 import { BubbleGroup as RenderBubbleGroup } from '../ui/bubble'
 import { Drawer as RenderDrawer } from '../ui/drawer'
-import { Sheet as RenderSheet } from '../ui/sheet'
+import {
+  Sheet as RenderSheet,
+  SheetSwitcher as RenderSheetSwitcher,
+} from '../ui/sheet'
 import { DropdownMenu as RenderDropdownMenu } from '../ui/dropdown-menu'
 import { ContextMenu as RenderContextMenu } from '../ui/context-menu'
 import { ScrollArea as RenderScrollArea } from '../ui/scroll-area'
@@ -571,6 +574,11 @@ export const Sheet = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderSheet<Msg, R>>[1],
 ) => RenderSheet(h, options, partClasses(drawer))
+
+export const SheetSwitcher = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderSheetSwitcher<Msg, R>>[1],
+) => RenderSheetSwitcher(h, options, partClasses(drawer))
 
 export const CircularProgress = <Msg, R = never>(
   h: Html.H<Msg>,

@@ -1785,6 +1785,16 @@
           "path": "src/ui/sheet.ts",
           "type": "registry:ui",
           "target": "@ui/effect/ui/sheet.ts"
+        },
+        {
+          "path": "src/ui/sheet.css",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/sheet.css"
+        },
+        {
+          "path": "src/ui/sheet-styles.d.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/ui/sheet-styles.d.ts"
         }
       ]
     },
