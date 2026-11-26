@@ -6,6 +6,7 @@ import { Button } from '@effect/ui-kit'
 import { Effect, Schema } from 'effect'
 
 const ChildMessage = UiSchema.TaggedEnum({ ChildPressed: {} })
+const directHandler = process.argv.includes('--direct')
 const Child = Html.component({
   name: 'Child',
   message: ChildMessage,
@@ -16,7 +17,9 @@ const Child = Html.component({
   parts: (p, pressed) => ({
     pressed,
     trigger: p.part('button', button =>
-      Button({ button }, { onPress: ChildMessage.ChildPressed() }),
+      directHandler
+        ? button.on('click', ChildMessage.ChildPressed())
+        : Button({ button }, { onPress: ChildMessage.ChildPressed() }),
     ),
   }),
 })
@@ -48,3 +51,4 @@ await Effect.runPromise(
     }),
   ).pipe(Effect.provide(TestHost.layer())),
 )
+console.log('Child rendered Pressed')

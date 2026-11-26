@@ -37,6 +37,6 @@ StyleX consumers need their StyleX compiler enabled. Pleat consumers need a Type
 
 ## Upstream reproduction
 
-`node effect-ui/repros/button-inside-part.mjs` reproduces a snapshot issue using only Effect UI and the kit. A kit `Button` applied inside `p.part` accepts a child Message, but clicking sends that Message to the parent and crashes its update. The same click should update the component that declared the part. Calendar binds its handlers directly on the part's builder, and a passing regression test covers that route.
+The [upstream findings](UPSTREAM.md) include tested snapshot SHAs, a standalone reproduction, a passing control, and an issue draft.
 
 The remaining migration includes the rest of the catalog and docs site, the Foldkit consumer lint tools, multi-select Combobox, and Calendar's range and month/year selection modes.
