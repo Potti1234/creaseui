@@ -1539,6 +1539,128 @@
       ]
     },
     {
+      "name": "effect-scroll-area-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/scroll-area.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/scroll-area.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-scroll-area",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-scroll-area-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/scroll-area.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/scroll-area.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toolbar-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/toolbar.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/toolbar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toolbar",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-toolbar-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/toolbar.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/toolbar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-breadcrumb-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/breadcrumb.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/breadcrumb.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-breadcrumb",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-breadcrumb-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/breadcrumb.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/breadcrumb.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-avatar-group-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/avatar-group.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/avatar-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-avatar-group",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-avatar-group-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/avatar-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/avatar-group.ts"
+        }
+      ]
+    },
+    {
       "name": "stylex-effect-components",
       "type": "registry:ui",
       "dependencies": ["@stylexjs/stylex@^0.19.2"],
@@ -1593,7 +1715,11 @@
         "@crease-effect/effect-code",
         "@crease-effect/effect-typography",
         "@crease-effect/effect-text",
-        "@crease-effect/effect-heading"
+        "@crease-effect/effect-heading",
+        "@crease-effect/effect-scroll-area",
+        "@crease-effect/effect-toolbar",
+        "@crease-effect/effect-breadcrumb",
+        "@crease-effect/effect-avatar-group"
       ],
       "files": [
         { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
@@ -1654,7 +1780,11 @@
         "@crease-effect/effect-code",
         "@crease-effect/effect-typography",
         "@crease-effect/effect-text",
-        "@crease-effect/effect-heading"
+        "@crease-effect/effect-heading",
+        "@crease-effect/effect-scroll-area",
+        "@crease-effect/effect-toolbar",
+        "@crease-effect/effect-breadcrumb",
+        "@crease-effect/effect-avatar-group"
       ],
       "files": [
         { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },

@@ -38,6 +38,12 @@ import {
   Text,
   Heading,
   Typography,
+  ScrollArea,
+  Toolbar,
+  Breadcrumb,
+  AvatarGroup,
+  AvatarGroupOverflow,
+  AvatarStatusDot,
   Button,
   ButtonLink,
   Calendar,
@@ -194,6 +200,96 @@ const Preview = Html.component({
     h.main.class('preview').children(
       h.h1.children('CreaseUI for Effect UI'),
       h.div.class('examples').children(
+        h.section.class('example').children(
+          h.h2.children('Workspace navigation'),
+          Breadcrumb(h, {
+            items: [
+              { kind: 'link', href: '#project-activity', label: 'Workspace' },
+              { kind: 'link', href: '#project-activity', label: 'Projects' },
+              { kind: 'link', href: '#project-activity', label: 'Activity' },
+              { kind: 'page', label: 'History' },
+            ],
+            maxItems: 3,
+          }),
+          Toolbar(h, {
+            label: 'Workspace actions',
+            variant: 'muted',
+            dividers: ['bottom'],
+            props: {
+              items: [
+                { value: 'refresh' },
+                {
+                  value: 'remove',
+                  disabled: true,
+                  focusableWhenDisabled: false,
+                },
+                { value: 'history' },
+              ],
+            },
+            startContent: toolbar => [
+              Button(h, {
+                element: toolbar.button({
+                  value: 'refresh',
+                  element: h.button,
+                }),
+                onPress: Message.Pressed(),
+              }).children('Refresh'),
+              Button(h, {
+                element: toolbar.button({ value: 'remove', element: h.button }),
+                disabled: toolbar.isDisabled('remove'),
+                variant: 'outline',
+              }).children('Remove'),
+            ],
+            endContent: toolbar =>
+              toolbar
+                .link({
+                  value: 'history',
+                  element: h.a.attr('href', '#project-activity'),
+                })
+                .children('History'),
+          }),
+          AvatarGroup(h, {
+            ariaLabel: 'Team members',
+            children: [
+              Avatar(h, {
+                key: 'grace',
+                props: {},
+                alt: 'Grace Hopper',
+                fallbackContent: ['GH'],
+                badge: [
+                  AvatarStatusDot(h, {
+                    variant: 'success',
+                    ariaLabel: 'Online',
+                  }),
+                ],
+              }),
+              Avatar(h, {
+                key: 'katherine',
+                props: {},
+                alt: 'Katherine Johnson',
+                fallbackContent: ['KJ'],
+                tone: 'accent',
+              }),
+              AvatarGroupOverflow(h, { count: 3, onPress: Message.Pressed() }),
+            ],
+          }),
+          h.div.style({ height: '7rem' }).children(
+            ScrollArea(h, {
+              props: {},
+              ariaLabel: 'Activity feed',
+              orientation: 'vertical',
+              children: [
+                h.ol
+                  .style({ width: '26rem' })
+                  .children(
+                    Array.from({ length: 12 }, (_, index) =>
+                      h.li.key(String(index)).children(`Update ${index + 1}`),
+                    ),
+                  ),
+              ],
+            }),
+          ),
+        ),
         h.section.class('example').children(
           Heading(h, { level: 2, children: ['Project activity'] }),
           Card(h, {

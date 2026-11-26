@@ -48,3 +48,11 @@ export { Code } from './code'
 export { Typography } from './typography'
 export { Text } from './text'
 export { Heading } from './heading'
+export { ScrollArea } from './scroll-area'
+export { Toolbar } from './toolbar'
+export { Breadcrumb } from './breadcrumb'
+export {
+  AvatarGroup,
+  AvatarGroupOverflow,
+  AvatarStatusDot,
+} from './avatar-group'

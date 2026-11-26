@@ -2231,6 +2231,243 @@ export const typography = stylex.create({
   },
 })
 
+export const scrollArea = stylex.create({
+  root: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    minWidth: 0,
+    minHeight: 0,
+    borderRadius: 'inherit',
+  },
+  viewport: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 'inherit',
+    outline: 'none',
+    boxShadow: {
+      default: null,
+      ':focus-visible':
+        '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    },
+  },
+  content: {
+    minHeight: '100%',
+  },
+  scrollbar: {
+    display: 'grid',
+    padding: 1,
+    zIndex: 10,
+    width: {
+      default: null,
+      ':is([data-orientation="vertical"])': 8,
+    },
+    height: {
+      default: null,
+      ':is([data-orientation="horizontal"])': 8,
+    },
+  },
+  thumb: {
+    borderRadius: 999,
+    backgroundColor: 'var(--border)',
+  },
+  corner: {
+    backgroundColor: 'var(--background)',
+  },
+})
+
+export const toolbar = stylex.create({
+  root: {
+    display: {
+      default: 'flex',
+      ':is([data-centered])': 'grid',
+    },
+    alignItems: {
+      default: 'center',
+      ':is([data-orientation="vertical"])': 'stretch',
+    },
+    flexWrap: 'wrap',
+    minWidth: 0,
+    paddingInline: 16,
+    minHeight: {
+      default: 36,
+      ':is([data-size="sm"])': 32,
+      ':is([data-size="lg"])': 40,
+    },
+    backgroundColor: {
+      default: null,
+      ':is([data-variant="muted"])': 'var(--muted)',
+      ':is([data-variant="surface"])': 'var(--card)',
+    },
+    color: {
+      default: null,
+      ':is([data-variant="surface"])': 'var(--card-foreground)',
+    },
+    flexDirection: {
+      default: null,
+      ':is([data-orientation="vertical"])': 'column',
+    },
+    gridTemplateColumns: {
+      default: null,
+      ':is([data-centered])': 'minmax(0, 1fr) auto minmax(0, 1fr)',
+      ':is([data-centered][data-orientation="vertical"])': '1fr',
+    },
+  },
+  slot: {
+    display: 'flex',
+    minWidth: 0,
+    alignItems: {
+      default: 'center',
+      ':is([data-orientation="vertical"])': 'stretch',
+    },
+    gap: 'var(--toolbar-gap)',
+    flexDirection: {
+      default: null,
+      ':is([data-orientation="vertical"])': 'column',
+    },
+  },
+  start: {
+    marginInlineStart: {
+      default: null,
+      ':has(>[data-crease-edge-comp]:first-child)': -8,
+    },
+  },
+  center: {
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  end: {
+    justifyContent: 'end',
+    marginInlineStart: 'auto',
+    marginInlineEnd: {
+      default: null,
+      ':has(>[data-crease-edge-comp]:last-child)': -8,
+    },
+  },
+})
+
+export const breadcrumb = stylex.create({
+  root: {
+    minWidth: 0,
+  },
+  list: {
+    margin: 0,
+    padding: 0,
+    listStyleType: 'none',
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: {
+      default: 6,
+      '@media (min-width: 40rem)': 10,
+    },
+    fontSize: '0.875rem',
+    overflowWrap: 'break-word',
+    color: 'var(--muted-foreground)',
+  },
+  item: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 6,
+  },
+  link: {
+    color: {
+      default: 'inherit',
+      ':hover': 'var(--foreground)',
+    },
+    textDecoration: 'none',
+    transition: 'color 150ms',
+  },
+  page: {
+    fontWeight: 400,
+    color: 'var(--foreground)',
+  },
+  separator: {
+    userSelect: 'none',
+  },
+  ellipsis: {
+    display: 'inline-grid',
+    width: 36,
+    height: 36,
+    placeItems: 'center',
+  },
+})
+
+export const avatarGroup = stylex.create({
+  root: {
+    display: 'inline-flex',
+    alignItems: 'center',
+  },
+  member: {
+    position: 'relative',
+    display: 'inline-flex',
+    borderRadius: 'var(--avatar-group-radius)',
+    backgroundColor: 'var(--background)',
+    boxShadow: '0 0 0 2px var(--background)',
+  },
+  overflow: {
+    display: 'inline-flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexShrink: 0,
+    borderWidth: 2,
+    borderStyle: 'solid',
+    borderColor: 'var(--background)',
+    backgroundColor: 'var(--muted)',
+    paddingInline: 8,
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+    userSelect: 'none',
+    outline: {
+      default: null,
+      ':focus-visible': '2px solid var(--ring)',
+    },
+    outlineOffset: {
+      default: null,
+      ':focus-visible': 2,
+    },
+  },
+  status: {
+    position: 'absolute',
+    insetInlineEnd: 0,
+    bottom: 0,
+    zIndex: 10,
+    display: 'grid',
+    placeItems: 'center',
+    borderRadius: 999,
+    borderStyle: 'solid',
+    borderColor: 'var(--background)',
+    backgroundColor: {
+      default: 'var(--success)',
+      ':is([data-variant="neutral"])': 'var(--background)',
+      ':is([data-variant="error"])': 'var(--destructive)',
+    },
+    color: {
+      default: 'var(--background)',
+      ':is([data-variant="neutral"])': 'var(--muted-foreground)',
+    },
+  },
+  glyph: {
+    borderRadius: 999,
+    borderWidth: {
+      default: null,
+      ':is([data-variant="neutral"])': 1,
+    },
+    borderStyle: {
+      default: null,
+      ':is([data-variant="neutral"])': 'solid',
+    },
+    borderColor: {
+      default: null,
+      ':is([data-variant="neutral"])': 'currentColor',
+    },
+    backgroundColor: {
+      default: null,
+      ':is([data-variant="error"])': 'currentColor',
+    },
+  },
+})
+
 export const tooltip = stylex.create({
   root: { display: 'inline-block' },
   positioner: {

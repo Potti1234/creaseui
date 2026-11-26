@@ -2157,6 +2157,231 @@ export const typography = {
   }),
 }
 
+export const scrollArea = {
+  root: Style.make({
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    minWidth: 0,
+    minHeight: 0,
+    borderRadius: 'inherit',
+  }),
+  viewport: Style.make({
+    width: '100%',
+    height: '100%',
+    borderRadius: 'inherit',
+    outline: 'none',
+  }).pipe(
+    Style.when(When.focusVisible, {
+      boxShadow: '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    }),
+  ),
+  content: Style.make({
+    minHeight: '100%',
+  }),
+  scrollbar: Style.make({
+    display: 'grid',
+    padding: 1,
+    zIndex: 10,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation="vertical"])'), {
+      width: 8,
+    }),
+    Style.when(When.pseudo(':is([data-orientation="horizontal"])'), {
+      height: 8,
+    }),
+  ),
+  thumb: Style.make({
+    borderRadius: 999,
+    backgroundColor: 'var(--border)',
+  }),
+  corner: Style.make({
+    backgroundColor: 'var(--background)',
+  }),
+}
+
+export const toolbar = {
+  root: Style.make({
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    minWidth: 0,
+    paddingInline: 16,
+    minHeight: 36,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-variant="muted"])'), {
+      backgroundColor: 'var(--muted)',
+    }),
+    Style.when(When.pseudo(':is([data-variant="surface"])'), {
+      backgroundColor: 'var(--card)',
+      color: 'var(--card-foreground)',
+    }),
+    Style.when(When.pseudo(':is([data-orientation="vertical"])'), {
+      flexDirection: 'column',
+      alignItems: 'stretch',
+    }),
+    Style.when(When.pseudo(':is([data-centered])'), {
+      display: 'grid',
+      gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
+    }),
+    Style.when(
+      When.pseudo(':is([data-centered][data-orientation="vertical"])'),
+      {
+        gridTemplateColumns: '1fr',
+      },
+    ),
+    Style.when(When.pseudo(':is([data-size="sm"])'), {
+      minHeight: 32,
+    }),
+    Style.when(When.pseudo(':is([data-size="lg"])'), {
+      minHeight: 40,
+    }),
+  ),
+  slot: Style.make({
+    display: 'flex',
+    minWidth: 0,
+    alignItems: 'center',
+    gap: 'var(--toolbar-gap)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-orientation="vertical"])'), {
+      flexDirection: 'column',
+      alignItems: 'stretch',
+    }),
+  ),
+  start: Style.make({}).pipe(
+    Style.when(When.pseudo(':has(>[data-crease-edge-comp]:first-child)'), {
+      marginInlineStart: -8,
+    }),
+  ),
+  center: Style.make({
+    justifyContent: 'center',
+    overflow: 'hidden',
+  }),
+  end: Style.make({
+    justifyContent: 'end',
+    marginInlineStart: 'auto',
+  }).pipe(
+    Style.when(When.pseudo(':has(>[data-crease-edge-comp]:last-child)'), {
+      marginInlineEnd: -8,
+    }),
+  ),
+}
+
+export const breadcrumb = {
+  root: Style.make({
+    minWidth: 0,
+  }),
+  list: Style.make({
+    margin: 0,
+    padding: 0,
+    listStyleType: 'none',
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: 6,
+    fontSize: '0.875rem',
+    overflowWrap: 'break-word',
+    color: 'var(--muted-foreground)',
+  }).pipe(
+    Style.when(When.media('(min-width: 40rem)'), {
+      gap: 10,
+    }),
+  ),
+  item: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 6,
+  }),
+  link: Style.make({
+    color: 'inherit',
+    textDecoration: 'none',
+    transition: 'color 150ms',
+  }).pipe(
+    Style.when(When.hover, {
+      color: 'var(--foreground)',
+    }),
+  ),
+  page: Style.make({
+    fontWeight: 400,
+    color: 'var(--foreground)',
+  }),
+  separator: Style.make({
+    userSelect: 'none',
+  }),
+  ellipsis: Style.make({
+    display: 'inline-grid',
+    width: 36,
+    height: 36,
+    placeItems: 'center',
+  }),
+}
+
+export const avatarGroup = {
+  root: Style.make({
+    display: 'inline-flex',
+    alignItems: 'center',
+  }),
+  member: Style.make({
+    position: 'relative',
+    display: 'inline-flex',
+    borderRadius: 'var(--avatar-group-radius)',
+    backgroundColor: 'var(--background)',
+    boxShadow: '0 0 0 2px var(--background)',
+  }),
+  overflow: Style.make({
+    display: 'inline-flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexShrink: 0,
+    borderWidth: 2,
+    borderStyle: 'solid',
+    borderColor: 'var(--background)',
+    backgroundColor: 'var(--muted)',
+    paddingInline: 8,
+    fontWeight: 500,
+    color: 'var(--muted-foreground)',
+    userSelect: 'none',
+  }).pipe(
+    Style.when(When.focusVisible, {
+      outline: '2px solid var(--ring)',
+      outlineOffset: 2,
+    }),
+  ),
+  status: Style.make({
+    position: 'absolute',
+    insetInlineEnd: 0,
+    bottom: 0,
+    zIndex: 10,
+    display: 'grid',
+    placeItems: 'center',
+    borderRadius: 999,
+    borderStyle: 'solid',
+    borderColor: 'var(--background)',
+    backgroundColor: 'var(--success)',
+    color: 'var(--background)',
+  }).pipe(
+    Style.when(When.pseudo(':is([data-variant="neutral"])'), {
+      backgroundColor: 'var(--background)',
+      color: 'var(--muted-foreground)',
+    }),
+    Style.when(When.pseudo(':is([data-variant="error"])'), {
+      backgroundColor: 'var(--destructive)',
+    }),
+  ),
+  glyph: Style.make({
+    borderRadius: 999,
+  }).pipe(
+    Style.when(When.pseudo(':is([data-variant="neutral"])'), {
+      borderWidth: 1,
+      borderStyle: 'solid',
+      borderColor: 'currentColor',
+    }),
+    Style.when(When.pseudo(':is([data-variant="error"])'), {
+      backgroundColor: 'currentColor',
+    }),
+  ),
+}
+
 export const tooltip = {
   root: Style.make({ display: 'inline-block' }),
   positioner: Style.make({

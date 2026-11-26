@@ -2,6 +2,12 @@ import type { Html } from '@effect/ui/html'
 import { Style } from '@pleat/core'
 
 import { Accordion as RenderAccordion } from '../ui/accordion'
+import { ScrollArea as RenderScrollArea } from '../ui/scroll-area'
+import { Toolbar as RenderToolbar } from '../ui/toolbar'
+import { Breadcrumb as RenderBreadcrumb } from '../ui/breadcrumb'
+import { AvatarGroup as RenderAvatarGroup } from '../ui/avatar-group'
+import { AvatarGroupOverflow as RenderAvatarGroupOverflow } from '../ui/avatar-group'
+import { AvatarStatusDot as RenderAvatarStatusDot } from '../ui/avatar-group'
 import { Card as RenderCard } from '../ui/card'
 import { Alert as RenderAlert } from '../ui/alert'
 import { Empty as RenderEmpty } from '../ui/empty'
@@ -55,6 +61,10 @@ import { Separator as RenderSeparator } from '../ui/separator'
 import { Toggle as RenderToggle } from '../ui/toggle'
 import {
   accordion,
+  scrollArea,
+  toolbar,
+  breadcrumb,
+  avatarGroup,
   card,
   alert,
   empty,
@@ -372,3 +382,33 @@ export const Typography = <Msg, R = never>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderTypography<Msg, R>>[1],
 ) => RenderTypography(h, options, partClasses(typography))
+
+export const ScrollArea = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderScrollArea<Msg, R>>[1],
+) => RenderScrollArea(h, options, partClasses(scrollArea))
+
+export const Toolbar = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderToolbar<Msg, R>>[1],
+) => RenderToolbar(h, options, partClasses(toolbar))
+
+export const Breadcrumb = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderBreadcrumb<Msg, R>>[1],
+) => RenderBreadcrumb(h, options, partClasses(breadcrumb))
+
+export const AvatarGroup = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderAvatarGroup<Msg, R>>[1],
+) => RenderAvatarGroup(h, options, partClasses(avatarGroup))
+
+export const AvatarGroupOverflow = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderAvatarGroupOverflow<Msg, R>>[1],
+) => RenderAvatarGroupOverflow(h, options, partClasses(avatarGroup))
+
+export const AvatarStatusDot = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderAvatarStatusDot<Msg>>[1],
+) => RenderAvatarStatusDot(h, options, partClasses(avatarGroup))
