@@ -2,7 +2,14 @@ import { UiSchema } from '@effect/ui'
 import { BrowserHost, Html } from '@effect/ui/html'
 import { Effect, Layer, Schema } from 'effect'
 
-import { Button, Calendar, Combobox, Dialog } from '#components'
+import {
+  Button,
+  Calendar,
+  Combobox,
+  Dialog,
+  Popover,
+  Select,
+} from '#components'
 import { CalendarDate } from './behaviors/calendar'
 import '#theme'
 import './preview.css'
@@ -11,6 +18,7 @@ const Message = UiSchema.TaggedEnum({
   Pressed: {},
   PickedFruit: { value: Schema.NullOr(Schema.String) },
   PickedDate: { value: CalendarDate },
+  PickedTheme: { value: Schema.NullOr(Schema.String) },
 })
 
 const fruits = [
@@ -18,6 +26,12 @@ const fruits = [
   { value: 'banana', label: 'Banana' },
   { value: 'pear', label: 'Pear' },
   { value: 'plum', label: 'Plum', disabled: true },
+]
+const themes = [
+  { value: 'light', label: 'Light' },
+  { value: 'dim', label: 'Dim', disabled: true },
+  { value: 'dark', label: 'Dark' },
+  { value: 'system', label: 'System' },
 ]
 const today = new Date().toISOString().slice(0, 10)
 
@@ -28,13 +42,15 @@ const Preview = Html.component({
     presses: Schema.Number,
     fruit: Schema.NullOr(Schema.String),
     date: Schema.NullOr(CalendarDate),
+    theme: Schema.NullOr(Schema.String),
   }),
 }).make({
-  init: () => ({ presses: 0, fruit: 'banana', date: null }),
+  init: () => ({ presses: 0, fruit: 'banana', date: null, theme: 'light' }),
   update: {
     Pressed: $ => $.evolve({ presses: count => count + 1 }),
     PickedFruit: ($, { value }) => $.evolve({ fruit: value }),
     PickedDate: ($, { value }) => $.evolve({ date: value }),
+    PickedTheme: ($, { value }) => $.evolve({ theme: value }),
   },
   view: (h, model) =>
     h.main.class('preview').children(
@@ -85,6 +101,41 @@ const Preview = Html.component({
             },
           }),
           h.output.children(`Selected date: ${model.date ?? 'None'}`),
+        ),
+        h.section.class('example example-compact').children(
+          h.h2.children('Select'),
+          Select(h, {
+            label: 'Theme',
+            props: { items: themes, value: model.theme },
+            onEmit: {
+              Picked: ({ value }) =>
+                typeof value === 'string' || value === null
+                  ? Message.PickedTheme({ value })
+                  : undefined,
+              RequestedOpen: () => undefined,
+              RequestedClose: () => undefined,
+              Settled: () => undefined,
+            },
+          }),
+          h.output.children(`Selected theme: ${model.theme ?? 'None'}`),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Popover'),
+          h.div.class('example-end').children(
+            Popover(h, {
+              props: { side: 'right' },
+              title: 'Display options',
+              trigger: Button(h, { variant: 'outline' }).children(
+                'Display options',
+              ),
+              content: h.label
+                .class('example-label')
+                .children(
+                  'Display name',
+                  h.input.class('example-input').attr('autocomplete', 'name'),
+                ),
+            }),
+          ),
         ),
       ),
     ),

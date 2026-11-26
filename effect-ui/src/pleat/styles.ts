@@ -223,6 +223,164 @@ export const combobox = {
   ),
 }
 
+const reducedMotion = When.media('(prefers-reduced-motion: reduce)')
+
+export const select = {
+  label: Style.make({ fontSize: '0.875rem', fontWeight: 500 }),
+  trigger: Style.make({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    width: 'fit-content',
+    maxWidth: '100%',
+    height: 32,
+    paddingInline: 10,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--background)',
+    color: 'var(--foreground)',
+    boxShadow: '0 1px 2px rgb(0 0 0 / 5%)',
+    fontFamily: 'inherit',
+    fontSize: '0.875rem',
+    outlineStyle: 'none',
+    cursor: 'pointer',
+  }).pipe(
+    Style.when(When.focusVisible, {
+      borderColor: 'var(--ring)',
+      boxShadow: '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    }),
+    Style.when(When.invalid, { borderColor: 'var(--destructive)' }),
+    Style.when(When.disabled, { opacity: 0.5, cursor: 'not-allowed' }),
+    Style.when(When.data('placeholder'), { color: 'var(--muted-foreground)' }),
+    Style.when(When.data('variant', 'ghost'), {
+      borderColor: 'transparent',
+      backgroundColor: 'transparent',
+      boxShadow: 'none',
+    }),
+    Style.when(When.all(When.data('variant', 'ghost'), When.hover), {
+      backgroundColor: 'var(--muted)',
+    }),
+    Style.when(When.all(When.data('variant', 'ghost'), When.focusVisible), {
+      borderColor: 'var(--ring)',
+      boxShadow: '0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent)',
+    }),
+  ),
+  value: Style.make({
+    minWidth: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  }),
+  icon: Style.make({
+    display: 'flex',
+    flexShrink: 0,
+    color: 'var(--muted-foreground)',
+  }),
+  backdrop: Style.make({
+    position: 'fixed',
+    inset: 0,
+    margin: 0,
+    padding: 0,
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+  }),
+  positioner: Style.make({
+    width: 'max-content',
+    minWidth: 'var(--anchor-width)',
+    maxWidth: 'min(var(--available-width), calc(100vw - 1rem))',
+    margin: 0,
+    padding: 0,
+    borderWidth: 0,
+    overflow: 'visible',
+    backgroundColor: 'transparent',
+  }),
+  popup: Style.make({
+    maxHeight: 'var(--available-height)',
+    overflow: 'auto',
+    padding: 4,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--popover)',
+    color: 'var(--popover-foreground)',
+    boxShadow: '0 4px 12px rgb(0 0 0 / 12%)',
+    outlineStyle: 'none',
+    transitionProperty: 'opacity',
+    transitionDuration: '150ms',
+  }).pipe(
+    Style.when(When.data('starting-style'), { opacity: 0 }),
+    Style.when(When.data('ending-style'), { opacity: 0 }),
+    Style.when(reducedMotion, { transitionDuration: '0ms' }),
+  ),
+  item: Style.make({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    padding: '6px 8px',
+    borderRadius: 'calc(var(--radius) - 4px)',
+    fontSize: '0.875rem',
+    outlineStyle: 'none',
+    cursor: 'default',
+    userSelect: 'none',
+  }).pipe(
+    Style.when(When.data('disabled'), { opacity: 0.5 }),
+    Style.when(When.data('highlighted'), {
+      backgroundColor: 'var(--accent)',
+      color: 'var(--accent-foreground)',
+    }),
+  ),
+  groupLabel: Style.make({
+    padding: '6px 8px',
+    fontSize: '0.75rem',
+    color: 'var(--muted-foreground)',
+  }),
+  separator: Style.make({
+    marginBlock: 4,
+    height: 1,
+    backgroundColor: 'var(--border)',
+  }),
+}
+
+export const popover = {
+  popup: Style.make({
+    display: 'grid',
+    gap: 8,
+    width: 'max-content',
+    maxWidth: 'min(var(--available-width, 100vw), calc(100vw - 2rem))',
+    maxHeight: 'var(--available-height)',
+    overflow: 'auto',
+    padding: 16,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--border)',
+    borderRadius: 'calc(var(--radius) - 2px)',
+    backgroundColor: 'var(--popover)',
+    color: 'var(--popover-foreground)',
+    boxShadow: '0 4px 12px rgb(0 0 0 / 12%)',
+    outlineStyle: 'none',
+    fontSize: '0.875rem',
+    transformOrigin: 'var(--transform-origin)',
+    transitionProperty: 'opacity, scale',
+    transitionDuration: '150ms',
+  }).pipe(
+    Style.when(When.data('starting-style'), { opacity: 0, scale: 0.95 }),
+    Style.when(When.data('ending-style'), { opacity: 0, scale: 0.95 }),
+    Style.when(reducedMotion, { transitionDuration: '0ms' }),
+  ),
+  title: Style.make({
+    margin: 0,
+    fontSize: '0.875rem',
+    fontWeight: 600,
+    lineHeight: 1,
+  }),
+  description: Style.make({ margin: 0, color: 'var(--muted-foreground)' }),
+}
+
 export const calendar = {
   root: Style.make({
     width: 'fit-content',

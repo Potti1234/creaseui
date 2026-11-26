@@ -8,6 +8,8 @@ import {
 import { Calendar as RenderCalendar } from '../ui/calendar'
 import { Combobox as RenderCombobox } from '../ui/combobox'
 import { Dialog as RenderDialog } from '../ui/dialog'
+import { Popover as RenderPopover } from '../ui/popover'
+import { Select as RenderSelect } from '../ui/select'
 import {
   buttonSizes,
   buttonVariants,
@@ -15,6 +17,8 @@ import {
   combobox,
   controls,
   dialog,
+  popover,
+  select,
 } from './styles.stylex'
 
 const buttonClasses: NonNullable<Parameters<typeof RenderButton>[2]> = (
@@ -63,3 +67,13 @@ export const Calendar = <Msg>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderCalendar<Msg>>[1],
 ) => RenderCalendar(h, options, partClasses(calendar))
+
+export const Popover = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderPopover<Msg, R>>[1],
+) => RenderPopover(h, options, partClasses(popover))
+
+export const Select = <Msg, R = never>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderSelect<Msg, R>>[1],
+) => RenderSelect(h, options, partClasses(select))

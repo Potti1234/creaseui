@@ -1,6 +1,6 @@
 # CreaseUI for Effect UI
 
-The first port covers Button, Dialog, Combobox, and Calendar. The headless behaviors can be installed and composed independently. Tailwind, StyleX, and Pleat use the same Effect UI views and event contracts. Dialog supports controlled or local open state. Combobox and Calendar report single selections to their consumer.
+The port covers Button, Dialog, Combobox, Calendar, Select, and Popover. The headless behaviors can be installed and composed independently. Tailwind, StyleX, and Pleat use the same Effect UI views and event contracts. Dialog, Popover, and Select support controlled or local open state. Consumers own the selected values in Combobox, Calendar, and Select.
 
 This package uses Effect 4.1.5 and pins both Effect UI packages to snapshot `77dcd92`. It has its own lockfile because the Foldkit application still requires Effect 4.0.0-rc.117.
 
@@ -15,7 +15,7 @@ npm --prefix effect-ui run dev:stylex -- --port 5182
 npm --prefix effect-ui run dev:pleat -- --port 5183
 ```
 
-`npm --prefix effect-ui run build` type-checks the package and builds all three previews. `npm --prefix effect-ui test` checks Calendar rendering and event delivery on Effect UI's test host.
+`npm --prefix effect-ui run build` type-checks the package and builds all three previews. `npm --prefix effect-ui test` runs the port's rendering and behavior tests.
 
 ## Install through the local registry
 
@@ -26,7 +26,7 @@ Build the registry with `npm --prefix effect-ui run registry:build`. With the Ta
 ```
 
 ```sh
-npx shadcn@latest add @crease-effect/effect-button @crease-effect/effect-dialog @crease-effect/effect-combobox @crease-effect/effect-calendar
+npx shadcn@latest add @crease-effect/effect-button @crease-effect/effect-dialog @crease-effect/effect-combobox @crease-effect/effect-calendar @crease-effect/effect-select @crease-effect/effect-popover
 npx shadcn@latest add @crease-effect/stylex-effect-components
 npx shadcn@latest add @crease-effect/pleat-effect-components
 ```
@@ -34,6 +34,8 @@ npx shadcn@latest add @crease-effect/pleat-effect-components
 The first command installs the Tailwind views. The other two install the corresponding renderer and its dependencies. Use the imports under your configured `ui` alias: `effect/ui/<component>`, `effect/stylex`, or `effect/pleat`. For a standalone behavior, append `-behavior` to the corresponding `effect-<component>` registry name.
 
 StyleX consumers need their StyleX compiler enabled. Pleat consumers need a TypeScript and bundler alias from `@pleat/core` to the installed `lib/pleat/core/src/index.ts`, using their configured `lib` path. When server rendering Pleat views, prepend `Sheet.styleTag(rendered.html)` to the document head.
+
+Select uses the kit's keyboard navigation, typeahead, disabled options, form integration, and multi-select. Pass `alignItemWithTrigger` in `props` for item-aligned placement. The styled view accepts grouping and item rendering callbacks. Popover exposes the kit's placement, collision, dismissal, and focus options. Pass `props: {}` for local disclosure or supply `open` and handle `RequestedOpen` and `RequestedClose` in the parent.
 
 ## Upstream reproduction
 
