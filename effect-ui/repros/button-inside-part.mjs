@@ -2,11 +2,14 @@ import { UiSchema } from '@effect/ui'
 import { Html } from '@effect/ui/html'
 import { HtmlLocator, HtmlPlay } from '@effect/ui/html/testing'
 import { TestHost } from '@effect/ui/testing'
-import { Button } from '@effect/ui-kit'
 import { Effect, Schema } from 'effect'
 
 const ChildMessage = UiSchema.TaggedEnum({ ChildPressed: {} })
-const directHandler = process.argv.includes('--direct')
+const mode = process.argv[2]
+const kit =
+  mode === '--forward' || mode === '--direct'
+    ? undefined
+    : await import('@effect/ui-kit')
 const Child = Html.component({
   name: 'Child',
   message: ChildMessage,
@@ -16,11 +19,13 @@ const Child = Html.component({
   update: { ChildPressed: () => true },
   parts: (p, pressed) => ({
     pressed,
-    trigger: p.part('button', button =>
-      directHandler
-        ? button.on('click', ChildMessage.ChildPressed())
-        : Button({ button }, { onPress: ChildMessage.ChildPressed() }),
-    ),
+    trigger: p.part('button', button => {
+      const pressed = ChildMessage.ChildPressed()
+      if (kit) return kit.Button({ button }, { onPress: pressed })
+      if (mode === '--forward')
+        return button.forward(node => node.on('click', pressed))
+      return button.on('click', pressed)
+    }),
   }),
 })
 
