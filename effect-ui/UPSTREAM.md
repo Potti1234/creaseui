@@ -4,9 +4,15 @@
 
 ### A click handler added through `.forward()` inside a headless part runs on the parent
 
+Reported upstream as [Effect UI #274](https://github.com/Effect-TS/ui/issues/274).
+The tested fix is linked in the issue. GitHub reported that PR creation was
+limited to collaborators and that `Potti1234` had read access on 2026-11-26.
+[Fix commit](https://github.com/Potti1234/ui/commit/7a8d34eb1fa531a3c8466a9ec8fef23f30eb573a)
+
 **Verified** on CreaseUI's pinned snapshot [`77dcd92`](https://github.com/Effect-TS/ui/commit/77dcd92f378930583e43debe36be7a203100d351)
-and on upstream `main` snapshot [`7ef6234`](https://github.com/Effect-TS/ui/commit/7ef62340bef8776d7d3f0d0668d64525ea8d434f)
-on 2026-11-26. Both used Node 24.11.1 and Effect 4.1.5.
+and on upstream snapshots [`7ef6234`](https://github.com/Effect-TS/ui/commit/7ef62340bef8776d7d3f0d0668d64525ea8d434f)
+and [`efdee07`](https://github.com/Effect-TS/ui/commit/efdee07133b4a64442a68cba69ef8c95cef33a95)
+on 2026-11-26. The repros used Node 24.11.1 and Effect 4.1.5.
 
 In a headless child's `p.part('button', ...)` decorator, passing the part's
 builder to the kit's `Button` and setting `onPress` to a child message sends
@@ -38,7 +44,7 @@ headless-owner issue concerned a synchronous blur during teardown. It was
 closed through a patch that skips closed owners during event lookup.
 [Effect UI #143](https://github.com/Effect-TS/ui/issues/143) · [Fix #144](https://github.com/Effect-TS/ui/pull/144)
 
-#### Issue draft
+#### Issue reproduction
 
 **Title** · A forwarded click handler in `p.part` sends the message to the parent update
 
@@ -64,6 +70,11 @@ node repro.mjs --direct
 The failure reproduces in `HtmlPlay` on Node 24.11.1. For the issue body, include
 the [repro source](repros/button-inside-part.mjs) as a code block so maintainers
 can run it independently of the CreaseUI branch.
+
+The proposed fix passed the upstream type-check, lint, and 41 focused tests.
+The isolated core and kit suite passed 1,819 tests with three expected
+failures. Its one unexpected failure, the NumberField `de-CH` parsing
+assertion, also failed on unmodified upstream `efdee07`. [NumberField test](https://github.com/Effect-TS/ui/blob/efdee07133b4a64442a68cba69ef8c95cef33a95/packages/ui-kit/test/NumberField.test.ts)
 
 ## Foldkit regressions to carry into the port
 

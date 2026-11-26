@@ -1,7 +1,12 @@
 # Contributing a fix to Effect UI
 
 Use the Effect UI issue tracker and a focused branch in a fork of
-`Effect-TS/ui`. The project's README describes its development commands.
+`Effect-TS/ui`. Check who can open a PR before submitting. On 2026-11-26,
+GitHub reported that `Effect-TS/ui` limited PR creation to collaborators.
+With read access, share the tested commit and diff in the issue so
+maintainers can review or adopt it.
+
+The project's README describes its development commands.
 Effect UI also inherits Effect-TS's contribution guide, code of conduct, and
 PR template. [Effect UI development](https://github.com/Effect-TS/ui#development) ·
 [Effect-TS contribution guide](https://github.com/Effect-TS/.github/blob/main/CONTRIBUTING.md) ·
@@ -24,8 +29,9 @@ PR template. [Effect UI development](https://github.com/Effect-TS/ui#development
 
 The headless-part issue is ready for this workflow. It reproduces with
 `@effect/ui` alone, so report the `.forward()` event-routing behavior and
-mention how it affects the kit's Button. Ask whether forwarded handlers should
-inherit the part's owner. [Issue draft and passing comparison](UPSTREAM.md)
+mention how it affects the kit's Button. The report and tested fix are
+available in [issue #274](https://github.com/Effect-TS/ui/issues/274).
+[Reproduction and passing comparison](UPSTREAM.md)
 
 ## Send the fix
 
