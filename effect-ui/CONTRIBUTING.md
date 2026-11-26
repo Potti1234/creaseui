@@ -14,6 +14,11 @@ PR template. [Effect UI development](https://github.com/Effect-TS/ui#development
 
 ## Report the behavior
 
+Write every upstream issue and follow-up so it stands on its own. Keep
+CreaseUI's name, links, and project-specific details in the local findings
+log. Use a minimal example made from Effect UI APIs and describe the impact
+in terms of what any Effect UI consumer sees.
+
 1. Search open and closed issues and PRs for the error text, API names, and
    symptom. Add a new repro or version result to an existing matching thread.
 2. Reproduce on CreaseUI's pin and a recent upstream `main` snapshot. Use the
@@ -21,16 +26,15 @@ PR template. [Effect UI development](https://github.com/Effect-TS/ui#development
    it helps locate the problem. Record exact package snapshots, the runtime
    or browser, the commands, and the expected and observed results.
 3. Open one issue for each independently reproducible bug. Paste the repro
-   or link to source that maintainers can access. Mention the downstream
-   impact in one sentence and say if you intend to send a fix. For an API
+   or link to a standalone example. Describe the API or user-visible impact
+   and say if you intend to send a fix. For an API
    decision, ask for direction in the issue before investing in a large patch.
    [GitHub issue guidance](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue) ·
    [Open Source Guides](https://opensource.guide/how-to-contribute/#how-to-submit-a-contribution)
 
-The headless-part issue is ready for this workflow. It reproduces with
-`@effect/ui` alone, so report the `.forward()` event-routing behavior and
-mention how it affects the kit's Button. The report and tested fix are
-available in [issue #274](https://github.com/Effect-TS/ui/issues/274).
+The `.forward()` event-routing bug in [issue #274](https://github.com/Effect-TS/ui/issues/274)
+reproduced with `@effect/ui` alone. The example isolates the core behavior
+and also shows how it affected the kit's Button.
 [Reproduction and passing comparison](UPSTREAM.md)
 
 ## Send the fix
