@@ -10,7 +10,7 @@ import {
 type Options<Msg> = Parameters<typeof DrawerBehavior<Msg>>[1]
 export type DrawerSide = 'top' | 'right' | 'bottom' | 'left'
 
-const swipeDirections = {
+export const drawerSwipeDirections = {
   bottom: 'down',
   top: 'up',
   left: 'left',
@@ -228,7 +228,7 @@ export const Drawer = <Msg, R = never>(
     ...(key === undefined ? {} : { key }),
     props: {
       ...props,
-      swipeDirection: props.swipeDirection ?? swipeDirections[side],
+      swipeDirection: props.swipeDirection ?? drawerSwipeDirections[side],
     },
     view: drawer =>
       drawerView(h, drawer, { ...viewOptions, side }, styles, slot),

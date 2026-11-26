@@ -1,24 +1,76 @@
-import { Command, Mount, UiSchema } from '@effect/ui'
+import { Command, type Component, Mount, UiSchema } from '@effect/ui'
 import { Html } from '@effect/ui/html'
 import {
   Drawer,
   DrawerDismissReason,
+  DrawerEvents,
   DrawerProps,
   DrawerSnapPoint,
 } from '@effect/ui-kit'
 import { Effect, Schema, Stream } from 'effect'
 
-export { Drawer as SheetBehavior }
-export type {
-  DrawerEvents as SheetEvents,
-  DrawerProps as SheetBehaviorProps,
-} from '@effect/ui-kit'
+export { DrawerEvents as SheetEvents }
+
+export const SheetPurpose = Schema.Literals(['info', 'form', 'required'])
+export type SheetPurpose = typeof SheetPurpose.Type
+export const SheetBehaviorProps = Schema.Struct({
+  ...DrawerProps.fields,
+  purpose: Schema.optional(SheetPurpose),
+})
+export type SheetBehaviorProps = typeof SheetBehaviorProps.Type
+
+type DrawerParts = Component.Headless.Parts<typeof Drawer>
+
+export const SheetBehavior = Html.component({
+  name: 'CreaseSheet',
+  props: SheetBehaviorProps,
+  model: Schema.Null,
+  message: DrawerEvents,
+  events: DrawerEvents,
+}).make({
+  init: () => null,
+  update: {
+    RequestedOpen: ($, event) => $.emit(event),
+    RequestedClose: ($, event) => $.emit(event),
+    Settled: ($, event) => $.emit(event),
+    Snapped: ($, event) => $.emit(event),
+  },
+  parts: p => {
+    const { purpose, ...props } = p.props
+    return p.child(Drawer, {
+      props: {
+        ...props,
+        disablePointerDismissal:
+          props.disablePointerDismissal === true ||
+          purpose === 'form' ||
+          purpose === 'required',
+      },
+      onEmit: event => {
+        if (event._tag !== 'RequestedClose') return event
+        if (
+          purpose === 'required' ||
+          (purpose === 'form' && event.reason === 'swipe')
+        )
+          return undefined
+        return event
+      },
+      parts: (drawer): DrawerParts =>
+        purpose === 'required'
+          ? {
+              ...drawer,
+              portal: element =>
+                drawer.portal(element.attr('role', 'alertdialog')),
+            }
+          : drawer,
+    })
+  },
+})
 
 const paneId = Schema.NullOr(Schema.String)
 const Pane = Schema.Struct({
   id: Schema.String,
   snapPoints: Schema.optional(Schema.Array(DrawerSnapPoint)),
-  purpose: Schema.optional(Schema.Literals(['info', 'form'])),
+  purpose: Schema.optional(SheetPurpose),
 })
 const {
   open: _open,
@@ -146,8 +198,6 @@ export const SheetSwitcherBehavior = Html.component({
     RequestedDismiss: ($, { reason }) => {
       const id = activePane($.props, $.model)
       if (id === null) return $.model
-      const pane = $.props.sheets.find(sheet => sheet.id === id)
-      if (pane?.purpose === 'form' && reason === 'swipe') return $.model
       return $.evolve({ localId: null }).emit(
         SheetSwitcherEvents.ActiveChanged({
           id: null,
@@ -199,13 +249,12 @@ export const SheetSwitcherBehavior = Html.component({
           : model.observedId
     const pane = sheets.find(sheet => sheet.id === renderedId)
     const triggerId = (id: string) => p.id('trigger', id)
-    return p.child(Drawer, {
+    return p.child(SheetBehavior, {
       props: {
         ...options,
         open: activeId !== null,
         swipeDirection: 'down',
-        disablePointerDismissal:
-          options.disablePointerDismissal === true || pane?.purpose === 'form',
+        purpose: pane?.purpose,
         triggerId: options.triggerId ?? model.triggerId,
         snapPoints: pane?.snapPoints,
         snapPoint: model.snaps.find(snap => snap.id === renderedId)?.point,

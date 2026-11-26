@@ -2,40 +2,61 @@ import type { Component, View } from '@effect/ui'
 import type { Html } from '@effect/ui/html'
 
 import {
+  SheetBehavior,
   SheetSwitcherBehavior,
   type SheetSwitcherBehaviorProps,
 } from '../behaviors/sheet'
 import {
-  Drawer,
   drawerClasses,
   drawerLayout,
+  drawerSwipeDirections,
   drawerView,
   type DrawerLayoutParts,
-  type DrawerOptions,
   type DrawerViewOptions,
 } from './drawer'
 import './sheet.css'
 
-export type SheetProps<Msg, R = never> = DrawerOptions<Msg, R>
+type SheetOptions<Msg> = Parameters<typeof SheetBehavior<Msg>>[1]
+export type SheetProps<Msg, R = never> = Omit<
+  SheetOptions<Msg>,
+  'view' | 'fallback'
+> &
+  DrawerViewOptions<Msg, R>
 export type SheetLayoutParts<Msg, R = never> = DrawerLayoutParts<Msg, R>
 
 export const Sheet = <Msg, R = never>(
   h: Html.H<Msg>,
-  options: SheetProps<NoInfer<Msg>, R>,
+  {
+    props,
+    side = 'right',
+    onEmit,
+    onFailure,
+    key,
+    ...viewOptions
+  }: SheetProps<NoInfer<Msg>, R>,
   styles: typeof drawerClasses = drawerClasses,
-) => {
-  const side = options.side ?? 'right'
-  return Drawer(
-    h,
-    {
-      closeLabel: side === 'bottom' ? false : 'Close',
-      ...options,
-      side,
+) =>
+  SheetBehavior(h, {
+    onEmit,
+    onFailure,
+    key,
+    props: {
+      ...props,
+      swipeDirection: props.swipeDirection ?? drawerSwipeDirections[side],
     },
-    styles,
-    'sheet',
-  )
-}
+    view: drawer =>
+      drawerView(
+        h,
+        drawer,
+        {
+          closeLabel: side === 'bottom' ? false : 'Close',
+          ...viewOptions,
+          side,
+        },
+        styles,
+        'sheet',
+      ),
+  })
 
 type SwitcherParts = Component.Headless.Parts<typeof SheetSwitcherBehavior>
 export type SheetSwitcherLayoutParts<Msg, R = never> = DrawerLayoutParts<
