@@ -13,7 +13,7 @@ const registry = new Map(
   read('../registry.json').items.map(item => [item.name, item]),
 )
 const partial = new Map([
-  ['calendar', 'Range, month, and year selection'],
+  ['calendar', 'Dedicated month and year grids'],
   ['input-otp', 'Custom character patterns'],
   [
     'number-input',

@@ -1,201 +1,181 @@
 import { UiSchema } from '@effect/ui'
-import { Html, HtmlCommand } from '@effect/ui/html'
-import { Button } from '@effect/ui-kit'
-import { Schema } from 'effect'
+import { Html } from '@effect/ui/html'
+import {
+  Calendar as CalendarPrimitive,
+  RangeCalendar as RangeCalendarPrimitive,
+} from '@effect/ui-kit'
+import { DateTime, Schema } from 'effect'
 
-/** Date-only ISO values keep the model independent of the browser's time zone. */
+/** Date-only ISO values keep the public state independent of the host time zone. */
 export const CalendarDate = Schema.String.check(
   Schema.isPattern(/^\d{4}-\d{2}-\d{2}$/u),
   Schema.makeFilter(value => {
     const date = new Date(value + 'T00:00:00Z')
-    return !Number.isNaN(date.getTime()) && isoDate(date) === value
+    return (
+      !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value
+    )
   }),
 )
 
-const Props = Schema.Struct({
+export const CalendarRange = Schema.Struct({
+  start: CalendarDate,
+  end: CalendarDate,
+})
+
+const Weekday = Schema.Literals([0, 1, 2, 3, 4, 5, 6])
+const CommonProps = {
   today: CalendarDate,
-  value: Schema.NullOr(CalendarDate),
+  initialMonth: Schema.optional(CalendarDate),
   locale: Schema.optional(Schema.String),
-  weekStartsOn: Schema.optional(
-    Schema.Int.check(Schema.isBetween({ minimum: 0, maximum: 6 })),
-  ),
+  weekStartsOn: Schema.optional(Weekday),
   min: Schema.optional(CalendarDate),
   max: Schema.optional(CalendarDate),
+  disabled: Schema.optional(Schema.Boolean),
+  readOnly: Schema.optional(Schema.Boolean),
   disabledDates: Schema.optional(Schema.Array(CalendarDate)),
-})
+  disabledDaysOfWeek: Schema.optional(Schema.Array(Weekday)),
+}
+const BaseProps = Schema.Struct(CommonProps)
 
+const Month = Schema.Struct({ month: CalendarDate })
+const PickedDay = { date: CalendarDate }
+const PickedRange = CalendarRange.fields
 const Message = UiSchema.TaggedEnum({
-  FocusedDay: { date: CalendarDate },
-  Moved: { date: CalendarDate },
-  Paged: { months: Schema.Int },
-  Picked: { date: CalendarDate },
-  FocusCompleted: {},
+  RequestedMonth: Month.fields,
+  PickedDay,
+  PickedRange,
+})
+const DayEvents = UiSchema.TaggedEnum({ Picked: PickedDay })
+const RangeEvents = UiSchema.TaggedEnum({ Picked: PickedRange })
+
+const toDate = (date: string): DateTime.Utc =>
+  DateTime.makeUnsafe(date + 'T00:00:00Z')
+const toIso = DateTime.formatIsoDateUtc
+const kitProps = (
+  {
+    today,
+    locale,
+    min = '0000-01-01',
+    max = '9999-12-31',
+    weekStartsOn = 0,
+    disabled,
+    readOnly,
+  }: typeof BaseProps.Type,
+  month: string,
+) => ({
+  today: toDate(today),
+  month: toDate(month),
+  min: toDate(min),
+  max: toDate(max),
+  firstDayOfWeek: weekStartsOn,
+  locale,
+  disabled,
+  readOnly,
 })
 
-const Events = UiSchema.TaggedEnum({ Picked: { date: CalendarDate } })
-const activeDay = Html.ref('CreaseCalendarActiveDay', 'button')
-const asDate = (value: string): Date => new Date(value + 'T00:00:00Z')
-const isoDate = (date: Date): string => date.toISOString().slice(0, -14)
-
-const addDays = (value: string, days: number): string => {
-  const date = asDate(value)
-  date.setUTCDate(date.getUTCDate() + days)
-  return isoDate(date)
-}
-
-const addMonths = (value: string, months: number): string => {
-  const date = asDate(value)
-  const day = date.getUTCDate()
-  date.setUTCDate(1)
-  date.setUTCMonth(date.getUTCMonth() + months + 1, 0)
-  date.setUTCDate(Math.min(day, date.getUTCDate()))
-  return isoDate(date)
-}
-
-const weekOffset = (value: string, weekStartsOn: number): number =>
-  (asDate(value).getUTCDay() + 7 - weekStartsOn) % 7
-
-const isDisabled = (props: typeof Props.Type, date: string): boolean =>
-  (props.min !== undefined && date < props.min) ||
-  (props.max !== undefined && date > props.max) ||
-  (props.disabledDates?.includes(date) ?? false)
-
-const keyboardTarget = (
-  event: Html.KeyPayload,
-  date: string,
-  weekStartsOn: number,
-): string | undefined => {
-  if (event.composing || event.alt || event.ctrl || event.meta) return undefined
-  switch (event.key) {
-    case 'ArrowLeft':
-      return addDays(date, -1)
-    case 'ArrowRight':
-      return addDays(date, 1)
-    case 'ArrowUp':
-      return addDays(date, -7)
-    case 'ArrowDown':
-      return addDays(date, 7)
-    case 'Home':
-      return addDays(date, -weekOffset(date, weekStartsOn))
-    case 'End':
-      return addDays(date, 6 - weekOffset(date, weekStartsOn))
-    case 'PageUp':
-      return addMonths(date, event.shift ? -12 : -1)
-    case 'PageDown':
-      return addMonths(date, event.shift ? 12 : 1)
-    default:
-      return undefined
-  }
-}
+const unavailable =
+  ({ disabledDates, disabledDaysOfWeek }: typeof BaseProps.Type) =>
+  (date: DateTime.DateTime) =>
+    (disabledDates?.includes(toIso(date)) ?? false) ||
+    (disabledDaysOfWeek?.some(
+      day => day === DateTime.toDateUtc(date).getUTCDay(),
+    ) ??
+      false)
 
 const isCalendarDate = Schema.is(CalendarDate)
+const readMonth = (value: string): string | undefined => {
+  const date = value + '-01'
+  return isCalendarDate(date) ? date : undefined
+}
+const pickedDay = ({ date }: { readonly date: DateTime.Utc }) =>
+  Message.PickedDay({ date: toIso(date) })
+const pickedRange = ({
+  start,
+  end,
+}: {
+  readonly start: DateTime.Utc
+  readonly end: DateTime.Utc
+}) => Message.PickedRange({ start: toIso(start), end: toIso(end) })
+const requestedMonth = ({ month }: { readonly month: DateTime.Utc }) =>
+  Message.RequestedMonth({ month: toIso(month) })
+const onMonthInput = ({ value }: { readonly value: string }) => {
+  const month = readMonth(value)
+  return month === undefined ? undefined : Message.RequestedMonth({ month })
+}
 
-/** Headless single-date calendar with keyboard navigation and controlled selection. */
+/** Owns the visible month and exposes the kit's calendar parts with ISO-date events. */
 export const CalendarBehavior = Html.component({
   name: 'CreaseCalendar',
-  props: Props,
-  model: Schema.Struct({ active: CalendarDate, visible: CalendarDate }),
+  props: Schema.Struct({ ...CommonProps, value: Schema.NullOr(CalendarDate) }),
+  model: Month,
   message: Message,
-  events: Events,
+  events: DayEvents,
 }).make({
-  init: ({ props }) => {
-    const active = props.value ?? props.today
-    return { active, visible: active }
-  },
+  init: ({ props }) => ({
+    month: props.initialMonth ?? props.value ?? props.today,
+  }),
   update: {
-    FocusedDay: ($, { date }) => $.evolve({ active: date }),
-    Moved: ($, { date }) =>
-      $.evolve({ active: date, visible: date }).run(
-        HtmlCommand.focus(activeDay, () => Message.FocusCompleted()),
-      ),
-    Paged: ($, { months }) => {
-      const date = addMonths($.model.visible, months)
-      return isCalendarDate(date)
-        ? $.evolve({ active: date, visible: date })
-        : $.model
-    },
-    Picked: ($, { date }) => $.emit(Events.Picked({ date })),
-    FocusCompleted: $ => $.model,
+    RequestedMonth: ($, { month }) => $.evolve({ month }),
+    PickedDay: ($, { date }) => $.emit(DayEvents.Picked({ date })),
+    PickedRange: $ => $.model,
   },
-  parts: (p, { active, visible }) => {
-    const { locale, today, value, weekStartsOn = 0 } = p.props
-    const firstOfMonth = visible.slice(0, 7) + '-01'
-    const start = addDays(firstOfMonth, -weekOffset(firstOfMonth, weekStartsOn))
-    const month = new Intl.DateTimeFormat(locale, {
-      month: 'long',
-      year: 'numeric',
-      timeZone: 'UTC',
-    })
-    const weekday = new Intl.DateTimeFormat(locale, {
-      weekday: 'short',
-      timeZone: 'UTC',
-    })
-    const fullDate = new Intl.DateTimeFormat(locale, {
-      dateStyle: 'full',
-      timeZone: 'UTC',
-    })
-    const labelId = p.id('month')
-    const label = month.format(asDate(visible))
-    return {
-      label,
-      weekdays: Array.from({ length: 7 }, (_, index) =>
-        weekday.format(asDate(addDays(start, index))),
-      ),
-      weeks: Array.from({ length: 6 }, (_, week) =>
-        Array.from({ length: 7 }, (_, index) =>
-          addDays(start, week * 7 + index),
-        ),
-      ),
-      month: p.part('h2', heading =>
-        heading.id(labelId).attr('aria-live', 'polite'),
-      ),
-      grid: p.part('table', table =>
-        table.attrs({ role: 'grid', 'aria-labelledby': labelId }),
-      ),
-      cell: p.part('td', (cell, date: string) =>
-        cell.attr('aria-selected', date === value ? 'true' : 'false'),
-      ),
-      navigation: p.part('button', (button, direction: -1 | 1) =>
-        Button(
-          { button },
-          {
-            onPress: Message.Paged({ months: direction }),
-          },
-        ).attr(
-          'aria-label',
-          direction === -1 ? 'Previous month' : 'Next month',
-        ),
-      ),
-      day: p.part('button', (button, date: string) => {
-        const disabled = isDisabled(p.props, date) || !isCalendarDate(date)
-        const day = button
-          .attrs({
-            type: 'button',
-            tabindex: date === active ? '0' : '-1',
-            'aria-disabled': disabled ? 'true' : undefined,
-            'aria-label': fullDate.format(asDate(date)),
-            'aria-current': date === today ? 'date' : undefined,
-            'data-disabled': disabled ? '' : undefined,
-            'data-selected': date === value ? '' : undefined,
-            'data-outside':
-              date.slice(0, 7) !== visible.slice(0, 7) ? '' : undefined,
-          })
-          .on('click', () => (disabled ? undefined : Message.Picked({ date })))
-          .on('focus', () =>
-            isCalendarDate(date) ? Message.FocusedDay({ date }) : undefined,
-          )
-          .on(
-            'keydown',
-            event => {
-              const next = keyboardTarget(event, date, weekStartsOn)
-              return next !== undefined && isCalendarDate(next)
-                ? Message.Moved({ date: next })
-                : undefined
-            },
-            { preventDefault: true },
-          )
-        return date === active ? day.ref(activeDay) : day
+  parts: (p, { month }) => {
+    const monthPicker = p.part('input', input =>
+      input.on('change', onMonthInput),
+    )
+    return p.child(CalendarPrimitive, {
+      props: {
+        ...kitProps(p.props, month),
+        value: p.props.value === null ? null : toDate(p.props.value),
+      },
+      onEmit: { Picked: pickedDay, RequestedMonth: requestedMonth },
+      parts: calendar => ({
+        ...calendar,
+        unavailable: unavailable(p.props),
+        monthPicker,
       }),
-    }
+    })
+  },
+})
+
+/** Range preview, anchoring, and keyboard navigation are owned by the kit. */
+export const RangeCalendarBehavior = Html.component({
+  name: 'CreaseRangeCalendar',
+  props: Schema.Struct({ ...CommonProps, value: Schema.NullOr(CalendarRange) }),
+  model: Month,
+  message: Message,
+  events: RangeEvents,
+}).make({
+  init: ({ props }) => ({
+    month: props.initialMonth ?? props.value?.start ?? props.today,
+  }),
+  update: {
+    RequestedMonth: ($, { month }) => $.evolve({ month }),
+    PickedDay: $ => $.model,
+    PickedRange: ($, { start, end }) =>
+      $.emit(RangeEvents.Picked({ start, end })),
+  },
+  parts: (p, { month }) => {
+    const monthPicker = p.part('input', input =>
+      input.on('change', onMonthInput),
+    )
+    return p.child(RangeCalendarPrimitive, {
+      props: {
+        ...kitProps(p.props, month),
+        value:
+          p.props.value === null
+            ? null
+            : {
+                start: toDate(p.props.value.start),
+                end: toDate(p.props.value.end),
+              },
+      },
+      onEmit: { Picked: pickedRange, RequestedMonth: requestedMonth },
+      parts: calendar => ({
+        ...calendar,
+        unavailable: unavailable(p.props),
+        monthPicker,
+      }),
+    })
   },
 })

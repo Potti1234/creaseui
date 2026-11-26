@@ -61,6 +61,8 @@ Use `Field` to pair a control with its label, help, error, and validation state.
 
 Combobox takes a single value or an array of values for multiple selection. Its `Picked` event reports the next selection and removable chips show selected items. Give an item a `group` string to display it under a labeled group. Number Input uses the kit's locale-aware formatting and emits edits through `Updated` and commits through `Committed`. Input OTP takes an Effect `Redacted<string>` and uses the kit's character validation and slot navigation.
 
+The Calendar registry item also exports `RangeCalendar`. Both use date-only ISO strings and emit `Picked` when the selection is complete. Set `captionLayout: 'dropdown'` to show the browser's month and year picker, or use the previous and next month buttons. Set `weekNumbers` to show ISO week numbers.
+
 ## Upstream reproduction
 
 The [upstream findings](UPSTREAM.md) include the published issue, tested fix, snapshot SHAs, and standalone reproduction. The [contribution workflow](CONTRIBUTING.md) records how to report a finding and share the corresponding fix with Effect UI.

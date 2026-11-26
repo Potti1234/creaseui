@@ -1,6 +1,6 @@
 export { Accordion } from './accordion'
 export { Button, ButtonLink } from './button'
-export { Calendar } from './calendar'
+export { Calendar, RangeCalendar } from './calendar'
 export { Checkbox } from './checkbox'
 export { Collapsible } from './collapsible'
 export { Combobox } from './combobox'

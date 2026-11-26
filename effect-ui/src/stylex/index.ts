@@ -26,7 +26,10 @@ import {
   Button as RenderButton,
   ButtonLink as RenderButtonLink,
 } from '../ui/button'
-import { Calendar as RenderCalendar } from '../ui/calendar'
+import {
+  Calendar as RenderCalendar,
+  RangeCalendar as RenderRangeCalendar,
+} from '../ui/calendar'
 import { Checkbox as RenderCheckbox } from '../ui/checkbox'
 import { Combobox as RenderCombobox } from '../ui/combobox'
 import { Dialog as RenderDialog } from '../ui/dialog'
@@ -133,6 +136,11 @@ export const Calendar = <Msg>(
   h: Html.H<Msg>,
   options: Parameters<typeof RenderCalendar<Msg>>[1],
 ) => RenderCalendar(h, options, partClasses(calendar))
+
+export const RangeCalendar = <Msg>(
+  h: Html.H<Msg>,
+  options: Parameters<typeof RenderRangeCalendar<Msg>>[1],
+) => RenderRangeCalendar(h, options, partClasses(calendar))
 
 export const Popover = <Msg, R = never>(
   h: Html.H<Msg>,

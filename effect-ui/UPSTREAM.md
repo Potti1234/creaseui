@@ -165,8 +165,7 @@ we have verified in the Effect UI port so far. [Foldkit fork PR #1](https://gith
   wait on the outer `dialog` timed out. Use the visible popup content to test
   opening, `:popover-open` to test portal state, and the trigger to test focus
   restoration. [Dialog implementation](https://github.com/Effect-TS/ui/blob/77dcd92f378930583e43debe36be7a203100d351/packages/ui-kit/src/Dialog.ts)
-- Calendar has no dedicated kit primitive in the checked snapshot. CreaseUI's
-  port uses Effect UI parts and typed focus commands. The older
-  `foldkit/calendar` date utilities and range and month/year modes remain
-  relevant when carrying the rest of the date controls across.
+- Snapshot `5ea1d77` includes `Calendar` and `RangeCalendar`. Both styled
+  variants use these primitives and expose date-only ISO values to consumers.
+  The kit owns keyboard navigation and range previews.
   [Kit catalog](https://ui.effect.website/#the-ui-kit)

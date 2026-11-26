@@ -33,6 +33,7 @@ import {
   Button,
   ButtonLink,
   Calendar,
+  RangeCalendar,
   Checkbox,
   Collapsible,
   Combobox,
@@ -51,7 +52,7 @@ import {
   Toggle,
   Tooltip,
 } from '#components'
-import { CalendarDate } from './behaviors/calendar'
+import { CalendarDate, CalendarRange } from './behaviors/calendar'
 import '#theme'
 import './preview.css'
 
@@ -60,6 +61,7 @@ const Message = UiSchema.TaggedEnum({
   PickedFruit: { value: Schema.NullOr(Schema.String) },
   PickedFruits: { value: Schema.Array(Schema.String) },
   PickedDate: { value: CalendarDate },
+  PickedDateRange: { value: CalendarRange },
   PickedTheme: { value: Schema.NullOr(Schema.String) },
   ToggledSummary: { checked: Schema.Boolean },
   ToggledAlerts: { checked: Schema.Boolean },
@@ -102,6 +104,7 @@ const Preview = Html.component({
     fruit: Schema.NullOr(Schema.String),
     fruits: Schema.Array(Schema.String),
     date: Schema.NullOr(CalendarDate),
+    dateRange: Schema.NullOr(CalendarRange),
     theme: Schema.NullOr(Schema.String),
     summary: Schema.Boolean,
     alerts: Schema.Boolean,
@@ -128,6 +131,7 @@ const Preview = Html.component({
     fruit: 'banana',
     fruits: ['banana'],
     date: null,
+    dateRange: null,
     theme: 'light',
     summary: false,
     alerts: false,
@@ -153,6 +157,7 @@ const Preview = Html.component({
     PickedFruit: ($, { value }) => $.evolve({ fruit: value }),
     PickedFruits: ($, { value }) => $.evolve({ fruits: value }),
     PickedDate: ($, { value }) => $.evolve({ date: value }),
+    PickedDateRange: ($, { value }) => $.evolve({ dateRange: value }),
     PickedTheme: ($, { value }) => $.evolve({ theme: value }),
     ToggledSummary: ($, { checked }) => $.evolve({ summary: checked }),
     ToggledAlerts: ($, { checked }) => $.evolve({ alerts: checked }),
@@ -390,6 +395,24 @@ const Preview = Html.component({
                 h.input.class('example-input').attr('autocomplete', 'name'),
               ),
           }),
+        ),
+        h.section.class('example').children(
+          h.h2.children('Dates'),
+          RangeCalendar(h, {
+            key: 'travel-dates',
+            props: { today, value: model.dateRange, locale: 'en-US' },
+            captionLayout: 'dropdown',
+            weekNumbers: true,
+            onEmit: {
+              Picked: ({ start, end }) =>
+                Message.PickedDateRange({ value: { start, end } }),
+            },
+          }),
+          h.output.children(
+            model.dateRange === null
+              ? 'Choose a date range'
+              : `${model.dateRange.start} to ${model.dateRange.end}`,
+          ),
         ),
         h.section.class('example').children(
           h.h2.children('Combobox'),

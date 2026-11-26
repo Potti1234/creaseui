@@ -1885,6 +1885,17 @@ export const calendar = {
     cursor: 'pointer',
   }).pipe(Style.when(When.hover, { backgroundColor: 'var(--muted)' })),
   month: Style.make({ margin: 0, fontSize: '0.875rem', fontWeight: 500 }),
+  monthPicker: Style.make({
+    marginBlock: '4px 8px',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    borderRadius: 4,
+    backgroundColor: 'var(--background)',
+    color: 'inherit',
+    padding: '4px 8px',
+    fontSize: '0.875rem',
+  }),
   table: Style.make({ borderCollapse: 'collapse' }),
   weekday: Style.make({
     height: 32,
@@ -1906,12 +1917,31 @@ export const calendar = {
     backgroundColor: 'transparent',
     opacity: 1,
   }).pipe(
-    Style.when(When.data('outside'), { color: 'var(--muted-foreground)' }),
-    Style.when(When.data('selected'), {
-      color: 'var(--primary-foreground)',
-      backgroundColor: 'var(--primary)',
+    Style.when(When.data('outside-month'), {
+      color: 'var(--muted-foreground)',
     }),
+    Style.when(
+      When.pseudo(':is([data-selected],[data-range-start],[data-range-end])'),
+      {
+        color: 'var(--primary-foreground)',
+        backgroundColor: 'var(--primary)',
+      },
+    ),
+    Style.when(
+      When.all(
+        When.data('in-range'),
+        When.not(When.data('range-start')),
+        When.not(When.data('range-end')),
+      ),
+      {
+        borderRadius: 0,
+        color: 'var(--accent-foreground)',
+        backgroundColor: 'var(--accent)',
+      },
+    ),
     Style.when(When.hover, { backgroundColor: 'var(--muted)' }),
-    Style.when(When.data('disabled'), { opacity: 0.5 }),
+    Style.when(When.pseudo(':is([data-disabled],[data-unavailable])'), {
+      opacity: 0.5,
+    }),
   ),
 }

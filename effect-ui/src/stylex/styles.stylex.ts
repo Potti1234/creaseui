@@ -1959,6 +1959,17 @@ export const calendar = stylex.create({
     cursor: 'pointer',
   },
   month: { margin: 0, fontSize: '0.875rem', fontWeight: 500 },
+  monthPicker: {
+    marginBlock: '4px 8px',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--input)',
+    borderRadius: 4,
+    backgroundColor: 'var(--background)',
+    color: 'inherit',
+    padding: '4px 8px',
+    fontSize: '0.875rem',
+  },
   table: { borderCollapse: 'collapse' },
   weekday: {
     height: 32,
@@ -1978,14 +1989,20 @@ export const calendar = stylex.create({
     fontVariantNumeric: 'tabular-nums',
     color: {
       default: 'inherit',
-      ':is([data-outside])': 'var(--muted-foreground)',
-      ':is([data-selected])': 'var(--primary-foreground)',
+      ':is([data-outside-month])': 'var(--muted-foreground)',
+      ':is([data-selected],[data-range-start],[data-range-end])':
+        'var(--primary-foreground)',
+      ':is([data-in-range]):not([data-range-start],[data-range-end])':
+        'var(--accent-foreground)',
     },
     backgroundColor: {
       default: 'transparent',
       ':hover': 'var(--muted)',
-      ':is([data-selected])': 'var(--primary)',
+      ':is([data-selected],[data-range-start],[data-range-end])':
+        'var(--primary)',
+      ':is([data-in-range]):not([data-range-start],[data-range-end])':
+        'var(--accent)',
     },
-    opacity: { default: 1, ':is([data-disabled])': 0.5 },
+    opacity: { default: 1, ':is([data-disabled],[data-unavailable])': 0.5 },
   },
 })
