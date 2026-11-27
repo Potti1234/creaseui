@@ -38,15 +38,15 @@ const tailwind = {
   shell: 'grid min-w-0 gap-2',
   header: 'text-sm font-medium',
   root: 'm-0 min-w-0 list-none p-0',
-  item: 'relative outline-none focus-visible:[&>[data-slot=tree-list-row]]:ring-2 focus-visible:[&>[data-slot=tree-list-row]]:ring-ring',
-  row: 'relative flex min-w-0 items-center gap-1.5 rounded-sm px-1.5 text-sm text-foreground data-[density=compact]:min-h-7 data-[density=balanced]:min-h-9 data-[density=spacious]:min-h-11 data-disabled:opacity-50 data-selected:bg-accent data-grabbed:bg-accent data-[drop=before]:shadow-[inset_0_2px_var(--ring)] data-[drop=after]:shadow-[inset_0_-2px_var(--ring)] data-[drop=inside]:ring-1 data-[drop=inside]:ring-ring',
+  item: 'relative py-px outline-none focus-visible:[&>[data-slot=tree-list-row]]:ring-2 focus-visible:[&>[data-slot=tree-list-row]]:ring-ring',
+  row: 'relative flex min-w-0 items-center gap-2 overflow-hidden rounded-md px-2 text-start text-sm text-foreground data-[density=compact]:py-1 data-[density=balanced]:py-2 data-[density=spacious]:py-3 data-disabled:opacity-50 data-selected:bg-accent data-grabbed:bg-accent data-[drop=before]:shadow-[inset_0_2px_var(--ring)] data-[drop=after]:shadow-[inset_0_-2px_var(--ring)] data-[drop=inside]:ring-1 data-[drop=inside]:ring-ring',
   children:
     'm-0 ms-3 list-none ps-2 data-guides:border-s data-guides:border-border',
   expand:
-    'inline-grid size-6 shrink-0 place-items-center rounded-sm border-0 bg-transparent text-muted-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring',
-  spacer: 'size-6 shrink-0',
+    'ms-1 -me-1 inline-grid size-4 shrink-0 place-items-center rounded-sm border-0 bg-transparent text-muted-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring',
+  spacer: 'h-4 w-6 shrink-0',
   action:
-    'flex min-w-0 flex-1 items-center gap-1.5 rounded-sm border-0 bg-transparent px-1 py-1 text-start text-inherit no-underline hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring',
+    'flex min-w-0 flex-1 items-center gap-2 rounded-sm border-0 bg-transparent text-start text-inherit no-underline hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring',
   content: 'grid min-w-0 flex-1 text-start',
   title: 'truncate',
   description: 'truncate text-xs text-muted-foreground',

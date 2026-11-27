@@ -23,3 +23,7 @@
 ## Tabs styled sizing diverges from Foldkit
 
 `effect-ui/src/ui/tabs.ts` originally used a larger root gap, 4px list padding, always-on trigger gaps, fixed minimum-height triggers, and text underline styling for the line variant. This made the basic demo 214px high with a 327px tab list where Foldkit renders 206px and 313px. The branch now aligns the styled root/list/trigger sizing and line indicator treatment with the Foldkit implementation while retaining the kit's `data-active` state attribute.
+
+## Tree List styled row metrics diverge from Foldkit
+
+`effect-ui/src/ui/tree-list.ts` originally used 6px row padding, minimum-height rows, 24px toggle glyphs, extra action padding, and no per-row gap. The same project-file tree rendered 324px high with labels shifted 8px to the right versus Foldkit's 342px tree. The branch now aligns row padding, vertical pitch, toggle/spacer geometry, and horizontal label position with the Foldkit implementation, although Effect still uses nested button/anchor controls where Foldkit makes the row itself clickable.
