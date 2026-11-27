@@ -295,23 +295,61 @@ const view =
             controlInput(h, `${id}-last-input`, 'Lee'),
           ) as never,
         )
-    if (kind === 'responsive')
+    if (kind === 'responsive') {
+      const responsiveField =
+        'group/field flex w-full flex-col gap-2 @md/field-group:flex-row @md/field-group:items-center [&>*]:w-full @md/field-group:[&>*]:w-auto'
       return h.div
-        .class('grid w-full max-w-2xl gap-4 md:grid-cols-2')
+        .class('w-full max-w-lg')
         .children(
-          simpleField(
-            h,
-            `${id}-city`,
-            'City',
-            controlInput(h, `${id}-city-input`, 'Berlin'),
-          ) as never,
-          simpleField(
-            h,
-            `${id}-zip`,
-            'Postal code',
-            controlInput(h, `${id}-zip-input`, '10115'),
-          ) as never,
+          h.fieldset
+            .class('m-0 flex flex-col gap-6 border-0 p-0')
+            .children(
+              h.legend.class('mb-3 text-base font-medium').children('Profile'),
+              h.p
+                .class(
+                  'm-0 -mt-1.5 text-sm leading-normal text-muted-foreground',
+                )
+                .children('Fill in your profile information.'),
+              h.div
+                .class('@container/field-group flex w-full flex-col gap-7')
+                .children(
+                  h.div
+                    .class(responsiveField)
+                    .children(
+                      h.div
+                        .class('flex flex-1 flex-col gap-1.5 leading-snug')
+                        .children(
+                          h.label
+                            .class(
+                              'flex w-fit items-center gap-2 text-sm leading-snug font-medium',
+                            )
+                            .children('Name'),
+                          h.p
+                            .class(
+                              'm-0 text-sm leading-normal text-muted-foreground',
+                            )
+                            .children(
+                              'Provide your full name for identification',
+                            ),
+                        ),
+                      h.input
+                        .class(inputClass)
+                        .attrs({ placeholder: 'Evil Rabbit' }),
+                    ),
+                  h.div
+                    .class(responsiveField)
+                    .children(
+                      Button(h, {})
+                        .attrs({ type: 'submit' })
+                        .children('Submit') as never,
+                      Button(h, { variant: 'outline' })
+                        .attrs({ type: 'button' })
+                        .children('Cancel') as never,
+                    ),
+                ),
+            ),
         )
+    }
     if (kind === 'fieldset')
       return h.fieldset
         .class('grid w-full max-w-md gap-4 rounded-lg border p-4')
