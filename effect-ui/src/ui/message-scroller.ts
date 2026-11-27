@@ -28,7 +28,7 @@ const tailwind = {
   scrollArea: 'min-h-0 flex-1',
   viewport:
     'h-full min-w-0 overscroll-contain outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring data-pending:invisible',
-  content: 'flex min-h-full min-w-0 flex-col gap-4',
+  content: 'flex h-max min-h-full min-w-0 flex-col gap-8',
   button:
     'absolute left-1/2 z-10 inline-flex -translate-x-1/2 items-center gap-1 rounded-md border bg-background px-2 py-1 text-xs text-foreground shadow-sm outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring data-[scroll-edge=start]:top-2 data-[scroll-edge=end]:bottom-2',
 }

@@ -1,6 +1,6 @@
 import { Html } from '@effect/ui/html'
 
-import { MessageScroller } from '#components'
+import { Bubble, Button, MessageScroller } from '#components'
 import {
   defineComponentDocs,
   type DocsExampleImplementation,
@@ -8,94 +8,103 @@ import {
 } from '../types'
 import { exampleApplicationSource } from './source'
 
-const authors = ['Ava', 'Milo', 'June', 'Theo']
-const messages = Array.from({ length: 18 }, (_, index) => ({
-  id: index + 1,
-  author: authors[index % authors.length]!,
-  text: [
-    'I updated the migration notes.',
-    'The scroll position should stay anchored.',
-    'Can you review the latest thread?',
-    'Yes — the live edge behavior looks right.',
-  ][index % 4]!,
-}))
-const bubble = (
-  h: Html.H<DocsMessage>,
-  message: (typeof messages)[number],
-  group = false,
-) =>
-  h.div
-    .key(String(message.id))
-    .class('flex gap-3')
-    .children(
-      group
-        ? h.div
-            .class(
-              'grid size-8 shrink-0 place-items-center rounded-full bg-muted text-xs font-medium',
-            )
-            .children(message.author.slice(0, 1))
-        : undefined,
-      h.div
-        .class('max-w-[85%] rounded-lg bg-muted px-3 py-2')
-        .children(
-          h.div
-            .class('mb-0.5 text-xs font-medium text-muted-foreground')
-            .children(`#${message.id} ${message.author}`),
-          h.p.class('text-sm').children(message.text),
-        ),
-    )
+const chat = [
+  { id: 1, role: 'assistant', text: 'Hey — welcome to the thread.' },
+  { id: 2, role: 'user', text: 'Can you summarize the release notes?' },
+  {
+    id: 3,
+    role: 'assistant',
+    text: 'Sure — highlights are auth, theming, and the new chart kit.',
+  },
+  { id: 4, role: 'user', text: 'Any breaking changes?' },
+  {
+    id: 5,
+    role: 'assistant',
+    text: 'Two: the renamed Button size tokens and strict listbox typing.',
+  },
+  { id: 6, role: 'marker', text: 'Marcus joined the chat' },
+  { id: 7, role: 'user', text: 'Does the calendar support RTL?' },
+  {
+    id: 8,
+    role: 'assistant',
+    text: 'Yes — pass direction rtl and the mirrored keys follow.',
+  },
+  { id: 9, role: 'user', text: 'Nice. Last one — how do I persist the theme?' },
+  {
+    id: 10,
+    role: 'assistant',
+    text: 'Write the resolved theme to localStorage on every change.',
+  },
+] as const
+const chatRow = (h: Html.H<DocsMessage>, message: (typeof chat)[number]) =>
+  message.role === 'marker'
+    ? h.div
+        .key(String(message.id))
+        .class('text-center text-xs text-muted-foreground')
+        .children(message.text)
+    : h.div.key(String(message.id)).children(
+        Bubble(h, {
+          ...(message.role === 'user' ? { align: 'end' as const } : {}),
+          children: [message.text],
+        }) as never,
+      )
+const actionLabel = (kind: string) => {
+  if (kind === 'group') return 'Marcus joins the chat'
+  if (kind === 'live') return 'Start streaming'
+  if (kind === 'loading') return 'Load earlier messages'
+  if (kind === 'jump') return 'Jump to the last turn'
+  return 'Send message'
+}
+const hasToolbar = (kind: string) =>
+  [
+    'anchoring',
+    'group',
+    'context',
+    'live',
+    'loading',
+    'animating',
+    'jump',
+  ].includes(kind)
 const view =
   (kind: string): DocsExampleImplementation['view'] =>
   (h: Html.H<DocsMessage>, context) =>
-    h.div.class('w-full max-w-xl').children(
+    h.div.class('flex w-full max-w-md flex-col gap-3').children(
+      hasToolbar(kind)
+        ? Button(h, { variant: 'outline', size: 'sm' }).children(
+            actionLabel(kind),
+          )
+        : undefined,
       kind === 'position' || kind === 'state'
         ? h.div
             .class(
-              'mb-2 flex justify-between rounded-md border px-3 py-2 text-xs text-muted-foreground',
+              'grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs text-muted-foreground',
             )
             .children(
-              h.span.children('Scroll state'),
-              h.span.children('atEnd: true · new: false'),
+              h.span.children('scrollTop: 0px'),
+              h.span.children('scrollHeight: 640px'),
+              h.span.children('Following the live edge'),
+              h.span.children('No pending messages'),
             )
         : undefined,
-      MessageScroller(h, {
-        id: `${context.idPrefix}-${kind}`,
-        label: 'Conversation messages',
-        edge: kind === 'jump' ? 'both' : 'end',
-        live: kind === 'live' ? 'polite' : 'off',
-        height: '20rem',
-        props: { startAtEnd: kind !== 'saved' && kind !== 'loading' },
-        children: [
-          kind === 'loading'
-            ? h.div
-                .class('py-2 text-center text-xs text-muted-foreground')
-                .children('Loading earlier messages…')
-            : undefined,
-          kind === 'context'
-            ? h.div
-                .class(
-                  'sticky top-0 z-10 rounded-md border bg-background px-3 py-2 text-xs font-medium shadow-sm',
-                )
-                .children('Design review · 18 messages')
-            : undefined,
-          ...messages.map(
-            message =>
-              bubble(
-                h,
-                message,
-                kind === 'group' || kind === 'animating',
-              ) as never,
-          ),
-          kind === 'animating'
-            ? h.div
-                .class(
-                  'rounded-lg border border-primary/40 bg-primary/5 px-3 py-2 text-sm',
-                )
-                .children('New message arrived')
-            : undefined,
-        ],
-        onEmit: { Measured: () => undefined },
-      } as any) as never,
+      h.div.class('relative h-72 w-full rounded-md border').children(
+        MessageScroller(h, {
+          id: `${context.idPrefix}-${kind}`,
+          label: 'Conversation messages',
+          edge: kind === 'jump' ? 'both' : 'end',
+          live: kind === 'live' ? 'polite' : 'off',
+          height: '100%',
+          props: { startAtEnd: kind !== 'saved' && kind !== 'loading' },
+          children: [
+            kind === 'loading'
+              ? h.div
+                  .class('py-2 text-center text-xs text-muted-foreground')
+                  .children('Loading earlier messages…')
+              : undefined,
+            ...chat.map(message => chatRow(h, message) as never),
+          ],
+          onEmit: { Measured: () => undefined },
+        } as any) as never,
+      ),
     )
 const source = exampleApplicationSource({
   imports: `import { MessageScroller } from '@/ui/effect/ui'`,
