@@ -87,12 +87,18 @@ const CalendarDemo = Html.component({
               Message.PickedDate({ value: String(date).slice(0, 10) }),
           },
         },
-        kind === 'presets' || kind === 'time'
+        kind === 'roomy'
           ? {
               ...calendarClasses,
-              root: calendarClasses.root.replace('p-3', 'p-0'),
+              weekday: calendarClasses.weekday.replace('h-8 w-8', 'h-10 w-10'),
+              day: calendarClasses.day.replace('size-8', 'size-10'),
             }
-          : undefined,
+          : kind === 'presets' || kind === 'time'
+            ? {
+                ...calendarClasses,
+                root: calendarClasses.root.replace('p-3', 'p-0'),
+              }
+            : undefined,
       )
     switch (kind) {
       case 'range':

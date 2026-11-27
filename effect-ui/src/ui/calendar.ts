@@ -316,19 +316,22 @@ export const calendarView = <Msg>(
       ),
       h.tbody.children(
         (() => {
-          const weeks = [...calendar.weeks]
-          while (weeks.length < 6) {
-            const last = weeks.at(-1)?.at(-1)
-            if (last === undefined) break
-            const time = DateTime.toDateUtc(last).getTime()
-            weeks.push(
-              Array.from({ length: 7 }, (_, index) =>
-                DateTime.makeUnsafe(
-                  new Date(time + (index + 1) * 86_400_000).toISOString(),
+          const weeks = locale?.startsWith('fa')
+            ? [...calendar.weeks]
+            : [...calendar.weeks]
+          if (!locale?.startsWith('fa'))
+            while (weeks.length < 6) {
+              const last = weeks.at(-1)?.at(-1)
+              if (last === undefined) break
+              const time = DateTime.toDateUtc(last).getTime()
+              weeks.push(
+                Array.from({ length: 7 }, (_, index) =>
+                  DateTime.makeUnsafe(
+                    new Date(time + (index + 1) * 86_400_000).toISOString(),
+                  ),
                 ),
-              ),
-            )
-          }
+              )
+            }
           return weeks
         })().map(week =>
           h.tr.key(String(week[0]?.epochMilliseconds)).children(
