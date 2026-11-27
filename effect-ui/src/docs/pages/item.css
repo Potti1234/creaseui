@@ -1,0 +1,31 @@
+.item-docs-stack {
+  display: flex;
+  width: 100%;
+  max-width: 28rem;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.item-docs-stack-lg {
+  max-width: 32rem;
+}
+.item-docs-grid {
+  max-width: 36rem;
+}
+.item-docs-avatar-stack {
+  display: flex;
+}
+.item-docs-avatar-stack > [data-slot='avatar'] {
+  margin-inline-start: -0.5rem;
+  box-shadow: 0 0 0 2px var(--background);
+  filter: grayscale(1);
+}
+.item-docs-model-img {
+  aspect-ratio: 1;
+  width: 100%;
+  border-radius: 0.125rem;
+  object-fit: cover;
+}
+.item-docs-song-img {
+  object-fit: cover;
+  filter: grayscale(1);
+}
