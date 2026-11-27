@@ -173,6 +173,58 @@ const view =
             ),
         )
     }
+    if (kind === 'input') {
+      const inputField = (
+        key: string,
+        label: string,
+        placeholder: string,
+        description: string,
+        type?: string,
+        descriptionFirst = false,
+      ) =>
+        h.div
+          .class('flex w-full flex-col gap-2')
+          .children(
+            h.label
+              .class(
+                'flex w-fit items-center gap-2 text-sm leading-snug font-medium',
+              )
+              .children(label),
+            descriptionFirst
+              ? h.p
+                  .class('m-0 text-sm leading-normal text-muted-foreground')
+                  .children(description)
+              : undefined,
+            h.input.class(inputClass).attrs({ placeholder, type }),
+            descriptionFirst
+              ? undefined
+              : h.p
+                  .class('m-0 text-sm leading-normal text-muted-foreground')
+                  .children(description),
+          )
+      return h.fieldset
+        .class('m-0 flex w-full max-w-xs flex-col gap-6 border-0 p-0')
+        .children(
+          h.div
+            .class('@container/field-group flex w-full flex-col gap-7')
+            .children(
+              inputField(
+                'username',
+                'Username',
+                'Max Leiter',
+                'Choose a unique username for your account.',
+              ) as never,
+              inputField(
+                'password',
+                'Password',
+                '••••••••',
+                'Must be at least 8 characters long.',
+                'password',
+                true,
+              ) as never,
+            ),
+        )
+    }
     if (kind === 'textarea')
       return simpleField(
         h,
