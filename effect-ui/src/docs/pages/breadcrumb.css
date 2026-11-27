@@ -1,0 +1,58 @@
+.breadcrumb-docs-list {
+  margin: 0;
+  display: flex;
+  list-style: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  overflow-wrap: break-word;
+}
+.breadcrumb-docs-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+.breadcrumb-docs-link {
+  transition: color 150ms;
+}
+.breadcrumb-docs-link:hover {
+  color: var(--foreground);
+}
+.breadcrumb-docs-page {
+  font-weight: 400;
+  color: var(--foreground);
+}
+.breadcrumb-docs-separator {
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+}
+.breadcrumb-docs-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.breadcrumb-docs-ellipsis-trigger {
+  display: inline-grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 0.375rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.breadcrumb-docs-ellipsis-trigger:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
