@@ -35,3 +35,7 @@
 ## Stepper geometry and collapse behavior diverge from Foldkit
 
 `effect-ui/src/ui/stepper.ts` uses a different DOM structure (`stepper` root containing a `stepper-list`) and different horizontal/on-track geometry from the Foldkit primitive. Basic vertical rows now match the Foldkit 156px four-step fixture, but horizontal examples shrink to different intrinsic widths, on-track labels do not occupy the same vertical space, and compact-collapse behavior does not reproduce the Foldkit examples exactly. The docs port keeps the same fixture data and interactions but cannot yet be considered pixel-identical for horizontal steppers.
+
+## Date Range Input status affordances are structurally incomplete
+
+`effect-ui/src/ui/date-range-input.ts` now matches the Foldkit field, wrapper, trigger, and preset-panel geometry, but its public `status` API is only arbitrary message content. It does not expose the Foldkit status type or render the semantic status icon inside the input wrapper, and its calendar icon is decorative rather than a second working toggle button. Validation examples therefore match the message colors and layout but not the complete Foldkit DOM/interaction structure.

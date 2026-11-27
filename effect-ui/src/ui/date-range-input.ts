@@ -3,23 +3,26 @@ import type { Html } from '@effect/ui/html'
 
 import type { CalendarRange } from '../behaviors/calendar'
 import { DateRangeInputBehavior } from '../behaviors/date-range-input'
+import { IconBehavior } from '../behaviors/icon'
 import { calendarClasses, calendarView } from './calendar'
 
 type Options<Msg> = Parameters<typeof DateRangeInputBehavior<Msg>>[1]
 const tailwind = {
-  root: 'grid min-w-0 gap-1.5 text-sm',
-  label: 'font-medium',
+  root: 'grid min-w-0 gap-2 text-sm',
+  label:
+    'flex w-fit items-center gap-2 text-sm leading-none font-medium select-none',
   description: 'm-0 text-sm text-muted-foreground',
-  row: 'flex min-w-0 items-center gap-1',
+  row: 'relative flex h-8 min-w-45 items-center gap-2 rounded-md border border-input bg-transparent px-2 py-1 shadow-xs transition-[color,box-shadow] outline-none focus-within:border-ring focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--ring)_50%,transparent)] hover:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--input)_30%,transparent)] aria-disabled:cursor-not-allowed aria-disabled:opacity-50 data-[invalid=true]:border-destructive dark:bg-input/30 dark:data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_40%,transparent)] data-[invalid=true]:focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--destructive)_20%,transparent)]',
   trigger:
-    'flex min-h-9 w-full items-center justify-start rounded-md border border-input bg-background px-3 text-start text-sm shadow-xs outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50 aria-invalid:border-destructive',
+    'block min-w-0 flex-1 cursor-pointer overflow-hidden bg-transparent text-start text-sm text-nowrap text-ellipsis outline-none disabled:cursor-default data-placeholder:text-muted-foreground',
   panel:
-    'grid max-h-(--available-height) max-w-(--available-width) justify-items-start overflow-auto rounded-lg bg-popover text-popover-foreground shadow-md outline-none data-ending-style:invisible',
+    'z-50 max-h-(--available-height) w-auto max-w-[calc(100vw-2rem)] overflow-auto rounded-md border bg-popover p-0 text-popover-foreground shadow-md outline-none transition duration-200 ease-out data-ending-style:invisible',
   clear:
-    'grid size-8 shrink-0 place-items-center rounded-sm text-muted-foreground hover:bg-muted focus-visible:outline-2',
-  presets: 'flex flex-wrap gap-1 p-2',
+    'inline-flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring [&>svg]:size-3.5',
+  presets:
+    'grid min-w-0 grid-cols-2 gap-1 border-b border-input p-3 sm:flex sm:min-w-35 sm:flex-col sm:border-e sm:border-b-0',
   preset:
-    'rounded-md px-2 py-1 text-sm hover:bg-muted focus-visible:outline-2 disabled:opacity-50',
+    'block w-full cursor-pointer rounded-md bg-transparent px-2 py-1 text-start text-sm text-foreground outline-none transition-colors hover:bg-accent disabled:cursor-default disabled:text-muted-foreground disabled:opacity-50 aria-[current=true]:bg-accent aria-[current=true]:text-accent-foreground',
 }
 
 export type DateRangePreset = {
@@ -94,30 +97,43 @@ export const DateRangeInput = <Msg, R = never>(
         .attrs({ 'data-slot': 'date-range-input', dir: direction })
         .children(
           h.label.class(styles.label).attr('for', id).children(label),
-          h.div.class(styles.row).children(
-            popup.trigger({
-              element: h.button
-                .class(styles.trigger)
-                .attrs({
-                  id,
-                  'data-slot': 'date-range-input-trigger',
-                  'aria-label': `${label}, ${display}`,
-                  'aria-invalid': invalid ? 'true' : undefined,
-                  'aria-describedby':
-                    [descId, statusId].filter(Boolean).join(' ') || undefined,
-                })
-                .children(display),
-              disabled: disabled === true,
-            }),
-            clearable && value !== null && !disabled && !readOnly
-              ? preset(
-                  h.button
-                    .class(styles.clear)
-                    .attr('aria-label', `Clear ${label}`),
-                  null,
-                ).children('×')
-              : undefined,
-          ),
+          h.div
+            .class(styles.row)
+            .attrs({
+              'data-slot': 'date-range-input-wrapper',
+              'data-invalid': invalid ? 'true' : 'false',
+            })
+            .children(
+              h.span
+                .class(
+                  'inline-flex size-6 shrink-0 items-center justify-center text-muted-foreground',
+                )
+                .attr('aria-hidden', 'true')
+                .children(IconBehavior(h, { name: 'calendar', size: 'sm' })),
+              popup.trigger({
+                element: h.button
+                  .class(styles.trigger)
+                  .attrs({
+                    id,
+                    'data-slot': 'date-range-input-trigger',
+                    'data-placeholder': value === null ? '' : undefined,
+                    'aria-label': `${label}, ${display}`,
+                    'aria-invalid': invalid ? 'true' : undefined,
+                    'aria-describedby':
+                      [descId, statusId].filter(Boolean).join(' ') || undefined,
+                  })
+                  .children(display),
+                disabled: disabled === true,
+              }),
+              clearable && value !== null && !disabled && !readOnly
+                ? preset(
+                    h.button
+                      .class(styles.clear)
+                      .attr('aria-label', `Clear ${label}`),
+                    null,
+                  ).children('×')
+                : undefined,
+            ),
           popup.portal(h.dialog.attr('aria-label', label))?.children(
             popup.backdrop(h.div),
             popup.positioner(h.div).children(
@@ -128,31 +144,38 @@ export const DateRangeInput = <Msg, R = never>(
                     .attr('data-slot', 'date-range-input-content'),
                 )
                 .children(
-                  calendarView(
-                    h,
-                    calendar,
-                    { direction },
-                    calendarStyles,
-                    options.props.calendar,
-                  ),
-                  presets.length === 0
-                    ? undefined
-                    : h.div.class(styles.presets).children(
-                        presets.map(({ label, value }, index) =>
-                          preset(
-                            h.button.key(String(index)).class(styles.preset),
-                            value,
-                          )
-                            .disabled(
-                              disabled === true ||
-                                readOnly === true ||
-                                value.start > value.end ||
-                                (min !== undefined && value.start < min) ||
-                                (max !== undefined && value.end > max),
-                            )
-                            .children(label),
-                        ),
+                  h.div
+                    .class('flex flex-col sm:flex-row')
+                    .attr('data-slot', 'popover-layout')
+                    .children(
+                      presets.length === 0
+                        ? undefined
+                        : h.div.class(styles.presets).children(
+                            presets.map(({ label, value }, index) =>
+                              preset(
+                                h.button
+                                  .key(String(index))
+                                  .class(styles.preset),
+                                value,
+                              )
+                                .disabled(
+                                  disabled === true ||
+                                    readOnly === true ||
+                                    value.start > value.end ||
+                                    (min !== undefined && value.start < min) ||
+                                    (max !== undefined && value.end > max),
+                                )
+                                .children(label),
+                            ),
+                          ),
+                      calendarView(
+                        h,
+                        calendar,
+                        { direction },
+                        calendarStyles,
+                        options.props.calendar,
                       ),
+                    ),
                 ),
             ),
           ),
