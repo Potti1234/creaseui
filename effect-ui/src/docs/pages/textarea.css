@@ -1,0 +1,15 @@
+.textarea-docs-frame {
+  width: 100%;
+  max-width: 20rem;
+  display: grid;
+  gap: 0.5rem;
+}
+.textarea-docs-wide {
+  width: 100%;
+  max-width: 28rem;
+  display: grid;
+  gap: 0.5rem;
+}
+.textarea-docs-rtl {
+  direction: rtl;
+}
