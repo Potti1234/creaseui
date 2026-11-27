@@ -1,0 +1,27 @@
+.thumbnail-docs-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.thumbnail-docs-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.thumbnail-docs-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.thumbnail-docs-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+}
+.thumbnail-docs-caption {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--muted-foreground);
+}
