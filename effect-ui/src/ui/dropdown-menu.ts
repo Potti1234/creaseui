@@ -1,6 +1,7 @@
 import type { View } from '@effect/ui'
 import type { Html } from '@effect/ui/html'
 
+import { Icon } from './icon'
 import {
   DropdownMenuBehavior,
   type MenuItem,
@@ -65,12 +66,12 @@ export const menuStyles = {
     'z-50 m-0 overflow-visible border-0 bg-transparent p-0 outline-none',
   popup:
     'max-h-(--available-height) min-w-32 overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md outline-none',
-  item: "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 data-inset:ps-7 data-[tone=destructive]:text-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  item: "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 data-inset:ps-8 data-[tone=destructive]:text-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   group: '',
   groupLabel: 'px-2 py-1.5 text-sm font-medium',
   separator: '-mx-1 my-1 h-px bg-border',
-  indicator: 'w-4 shrink-0 text-center',
-  shortcut: 'ms-auto ps-4 text-xs text-muted-foreground',
+  indicator: 'absolute left-2 flex size-3.5 items-center justify-center',
+  shortcut: 'ml-auto text-xs tracking-widest text-muted-foreground',
 }
 
 export const MenuPopup = <Msg, R = never>(
@@ -99,7 +100,7 @@ export const MenuPopup = <Msg, R = never>(
     }
     const content = [
       visual.icon,
-      visual.label ?? label,
+      h.span.class('flex-1').children(visual.label ?? label),
       visual.shortcut === undefined
         ? undefined
         : h.span
@@ -132,7 +133,11 @@ export const MenuPopup = <Msg, R = never>(
               value,
               keepMounted: true,
             })
-            ?.children(visual.checked ? '✓' : ''),
+            ?.children(
+              visual.checked
+                ? Icon(h, { name: 'check', size: 'sm', className: 'size-4' })
+                : '',
+            ),
           ...content,
         )
     }
@@ -142,7 +147,11 @@ export const MenuPopup = <Msg, R = never>(
         .children(
           parts
             .radioItemIndicator({ element: marker, value, keepMounted: true })
-            ?.children(visual.selectedValue === value ? '●' : ''),
+            ?.children(
+              visual.selectedValue === value
+                ? Icon(h, { name: 'check', size: 'sm', className: 'size-4' })
+                : '',
+            ),
           ...content,
         )
     }
