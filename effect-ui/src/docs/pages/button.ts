@@ -72,10 +72,9 @@ const itemButton = <Msg>(h: Html.H<Msg>, item: ButtonItem) => {
     ...(item.variant === undefined ? {} : { variant: item.variant }),
     ...(item.size === undefined ? {} : { size: item.size }),
     ...(item.disabled === true ? { disabled: true } : {}),
+    ...(item.rounded === true ? { className: 'button-docs-rounded' } : {}),
   })
-  return (
-    item.rounded === true ? button.class('button-docs-rounded') : button
-  ).children(content)
+  return button.children(content)
 }
 
 const itemsExample =

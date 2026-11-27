@@ -119,7 +119,7 @@ const loginCard = (
       card.footer({
         className: 'card-docs-footer-column',
         children: [
-          Button(h).class('card-docs-full').children(copy.login),
+          Button(h, { className: 'card-docs-full' }).children(copy.login),
           Button(h, {
             variant: 'outline',
             className: 'card-docs-full',
@@ -299,7 +299,9 @@ const image: DocsExampleImplementation['view'] = h =>
         ],
       }),
       card.footer({
-        children: [Button(h).class('card-docs-full').children('View Event')],
+        children: [
+          Button(h, { className: 'card-docs-full' }).children('View Event'),
+        ],
       }),
     ],
   })

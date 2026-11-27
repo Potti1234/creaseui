@@ -93,7 +93,7 @@ const OtpDemo = Html.component({
           : undefined,
         content,
         kind === 'form'
-          ? Button(h, {}).class('w-full').children('Verify')
+          ? Button(h, { className: 'w-full' }).children('Verify')
           : undefined,
       )
   },
