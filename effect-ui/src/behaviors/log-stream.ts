@@ -11,11 +11,6 @@ export type LogEntry = {
 }
 
 export const logStreamColumns = (timestamps: boolean, source: boolean) =>
-  [
-    timestamps ? '6rem' : '',
-    '3.25rem',
-    source ? 'minmax(4rem, 8rem)' : '',
-    'minmax(0, 1fr)',
-  ]
+  [timestamps ? '6rem' : '', '3.25rem', source ? '8rem' : '', 'minmax(0, 1fr)']
     .filter(Boolean)
     .join(' ')

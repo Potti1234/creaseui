@@ -180,12 +180,24 @@ const FollowDemo = Html.component({
       id: `live-${index}`,
       ...live[index % live.length]!,
     }))
-    return h.div.class('w-full max-w-3xl grid gap-2').children(
-      h.div.class('flex gap-2').children(
-        Button(h, { variant: 'outline', size: 'sm' })
+    return h.div.class('flex w-full max-w-3xl flex-col gap-3').children(
+      h.div.class('flex items-center gap-2').children(
+        h.span
+          .class('inline-flex items-center')
+          .children(
+            h.span.class('size-2 rounded-full bg-emerald-500'),
+            h.span.class('sr-only').children('Following latest'),
+          ),
+        h.span
+          .class('flex-1 text-xs leading-5 text-muted-foreground')
+          .children(`${logEntries.length + additions.length} rows`),
+        Button(h, {
+          variant: 'secondary',
+          disabled: model.extra >= live.length,
+        })
           .on('click', () => Message.Appended())
-          .children('Append entry'),
-        Button(h, { variant: 'outline', size: 'sm' })
+          .children('Append line'),
+        Button(h, { variant: 'ghost' })
           .on('click', () => Message.Reset())
           .children('Reset'),
       ),
