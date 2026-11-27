@@ -53,6 +53,7 @@ const DataTableDemo = Html.component({
           key: 'status',
           header: 'Status',
           get: (row: any) => row.status,
+          sortValue: (row: any) => row.status,
           filterVariant: 'options',
           options: ['success', 'pending', 'processing', 'failed'].map(
             value => ({
@@ -71,6 +72,7 @@ const DataTableDemo = Html.component({
           key: 'email',
           header: 'Email',
           get: (row: any) => row.email,
+          sortValue: (row: any) => row.email,
           cell: (row: any) => row.email,
         },
         {

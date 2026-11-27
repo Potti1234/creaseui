@@ -92,7 +92,7 @@ export const dataTableClasses = {
   header: 'border-b',
   row: 'border-b last:border-b-0 hover:bg-muted/50 aria-selected:bg-muted',
   head: 'h-10 px-2.5 text-start align-middle font-medium whitespace-nowrap text-foreground',
-  cell: 'px-2.5 py-2 align-middle whitespace-nowrap',
+  cell: 'p-3 align-middle whitespace-nowrap',
   empty: 'h-24 text-center text-muted-foreground',
   footer: 'flex flex-wrap items-center justify-between gap-3',
   controls: 'flex flex-wrap items-center gap-2',
@@ -227,15 +227,19 @@ export const DataTable = <Row, Msg, R = never>(
     label: string,
     title: string,
     content: View.Children<Msg, R>,
+    triggerClass?: string,
   ) =>
     PopoverBehavior(h, {
       key: `${id}-${key}`,
       props: { side: 'bottom', align: 'start', sideOffset: 4 },
       view: parts =>
-        h.div.children(
+        h.div.class(key === 'columns' ? 'ms-auto' : triggerClass).children(
           parts.trigger({
             element: h.button
-              .class(styles.button)
+              .class(
+                styles.button,
+                triggerClass ?? (key === 'columns' ? 'ms-auto' : undefined),
+              )
               .attr('aria-label', label)
               .children(title),
           }),
@@ -1002,7 +1006,7 @@ export const DataTable = <Row, Msg, R = never>(
                 .attr('role', 'status')
                 .children(
                   enableRowSelection
-                    ? `${projection.selectedVisibleCount} of ${projection.filteredRowCount} row(s) selected.`
+                    ? `${projection.selectedVisibleCount} of ${projection.filteredRowCount} rows selected.`
                     : `${projection.filteredRowCount} rows`,
                 ),
               h.div.class(styles.controls).children(
@@ -1044,6 +1048,22 @@ export const DataTable = <Row, Msg, R = never>(
                   'Previous',
                   page(projection.page - 1),
                   projection.page === 0,
+                ),
+                ...Array.from({ length: projection.pageCount }, (_, index) =>
+                  parts
+                    .button(
+                      h.button
+                        .class(
+                          styles.button,
+                          index === projection.page ? 'bg-muted' : undefined,
+                        )
+                        .attr(
+                          'aria-current',
+                          index === projection.page ? 'page' : undefined,
+                        ),
+                      page(index),
+                    )
+                    .children(String(index + 1)),
                 ),
                 button(
                   'Next',
