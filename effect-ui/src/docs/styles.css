@@ -600,9 +600,10 @@ body:has(.effect-docs) {
 }
 
 .docs-code-clip {
-  max-height: 0;
+  max-height: 7.25rem;
   padding-bottom: 2.75rem;
   overflow: hidden;
+  mask-image: linear-gradient(to bottom, black 35%, transparent 100%);
 }
 
 .docs-code-checkbox:checked ~ .docs-code-clip {
@@ -611,14 +612,9 @@ body:has(.effect-docs) {
 }
 
 .docs-code-panel [data-slot='code-block'] {
-  display: none;
   border: 0;
   border-radius: 0;
   background: transparent;
-}
-
-.docs-code-checkbox:checked ~ .docs-code-clip [data-slot='code-block'] {
-  display: block;
 }
 
 .docs-code-expander {
