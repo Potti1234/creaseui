@@ -1,5 +1,6 @@
 import type { Html } from '@effect/ui/html'
 
+import { CodeBlock, Markdown } from '#components'
 import { behaviors as foldkitBehaviors } from '../../../../src/docs/generated-behavior-docs'
 import type { DocsGuide, DocsMessage } from '../types'
 import { section } from './setup'
@@ -194,6 +195,193 @@ const references: Readonly<Record<string, Reference>> = {
   },
 }
 
+const guides = import.meta.glob<string>('../../../../src/lib/behaviors/*.md', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+})
+const exampleSources = import.meta.glob<string>(
+  '../../../../src/docs/examples/*/main.ts',
+  { eager: true, query: '?raw', import: 'default' },
+)
+const guideFor = (name: string) =>
+  (guides[`../../../../src/lib/behaviors/${name}.md`] ?? '')
+    .replace(/^# .+\r?\n+/, '')
+    .replaceAll('Foldkit', 'Effect UI')
+    .replaceAll('foldkit', 'effect-ui')
+const demoExamples: Readonly<
+  Record<string, { title: string; folder: string; explanation: string }>
+> = {
+  transfer: {
+    title: 'Schedule field checks',
+    folder: 'transfer',
+    explanation:
+      'The parent holds the Transfer Model, applies a capacity rule, and records the previous order from a Transferred event.',
+  },
+  'popup-behavior': {
+    title: 'Open order details',
+    folder: 'anchored-popup',
+    explanation:
+      'A correlated request stays in the parent Model, and a Command returns the result when the popup closes.',
+  },
+  'popup-controller': {
+    title: 'Open order details',
+    folder: 'anchored-popup',
+    explanation:
+      'A correlated request stays in the parent Model, and a Command returns the result when the popup closes.',
+  },
+  portal: {
+    title: 'Open order details',
+    folder: 'anchored-popup',
+    explanation:
+      'A correlated request stays in the parent Model, and a Command returns the result when the popup closes.',
+  },
+  virtualizer: {
+    title: 'Jump through 10,000 rows',
+    folder: 'virtualizer',
+    explanation:
+      'The parent lifts scroll and measurement input and projects the visible window from the Model.',
+  },
+  'swipe-actions': {
+    title: 'Reveal row actions',
+    folder: 'swipe-actions',
+    explanation:
+      'The Model tracks drag progress while the Mount owns pointer input.',
+  },
+  move: {
+    title: 'Move a tile across a board',
+    folder: 'move',
+    explanation:
+      'The parent maps pointer and keyboard messages into Move.update and renders the resulting position.',
+  },
+  viewport: {
+    title: 'Pan and zoom a canvas',
+    folder: 'viewport',
+    explanation:
+      'The parent holds the camera Model while scoped input updates the viewport.',
+  },
+}
+const componentExamples: Readonly<Record<string, readonly [string, string?]>> =
+  {
+    'drag-and-drop': ['transfer-list'],
+    'grid-focus': ['data-grid'],
+    'cell-range': ['data-grid'],
+    'spatial-focus': ['grid', 'Grid — Spatial Focus'],
+    'input-history': ['textarea', 'Chat History'],
+    'message-scroller': ['message-scroller'],
+    lasso: ['grid', 'Grid — Lasso Selection'],
+    'scroll-picker': ['time-input', 'Hour and Minute Picker'],
+    motion: ['collapsible', 'Motion presence'],
+  }
+const codeBlock = (h: Html.H<DocsMessage>, id: string, code: string) =>
+  h.details.class('docs-behavior-code').children(
+    h.summary.children('Example source'),
+    CodeBlock(h, {
+      id,
+      language: 'typescript',
+      props: { code },
+      width: '100%',
+      container: 'section',
+    }) as never,
+  )
+const behaviorDetail = (
+  h: Html.H<DocsMessage>,
+  behavior: (typeof foldkitBehaviors)[number],
+  reference: Reference | undefined,
+) => {
+  const guide = behavior.guides.map(guideFor).join('\n\n')
+  const demo = demoExamples[behavior.slug]
+  const componentExample = componentExamples[behavior.slug]
+  const demoCode =
+    demo === undefined
+      ? undefined
+      : exampleSources[`../../../../src/docs/examples/${demo.folder}/main.ts`]
+  return h.div.children(
+    h.nav
+      .class('docs-breadcrumb')
+      .attr('aria-label', 'Breadcrumb')
+      .children(
+        h.a.attr('href', '/docs/behaviors').children('Behaviors'),
+        h.span.attr('aria-hidden', 'true').children('/'),
+        h.span.attr('aria-current', 'page').children(behavior.title),
+      ),
+    h.section
+      .attr('id', 'effect-ui')
+      .class('docs-section')
+      .children(
+        h.h2.children('Effect UI'),
+        h.p
+          .class('docs-muted')
+          .children(
+            reference?.explanation ??
+              'Use the corresponding Effect UI behavior or component composition where available.',
+          ),
+        reference?.api === undefined
+          ? undefined
+          : h.p.children(h.code.children(reference.api)),
+        (reference?.components ?? []).length === 0
+          ? undefined
+          : h.ul
+              .class('docs-compact-list')
+              .children(
+                (reference?.components ?? []).map(slug =>
+                  h.li.children(componentLink(h, slug)),
+                ),
+              ),
+      ),
+    demo === undefined && componentExample === undefined
+      ? undefined
+      : h.section
+          .attr('id', 'examples')
+          .class('docs-section')
+          .children(
+            h.h2.children('Examples'),
+            demo === undefined
+              ? undefined
+              : h.article.children(
+                  h.h3.children(demo.title),
+                  h.p.class('docs-muted').children(demo.explanation),
+                  demoCode === undefined
+                    ? undefined
+                    : codeBlock(h, `${behavior.slug}-example`, demoCode),
+                ),
+            componentExample === undefined
+              ? undefined
+              : h.article.children(
+                  h.h3.children(componentExample[1] ?? 'Component example'),
+                  h.p.children(componentLink(h, componentExample[0])),
+                ),
+          ),
+    guide === ''
+      ? undefined
+      : h.section
+          .attr('id', 'usage-guide')
+          .class('docs-section')
+          .children(
+            Markdown(h, {
+              id: `${behavior.slug}-guide`,
+              source: guide,
+              headingLevelStart: 2,
+            }) as never,
+          ),
+    h.section
+      .attr('id', 'source-exports')
+      .class('docs-section')
+      .children(
+        h.h2.children('Source exports'),
+        h.p
+          .class('docs-muted')
+          .children(h.code.children(`@/${behavior.source.slice(4, -3)}`)),
+        h.ul
+          .class('docs-compact-list')
+          .children(
+            behavior.exports.map(name => h.li.children(h.code.children(name))),
+          ),
+      ),
+    h.p.children(h.a.attr('href', '/docs/behaviors').children('All behaviors')),
+  )
+}
+
 const displayName = (slug: string) =>
   slug
     .split('-')
@@ -262,36 +450,7 @@ export const behaviorGuides: Readonly<Record<string, DocsGuide>> = {
         {
           title: behavior.title,
           description: behavior.description,
-          view: h =>
-            h.div.children(
-              reference === undefined
-                ? behavior.owner === undefined
-                  ? h.p.children(
-                      'An Effect UI reference for this Foldkit behavior is pending.',
-                    )
-                  : h.p.children(
-                      'See the Effect UI component page for ',
-                      componentLink(h, behavior.owner),
-                      '.',
-                    )
-                : section(
-                    h,
-                    'effect-ui',
-                    'Effect UI',
-                    h.p.children(reference.explanation),
-                    reference.api === undefined
-                      ? undefined
-                      : h.p.children(h.code.children(reference.api)),
-                    h.ul.children(
-                      reference.components.map(slug =>
-                        h.li.children(componentLink(h, slug)),
-                      ),
-                    ),
-                  ),
-              h.p.children(
-                h.a.attr('href', '/docs/behaviors').children('All behaviors'),
-              ),
-            ),
+          view: h => behaviorDetail(h, behavior, reference),
         } satisfies DocsGuide,
       ]
     }),
