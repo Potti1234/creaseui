@@ -90,7 +90,6 @@ const docsMain = (h: DocHtml) =>
 const guideLinks = [
   { href: '/docs/getting-started', label: 'Get Started' },
   { href: '/docs/theming', label: 'Theming' },
-  { href: '/docs/behaviors', label: 'Behaviors' },
   { href: '/docs/lint', label: 'Lint rules' },
   { href: '/docs/tutorial', label: 'Tutorial' },
 ]
@@ -128,6 +127,16 @@ const behaviorLinks = (h: DocHtml) => {
   return h.div.class('docs-nav-group').children(
     h.h2.class('docs-nav-group-title').children('Behaviors'),
     h.ul.children(
+      h.li.key('all-behaviors').children(
+        h.a
+          .class('docs-nav-link')
+          .attrs({
+            href: '/docs/behaviors',
+            'aria-current':
+              guidePath === '/docs/behaviors' ? 'page' : undefined,
+          })
+          .children('All Behaviors'),
+      ),
       primitives.map(entry =>
         h.li.key(entry.slug).children(
           h.a
@@ -153,7 +162,6 @@ const sidebar = (
     .attr('aria-label', 'Documentation')
     .children(
       h.div.class('docs-nav-group').children(
-        h.h2.class('docs-nav-group-title').children('Guides'),
         h.ul.children(
           guideLinks.map(({ href, label }) =>
             h.li.key(href).children(
@@ -168,15 +176,6 @@ const sidebar = (
           ),
         ),
       ),
-      h.input
-        .class('docs-filter')
-        .attrs({
-          type: 'search',
-          'aria-label': 'Search components',
-          placeholder: 'Search components',
-        })
-        .value(query)
-        .on('input', ({ value }) => DocsMessage.Filtered({ query: value })),
       groups.map(({ label, entries }) =>
         h.div
           .key(label)
@@ -801,7 +800,9 @@ const searchDialog = (
               'aria-label': 'Search documentation',
             })
             .value(query)
-            .on('input', ({ value }) => DocsMessage.Filtered({ query: value })),
+            .on('input', ({ value }) =>
+              DocsMessage.SearchFiltered({ query: value }),
+            ),
           h.button
             .class('docs-search-close')
             .attrs({ type: 'button', 'aria-label': 'Close search' })
@@ -874,18 +875,26 @@ const Docs = Html.component({
     query: Schema.String,
     dark: Schema.Boolean,
     searchOpen: Schema.Boolean,
+    search: Schema.String,
   }),
   message: DocsMessage,
 }).make({
-  init: () => ({ query: '', dark: initialDark, searchOpen: false }),
+  init: () => ({
+    query: '',
+    dark: initialDark,
+    searchOpen: false,
+    search: '',
+  }),
   update: {
     Filtered: ($, { query }) => $.evolve({ query }),
+    SearchFiltered: ($, { query }) => $.evolve({ search: query }),
     ToggledTheme: $ => $.evolve({ dark: value => !value }),
     OpenedSearch: $ => $.evolve({ searchOpen: true }),
     ClosedSearch: $ => $.evolve({ searchOpen: false }),
   },
-  view: (h, { query, dark, searchOpen }) => {
+  view: (h, { query, dark, searchOpen, search }) => {
     const groups = groupedEntries(query)
+    const searchGroups = groupedEntries(search)
     return h.div
       .class('effect-docs', dark ? 'dark' : 'light')
       .children(
@@ -894,7 +903,7 @@ const Docs = Html.component({
           .attr('href', '#docs-main')
           .children('Skip to content'),
         docsHeader(h, dark),
-        searchOpen ? searchDialog(h, query, groups) : undefined,
+        searchOpen ? searchDialog(h, search, searchGroups) : undefined,
         h.div
           .class('docs-frame', 'docs-layout')
           .children(
