@@ -18,9 +18,9 @@ const chartGroups = [
       'Stacked',
       'Stacked Expanded',
       'Legend',
-      'Icons',
-      'Axes',
       'Gradient',
+      'Axes',
+      'Icons',
       'Interactive',
     ],
   ],
@@ -252,7 +252,11 @@ const chartDetail = (
         examples.map((example, index) =>
           h.article
             .key(example)
-            .class('chart-gallery-card')
+            .class(
+              example === 'Interactive'
+                ? 'chart-gallery-card interactive'
+                : 'chart-gallery-card',
+            )
             .children(
               h.header.children(
                 h.h3.children(chartExampleTitle(title, example)),
@@ -270,11 +274,6 @@ const chartDetail = (
             ),
         ),
       ),
-      h.p
-        .class('chart-gallery-note')
-        .children(
-          'Live Apache ECharts instances are mounted. Per-variant option details and advanced interactive controls are still being aligned with the Foldkit gallery.',
-        ),
     ),
 })
 const blocks = [

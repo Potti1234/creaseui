@@ -1168,6 +1168,10 @@ body:has(.effect-docs) {
   border-radius: 0.5rem;
   background: var(--card);
 }
+.chart-gallery-card.interactive {
+  min-height: 461px;
+}
+
 .chart-gallery-card > header,
 .chart-gallery-card > footer {
   padding: 1rem;
