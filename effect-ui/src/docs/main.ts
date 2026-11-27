@@ -541,7 +541,7 @@ const component = (h: DocHtml, slug: string, title: string) => {
                 ? 'https://github.com/Effect-TS/ui'
                 : (metadata.apiHref ?? 'https://github.com/Effect-TS/ui'),
             )
-            .children(metadata.apiDescription ?? 'API reference'),
+            .children(effectText(metadata.apiDescription ?? 'API reference')),
         ),
       ),
       migrationNotice(h, missing, entries.length),
