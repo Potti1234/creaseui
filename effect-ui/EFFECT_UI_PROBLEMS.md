@@ -74,3 +74,4 @@ Effect `Combobox` owns popup/draft state but exposes only plain item labels. It 
 
 - Color Picker's styled API only exposes swatch/button/input trigger variants and fixed panel composition; unlike Foldkit it does not expose composable area/channel/input/preset parts for custom arrangements or localization.
 - Date Picker exposes only a single-date popover composite; Foldkit docs' true range picker, date-plus-time composition, and natural-language parsing require manual composition in Effect UI.
+- Pointer Kind and Avoid Keyboard have no Effect UI behavior implementations; their docs examples cannot yet reproduce the live media-query/viewport behavior of the Foldkit versions.
