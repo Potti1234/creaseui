@@ -105,6 +105,16 @@ export const gettingStarted: DocsGuide = {
   title: 'Get Started',
   description:
     'Install CreaseUI components in an Effect UI application and render your first view.',
+  toc: [
+    ['before-you-start', 'Before you start'],
+    ['install-dependencies', 'Install dependencies'],
+    ['configure-vite', 'Configure Vite'],
+    ['add-the-stylesheet', 'Add the stylesheet'],
+    ['configure-the-cli', 'Configure the CLI'],
+    ['install-components', 'Install components'],
+    ['use-components', 'Use components'],
+    ['next-steps', 'Next steps'],
+  ],
   view: h =>
     h.div.children(
       section(
@@ -323,6 +333,14 @@ export const theming: DocsGuide = {
   title: 'Theming',
   description:
     'Use semantic color and radius tokens to theme the Effect UI components across renderers.',
+  toc: [
+    ['theme-contract', 'Theme tokens'],
+    ['how-components-read-the-theme', 'How components read the theme'],
+    ['change-the-theme', 'Change the theme'],
+    ['dark-mode', 'Dark mode'],
+    ['scoped-themes', 'Scoped themes'],
+    ['component-customization', 'Component customization'],
+  ],
   view: h =>
     h.div.children(
       section(

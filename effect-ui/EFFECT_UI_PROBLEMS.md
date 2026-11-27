@@ -80,3 +80,4 @@ Effect `Combobox` owns popup/draft state but exposes only plain item labels. It 
 - Tutorial chapter pages currently migrate navigation, summaries and repository checkpoints, but the Foldkit interactive essay runtimes remain unported.
 - Chart gallery pages expose the same categories and card inventory, but the full interactive Apache ECharts gallery is approximated by static chart-shaped previews.
 - Blocks exposes the block catalog and representative previews, but live block preview pages and copyable per-renderer block source remain unported.
+- Agent and History behaviors are not implemented in Effect UI, so the Get Started guide cannot yet include the Foldkit agent/history walkthrough or live behavior demo.

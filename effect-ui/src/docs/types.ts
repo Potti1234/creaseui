@@ -16,6 +16,7 @@ export type DocsMessage = typeof DocsMessage.Type
 export type DocsGuide = {
   readonly title: string
   readonly description?: string
+  readonly toc?: ReadonlyArray<readonly [string, string]>
   readonly view: (h: Html.H<DocsMessage>) => View.Input<DocsMessage>
 }
 

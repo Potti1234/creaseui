@@ -774,8 +774,11 @@ const component = (h: DocHtml, slug: string, title: string) => {
   )
 }
 
-const guidePage = (h: DocHtml, { title, description, view }: DocsGuide) =>
-  docsMain(h).children(
+const guidePage = (
+  h: DocHtml,
+  { title, description, toc, view }: DocsGuide,
+) => {
+  const content = docsMain(h).children(
     h.nav
       .class('docs-breadcrumb')
       .attr('aria-label', 'Breadcrumb')
@@ -790,6 +793,30 @@ const guidePage = (h: DocHtml, { title, description, view }: DocsGuide) =>
       : h.p.class('docs-description').children(description),
     h.div.class('docs-article').children(view(h)),
   )
+  return toc === undefined
+    ? content
+    : h.div
+        .class('docs-component-grid')
+        .children(
+          content,
+          h.aside
+            .class('docs-toc')
+            .children(
+              h.nav
+                .attr('aria-label', 'On this page')
+                .children(
+                  h.p.class('docs-toc-title').children('On this page'),
+                  h.ul.children(
+                    toc.map(([id, label]) =>
+                      h.li
+                        .key(id)
+                        .children(h.a.attr('href', `#${id}`).children(label)),
+                    ),
+                  ),
+                ),
+            ),
+        )
+}
 
 const notFound = (h: DocHtml) =>
   docsMain(h).children(
