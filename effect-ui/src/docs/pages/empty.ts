@@ -24,7 +24,7 @@ const action = (
   label: string,
   icon?: View.Input<DocsMessage>,
 ) =>
-  Button<DocsMessage>(h, { variant, size: 'sm' }).children(
+  Button<DocsMessage>(h, { variant }).children(
     ...(icon === undefined ? [label] : [icon, label]),
   ) as View.Content<DocsMessage, never>
 const linkRow = (h: H, label: string) =>
@@ -38,7 +38,7 @@ const project =
     h.div.class(rtl ? 'empty-docs-rtl' : undefined).children(
       Empty<DocsMessage>(h, {
         className: 'empty-docs-shell',
-        media: Icon<DocsMessage>(h, { name: 'folder-code' }),
+        media: Icon<DocsMessage>(h, { name: 'folder-code', size: 'md' }),
         mediaVariant: 'icon',
         title: rtl ? 'لا توجد مشاريع بعد' : 'No Projects Yet',
         description: rtl
@@ -51,9 +51,9 @@ const project =
               action(h, 'default', rtl ? 'إنشاء مشروع' : 'Create Project'),
               action(h, 'outline', rtl ? 'استيراد مشروع' : 'Import Project'),
             ) as View.Content<DocsMessage, never>,
+          linkRow(h, rtl ? 'تعرف على المزيد' : 'Learn More'),
         ],
       }),
-      linkRow(h, rtl ? 'تعرف على المزيد' : 'Learn More'),
     )
 
 const outline: DocsExampleImplementation['view'] = h =>
@@ -186,7 +186,7 @@ Empty<DocsMessage>(h, { title: 'No results', description: 'Try another search.' 
       title: 'Create a project',
       view: project(),
       source: emptySource(`Empty<DocsMessage>(h, {
-  media: Icon<DocsMessage>(h, { name: 'folder-code' }),
+  media: Icon<DocsMessage>(h, { name: 'folder-code', size: 'md' }),
   mediaVariant: 'icon',
   title: 'No Projects Yet',
   description: "You haven't created any projects yet.",
