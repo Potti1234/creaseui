@@ -425,23 +425,71 @@ const createGuide: DocsGuide = {
             h.span.attr('aria-current', 'page').children('Light'),
             h.span.children('Dark'),
           ),
+        h.div.class('create-token-section').children('PRIMARY'),
         ...[
-          'primary',
-          'primary-foreground',
-          'secondary',
-          'secondary-foreground',
-        ].map(token =>
+          ['primary', 'oklch(0.21 0 0)', '#171717', ''],
+          ['primary-foreground', 'oklch(0.985 0 0)', '#fafafa', '17.0'],
+        ].map(([token, value, color, contrast]) =>
           h.div
-            .key(token)
+            .key(token ?? '')
             .class('create-token')
             .children(
-              h.span.class('create-token-swatch'),
+              h.span
+                .class('create-token-swatch')
+                .style({ background: color ?? '' }),
               h.div.children(
-                h.strong.children(token),
-                h.code.children('oklch(0.205 0 0)'),
+                h.strong.children(token ?? ''),
+                h.code.children(value ?? ''),
+              ),
+              contrast === ''
+                ? undefined
+                : h.span.class('create-contrast').children(contrast ?? ''),
+            ),
+        ),
+        h.div.class('create-token-section').children('SECONDARY'),
+        ...[
+          ['secondary', 'oklch(0.923 0 0)', '#ebebeb', ''],
+          ['secondary-foreground', 'oklch(0.205 0 0)', '#343434', '14.3'],
+        ].map(([token, value, color, contrast]) =>
+          h.div
+            .key(token ?? '')
+            .class('create-token')
+            .children(
+              h.span
+                .class('create-token-swatch')
+                .style({ background: color ?? '' }),
+              h.div.children(
+                h.strong.children(token ?? ''),
+                h.code.children(value ?? ''),
+              ),
+              contrast === ''
+                ? undefined
+                : h.span.class('create-contrast').children(contrast ?? ''),
+            ),
+        ),
+        h.div.class('create-token-section').children('ACCENT'),
+        ...[
+          ['accent', 'oklch(0.923 0 0)', '#ebebeb', ''],
+          ['accent-foreground', 'oklch(0.205 0 0)', '#343434', ''],
+          ['muted', 'oklch(0.923 0 0)', '#ebebeb', ''],
+          ['muted-foreground', 'oklch(0.556 0 0)', '#737373', ''],
+        ].map(([token, value, color]) =>
+          h.div
+            .key(token ?? '')
+            .class('create-token')
+            .children(
+              h.span
+                .class('create-token-swatch')
+                .style({ background: color ?? '' }),
+              h.div.children(
+                h.strong.children(token ?? ''),
+                h.code.children(value ?? ''),
               ),
             ),
         ),
+        h.div
+          .class('create-preset-row')
+          .children('--preset c4zq0t03xwdr50pnkMhUR…'),
         h.button.attrs({ type: 'button' }).children('Open Preset'),
         h.div
           .class('create-panel-actions')

@@ -1982,3 +1982,58 @@ body:has(.effect-docs) {
   color: var(--foreground);
   font-weight: 500;
 }
+
+.create-panel {
+  overflow-y: auto;
+}
+.create-token-section {
+  margin-top: 0.25rem;
+  color: var(--muted-foreground);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.create-token {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 0.45rem;
+  padding: 0.45rem 0.55rem;
+}
+.create-token > div {
+  min-width: 0;
+}
+.create-token strong {
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+.create-token code {
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 0.64rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.create-token-swatch {
+  flex: 0 0 1.35rem;
+  border: 1px solid var(--border);
+}
+.create-contrast {
+  position: absolute;
+  right: 0.45rem;
+  bottom: 0.4rem;
+  border-radius: 0.25rem;
+  background: #b7f7df;
+  padding: 0.05rem 0.25rem;
+  color: #066046;
+  font-size: 0.6rem;
+}
+.create-preset-row {
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  padding-block: 0.4rem;
+  color: var(--muted-foreground);
+  font-family: ui-monospace, monospace;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
