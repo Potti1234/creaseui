@@ -44,7 +44,9 @@ const DataTableDemo = Html.component({
     return DataTable(h, {
       id: `${h.props.idPrefix}-${kind}`,
       ariaLabel: 'Payments',
-      rows,
+      rows: ['sortable', 'filter', 'server', 'rtl'].includes(kind)
+        ? rows.slice(0, 6)
+        : rows,
       rowKey: (row: any) => row.id,
       columns: [
         {
@@ -95,6 +97,7 @@ const DataTableDemo = Html.component({
             searchPlaceholder: 'Filter payments…',
           }
         : {}),
+      pageSizeOptions: [5, 10, 20],
       direction: kind === 'rtl' ? 'rtl' : undefined,
       toolbarContent: kind === 'filter' ? undefined : undefined,
       actionBar: (selection: any) =>
