@@ -1,0 +1,10 @@
+.circular-progress-docs-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+}
+.circular-progress-docs-single {
+  display: flex;
+  justify-content: center;
+}
