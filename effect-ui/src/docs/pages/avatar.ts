@@ -47,9 +47,9 @@ const DEVIN: Item = {
 }
 const GROUP = [CREASEUI, FOLDKIT, DEVIN] as const
 
-const avatar = <Msg>(h: Html.H<Msg>, item: Item) =>
+const avatar = <Msg>(h: Html.H<Msg>, item: Item, prefix = '') =>
   Avatar(h, {
-    key: item.key,
+    key: `${prefix}${item.key}`,
     props: { src: item.src },
     alt: item.alt,
     fallbackContent: [item.fallback],
@@ -74,11 +74,12 @@ const group = <Msg>(
   items: ReadonlyArray<Item>,
   count?: string,
   countIcon = false,
+  prefix = '',
 ) =>
   AvatarGroup(h, {
     className: 'avatar-docs-grayscale',
     children: [
-      ...items.map(item => avatar(h, item)),
+      ...items.map(item => avatar(h, item, prefix)),
       count === undefined && !countIcon
         ? undefined
         : AvatarGroupOverflow(h, {
@@ -89,10 +90,10 @@ const group = <Msg>(
     ],
   })
 
-const demo = <Msg>(h: Html.H<Msg>, count: string) => [
-  h.div.children(avatar(h, { ...CREASEUI, grayscale: 'avatar' })),
-  h.div.children(avatar(h, { ...DEVIN, badge: 'green' })),
-  group(h, GROUP, count),
+const demo = <Msg>(h: Html.H<Msg>, count: string, prefix = '') => [
+  h.div.children(avatar(h, { ...CREASEUI, grayscale: 'avatar' }, prefix)),
+  h.div.children(avatar(h, { ...DEVIN, badge: 'green' }, prefix)),
+  group(h, GROUP, count, false, prefix),
 ]
 
 const DropdownMessage = UiSchema.TaggedEnum({
@@ -149,30 +150,56 @@ const view =
     if (kind === 'basic')
       return h.div
         .class('avatar-docs-plain')
-        .children(avatar(h, { ...CREASEUI, grayscale: 'avatar' }))
+        .children(
+          avatar(
+            h,
+            { ...CREASEUI, grayscale: 'avatar' },
+            `${context.idPrefix}-`,
+          ),
+        )
     if (kind === 'badge')
       return h.div
         .class('avatar-docs-plain')
-        .children(avatar(h, { ...CREASEUI, badge: 'green' }))
+        .children(
+          avatar(h, { ...CREASEUI, badge: 'green' }, `${context.idPrefix}-`),
+        )
     if (kind === 'badgeIcon')
       return h.div
         .class('avatar-docs-plain')
-        .children(avatar(h, { ...FOLDKIT, badge: 'icon', grayscale: 'avatar' }))
+        .children(
+          avatar(
+            h,
+            { ...FOLDKIT, badge: 'icon', grayscale: 'avatar' },
+            `${context.idPrefix}-`,
+          ),
+        )
     if (kind === 'group')
-      return h.div.class('avatar-docs-plain').children(group(h, GROUP))
+      return h.div
+        .class('avatar-docs-plain')
+        .children(group(h, GROUP, undefined, false, `${context.idPrefix}-`))
     if (kind === 'groupCount')
-      return h.div.class('avatar-docs-plain').children(group(h, GROUP, '+3'))
+      return h.div
+        .class('avatar-docs-plain')
+        .children(group(h, GROUP, '+3', false, `${context.idPrefix}-`))
     if (kind === 'groupCountIcon')
       return h.div
         .class('avatar-docs-plain')
-        .children(group(h, GROUP, undefined, true))
+        .children(group(h, GROUP, undefined, true, `${context.idPrefix}-`))
     if (kind === 'sizes')
       return h.div
         .class('avatar-docs-sizes')
         .children(
-          avatar(h, { ...CREASEUI, key: 'sm', size: 'sm' }),
-          avatar(h, CREASEUI),
-          avatar(h, { ...CREASEUI, key: 'lg', size: 'lg' }),
+          avatar(
+            h,
+            { ...CREASEUI, key: 'sm', size: 'sm' },
+            `${context.idPrefix}-`,
+          ),
+          avatar(h, CREASEUI, `${context.idPrefix}-`),
+          avatar(
+            h,
+            { ...CREASEUI, key: 'lg', size: 'lg' },
+            `${context.idPrefix}-`,
+          ),
         )
     if (kind === 'dropdown')
       return h.div.class('avatar-docs-plain').children(
