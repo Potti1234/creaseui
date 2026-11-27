@@ -48,10 +48,12 @@ const overview: DocsGuide = {
                   .key(rule.id)
                   .children(
                     h.a
-                      .class('docs-inline-link')
+                      .class('docs-inline-link lint-rule-title')
                       .attr('href', ruleLink(rule.id))
                       .children(rule.title),
-                    h.span.class('docs-muted').children(` ${rule.summary}`),
+                    h.div
+                      .class('docs-muted lint-rule-summary')
+                      .children(rule.summary),
                   ),
               ),
             ),
