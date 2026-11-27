@@ -249,10 +249,16 @@ const SidebarDemo = Html.component({
 const view =
   (kind: string): DocsExampleImplementation['view'] =>
   (h: Html.H<DocsMessage>, context) =>
-    SidebarDemo(h, {
-      key: `${context.idPrefix}-${kind}`,
-      props: { kind, idPrefix: context.idPrefix },
-    }) as never
+    h.div
+      .class(
+        'relative h-[26rem] min-h-0 w-full overflow-hidden rounded-lg border bg-background',
+      )
+      .children(
+        SidebarDemo(h, {
+          key: `${context.idPrefix}-${kind}`,
+          props: { kind, idPrefix: context.idPrefix },
+        }) as never,
+      )
 const source = exampleApplicationSource({
   imports: `import { Icon, Sidebar } from '@/ui/effect/ui'`,
   body: `Sidebar(h, {

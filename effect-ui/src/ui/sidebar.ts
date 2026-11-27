@@ -11,7 +11,7 @@ type Slot<Msg, R> = {
 }
 type Side = 'left' | 'right'
 const tailwind = {
-  root: 'flex w-full min-w-0 items-stretch gap-2 data-[side=right]:flex-row-reverse data-[variant=inset]:bg-sidebar',
+  root: 'flex h-full w-full min-w-0 items-stretch gap-2 data-[side=right]:flex-row-reverse data-[variant=inset]:bg-sidebar',
   panel:
     'relative flex min-w-0 shrink-0 flex-col border-sidebar-border bg-sidebar text-sidebar-foreground [width:var(--sidebar-width)] data-icon-only:[width:var(--sidebar-icon-width)] data-[side=left]:border-e data-[side=right]:border-s data-[variant=floating]:m-2 data-[variant=floating]:rounded-lg data-[variant=floating]:border data-[variant=inset]:m-2 data-[variant=inset]:rounded-lg data-[presentation=application]:min-h-svh',
   inset:
