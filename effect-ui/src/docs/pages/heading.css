@@ -1,0 +1,35 @@
+.heading-docs-showcase {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.heading-docs-truncation,
+.heading-docs-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.heading-docs-page {
+  width: min(100%, 25rem);
+}
+
+.heading-docs-box {
+  width: 18.75rem;
+  max-width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+}
+
+.heading-docs-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.heading-docs-card {
+  width: 18.75rem;
+  max-width: 100%;
+}

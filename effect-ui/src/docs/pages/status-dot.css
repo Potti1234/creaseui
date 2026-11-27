@@ -1,0 +1,17 @@
+.status-dot-docs-row,
+.status-dot-docs-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-dot-docs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.status-dot-docs-label {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
