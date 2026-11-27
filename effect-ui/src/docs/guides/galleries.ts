@@ -1,3 +1,6 @@
+import type { View } from '@effect/ui'
+import type { Html } from '@effect/ui/html'
+
 import { EChart } from '#components'
 import { registerChart } from '../../behaviors/chart'
 import { familyOption, type ChartFamilyKind } from '../pages/chart-echarts'
@@ -345,6 +348,46 @@ const blocks = [
   ['login-04', 'A split login layout with a form and image panel.'],
 ] as const
 
+const createPlaceholder = (
+  h: Html.H<DocsMessage>,
+  title: string,
+  tone: 'compact' | 'regular' | 'large' = 'regular',
+  lines = 3,
+) =>
+  h.section
+    .key(title)
+    .class(`create-card create-placeholder ${tone}`)
+    .children(
+      h.div
+        .class('create-placeholder-head')
+        .children(
+          h.h2.children(title),
+          h.span.class('create-placeholder-icon').children('⋯'),
+        ),
+      h.div
+        .class('create-placeholder-body')
+        .children(
+          Array.from({ length: lines }, (_, index) =>
+            h.span
+              .key(String(index))
+              .class(
+                index === 0 ? 'strong' : index === lines - 1 ? 'short' : '',
+              ),
+          ),
+        ),
+      h.div.class('create-placeholder-actions').children(h.span, h.span),
+    )
+
+const createColumn = (
+  h: Html.H<DocsMessage>,
+  key: string,
+  ...cards: View.Input<DocsMessage>[]
+) =>
+  h.div
+    .key(key)
+    .class('create-column')
+    .children(...cards)
+
 const createGuide: DocsGuide = {
   title: 'Create',
   description: 'Create a new Effect UI project with CreaseUI.',
@@ -399,9 +442,29 @@ const createGuide: DocsGuide = {
           .attrs({ type: 'button' })
           .children('Copy Registry JSON'),
       ),
-      h.main
-        .class('create-preview')
-        .children(
+      h.main.class('create-preview').children(
+        h.div
+          .class('create-toolbar')
+          .children(
+            h.nav
+              .attr('aria-label', 'Theme tools')
+              .children(
+                h.span.attr('aria-current', 'page').children('Board'),
+                h.span.children('Blocks'),
+                h.span.children('Type'),
+                h.span.children('Palette'),
+              ),
+            h.div
+              .class('create-scheme')
+              .children(
+                h.span.attr('aria-current', 'page').children('Auto'),
+                h.span.children('Light'),
+                h.span.children('Dark'),
+              ),
+          ),
+        createColumn(
+          h,
+          'activity',
           h.section
             .class('create-card contribution')
             .children(
@@ -440,6 +503,24 @@ const createGuide: DocsGuide = {
               h.button.attrs({ type: 'button' }).children('View Full Report'),
             ),
           h.section
+            .class('create-card distribute')
+            .children(
+              h.div.class('create-plus').children('+'),
+              h.h2.children('Distribute Track'),
+              h.p.children(
+                'Upload your first master to start reaching listeners on streaming platforms.',
+              ),
+              h.button.attrs({ type: 'button' }).children('Upload'),
+            ),
+          createPlaceholder(h, 'QR Connect', 'regular', 3),
+          createPlaceholder(h, 'Dividend Income', 'regular', 4),
+          createPlaceholder(h, 'Index Investing', 'regular', 4),
+          createPlaceholder(h, 'Syncing State', 'compact', 2),
+        ),
+        createColumn(
+          h,
+          'payouts',
+          h.section
             .class('create-card payout')
             .children(
               h.h2.children('Payout Threshold'),
@@ -450,9 +531,19 @@ const createGuide: DocsGuide = {
               h.div
                 .class('create-input')
                 .children('USD — United States Dollar ⌄'),
-              h.label.children('Minimum Payout Amount'),
-              h.div.class('create-amount').children('$2500.00'),
+              h.div
+                .class('create-card-row')
+                .children(
+                  h.label.children('Minimum Payout Amount'),
+                  h.div.class('create-amount').children('$2500.00'),
+                ),
               h.div.class('create-slider').children(h.span),
+              h.div
+                .class('create-card-row create-slider-labels')
+                .children(
+                  h.span.children('$50 (MIN)'),
+                  h.span.children('$10,000 (MAX)'),
+                ),
               h.label.children('Notes'),
               h.div
                 .class('create-notes')
@@ -460,25 +551,71 @@ const createGuide: DocsGuide = {
               h.button.attrs({ type: 'button' }).children('Save Threshold'),
             ),
           h.section
-            .class('create-card distribute')
-            .children(
-              h.div.class('create-plus').children('+'),
-              h.h2.children('Distribute Track'),
-            ),
-          h.section
             .class('create-card balance')
             .children(
               h.p.children('Claimable Balance'),
               h.strong.children('$0.00'),
-              h.span.children('● Pending Setup'),
+              h.span.class('create-status').children('● Pending Setup'),
               h.div
                 .class('create-card-row')
                 .children(
                   h.span.children('Net Royalties'),
                   h.span.children('$0.00'),
                 ),
+              h.div
+                .class('create-card-row')
+                .children(
+                  h.span.children('Processing Fee'),
+                  h.span.children('-$0.00'),
+                ),
             ),
+          createPlaceholder(h, 'Preferences', 'regular', 4),
+          createPlaceholder(h, 'Savings Progress', 'regular', 3),
+          createPlaceholder(h, 'Kitchen Island', 'regular', 5),
         ),
+        h.div
+          .key('planning')
+          .class('create-column wide')
+          .children(
+            createPlaceholder(h, 'Savings Targets', 'large', 5),
+            createPlaceholder(h, 'Recent Transactions', 'large', 6),
+            h.div
+              .class('create-nested-grid')
+              .children(
+                h.div
+                  .class('create-nested-column')
+                  .children(
+                    createPlaceholder(h, 'Sidebar Nav', 'regular', 5),
+                    createPlaceholder(h, 'FAQ', 'regular', 4),
+                  ),
+                h.div
+                  .class('create-nested-column')
+                  .children(
+                    createPlaceholder(h, 'Payments', 'regular', 4),
+                    createPlaceholder(h, 'Front Door', 'regular', 3),
+                  ),
+              ),
+            createPlaceholder(h, 'Release Catalog', 'large', 4),
+          ),
+        createColumn(
+          h,
+          'account',
+          createPlaceholder(h, 'Account Access', 'regular', 4),
+          createPlaceholder(h, 'Card Overview', 'regular', 5),
+          createPlaceholder(h, 'Transfer Funds', 'regular', 5),
+          createPlaceholder(h, 'Cover Art', 'compact', 3),
+          createPlaceholder(h, 'Loading Card', 'compact', 3),
+        ),
+        createColumn(
+          h,
+          'utilities',
+          createPlaceholder(h, 'Receiving Method', 'regular', 4),
+          createPlaceholder(h, 'Power Usage', 'regular', 4),
+          createPlaceholder(h, 'Connect Bank', 'regular', 3),
+          createPlaceholder(h, 'Upcoming Payments', 'regular', 4),
+          createPlaceholder(h, 'Roller Shades', 'regular', 5),
+        ),
+      ),
     ),
 }
 const blocksGuide: DocsGuide = {
