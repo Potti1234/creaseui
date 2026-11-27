@@ -15,3 +15,7 @@
 ## Popover styled popup styling diverges from Foldkit
 
 `effect-ui/src/ui/popover.ts` originally added `grid`, `gap-2`, `text-sm`, sizing clamps, and scrolling behavior that the Foldkit/shadcn-style popover does not have. That compressed custom content and changed inherited heading text from 16px to 14px. The branch now aligns the styled popup classes with the Foldkit implementation.
+
+## Select styled trigger, popup, and item styling diverge from Foldkit
+
+`effect-ui/src/ui/select.ts` originally used fixed-height/background trigger classes, allowed the popup to size itself independently of the trigger anchor, and used flatter menu-item padding. This made the same docs fixture render a 384px trigger/popup where Foldkit renders the shrink-to-fit 129px control. The branch now aligns the styled trigger, popup width, and option padding with the Foldkit implementation, although the inner option DOM still differs because the Effect kit exposes item parts differently.

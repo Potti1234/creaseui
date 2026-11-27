@@ -9,15 +9,15 @@ type SelectOptions<Msg> = Parameters<typeof SelectBehavior<Msg>>[1]
 const tailwind = {
   label: 'text-sm font-medium',
   trigger:
-    'flex h-8 w-fit max-w-full items-center justify-between gap-2 rounded-md border border-input bg-background px-2.5 text-sm text-foreground shadow-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-muted-foreground data-[variant=ghost]:bg-transparent data-[variant=ghost]:not-focus-visible:border-transparent data-[variant=ghost]:not-focus-visible:shadow-none data-[variant=ghost]:hover:bg-muted',
+    'flex w-fit max-w-full items-center justify-between gap-2 rounded-md border border-input bg-transparent px-2.5 py-1.5 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-8 data-[variant=ghost]:bg-transparent data-[variant=ghost]:not-focus-visible:border-transparent data-[variant=ghost]:not-focus-visible:shadow-none data-[variant=ghost]:hover:bg-muted dark:bg-input/30 dark:hover:bg-input/50',
   value: 'min-w-0 truncate',
   icon: 'shrink-0 text-muted-foreground',
   backdrop: 'fixed inset-0 m-0 size-auto border-0 bg-transparent p-0',
   positioner:
     'm-0 w-max min-w-(--anchor-width) max-w-[min(var(--available-width),calc(100vw-1rem))] overflow-visible border-0 bg-transparent p-0',
   popup:
-    'max-h-(--available-height) origin-(--transform-origin) overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md outline-none transition-opacity duration-150 data-starting-style:opacity-0 data-ending-style:opacity-0 motion-reduce:transition-none',
-  item: 'flex cursor-default items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:opacity-50',
+    'max-h-(--available-height) w-(--anchor-width) min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md outline-none transition-opacity duration-150 data-starting-style:opacity-0 data-ending-style:opacity-0 motion-reduce:transition-none',
+  item: 'group relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-none select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50',
   groupLabel: 'px-2 py-1.5 text-xs text-muted-foreground',
   separator: 'my-1 h-px bg-border',
 }
@@ -84,17 +84,15 @@ export const Select = <Msg, R = never>(
                 index === 0
                   ? undefined
                   : select.separator(h.div.class(styles.separator)),
-                select
-                  .group({ element: h.div, group })
-                  .children(
-                    select
-                      .groupLabel({
-                        element: h.div.class(styles.groupLabel),
-                        group,
-                      })
-                      .children(title),
-                    ...items.map(itemView),
-                  ),
+                select.group({ element: h.div, group }).children(
+                  select
+                    .groupLabel({
+                      element: h.div.class(styles.groupLabel),
+                      group,
+                    })
+                    .children(title),
+                  ...items.map(itemView),
+                ),
               ]
             }).flat()
 
@@ -133,20 +131,16 @@ export const Select = <Msg, R = never>(
             ),
           ),
         select.backdrop(h.div.class(styles.backdrop)),
-        select
-          .positioner(h.div.class(styles.positioner))
-          .children(
-            select
-              .popup(
-                h.div
-                  .class(styles.popup)
-                  .attrs({
-                    'aria-label': ariaLabel,
-                    'data-slot': 'select-content',
-                  }),
-              )
-              .children(...contents),
-          ),
+        select.positioner(h.div.class(styles.positioner)).children(
+          select
+            .popup(
+              h.div.class(styles.popup).attrs({
+                'aria-label': ariaLabel,
+                'data-slot': 'select-content',
+              }),
+            )
+            .children(...contents),
+        ),
       )
     },
   })
