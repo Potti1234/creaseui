@@ -54,7 +54,11 @@ The Foldkit grid documentation uses the `SpatialFocus` and `Lasso` headless beha
 
 ## Data Grid is structurally different from the Foldkit grid
 
-`effect-ui/src/ui/data-grid.ts` renders a native table plus a simpler toolbar/viewport composition. The Foldkit data grid uses a custom virtualized `div` grid with different row metrics, selection/index cells, toolbar panels, focus movement, range highlighting, and editor layering. The Effect docs reuse the same people, column variants, widths, and RTL fixture, but the rendered geometry and interaction surface are not close enough to call the examples 1:1.
+`effect-ui/src/ui/data-grid.ts` still renders a native table rather than Foldkit's custom virtualized `div` grid. The docs now match the spreadsheet-like clipped frame, fixed column widths, row-number/selection cells, toolbar overflow placement, empty grid surface, and Add row treatment closely, but important behavior remains different: header buttons sort directly instead of opening the column menu with explicit ascending/descending/remove/hide actions, the direction toolbar button is presentational because direction is a prop rather than grid state, and Foldkit's full focus movement, range highlighting, editor layering, undo/redo controls, and toolbar panel behavior are not completely ported.
+
+## Empty composition is convenience-based rather than part-based
+
+Foldkit's Empty renderer exposes explicit root children plus an `emptyContent` part, so actions and trailing links can occupy different structural positions. Effect's styled Empty historically wrapped every child in `empty-content`; the branch adds a `footer` escape hatch to match the docs, but the public API still does not expose the same part-level composition as Foldkit.
 
 ## Toast provider positioning and helpers are narrower than Foldkit
 
