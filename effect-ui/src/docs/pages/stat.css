@@ -1,19 +1,29 @@
-.stat-docs-grid {
+.stat-docs-cards {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  width: 100%;
+  max-width: 48rem;
+}
+.stat-docs-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  background: var(--card);
 }
 .stat-docs-row {
   display: flex;
+  flex-wrap: wrap;
+  align-items: end;
   gap: 2rem;
-  align-items: flex-end;
 }
-.stat-docs-card {
-  padding: 1rem;
+.stat-docs-single {
+  width: 100%;
+  max-width: 20rem;
 }
 .stat-docs-sparkline {
-  display: block;
   height: 2.25rem;
   width: 100%;
   color: var(--primary);
+  display: block;
 }
