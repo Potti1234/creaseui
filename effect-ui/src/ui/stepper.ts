@@ -69,7 +69,7 @@ const tailwind = {
   content: 'min-w-0 px-2 pb-2 text-sm',
   compact: 'flex min-w-0 items-center justify-between gap-2 px-1 text-sm',
   control:
-    'inline-grid size-6 shrink-0 place-items-center rounded border bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50',
+    'inline-grid size-6 shrink-0 place-items-center rounded border-0 bg-transparent text-foreground hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50',
 }
 
 export const Stepper = <Msg, R = never>(
@@ -372,10 +372,25 @@ export const Stepper = <Msg, R = never>(
                   collapsedVariant === 'withLabelAndControls' && buttons
                     ? relative(-1)
                     : undefined,
-                  h.span
-                    .class(styles.title)
+                  h.div
+                    .class(
+                      'flex min-w-0 grow flex-col items-center gap-0.5 text-center',
+                    )
                     .children(
-                      `Step ${stepper.active + 1} of ${steps.length}: ${selected.label}`,
+                      h.div
+                        .class('flex min-w-0 items-center gap-2')
+                        .children(
+                          h.span
+                            .class(
+                              'grid size-4 shrink-0 place-items-center rounded-full border border-primary',
+                            )
+                            .children(
+                              h.span.class('size-1.5 rounded-full bg-primary'),
+                            ),
+                          h.span
+                            .class('truncate text-sm font-medium')
+                            .children(selected.label),
+                        ),
                     ),
                   collapsedVariant === 'withLabelAndControls' && buttons
                     ? relative(1)

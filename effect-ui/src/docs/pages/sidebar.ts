@@ -12,67 +12,192 @@ import { exampleApplicationSource } from './source'
 
 const Message = UiSchema.TaggedEnum({
   ChangedSidebar: { open: Schema.Boolean },
+  ChangedQuery: { value: Schema.String },
+  PressedProjectActions: {},
 })
 const SidebarDemo = Html.component({
   name: 'DocsSidebarDemo',
   props: Schema.Struct({ kind: Schema.String, idPrefix: Schema.String }),
-  model: Schema.Struct({ open: Schema.Boolean }),
+  model: Schema.Struct({ open: Schema.Boolean, query: Schema.String }),
   message: Message,
 }).make({
-  init: () => ({ open: true }),
-  update: { ChangedSidebar: ($, { open }) => $.evolve({ open }) },
+  init: () => ({ open: true, query: '' }),
+  update: {
+    ChangedSidebar: ($, { open }) => $.evolve({ open }),
+    ChangedQuery: ($, { value }) => $.evolve({ query: value }),
+    PressedProjectActions: $ => $,
+  },
   view: (h, model) => {
     const kind = h.props.kind
-    const navigation = (sidebar: any) =>
-      sidebar.content({
+    const navigation = (sidebar: any) => {
+      const link = (
+        label: string,
+        icon: string,
+        active = false,
+        badge?: unknown,
+      ) =>
+        sidebar.item({
+          key: label,
+          children: [
+            sidebar.link({
+              label,
+              href: '#',
+              active,
+              icon: Icon(h, { name: icon as never, size: 'sm' }),
+              ...(badge === undefined ? {} : { badge }),
+            }),
+            label === 'Projects' && kind === 'application'
+              ? sidebar.action({
+                  label: 'Project actions',
+                  onSelect: Message.PressedProjectActions(),
+                  children: Icon(h, { name: 'ellipsis', size: 'sm' }),
+                })
+              : undefined,
+          ],
+        })
+      const platformMenu = sidebar.menu({
         children: [
-          sidebar.group({
-            children: [
-              sidebar.groupLabel({ children: ['Workspace'] }),
-              sidebar.menu({
-                children: [
-                  ['Dashboard', 'house', true],
-                  ['Projects', 'folder', false],
-                  ['Analytics', 'chart-bar-stacked', false],
-                  ['Settings', 'settings', false],
-                ].map(([label, icon, active]: any) =>
-                  sidebar.item({
-                    key: label,
-                    children: [
-                      sidebar.link({
-                        label,
-                        href: '#',
-                        active,
-                        icon: Icon(h, { name: icon, size: 'sm' }),
-                      }),
-                    ],
-                  }),
-                ),
-              }),
-              kind === 'nested'
-                ? sidebar.item({
-                    key: 'nested',
-                    children: [
-                      sidebar.subMenu({
-                        children: ['Overview', 'Members'].map(label =>
-                          sidebar.item({
-                            key: label,
-                            children: [
-                              sidebar.link({ label, href: '#', size: 'sm' }),
-                            ],
-                          }),
-                        ),
-                      }),
-                    ],
-                  })
-                : undefined,
-              kind === 'loading' ? sidebar.skeleton('82%') : undefined,
-              kind === 'loading' ? sidebar.skeleton('64%') : undefined,
-              kind === 'loading' ? sidebar.skeleton('74%') : undefined,
-            ],
-          }),
+          link('Dashboard', 'gauge', true),
+          link('Inbox', 'inbox', false, '12'),
+          link('Projects', 'book-open'),
+          link('Calendar', 'calendar'),
         ],
       })
+      const documentation = sidebar.item({
+        key: 'documentation',
+        children: [
+          sidebar.link({
+            label: 'Documentation',
+            href: '#',
+            icon: Icon(h, { name: 'book-open', size: 'sm' }),
+            badge: Icon(h, { name: 'chevron-down', size: 'sm' }),
+            expanded: kind === 'nested',
+          }),
+          kind === 'nested'
+            ? sidebar.subMenu({
+                children: ['Introduction', 'Components', 'Changelog'].map(
+                  (label, index) =>
+                    sidebar.item({
+                      key: label,
+                      children: [
+                        sidebar.link({
+                          label,
+                          href: '#',
+                          active: index === 1,
+                          size: 'sm',
+                        }),
+                      ],
+                    }),
+                ),
+              })
+            : undefined,
+        ],
+      })
+      if (kind === 'loading')
+        return sidebar.content({
+          children: [
+            sidebar.group({
+              children: [
+                sidebar.groupLabel({ children: ['Projects'] }),
+                sidebar.menu({
+                  children: ['82%', '68%', '76%', '58%'].map(width =>
+                    sidebar.item({
+                      key: width,
+                      children: [sidebar.skeleton(width)],
+                    }),
+                  ),
+                }),
+              ],
+            }),
+          ],
+        })
+      return h.div.class('flex min-h-full flex-col').children(
+        kind === 'application' ||
+          kind === 'floating' ||
+          kind === 'inset' ||
+          kind === 'offcanvas' ||
+          kind === 'right'
+          ? sidebar.header({
+              children: [
+                h.div
+                  .class('flex items-center gap-2 px-1 py-1')
+                  .children(
+                    h.div
+                      .class(
+                        'grid size-8 shrink-0 place-items-center rounded-md bg-primary text-xs font-semibold text-primary-foreground',
+                      )
+                      .children('C'),
+                    h.span
+                      .class('truncate text-sm font-semibold')
+                      .children('Crease Workspace'),
+                  ),
+                sidebar.input(
+                  h.input
+                    .attrs({
+                      type: 'search',
+                      placeholder: 'Search navigation',
+                      'aria-label': 'Search navigation',
+                    })
+                    .class('h-9')
+                    .value(model.query)
+                    .on('input', ({ value }) =>
+                      Message.ChangedQuery({ value }),
+                    ),
+                ),
+              ],
+            })
+          : undefined,
+        sidebar.content({
+          children: [
+            sidebar.group({
+              children: [
+                sidebar.groupLabel({ children: ['Platform'] }),
+                platformMenu,
+              ],
+            }),
+            sidebar.group({
+              children: [
+                sidebar.groupLabel({ children: ['Learn'] }),
+                sidebar.menu({ children: [documentation] }),
+              ],
+            }),
+          ],
+        }),
+        kind === 'application' ||
+          kind === 'floating' ||
+          kind === 'inset' ||
+          kind === 'offcanvas' ||
+          kind === 'right'
+          ? sidebar.footer({
+              children: [
+                sidebar.menu({
+                  children: [
+                    sidebar.item({
+                      key: 'account',
+                      children: [
+                        sidebar.link({
+                          label: 'Ada Lovelace',
+                          href: '#',
+                          size: 'lg',
+                          icon: h.span
+                            .class(
+                              'grid size-8 shrink-0 place-items-center rounded-md bg-primary text-xs font-semibold text-primary-foreground',
+                            )
+                            .children('AL'),
+                          badge: Icon(h, {
+                            name: 'chevrons-up-down',
+                            size: 'sm',
+                          }),
+                        }),
+                      ],
+                    }),
+                  ],
+                }),
+              ],
+            })
+          : undefined,
+      )
+    }
     return Sidebar(h, {
       key: `${h.props.idPrefix}-${kind}`,
       label: 'Workspace navigation',
@@ -88,19 +213,32 @@ const SidebarDemo = Html.component({
           : kind === 'primitives'
             ? 'none'
             : 'icon',
-      width: kind === 'right' ? '20rem' : '16rem',
-      rail: kind === 'offcanvas',
+      width: kind === 'right' ? '19rem' : '16rem',
+      ...(kind === 'right'
+        ? { mobileWidth: '20rem', iconWidth: '3.25rem' }
+        : {}),
+      presentation: 'contained',
+      rail: true,
       props: {
         id: `${h.props.idPrefix}-${kind}`,
         open: model.open,
         side: kind === 'right' ? 'right' : 'left',
       },
       navigation,
+      insetHeader: h.strong
+        .class('text-sm font-semibold')
+        .children('Product overview'),
       children: h.div
-        .class(
-          'grid min-h-72 flex-1 place-items-center rounded-md border border-dashed text-sm text-muted-foreground',
-        )
-        .children('Main content'),
+        .class('grid gap-4 p-2')
+        .children(
+          h.div
+            .class('grid gap-4 md:grid-cols-2')
+            .children(
+              h.div.class('h-24 rounded-xl bg-muted').children(),
+              h.div.class('h-24 rounded-xl bg-muted').children(),
+            ),
+          h.div.class('h-32 rounded-xl bg-muted').children(),
+        ),
       onEmit: {
         Changed: ({ open }: any) => Message.ChangedSidebar({ open }),
         MobileChanged: ({ open }: any) => Message.ChangedSidebar({ open }),

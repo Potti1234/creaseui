@@ -25,14 +25,9 @@ const DatePickerDemo = Html.component({
 }).make({
   init: ({ props }) => ({
     dates: {
-      main:
-        props.kind === 'demo'
-          ? '2026-07-08'
-          : props.kind === 'dob'
-            ? '1990-06-15'
-            : null,
-      start: '2026-07-09',
-      end: '2026-07-17',
+      main: null,
+      start: '2026-01-20',
+      end: '2026-02-09',
     },
     query: '',
   }),

@@ -35,7 +35,7 @@ export const DateRangeInput = <Msg, R = never>(
   {
     id,
     label,
-    placeholder = 'Choose date range',
+    placeholder = 'Select date range',
     description,
     status,
     clearable,

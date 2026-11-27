@@ -6396,6 +6396,20 @@ export const sidebar = {
       backgroundColor: 'var(--background)',
     }),
   ),
+  insetHeader: Style.make({
+    display: 'flex',
+    height: 48,
+    flexShrink: 0,
+    alignItems: 'center',
+    gap: 8,
+    borderBottom: '1px solid var(--border)',
+    paddingInline: 16,
+  }),
+  insetBody: Style.make({
+    minHeight: 0,
+    flexGrow: 1,
+    padding: 16,
+  }),
   header: Style.make({
     display: 'flex',
     minWidth: 0,
@@ -6526,8 +6540,6 @@ export const sidebar = {
   ),
   menuIcon: Style.make({
     display: 'inline-grid',
-    width: 16,
-    height: 16,
     flexShrink: 0,
     placeItems: 'center',
   }),
@@ -6543,37 +6555,32 @@ export const sidebar = {
     }),
   ),
   menuAction: Style.make({
-    display: 'inline-grid',
-    height: 28,
-    width: 28,
-    placeItems: 'center',
-    flexShrink: 0,
+    display: 'flex',
+    position: 'absolute',
+    top: 6,
+    insetInlineEnd: 4,
+    width: 20,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 'calc(var(--radius) - 2px)',
-    color: 'inherit',
+    color: 'var(--sidebar-foreground)',
     backgroundColor: 'transparent',
-    borderWidth: 0,
   }).pipe(
-    Style.when(When.pseudo(':is([data-icon-only])'), {
-      display: 'none',
-    }),
-    Style.when(When.hover, {
+    Style.when(When.pseudo(':hover'), {
       backgroundColor: 'var(--sidebar-accent)',
     }),
-    Style.when(When.focusVisible, {
-      outline: '2px solid var(--sidebar-ring)',
-      outlineOffset: 2,
+    Style.when(When.pseudo(':is([data-icon-only])'), {
+      display: 'none',
     }),
   ),
   menuSub: Style.make({
     display: 'grid',
     minWidth: 0,
-    margin: 0,
-    marginInlineStart: 12,
-    padding: 0,
-    paddingInlineStart: 8,
-    listStyle: 'none',
     gap: 2,
+    marginInlineStart: 12,
     borderInlineStart: '1px solid var(--sidebar-border)',
+    paddingInlineStart: 8,
   }).pipe(
     Style.when(When.pseudo(':is([data-icon-only])'), {
       display: 'none',

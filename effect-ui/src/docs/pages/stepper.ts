@@ -278,7 +278,7 @@ const StepperDemo = Html.component({
                         .children(
                           h.span
                             .class('text-sm font-medium')
-                            .children('Foldkit + Vite'),
+                            .children('Effect UI + Vite'),
                           Badge(h, { variant: 'secondary' }).children(
                             'Detected',
                           ),
