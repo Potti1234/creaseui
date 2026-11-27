@@ -6,6 +6,7 @@ import { Schema } from 'effect'
 export const DocsMessage = UiSchema.TaggedEnum({
   Filtered: { query: Schema.String },
   SearchFiltered: { query: Schema.String },
+  SelectedBlockCategory: { category: Schema.String },
   ToggledTheme: {},
   OpenedSearch: {},
   ClosedSearch: {},
@@ -17,7 +18,10 @@ export type DocsGuide = {
   readonly title: string
   readonly description?: string
   readonly toc?: ReadonlyArray<readonly [string, string]>
-  readonly view: (h: Html.H<DocsMessage>) => View.Input<DocsMessage>
+  readonly view: (
+    h: Html.H<DocsMessage>,
+    context?: { readonly blockCategory: string },
+  ) => View.Input<DocsMessage>
 }
 
 export type DocsExampleRenderContext = {
@@ -55,6 +59,9 @@ export const defineComponentDocs = (
 
 export type DocsExample = {
   readonly description: string
-  readonly view: (h: Html.H<DocsMessage>) => View.Input<DocsMessage>
+  readonly view: (
+    h: Html.H<DocsMessage>,
+    context?: { readonly blockCategory: string },
+  ) => View.Input<DocsMessage>
   readonly source?: string
 }

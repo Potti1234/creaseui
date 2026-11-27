@@ -985,6 +985,7 @@ const Docs = Html.component({
     dark: Schema.Boolean,
     searchOpen: Schema.Boolean,
     search: Schema.String,
+    blockCategory: Schema.String,
   }),
   message: DocsMessage,
 }).make({
@@ -993,10 +994,18 @@ const Docs = Html.component({
     dark: initialDark,
     searchOpen: false,
     search: '',
+    blockCategory:
+      guidePath === '/blocks/sidebar'
+        ? 'sidebar'
+        : guidePath === '/blocks-stylex/table'
+          ? 'table'
+          : 'all',
   }),
   update: {
     Filtered: ($, { query }) => $.evolve({ query }),
     SearchFiltered: ($, { query }) => $.evolve({ search: query }),
+    SelectedBlockCategory: ($, { category }) =>
+      $.evolve({ blockCategory: category }),
     ToggledTheme: $ => $.evolve({ dark: value => !value }),
     OpenedSearch: $ => $.evolve({ searchOpen: true }),
     ClosedSearch: $ => $.evolve({ searchOpen: false }),
@@ -1017,7 +1026,7 @@ const Docs = Html.component({
       },
     ]),
   ],
-  view: (h, { query, dark, searchOpen, search }) => {
+  view: (h, { query, dark, searchOpen, search, blockCategory }) => {
     const groups = groupedEntries(query)
     return h.div.class('effect-docs', dark ? 'dark' : 'light').children(
       isBlockPreview
@@ -1032,7 +1041,7 @@ const Docs = Html.component({
         ? h.main
             .class('block-preview-page')
             .attrs({ id: 'docs-main', tabindex: '-1' })
-            .children(guide.view(h))
+            .children(guide.view(h, { blockCategory }))
         : isHome
           ? h.main
               .class('site-page')
@@ -1045,7 +1054,7 @@ const Docs = Html.component({
             ? h.main
                 .class('site-page')
                 .attrs({ id: 'docs-main', tabindex: '-1' })
-                .children(guide.view(h))
+                .children(guide.view(h, { blockCategory }))
             : h.div.class('docs-layout').children(
                 h.aside.class('docs-sidebar').children(
                   guidePath.startsWith('/docs/tutorial')

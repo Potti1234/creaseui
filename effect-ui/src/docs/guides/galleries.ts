@@ -923,11 +923,33 @@ const blockPreviewGuide = (name: string, description: string): DocsGuide => ({
   view: h => blockPreviewView(h, name),
 })
 
+const blockCategory = (name: string) =>
+  name.startsWith('sidebar-') || name === 'app-shell-01'
+    ? 'sidebar'
+    : name.startsWith('login-')
+      ? 'login'
+      : name.startsWith('tablecn')
+        ? 'table'
+        : 'dashboard'
+
+const blockCategories = [
+  ['all', 'All blocks'],
+  ['dashboard', 'Dashboards'],
+  ['sidebar', 'Sidebars'],
+  ['login', 'Authentication'],
+  ['table', 'Tables'],
+] as const
+
 const blocksGuide: DocsGuide = {
   title: 'Blocks',
   description: 'Building Blocks for Effect UI',
-  view: h =>
-    h.div.class('blocks-gallery').children(
+  view: (h, context) => {
+    const selectedCategory = context?.blockCategory ?? 'all'
+    const visibleBlocks = blocks.filter(
+      ([name]) =>
+        selectedCategory === 'all' || blockCategory(name) === selectedCategory,
+    )
+    return h.div.class('blocks-gallery').children(
       h.header
         .class('blocks-header')
         .children(
@@ -936,25 +958,31 @@ const blocksGuide: DocsGuide = {
             'Complete sidebars, dashboards and login layouts. Explore the same blocks across renderers, with live previews you can open full screen.',
           ),
         ),
-      h.div
-        .class('blocks-toolbar')
-        .children(
-          h.nav
-            .attr('aria-label', 'Block categories')
-            .children(
-              h.a.attr('aria-current', 'page').children('All blocks'),
-              h.a.children('Dashboards'),
-              h.a.children('Sidebars'),
-              h.a.children('Authentication'),
-              h.a.children('Tables'),
-            ),
-          h.a.class('blocks-playground').children('Table playground ↗'),
+      h.div.class('blocks-toolbar').children(
+        h.nav.attr('aria-label', 'Block categories').children(
+          blockCategories.map(([category, label]) =>
+            h.button
+              .key(category)
+              .attrs({
+                type: 'button',
+                'aria-pressed': String(category === selectedCategory),
+              })
+              .on('click', () =>
+                DocsMessage.SelectedBlockCategory({ category }),
+              )
+              .children(label),
+          ),
         ),
+        h.a
+          .class('blocks-playground')
+          .attr('href', '/blocks-stylex/table')
+          .children('Table playground ↗'),
+      ),
       h.p
         .class('blocks-count')
-        .children(`${String(blocks.length)} blocks · Tailwind`),
+        .children(`${String(visibleBlocks.length)} blocks · Tailwind`),
       h.div.class('blocks-list').children(
-        blocks.map(([name, description]) =>
+        visibleBlocks.map(([name, description]) =>
           h.article
             .key(name)
             .class('block-row')
@@ -984,9 +1012,10 @@ const blocksGuide: DocsGuide = {
       h.p
         .class('chart-gallery-note')
         .children(
-          'Live block iframe previews and copyable per-renderer block source are still pending migration; these rows preserve the catalog and page structure.',
+          'Block previews are live Effect UI reconstructions; copyable per-renderer block source is still pending migration.',
         ),
-    ),
+    )
+  },
 }
 export const galleryGuides: Readonly<Record<string, DocsGuide>> = {
   '/create': createGuide,
