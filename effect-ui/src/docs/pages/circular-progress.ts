@@ -25,7 +25,7 @@ const render =
     items: ReadonlyArray<Item>,
     row: boolean,
   ): DocsExampleImplementation['view'] =>
-  (h: Html.H<DocsMessage>) =>
+  (h: Html.H<DocsMessage>, context) =>
     h.div
       .class(
         row ? 'circular-progress-docs-row' : 'circular-progress-docs-single',
