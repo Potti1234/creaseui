@@ -77,10 +77,10 @@ export const dataTableClasses = {
   root: 'grid min-w-0 gap-4 text-sm',
   toolbar: 'flex flex-wrap items-center gap-2',
   input:
-    'h-8 min-w-0 rounded-md border border-input bg-background px-2.5 outline-none focus-visible:ring-2 focus-visible:ring-ring',
+    'h-10 min-w-0 rounded-md border border-input bg-background px-3 outline-none focus-visible:ring-2 focus-visible:ring-ring',
   search: 'w-full max-w-56',
   button:
-    'inline-flex min-h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border border-input bg-background px-2.5 text-sm font-medium leading-none hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-50',
+    'inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-md border border-input bg-background px-3 text-sm font-medium leading-none hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-50',
   quietButton:
     'inline-flex min-h-8 items-center gap-1.5 rounded-md px-2 text-start font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-50',
   danger: 'text-destructive',
@@ -311,6 +311,24 @@ export const DataTable = <Row, Msg, R = never>(
       ) =>
         parts
           .button(h.button.class(styles.button).disabled(disabled), action)
+          .children(label)
+      const pageButton = (
+        label: string,
+        action: DataTableAction,
+        disabled = false,
+      ) =>
+        parts
+          .button(
+            h.button
+              .class(styles.button)
+              .style({
+                minHeight: '2rem',
+                height: '2rem',
+                paddingInline: '0.625rem',
+              })
+              .disabled(disabled),
+            action,
+          )
           .children(label)
       const valueChoice = (keys: readonly string[], current = '') =>
         valueMenu === undefined
@@ -1044,7 +1062,7 @@ export const DataTable = <Row, Msg, R = never>(
                 faceted
                   ? button('First page', page(0), projection.page === 0)
                   : undefined,
-                button(
+                pageButton(
                   'Previous',
                   page(projection.page - 1),
                   projection.page === 0,
@@ -1057,6 +1075,11 @@ export const DataTable = <Row, Msg, R = never>(
                           styles.button,
                           index === projection.page ? 'bg-muted' : undefined,
                         )
+                        .style({
+                          minHeight: '2rem',
+                          height: '2rem',
+                          paddingInline: '0.625rem',
+                        })
                         .attr(
                           'aria-current',
                           index === projection.page ? 'page' : undefined,
@@ -1065,13 +1088,13 @@ export const DataTable = <Row, Msg, R = never>(
                     )
                     .children(String(index + 1)),
                 ),
-                button(
+                pageButton(
                   'Next',
                   page(projection.page + 1),
                   projection.page >= projection.pageCount - 1,
                 ),
                 faceted
-                  ? button(
+                  ? pageButton(
                       'Last page',
                       page(projection.pageCount - 1),
                       projection.page >= projection.pageCount - 1,
