@@ -8,6 +8,8 @@ import {
   componentBehaviors,
   type BehaviorEntry,
 } from '../../../src/docs/generated-behavior-docs'
+import { LINT_RULE_GROUPS } from '../../../src/docs/lint/rules'
+import { TUTORIAL_CHAPTERS } from '../../../src/docs/tutorial/chapter-meta'
 import { componentDocsPages } from './component-pages'
 import { guides } from './guides'
 import { pageMetadata } from './page-metadata'
@@ -86,6 +88,37 @@ type PageMetadata = Readonly<{
 
 const metadataBySlug = pageMetadata as unknown as Record<string, PageMetadata>
 const behaviorBySlug = new Map(behaviors.map(entry => [entry.slug, entry]))
+const searchEntries = catalogOrder
+  .map(({ slug, title }) => ({
+    href: componentPath(slug),
+    title,
+    description: metadataBySlug[slug]?.description ?? '',
+  }))
+  .concat(
+    behaviors
+      .filter(entry => entry.kind === 'primitive')
+      .map(entry => ({
+        href: entry.docs,
+        title: `${entry.title} (behavior)`,
+        description: entry.description,
+      })),
+    LINT_RULE_GROUPS.flatMap(group =>
+      group.rules.map(rule => ({
+        href: `/docs/lint#${rule.id}`,
+        title: `${rule.title} (lint)`,
+        description: rule.summary,
+      })),
+    ),
+    TUTORIAL_CHAPTERS.map(chapter => ({
+      href:
+        chapter.id === 'short'
+          ? '/docs/tutorial'
+          : `/docs/tutorial/${chapter.id}`,
+      title: `${chapter.title} (tutorial)`,
+      description: chapter.summary,
+    })),
+  )
+  .sort((left, right) => left.title.localeCompare(right.title, 'en'))
 const effectText = (value: string): string =>
   value.replaceAll('Foldkit', 'Effect UI').replaceAll('foldkit', 'effect-ui')
 
@@ -848,21 +881,15 @@ const notFound = (h: DocHtml) =>
     h.p.children(h.a.attr('href', catalogPath).children('Browse components')),
   )
 
-const searchDialog = (
-  h: DocHtml,
-  query: string,
-  groups: ReturnType<typeof groupedEntries>,
-) => {
-  const term = query.trim().toLowerCase()
-  const behaviorResults = behaviors.filter(
-    entry =>
-      entry.kind === 'primitive' &&
-      (term === '' ||
-        entry.title.toLowerCase().includes(term) ||
-        entry.description.toLowerCase().includes(term)),
-  )
-  const guideResults = guideLinks.filter(
-    entry => term === '' || entry.label.toLowerCase().includes(term),
+const searchDialog = (h: DocHtml, query: string) => {
+  const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean)
+  const results = searchEntries.filter(({ title, description, href }) =>
+    terms.every(
+      term =>
+        title.toLowerCase().includes(term) ||
+        description.toLowerCase().includes(term) ||
+        href.toLowerCase().includes(term),
+    ),
   )
   return h.div.class('docs-search-backdrop').children(
     h.div
@@ -873,69 +900,66 @@ const searchDialog = (
         'aria-label': 'Search documentation',
       })
       .children(
+        h.div
+          .class('docs-search-heading')
+          .children(
+            h.div.children(
+              h.h2.children('Search documentation'),
+              h.p.children('Find a component by name or what it does.'),
+            ),
+            h.button
+              .class('docs-search-close')
+              .attrs({ type: 'button', 'aria-label': 'Close search' })
+              .on('click', DocsMessage.ClosedSearch())
+              .children('×'),
+          ),
         h.div.class('docs-search-bar').children(
+          Icon(h, { name: 'search', size: 'sm' }),
           h.input
             .class('docs-search-input')
             .attrs({
               type: 'search',
               placeholder: 'Search documentation…',
-              'aria-label': 'Search documentation',
+              'aria-label': 'Search documentation pages',
             })
             .value(query)
             .on('input', ({ value }) =>
               DocsMessage.SearchFiltered({ query: value }),
             ),
-          h.button
-            .class('docs-search-close')
-            .attrs({ type: 'button', 'aria-label': 'Close search' })
-            .on('click', DocsMessage.ClosedSearch())
-            .children('×'),
         ),
         h.div.class('docs-search-results').children(
-          guideResults.length === 0
-            ? undefined
-            : h.div.class('docs-search-group').children(
-                h.h2.children('Guides'),
-                guideResults.map(entry =>
-                  h.a
-                    .key(entry.href)
-                    .attr('href', entry.href)
-                    .children(entry.label),
-                ),
-              ),
-          groups.map(group =>
-            h.div
-              .key(group.label)
-              .class('docs-search-group')
+          results.map(entry =>
+            h.a
+              .key(entry.href)
+              .class('docs-search-result')
+              .attr('href', entry.href)
               .children(
-                h.h2.children(group.label),
-                group.entries.map(entry =>
-                  h.a
-                    .key(entry.slug)
-                    .attr('href', componentPath(entry.slug))
-                    .children(entry.title),
-                ),
+                Icon(h, { name: 'book-open', size: 'sm' }),
+                h.span
+                  .class('docs-search-result-copy')
+                  .children(
+                    h.span
+                      .class('docs-search-result-title')
+                      .children(entry.title),
+                    h.span
+                      .class('docs-search-result-description')
+                      .children(entry.description),
+                  ),
               ),
           ),
-          behaviorResults.length === 0
-            ? undefined
-            : h.div.class('docs-search-group').children(
-                h.h2.children('Behaviors'),
-                behaviorResults.map(entry =>
-                  h.a
-                    .key(entry.slug)
-                    .attr('href', entry.docs)
-                    .children(entry.title),
-                ),
-              ),
-          groups.length === 0 &&
-            behaviorResults.length === 0 &&
-            guideResults.length === 0
+          results.length === 0
             ? h.p
-                .class('docs-muted')
-                .children('No documentation matches your search.')
+                .class('docs-search-empty')
+                .children('No documentation pages found. Try another search.')
             : undefined,
         ),
+        h.div
+          .class('docs-search-help')
+          .children(
+            h.span.children('Arrow keys to navigate'),
+            h.span.children('Enter to open'),
+            h.span.children('Esc to close'),
+          ),
       ),
   )
 }
@@ -992,14 +1016,13 @@ const Docs = Html.component({
   ],
   view: (h, { query, dark, searchOpen, search }) => {
     const groups = groupedEntries(query)
-    const searchGroups = groupedEntries(search)
     return h.div.class('effect-docs', dark ? 'dark' : 'light').children(
       h.a
         .class('docs-skip')
         .attr('href', '#docs-main')
         .children('Skip to content'),
       docsHeader(h, dark, query, groups),
-      searchOpen ? searchDialog(h, search, searchGroups) : undefined,
+      searchOpen ? searchDialog(h, search) : undefined,
       guide !== undefined &&
         (guidePath === '/create' ||
           guidePath.startsWith('/charts') ||

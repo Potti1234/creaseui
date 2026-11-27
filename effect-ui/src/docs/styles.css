@@ -154,11 +154,11 @@ body:has(.effect-docs) {
   z-index: 80;
   display: grid;
   place-items: start center;
-  padding: 12vh 1rem 1rem;
+  padding: 9vh 1rem 1rem;
   background: rgb(0 0 0 / 45%);
 }
 .docs-search-dialog {
-  width: min(40rem, 100%);
+  width: min(32rem, 100%);
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: calc(var(--radius) + 4px);
@@ -166,50 +166,120 @@ body:has(.effect-docs) {
   color: var(--popover-foreground);
   box-shadow: var(--shadow-lg);
 }
+.docs-search-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1rem 0.75rem;
+}
+.docs-search-heading h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.docs-search-heading p {
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+.docs-search-close {
+  display: grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  border: 0;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.docs-search-close:hover {
+  background: var(--accent);
+  color: var(--foreground);
+}
 .docs-search-bar {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin: 0 1rem;
   border-bottom: 1px solid var(--border);
-  padding: 0.5rem;
+  padding: 0.5rem 0;
+  color: var(--muted-foreground);
 }
 .docs-search-input {
   min-width: 0;
   flex: 1;
   border: 0;
   background: transparent;
-  padding: 0.5rem;
+  padding: 0.25rem 0;
+  color: var(--foreground);
+  font-size: 0.875rem;
   outline: none;
 }
-.docs-search-close {
-  border: 0;
-  background: transparent;
-  color: var(--muted-foreground);
-  font-size: 1.25rem;
-}
 .docs-search-results {
-  max-height: 55vh;
+  max-height: 19rem;
   overflow: auto;
   padding: 0.5rem;
 }
-.docs-search-group {
-  padding: 0.25rem 0;
-}
-.docs-search-group h2 {
-  padding: 0.25rem 0.5rem;
-  color: var(--muted-foreground);
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-.docs-search-group a {
-  display: block;
+.docs-search-result {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
   border-radius: var(--radius);
-  padding: 0.5rem;
+  padding: 0.375rem 0.5rem;
   color: inherit;
   text-decoration: none;
 }
-.docs-search-group a:hover {
+.docs-search-result:first-child,
+.docs-search-result:hover {
   background: var(--muted);
+}
+.docs-search-result > svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+.docs-search-result-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.docs-search-result-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+.docs-search-result-description {
+  overflow: hidden;
+  color: color-mix(in oklab, var(--foreground) 75%, transparent);
+  font-size: 0.75rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.docs-search-empty {
+  padding: 1rem 0.5rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  text-align: center;
+}
+.docs-search-help {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-top: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
 }
 
 .docs-search-trigger kbd {
