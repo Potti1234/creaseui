@@ -12,12 +12,14 @@ export const ContextMenu = <Msg, R = never>(
     trigger,
     triggerLabel,
     triggerId,
+    triggerClassName,
     ...options
   }: Omit<Options<Msg>, 'view' | 'fallback'> &
     MenuUiOptions<NoInfer<Msg>, R> & {
       readonly trigger: View.Input<NoInfer<Msg>, R>
       readonly triggerLabel?: string
       readonly triggerId?: string
+      readonly triggerClassName?: string
     },
   styles: typeof menuStyles = menuStyles,
 ) =>
@@ -27,7 +29,7 @@ export const ContextMenu = <Msg, R = never>(
       h.div.attr('dir', options.direction).children(
         menu
           .trigger(
-            h.div.class(styles.contextTrigger).attrs({
+            h.div.class(triggerClassName ?? styles.contextTrigger).attrs({
               id: triggerId,
               'data-slot': 'context-menu-trigger',
               'aria-label': triggerLabel,
