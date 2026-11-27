@@ -7,59 +7,36 @@ import {
 } from '../types'
 import { exampleApplicationSource } from './source'
 
-const node = (
-  h: Html.H<DocsMessage>,
-  label: string,
-  x: number,
-  y: number,
-  active = false,
-) =>
-  h.div
-    .key(label)
-    .class(
-      active
-        ? 'absolute rounded-lg border-2 border-primary bg-background px-3 py-2 text-sm font-medium shadow-sm'
-        : 'absolute rounded-lg border bg-background px-3 py-2 text-sm font-medium shadow-sm',
-    )
-    .style({ left: `${x}px`, top: `${y}px` })
-    .children(
-      label,
-      h.span
-        .class(
-          'absolute top-1/2 -right-1.5 size-3 -translate-y-1/2 rounded-full border bg-primary',
-        )
-        .attr('aria-hidden', 'true'),
-    )
-const view =
-  (keyboard: boolean): DocsExampleImplementation['view'] =>
-  (h: Html.H<DocsMessage>) =>
+const port = (h: Html.H<DocsMessage>, label: string, x: number, y: number) =>
+  h.div.key(label).children(
     h.div
-      .class('w-full max-w-lg')
-      .children(
-        h.div
-          .class(
-            'relative h-56 w-full overflow-hidden rounded-lg border bg-muted/30',
-          )
-          .children(
-            h.div
-              .class('absolute top-12 right-30 left-31 h-0.5 bg-primary')
-              .attr('aria-hidden', 'true'),
-            h.div
-              .class(
-                'absolute top-36 right-30 left-31 border-t-2 border-dashed border-border',
-              )
-              .attr('aria-hidden', 'true'),
-            node(h, 'prompt:out', 24, keyboard ? 32 : 128, keyboard),
-            node(h, 'answer:in', 300, keyboard ? 32 : 128),
-          ),
-        h.p
-          .class('mt-3 text-sm text-muted-foreground')
-          .children(
-            keyboard
-              ? 'Start with Enter, target a compatible port with an arrow key, and commit with Enter.'
-              : 'Drag from an output port to a compatible input port to create a connection.',
-          ),
-      )
+      .class('absolute size-6 rounded-full bg-foreground')
+      .style({ left: `${x - 12}px`, top: `${y - 12}px` })
+      .attr('aria-hidden', 'true'),
+    h.div
+      .class('absolute w-24 text-center text-xs text-foreground')
+      .style({ left: `${x - 48}px`, top: `${y + 18}px` })
+      .children(label.replace(':', ' ')),
+  )
+const view =
+  (_keyboard: boolean): DocsExampleImplementation['view'] =>
+  (h: Html.H<DocsMessage>) =>
+    h.div.children(
+      h.p
+        .class('m-0 text-base')
+        .children(
+          'Drag an output to an input. Or Tab to an output, press Enter, use arrows, then Enter. Escape or Tab cancels.',
+        ),
+      h.div
+        .class('relative h-55 w-100')
+        .children(
+          port(h, 'prompt:out', 80, 60) as never,
+          port(h, 'context:out', 80, 160) as never,
+          port(h, 'answer:in', 320, 60) as never,
+          port(h, 'summary:in', 320, 160) as never,
+        ),
+      h.p.class('m-0 text-base').children('Saved connections: 0'),
+    )
 const source = exampleApplicationSource({
   imports: `import * as Connect from '@/lib/behaviors/connect'`,
   body: `h.submodel({

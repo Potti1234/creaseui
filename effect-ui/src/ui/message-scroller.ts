@@ -19,6 +19,8 @@ export type MessageScrollerProps<Msg, R = never> = Omit<
   readonly live?: 'off' | 'polite'
   readonly children: View.Children<Msg, R>
   readonly height?: string
+  readonly maxHeight?: string
+  readonly dense?: boolean
   readonly className?: string
 }
 const tailwind = {
@@ -42,6 +44,8 @@ export const MessageScroller = <Msg, R = never>(
     newContentLabel = 'New messages',
     live = 'off',
     height,
+    maxHeight,
+    dense,
     children,
     className,
     ...options
@@ -57,7 +61,7 @@ export const MessageScroller = <Msg, R = never>(
           h.div
             .class(styles.root, className)
             .attrs({ 'data-slot': 'message-scroller', id })
-            .style({ height }),
+            .style({ height, maxHeight }),
         )
         .children(
           ScrollAreaBehavior(h, {
@@ -80,6 +84,7 @@ export const MessageScroller = <Msg, R = never>(
                         role: live === 'polite' ? 'log' : 'region',
                       })
                       .style({
+                        scrollbarWidth: 'thin',
                         overflowX: 'hidden !important',
                         overflowY: 'auto !important',
                       }),
@@ -88,7 +93,11 @@ export const MessageScroller = <Msg, R = never>(
                     scroll
                       .content(
                         h.div
-                          .class(styles.content)
+                          .class(
+                            dense === true
+                              ? 'flex min-w-0 flex-col'
+                              : styles.content,
+                          )
                           .attr('data-slot', 'message-scroller-content'),
                       )
                       .children(children),

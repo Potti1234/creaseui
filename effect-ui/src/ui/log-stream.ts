@@ -7,7 +7,7 @@ import { MessageScroller, type MessageScrollerProps } from './message-scroller'
 
 export type LogStreamProps<Msg, R = never> = Omit<
   MessageScrollerProps<Msg, R>,
-  'children' | 'live' | 'height' | 'newContentLabel' | 'endLabel'
+  'children' | 'live' | 'height' | 'maxHeight' | 'newContentLabel' | 'endLabel'
 > & {
   readonly entries: readonly LogEntry[]
   readonly variant?: 'default' | 'terminal'
@@ -17,8 +17,8 @@ export type LogStreamProps<Msg, R = never> = Omit<
 }
 
 const tailwind = {
-  root: 'overflow-hidden rounded-md border bg-card text-card-foreground data-[variant=terminal]:border-neutral-800 data-[variant=terminal]:bg-neutral-950 data-[variant=terminal]:text-neutral-100',
-  row: 'grid w-full min-w-0 items-baseline gap-2 border-0 border-b border-current/10 bg-transparent px-2 py-1 text-start font-mono text-xs text-inherit',
+  root: 'overflow-hidden rounded-lg border bg-card font-mono text-sm text-card-foreground data-[variant=terminal]:border-neutral-800 data-[variant=terminal]:bg-neutral-950 data-[variant=terminal]:text-neutral-100',
+  row: 'grid w-full min-w-0 items-baseline gap-x-3 border-0 border-b border-current/10 bg-transparent px-3 py-1 text-start leading-[1.7] text-inherit data-[variant=terminal]:border-b-0 data-[variant=terminal]:py-px',
   expander:
     'cursor-pointer hover:bg-current/5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring data-open:bg-current/5',
   timestamp: 'whitespace-nowrap tabular-nums opacity-70',
@@ -73,10 +73,11 @@ export const LogStream = <Msg, R = never>(
       renderScroller(h, {
         ...options,
         label,
+        maxHeight: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight,
+        dense: true,
         newContentLabel: 'New log entries',
         endLabel: 'Jump to latest log entry',
         live: 'polite',
-        height: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight,
         children: entries.map(entry =>
           renderEntry !== undefined
             ? h.div
@@ -87,7 +88,10 @@ export const LogStream = <Msg, R = never>(
               ? h.div
                   .key(entry.id)
                   .class(styles.row)
-                  .attr('data-slot', 'log-stream-entry')
+                  .attrs({
+                    'data-slot': 'log-stream-entry',
+                    'data-variant': variant,
+                  })
                   .style({ gridTemplateColumns: columns })
                   .children(cells(entry))
               : CollapsibleBehavior(h, {
@@ -95,7 +99,12 @@ export const LogStream = <Msg, R = never>(
                   props: {},
                   view: disclosure =>
                     disclosure
-                      .root(h.div.attr('data-slot', 'log-stream-entry'))
+                      .root(
+                        h.div.attrs({
+                          'data-slot': 'log-stream-entry',
+                          'data-variant': variant,
+                        }),
+                      )
                       .children(
                         disclosure
                           .trigger(
@@ -106,11 +115,9 @@ export const LogStream = <Msg, R = never>(
                           .children(cells(entry)),
                         disclosure
                           .panel(
-                            h.pre
-                              .class(styles.details)
-                              .attrs({
-                                'data-slot': 'log-stream-entry-detail',
-                              }),
+                            h.pre.class(styles.details).attrs({
+                              'data-slot': 'log-stream-entry-detail',
+                            }),
                           )
                           ?.children(entry.detail),
                       ),
