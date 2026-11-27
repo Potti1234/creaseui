@@ -1,5 +1,5 @@
 import type { Html as HtmlTypes } from '@effect/ui/html'
-import { BrowserHost, Html } from '@effect/ui/html'
+import { BrowserHost, Html, HtmlSubscription } from '@effect/ui/html'
 import { Effect, Layer, Schema } from 'effect'
 
 import { CodeBlock } from '#components'
@@ -912,6 +912,21 @@ const Docs = Html.component({
     OpenedSearch: $ => $.evolve({ searchOpen: true }),
     ClosedSearch: $ => $.evolve({ searchOpen: false }),
   },
+  subscriptions: () => [
+    HtmlSubscription.shortcuts([
+      {
+        key: 'k',
+        mod: true,
+        whileTyping: true,
+        message: DocsMessage.OpenedSearch(),
+      },
+      {
+        key: 'Escape',
+        whileTyping: true,
+        message: DocsMessage.ClosedSearch(),
+      },
+    ]),
+  ],
   view: (h, { query, dark, searchOpen, search }) => {
     const groups = groupedEntries(query)
     const searchGroups = groupedEntries(search)
