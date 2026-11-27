@@ -366,23 +366,65 @@ const view =
             ),
         ),
       )
-    if (kind === 'group')
+    if (kind === 'group') {
+      const item = (
+        key: string,
+        label: string,
+        checked: boolean,
+        disabled = false,
+      ) =>
+        Checkbox(h, {
+          key,
+          id: `${id}-${key}`,
+          label,
+          props: { checked, disabled, name: 'notifications', value: key },
+          onEmit: { Toggled: () => undefined },
+        })
+      const section = (
+        title: string,
+        description: unknown,
+        children: readonly unknown[],
+      ) =>
+        h.fieldset
+          .class('m-0 flex flex-col gap-6 border-0 p-0')
+          .children(
+            h.label
+              .class(
+                'flex w-fit items-center gap-2 text-sm leading-snug font-medium',
+              )
+              .children(title),
+            h.p
+              .class('m-0 -mt-4 text-sm leading-normal text-muted-foreground')
+              .children(description as never),
+            h.div
+              .class('flex w-full flex-col gap-3')
+              .children(...(children as never[])),
+          )
       return h.div
-        .class('grid w-full max-w-md gap-6')
+        .class('@container/field-group flex w-full max-w-xs flex-col gap-7')
         .children(
-          simpleField(
-            h,
-            `${id}-first`,
-            'First name',
-            controlInput(h, `${id}-first-input`, 'Jordan'),
+          section(
+            'Responses',
+            'Get notified when ChatGPT responds to requests that take time, like research or image generation.',
+            [item('push', 'Push notifications', true, true) as never],
           ) as never,
-          simpleField(
-            h,
-            `${id}-last`,
-            'Last name',
-            controlInput(h, `${id}-last-input`, 'Lee'),
+          h.hr.class('m-0 h-px border-0 bg-border'),
+          section(
+            'Tasks',
+            h.span.children(
+              "Get notified when tasks you've created have updates. ",
+              h.a
+                .class('underline underline-offset-4')
+                .attr('href', '#')
+                .children('Manage tasks'),
+            ),
+            [
+              item('push-tasks', 'Push notifications', false) as never,
+              item('email-tasks', 'Email notifications', false) as never,
+            ],
           ) as never,
         )
+    }
     if (kind === 'responsive') {
       const responsiveField =
         'group/field flex w-full flex-col gap-2 @md/field-group:flex-row @md/field-group:items-center [&>*]:w-full @md/field-group:[&>*]:w-auto'
