@@ -93,10 +93,10 @@ const avatarExample: DocsExampleImplementation['view'] = (h, context) =>
     className: 'empty-docs-shell',
     media: Avatar<DocsMessage>(h, {
       key: `${context.idPrefix}-offline-avatar`,
-      props: {},
+      props: { src: '/logo-mark.svg' },
       alt: '@creaseui',
       fallbackContent: ['LR'],
-      className: 'empty-docs-avatar',
+      className: 'empty-docs-avatar size-12',
     }),
     title: 'User Offline',
     description:
@@ -112,14 +112,14 @@ const avatarGroupExample: DocsExampleImplementation['view'] = (h, context) =>
       className: 'empty-docs-group-avatar',
       children: (
         [
-          ['creaseui', 'CU'],
-          ['maxleiter', 'LR'],
-          ['evilrabbit', 'ER'],
+          ['/logo-mark.svg', 'creaseui', 'CU'],
+          ['https://github.com/maxleiter.png', 'maxleiter', 'LR'],
+          ['https://github.com/evilrabbit.png', 'evilrabbit', 'ER'],
         ] as const
-      ).map(([name, fallback]) =>
+      ).map(([src, name, fallback]) =>
         Avatar<DocsMessage>(h, {
           key: `${context.idPrefix}-${name}`,
-          props: {},
+          props: { src },
           alt: `@${name}`,
           fallbackContent: [fallback],
         }),

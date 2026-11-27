@@ -44,5 +44,7 @@
   filter: grayscale(1);
 }
 .empty-docs-group-avatar > * {
+  width: 3rem;
+  height: 3rem;
   filter: grayscale(1);
 }
