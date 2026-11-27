@@ -14,6 +14,7 @@ export type EmptyProps<Msg, R = never> = {
   readonly media?: View.Input<Msg, R>
   readonly mediaVariant?: 'default' | 'icon'
   readonly children?: View.Children<Msg, R>
+  readonly footer?: View.Input<Msg, R>
   readonly className?: string
 }
 
@@ -25,6 +26,7 @@ export const EmptyBehavior = <Msg, R = never>(
     media,
     mediaVariant = 'default',
     children,
+    footer,
     className,
   }: EmptyProps<NoInfer<Msg>, R>,
   styles: Classes = {},
@@ -63,4 +65,5 @@ export const EmptyBehavior = <Msg, R = never>(
             .class(styles.content)
             .attr('data-slot', 'empty-content')
             .children(children),
+      footer,
     )

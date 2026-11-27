@@ -24,7 +24,7 @@ const action = (
   label: string,
   icon?: View.Input<DocsMessage>,
 ) =>
-  Button<DocsMessage>(h, { variant }).children(
+  Button<DocsMessage>(h, { variant, size: 'sm' }).children(
     ...(icon === undefined ? [label] : [icon, label]),
   ) as View.Content<DocsMessage, never>
 const linkRow = (h: H, label: string) =>
@@ -51,8 +51,8 @@ const project =
               action(h, 'default', rtl ? 'إنشاء مشروع' : 'Create Project'),
               action(h, 'outline', rtl ? 'استيراد مشروع' : 'Import Project'),
             ) as View.Content<DocsMessage, never>,
-          linkRow(h, rtl ? 'تعرف على المزيد' : 'Learn More'),
         ],
+        footer: linkRow(h, rtl ? 'تعرف على المزيد' : 'Learn More'),
       }),
     )
 
