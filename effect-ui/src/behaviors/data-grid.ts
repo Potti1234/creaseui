@@ -94,6 +94,8 @@ const State = Schema.Struct({
   rowAnchor: Schema.NullOr(Schema.String),
   sorting: Schema.Array(Sort),
   hidden: Schema.Array(Schema.String),
+  columnMenu: Schema.String,
+  directionOverride: Schema.NullOr(Schema.Literals(['ltr', 'rtl'])),
   order: Schema.Array(Schema.String),
   filters: TextValues,
   rowHeight: RowHeight,
@@ -145,6 +147,11 @@ const Message = UiSchema.TaggedEnum({
   SearchToggled: {},
   MatchMoved: { delta: Schema.Number },
   Sorted: { column: Schema.String, extend: Schema.Boolean },
+  SortDirectionPicked: { column: Schema.String, desc: Schema.Boolean },
+  SortRemoved: { column: Schema.String },
+  ColumnMenuToggled: { column: Schema.String },
+  ColumnMenuClosed: {},
+  DirectionToggled: {},
   Filtered: { column: Schema.String, value: Schema.String },
   ColumnToggled: { column: Schema.String },
   ColumnMoved: { column: Schema.String, delta: Schema.Number },
@@ -345,7 +352,7 @@ const navigated = (
     1,
     Math.floor((props.height ?? 420) / rowHeights[state.rowHeight]) - 1,
   )
-  const right = props.direction === 'rtl' ? -1 : 1
+  const right = (state.directionOverride ?? props.direction) === 'rtl' ? -1 : 1
   const byKey: Readonly<Record<string, readonly [number, number]>> = {
     ArrowUp: [row - 1, col],
     ArrowDown: [row + 1, col],
@@ -747,6 +754,33 @@ const step = (
           : [...sorting, { id: message.column, desc: current !== undefined }],
       }
     }
+    case 'SortDirectionPicked':
+      return {
+        ...state,
+        sorting: [{ id: message.column, desc: message.desc }],
+        columnMenu: '',
+      }
+    case 'SortRemoved':
+      return {
+        ...state,
+        sorting: state.sorting.filter(entry => entry.id !== message.column),
+        columnMenu: '',
+      }
+    case 'ColumnMenuToggled':
+      return {
+        ...state,
+        columnMenu: state.columnMenu === message.column ? '' : message.column,
+      }
+    case 'ColumnMenuClosed':
+      return { ...state, columnMenu: '' }
+    case 'DirectionToggled':
+      return {
+        ...state,
+        directionOverride:
+          (state.directionOverride ?? props.direction ?? 'ltr') === 'ltr'
+            ? 'rtl'
+            : 'ltr',
+      }
     case 'Filtered':
       return {
         ...state,
@@ -754,10 +788,18 @@ const step = (
       }
     case 'ColumnToggled':
       return state.hidden.includes(message.column)
-        ? { ...state, hidden: state.hidden.filter(id => id !== message.column) }
+        ? {
+            ...state,
+            hidden: state.hidden.filter(id => id !== message.column),
+            columnMenu: '',
+          }
         : columns.length <= 1
           ? state
-          : { ...state, hidden: [...state.hidden, message.column] }
+          : {
+              ...state,
+              hidden: [...state.hidden, message.column],
+              columnMenu: '',
+            }
     case 'ColumnMoved': {
       const order = [
         ...new Set([...state.order, ...props.columns.map(column => column.id)]),
@@ -1367,6 +1409,8 @@ export const DataGridBehavior = Html.component({
     rowAnchor: null,
     sorting: [],
     hidden: [],
+    columnMenu: '',
+    directionOverride: null,
     order: [],
     filters: {},
     rowHeight: props.defaultRowHeight ?? 'short',

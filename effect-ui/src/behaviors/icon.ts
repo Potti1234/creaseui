@@ -42,6 +42,8 @@ export const IconBehavior = <Msg>(
   }: IconProps,
 ) => {
   const dimensions = size === undefined ? '1em' : String(sizes[size])
+  const missing = !hasIcon(name)
+  const nodes = missing ? iconNodes['circle-question-mark'] : iconNodes[name]
   const style = h.span.style({
     color:
       tone === 'muted'
@@ -62,6 +64,7 @@ export const IconBehavior = <Msg>(
       'aria-hidden': ariaLabel === undefined ? 'true' : undefined,
       role: ariaLabel === undefined ? undefined : 'img',
       'aria-label': ariaLabel,
+      'data-icon-missing': missing ? name : undefined,
       focusable: 'false',
       width: dimensions,
       height: dimensions,
@@ -73,7 +76,7 @@ export const IconBehavior = <Msg>(
       'stroke-linejoin': 'round',
     })
     .children(
-      iconNodes[name].map(([tag, attributes], index) =>
+      nodes.map(([tag, attributes], index) =>
         h.el(tag).key(String(index)).attrs(attributes),
       ),
     )

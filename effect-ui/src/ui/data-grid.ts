@@ -136,13 +136,18 @@ export const dataGridClasses = {
     'grid w-max min-w-40 max-w-[min(var(--available-width),calc(100vw-2rem))] max-h-(--available-height) justify-items-stretch gap-1 overflow-auto rounded-md border bg-popover p-2 text-sm text-popover-foreground shadow-md outline-none data-ending-style:invisible',
   panelRow: 'flex items-center justify-between gap-2',
   panelLabel: 'px-2 py-1.5 text-xs font-medium text-muted-foreground',
+  columnMenu:
+    'absolute start-0 top-full z-50 grid w-60 gap-0.5 rounded-md border bg-popover p-1 text-sm text-popover-foreground shadow-md',
+  columnMenuItem:
+    'relative flex min-h-8 w-full items-center gap-2 rounded-sm py-1.5 pe-8 ps-2 text-start text-sm hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-ring',
+  columnMenuSeparator: 'my-1 h-px bg-border',
   muted: 'text-muted-foreground',
   frame: 'relative min-w-0 overflow-hidden rounded-md border',
   viewport:
     'relative w-full overflow-auto focus-visible:outline-2 focus-visible:outline-ring',
   table: 'min-w-full table-fixed border-separate border-spacing-0 text-sm',
   header: 'sticky top-0 z-10 bg-muted',
-  head: 'h-9 border-e border-b bg-muted px-2 text-start align-middle font-medium whitespace-nowrap text-foreground last:border-e-0',
+  head: 'relative h-9 border-e border-b bg-muted px-2 text-start align-middle font-medium whitespace-nowrap text-foreground last:border-e-0',
   selectHead: 'w-12',
   row: 'aria-selected:bg-muted/70',
   selectCell:
@@ -314,14 +319,106 @@ export const DataGrid = <Row, Msg, R = never>(
         parts.found.map(match => JSON.stringify([match.row, match.column])),
       )
 
+      const effectiveDirection = state.directionOverride ?? direction
+      const columnMenuItem = (
+        label: string,
+        message: typeof Message.Type,
+        iconName: 'chevron-up' | 'chevron-down' | 'x' | 'eye-off',
+        checked = false,
+      ) =>
+        parts
+          .button(
+            h.button
+              .key(label)
+              .class(styles.columnMenuItem)
+              .attrs({
+                role: 'menuitemcheckbox',
+                'aria-checked': String(checked),
+              }),
+            message,
+          )
+          .children(
+            Icon(h, {
+              name: iconName,
+              size: 'sm',
+              className: 'size-4 shrink-0 text-muted-foreground',
+            }),
+            label,
+            checked
+              ? Icon(h, {
+                  name: 'check',
+                  size: 'sm',
+                  className: 'ms-auto size-4 shrink-0 text-foreground',
+                })
+              : undefined,
+          )
+      const columnMenu = (
+        column: GridColumn,
+        sort: (typeof state.sorting)[number] | undefined,
+      ) =>
+        state.columnMenu === column.id
+          ? [
+              parts.button(
+                h.button
+                  .key(`${column.id}-menu-backdrop`)
+                  .class('fixed inset-0 z-40 cursor-default bg-transparent')
+                  .attrs({
+                    'aria-hidden': 'true',
+                    tabindex: '-1',
+                  }),
+                Message.ColumnMenuClosed(),
+              ),
+              h.div
+                .key(`${column.id}-menu`)
+                .class(styles.columnMenu)
+                .attr('data-slot', 'data-grid-column-menu')
+                .children(
+                  columnMenuItem(
+                    'Sort asc',
+                    Message.SortDirectionPicked({
+                      column: column.id,
+                      desc: false,
+                    }),
+                    'chevron-up',
+                    sort !== undefined && !sort.desc,
+                  ),
+                  columnMenuItem(
+                    'Sort desc',
+                    Message.SortDirectionPicked({
+                      column: column.id,
+                      desc: true,
+                    }),
+                    'chevron-down',
+                    sort !== undefined && sort.desc,
+                  ),
+                  sort === undefined
+                    ? undefined
+                    : columnMenuItem(
+                        'Remove sort',
+                        Message.SortRemoved({ column: column.id }),
+                        'x',
+                      ),
+                  h.div.class(styles.columnMenuSeparator),
+                  columnMenuItem(
+                    'Hide column',
+                    Message.ColumnToggled({ column: column.id }),
+                    'eye-off',
+                  ),
+                ),
+            ]
+          : undefined
       const toolbar = h.div
         .class(styles.toolbar)
         .attr('data-slot', 'data-grid-toolbar')
         .children(
-          h.button
-            .class(styles.button)
-            .attrs({ type: 'button', 'aria-label': 'Toggle direction' })
-            .children(direction === 'ltr' ? 'LTR' : 'RTL'),
+          parts
+            .button(
+              h.button
+                .class(styles.button)
+                .attr('aria-label', 'Toggle direction'),
+              Message.DirectionToggled(),
+            )
+            .children(effectiveDirection === 'ltr' ? 'LTR' : 'RTL'),
           popover(
             'filters',
             activeFilters === 0 ? 'Filter' : `Filter (${activeFilters})`,
@@ -792,15 +889,21 @@ export const DataGrid = <Row, Msg, R = never>(
                         })
                         .children(
                           parts
-                            .sort(
-                              h.button
-                                .class(styles.quietButton)
-                                .attr('aria-label', `Sort by ${column.header}`),
-                              column.id,
+                            .button(
+                              h.button.class(styles.quietButton).attrs({
+                                'aria-label': `${column.header} column menu`,
+                                'aria-haspopup': 'menu',
+                                'aria-expanded': String(
+                                  state.columnMenu === column.id,
+                                ),
+                              }),
+                              Message.ColumnMenuToggled({ column: column.id }),
                             )
                             .children(
                               byId.get(column.id)?.icon,
-                              column.header,
+                              h.span
+                                .class('min-w-0 truncate')
+                                .children(column.header),
                               sort === undefined
                                 ? undefined
                                 : h.span
@@ -813,6 +916,7 @@ export const DataGrid = <Row, Msg, R = never>(
                                   'ms-auto size-3.5 shrink-0 text-muted-foreground',
                               }),
                             ),
+                          columnMenu(column, sort),
                         )
                     }),
                   ),
@@ -934,7 +1038,7 @@ export const DataGrid = <Row, Msg, R = never>(
         .root(
           h.div.class(styles.root, className).attrs({
             id,
-            dir: direction,
+            dir: effectiveDirection,
             'data-slot': 'data-grid',
           }),
         )

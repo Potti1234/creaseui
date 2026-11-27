@@ -54,7 +54,7 @@ The Foldkit grid documentation uses the `SpatialFocus` and `Lasso` headless beha
 
 ## Data Grid is structurally different from the Foldkit grid
 
-`effect-ui/src/ui/data-grid.ts` still renders a native table rather than Foldkit's custom virtualized `div` grid. The docs now match the spreadsheet-like clipped frame, fixed column widths, row-number/selection cells, toolbar overflow placement, empty grid surface, and Add row treatment closely, but important behavior remains different: header buttons sort directly instead of opening the column menu with explicit ascending/descending/remove/hide actions, the direction toolbar button is presentational because direction is a prop rather than grid state, and Foldkit's full focus movement, range highlighting, editor layering, undo/redo controls, and toolbar panel behavior are not completely ported.
+`effect-ui/src/ui/data-grid.ts` still renders a native table rather than Foldkit's custom virtualized `div` grid. The docs now match the spreadsheet-like clipped frame, fixed column widths, row-number/selection cells, toolbar overflow placement, empty grid surface, Add row treatment, header column menus with ascending/descending/remove/hide actions, and a working direction toggle closely. Remaining differences are the underlying virtualized grid DOM, some exact focus/range/editor layering behavior, and detailed toolbar panel positioning/interactions. The Foldkit fixture's `text` icon is itself missing from the generated Lucide set; Effect now mirrors Foldkit's visible missing-icon fallback rather than resolving it to a different glyph.
 
 ## Empty composition is convenience-based rather than part-based
 
