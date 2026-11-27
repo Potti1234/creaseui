@@ -220,10 +220,27 @@ const docsHeader = (
         .class('docs-global-nav')
         .attr('aria-label', 'Documentation')
         .children(
-          h.a.attr('href', '/docs/getting-started').children('Docs'),
-          h.a.attr('href', '/create').children('Create'),
-          h.a.attr('href', '/charts/area').children('Charts'),
-          h.a.attr('href', '/blocks').children('Blocks'),
+          [
+            [
+              '/docs/getting-started',
+              'Docs',
+              guidePath.startsWith('/docs'),
+            ] as const,
+            ['/create', 'Create', guidePath === '/create'] as const,
+            [
+              '/charts/area',
+              'Charts',
+              guidePath.startsWith('/charts'),
+            ] as const,
+            ['/blocks', 'Blocks', guidePath.startsWith('/blocks')] as const,
+          ].map(([href, label, active]) =>
+            h.a
+              .attrs({
+                href,
+                'aria-current': active ? 'page' : undefined,
+              })
+              .children(label),
+          ),
         ),
       h.div.class('docs-header-actions').children(
         h.button

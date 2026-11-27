@@ -86,6 +86,10 @@ body:has(.effect-docs) {
   text-decoration: none;
 }
 
+.docs-global-nav a[aria-current] {
+  color: var(--foreground);
+}
+
 .docs-global-nav a:hover,
 .docs-breadcrumb a:hover {
   color: var(--foreground);
