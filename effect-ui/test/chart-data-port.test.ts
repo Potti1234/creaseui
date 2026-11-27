@@ -129,7 +129,7 @@ test('data table sorts, selects visible rows, and paginates using its local mode
         )
         yield* play
           .expect(HtmlLocator.role('status'))
-          .toHaveText('2 of 3 row(s) selected.')
+          .toHaveText('2 of 3 rows selected.')
         yield* play.click(HtmlLocator.role('button', { name: 'Next' }))
         yield* play
           .expect(HtmlLocator.role('cell', { name: 'Charlie' }))
