@@ -359,6 +359,114 @@ const blocks = [
   ['login-04', 'A split login layout with a form and image panel.'],
 ] as const
 
+const createPlaceholderChildren = (
+  h: Html.H<DocsMessage>,
+  title: string,
+  lines: number,
+): View.Input<DocsMessage>[] => {
+  if (title === 'QR Connect') {
+    return [
+      h.div
+        .class('create-qr-panel')
+        .children(
+          h.div
+            .class('create-qr-grid')
+            .children(
+              Array.from({ length: 64 }, (_, index) =>
+                h.span
+                  .key(String(index))
+                  .class(
+                    [
+                      0, 1, 2, 5, 6, 7, 8, 10, 13, 15, 16, 18, 19, 20, 22, 23,
+                      24, 27, 28, 31, 32, 34, 37, 38, 40, 42, 43, 44, 45, 47,
+                      48, 50, 51, 53, 56, 57, 58, 61, 62, 63,
+                    ].includes(index)
+                      ? 'filled'
+                      : '',
+                  ),
+              ),
+            ),
+        ),
+      h.h2.children('Scan to connect your mobile device'),
+      h.p.children(
+        'Open the Ledger mobile app and scan this code to link your device.',
+      ),
+      h.button.attrs({ type: 'button' }).children('Got it'),
+    ]
+  }
+  if (title === 'Dividend Income') {
+    return [
+      h.div
+        .class('create-card-heading')
+        .children(
+          h.div.children(
+            h.h2.children('Q2 Dividend Income'),
+            h.p.children(
+              'Quarterly dividend payouts across your portfolio holdings.',
+            ),
+          ),
+          h.button.attrs({ type: 'button' }).children('Close Dividend Income'),
+        ),
+      ...[
+        ['Vanguard VIG', '450 Shares', '$1,842.10'],
+        ['S&P 500 VOO', '112 Shares', '$928.40'],
+        ['Apple AAPL', '85 Shares', '$340.00'],
+        ['Realty Income', '320 Shares', '$1,139.50'],
+      ].map(([name, shares, amount]) =>
+        h.div
+          .key(name ?? '')
+          .class('create-dividend-row')
+          .children(
+            h.div.children(
+              h.strong.children(name ?? ''),
+              h.span.children(shares ?? ''),
+            ),
+            h.strong.children(amount ?? ''),
+          ),
+      ),
+    ]
+  }
+  if (title === 'Dollar-Cost Averaging') {
+    return [
+      h.h2.children('Dollar-Cost Averaging'),
+      h.p
+        .class('create-card-subtitle')
+        .children('A strategy for building wealth over time.'),
+      h.p.children(
+        'Over time, this smooths out the average cost of your investments. When prices drop, your fixed amount buys more shares. When prices rise, you buy fewer. The result is a lower average cost per share compared to lump-sum investing during volatile periods.',
+      ),
+    ]
+  }
+  if (title === 'Syncing your accounts') {
+    return [
+      h.div.class('create-sync-icon').children('⟳'),
+      h.h2.children('Syncing your accounts'),
+      h.p.children(
+        "We're pulling in your latest transactions. This usually takes a few seconds.",
+      ),
+      h.button.attrs({ type: 'button' }).children('Cancel'),
+    ]
+  }
+  return [
+    h.div
+      .class('create-placeholder-head')
+      .children(
+        h.h2.children(title),
+        h.span.class('create-placeholder-icon').children('⋯'),
+      ),
+    h.div
+      .class('create-placeholder-body')
+      .children(
+        Array.from({ length: lines }, (_, index) =>
+          h.span
+            .key(String(index))
+            .class(index === 0 ? 'strong' : index === lines - 1 ? 'short' : ''),
+        ),
+      ),
+    h.div.class('create-placeholder-actions').children(h.span, h.span),
+  ]
+}
+
 const createPlaceholder = (
   h: Html.H<DocsMessage>,
   title: string,
@@ -370,26 +478,7 @@ const createPlaceholder = (
     .key(title)
     .class(`create-card create-placeholder ${tone}`)
     .style(height === undefined ? {} : { height: `${String(height)}px` })
-    .children(
-      h.div
-        .class('create-placeholder-head')
-        .children(
-          h.h2.children(title),
-          h.span.class('create-placeholder-icon').children('⋯'),
-        ),
-      h.div
-        .class('create-placeholder-body')
-        .children(
-          Array.from({ length: lines }, (_, index) =>
-            h.span
-              .key(String(index))
-              .class(
-                index === 0 ? 'strong' : index === lines - 1 ? 'short' : '',
-              ),
-          ),
-        ),
-      h.div.class('create-placeholder-actions').children(h.span, h.span),
-    )
+    .children(...createPlaceholderChildren(h, title, lines))
 
 const createColumn = (
   h: Html.H<DocsMessage>,
@@ -576,9 +665,9 @@ const createGuide: DocsGuide = {
               h.div.class('create-plus').children('+'),
               h.h2.children('Distribute Track'),
               h.p.children(
-                'Upload your first master to start reaching listeners on streaming platforms.',
+                'Upload your first master to start reaching listeners on Spotify, Apple Music, and more.',
               ),
-              h.button.attrs({ type: 'button' }).children('Upload'),
+              h.button.attrs({ type: 'button' }).children('Create Release'),
             ),
           createPlaceholder(h, 'QR Connect', 'regular', 5, 440),
           createPlaceholder(h, 'Dividend Income', 'regular', 5, 459),
