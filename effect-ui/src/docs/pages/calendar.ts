@@ -101,53 +101,42 @@ const CalendarDemo = Html.component({
         })
       case 'presets':
         return h.div
-          .class('flex flex-col overflow-hidden rounded-lg border sm:flex-row')
+          .class('w-fit overflow-hidden rounded-lg border bg-background')
           .children(
-            h.div
-              .class(
-                'flex gap-1 border-b p-3 sm:w-36 sm:flex-col sm:border-e sm:border-b-0',
-              )
-              .children(
-                [
-                  ['Today', 0],
-                  ['Tomorrow', 1],
-                  ['In 3 days', 3],
-                  ['In a week', 7],
-                  ['In 2 weeks', 14],
-                ].map(([label, days]) =>
-                  Button(h, {
-                    variant: 'ghost',
-                    size: 'sm',
-                    className: 'justify-start',
-                  })
-                    .on('click', () =>
-                      Message.PickedPreset({ days: days as number }),
-                    )
-                    .children(label as string),
-                ),
+            single('border-0'),
+            h.div.class('flex flex-wrap gap-2 border-t p-4').children(
+              [
+                ['Today', 0],
+                ['Tomorrow', 1],
+                ['In 3 days', 3],
+                ['In a week', 7],
+                ['In 2 weeks', 14],
+              ].map(([label, days]) =>
+                Button(h, { variant: 'outline', size: 'sm' })
+                  .on('click', () =>
+                    Message.PickedPreset({ days: days as number }),
+                  )
+                  .children(label as string),
               ),
-            h.div.class('p-3').children(single('border-0 p-0')),
+            ),
           )
       case 'time':
         return h.div
-          .class('flex flex-col overflow-hidden rounded-lg border sm:flex-row')
+          .class('w-fit overflow-hidden rounded-lg border bg-background')
           .children(
-            h.div
-              .class('border-b p-3 sm:border-e sm:border-b-0')
-              .children(single('border-0 p-0')),
-            h.div.class('flex flex-col gap-4 p-4').children(
-              ['Start time', 'End time'].map((label, index) =>
+            single('border-0'),
+            h.div.class('flex flex-col gap-4 border-t p-4').children(
+              ['Start Time', 'End Time'].map((label, index) =>
                 h.label.class('grid gap-2 text-sm font-medium').children(
                   label,
-                  Input(h, {
-                    id: `${label.replaceAll(' ', '-')}-${index}`,
-                    element: h.input.attrs({
+                  h.input
+                    .class(
+                      'h-8 w-full rounded-md border border-input bg-background px-2.5 text-sm shadow-xs outline-none',
+                    )
+                    .attrs({
                       type: 'time',
-                      value: index === 0 ? '09:00' : '17:00',
+                      value: index === 0 ? '10:30' : '12:30',
                     }),
-                    props: { value: index === 0 ? '09:00' : '17:00' },
-                    onUpdate: () => undefined,
-                  }),
                 ),
               ),
             ),
