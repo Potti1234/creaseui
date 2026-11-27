@@ -501,10 +501,13 @@ const component = (h: DocHtml, slug: string, title: string) => {
     )
   }
 
+  const hasImplementation = behaviors.some(entry => entry.owner === slug)
   const toc = [
     ['architecture', 'Architecture'],
     ['behaviors', 'Behaviors'],
-    ['implementation', 'Implementation'],
+    ...(hasImplementation
+      ? [['implementation', 'Implementation'] as const]
+      : []),
     ['installation', 'Installation'],
     ['usage', 'Usage'],
     ...(metadata.sections ?? []).map(
