@@ -1,0 +1,27 @@
+.stack-docs-supporting {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+.stack-docs-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0;
+}
+.stack-docs-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 0.75rem;
+  width: 100%;
+}
+.stack-docs-heading {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+.stack-docs-body {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  margin: 0;
+}
