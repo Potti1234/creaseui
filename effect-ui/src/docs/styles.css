@@ -2126,3 +2126,85 @@ body:has(.effect-docs) {
 .calendar-presets > div:first-child button {
   min-height: 2.375rem;
 }
+
+.tutorial-essay {
+  max-width: 46rem;
+}
+.tutorial-hero {
+  padding-block: 2rem 1rem;
+}
+.tutorial-kicker {
+  display: flex;
+  gap: 0.6rem;
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tutorial-kicker a {
+  color: inherit;
+}
+.tutorial-hero h1 {
+  margin: 1rem 0 0;
+  font-size: clamp(2.5rem, 5vw, 3rem);
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+}
+.tutorial-hero p {
+  margin: 1.25rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+.tutorial-essay section {
+  margin-block: 2.25rem;
+}
+.tutorial-essay section h2 {
+  margin-block: 0 0.85rem;
+  font-size: 1.45rem;
+  letter-spacing: -0.02em;
+}
+.tutorial-essay section p,
+.tutorial-essay section li {
+  line-height: 1.75;
+}
+.tutorial-table-wrap {
+  overflow-x: auto;
+  margin-block: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+.tutorial-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+}
+.tutorial-table th,
+.tutorial-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.tutorial-table tr:last-child td {
+  border-bottom: 0;
+}
+.tutorial-table th {
+  background: color-mix(in oklab, var(--muted) 45%, transparent);
+}
+.tutorial-code {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--muted);
+  padding: 0.9rem;
+  font-size: 0.8rem;
+}
+.tutorial-footer {
+  margin-block: 3rem 1rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+}
