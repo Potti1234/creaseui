@@ -71,3 +71,5 @@ Effect `InputGroup` exposes addon slots and control parts, but it has no built-i
 ## Combobox styled API lacks several documented composition hooks
 
 Effect `Combobox` owns popup/draft state but exposes only plain item labels. It has no consumer item renderer for the Custom Items example's flag/name/continent rows, no invalid prop or aria-invalid styling hook, and no auto-highlight option. The Effect docs reproduce those examples with plain items and static appearance. Input Group composition is also manual because the styled combobox cannot yet render through the input-group control part without a nested wrapper.
+
+- Color Picker's styled API only exposes swatch/button/input trigger variants and fixed panel composition; unlike Foldkit it does not expose composable area/channel/input/preset parts for custom arrangements or localization.

@@ -24,6 +24,7 @@ export type ColorPickerProps<Msg> = Omit<Options<Msg>, 'view' | 'fallback'> & {
   }[]
   readonly showAlpha?: boolean
   readonly showEyeDropper?: boolean
+  readonly triggerVariant?: 'swatch' | 'button' | 'input'
   readonly className?: string
 }
 
@@ -34,28 +35,28 @@ const hueGradient =
 const tailwind = {
   root: 'relative inline-flex min-w-0',
   trigger:
-    'flex min-h-9 items-center gap-2 rounded-md border border-input bg-background px-2.5 text-sm font-medium outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50',
+    'inline-flex size-8 shrink-0 items-center justify-center rounded-[4px] p-0 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
   triggerSwatch:
     'size-5 shrink-0 overflow-hidden rounded-sm border border-input',
   swatch: 'block size-full',
   panel:
-    'grid w-72 max-w-[min(var(--available-width,100vw),calc(100vw-2rem))] max-h-(--available-height) gap-3 overflow-auto rounded-lg border bg-popover p-3 text-sm text-popover-foreground shadow-md outline-none data-ending-style:invisible data-inline:shadow-none',
+    'flex w-64 max-w-[min(var(--available-width,100vw),calc(100vw-2rem))] max-h-(--available-height) flex-col gap-3 overflow-auto text-sm outline-none data-ending-style:invisible',
   area: 'relative h-44 w-full cursor-crosshair touch-none overflow-hidden rounded-md border border-input outline-none select-none focus-visible:ring-2 focus-visible:ring-ring aria-disabled:cursor-default aria-disabled:opacity-50',
   handle:
     'pointer-events-none absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm',
-  slider: 'grid min-w-0 gap-1',
-  sliderLabel: 'text-xs text-muted-foreground',
-  sliderControl: 'relative flex h-5 items-center touch-none',
-  track: 'h-4 w-full rounded-full border border-input',
+  slider: 'relative h-4 w-full cursor-pointer touch-none select-none',
+  sliderLabel: 'sr-only',
+  sliderControl: 'absolute inset-0 size-full touch-none',
+  track: 'absolute inset-0 h-4 w-full overflow-hidden rounded-full border',
   thumb:
-    'size-3.5 rounded-full border border-black/25 bg-white shadow-sm focus-within:ring-2 focus-within:ring-ring',
+    'absolute top-1/2 left-(--slider-thumb-position) size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-white shadow-sm focus-within:ring-2 focus-within:ring-ring',
   inputs: 'flex min-w-0 items-center gap-2',
   input:
-    'h-8 min-w-0 flex-1 rounded-md border border-input bg-background px-2 font-mono text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring aria-invalid:border-destructive',
+    'h-8 w-full min-w-0 flex-1 rounded-md border bg-transparent px-2 font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring aria-invalid:border-destructive',
   format:
-    'h-8 rounded-md border border-input bg-background px-1 text-xs font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring',
+    'h-8 w-20 shrink-0 rounded-md border bg-transparent px-2 text-xs font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring',
   sample:
-    'grid size-8 shrink-0 place-items-center rounded-md border border-input bg-background outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring',
+    'inline-flex size-8 shrink-0 items-center justify-center rounded-md border bg-transparent outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring',
   presets: 'flex flex-wrap gap-1.5',
   preset:
     'size-6 overflow-hidden rounded-sm border border-input p-0 outline-none focus-visible:ring-2 focus-visible:ring-ring aria-pressed:ring-2 aria-pressed:ring-ring',
@@ -73,6 +74,7 @@ export const ColorPicker = <Msg>(
     presets = [],
     showAlpha = true,
     showEyeDropper = true,
+    triggerVariant = 'swatch',
     className,
     ...options
   }: ColorPickerProps<NoInfer<Msg>>,
@@ -93,7 +95,10 @@ export const ColorPicker = <Msg>(
           .root(
             h.div
               .class(styles.slider)
-              .attr('data-slot', 'color-picker-channel'),
+              .attr(
+                'data-slot',
+                `color-picker-${label === 'Hue' ? 'hue' : 'alpha'}`,
+              ),
           )
           .children(
             h.span.class(styles.sliderLabel).children(label),
@@ -113,6 +118,11 @@ export const ColorPicker = <Msg>(
           'data-inline': inline ? '' : undefined,
           'data-disabled': picker.disabled ? '' : undefined,
         })
+      const shell = h.div
+        .class(
+          'w-fit rounded-md border bg-popover p-3 text-popover-foreground shadow-md',
+        )
+        .attrs({ 'data-slot': 'color-picker' })
       const contents = [
         picker
           .area(
@@ -136,23 +146,37 @@ export const ColorPicker = <Msg>(
                 backgroundColor: opaque,
               }),
           ),
-        ramp(picker.hue, 'Hue', hueGradient),
-        showAlpha
-          ? ramp(
-              picker.alpha,
-              'Opacity',
-              `linear-gradient(90deg, transparent, ${opaque}), ${checker}`,
-            )
-          : undefined,
+        h.div.class('flex items-center gap-2').children(
+          !showEyeDropper || !picker.sampler
+            ? undefined
+            : picker
+                .sample(
+                  h.button.class(styles.sample).attrs({
+                    'aria-label': 'Pick color from screen',
+                    'data-slot': 'color-picker-eye-dropper',
+                  }),
+                )
+                .children(IconBehavior(h, { name: 'pipette', size: 'sm' })),
+          h.div
+            .class('flex min-w-0 flex-1 flex-col gap-2')
+            .children(
+              ramp(picker.hue, 'Hue', hueGradient),
+              showAlpha
+                ? ramp(
+                    picker.alpha,
+                    'Opacity',
+                    `linear-gradient(90deg, transparent, ${opaque}), ${checker}`,
+                  )
+                : undefined,
+            ),
+        ),
         h.div.class(styles.inputs).children(
           picker
             .format(
-              h.select
-                .class(styles.format)
-                .attrs({
-                  'aria-label': 'Color format',
-                  'data-slot': 'color-picker-format',
-                }),
+              h.select.class(styles.format).attrs({
+                'aria-label': 'Color format',
+                'data-slot': 'color-picker-format',
+              }),
             )
             .children(
               colorFormats.map(format =>
@@ -173,15 +197,6 @@ export const ColorPicker = <Msg>(
               'aria-describedby': picker.error ? `${id}-error` : undefined,
             }),
           ),
-          !showEyeDropper || !picker.sampler
-            ? undefined
-            : picker
-                .sample(
-                  h.button
-                    .class(styles.sample)
-                    .attr('aria-label', 'Pick color from screen'),
-                )
-                .children(IconBehavior(h, { name: 'pipette', size: 'sm' })),
         ),
         picker.error
           ? h.div
@@ -223,24 +238,36 @@ export const ColorPicker = <Msg>(
         .root(
           h.div
             .class(styles.root, inline ? undefined : className)
-            .attrs({ id, 'data-slot': 'color-picker' }),
+            .attrs({ id, 'data-slot': inline ? undefined : 'popover' }),
         )
         .children(
           inline
-            ? panel.children(contents)
+            ? shell.children(panel.children(contents))
             : picker.popup.trigger({
                 element: h.button
-                  .class(styles.trigger)
                   .attrs({
                     'data-slot': 'color-picker-trigger',
                     'aria-label': `${label}, ${picker.hex}`,
                   })
+                  .class(
+                    triggerVariant === 'swatch'
+                      ? styles.trigger
+                      : triggerVariant === 'button'
+                        ? 'inline-flex h-9 items-center gap-2 rounded-md border bg-background px-3 text-sm font-medium whitespace-nowrap shadow-xs outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50'
+                        : 'inline-flex h-9 items-center gap-2 rounded-md border bg-background px-2.5 text-sm font-medium whitespace-nowrap shadow-xs outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50',
+                  )
                   .children(
                     h.span
                       .class(styles.triggerSwatch)
                       .style({ background: checker })
                       .children(swatch(picker.swatch)),
-                    picker.hex,
+                    triggerVariant === 'swatch'
+                      ? undefined
+                      : triggerVariant === 'button'
+                        ? 'Pick a color'
+                        : h.span
+                            .class('font-mono text-xs')
+                            .children(picker.hex),
                   ),
                 disabled: picker.disabled,
               }),
@@ -251,7 +278,11 @@ export const ColorPicker = <Msg>(
                 ?.children(
                   picker.popup
                     .positioner(h.div)
-                    .children(picker.popup.popup(panel).children(contents)),
+                    .children(
+                      picker.popup
+                        .popup(shell)
+                        .children(panel.children(contents)),
+                    ),
                 ),
           name === undefined
             ? undefined
