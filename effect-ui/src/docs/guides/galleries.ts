@@ -152,6 +152,24 @@ const chartIndex: DocsGuide = {
       ),
     ),
 }
+const singularChartTitle = (title: string) =>
+  title === 'Chart Tooltips'
+    ? 'Chart Tooltip'
+    : title.replace(/ Charts$/, ' Chart')
+const chartDescription = (slug: string) => {
+  if (slug === 'area' || slug === 'line')
+    return 'Showing total visitors for the last 6 months'
+  if (slug === 'pie') return 'Total visitors by browser'
+  if (slug === 'radar') return 'Performance across five dimensions'
+  if (slug === 'radial') return 'Visitors by acquisition source'
+  return 'January - June 2024'
+}
+const chartExampleTitle = (title: string, example: string) => {
+  const base = singularChartTitle(title)
+  return example === 'Default' || example === 'Simple'
+    ? base
+    : `${base} - ${example}`
+}
 const chartDetail = (
   slug: string,
   title: string,
@@ -160,39 +178,54 @@ const chartDetail = (
   title,
   description: `${title} gallery`,
   view: h =>
-    h.div.children(
-      h.nav
-        .class('docs-breadcrumb')
-        .attr('aria-label', 'Breadcrumb')
+    h.div.class('chart-gallery').children(
+      h.header
+        .class('chart-gallery-header')
         .children(
-          h.a.attr('href', '/charts').children('Charts'),
-          h.span.attr('aria-hidden', 'true').children('/'),
-          h.span.attr('aria-current', 'page').children(title),
+          h.h1.children('Beautiful Charts & Graphs'),
+          h.p.children(
+            'A collection of ready-to-use chart components built with Apache ECharts and Effect UI, styled with CreaseUI. From basic charts to rich data displays.',
+          ),
         ),
-      h.div.class('grid gap-6 md:grid-cols-2').children(
+      h.nav
+        .class('chart-gallery-tabs')
+        .attr('aria-label', 'Chart types')
+        .children(
+          chartGroups.map(([value, label]) =>
+            h.a
+              .attrs({
+                href: `/charts/${value}`,
+                'aria-current': value === slug ? 'page' : undefined,
+              })
+              .children(label),
+          ),
+        ),
+      h.div.class('chart-gallery-grid').children(
         examples.map((example, index) =>
           h.article
             .key(example)
-            .class('rounded-xl border bg-card shadow-xs')
+            .class('chart-gallery-card')
             .children(
-              h.header
-                .class('border-b p-4')
-                .children(
-                  h.h3.class('font-medium').children(example),
-                  h.p
-                    .class('text-sm text-muted-foreground')
-                    .children(`${title} example ${String(index + 1)}`),
-                ),
-              h.div.class('p-4').children(galleryChart(h, slug, example)),
+              h.header.children(
+                h.h3.children(chartExampleTitle(title, example)),
+                h.p.children(chartDescription(slug)),
+              ),
+              h.div
+                .class('chart-gallery-chart')
+                .children(galleryChart(h, slug, example)),
+              h.footer.children(
+                h.p
+                  .class('chart-trend')
+                  .children('Trending up by 5.2% this month ↗'),
+                h.p.children('January - June 2024'),
+              ),
             ),
         ),
       ),
-      h.div
-        .class('docs-pending')
+      h.p
+        .class('chart-gallery-note')
         .children(
-          h.p.children(
-            'Gallery cards now mount live theme-aware Apache ECharts instances. Per-variant option details and interactive controls are still being aligned with the Foldkit gallery.',
-          ),
+          'Live Apache ECharts instances are mounted. Per-variant option details and advanced interactive controls are still being aligned with the Foldkit gallery.',
         ),
     ),
 })

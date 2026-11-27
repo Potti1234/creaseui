@@ -929,3 +929,80 @@ body:has(.effect-docs) {
     padding-inline: 0.75rem;
   }
 }
+
+.site-page {
+  width: min(100%, 87.5rem);
+  margin-inline: auto;
+  padding: 2.5rem 1.25rem 5rem;
+}
+.chart-gallery-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: -0.04em;
+}
+.chart-gallery-header p {
+  max-width: 44rem;
+  color: var(--muted-foreground);
+}
+.chart-gallery-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-block: 1.25rem 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.chart-gallery-tabs a {
+  padding-block: 0.625rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+.chart-gallery-tabs a[aria-current] {
+  color: var(--foreground);
+  font-weight: 600;
+  box-shadow: inset 0 -2px var(--foreground);
+}
+.chart-gallery-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+@media (width >= 768px) {
+  .chart-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (width >= 1150px) {
+  .chart-gallery-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.chart-gallery-card {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card);
+}
+.chart-gallery-card > header,
+.chart-gallery-card > footer {
+  padding: 1rem;
+}
+.chart-gallery-card h3,
+.chart-gallery-card p {
+  margin: 0;
+}
+.chart-gallery-card > header p,
+.chart-gallery-card > footer,
+.chart-gallery-note {
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+}
+.chart-gallery-chart {
+  padding-inline: 0.5rem;
+}
+.chart-trend {
+  color: var(--foreground) !important;
+  font-weight: 500;
+}
+.chart-gallery-note {
+  margin-block-start: 2rem;
+}

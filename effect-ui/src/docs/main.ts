@@ -999,18 +999,28 @@ const Docs = Html.component({
           .children('Skip to content'),
         docsHeader(h, dark, query, groups),
         searchOpen ? searchDialog(h, search, searchGroups) : undefined,
-        h.div
-          .class('docs-layout')
-          .children(
-            h.aside.class('docs-sidebar').children(sidebar(h, query, groups)),
-            guide !== undefined
-              ? guidePage(h, guide)
-              : route.tag === 'catalog'
-                ? catalog(h, groups)
-                : route.tag === 'component'
-                  ? component(h, route.slug, route.title)
-                  : notFound(h),
-          ),
+        guide !== undefined &&
+          (guidePath === '/create' ||
+            guidePath.startsWith('/charts') ||
+            guidePath.startsWith('/blocks'))
+          ? h.main
+              .class('site-page')
+              .attrs({ id: 'docs-main', tabindex: '-1' })
+              .children(guide.view(h))
+          : h.div
+              .class('docs-layout')
+              .children(
+                h.aside
+                  .class('docs-sidebar')
+                  .children(sidebar(h, query, groups)),
+                guide !== undefined
+                  ? guidePage(h, guide)
+                  : route.tag === 'catalog'
+                    ? catalog(h, groups)
+                    : route.tag === 'component'
+                      ? component(h, route.slug, route.title)
+                      : notFound(h),
+              ),
       )
   },
 })
