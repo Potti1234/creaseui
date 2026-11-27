@@ -1,0 +1,31 @@
+.hover-card-docs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.hover-card-docs-content {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+.hover-card-docs-heading {
+  font-weight: 600;
+}
+.hover-card-docs-heading-medium {
+  font-weight: 500;
+}
+.hover-card-docs-meta {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--muted-foreground);
+}
+.hover-card-docs-muted {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+.hover-card-docs-rtl {
+  direction: rtl;
+}
