@@ -32,13 +32,13 @@ export type BannerProps<Msg, R = never> = Omit<
   readonly className?: string
 }
 const tailwind = {
-  root: 'grid min-w-0 overflow-hidden rounded-md border bg-card text-sm text-card-foreground data-[container=section]:rounded-none data-[container=section]:border-x-0 data-[elevation=low]:shadow-sm data-[elevation=med]:shadow-md data-[elevation=high]:shadow-lg',
+  root: 'grid min-w-0 overflow-hidden rounded-md bg-card text-sm text-card-foreground data-[container=section]:rounded-none data-[container=section]:border-x-0 data-[elevation=low]:shadow-sm data-[elevation=med]:shadow-md data-[elevation=high]:shadow-lg',
   header:
-    'flex min-w-0 flex-wrap items-start gap-2 p-3 data-[status=info]:bg-primary/20 data-[status=warning]:bg-warning/20 data-[status=error]:bg-destructive/20 data-[status=success]:bg-success/20',
-  icon: 'mt-0.5 shrink-0 data-[status=info]:text-primary data-[status=warning]:text-warning data-[status=error]:text-destructive data-[status=success]:text-success',
-  body: 'grid min-w-34 flex-1 gap-0.5',
+    'flex min-w-0 flex-wrap items-start gap-2 px-4 py-3 data-[status=info]:bg-primary/20 data-[status=warning]:bg-warning/20 data-[status=error]:bg-destructive/20 data-[status=success]:bg-success/20',
+  icon: 'flex shrink-0 items-center data-[status=info]:text-primary data-[status=warning]:text-warning data-[status=error]:text-destructive data-[status=success]:text-success',
+  body: 'grid min-w-34 flex-1',
   title: 'font-semibold',
-  description: 'text-muted-foreground',
+  description: 'text-xs text-muted-foreground',
   end: 'flex shrink-0 items-center gap-1',
   action:
     'inline-grid size-7 place-items-center rounded-sm border-0 bg-transparent text-foreground outline-none hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-ring',
@@ -83,7 +83,7 @@ export const Banner = <Msg, R = never>(
             .class(styles.icon)
             .attrs({ 'aria-hidden': 'true', 'data-status': status })
             .children(
-              icon ?? IconBehavior(h, { name: iconName[status], size: 'sm' }),
+              icon ?? IconBehavior(h, { name: iconName[status], size: 'md' }),
             ),
           h.div.class(styles.body).children(
             h.div

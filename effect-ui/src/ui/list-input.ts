@@ -78,20 +78,20 @@ export type ListInputProps<T, Msg, R = never> = {
 }
 
 const tailwind = {
-  root: '@container/list-input grid min-w-0 gap-2',
+  root: '@container/list-input grid min-w-0 w-full gap-2',
   label: 'text-sm font-medium',
   hidden: 'sr-only',
   description: 'text-sm text-muted-foreground',
   headers:
-    'grid grid-cols-(--list-input-columns) items-center gap-2 text-xs font-medium text-muted-foreground @max-[640px]/list-input:hidden',
+    'grid w-full items-center gap-2 text-xs font-medium text-muted-foreground @max-[640px]/list-input:hidden',
   list: 'm-0 flex list-none flex-col gap-2 p-0',
-  row: 'grid grid-cols-(--list-input-columns) min-w-0 items-start gap-2 rounded-md transition-colors data-grabbed:bg-accent @max-[640px]/list-input:grid-cols-1 @max-[640px]/list-input:border @max-[640px]/list-input:p-2',
+  row: 'grid min-w-0 w-full items-start gap-2 rounded-md transition-colors data-grabbed:bg-accent @max-[640px]/list-input:grid-cols-1 @max-[640px]/list-input:border @max-[640px]/list-input:p-2',
   field: 'min-w-0',
   fieldLabel: 'mb-1 block text-xs font-medium @min-[641px]/list-input:hidden',
   actions: 'flex items-center justify-end gap-1',
   iconButton:
     'inline-grid size-7 shrink-0 place-items-center rounded-sm border-0 bg-transparent text-muted-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40',
-  add: 'inline-flex min-h-8 w-fit items-center gap-1.5 rounded-md border bg-background px-2.5 py-1 text-sm font-medium outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40',
+  add: 'inline-flex min-h-8 w-full items-center justify-center gap-1.5 rounded-md border-0 bg-secondary px-2.5 py-1 text-sm font-medium text-secondary-foreground outline-none hover:bg-secondary/80 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40',
   status:
     'text-xs data-[type=error]:text-destructive data-[type=warning]:text-warning data-[type=success]:text-success',
 }
@@ -205,6 +205,7 @@ export const ListInput = <T, Msg, R = never>(
           columns.length > 0 && value.length > 0
             ? h.div
                 .class(styles.headers)
+                .style({ gridTemplateColumns: controlGrid })
                 .attrs({
                   'data-slot': 'list-input-headers',
                   'aria-hidden': 'true',
@@ -236,7 +237,10 @@ export const ListInput = <T, Msg, R = never>(
                         ? undefined
                         : `${id}-row-${position}-status`,
                   })
-                  .style({ order: String(position) })
+                  .style({
+                    gridTemplateColumns: controlGrid,
+                    order: String(position),
+                  })
                   .children(
                     columns.map(column =>
                       h.div

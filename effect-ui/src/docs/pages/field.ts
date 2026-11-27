@@ -1,6 +1,6 @@
 import { Html } from '@effect/ui/html'
 
-import { Field, Input } from '#components'
+import { Button, Field, Input } from '#components'
 import {
   defineComponentDocs,
   type DocsExampleImplementation,
@@ -40,25 +40,104 @@ const view =
   (kind: string): DocsExampleImplementation['view'] =>
   (h: Html.H<DocsMessage>, context) => {
     const id = context.idPrefix
-    if (kind === 'payment')
-      return h.div.class('w-full max-w-md').children(
-        h.fieldset.class('grid gap-3').children(
-          h.legend.class('text-sm font-medium').children('Payment Method'),
-          ['Card', 'PayPal', 'Apple Pay'].map((label, index) =>
-            h.label
-              .key(label)
-              .class('flex items-center gap-3 rounded-lg border p-3')
-              .children(
-                h.input.attrs({
-                  type: 'radio',
-                  name: `${id}-payment`,
-                  checked: index === 0 ? '' : undefined,
-                }),
-                h.span.class('text-sm font-medium').children(label),
-              ),
-          ),
-        ),
-      )
+    if (kind === 'payment') {
+      const fieldLabel = 'text-sm leading-snug font-medium'
+      const input =
+        'h-8 w-full min-w-0 rounded-md border border-input bg-background px-2.5 py-1 text-sm shadow-xs outline-none placeholder:text-muted-foreground'
+      const field = (label: string, control: unknown, description?: string) =>
+        h.div
+          .class('flex w-full flex-col gap-2')
+          .children(
+            h.label.class(fieldLabel).children(label),
+            control as never,
+            description === undefined
+              ? undefined
+              : h.p
+                  .class('m-0 text-sm text-muted-foreground')
+                  .children(description),
+          )
+      const select = (label: string, placeholder: string) =>
+        h.div
+          .class('flex w-full flex-col gap-2')
+          .children(
+            h.label.class(fieldLabel).children(label),
+            h.select.class(input).children(h.option.children(placeholder)),
+          )
+      return h.div
+        .class('flex w-full max-w-md flex-col gap-7')
+        .children(
+          h.fieldset
+            .class('m-0 flex min-w-0 flex-col gap-6 border-0 p-0')
+            .children(
+              h.legend
+                .class('mb-0 text-base font-medium')
+                .children('Payment Method'),
+              h.p
+                .class('m-0 -mt-4 text-sm text-muted-foreground')
+                .children('All transactions are secure and encrypted'),
+              h.div
+                .class('mt-6 flex w-full flex-col gap-7')
+                .children(
+                  field(
+                    'Name on Card',
+                    h.input.class(input).attrs({ placeholder: 'Evil Rabbit' }),
+                  ) as never,
+                  field(
+                    'Card Number',
+                    h.input
+                      .class(input)
+                      .attrs({ placeholder: '1234 5678 9012 3456' }),
+                    'Enter your 16-digit card number',
+                  ) as never,
+                  h.div
+                    .class('grid grid-cols-3 gap-4')
+                    .children(
+                      select('Month', 'MM') as never,
+                      select('Year', 'YYYY') as never,
+                      field(
+                        'CVV',
+                        h.input.class(input).attrs({ placeholder: '123' }),
+                      ) as never,
+                    ),
+                ),
+            ),
+          h.hr.class('m-0 h-px border-0 bg-border'),
+          h.fieldset
+            .class('m-0 flex min-w-0 flex-col gap-6 border-0 p-0')
+            .children(
+              h.legend
+                .class('mb-0 text-base font-medium')
+                .children('Billing Address'),
+              h.p
+                .class('m-0 -mt-4 text-sm text-muted-foreground')
+                .children(
+                  'The billing address associated with your payment method',
+                ),
+              h.label
+                .class('flex items-center gap-2 text-sm font-medium')
+                .children(
+                  h.input
+                    .class('size-4 accent-primary')
+                    .attrs({ type: 'checkbox', checked: '' }),
+                  'Same as shipping address',
+                ),
+            ),
+          h.div
+            .class('mt-5 flex w-full flex-col gap-2')
+            .children(
+              h.label.class(fieldLabel).children('Comments'),
+              h.textarea
+                .class(input + ' min-h-16 resize-none')
+                .attrs({ placeholder: 'Add any additional comments' }),
+            ),
+          h.div
+            .class('flex items-center gap-2')
+            .children(
+              Button(h, {}).children('Submit') as never,
+              Button(h, { variant: 'outline' }).children('Cancel') as never,
+            ),
+        )
+    }
     if (kind === 'textarea')
       return simpleField(
         h,

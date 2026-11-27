@@ -9,6 +9,7 @@ import {
   type DocsMessage,
 } from '../types'
 import { exampleApplicationSource } from './source'
+import './list-input.css'
 
 type Guest = {
   readonly id: string
