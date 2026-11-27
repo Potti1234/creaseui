@@ -1116,7 +1116,7 @@ body:has(.effect-docs) {
 .site-page {
   width: min(100%, 87.5rem);
   margin-inline: auto;
-  padding: 2.5rem 1.25rem 5rem;
+  padding: 2rem 2rem 5rem;
 }
 .chart-gallery-header h1 {
   margin: 0;
@@ -1131,7 +1131,7 @@ body:has(.effect-docs) {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  margin-block: 1.25rem 2rem;
+  margin-block: 1.25rem 4.5rem;
   border-bottom: 1px solid var(--border);
   padding-bottom: 0.75rem;
 }
@@ -1149,7 +1149,7 @@ body:has(.effect-docs) {
 }
 .chart-gallery-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 2.5rem;
 }
 @media (width >= 768px) {
   .chart-gallery-grid {
@@ -1162,6 +1162,7 @@ body:has(.effect-docs) {
   }
 }
 .chart-gallery-card {
+  min-height: 369px;
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 0.5rem;
