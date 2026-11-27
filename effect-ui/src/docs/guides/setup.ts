@@ -329,17 +329,94 @@ const themeTokens = [
   ['--radius', 'Base corner radius'],
 ] as const
 
+const tailwindThemeTokens = [
+  ['--font-sans', 'Sans-serif font stack used by the font-sans utility.'],
+  ['--color-background', 'Maps to --background for background utilities.'],
+  ['--color-foreground', 'Maps to --foreground for text utilities.'],
+  ['--color-card', 'Maps to --card for card surface utilities.'],
+  [
+    '--color-card-foreground',
+    'Maps to --card-foreground for card text utilities.',
+  ],
+  ['--color-popover', 'Maps to --popover for popover surface utilities.'],
+  [
+    '--color-popover-foreground',
+    'Maps to --popover-foreground for popover text utilities.',
+  ],
+  ['--color-primary', 'Maps to --primary for primary surface utilities.'],
+  [
+    '--color-primary-foreground',
+    'Maps to --primary-foreground for primary text utilities.',
+  ],
+  ['--color-secondary', 'Maps to --secondary for secondary surface utilities.'],
+  [
+    '--color-secondary-foreground',
+    'Maps to --secondary-foreground for secondary text utilities.',
+  ],
+  ['--color-muted', 'Maps to --muted for muted surface utilities.'],
+  [
+    '--color-muted-foreground',
+    'Maps to --muted-foreground for supporting text utilities.',
+  ],
+  ['--color-accent', 'Maps to --accent for highlighted surface utilities.'],
+  [
+    '--color-accent-foreground',
+    'Maps to --accent-foreground for highlighted text utilities.',
+  ],
+  ['--color-destructive', 'Maps to --destructive for destructive utilities.'],
+  ['--color-border', 'Maps to --border; this also powers border-border.'],
+  ['--color-input', 'Maps to --input for form control utilities.'],
+  ['--color-ring', 'Maps to --ring for focus ring utilities.'],
+  ['--color-chart-1', 'Maps to --chart-1 for the first chart series.'],
+  ['--color-chart-2', 'Maps to --chart-2 for the second chart series.'],
+  ['--color-chart-3', 'Maps to --chart-3 for the third chart series.'],
+  ['--color-chart-4', 'Maps to --chart-4 for the fourth chart series.'],
+  ['--color-chart-5', 'Maps to --chart-5 for the fifth chart series.'],
+  ['--color-sidebar', 'Maps to --sidebar for sidebar surface utilities.'],
+  [
+    '--color-sidebar-foreground',
+    'Maps to --sidebar-foreground for sidebar text utilities.',
+  ],
+  [
+    '--color-sidebar-primary',
+    'Maps to --sidebar-primary for sidebar primary surfaces.',
+  ],
+  [
+    '--color-sidebar-primary-foreground',
+    'Maps to --sidebar-primary-foreground for sidebar primary text.',
+  ],
+  [
+    '--color-sidebar-accent',
+    'Maps to --sidebar-accent for sidebar highlighted surfaces.',
+  ],
+  [
+    '--color-sidebar-accent-foreground',
+    'Maps to --sidebar-accent-foreground for sidebar highlighted text.',
+  ],
+  [
+    '--color-sidebar-border',
+    'Maps to --sidebar-border for sidebar border utilities.',
+  ],
+  [
+    '--color-sidebar-ring',
+    'Maps to --sidebar-ring for sidebar focus ring utilities.',
+  ],
+  ['--radius-sm', 'Uses calc(var(--radius) - 4px).'],
+  ['--radius-md', 'Uses calc(var(--radius) - 2px).'],
+  ['--radius-lg', 'Uses --radius directly.'],
+  ['--radius-xl', 'Uses calc(var(--radius) + 4px).'],
+] as const
+
 export const theming: DocsGuide = {
   title: 'Theming',
   description:
-    'Use semantic color and radius tokens to theme the Effect UI components across renderers.',
+    'Customize the Tailwind components through the shared semantic theme tokens.',
   toc: [
     ['theme-contract', 'Theme tokens'],
-    ['how-components-read-the-theme', 'How components read the theme'],
     ['change-the-theme', 'Change the theme'],
     ['dark-mode', 'Dark mode'],
-    ['scoped-themes', 'Scoped themes'],
     ['component-customization', 'Component customization'],
+    ['theme-builder', 'Theme builder'],
   ],
   view: h =>
     h.div.children(
@@ -348,52 +425,118 @@ export const theming: DocsGuide = {
         'theme-contract',
         'Theme tokens',
         h.p.children(
-          'The registry adds shared CSS custom properties. Use the surface and foreground tokens together to keep text legible.',
+          'This theming guide is for the Tailwind renderer. The StyleX theming guide and Pleat theming guide cover the other renderers. Every component exists in all three with the same props and behavior.',
         ),
-        h.table.children(
-          h.thead.children(
-            h.tr.children(
-              h.th.attr('scope', 'col').children('Token'),
-              h.th.attr('scope', 'col').children('Purpose'),
-            ),
-          ),
-          h.tbody.children(
-            themeTokens.map(([token, purpose]) =>
-              h.tr.children(
-                h.th.attr('scope', 'row').children(h.code.children(token)),
-                h.td.children(purpose),
-              ),
-            ),
-          ),
-        ),
-      ),
-      section(
-        h,
-        'how-components-read-the-theme',
-        'How components read the theme',
         h.p.children(
-          {
-            tailwind:
-              'Tailwind utilities read the semantic colors via the @theme inline aliases. Keep the alias definitions when changing the application colors.',
-            stylex:
-              'StyleX styles refer to the semantic CSS properties with var(). Compile the installed styles through the StyleX Vite plugin.',
-            pleat:
-              'Pleat styles refer to the semantic CSS properties with var(). The installed Pleat renderer emits the declarations it applies.',
-          }[renderer],
+          'Crease UI styles components with semantic CSS variables. One palette updates buttons, inputs, overlays, charts, and sidebars together, while components keep their behavior and layout.',
         ),
+        h.p.children(
+          'Tailwind registry components depend on ',
+          h.code.children('crease-theme'),
+          '. The CLI writes its light and dark values into the stylesheet named by ',
+          h.code.children('tailwind.css'),
+          ' in ',
+          h.code.children('components.json'),
+          ' and maps them to Tailwind utilities.',
+        ),
+        h.div
+          .class('guide-token-table-wrapper')
+          .children(
+            h.table
+              .class('guide-token-table')
+              .children(
+                h.thead.children(
+                  h.tr.children(
+                    h.th.attr('scope', 'col').children('Token'),
+                    h.th.attr('scope', 'col').children('Purpose'),
+                  ),
+                ),
+                h.tbody.children(
+                  themeTokens.map(([token, purpose]) =>
+                    h.tr.children(
+                      h.th
+                        .class('guide-token-name')
+                        .attr('scope', 'row')
+                        .children(h.code.children(token)),
+                      h.td.children(purpose),
+                    ),
+                  ),
+                ),
+              ),
+          ),
+        h.h3.children('Tailwind utility tokens'),
+        h.p.children(
+          'The @theme inline block publishes color aliases, the sans-serif font token, and four radius utilities. They are generated from the variables above and power classes such as bg-background or rounded-lg.',
+        ),
+        h.div
+          .class('guide-token-table-wrapper')
+          .children(
+            h.table
+              .class('guide-token-table')
+              .children(
+                h.thead.children(
+                  h.tr.children(
+                    h.th.attr('scope', 'col').children('Token'),
+                    h.th.attr('scope', 'col').children('Purpose'),
+                  ),
+                ),
+                h.tbody.children(
+                  tailwindThemeTokens.map(([token, purpose]) =>
+                    h.tr.children(
+                      h.th
+                        .class('guide-token-name')
+                        .attr('scope', 'row')
+                        .children(h.code.children(token)),
+                      h.td.children(purpose),
+                    ),
+                  ),
+                ),
+              ),
+          ),
       ),
       section(
         h,
         'change-the-theme',
         'Change the theme',
         h.p.children(
-          'Set color pairs together. This example changes the main action colors and the shared corner radius.',
+          'Edit the ',
+          h.code.children(':root'),
+          ' and ',
+          h.code.children('.dark'),
+          ' values in the stylesheet selected by ',
+          h.code.children('components.json'),
+          '. Keep the generated ',
+          h.code.children('@theme inline'),
+          ' mapping: it makes the variables available as utilities such as ',
+          h.code.children('bg-background'),
+          ', ',
+          h.code.children('text-foreground'),
+          ', and ',
+          h.code.children('rounded-lg'),
+          '.',
         ),
         snippet(
           h,
           'guide-theme-override',
           'css',
-          `:root {\n  --primary: oklch(0.39 0.14 254);\n  --primary-foreground: oklch(0.99 0 0);\n  --radius: 0.5rem;\n}`,
+          `:root,
+.light {
+  --background: oklch(0.99 0.01 200);
+  --foreground: oklch(0.2 0.03 250);
+  --primary: oklch(0.55 0.18 205);
+  --primary-foreground: oklch(0.99 0.01 200);
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: oklch(0.16 0.02 250);
+  --foreground: oklch(0.96 0.01 200);
+  --primary: oklch(0.72 0.13 190);
+  --primary-foreground: oklch(0.16 0.02 250);
+}`,
+        ),
+        h.p.children(
+          'The example changes the page surface, foreground, primary color, and radius and keeps the rest of the default palette. Set every variable you change in both blocks so the theme stays legible in light and dark mode.',
         ),
       ),
       section(
@@ -401,23 +544,9 @@ export const theming: DocsGuide = {
         'dark-mode',
         'Dark mode',
         h.p.children(
-          'Apply ',
+          'Add or remove the ',
           h.code.children('.dark'),
-          ' to the document element to switch the same components to the dark palette. Update the corresponding dark tokens when replacing the light palette.',
-        ),
-        snippet(
-          h,
-          'guide-dark-theme',
-          'css',
-          `.dark {\n  color-scheme: dark;\n  --primary: oklch(0.8 0.11 254);\n  --primary-foreground: oklch(0.21 0.06 254);\n}`,
-        ),
-      ),
-      section(
-        h,
-        'scoped-themes',
-        'Scoped themes',
-        h.p.children(
-          'Apply overrides on a container for a local theme. Place overlay tokens on an ancestor shared by the anchor and its top-layer content.',
+          ' class on the document root or on an ancestor of the themed components. Existing utility classes then resolve against the active variable block.',
         ),
       ),
       section(
@@ -425,13 +554,27 @@ export const theming: DocsGuide = {
         'component-customization',
         'Component customization',
         h.p.children(
-          'Use component variants for local appearance changes. Edit the installed renderer source to change a component recipe. Use the standalone behavior when composing your own elements and styles.',
+          'Use semantic tokens for changes that should apply across the app, and a component’s documented ',
+          h.code.children('variant'),
+          ' and ',
+          h.code.children('size'),
+          ' for supported visual choices. The class prop accepts parent-layout utilities only.',
         ),
         h.p.children(
-          h.a
-            .attr('href', '/docs/behaviors')
-            .children('Browse the behavior reference'),
+          'For anything beyond that, edit the installed source: it is your code, and the component pages document its exports.',
         ),
+      ),
+      section(
+        h,
+        'theme-builder',
+        'Create a theme preset',
+        h.p.children(
+          'The Create page lets you adjust the color palette, chart colors, radius, typography, and sidebar treatment together. Copy its registry JSON to keep the preset reproducible, or copy the generated CSS variables into your stylesheet.',
+        ),
+        h.a
+          .class('docs-guide-link')
+          .attr('href', '/create')
+          .children('Open the theme builder'),
       ),
     ),
 }
