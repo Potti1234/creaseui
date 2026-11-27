@@ -13,6 +13,7 @@ import { TUTORIAL_CHAPTERS } from '../../../src/docs/tutorial/chapter-meta'
 import { componentDocsPages } from './component-pages'
 import { guides } from './guides'
 import { pageMetadata } from './page-metadata'
+import { LandingPage } from './pages/landing'
 import {
   DocsMessage,
   type DocsExampleImplementation,
@@ -35,6 +36,7 @@ const location = new URL(window.location.href)
 const route = docsRoute(location.pathname)
 const guidePath = location.pathname.replace(/\/+$/, '')
 const guide = guides[guidePath]
+const isHome = guidePath === '' || guidePath === '/'
 const renderer = docsRenderer(import.meta.env.MODE)
 const rendererIndex = rendererChoices.findIndex(
   choice => choice.value === renderer,
@@ -51,9 +53,12 @@ if (
   history.replaceState(history.state, '', location)
 }
 
-const pageTitle =
-  guide?.title ?? (route.tag === 'component' ? route.title : 'Components')
-document.title = `${pageTitle} · CreaseUI for Effect UI`
+const pageTitle = isHome
+  ? 'CreaseUI'
+  : (guide?.title ?? (route.tag === 'component' ? route.title : 'Components'))
+document.title = isHome
+  ? 'CreaseUI for Effect UI'
+  : `${pageTitle} · CreaseUI for Effect UI`
 
 type DocHtml = HtmlTypes.H<DocsMessage>
 
@@ -245,10 +250,7 @@ const docsHeader = (
 ) =>
   h.header.class('docs-header').children(
     h.div.class('docs-frame', 'docs-header-content').children(
-      h.a
-        .class('docs-brand')
-        .attr('href', '/docs/getting-started')
-        .children('crease/ui'),
+      h.a.class('docs-brand').attr('href', '/').children('crease/ui'),
       h.nav
         .class('docs-global-nav')
         .attr('aria-label', 'Documentation')
@@ -1023,52 +1025,59 @@ const Docs = Html.component({
         .children('Skip to content'),
       docsHeader(h, dark, query, groups),
       searchOpen ? searchDialog(h, search) : undefined,
-      guide !== undefined &&
-        (guidePath === '/create' ||
-          guidePath.startsWith('/charts') ||
-          guidePath.startsWith('/blocks'))
+      isHome
         ? h.main
             .class('site-page')
             .attrs({ id: 'docs-main', tabindex: '-1' })
-            .children(guide.view(h))
-        : h.div.class('docs-layout').children(
-            h.aside.class('docs-sidebar').children(
-              guidePath.startsWith('/docs/tutorial')
-                ? h.nav.class('docs-component-nav').children(
-                    h.div.children(
-                      h.p.class('docs-nav-group-title').children('Tutorial'),
-                      h.ul.children(
-                        Object.entries(guides)
-                          .filter(([path]) => path.startsWith('/docs/tutorial'))
-                          .map(([path, entry]) =>
-                            h.li.key(path).children(
-                              h.a
-                                .class('docs-nav-link')
-                                .attrs({
-                                  href: path,
-                                  'aria-current':
-                                    guidePath === path ? 'page' : undefined,
-                                })
-                                .children(
-                                  path === '/docs/tutorial'
-                                    ? 'Overview: the short version'
-                                    : entry.title,
-                                ),
+            .children(LandingPage(h, { key: 'landing' }) as never)
+        : guide !== undefined &&
+            (guidePath === '/create' ||
+              guidePath.startsWith('/charts') ||
+              guidePath.startsWith('/blocks'))
+          ? h.main
+              .class('site-page')
+              .attrs({ id: 'docs-main', tabindex: '-1' })
+              .children(guide.view(h))
+          : h.div.class('docs-layout').children(
+              h.aside.class('docs-sidebar').children(
+                guidePath.startsWith('/docs/tutorial')
+                  ? h.nav.class('docs-component-nav').children(
+                      h.div.children(
+                        h.p.class('docs-nav-group-title').children('Tutorial'),
+                        h.ul.children(
+                          Object.entries(guides)
+                            .filter(([path]) =>
+                              path.startsWith('/docs/tutorial'),
+                            )
+                            .map(([path, entry]) =>
+                              h.li.key(path).children(
+                                h.a
+                                  .class('docs-nav-link')
+                                  .attrs({
+                                    href: path,
+                                    'aria-current':
+                                      guidePath === path ? 'page' : undefined,
+                                  })
+                                  .children(
+                                    path === '/docs/tutorial'
+                                      ? 'Overview: the short version'
+                                      : entry.title,
+                                  ),
+                              ),
                             ),
-                          ),
+                        ),
                       ),
-                    ),
-                  )
-                : sidebar(h, query, groups),
+                    )
+                  : sidebar(h, query, groups),
+              ),
+              guide !== undefined
+                ? guidePage(h, guide)
+                : route.tag === 'catalog'
+                  ? catalog(h, groups)
+                  : route.tag === 'component'
+                    ? component(h, route.slug, route.title)
+                    : notFound(h),
             ),
-            guide !== undefined
-              ? guidePage(h, guide)
-              : route.tag === 'catalog'
-                ? catalog(h, groups)
-                : route.tag === 'component'
-                  ? component(h, route.slug, route.title)
-                  : notFound(h),
-          ),
     )
   },
 })

@@ -1345,3 +1345,185 @@ body:has(.effect-docs) {
     border-bottom: 1px solid var(--border);
   }
 }
+
+/* Landing page composite previews */
+.landing-app {
+  display: grid;
+  grid-template-columns: 13rem 1fr;
+  height: 100%;
+  min-height: 0;
+  background: var(--background);
+}
+.landing-app-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-right: 1px solid var(--border);
+  padding: 1.25rem;
+  background: color-mix(in oklab, var(--muted) 45%, transparent);
+}
+.landing-app-sidebar span,
+.landing-app-logo {
+  height: 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted-foreground) 22%, transparent);
+}
+.landing-app-logo {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.45rem;
+  background: var(--foreground);
+  margin-bottom: 1rem;
+}
+.landing-app-main {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+}
+.landing-app-topbar {
+  height: 2.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card);
+}
+.landing-app-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+.landing-app-card {
+  display: grid;
+  gap: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--card);
+  padding: 1rem;
+  font-size: 0.78rem;
+}
+.landing-app-card span {
+  color: var(--muted-foreground);
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+.landing-app-panel {
+  display: grid;
+  flex: 1;
+  align-content: start;
+  gap: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--card);
+  padding: 1.25rem;
+}
+.landing-app-panel span {
+  height: 1rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted-foreground) 18%, transparent);
+}
+.landing-app-panel span:nth-child(2n) {
+  width: 82%;
+}
+.landing-app-panel span:nth-child(3n) {
+  width: 64%;
+}
+.landing-app-inbox .landing-app-cards,
+.landing-app-kanban .landing-app-cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.landing-map {
+  position: relative;
+  height: 620px;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: #dbe8df;
+  box-shadow: 0 0 0 1px var(--border);
+}
+.landing-map-grid {
+  position: absolute;
+  inset: -20%;
+  background-image:
+    linear-gradient(
+      28deg,
+      transparent 47%,
+      rgb(255 255 255 / 0.85) 48%,
+      rgb(255 255 255 / 0.85) 50%,
+      transparent 51%
+    ),
+    linear-gradient(
+      112deg,
+      transparent 47%,
+      rgb(255 255 255 / 0.7) 48%,
+      rgb(255 255 255 / 0.7) 50%,
+      transparent 51%
+    ),
+    linear-gradient(rgb(255 255 255 / 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.35) 1px, transparent 1px);
+  background-size:
+    240px 180px,
+    280px 210px,
+    80px 80px,
+    80px 80px;
+}
+.landing-map-route {
+  position: absolute;
+  left: 18%;
+  top: 30%;
+  width: 62%;
+  height: 42%;
+  border: 5px solid #4c80ff;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-radius: 50%;
+  transform: rotate(-12deg);
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.2));
+}
+.landing-map-marker {
+  position: absolute;
+  border-radius: 999px;
+  background: var(--foreground);
+  color: var(--background);
+  padding: 0.45rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.22);
+}
+.landing-map-marker-a {
+  left: 36%;
+  top: 38%;
+}
+.landing-map-marker-b {
+  right: 26%;
+  bottom: 31%;
+}
+.landing-map-controls {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 1.25rem;
+  text-align: center;
+}
+.landing-map-controls::first-letter {
+  line-height: 2rem;
+}
+@media (max-width: 800px) {
+  .landing-app {
+    grid-template-columns: 4rem 1fr;
+  }
+  .landing-app-sidebar {
+    padding: 0.75rem;
+  }
+  .landing-app-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .landing-map {
+    height: 420px;
+  }
+}
