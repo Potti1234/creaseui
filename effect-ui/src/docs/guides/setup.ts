@@ -123,12 +123,21 @@ export const gettingStarted: DocsGuide = {
         'before-you-start',
         'Before you start',
         h.p.children(
-          'You need an Effect UI project with TypeScript and Vite. Use a local checkout of the registry while the Effect UI port is in development.',
+          'Crease UI is a source registry for Effect UI. The shadcn CLI copies the TypeScript files you choose into your application, where you can inspect and edit them. Your app keeps its own Effect UI and Effect versions.',
         ),
         h.p.children(
-          'These steps use ',
+          'The ',
           rendererName,
-          '. Use the renderer links to see the other setups.',
+          ' renderer styles components with Tailwind CSS 4 utility classes, compiled by the Tailwind Vite plugin. Start with Node.js 22 or newer and an Effect UI Vite app. For the currently validated versions, see the ',
+          h.a
+            .class('docs-inline-link')
+            .attrs({
+              href: 'https://github.com/Potti1234/creaseui/blob/main/compatibility.json',
+              target: '_blank',
+              rel: 'noreferrer',
+            })
+            .children('compatibility matrix'),
+          '.',
         ),
       ),
       section(
@@ -212,6 +221,7 @@ export const gettingStarted: DocsGuide = {
           : h.p.children(
               'An empty stylesheet is enough to start. After installation, keep the CSS custom properties and font import in this stylesheet.',
             ),
+        snippet(h, 'guide-entry-import', 'ts', `import './styles.css'`),
       ),
       section(
         h,
@@ -246,6 +256,43 @@ export const gettingStarted: DocsGuide = {
             : `npx shadcn@latest add @crease-effect/${renderer}-effect-components`,
         ),
         h.p.children(
+          'Each item brings its registry dependencies with it. Installing Button writes these files:',
+        ),
+        h.div.class('guide-token-table-wrapper').children(
+          h.table.class('guide-token-table').children(
+            h.tbody.children(
+              [
+                [
+                  'src/ui/effect/ui/button.ts',
+                  'The Tailwind Button source: variants, sizes, and view.',
+                ],
+                [
+                  'src/ui/effect/behaviors/button.ts',
+                  'Shared Button behavior used by the renderers.',
+                ],
+                [
+                  'src/styles.css',
+                  'crease-theme adds the light and dark theme variables and the @theme inline mapping.',
+                ],
+                [
+                  'package.json',
+                  'Component dependencies such as class-variance-authority.',
+                ],
+              ].map(([file, description]) =>
+                h.tr
+                  .key(file ?? '')
+                  .children(
+                    h.td.children(h.code.children(file)),
+                    h.td.children(description ?? ''),
+                  ),
+              ),
+            ),
+          ),
+        ),
+        h.p.children(
+          'Stateless components are a single view helper. Interactive components also include their Model, Message, and update logic. Every component page shows its install command in its Installation section.',
+        ),
+        h.p.children(
           'Install a standalone behavior with ',
           h.code.children(
             'npx shadcn@latest add @crease-effect/effect-button-behavior',
@@ -259,12 +306,23 @@ export const gettingStarted: DocsGuide = {
         h,
         'use-components',
         'Use components',
+        h.h3.children('Render a stateless component'),
+        h.p.children(
+          'Import the installed component helper and place it in your view. Its children, variant and event handlers are ordinary Effect UI view inputs.',
+        ),
         h.p.children(
           'Place a ',
           h.code.children('<div id="root"></div>'),
           ' in your HTML and point the module script at the application entry.',
         ),
         snippet(h, 'guide-first-view', 'ts', application),
+        h.h3.children('Compose a stateful component'),
+        h.p.children(
+          'For a dialog, menu, calendar, or other stateful component, declare it as a child component from the parent view. Keep durable values in the parent model, pass them as props, and map child events in onEmit. The child owns its transient interaction state; the parent owns the values that must survive navigation or be saved.',
+        ),
+        h.p.children(
+          'Commands and subscriptions belong to the child unless the state is shared by several controls. Shared state moves up to the parent or a provider, as described in the Behaviors guide.',
+        ),
         renderer === 'pleat'
           ? h.p.children(
               'For server rendering, place ',
