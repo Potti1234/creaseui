@@ -31,31 +31,33 @@ export type TransferListProps<Msg, R = never> = Omit<
 }
 
 const tailwind = {
-  root: '@container/transfer grid w-full min-w-0 gap-2 text-sm',
+  root: '@container/transfer flex w-full min-w-0 flex-col gap-0 text-sm',
   hidden: 'sr-only',
-  label: 'font-medium',
-  description: 'text-sm text-muted-foreground',
-  searchWrap: 'relative min-w-0',
+  label: 'block px-3 text-sm leading-5 font-medium',
+  description: 'block px-3 text-xs leading-5 text-muted-foreground',
+  searchWrap: 'relative m-3 min-w-0',
   search:
     'h-9 w-full min-w-0 rounded-md border bg-background ps-8 pe-8 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40',
   searchIcon:
     'pointer-events-none absolute start-2.5 top-1/2 -translate-y-1/2 text-muted-foreground',
   clearSearch:
     'absolute end-1 top-1/2 inline-grid size-7 -translate-y-1/2 place-items-center rounded-md border-0 bg-transparent text-muted-foreground hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring',
-  panels: 'grid min-w-0 grid-cols-1 gap-3 @min-[40rem]/transfer:grid-cols-2',
+  panels: 'grid min-w-0 grid-cols-1 gap-0 @min-[40rem]/transfer:grid-cols-2',
   panel:
-    'min-w-0 overflow-hidden rounded-md border bg-card text-card-foreground',
+    'flex min-w-0 flex-col overflow-hidden outline-offset-0 focus-visible:-outline-offset-2',
   header:
-    'flex min-h-9 items-center justify-between gap-2 border-b bg-muted/50 px-3 py-1.5',
-  heading: 'text-sm font-medium',
+    'flex items-center justify-between gap-2 border-b border-border px-3 py-2 @max-[40rem]/transfer:bg-background',
+  heading: 'text-sm leading-5 font-medium text-muted-foreground',
   bulk: 'rounded-sm border-0 bg-transparent px-1.5 py-1 text-xs font-medium text-primary outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40',
-  list: 'm-0 flex min-h-24 max-h-72 list-none flex-col overflow-y-auto p-1',
-  groupLabel: 'px-2 py-1.5 text-xs font-medium text-muted-foreground',
-  row: 'flex min-w-0 items-center gap-2 rounded-sm px-2 py-1.5 data-grabbed:bg-accent data-[drop=before]:shadow-[inset_0_2px_var(--ring)] data-[drop=after]:shadow-[inset_0_-2px_var(--ring)]',
+  list: 'm-0 flex min-h-48 max-h-80 list-none flex-col overflow-y-auto overscroll-contain p-0',
+  groupLabel:
+    'mt-1 px-3 py-1 text-sm leading-5 font-bold text-foreground first:mt-0',
+  row: 'flex min-w-0 items-center gap-2 px-3 py-1.5 text-sm data-grabbed:bg-accent data-[drop=before]:shadow-[inset_0_2px_var(--ring)] data-[drop=after]:shadow-[inset_0_-2px_var(--ring)]',
   option: 'min-w-0 flex-1 truncate',
   action:
-    'inline-grid size-7 shrink-0 place-items-center rounded-sm border-0 bg-transparent text-muted-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40',
-  empty: 'px-3 py-4 text-sm text-muted-foreground',
+    'inline-grid size-6 shrink-0 place-items-center rounded-md border-0 bg-transparent text-muted-foreground outline-none hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-40',
+  empty:
+    'flex min-h-48 items-center justify-center p-4 text-center text-xs leading-5 text-muted-foreground',
 }
 
 export const TransferList = <Msg, R = never>(
@@ -106,10 +108,17 @@ export const TransferList = <Msg, R = never>(
           else group.push(item)
         }
         return h.section
-          .class(styles.panel)
+          .class(
+            styles.panel,
+            selected
+              ? undefined
+              : 'border-t border-border @min-[40rem]/transfer:border-t-0 @min-[40rem]/transfer:border-l',
+          )
           .attrs({
             'data-slot': `transfer-list-${side}`,
             'aria-labelledby': `${id}-${side}-headline`,
+            role: 'group',
+            tabindex: '-1',
           })
           .children(
             h.div
