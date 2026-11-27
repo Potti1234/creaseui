@@ -105,13 +105,15 @@ const sparkline = (h: Html.H<Message>, id: string) =>
     id,
     data: heroTrend,
     ariaLabel: 'Revenue trend for the last 6 months',
-    className: 'h-44 w-full',
+    className: 'h-24 w-full',
+    color: 'var(--chart-1)',
+    height: '6rem',
   })
 
 const hero = (h: Html.H<Message>) =>
   h.section
     .class(
-      'mx-auto grid w-full max-w-[1200px] items-center gap-12 px-4 py-16 md:grid-cols-2 md:px-8 md:py-24',
+      'mx-auto grid w-full max-w-[1200px] items-center gap-12 px-4 py-16 md:grid-cols-2 md:px-8 md:py-16',
     )
     .children(
       h.div.class('flex flex-col items-start gap-6').children(

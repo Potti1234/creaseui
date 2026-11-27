@@ -382,13 +382,22 @@ export const BarChart = <Msg>(
 type AreaChartOptions = Styled & {
   readonly id?: string
   readonly ariaLabel?: string
+  readonly color?: string
+  readonly height?: string
 }
 export type AreaChartProps = AreaChartOptions & {
   readonly data: readonly number[]
 }
 export const AreaChart = <Msg>(
   h: Html.H<Msg>,
-  { id, data, className, ariaLabel = 'Area chart' }: AreaChartProps,
+  {
+    id,
+    data,
+    className,
+    ariaLabel = 'Area chart',
+    color: colorOption,
+    height,
+  }: AreaChartProps,
   styles: ChartClasses = chartClasses,
 ) => {
   const values = data.map(finite)
@@ -399,7 +408,7 @@ export const AreaChart = <Msg>(
     x: (index * 100) / Math.max(1, values.length - 1),
     y: range === 0 ? 25 : 15 + ((maximum - value) / range) * 20,
   }))
-  const color = 'var(--muted-foreground)'
+  const color = colorOption ?? 'var(--muted-foreground)'
   return ChartIds(h, {
     key: id,
     view: ids => {
@@ -409,19 +418,21 @@ export const AreaChart = <Msg>(
         '0 0 100 50',
         ariaLabel,
         Html.classNames(styles.chart, className),
-      ).children(
-        h.el('defs').children(gradient(h, gradientId, color, '0.16')),
-        [14, 25, 36].map(y => baseline(h, 0, 100, y)),
-        points.length === 0
-          ? undefined
-          : h.el('path').attrs({
-              d: chartAreaPath(points, 50),
-              fill: `url(#${gradientId})`,
-            }),
-        points.length === 0
-          ? undefined
-          : curve(h, smoothChartPath(points), color, '1'),
       )
+        .attrs(height === undefined ? {} : { style: `height:${height}` })
+        .children(
+          h.el('defs').children(gradient(h, gradientId, color, '0.16')),
+          [14, 25, 36].map(y => baseline(h, 0, 100, y)),
+          points.length === 0
+            ? undefined
+            : h.el('path').attrs({
+                d: chartAreaPath(points, 50),
+                fill: `url(#${gradientId})`,
+              }),
+          points.length === 0
+            ? undefined
+            : curve(h, smoothChartPath(points), color, '1'),
+        )
     },
   })
 }
