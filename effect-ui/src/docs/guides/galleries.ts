@@ -332,14 +332,26 @@ const blocks = [
     'chart-analytics-dashboard',
     'An analytics dashboard with six Apache ECharts visualizations.',
   ],
-  ...Array.from(
-    { length: 16 },
-    (_, i) =>
-      [
-        `sidebar-${String(i + 1).padStart(2, '0')}`,
-        'A sidebar application layout.',
-      ] as const,
-  ),
+  ...(
+    [
+      ['01', 'A simple sidebar with navigation grouped by section.'],
+      ['02', 'A sidebar with collapsible sections.'],
+      ['03', 'A sidebar with submenus.'],
+      ['04', 'A floating sidebar with submenus.'],
+      ['05', 'A sidebar with collapsible submenus.'],
+      ['06', 'A sidebar with submenus as dropdowns.'],
+      ['07', 'A sidebar that collapses to icons.'],
+      ['08', 'An inset sidebar with secondary navigation.'],
+      ['09', 'Collapsible nested sidebars.'],
+      ['10', 'A sidebar in a popover.'],
+      ['11', 'A sidebar with a collapsible file tree.'],
+      ['12', 'A sidebar with a calendar.'],
+      ['13', 'A sidebar in a dialog.'],
+      ['14', 'A sidebar on the right.'],
+      ['15', 'A left and right sidebar.'],
+      ['16', 'A sidebar with a sticky site header.'],
+    ] as const
+  ).map(([id, description]) => [`sidebar-${id}`, description] as const),
   [
     'app-shell-01',
     'An app shell with a top navigation, sidebar and elevated content.',
@@ -618,6 +630,299 @@ const createGuide: DocsGuide = {
       ),
     ),
 }
+
+const previewMetric = (
+  h: Html.H<DocsMessage>,
+  label: string,
+  value: string,
+  delta: string,
+  detail: string,
+) =>
+  h.section
+    .key(label)
+    .class('preview-metric')
+    .children(
+      h.div.children(h.span.children(label), h.b.children(delta)),
+      h.strong.children(value),
+      h.p.children(detail),
+    )
+
+const previewSidebar = (h: Html.H<DocsMessage>, compact = false) =>
+  h.aside.class('preview-sidebar', compact ? 'compact' : '').children(
+    h.div.class('preview-brand').children('A', h.strong.children('Acme Inc.')),
+    h.button.attrs({ type: 'button' }).children('⌘ Quick Create'),
+    h.nav.children(
+      ...['Dashboard', 'Lifecycle', 'Analytics', 'Projects', 'Team'].map(
+        (item, index) =>
+          h.a
+            .key(item)
+            .attr('aria-current', index === 0 ? 'page' : undefined)
+            .children(item),
+      ),
+    ),
+    h.nav
+      .class('preview-secondary')
+      .children(
+        ...['Data Library', 'Reports', 'Word Assistant'].map(item =>
+          h.a.key(item).children(item),
+        ),
+      ),
+    h.div.class('preview-user').children('sc', h.span.children('CreaseUI')),
+  )
+
+const dashboardPreview = (h: Html.H<DocsMessage>) =>
+  h.div.class('preview-shell').children(
+    previewSidebar(h),
+    h.main.class('preview-main').children(
+      h.header
+        .class('preview-topbar')
+        .children(
+          h.span.children('☰'),
+          h.span.children('Acme Inc. › Documents'),
+          h.a.children('GitHub'),
+        ),
+      h.div.class('preview-content').children(
+        h.div
+          .class('preview-metrics')
+          .children(
+            previewMetric(
+              h,
+              'Total Revenue',
+              '$1,250.00',
+              '+12.5%',
+              'Trending up this month',
+            ),
+            previewMetric(
+              h,
+              'New Customers',
+              '1,234',
+              '-20%',
+              'Down 20% this period',
+            ),
+            previewMetric(
+              h,
+              'Active Accounts',
+              '45,678',
+              '+12.5%',
+              'Strong user retention',
+            ),
+            previewMetric(
+              h,
+              'Growth Rate',
+              '4.5%',
+              '+4.5%',
+              'Steady performance increase',
+            ),
+          ),
+        h.section
+          .class('preview-panel preview-chart')
+          .children(
+            h.div.children(
+              h.h1.children('Total Visitors'),
+              h.p.children('Total for the last three months'),
+            ),
+            h.span.children('Last 3 months ⌄'),
+            h.div
+              .class('preview-line-chart')
+              .children(h.span.class('line one'), h.span.class('line two')),
+            h.footer.children(
+              h.span.children('■ Desktop'),
+              h.span.children('■ Mobile'),
+            ),
+          ),
+        h.section.class('preview-panel preview-table').children(
+          h.div.children(
+            h.h1.children('Document sections'),
+            h.button.attrs({ type: 'button' }).children('Customize Columns'),
+          ),
+          ...[
+            ['Introduction', 'Technical', 'Done'],
+            ['Architecture', 'Design', 'In Process'],
+            ['Launch plan', 'Marketing', 'Draft'],
+            ['Analytics spec', 'Technical', 'Review'],
+          ].map(([name, type, status]) =>
+            h.div
+              .key(name ?? '')
+              .class('preview-table-row')
+              .children(
+                h.span.children(name ?? ''),
+                h.span.children(type ?? ''),
+                h.b.children(status ?? ''),
+              ),
+          ),
+        ),
+      ),
+    ),
+  )
+
+const sidebarOnlyPreview = (h: Html.H<DocsMessage>, name: string) =>
+  h.div
+    .class('preview-shell sparse')
+    .children(
+      previewSidebar(h, name === 'sidebar-07'),
+      name === 'sidebar-14' || name === 'sidebar-15'
+        ? previewSidebar(h, name === 'sidebar-15')
+        : undefined,
+      h.main
+        .class('preview-main')
+        .children(
+          h.header
+            .class('preview-topbar')
+            .children(
+              h.span.children('☰'),
+              h.span.children('Build your application'),
+              h.span.children('⌘K'),
+            ),
+          h.div
+            .class('preview-empty')
+            .children(
+              h.strong.children(name),
+              h.p.children('Select a page from the sidebar to get started.'),
+            ),
+        ),
+    )
+
+const loginPreview = (h: Html.H<DocsMessage>, split: boolean) =>
+  h.main
+    .class('preview-login', split ? 'split' : '')
+    .children(
+      split ? h.div.class('preview-login-visual') : undefined,
+      h.section
+        .class('preview-login-card')
+        .children(
+          h.h1.children('Welcome back'),
+          h.p.children('Enter your email to sign in to your account'),
+          h.label.children('Email'),
+          h.div.class('preview-input').children('m@example.com'),
+          h.label.children('Password'),
+          h.div.class('preview-input').children('••••••••'),
+          h.button.attrs({ type: 'button' }).children('Login'),
+          h.p
+            .class('preview-login-foot')
+            .children("Don't have an account? Sign up"),
+        ),
+    )
+
+const tablePreview = (h: Html.H<DocsMessage>) =>
+  h.main.class('preview-table-page').children(
+    h.header.children(
+      h.h1.children('Tasks'),
+      h.p.children('Manage and track your product roadmap.'),
+    ),
+    h.div
+      .class('preview-toolbar')
+      .children(
+        h.span.children('Filter tasks…'),
+        h.span.children('Status ⌄'),
+        h.span.children('Priority ⌄'),
+        h.span.children('View ⌄'),
+      ),
+    h.section.class('preview-panel preview-table tall').children(
+      ...[
+        ['TASK-8782', 'Documentation', 'In Progress'],
+        ['TASK-7878', 'Design', 'Backlog'],
+        ['TASK-4562', 'Development', 'Todo'],
+        ['TASK-2314', 'Research', 'Done'],
+        ['TASK-9812', 'Marketing', 'Review'],
+        ['TASK-1042', 'Infrastructure', 'Done'],
+      ].map(([id, type, status]) =>
+        h.div
+          .key(id ?? '')
+          .class('preview-table-row')
+          .children(
+            h.span.children(id ?? ''),
+            h.span.children(type ?? ''),
+            h.b.children(status ?? ''),
+          ),
+      ),
+    ),
+  )
+
+const dashboardSkeleton = (h: Html.H<DocsMessage>, name: string) =>
+  h.div
+    .class('preview-shell')
+    .children(
+      previewSidebar(h),
+      h.main
+        .class('preview-main')
+        .children(
+          h.header
+            .class('preview-topbar')
+            .children(
+              h.span.children('☰'),
+              h.span.children('CreaseUI'),
+              h.span.children('GitHub'),
+            ),
+          h.div
+            .class('preview-content')
+            .children(
+              h.div
+                .class('preview-metrics')
+                .children(
+                  previewMetric(
+                    h,
+                    'Revenue',
+                    '$24.5k',
+                    '+8%',
+                    'Up from last month',
+                  ),
+                  previewMetric(
+                    h,
+                    'Orders',
+                    '1,284',
+                    '+12%',
+                    'Strong conversion',
+                  ),
+                  previewMetric(
+                    h,
+                    'Active users',
+                    '8,492',
+                    '+4%',
+                    'Steady retention',
+                  ),
+                  previewMetric(h, 'Latency', '128ms', '-9%', 'Within target'),
+                ),
+              h.section
+                .class('preview-panel preview-chart')
+                .children(
+                  h.div.children(
+                    h.h1.children(name),
+                    h.p.children('Live block preview'),
+                  ),
+                  h.div
+                    .class('preview-line-chart')
+                    .children(
+                      h.span.class('line one'),
+                      h.span.class('line two'),
+                    ),
+                ),
+              h.div
+                .class('preview-two-up')
+                .children(
+                  h.section.class('preview-panel'),
+                  h.section.class('preview-panel'),
+                ),
+            ),
+        ),
+    )
+
+const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
+  if (name === 'dashboard-01' || name === 'chart-analytics-dashboard')
+    return dashboardPreview(h)
+  if (name.startsWith('sidebar-') || name === 'app-shell-01')
+    return sidebarOnlyPreview(h, name)
+  if (name === 'login-03') return loginPreview(h, false)
+  if (name === 'login-04') return loginPreview(h, true)
+  if (name.startsWith('tablecn')) return tablePreview(h)
+  return dashboardSkeleton(h, name)
+}
+
+const blockPreviewGuide = (name: string, description: string): DocsGuide => ({
+  title: name,
+  description,
+  view: h => blockPreviewView(h, name),
+})
+
 const blocksGuide: DocsGuide = {
   title: 'Blocks',
   description: 'Building Blocks for Effect UI',
@@ -653,38 +958,26 @@ const blocksGuide: DocsGuide = {
           h.article
             .key(name)
             .class('block-row')
+            .attrs({ id: name, 'data-block': name })
             .children(
-              h.header
-                .class('block-row-header')
-                .children(
-                  h.div.children(
-                    h.h2.children(name),
-                    h.p.children(description),
-                  ),
-                  h.div
-                    .class('block-actions')
-                    .children(
-                      h.button.attrs({ type: 'button' }).children('Code'),
-                      h.a.children('Open ↗'),
-                    ),
+              h.header.class('block-row-header').children(
+                h.div.children(h.h2.children(name), h.p.children(description)),
+                h.div.class('block-actions').children(
+                  h.button.attrs({ type: 'button' }).children('Code'),
+                  h.a
+                    .attrs({
+                      href: `/blocks/preview/tailwind--${name}`,
+                      target: '_blank',
+                      rel: 'noreferrer',
+                    })
+                    .children('Open ↗'),
                 ),
-              h.div
-                .class('block-preview')
-                .children(
-                  h.div.class('block-preview-sidebar'),
-                  h.div
-                    .class('block-preview-main')
-                    .children(
-                      h.div.class('block-preview-bar'),
-                      h.div
-                        .class('block-preview-content')
-                        .children(
-                          h.div.class('block-preview-card'),
-                          h.div.class('block-preview-card'),
-                          h.div.class('block-preview-card wide'),
-                        ),
-                    ),
-                ),
+              ),
+              h.iframe.class('block-preview-frame').attrs({
+                src: `/blocks/preview/tailwind--${name}`,
+                title: `${name} — Tailwind preview`,
+                loading: 'lazy',
+              }),
             ),
         ),
       ),
@@ -705,4 +998,16 @@ export const galleryGuides: Readonly<Record<string, DocsGuide>> = {
     ]),
   ),
   '/blocks': blocksGuide,
+  '/blocks/sidebar': blocksGuide,
+  '/blocks-stylex': blocksGuide,
+  '/blocks-stylex/table': blocksGuide,
+  ...Object.fromEntries(
+    blocks.flatMap(([name, description]) => {
+      const guide = blockPreviewGuide(name, description)
+      const entries = [[`/blocks/preview/tailwind--${name}`, guide] as const]
+      return name.startsWith('sidebar-')
+        ? [...entries, [`/blocks/preview/${name.slice(8)}`, guide] as const]
+        : entries
+    }),
+  ),
 }

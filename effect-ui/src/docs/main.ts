@@ -36,6 +36,7 @@ const location = new URL(window.location.href)
 const route = docsRoute(location.pathname)
 const guidePath = location.pathname.replace(/\/+$/, '')
 const guide = guides[guidePath]
+const isBlockPreview = guidePath.startsWith('/blocks/preview/')
 const isHome = guidePath === '' || guidePath === '/'
 const renderer = docsRenderer(import.meta.env.MODE)
 const rendererIndex = rendererChoices.findIndex(
@@ -1019,65 +1020,74 @@ const Docs = Html.component({
   view: (h, { query, dark, searchOpen, search }) => {
     const groups = groupedEntries(query)
     return h.div.class('effect-docs', dark ? 'dark' : 'light').children(
-      h.a
-        .class('docs-skip')
-        .attr('href', '#docs-main')
-        .children('Skip to content'),
-      docsHeader(h, dark, query, groups),
-      searchOpen ? searchDialog(h, search) : undefined,
-      isHome
+      isBlockPreview
+        ? undefined
+        : h.a
+            .class('docs-skip')
+            .attr('href', '#docs-main')
+            .children('Skip to content'),
+      isBlockPreview ? undefined : docsHeader(h, dark, query, groups),
+      !isBlockPreview && searchOpen ? searchDialog(h, search) : undefined,
+      isBlockPreview && guide !== undefined
         ? h.main
-            .class('site-page')
+            .class('block-preview-page')
             .attrs({ id: 'docs-main', tabindex: '-1' })
-            .children(LandingPage(h, { key: 'landing' }) as never)
-        : guide !== undefined &&
-            (guidePath === '/create' ||
-              guidePath.startsWith('/charts') ||
-              guidePath.startsWith('/blocks'))
+            .children(guide.view(h))
+        : isHome
           ? h.main
               .class('site-page')
               .attrs({ id: 'docs-main', tabindex: '-1' })
-              .children(guide.view(h))
-          : h.div.class('docs-layout').children(
-              h.aside.class('docs-sidebar').children(
-                guidePath.startsWith('/docs/tutorial')
-                  ? h.nav.class('docs-component-nav').children(
-                      h.div.children(
-                        h.p.class('docs-nav-group-title').children('Tutorial'),
-                        h.ul.children(
-                          Object.entries(guides)
-                            .filter(([path]) =>
-                              path.startsWith('/docs/tutorial'),
-                            )
-                            .map(([path, entry]) =>
-                              h.li.key(path).children(
-                                h.a
-                                  .class('docs-nav-link')
-                                  .attrs({
-                                    href: path,
-                                    'aria-current':
-                                      guidePath === path ? 'page' : undefined,
-                                  })
-                                  .children(
-                                    path === '/docs/tutorial'
-                                      ? 'Overview: the short version'
-                                      : entry.title,
-                                  ),
+              .children(LandingPage(h, { key: 'landing' }) as never)
+          : guide !== undefined &&
+              (guidePath === '/create' ||
+                guidePath.startsWith('/charts') ||
+                guidePath.startsWith('/blocks'))
+            ? h.main
+                .class('site-page')
+                .attrs({ id: 'docs-main', tabindex: '-1' })
+                .children(guide.view(h))
+            : h.div.class('docs-layout').children(
+                h.aside.class('docs-sidebar').children(
+                  guidePath.startsWith('/docs/tutorial')
+                    ? h.nav.class('docs-component-nav').children(
+                        h.div.children(
+                          h.p
+                            .class('docs-nav-group-title')
+                            .children('Tutorial'),
+                          h.ul.children(
+                            Object.entries(guides)
+                              .filter(([path]) =>
+                                path.startsWith('/docs/tutorial'),
+                              )
+                              .map(([path, entry]) =>
+                                h.li.key(path).children(
+                                  h.a
+                                    .class('docs-nav-link')
+                                    .attrs({
+                                      href: path,
+                                      'aria-current':
+                                        guidePath === path ? 'page' : undefined,
+                                    })
+                                    .children(
+                                      path === '/docs/tutorial'
+                                        ? 'Overview: the short version'
+                                        : entry.title,
+                                    ),
+                                ),
                               ),
-                            ),
+                          ),
                         ),
-                      ),
-                    )
-                  : sidebar(h, query, groups),
+                      )
+                    : sidebar(h, query, groups),
+                ),
+                guide !== undefined
+                  ? guidePage(h, guide)
+                  : route.tag === 'catalog'
+                    ? catalog(h, groups)
+                    : route.tag === 'component'
+                      ? component(h, route.slug, route.title)
+                      : notFound(h),
               ),
-              guide !== undefined
-                ? guidePage(h, guide)
-                : route.tag === 'catalog'
-                  ? catalog(h, groups)
-                  : route.tag === 'component'
-                    ? component(h, route.slug, route.title)
-                    : notFound(h),
-            ),
     )
   },
 })
