@@ -419,12 +419,15 @@ const createGuide: DocsGuide = {
             h.span.children('Type'),
             h.span.children('Motion'),
           ),
-        h.div
-          .class('create-mode')
-          .children(
-            h.span.attr('aria-current', 'page').children('Light'),
-            h.span.children('Dark'),
-          ),
+        h.div.class('create-mode').children(
+          h.span
+            .attr('aria-current', 'page')
+            .on('click', DocsMessage.SelectedTheme({ dark: false }))
+            .children('Light'),
+          h.span
+            .on('click', DocsMessage.SelectedTheme({ dark: true }))
+            .children('Dark'),
+        ),
         h.div.class('create-token-section').children('PRIMARY'),
         ...[
           ['primary', 'oklch(0.21 0 0)', '#171717', ''],
@@ -518,8 +521,12 @@ const createGuide: DocsGuide = {
               .class('create-scheme')
               .children(
                 h.span.attr('aria-current', 'page').children('Auto'),
-                h.span.children('Light'),
-                h.span.children('Dark'),
+                h.span
+                  .on('click', DocsMessage.SelectedTheme({ dark: false }))
+                  .children('Light'),
+                h.span
+                  .on('click', DocsMessage.SelectedTheme({ dark: true }))
+                  .children('Dark'),
               ),
           ),
         createColumn(

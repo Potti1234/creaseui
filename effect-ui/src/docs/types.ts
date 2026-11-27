@@ -8,6 +8,7 @@ export const DocsMessage = UiSchema.TaggedEnum({
   SearchFiltered: { query: Schema.String },
   SelectedBlockCategory: { category: Schema.String },
   ToggledTheme: {},
+  SelectedTheme: { dark: Schema.Boolean },
   OpenedSearch: {},
   ClosedSearch: {},
   ChartEvent: {},

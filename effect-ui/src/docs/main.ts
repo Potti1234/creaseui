@@ -1007,6 +1007,7 @@ const Docs = Html.component({
     SelectedBlockCategory: ($, { category }) =>
       $.evolve({ blockCategory: category }),
     ToggledTheme: $ => $.evolve({ dark: value => !value }),
+    SelectedTheme: ($, { dark }) => $.evolve({ dark }),
     OpenedSearch: $ => $.evolve({ searchOpen: true }),
     ClosedSearch: $ => $.evolve({ searchOpen: false }),
     ChartEvent: $ => $,
