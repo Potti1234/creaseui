@@ -60,14 +60,14 @@ export type MenuUiOptions<Msg, R = never> = {
 export const menuStyles = {
   contextTrigger:
     'relative flex min-h-24 items-center justify-center rounded-md border border-dashed p-4 outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
-  backdrop: 'fixed inset-0',
+  backdrop: 'fixed inset-0 bg-transparent',
   positioner:
     'z-50 m-0 overflow-visible border-0 bg-transparent p-0 outline-none',
   popup:
-    'max-h-(--available-height) min-w-36 overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md outline-none',
-  item: 'relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:opacity-50 data-inset:ps-7 data-[tone=destructive]:text-destructive',
+    'max-h-(--available-height) min-w-32 overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md outline-none',
+  item: "relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 data-inset:ps-7 data-[tone=destructive]:text-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   group: '',
-  groupLabel: 'px-2 py-1.5 text-xs font-medium text-muted-foreground',
+  groupLabel: 'px-2 py-1.5 text-sm font-medium',
   separator: '-mx-1 my-1 h-px bg-border',
   indicator: 'w-4 shrink-0 text-center',
   shortcut: 'ms-auto ps-4 text-xs text-muted-foreground',
@@ -187,12 +187,21 @@ export const MenuPopup = <Msg, R = never>(
         )
         .children(
           groups.flatMap(({ group, entries }, index) => {
+            const separator =
+              index === 0
+                ? undefined
+                : parts.separator(
+                    h.div
+                      .class(styles.separator)
+                      .attr('data-slot', 'menu-separator'),
+                  )
             if (group === undefined) {
               const output = renderGroup(entries)
-              return Array.isArray(output) ? output : [output]
+              return [separator, ...(Array.isArray(output) ? output : [output])]
             }
             const key = `group:${index}:${group}`
             return [
+              separator,
               parts
                 .group({
                   group: key,
