@@ -10,7 +10,7 @@ import { TimeInput, type TimeInputProps } from './time-input'
 const tailwind = {
   root: 'grid min-w-0 gap-2 text-sm',
   label: 'font-medium',
-  row: 'grid min-w-0 gap-2 sm:grid-cols-2',
+  row: 'grid min-w-0 gap-2',
   description: 'm-0 text-sm text-muted-foreground',
 }
 

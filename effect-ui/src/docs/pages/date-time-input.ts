@@ -78,6 +78,7 @@ const DateTimeDemo = Html.component({
           ...(h.props.kind === 'options' ? { timeOptionInterval: 30 } : {}),
           date: {
             label: `${label} date`,
+            hideLabel: true,
             placeholder: 'Select a date',
             presentation: 'popover',
             clearable: true,
@@ -87,6 +88,7 @@ const DateTimeDemo = Html.component({
           },
           time: {
             label: `${label} time`,
+            hideLabel: true,
             clearable: true,
             invalid: status?.type === 'error',
             props: { value: value.time },
