@@ -104,7 +104,19 @@ const toolbar = (
           }).children(Icon(h, { name: 'share', size: 'sm' })),
         ]
       if (kind === 'tabs') return action('New run', 'default')
-      if (kind === 'bulk') return [action('Archive'), action('Delete', 'ghost')]
+      if (kind === 'bulk')
+        return [
+          Button(h, {
+            element: bar.button({ value: 'back', element: h.button }),
+            variant: 'outline',
+            size: 'sm',
+          }).children('Archive'),
+          Button(h, {
+            element: bar.button({ value: 'forward', element: h.button }),
+            variant: 'ghost',
+            size: 'sm',
+          }).children('Delete'),
+        ]
       if (kind === 'filter')
         return h.div
           .class('flex items-center gap-2 text-sm text-muted-foreground')
