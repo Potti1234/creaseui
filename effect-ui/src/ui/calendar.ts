@@ -22,8 +22,8 @@ type VisualOptions = {
 }
 
 export const calendarClasses = {
-  root: 'w-fit bg-background p-3 text-foreground',
-  header: 'mb-2 flex items-center justify-between gap-2',
+  root: 'w-fit rounded-lg border bg-background p-3 text-foreground',
+  header: 'mb-4 flex items-center justify-between gap-2',
   navigation:
     'grid size-8 place-items-center rounded-md border-0 bg-transparent text-sm hover:bg-accent focus-visible:outline-2 disabled:opacity-50',
   month: 'text-sm font-medium',
