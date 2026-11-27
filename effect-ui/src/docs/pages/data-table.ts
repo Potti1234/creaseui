@@ -69,6 +69,15 @@ const rows = [
     email: 'maya@example.com',
   },
 ]
+for (let index = rows.length; index < 24; index += 1) {
+  const base = rows[index % 7]!
+  rows.push({
+    ...base,
+    id: `generated-${index}`,
+    invoice: `INV-${String(index + 1).padStart(3, '0')}`,
+    email: `customer${index + 1}@example.com`,
+  })
+}
 const Message = UiSchema.TaggedEnum({ TableEvent: {} })
 const DataTableDemo = Html.component({
   name: 'DocsDataTableDemo',
@@ -117,6 +126,12 @@ const DataTableDemo = Html.component({
           cell: (row: any) => row.method,
         },
         {
+          key: 'email',
+          header: 'Email',
+          get: (row: any) => row.email,
+          cell: (row: any) => row.email,
+        },
+        {
           key: 'amount',
           header: 'Amount',
           get: (row: any) => String(row.amount),
@@ -130,9 +145,18 @@ const DataTableDemo = Html.component({
       props: { defaultState: initDataTable(kind === 'pagination' ? 3 : 10) },
       mode: kind === 'server' ? 'server' : undefined,
       rowCount: kind === 'server' ? 100 : undefined,
-      enableRowSelection: kind === 'bulk' || kind === 'actions',
-      enableColumnVisibility: kind === 'faceted' || kind === 'server',
+      enableRowSelection:
+        kind === 'bulk' || kind === 'actions' || kind === 'filter',
+      enableColumnVisibility:
+        kind === 'faceted' || kind === 'server' || kind === 'filter',
       rowMenu: kind === 'actions',
+      ...(kind === 'filter'
+        ? {
+            filterText: (row: any) => row.email,
+            searchColumnKey: 'email',
+            searchPlaceholder: 'Filter emails...',
+          }
+        : {}),
       direction: kind === 'rtl' ? 'rtl' : undefined,
       toolbarContent: kind === 'filter' ? undefined : undefined,
       actionBar: (selection: any) =>
