@@ -44,7 +44,7 @@ const tailwind = {
   description: 'text-sm text-muted-foreground',
   row: 'flex min-w-0 items-center gap-0.5',
   trigger:
-    'flex min-h-9 flex-1 min-w-0 items-center gap-2 rounded-md border border-input bg-background px-2.5 py-1 text-start text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 data-[variant=ghost]:border-transparent data-[variant=ghost]:bg-transparent disabled:opacity-50 aria-invalid:border-destructive',
+    'flex min-w-0 flex-1 items-center justify-between gap-2 rounded-md border border-input bg-transparent px-3 py-2 text-start text-sm text-foreground shadow-xs transition-[color,box-shadow] outline-none hover:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--input)_30%,transparent)] focus-visible:border-ring focus-visible:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--ring)_50%,transparent)] data-[variant=ghost]:border-transparent data-[variant=ghost]:bg-transparent disabled:cursor-default disabled:opacity-50 aria-invalid:border-destructive dark:bg-input/30',
   triggerContent: 'flex min-w-0 flex-1 flex-wrap items-center gap-1',
   text: 'min-w-0 truncate',
   badge:
