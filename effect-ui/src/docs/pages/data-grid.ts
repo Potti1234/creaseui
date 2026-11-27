@@ -176,7 +176,7 @@ const grid = (h: Html.H<DocsMessage>, key: string, rtl: boolean) => {
       {
         id: 'name',
         header: 'Name',
-        icon: icon('file-text'),
+        icon: icon('text'),
         width: 85,
         variant: 'text',
         get: row => row.name ?? '',

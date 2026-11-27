@@ -13,6 +13,7 @@ import {
 } from '../behaviors/data-grid'
 import { PopoverBehavior } from '../behaviors/popover'
 import { calendarClasses, calendarView } from './calendar'
+import { Icon } from './icon'
 import { MenuPopup, menuStyles } from './dropdown-menu'
 export * from '../behaviors/data-grid'
 
@@ -123,12 +124,12 @@ export const applyDataGridRows = <Row>(
 
 export const dataGridClasses = {
   root: 'relative grid min-w-0 gap-3 text-sm',
-  toolbar: 'flex flex-wrap items-center gap-2',
+  toolbar: 'flex flex-wrap items-center justify-end gap-2',
   toolbarGroup: 'flex flex-wrap items-center gap-1.5',
   button:
     'inline-flex min-h-8 shrink-0 items-center justify-center gap-1 rounded-md border border-input bg-background px-2.5 text-sm font-medium leading-none hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-50',
   quietButton:
-    'inline-flex min-h-8 items-center gap-1.5 rounded-sm px-2 text-start text-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-50',
+    'inline-flex h-full min-h-8 w-full items-center gap-1.5 rounded-sm px-2 text-start text-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring disabled:opacity-50',
   input:
     'h-8 min-w-0 max-w-full rounded-md border border-input bg-background px-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring',
   panel:
@@ -136,7 +137,7 @@ export const dataGridClasses = {
   panelRow: 'flex items-center justify-between gap-2',
   panelLabel: 'px-2 py-1.5 text-xs font-medium text-muted-foreground',
   muted: 'text-muted-foreground',
-  frame: 'min-w-0 overflow-hidden rounded-md border',
+  frame: 'relative min-w-0 overflow-hidden rounded-md border',
   viewport:
     'relative w-full overflow-auto focus-visible:outline-2 focus-visible:outline-ring',
   table: 'min-w-full table-fixed border-separate border-spacing-0 text-sm',
@@ -144,7 +145,8 @@ export const dataGridClasses = {
   head: 'h-9 border-e border-b bg-muted px-2 text-start align-middle font-medium whitespace-nowrap text-foreground last:border-e-0',
   selectHead: 'w-12',
   row: 'aria-selected:bg-muted/70',
-  selectCell: 'w-12 border-e border-b px-3 align-middle',
+  selectCell:
+    'group/marker relative w-12 border-e border-b px-0 text-center align-middle',
   cell: 'relative max-w-0 border-e border-b p-0 align-middle outline-none select-none last:border-e-0 data-range:bg-primary/10 data-current:ring-2 data-current:ring-inset data-current:ring-primary data-match:bg-accent data-match-current:bg-yellow-100 data-match-current:text-black focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
   value: 'flex min-w-0 items-center gap-1.5 overflow-hidden px-2 py-1',
   text: 'truncate',
@@ -279,9 +281,9 @@ export const DataGrid = <Row, Msg, R = never>(
         parts
           .button(h.button.class(styles.button).disabled(disabled), message)
           .children(label)
-      const check = (value: boolean | 'mixed', label: string) =>
+      const check = (value: boolean | 'mixed', label: string, className = '') =>
         h.button
-          .class(styles.check)
+          .class(styles.check, className)
           .attrs({
             role: 'checkbox',
             'aria-checked': String(value),
@@ -316,89 +318,96 @@ export const DataGrid = <Row, Msg, R = never>(
         .class(styles.toolbar)
         .attr('data-slot', 'data-grid-toolbar')
         .children(
-          h.div.class(styles.toolbarGroup).children(
-            button('Search', Message.SearchToggled()),
-            popover(
-              'filters',
-              activeFilters === 0 ? 'Filter' : `Filter (${activeFilters})`,
-              [
-                h.span.class(styles.panelLabel).children('Filter columns'),
-                ...columns.map(column =>
-                  h.label
-                    .key(column.id)
-                    .class(styles.panelRow)
-                    .children(
-                      column.header,
-                      parts.filter(
-                        h.input
-                          .class(styles.input)
-                          .attrs({
-                            type: 'search',
-                            placeholder: `Filter ${column.header}`,
-                          })
-                          .value(state.filters[column.id] ?? ''),
-                        column.id,
-                      ),
-                    ),
-                ),
-              ],
-            ),
-            popover('columns', 'Columns', [
-              h.span
-                .class(styles.panelLabel)
-                .children('Show and reorder columns'),
-              ...columns.map(column => {
-                const visible = !state.hidden.includes(column.id)
-                return h.div
+          h.button
+            .class(styles.button)
+            .attrs({ type: 'button', 'aria-label': 'Toggle direction' })
+            .children(direction === 'ltr' ? 'LTR' : 'RTL'),
+          popover(
+            'filters',
+            activeFilters === 0 ? 'Filter' : `Filter (${activeFilters})`,
+            [
+              h.span.class(styles.panelLabel).children('Filter'),
+              ...columns.map(column =>
+                h.label
                   .key(column.id)
                   .class(styles.panelRow)
                   .children(
-                    parts
-                      .button(
-                        h.button
-                          .class(styles.quietButton)
-                          .attr('aria-pressed', String(visible))
-                          .disabled(visible && parts.columns.length <= 1),
-                        Message.ColumnToggled({ column: column.id }),
-                      )
-                      .children(visible ? '✓ ' : undefined, column.header),
-                    button(
-                      `Move ${column.header} earlier`,
-                      Message.ColumnMoved({ column: column.id, delta: -1 }),
-                    ),
-                    button(
-                      `Move ${column.header} later`,
-                      Message.ColumnMoved({ column: column.id, delta: 1 }),
-                    ),
-                  )
-              }),
-            ]),
-            h.label
-              .class(styles.toolbarGroup)
-              .children(
-                'Row height',
-                parts
-                  .rowHeight(
-                    h.select.class(styles.input).value(state.rowHeight),
-                  )
-                  .children(
-                    (Object.keys(labels) as RowHeightId[]).map(value =>
-                      choose(value, labels[value], state.rowHeight === value),
+                    h.span
+                      .class('w-24 text-xs text-muted-foreground')
+                      .children(column.header),
+                    parts.filter(
+                      h.input
+                        .class(styles.input)
+                        .attrs({
+                          type: 'search',
+                          placeholder: `Filter ${column.header}`,
+                        })
+                        .value(state.filters[column.id] ?? ''),
+                      column.id,
                     ),
                   ),
               ),
+            ],
           ),
-          h.div
-            .class(styles.toolbarGroup)
-            .children(
-              button('Undo', Message.Undone(), state.undo.length === 0),
-              button('Redo', Message.Redone(), state.redo.length === 0),
-              disableEditing
-                ? undefined
-                : parts
-                    .addRow(h.button.class(styles.button), add)
-                    .children('Add row'),
+          popover('sort', 'Sort', [
+            h.span.class(styles.panelLabel).children('Sort by'),
+            ...columns.map(column => {
+              const entry = state.sorting.find(sort => sort.id === column.id)
+              return parts
+                .button(
+                  h.button
+                    .key(column.id)
+                    .class(styles.quietButton)
+                    .attr('aria-pressed', String(entry !== undefined)),
+                  Message.Sorted({ column: column.id, extend: false }),
+                )
+                .children(
+                  byId.get(column.id)?.icon,
+                  column.header,
+                  h.span
+                    .class('ms-auto text-muted-foreground')
+                    .children(
+                      entry === undefined ? undefined : entry.desc ? '↓' : '↑',
+                    ),
+                )
+            }),
+          ]),
+          popover('height', labels[state.rowHeight], [
+            h.span.class(styles.panelLabel).children('Row height'),
+            ...(Object.keys(labels) as RowHeightId[]).map(value =>
+              parts
+                .button(
+                  h.button
+                    .key(value)
+                    .class(styles.quietButton)
+                    .attr('aria-checked', String(state.rowHeight === value)),
+                  Message.HeightChanged({ value }),
+                )
+                .children(
+                  state.rowHeight === value ? '✓ ' : undefined,
+                  labels[value],
+                ),
             ),
+          ]),
+          popover('columns', 'View', [
+            h.span.class(styles.panelLabel).children('Toggle columns'),
+            ...columns.map(column => {
+              const visible = !state.hidden.includes(column.id)
+              return parts
+                .button(
+                  h.button
+                    .key(column.id)
+                    .class(styles.quietButton)
+                    .attrs({
+                      role: 'menuitemcheckbox',
+                      'aria-checked': String(visible),
+                    })
+                    .disabled(visible && parts.columns.length <= 1),
+                  Message.ColumnToggled({ column: column.id }),
+                )
+                .children(visible ? '✓ ' : undefined, column.header)
+            }),
+          ]),
         )
       const search = !state.searchOpen
         ? undefined
@@ -686,6 +695,29 @@ export const DataGrid = <Row, Msg, R = never>(
           .attr('title', value || undefined)
           .children(value)
       }
+      const gridWidth =
+        48 +
+        parts.columns.reduce(
+          (width, column) => width + (byId.get(column.id)?.width ?? 120),
+          0,
+        )
+      const addRowFooter = disableEditing
+        ? undefined
+        : parts
+            .addRow(
+              h.button.class(
+                'sticky bottom-0 z-20 flex h-9 w-full items-center border-t bg-muted/30 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted/50 focus-visible:outline-none',
+              ),
+              add,
+            )
+            .children(
+              Icon(h, {
+                name: 'plus',
+                size: 'sm',
+                className: 'me-2 size-3.5',
+              }),
+              'Add row',
+            )
       const frame = h.div.class(styles.frame).children(
         virtual
           .viewport(
@@ -695,17 +727,20 @@ export const DataGrid = <Row, Msg, R = never>(
                 'data-slot': 'data-grid-viewport',
                 'aria-label': `${label} viewport`,
               })
-              .style({ maxHeight: `${displayHeight}px` }),
+              .style({ height: `${displayHeight}px` }),
           )
           .children(
             virtual
               .table(
-                h.table.class(styles.table).attrs({
-                  role: 'grid',
-                  'aria-label': label,
-                  'aria-multiselectable': 'true',
-                  'aria-colcount': String(parts.columns.length + 1),
-                }),
+                h.table
+                  .class(styles.table)
+                  .style({ width: `${gridWidth}px` })
+                  .attrs({
+                    role: 'grid',
+                    'aria-label': label,
+                    'aria-multiselectable': 'true',
+                    'aria-colcount': String(parts.columns.length + 1),
+                  }),
               )
               .children(
                 h.colgroup.children(
@@ -716,7 +751,7 @@ export const DataGrid = <Row, Msg, R = never>(
                       width:
                         width === undefined || !Number.isFinite(width)
                           ? '160px'
-                          : `${Math.max(64, width)}px`,
+                          : `${width}px`,
                     })
                   }),
                 ),
@@ -766,15 +801,17 @@ export const DataGrid = <Row, Msg, R = never>(
                             .children(
                               byId.get(column.id)?.icon,
                               column.header,
-                              h.span
-                                .attr('aria-hidden', 'true')
-                                .children(
-                                  sort === undefined
-                                    ? '↕'
-                                    : sort.desc
-                                      ? '↓'
-                                      : '↑',
-                                ),
+                              sort === undefined
+                                ? undefined
+                                : h.span
+                                    .attr('aria-hidden', 'true')
+                                    .children(sort.desc ? '↓' : '↑'),
+                              Icon(h, {
+                                name: 'chevron-down',
+                                size: '2xs',
+                                className:
+                                  'ms-auto size-3.5 shrink-0 text-muted-foreground',
+                              }),
                             ),
                         )
                     }),
@@ -807,8 +844,21 @@ export const DataGrid = <Row, Msg, R = never>(
                             h.td
                               .class(styles.selectCell)
                               .children(
+                                h.span
+                                  .class(
+                                    rowSelected
+                                      ? 'hidden text-xs text-muted-foreground tabular-nums'
+                                      : 'text-xs text-muted-foreground tabular-nums group-hover/marker:hidden',
+                                  )
+                                  .children(String(index + 1)),
                                 parts.toggleRow(
-                                  check(rowSelected, `Select row ${index + 1}`),
+                                  check(
+                                    rowSelected,
+                                    `Select row ${index + 1}`,
+                                    rowSelected
+                                      ? 'absolute inset-x-0 mx-auto'
+                                      : 'absolute inset-x-0 mx-auto hidden group-hover/marker:grid',
+                                  ),
                                   row.key,
                                 ),
                               ),
@@ -877,6 +927,7 @@ export const DataGrid = <Row, Msg, R = never>(
                       }),
                 ),
               ),
+            addRowFooter,
           ),
       )
       return parts
