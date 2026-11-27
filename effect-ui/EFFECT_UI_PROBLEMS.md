@@ -76,8 +76,9 @@ Effect `Combobox` owns popup/draft state but exposes only plain item labels. It 
 - Date Picker exposes only a single-date popover composite; Foldkit docs' true range picker, date-plus-time composition, and natural-language parsing require manual composition in Effect UI.
 - Pointer Kind and Avoid Keyboard have no Effect UI behavior implementations; their docs examples cannot yet reproduce the live media-query/viewport behavior of the Foldkit versions.
 - Connect has no Effect UI behavior implementation; keyboard/pointer connection examples are visual documentation placeholders rather than interactive port-connection drafts.
-- Effect UI chart helpers cover simple SVG bar/area/donut charts, but the Foldkit docs' full ECharts lifecycle, radar, radial, tooltip, and synchronized interactive examples require substantial manual composition or are only approximated.
+- Effect UI now has an ECharts lifecycle adapter used by the Chart docs, but synchronized interactive examples and some advanced option compositions are still approximated rather than full ports of the Foldkit examples.
 - Tutorial chapter pages currently migrate navigation, summaries and repository checkpoints, but the Foldkit interactive essay runtimes remain unported.
-- Chart gallery pages expose the same categories and card inventory, but the full interactive Apache ECharts gallery is approximated by static chart-shaped previews.
-- Blocks exposes the block catalog and representative previews, but live block preview pages and copyable per-renderer block source remain unported.
+- Chart gallery pages now mount live Apache ECharts instances in the correct full-width gallery shell, but many per-variant option details, interactive controls, icons, labels, and exact card footers remain approximations rather than ports of the individual Foldkit card modules.
+- Blocks now matches the catalog-row shell, but previews are static skeletons; live block preview pages, working category filters, copyable per-renderer source, and open/full-screen actions remain unported.
+- Create now matches the broad theme-editor/preview layout, but token editing, theme application, presets, shuffle/reset/copy actions, and the interactive preview components remain static placeholders.
 - Agent and History behaviors are not implemented in Effect UI, so the Get Started guide cannot yet include the Foldkit agent/history walkthrough or live behavior demo.
