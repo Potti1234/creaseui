@@ -130,8 +130,10 @@ const effectText = (value: string): string =>
 
 const slugify = (value: string) => value.toLowerCase().replaceAll(' ', '-')
 
-const docsMain = (h: DocHtml) =>
-  h.main.class('docs-main').attrs({ id: 'docs-main', tabindex: '-1' })
+const docsMain = (h: DocHtml, className = '') =>
+  h.main
+    .class(`docs-main${className === '' ? '' : ` ${className}`}`)
+    .attrs({ id: 'docs-main', tabindex: '-1' })
 
 const guideLinks = [
   { href: '/docs/getting-started', label: 'Get Started' },
@@ -838,15 +840,7 @@ const guidePage = (
   h: DocHtml,
   { title, description, toc, view }: DocsGuide,
 ) => {
-  const content = docsMain(h).children(
-    h.nav
-      .class('docs-breadcrumb')
-      .attr('aria-label', 'Breadcrumb')
-      .children(
-        h.a.attr('href', '/docs/getting-started').children('Docs'),
-        h.span.attr('aria-hidden', 'true').children('/'),
-        h.span.attr('aria-current', 'page').children(title),
-      ),
+  const content = docsMain(h, 'guide-main').children(
     h.h1.children(title),
     description === undefined
       ? undefined
