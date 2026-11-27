@@ -1155,11 +1155,6 @@ const blocksGuide: DocsGuide = {
             ),
         ),
       ),
-      h.p
-        .class('chart-gallery-note')
-        .children(
-          'Block previews are live Effect UI reconstructions; copyable per-renderer block source is still pending migration.',
-        ),
     )
   },
 }
