@@ -258,7 +258,11 @@ export const ColorPicker = <Msg>(
                   )
                   .children(
                     h.span
-                      .class(styles.triggerSwatch)
+                      .class(
+                        triggerVariant === 'swatch'
+                          ? 'size-full overflow-hidden rounded-[4px] border border-black/10 shadow-sm'
+                          : styles.triggerSwatch,
+                      )
                       .style({ background: checker })
                       .children(swatch(picker.swatch)),
                     triggerVariant === 'swatch'
