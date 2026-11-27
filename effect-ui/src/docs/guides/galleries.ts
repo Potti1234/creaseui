@@ -115,10 +115,50 @@ const galleryKind = (slug: string): ChartFamilyKind =>
   slug === 'tooltip' ? 'bar' : (slug as ChartFamilyKind)
 const galleryHostId = (slug: string, example: string) =>
   `gallery-${slug}-${example.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+const customizeGalleryOption = (option: any, slug: string, example: string) => {
+  const series = Array.isArray(option.series) ? [...option.series] : []
+  const first = { ...(series[0] ?? {}) }
+  if ((slug === 'area' || slug === 'line') && example === 'Linear')
+    first.smooth = false
+  if ((slug === 'area' || slug === 'line') && example === 'Step') {
+    first.smooth = false
+    first.step = 'end'
+  }
+  if (
+    (slug === 'area' || slug === 'line' || slug === 'bar') &&
+    (example.includes('Stacked') ||
+      example === 'Multiple' ||
+      example === 'Mixed')
+  ) {
+    const second = {
+      ...first,
+      data: [80, 200, 120, 190, 130, 140],
+      name: 'Mobile',
+    }
+    if (example.includes('Stacked')) {
+      first.stack = 'total'
+      second.stack = 'total'
+    }
+    series.splice(1, 0, second)
+  }
+  if (slug === 'bar' && example === 'Negative')
+    first.data = [186, -120, 237, -90, 209, -140]
+  if (slug === 'pie' && example === 'Simple') first.radius = '70%'
+  if (slug === 'radar' && example === 'Lines Only') delete first.areaStyle
+  series[0] = first
+  option.series = series
+  if (example.includes('Legend')) option.legend = { bottom: 0 }
+  return option
+}
+
 for (const [slug, , examples] of chartGroups) {
   for (const example of examples) {
     registerChart(galleryHostId(slug, example), theme =>
-      familyOption(galleryKind(slug), theme),
+      customizeGalleryOption(
+        familyOption(galleryKind(slug), theme),
+        slug,
+        example,
+      ),
     )
   }
 }
