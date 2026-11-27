@@ -35,7 +35,7 @@ const config = {
 const wrap = (child: unknown): any => child
 const view =
   (kind: string): DocsExampleImplementation['view'] =>
-  (h: Html.H<DocsMessage>) => {
+  (h: Html.H<DocsMessage>, context) => {
     if (kind === 'tooltip')
       return wrap(
         h.div.class('grid w-full max-w-sm gap-3').children(
@@ -67,6 +67,7 @@ const view =
     if (kind === 'rtl')
       return h.div.attrs({ dir: 'rtl' }).children(
         AreaChart(h, {
+          id: `${context.idPrefix}-${kind}`,
           data: monthly.map(d => d.value),
           ariaLabel: 'الاتجاه الشهري',
         }) as never,
@@ -80,6 +81,7 @@ const view =
         .children('Loading chart…')
     if (kind === 'area')
       return AreaChart(h, {
+        id: `${context.idPrefix}-${kind}`,
         data: monthly.map(d => d.value),
         ariaLabel: 'Area chart',
       }) as never
@@ -87,6 +89,7 @@ const view =
       return BarChart(h, { data: monthly, ariaLabel: 'Bar chart' }) as never
     if (kind === 'line')
       return InteractiveAreaChart(h, {
+        id: `${context.idPrefix}-${kind}`,
         data: trend,
         ariaLabel: 'Line chart',
       }) as never
@@ -113,6 +116,7 @@ const view =
         children: [
           kind === 'traffic'
             ? (InteractiveAreaChart(h, {
+                id: `${context.idPrefix}-${kind}`,
                 data: trend,
                 ariaLabel: 'Traffic trend',
               }) as never)
