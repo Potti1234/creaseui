@@ -1,5 +1,7 @@
-import { AreaChart, BarChart, DonutChart } from '#components'
-import type { DocsGuide } from '../types'
+import { EChart } from '#components'
+import { registerChart } from '../../behaviors/chart'
+import { familyOption, type ChartFamilyKind } from '../pages/chart-echarts'
+import { DocsMessage, type DocsGuide } from '../types'
 import { section } from './setup'
 
 const chartGroups = [
@@ -109,46 +111,26 @@ const chartGroups = [
     ],
   ],
 ] as const
-const series = [42, 68, 35, 82, 56, 94, 61, 73, 48, 88, 66, 79]
-const sparkline = (h: any, kind: string, id: string) => {
-  if (kind === 'bar' || kind === 'tooltip')
-    return BarChart(h, {
-      data: series.map((value, index) => ({ label: String(index + 1), value })),
-      isCompact: true,
-      className: 'h-32 w-full',
-    }) as never
-  if (kind === 'pie' || kind === 'radial')
-    return h.div.class('flex h-32 items-center justify-center').children(
-      DonutChart(h, {
-        value: 275,
-        max: 400,
-        label: '275',
-        sublabel: 'Visitors',
-        className: 'h-28',
-      }) as never,
+const galleryKind = (slug: string): ChartFamilyKind =>
+  slug === 'tooltip' ? 'bar' : (slug as ChartFamilyKind)
+const galleryHostId = (slug: string, example: string) =>
+  `gallery-${slug}-${example.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+for (const [slug, , examples] of chartGroups) {
+  for (const example of examples) {
+    registerChart(galleryHostId(slug, example), theme =>
+      familyOption(galleryKind(slug), theme),
     )
-  if (kind === 'radar')
-    return h.div.class('grid h-32 grid-cols-2 items-center gap-3').children(
-      DonutChart(h, {
-        value: 68,
-        max: 100,
-        label: '68%',
-        className: 'h-24',
-      }) as never,
-      BarChart(h, {
-        data: series
-          .slice(0, 6)
-          .map((value, index) => ({ label: String(index + 1), value })),
-        isCompact: true,
-        className: 'h-24 w-full',
-      }) as never,
-    )
-  return AreaChart(h, {
-    id: `gallery-${id}`,
-    data: series,
-    className: 'h-32 w-full',
-  }) as never
+  }
 }
+const galleryChart = (h: any, slug: string, example: string) =>
+  EChart(h, {
+    hostId: galleryHostId(slug, example),
+    ariaLabel: `${example} chart`,
+    accessibleAlternative: h.p.children(`${example} chart data.`),
+    toMessage: () => DocsMessage.ChartEvent(),
+    className: 'w-full',
+  }) as never
+
 const chartIndex: DocsGuide = {
   title: 'Charts',
   description: 'Chart examples built with the CreaseUI chart components.',
@@ -201,9 +183,7 @@ const chartDetail = (
                     .class('text-sm text-muted-foreground')
                     .children(`${title} example ${String(index + 1)}`),
                 ),
-              h.div
-                .class('p-4')
-                .children(sparkline(h, slug, `${slug}-${example}`) as never),
+              h.div.class('p-4').children(galleryChart(h, slug, example)),
             ),
         ),
       ),
@@ -211,7 +191,7 @@ const chartDetail = (
         .class('docs-pending')
         .children(
           h.p.children(
-            'Interactive ECharts parity for the full gallery is pending; the Effect UI chart examples are available on the Chart component page.',
+            'Gallery cards now mount live theme-aware Apache ECharts instances. Per-variant option details and interactive controls are still being aligned with the Foldkit gallery.',
           ),
         ),
     ),

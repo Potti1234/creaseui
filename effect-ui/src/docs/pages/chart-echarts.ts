@@ -162,7 +162,7 @@ const upstreamOption = (
   }
 }
 
-const familyOption = (
+export const familyOption = (
   kind: ChartFamilyKind,
   theme: ChartTheme,
 ): EChartsOption => {
