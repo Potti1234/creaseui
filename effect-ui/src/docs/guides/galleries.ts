@@ -97,7 +97,7 @@ const chartGroups = [
   ],
   [
     'tooltip',
-    'Chart Tooltips',
+    'Tooltip',
     [
       'Default',
       'Advanced',
