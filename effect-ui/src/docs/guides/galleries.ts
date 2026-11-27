@@ -1,3 +1,4 @@
+import { AreaChart, BarChart, DonutChart } from '#components'
 import type { DocsGuide } from '../types'
 import { section } from './setup'
 
@@ -108,23 +109,46 @@ const chartGroups = [
     ],
   ],
 ] as const
-const sparkline = (h: any, kind: string) =>
-  h.div
-    .class('flex h-28 items-end gap-1 rounded-md border bg-muted/30 p-3')
-    .children(
-      Array.from({ length: 12 }, (_, index) =>
-        h.div
-          .key(String(index))
-          .class(
-            kind === 'line' || kind === 'area'
-              ? 'w-full rounded-full bg-chart-1/70'
-              : 'w-full rounded-t-sm bg-chart-1/80',
-          )
-          .style({
-            height: `${String(22 + ((index * 17 + kind.length * 9) % 58))}%`,
-          }),
-      ),
+const series = [42, 68, 35, 82, 56, 94, 61, 73, 48, 88, 66, 79]
+const sparkline = (h: any, kind: string, id: string) => {
+  if (kind === 'bar' || kind === 'tooltip')
+    return BarChart(h, {
+      data: series.map((value, index) => ({ label: String(index + 1), value })),
+      isCompact: true,
+      className: 'h-32 w-full',
+    }) as never
+  if (kind === 'pie' || kind === 'radial')
+    return h.div.class('flex h-32 items-center justify-center').children(
+      DonutChart(h, {
+        value: 275,
+        max: 400,
+        label: '275',
+        sublabel: 'Visitors',
+        className: 'h-28',
+      }) as never,
     )
+  if (kind === 'radar')
+    return h.div.class('grid h-32 grid-cols-2 items-center gap-3').children(
+      DonutChart(h, {
+        value: 68,
+        max: 100,
+        label: '68%',
+        className: 'h-24',
+      }) as never,
+      BarChart(h, {
+        data: series
+          .slice(0, 6)
+          .map((value, index) => ({ label: String(index + 1), value })),
+        isCompact: true,
+        className: 'h-24 w-full',
+      }) as never,
+    )
+  return AreaChart(h, {
+    id: `gallery-${id}`,
+    data: series,
+    className: 'h-32 w-full',
+  }) as never
+}
 const chartIndex: DocsGuide = {
   title: 'Charts',
   description: 'Chart examples built with the CreaseUI chart components.',
@@ -177,7 +201,9 @@ const chartDetail = (
                     .class('text-sm text-muted-foreground')
                     .children(`${title} example ${String(index + 1)}`),
                 ),
-              h.div.class('p-4').children(sparkline(h, slug) as never),
+              h.div
+                .class('p-4')
+                .children(sparkline(h, slug, `${slug}-${example}`) as never),
             ),
         ),
       ),
