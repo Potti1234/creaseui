@@ -197,7 +197,12 @@ const sidebar = (
         : undefined,
     )
 
-const docsHeader = (h: DocHtml, dark: boolean) =>
+const docsHeader = (
+  h: DocHtml,
+  dark: boolean,
+  query: string,
+  groups: ReturnType<typeof groupedEntries>,
+) =>
   h.header.class('docs-header').children(
     h.div.class('docs-frame', 'docs-header-content').children(
       h.a
@@ -268,6 +273,12 @@ const docsHeader = (h: DocHtml, dark: boolean) =>
             return DocsMessage.ToggledTheme()
           })
           .children(dark ? '☀' : '☾'),
+        h.details
+          .class('docs-mobile-nav')
+          .children(
+            h.summary.attr('aria-label', 'Browse docs').children('☰'),
+            sidebar(h, query, groups),
+          ),
       ),
     ),
   )
@@ -937,18 +948,12 @@ const Docs = Html.component({
           .class('docs-skip')
           .attr('href', '#docs-main')
           .children('Skip to content'),
-        docsHeader(h, dark),
+        docsHeader(h, dark, query, groups),
         searchOpen ? searchDialog(h, search, searchGroups) : undefined,
         h.div
           .class('docs-frame', 'docs-layout')
           .children(
             h.aside.class('docs-sidebar').children(sidebar(h, query, groups)),
-            h.details
-              .class('docs-mobile-nav')
-              .children(
-                h.summary.children('Browse docs'),
-                sidebar(h, query, groups),
-              ),
             guide !== undefined
               ? guidePage(h, guide)
               : route.tag === 'catalog'
