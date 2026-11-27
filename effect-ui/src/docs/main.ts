@@ -530,7 +530,7 @@ const component = (h: DocHtml, slug: string, title: string) => {
               metadata.kind === 'helper'
                 ? 'Stateless helper'
                 : metadata.kind === 'submodel'
-                  ? 'Stateful component'
+                  ? 'Stateful submodel'
                   : 'Composed recipe',
             ),
           h.span.class('docs-muted').children('Installed as source'),
