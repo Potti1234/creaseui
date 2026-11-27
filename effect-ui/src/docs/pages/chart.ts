@@ -6,6 +6,7 @@ import {
   BarChart,
   ChartContainer,
   ChartLegend,
+  ChartTooltipContent,
   DonutChart,
   EChart,
   InteractiveAreaChart,
@@ -31,6 +32,14 @@ const monthly = [
   { label: 'May', value: 21 },
   { label: 'Jun', value: 31 },
 ]
+const revenueData = [
+  { label: 'Jan', value: 186 },
+  { label: 'Feb', value: 305 },
+  { label: 'Mar', value: 237 },
+  { label: 'Apr', value: 273 },
+  { label: 'May', value: 209 },
+  { label: 'Jun', value: 314 },
+] as const
 const trend = Array.from({ length: 18 }, (_, index) => ({
   label: `Day ${index + 1}`,
   desktop: 12 + Math.round(Math.sin(index / 2) * 7 + index * 1.4),
@@ -79,6 +88,16 @@ const view =
       lifecycle: ['lifecycle', 'Revenue by period'],
     }
     const selected = upstream[kind]
+    if (kind === 'lifecycle')
+      return h.div
+        .class('mx-auto w-full max-w-xl space-y-3')
+        .children(
+          h.button
+            .class('rounded-md border px-3 py-2 text-sm')
+            .attrs({ type: 'button' })
+            .children('Show quarters'),
+          echart('lifecycle', 'Revenue by period')(h, context),
+        )
     if (kind === 'demo')
       return Card(h, {
         className: 'mx-auto w-full max-w-xl',
@@ -143,10 +162,13 @@ const view =
         ],
       })
     if (selected !== undefined)
-      return echart(selected[0], selected[1], selected[2])(h, context)
+      return h.div
+        .class('mx-auto w-full max-w-xl')
+        .attrs(kind === 'rtl' ? { dir: 'rtl' } : {})
+        .children(echart(selected[0], selected[1], selected[2])(h, context))
     if (kind === 'states')
       return h.div
-        .class('grid w-full gap-4 md:grid-cols-3')
+        .class('mx-auto grid w-full max-w-xl gap-3')
         .children(
           echart(
             'lifecycle',
@@ -168,34 +190,35 @@ const view =
           )(h, context),
         )
     if (['area', 'bar', 'line', 'pie', 'radar', 'radial'].includes(kind))
-      return echart(kind as ChartFamilyKind, `${kind} chart`)(h, context)
+      return h.div
+        .class('mx-auto w-full max-w-xl')
+        .children(echart(kind as ChartFamilyKind, `${kind} chart`)(h, context))
     if (kind === 'tooltip')
-      return wrap(
-        h.div.class('grid w-full max-w-sm gap-3').children(
-          ChartContainer(h, {
-            config,
-            children: [
-              BarChart(h, {
-                data: monthly,
-                ariaLabel: 'Monthly revenue',
-              }) as never,
-            ],
-          }) as never,
-          h.div
-            .class(
-              'grid min-w-32 gap-1.5 rounded-lg border bg-background px-2.5 py-1.5 text-xs shadow-xl',
-            )
-            .children(
-              h.div.class('font-medium').children('June'),
-              h.div
-                .class('flex items-center gap-2')
-                .children(
-                  h.span.class('size-2 rounded-sm bg-primary'),
-                  h.span.class('text-muted-foreground').children('Revenue'),
-                  h.span.class('ms-auto font-mono font-medium').children('31'),
-                ),
-            ),
-        ),
+      return h.div.class('flex flex-wrap gap-4').children(
+        ChartTooltipContent(h, {
+          config: {
+            desktop: { label: 'Desktop', color: 'var(--chart-3)' },
+          },
+          label: 'Page Views',
+          items: [{ key: 'desktop', value: '12,486' }],
+        }) as never,
+        ChartTooltipContent(h, {
+          config: {
+            chrome: { label: 'Chrome', color: 'var(--chart-3)' },
+            firefox: { label: 'Firefox', color: 'var(--chart-4)' },
+          },
+          label: 'Browser',
+          items: [
+            { key: 'chrome', value: '1,286' },
+            { key: 'firefox', value: '1,000' },
+          ],
+        }) as never,
+        ChartTooltipContent(h, {
+          config: {
+            chrome: { label: 'Chrome', color: 'var(--chart-1)' },
+          },
+          items: [{ key: 'chrome', value: '1,286' }],
+        }) as never,
       )
     if (kind === 'rtl')
       return h.div.attrs({ dir: 'rtl' }).children(
@@ -203,6 +226,25 @@ const view =
           id: `${context.idPrefix}-${kind}`,
           data: monthly.map(d => d.value),
           ariaLabel: 'الاتجاه الشهري',
+        }) as never,
+      )
+    if (kind === 'revenue')
+      return BarChart(h, {
+        className: 'mx-auto max-w-xl',
+        data: revenueData,
+        ariaLabel: 'Monthly revenue',
+      }) as never
+    if (kind === 'traffic')
+      return h.div.class('mx-auto w-full max-w-xl space-y-4').children(
+        AreaChart(h, {
+          id: `${context.idPrefix}-${kind}`,
+          data: revenueData.map(item => item.value),
+          ariaLabel: 'Traffic trend',
+        }) as never,
+        ChartLegend(h, {
+          config: {
+            visitors: { label: 'Visitors', color: 'var(--chart-2)' },
+          },
         }) as never,
       )
     if (kind === 'loading')
