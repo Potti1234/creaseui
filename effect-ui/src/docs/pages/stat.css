@@ -1,0 +1,19 @@
+.stat-docs-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+}
+.stat-docs-row {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-end;
+}
+.stat-docs-card {
+  padding: 1rem;
+}
+.stat-docs-sparkline {
+  display: block;
+  height: 2.25rem;
+  width: 100%;
+  color: var(--primary);
+}
