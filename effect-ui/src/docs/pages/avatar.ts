@@ -79,7 +79,9 @@ const group = <Msg>(
   AvatarGroup(h, {
     className: 'avatar-docs-grayscale',
     children: [
-      ...items.map(item => avatar(h, item, prefix)),
+      ...items.map(item =>
+        avatar(h, { ...item, key: `${prefix}group-${item.key}` }),
+      ),
       count === undefined && !countIcon
         ? undefined
         : AvatarGroupOverflow(h, {
@@ -104,7 +106,7 @@ const DropdownMessage = UiSchema.TaggedEnum({
 
 const AvatarDropdown = Html.component({
   name: 'DocsAvatarDropdown',
-  props: Schema.Null,
+  props: Schema.Struct({ prefix: Schema.String }),
   model: Schema.Struct({ open: Schema.Boolean }),
   message: DropdownMessage,
 }).make({
@@ -121,7 +123,7 @@ const AvatarDropdown = Html.component({
       trigger: h.button
         .class('avatar-docs-trigger')
         .attrs({ type: 'button' })
-        .children(avatar(h, CREASEUI)),
+        .children(avatar(h, CREASEUI, h.props.prefix)),
       props: {
         open: model.open,
         items: [
@@ -205,12 +207,12 @@ const view =
       return h.div.class('avatar-docs-plain').children(
         AvatarDropdown(h, {
           key: `${context.idPrefix}-avatar-menu`,
-          props: null,
+          props: { prefix: `${context.idPrefix}-` },
         }),
       )
     return h.div
       .class('avatar-docs-hero', kind === 'rtl' ? 'avatar-docs-rtl' : undefined)
-      .children(demo(h, kind === 'rtl' ? '+٣' : '+3'))
+      .children(demo(h, kind === 'rtl' ? '+٣' : '+3', `${context.idPrefix}-`))
   }
 
 const source = exampleApplicationSource({
