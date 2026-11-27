@@ -43,3 +43,7 @@
 ## Date Time Input is only a loose date-plus-time composition
 
 `effect-ui/src/ui/date-time-input.ts` is a stateless wrapper that places separate `DateInput` and `TimeInput` controls in a two-column row. The Foldkit component is one combined date-time field with a calendar+time popover, adaptive bottom sheet behavior, integrated clear/status affordances, and a single committed value model. The docs port preserves the fixture values and time-option coverage, but the control structure, popover behavior, and validation presentation are substantially different.
+
+## Grid spatial-focus and lasso behaviors are missing
+
+The Foldkit grid documentation uses the `SpatialFocus` and `Lasso` headless behaviors for physical arrow-key navigation and pointer rectangle selection. `effect-ui/src/behaviors` has no corresponding implementations. The Effect docs currently reproduce the board/tile geometry and instructional copy statically, but arrow-key spatial movement, disabled-item skipping, drag selection, Shift-add, Escape-cancel, selection state, and live selection announcements are not yet ported.
