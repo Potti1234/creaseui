@@ -35,6 +35,9 @@ export const MapDemoMessage = UiSchema.TaggedEnum({
   },
   ResetViewport: {},
   ToggledPopup: {},
+  PickedSelect: { value: Schema.String },
+  RequestedOpenSelect: {},
+  RequestedCloseSelect: {},
 })
 export type MapDemoMessage = typeof MapDemoMessage.Type
 
@@ -87,6 +90,8 @@ export const createMapDemo = (
       longitude: number
       latitude: number
       popupOpen: boolean
+      selected: string
+      selectOpen: boolean
     },
     kind: string,
     idPrefix: string,
@@ -101,6 +106,8 @@ export const createMapDemo = (
       longitude: Schema.Number,
       latitude: Schema.Number,
       popupOpen: Schema.Boolean,
+      selected: Schema.String,
+      selectOpen: Schema.Boolean,
     }),
     message: MapDemoMessage,
   }).make({
@@ -110,6 +117,8 @@ export const createMapDemo = (
       longitude: 11.576124,
       latitude: 48.137154,
       popupOpen: true,
+      selected: 'positron',
+      selectOpen: false,
     }),
     update: {
       MapLoaded: $ => $,
@@ -122,6 +131,10 @@ export const createMapDemo = (
         $.evolve({ longitude, latitude }),
       ResetViewport: $ => $.evolve({ viewport: initialMapViewport }),
       ToggledPopup: $ => $.evolve({ popupOpen: !$.model.popupOpen }),
+      PickedSelect: ($, { value }) =>
+        $.evolve({ selected: value, selectOpen: false }),
+      RequestedOpenSelect: $ => $.evolve({ selectOpen: true }),
+      RequestedCloseSelect: $ => $.evolve({ selectOpen: false }),
     },
     view: (h, model) =>
       render(h, model, h.props.kind, h.props.idPrefix) as never,
