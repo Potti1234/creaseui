@@ -76,3 +76,4 @@ Effect `Combobox` owns popup/draft state but exposes only plain item labels. It 
 - Date Picker exposes only a single-date popover composite; Foldkit docs' true range picker, date-plus-time composition, and natural-language parsing require manual composition in Effect UI.
 - Pointer Kind and Avoid Keyboard have no Effect UI behavior implementations; their docs examples cannot yet reproduce the live media-query/viewport behavior of the Foldkit versions.
 - Connect has no Effect UI behavior implementation; keyboard/pointer connection examples are visual documentation placeholders rather than interactive port-connection drafts.
+- Effect UI chart helpers cover simple SVG bar/area/donut charts, but the Foldkit docs' full ECharts lifecycle, radar, radial, tooltip, and synchronized interactive examples require substantial manual composition or are only approximated.
