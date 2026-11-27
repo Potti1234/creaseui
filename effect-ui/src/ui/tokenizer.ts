@@ -37,15 +37,15 @@ const tailwind = {
   hiddenLabel: 'sr-only',
   description: 'text-sm text-muted-foreground',
   group:
-    'group/tokenizer flex min-w-0 items-center gap-1 rounded-md border border-input bg-background px-2 py-1 outline-none focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 data-disabled:opacity-50 data-invalid:border-destructive data-[size=sm]:min-h-8 data-[size=md]:min-h-9 data-[size=lg]:min-h-10',
+    'group/tokenizer relative flex min-w-0 cursor-text items-center gap-1 rounded-md border border-input bg-transparent px-[calc(0.25rem-1px)] py-[calc(0.25rem-1px)] shadow-xs transition-[color,box-shadow] outline-none hover:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--input)_30%,transparent)] focus-within:border-ring focus-within:shadow-[inset_0_0_0_2px_color-mix(in_oklab,var(--ring)_50%,transparent)] data-disabled:cursor-default data-disabled:opacity-50 data-invalid:border-destructive dark:bg-input/30 data-[size=sm]:min-h-8 data-[size=md]:min-h-9 data-[size=lg]:min-h-10',
   chips:
     'flex min-w-0 flex-1 flex-wrap items-center gap-1 group-not-focus-within/tokenizer:data-overflow:flex-nowrap group-not-focus-within/tokenizer:data-overflow:overflow-hidden',
-  chip: 'inline-flex max-w-full shrink-0 items-center gap-0.5 rounded-sm bg-muted px-1.5 py-0.5 text-xs text-foreground',
+  chip: 'inline-flex h-6 max-w-full shrink-0 items-center gap-1 overflow-hidden rounded-[4px] bg-muted px-2 text-xs font-medium whitespace-nowrap text-foreground',
   chipText: 'min-w-0 truncate',
   chipRemove:
-    'inline-grid size-4 shrink-0 place-items-center rounded-sm border-0 bg-transparent text-muted-foreground outline-none hover:bg-background focus-visible:ring-2 focus-visible:ring-ring',
+    'inline-flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-inherit outline-none transition-colors hover:bg-accent-foreground/10 disabled:cursor-default [&>svg]:size-3',
   input:
-    'min-w-12 flex-1 bg-transparent py-0.5 text-sm outline-none placeholder:text-muted-foreground',
+    'block min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-default data-invalid:text-muted-foreground',
   icon: 'shrink-0 text-muted-foreground',
   clear:
     'inline-grid size-6 shrink-0 place-items-center rounded-md border-0 bg-transparent text-muted-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring',
