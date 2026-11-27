@@ -26,15 +26,15 @@ export type CarouselProps<Msg, R = never> = Omit<
 }
 
 const tailwind = {
-  root: 'relative min-h-0 min-w-0',
+  root: 'relative min-h-0 min-w-0 outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
   viewport:
-    'min-h-0 min-w-0 overflow-hidden rounded-[inherit] outline-none focus-visible:ring-3 focus-visible:ring-inset focus-visible:ring-ring/50 data-[orientation=vertical]:h-full',
-  rail: 'flex min-h-0 touch-pan-y data-[orientation=vertical]:h-full data-[orientation=vertical]:flex-col data-[orientation=vertical]:touch-pan-x',
+    'min-h-0 min-w-0 overflow-hidden outline-none data-[orientation=vertical]:h-full',
+  rail: 'flex min-h-0 -ml-4 touch-pan-y data-[orientation=vertical]:-mt-4 data-[orientation=vertical]:ml-0 data-[orientation=vertical]:h-full data-[orientation=vertical]:flex-col data-[orientation=vertical]:touch-pan-x',
   slide:
-    'min-h-0 min-w-0 shrink-0 grow-0 ps-4 first:ps-0 data-[orientation=vertical]:ps-0 data-[orientation=vertical]:pt-4 data-[orientation=vertical]:first:pt-0',
-  controls: 'mt-2 flex items-center justify-end gap-1',
+    'min-h-0 min-w-0 shrink-0 grow-0 snap-start pl-4 data-[orientation=vertical]:min-h-0 data-[orientation=vertical]:pl-0 data-[orientation=vertical]:pt-4',
+  controls: '',
   button:
-    'grid size-8 shrink-0 place-items-center rounded-md border bg-background text-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50',
+    'absolute flex size-8 shrink-0 items-center justify-center rounded-full border bg-background shadow-xs hover:bg-accent disabled:pointer-events-none disabled:opacity-50',
   status: 'sr-only',
 }
 
@@ -112,48 +112,58 @@ export const Carousel = <Msg, R = never>(
                   }),
                 ),
             ),
-          h.div.class(styles.controls).children(
-            h.button
-              .class(styles.button)
-              .attrs({
-                'data-carousel-action': 'previous',
-                'data-slot': 'carousel-previous',
-                'aria-label': previousLabel,
-                type: 'button',
-              })
-              .disabled(!carousel.canScrollPrevious)
-              .children(
-                IconBehavior(h, {
-                  name:
-                    orientation === 'vertical'
-                      ? 'arrow-up'
-                      : direction === 'rtl'
-                        ? 'arrow-right'
-                        : 'arrow-left',
-                  size: 'sm',
-                }),
-              ),
-            h.button
-              .class(styles.button)
-              .attrs({
-                'data-carousel-action': 'next',
-                'data-slot': 'carousel-next',
-                'aria-label': nextLabel,
-                type: 'button',
-              })
-              .disabled(!carousel.canScrollNext)
-              .children(
-                IconBehavior(h, {
-                  name:
-                    orientation === 'vertical'
-                      ? 'arrow-down'
-                      : direction === 'rtl'
-                        ? 'arrow-left'
-                        : 'arrow-right',
-                  size: 'sm',
-                }),
-              ),
-          ),
+          h.button
+            .class(
+              styles.button,
+              orientation === 'vertical'
+                ? 'left-1/2 -top-12 -translate-x-1/2'
+                : 'top-1/2 -left-12 -translate-y-1/2',
+            )
+            .attrs({
+              'data-carousel-action': 'previous',
+              'data-slot': 'carousel-previous',
+              'aria-label': previousLabel,
+              type: 'button',
+            })
+            .disabled(!carousel.canScrollPrevious)
+            .children(
+              IconBehavior(h, {
+                name:
+                  orientation === 'vertical'
+                    ? 'arrow-up'
+                    : direction === 'rtl'
+                      ? 'arrow-right'
+                      : 'arrow-left',
+                size: 'sm',
+              }),
+              h.span.class('sr-only').children(previousLabel),
+            ),
+          h.button
+            .class(
+              styles.button,
+              orientation === 'vertical'
+                ? 'left-1/2 -bottom-12 -translate-x-1/2'
+                : 'top-1/2 -right-12 -translate-y-1/2',
+            )
+            .attrs({
+              'data-carousel-action': 'next',
+              'data-slot': 'carousel-next',
+              'aria-label': nextLabel,
+              type: 'button',
+            })
+            .disabled(!carousel.canScrollNext)
+            .children(
+              IconBehavior(h, {
+                name:
+                  orientation === 'vertical'
+                    ? 'arrow-down'
+                    : direction === 'rtl'
+                      ? 'arrow-left'
+                      : 'arrow-right',
+                size: 'sm',
+              }),
+              h.span.class('sr-only').children(nextLabel),
+            ),
           h.span
             .class(styles.status)
             .attr('role', 'status')
