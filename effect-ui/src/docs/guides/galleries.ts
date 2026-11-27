@@ -141,6 +141,11 @@ const customizeGalleryOption = (option: any, slug: string, example: string) => {
     }
     series.splice(1, 0, second)
   }
+  if (slug === 'bar' && example === 'Horizontal') {
+    const xAxis = option.xAxis
+    option.xAxis = { ...option.yAxis, type: 'value' }
+    option.yAxis = { ...xAxis, type: 'category' }
+  }
   if (slug === 'bar' && example === 'Negative')
     first.data = [186, -120, 237, -90, 209, -140]
   if (slug === 'pie' && example === 'Simple') first.radius = '70%'
