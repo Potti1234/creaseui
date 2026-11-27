@@ -1,0 +1,21 @@
+.progress-docs-60 {
+  width: 60%;
+}
+.progress-docs-field {
+  width: 100%;
+  max-width: 24rem;
+}
+.progress-docs-wide {
+  width: 100%;
+  max-width: 28rem;
+}
+.progress-docs-narrow {
+  width: 6rem;
+}
+.progress-docs-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 24rem;
+}
