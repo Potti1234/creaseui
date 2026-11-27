@@ -1,0 +1,14 @@
+.list-docs-frame {
+  width: 100%;
+  max-width: 28rem;
+}
+.list-docs-avatar {
+  display: inline-grid;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 9999px;
+  background: var(--muted);
+  font-size: 0.875rem;
+}
