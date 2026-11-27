@@ -1157,26 +1157,33 @@ body:has(.effect-docs) {
 }
 .chart-gallery-header h1 {
   margin: 0;
-  font-size: 2rem;
-  letter-spacing: -0.04em;
+  font-size: 3rem;
+  font-weight: 600;
+  line-height: 3.3rem;
+  letter-spacing: -0.075rem;
 }
 .chart-gallery-header p {
   max-width: 44rem;
+  margin-block-start: 1rem;
   color: var(--muted-foreground);
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 .chart-gallery-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  margin-block: 1.25rem 4.5rem;
+  margin-block: 2rem 2rem;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
 }
 .chart-gallery-tabs a {
   border-radius: 999px;
-  padding: 0.35rem 0.65rem;
+  height: 28px;
+  padding: 0 1rem;
   color: var(--muted-foreground);
-  font-size: 0.875rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
   text-decoration: none;
 }
 .chart-gallery-tabs a[aria-current] {

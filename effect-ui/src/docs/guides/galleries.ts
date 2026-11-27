@@ -121,6 +121,8 @@ const galleryHostId = (slug: string, example: string) =>
 const customizeGalleryOption = (option: any, slug: string, example: string) => {
   const series = Array.isArray(option.series) ? [...option.series] : []
   const first = { ...(series[0] ?? {}) }
+  if (slug === 'area' || slug === 'line')
+    first.data = [186, 305, 237, 73, 209, 214]
   if ((slug === 'area' || slug === 'line') && example === 'Linear')
     first.smooth = false
   if ((slug === 'area' || slug === 'line') && example === 'Step') {
@@ -135,7 +137,7 @@ const customizeGalleryOption = (option: any, slug: string, example: string) => {
   ) {
     const second = {
       ...first,
-      data: [80, 200, 120, 190, 130, 140],
+      data: [80, 200, 174, 190, 130, 140],
       name: 'Mobile',
     }
     if (example.includes('Stacked')) {
