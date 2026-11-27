@@ -70,9 +70,21 @@ const view =
   (h: Html.H<DocsMessage>, context) =>
     h.div.class('flex w-full max-w-md flex-col gap-3').children(
       hasToolbar(kind)
-        ? Button(h, { variant: 'outline', size: 'sm' }).children(
-            actionLabel(kind),
-          )
+        ? kind === 'jump'
+          ? [
+              Button(h, { variant: 'outline', size: 'sm' }).children(
+                'Jump to first question',
+              ),
+              Button(h, { variant: 'outline', size: 'sm' }).children(
+                'Jump to the RTL answer',
+              ),
+              Button(h, { variant: 'outline', size: 'sm' }).children(
+                'Jump to the last turn',
+              ),
+            ]
+          : Button(h, { variant: 'outline', size: 'sm' }).children(
+              actionLabel(kind),
+            )
         : undefined,
       kind === 'position' || kind === 'state'
         ? h.div
@@ -90,7 +102,7 @@ const view =
         MessageScroller(h, {
           id: `${context.idPrefix}-${kind}`,
           label: 'Conversation messages',
-          edge: kind === 'jump' ? 'both' : 'end',
+          edge: 'end',
           live: kind === 'live' ? 'polite' : 'off',
           height: '100%',
           props: { startAtEnd: kind !== 'saved' && kind !== 'loading' },
