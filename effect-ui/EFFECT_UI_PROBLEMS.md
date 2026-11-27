@@ -55,3 +55,7 @@ The Foldkit grid documentation uses the `SpatialFocus` and `Lasso` headless beha
 ## Data Grid is structurally different from the Foldkit grid
 
 `effect-ui/src/ui/data-grid.ts` renders a native table plus a simpler toolbar/viewport composition. The Foldkit data grid uses a custom virtualized `div` grid with different row metrics, selection/index cells, toolbar panels, focus movement, range highlighting, and editor layering. The Effect docs reuse the same people, column variants, widths, and RTL fixture, but the rendered geometry and interaction surface are not close enough to call the examples 1:1.
+
+## Toast provider positioning and helpers are narrower than Foldkit
+
+`effect-ui/src/ui/toast.ts` positions the whole provider viewport, while the Foldkit toast model stores a position on each toast. The Effect docs therefore render the Position example's controls but every toast appears in the provider's single bottom-end position. Effect also has no promise-toast helper that resolves a loading toast into success, and action callbacks cannot easily target dismissal from the child control that posted the toast. The docs currently show a static loading toast for Promise and omit the Basic example's visible Undo action.
