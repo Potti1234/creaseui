@@ -12,72 +12,23 @@ import {
 import { exampleApplicationSource } from './source'
 
 const rows = [
-  {
-    id: 'm5gr84i9',
-    invoice: 'INV-001',
-    status: 'paid',
-    method: 'credit card',
-    amount: 250,
-    email: 'ken99@example.com',
-  },
-  {
-    id: '3u1reuv4',
-    invoice: 'INV-002',
-    status: 'pending',
-    method: 'paypal',
-    amount: 150,
-    email: 'abe45@example.com',
-  },
-  {
-    id: 'derv1ws0',
-    invoice: 'INV-003',
-    status: 'unpaid',
-    method: 'bank transfer',
-    amount: 350,
-    email: 'monserrat44@example.com',
-  },
-  {
-    id: '5kma53ae',
-    invoice: 'INV-004',
-    status: 'paid',
-    method: 'credit card',
-    amount: 450,
-    email: 'james78@example.com',
-  },
-  {
-    id: 'bhqecj4p',
-    invoice: 'INV-005',
-    status: 'pending',
-    method: 'paypal',
-    amount: 550,
-    email: 'carmella@example.com',
-  },
-  {
-    id: 'p9k2x8lm',
-    invoice: 'INV-006',
-    status: 'paid',
-    method: 'bank transfer',
-    amount: 200,
-    email: 'jordan@example.com',
-  },
-  {
-    id: 'q7n3v5tr',
-    invoice: 'INV-007',
-    status: 'unpaid',
-    method: 'credit card',
-    amount: 300,
-    email: 'maya@example.com',
-  },
+  { id: '728ed52f', status: 'success', email: 'm@example.com', amount: 100 },
+  { id: '489e1d42', status: 'pending', email: 'a@example.com', amount: 125 },
+  { id: 'f7a4b3c2', status: 'processing', email: 's@example.com', amount: 250 },
+  { id: 'aa91df03', status: 'success', email: 'j@example.com', amount: 75 },
+  { id: '6dc9a830', status: 'failed', email: 'r@example.com', amount: 340 },
+  { id: '4cb3d780', status: 'pending', email: 't@example.com', amount: 88 },
+  { id: '91be24c7', status: 'success', email: 'k@example.com', amount: 410 },
+  { id: 'c37fa912', status: 'processing', email: 'd@example.com', amount: 64 },
+  { id: '5e08d1b4', status: 'failed', email: 'n@example.com', amount: 190 },
+  { id: '8b2f6e51', status: 'pending', email: 'p@example.com', amount: 230 },
+  { id: '0d94ab68', status: 'success', email: 'g@example.com', amount: 155 },
+  { id: 'f61c3d29', status: 'processing', email: 'w@example.com', amount: 99 },
+  { id: '3a7e90b5', status: 'pending', email: 'v@example.com', amount: 275 },
+  { id: 'be5417c8', status: 'success', email: 'l@example.com', amount: 320 },
+  { id: '72d8f4a1', status: 'failed', email: 'o@example.com', amount: 48 },
+  { id: 'a9c35b76', status: 'pending', email: 'u@example.com', amount: 132 },
 ]
-for (let index = rows.length; index < 24; index += 1) {
-  const base = rows[index % 7]!
-  rows.push({
-    ...base,
-    id: `generated-${index}`,
-    invoice: `INV-${String(index + 1).padStart(3, '0')}`,
-    email: `customer${index + 1}@example.com`,
-  })
-}
 const Message = UiSchema.TaggedEnum({ TableEvent: {} })
 const DataTableDemo = Html.component({
   name: 'DocsDataTableDemo',
@@ -97,33 +48,22 @@ const DataTableDemo = Html.component({
       rowKey: (row: any) => row.id,
       columns: [
         {
-          key: 'invoice',
-          header: 'Invoice',
-          get: (row: any) => row.invoice,
-          sortValue: (row: any) => row.invoice,
-          cell: (row: any) => row.invoice,
-        },
-        {
           key: 'status',
           header: 'Status',
           get: (row: any) => row.status,
           filterVariant: 'options',
-          options: ['paid', 'pending', 'unpaid'].map(value => ({
-            value,
-            label: value,
-          })),
+          options: ['success', 'pending', 'processing', 'failed'].map(
+            value => ({
+              value,
+              label: value,
+            }),
+          ),
           cell: (row: any) =>
             styled
               ? h.span
                   .class('rounded-full bg-muted px-2 py-0.5 text-xs capitalize')
                   .children(row.status)
               : row.status,
-        },
-        {
-          key: 'method',
-          header: 'Method',
-          get: (row: any) => row.method,
-          cell: (row: any) => row.method,
         },
         {
           key: 'email',
@@ -142,19 +82,17 @@ const DataTableDemo = Html.component({
         },
       ],
       variant: kind === 'faceted' ? 'faceted' : undefined,
-      props: { defaultState: initDataTable(kind === 'pagination' ? 3 : 10) },
+      props: { defaultState: initDataTable(5) },
       mode: kind === 'server' ? 'server' : undefined,
       rowCount: kind === 'server' ? 100 : undefined,
-      enableRowSelection:
-        kind === 'bulk' || kind === 'actions' || kind === 'filter',
-      enableColumnVisibility:
-        kind === 'faceted' || kind === 'server' || kind === 'filter',
+      enableRowSelection: kind !== 'styling',
+      enableColumnVisibility: kind !== 'styling',
       rowMenu: kind === 'actions',
       ...(kind === 'filter'
         ? {
-            filterText: (row: any) => row.email,
+            filterText: (row: any) => `${row.status} ${row.email}`,
             searchColumnKey: 'email',
-            searchPlaceholder: 'Filter emails...',
+            searchPlaceholder: 'Filter payments…',
           }
         : {}),
       direction: kind === 'rtl' ? 'rtl' : undefined,
