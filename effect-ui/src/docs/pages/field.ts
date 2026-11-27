@@ -1,6 +1,6 @@
 import { Html } from '@effect/ui/html'
 
-import { Button, Field, Input } from '#components'
+import { Button, Checkbox, Field, Input } from '#components'
 import {
   defineComponentDocs,
   type DocsExampleImplementation,
@@ -206,18 +206,54 @@ const view =
           .class('w-full accent-primary'),
         'Adjust the playback volume.',
       )
-    if (kind === 'checkbox')
-      return simpleField(
-        h,
-        `${id}-terms`,
-        'Terms',
-        h.label
-          .class('flex items-center gap-2 text-sm')
-          .children(
-            h.input.attrs({ type: 'checkbox' }),
-            'Accept terms and conditions',
-          ),
-      )
+    if (kind === 'checkbox') {
+      const item = (key: string, label: string, checked: boolean) =>
+        Checkbox(h, {
+          key,
+          id: `${id}-${key}`,
+          label,
+          props: { checked, name: 'desktop-items', value: key },
+          onEmit: { Toggled: () => undefined },
+        })
+      return h.div
+        .class('@container/field-group flex w-full max-w-xs flex-col gap-7')
+        .children(
+          h.fieldset
+            .class('m-0 flex flex-col gap-6 border-0 p-0')
+            .children(
+              h.legend
+                .class('mb-3 text-sm font-medium')
+                .children('Show these items on the desktop'),
+              h.p
+                .class(
+                  'm-0 -mt-1.5 text-sm leading-normal text-muted-foreground',
+                )
+                .children('Select the items you want to show on the desktop.'),
+              h.div
+                .class('flex w-full flex-col gap-3')
+                .children(
+                  item('hard-disks', 'Hard disks', true) as never,
+                  item('external-disks', 'External disks', false) as never,
+                  item('cds-dvds', 'CDs, DVDs, and iPods', false) as never,
+                  item(
+                    'connected-servers',
+                    'Connected servers',
+                    false,
+                  ) as never,
+                ),
+            ),
+          h.hr.class('m-0 h-px border-0 bg-border'),
+          Checkbox(h, {
+            key: 'sync-folders',
+            id: `${id}-sync`,
+            label: 'Sync Desktop & Documents folders',
+            description:
+              'Your Desktop & Documents folders are being synced with iCloud Drive. You can access them from other devices.',
+            props: { checked: true, name: 'sync-folders', value: 'sync' },
+            onEmit: { Toggled: () => undefined },
+          }) as never,
+        )
+    }
     if (kind === 'radio')
       return simpleField(
         h,
