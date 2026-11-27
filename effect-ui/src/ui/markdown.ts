@@ -28,7 +28,7 @@ export type MarkdownProps = {
 }
 
 const tailwind = {
-  root: 'min-w-0 w-full break-words text-foreground',
+  root: 'min-w-0 w-full break-words text-base text-foreground',
   block: 'min-w-0',
   heading: 'm-0',
   paragraph: 'm-0 min-w-0 wrap-break-word',
@@ -181,6 +181,73 @@ export const Markdown = <Msg>(
         }
       }
     })
+  const listLabel = (
+    children: readonly MarkdownBlock[],
+    path: string,
+  ): View.Input<Msg> => {
+    const first = children[0]
+    if (children.length === 1 && first?.type === 'paragraph')
+      return h.span.children(inline(first.children))
+    return h.span.children(blocks(children, path))
+  }
+  const bulletMarker = (ordered: boolean) =>
+    ordered
+      ? h.span
+          .class(
+            'self-baseline shrink-0 text-foreground text-sm leading-5 w-4 before:content-[counter(crease-list)_"."]',
+          )
+          .attr('aria-hidden', 'true')
+      : h.span
+          .class(
+            'self-baseline box-border flex items-center justify-center shrink-0 w-4 mt-[calc((1em*1.4286-6px)/2)]',
+          )
+          .attr('aria-hidden', 'true')
+          .children(h.span.class('w-1.5 h-1.5 rounded-full bg-foreground'))
+  const taskMarker = (checked: boolean) =>
+    h.span
+      .class(
+        checked
+          ? 'size-4 shrink-0 rounded-[4px] border border-primary bg-primary text-primary-foreground inline-flex items-center justify-center'
+          : 'size-4 shrink-0 rounded-[4px] border border-input inline-flex items-center justify-center',
+      )
+      .attr('aria-hidden', 'true')
+      .children(
+        checked
+          ? IconBehavior(h, {
+              name: 'check',
+              size: 'xs',
+              className: 'size-3.5',
+            })
+          : undefined,
+      )
+  const markdownListItem = (
+    item: Extract<MarkdownBlock, { type: 'list' }>['children'][number],
+    key: string,
+    ordered: boolean,
+  ) =>
+    h.li
+      .key(key)
+      .class(
+        'relative box-border flex items-center gap-2 text-start rounded-md px-[var(--_item-inset-inline)] py-1 [counter-increment:crease-list]',
+      )
+      .attrs({
+        'data-slot': 'list-item',
+        'data-density': 'compact',
+      })
+      .style({ '--_item-inset-inline': '8px' })
+      .children(
+        item.checked === null
+          ? bulletMarker(ordered)
+          : taskMarker(item.checked),
+        h.span
+          .class('flex flex-col flex-1 min-w-0 text-start')
+          .attr('data-slot', 'list-item-content')
+          .children(
+            h.span
+              .class('text-foreground text-sm leading-5')
+              .children(listLabel(item.children, key)),
+          ),
+      )
   const blocks = (
     nodes: readonly MarkdownBlock[],
     path: string,
@@ -256,43 +323,49 @@ export const Markdown = <Msg>(
           const allTasks =
             node.children.length > 0 &&
             node.children.every(item => item.checked !== null)
-          return block(allTasks ? 'markdown-tasklist' : undefined).children(
-            h
-              .el(node.ordered ? 'ol' : 'ul')
-              .attrs({
-                class: allTasks ? styles.taskList : styles.list,
-                'data-ordered': node.ordered ? '' : undefined,
-                start: node.ordered ? String(node.start) : undefined,
-              })
-              .children(
-                node.children.map((item, row) =>
-                  h.li
-                    .key(`${key}-${row}`)
-                    .class(
-                      styles.listItem,
-                      item.checked === null ? undefined : styles.task,
-                    )
-                    .children(
-                      item.checked === null
-                        ? undefined
-                        : h.span
-                            .class(styles.taskMarker)
-                            .attrs({
-                              role: 'checkbox',
-                              'aria-label': 'Task',
-                              'aria-readonly': 'true',
-                              'aria-checked': String(item.checked),
-                              'data-checked': item.checked ? '' : undefined,
-                            })
-                            .children(
-                              item.checked
-                                ? IconBehavior(h, { name: 'check', size: 'xs' })
-                                : undefined,
-                            ),
-                      h.div.children(blocks(item.children, `${key}-${row}`)),
+          const listStyle = allTasks
+            ? 'none'
+            : node.ordered
+              ? 'decimal'
+              : 'disc'
+          return block(
+            allTasks ? 'markdown-tasklist' : 'markdown-list',
+          ).children(
+            node.ordered && !allTasks
+              ? h.ol
+                  .class('m-0 ps-0 list-none flex flex-col gap-0.5 -mx-2')
+                  .attrs({
+                    'data-slot': 'list',
+                    'data-density': 'compact',
+                    role: 'list',
+                    start: node.start !== 1 ? String(node.start) : undefined,
+                  })
+                  .style({
+                    counterReset:
+                      node.start !== 1
+                        ? `crease-list ${node.start - 1}`
+                        : 'crease-list',
+                  })
+                  .children(
+                    node.children.map((item, row) =>
+                      markdownListItem(item, `${key}-${row}`, true),
                     ),
-                ),
-              ),
+                  )
+              : h.ul
+                  .class('m-0 ps-0 list-none flex flex-col gap-0.5 -mx-2')
+                  .attrs({
+                    'data-slot': 'list',
+                    'data-density': 'compact',
+                    role: 'list',
+                  })
+                  .style({
+                    counterReset: allTasks ? undefined : 'crease-list',
+                  })
+                  .children(
+                    node.children.map((item, row) =>
+                      markdownListItem(item, `${key}-${row}`, false),
+                    ),
+                  ),
           )
         }
         case 'table': {
