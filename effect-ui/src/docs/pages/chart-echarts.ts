@@ -17,9 +17,15 @@ const desktop = [186, 305, 237, 273, 209, 314] as const
 const mobile = [80, 200, 120, 190, 130, 140] as const
 const stepDesktop = [186, 305, 237, 273, 209, 314] as const
 const stepMobile = [80, 200, 120, 190, 130, 140] as const
-const demoLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] as const
-const demoDesktop = [186, 305, 237, 273, 209, 314] as const
-const demoMobile = [80, 200, 120, 190, 130, 140] as const
+const demoLabels = Array.from({ length: 30 }, (_, index) => `Apr ${index + 1}`)
+const demoDesktop = [
+  222, 97, 167, 242, 373, 301, 245, 409, 59, 261, 327, 292, 342, 137, 120, 138,
+  446, 364, 243, 89, 137, 224, 138, 387, 215, 75, 383, 122, 315, 454,
+] as const
+const demoMobile = [
+  150, 180, 120, 260, 290, 340, 180, 320, 110, 190, 350, 210, 380, 220, 170,
+  190, 360, 410, 180, 150, 200, 170, 230, 290, 250, 130, 420, 180, 240, 380,
+] as const
 const rtlLabels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'] as const
 
 export type ChartUpstreamKind =

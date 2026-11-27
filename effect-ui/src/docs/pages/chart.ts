@@ -2,6 +2,7 @@ import { Html } from '@effect/ui/html'
 
 import {
   AreaChart,
+  Card,
   BarChart,
   ChartContainer,
   ChartLegend,
@@ -78,6 +79,69 @@ const view =
       lifecycle: ['lifecycle', 'Revenue by period'],
     }
     const selected = upstream[kind]
+    if (kind === 'demo')
+      return Card(h, {
+        className: 'mx-auto w-full max-w-xl',
+        children: card => [
+          card.header({
+            children: [
+              h.div
+                .class(
+                  'flex flex-col items-stretch sm:flex-row sm:items-center',
+                )
+                .children(
+                  h.div
+                    .class('flex flex-1 flex-col justify-center gap-1')
+                    .children(
+                      card.title({ children: ['Bar Chart - Interactive'] }),
+                      card.description({
+                        children: [
+                          'Showing total visitors for the last 3 months',
+                        ],
+                      }),
+                    ),
+                  h.div.class('flex').children(
+                    [
+                      ['desktop', 'Desktop', '7,324', true],
+                      ['mobile', 'Mobile', '7,250', false],
+                    ].map(([key, label, total, active]) =>
+                      h.button
+                        .key(String(key))
+                        .attrs({
+                          type: 'button',
+                          'data-active': active === true ? 'true' : 'false',
+                        })
+                        .class(
+                          'flex flex-1 flex-col justify-center gap-1 border-t px-4 py-3 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l',
+                        )
+                        .children(
+                          h.span
+                            .class('text-xs text-muted-foreground')
+                            .children(String(label)),
+                          h.span
+                            .class('text-lg leading-none font-bold')
+                            .children(String(total)),
+                        ),
+                    ),
+                  ),
+                ),
+            ],
+          }),
+          card.content({
+            children: [
+              h.div
+                .class('h-64 w-full')
+                .children(
+                  echart(
+                    'demo',
+                    'Bar chart of daily page views',
+                    'desktop',
+                  )(h, context) as never,
+                ),
+            ],
+          }),
+        ],
+      })
     if (selected !== undefined)
       return echart(selected[0], selected[1], selected[2])(h, context)
     if (kind === 'states')
