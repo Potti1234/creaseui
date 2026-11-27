@@ -1,0 +1,44 @@
+.typography-docs-article {
+  width: 100%;
+  max-width: 42rem;
+}
+.typography-docs-link {
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.typography-docs-list {
+  margin-block: 1.5rem;
+  margin-inline-start: 1.5rem;
+  list-style-type: disc;
+}
+.typography-docs-list li {
+  margin-top: 0.5rem;
+}
+.typography-docs-table-wrap {
+  margin-block: 1.5rem;
+  width: 100%;
+  overflow-y: auto;
+}
+.typography-docs-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.typography-docs-table tr {
+  margin: 0;
+  border-top: 1px solid var(--border);
+  padding: 0;
+}
+.typography-docs-table tr:nth-child(even) {
+  background: var(--muted);
+}
+.typography-docs-table th,
+.typography-docs-table td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  text-align: start;
+}
+.typography-docs-table th {
+  font-weight: 700;
+}
