@@ -6,13 +6,20 @@ import {
   ChartContainer,
   ChartLegend,
   DonutChart,
+  EChart,
   InteractiveAreaChart,
 } from '#components'
 import {
   defineComponentDocs,
   type DocsExampleImplementation,
-  type DocsMessage,
+  DocsMessage,
 } from '../types'
+import {
+  familyHostId,
+  upstreamHostId,
+  type ChartFamilyKind,
+  type ChartUpstreamKind,
+} from './chart-echarts'
 import { exampleApplicationSource } from './source'
 
 const monthly = [
@@ -33,9 +40,71 @@ const config = {
   traffic: { label: 'Traffic', color: 'var(--chart-2, #60a5fa)' },
 }
 const wrap = (child: unknown): any => child
+const echart =
+  (
+    kind: ChartUpstreamKind | ChartFamilyKind,
+    label: string,
+    variant?: string,
+    state?: 'ready' | 'loading' | 'empty' | 'error',
+  ): DocsExampleImplementation['view'] =>
+  (h: Html.H<DocsMessage>) => {
+    const family = ['area', 'bar', 'line', 'pie', 'radar', 'radial'].includes(
+      kind,
+    )
+    return EChart(h, {
+      hostId: family
+        ? familyHostId(kind as ChartFamilyKind)
+        : upstreamHostId(kind as ChartUpstreamKind),
+      ariaLabel: label,
+      accessibleAlternative: h.p.children(
+        'Chart data is available in the surrounding documentation example source.',
+      ),
+      toMessage: () => DocsMessage.ChartEvent(),
+      ...(variant === undefined ? {} : { variant }),
+      ...(state === undefined ? {} : { state }),
+    })
+  }
 const view =
   (kind: string): DocsExampleImplementation['view'] =>
   (h: Html.H<DocsMessage>, context) => {
+    const upstream: Record<string, [ChartUpstreamKind, string, string?]> = {
+      demo: ['demo', 'Interactive monthly traffic chart'],
+      first1: ['step-basic', 'Minimal two-series bar chart'],
+      first2: ['step-grid', 'Bar chart with grid'],
+      first3: ['step-axis', 'Bar chart with category axis'],
+      first4: ['step-tooltip', 'Bar chart with tooltip'],
+      first5: ['step-legend', 'Bar chart with legend'],
+      rtl: ['rtl', 'Right-to-left bar chart'],
+      lifecycle: ['lifecycle', 'Revenue by period'],
+    }
+    const selected = upstream[kind]
+    if (selected !== undefined)
+      return echart(selected[0], selected[1], selected[2])(h, context)
+    if (kind === 'states')
+      return h.div
+        .class('grid w-full gap-4 md:grid-cols-3')
+        .children(
+          echart(
+            'lifecycle',
+            'Loading revenue chart',
+            undefined,
+            'loading',
+          )(h, context),
+          echart(
+            'lifecycle',
+            'Empty revenue chart',
+            undefined,
+            'empty',
+          )(h, context),
+          echart(
+            'lifecycle',
+            'Failed revenue chart',
+            undefined,
+            'error',
+          )(h, context),
+        )
+    if (['area', 'bar', 'line', 'pie', 'radar', 'radial'].includes(kind))
+      return echart(kind as ChartFamilyKind, `${kind} chart`)(h, context)
     if (kind === 'tooltip')
       return wrap(
         h.div.class('grid w-full max-w-sm gap-3').children(
@@ -149,8 +218,8 @@ export const componentDocs = defineComponentDocs({
     { title: 'RTL', view: view('rtl'), source },
     { title: 'Monthly revenue', view: view('revenue'), source },
     { title: 'Traffic trend', view: view('traffic'), source },
-    { title: 'ECharts lifecycle', view: view('loading'), source },
-    { title: 'Lifecycle states', view: view('loading'), source },
+    { title: 'ECharts lifecycle', view: view('lifecycle'), source },
+    { title: 'Lifecycle states', view: view('states'), source },
     { title: 'Area chart', view: view('area'), source },
     { title: 'Bar chart', view: view('bar'), source },
     { title: 'Line chart', view: view('line'), source },

@@ -922,6 +922,7 @@ const Docs = Html.component({
     ToggledTheme: $ => $.evolve({ dark: value => !value }),
     OpenedSearch: $ => $.evolve({ searchOpen: true }),
     ClosedSearch: $ => $.evolve({ searchOpen: false }),
+    ChartEvent: $ => $,
   },
   subscriptions: () => [
     HtmlSubscription.shortcuts([

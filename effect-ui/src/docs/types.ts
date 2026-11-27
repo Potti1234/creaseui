@@ -9,6 +9,7 @@ export const DocsMessage = UiSchema.TaggedEnum({
   ToggledTheme: {},
   OpenedSearch: {},
   ClosedSearch: {},
+  ChartEvent: {},
 })
 export type DocsMessage = typeof DocsMessage.Type
 
