@@ -113,7 +113,7 @@ const sparkline = (h: Html.H<Message>, id: string) =>
 const hero = (h: Html.H<Message>) =>
   h.section
     .class(
-      'mx-auto grid w-full max-w-[1200px] items-center gap-12 px-4 py-16 md:grid-cols-2 md:px-8 md:py-16',
+      'mx-auto grid w-full max-w-[1200px] items-center gap-12 px-4 py-16 md:grid-cols-2 md:px-8 md:py-20',
     )
     .children(
       h.div.class('flex flex-col items-start gap-6').children(
