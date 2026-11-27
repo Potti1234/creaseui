@@ -59,3 +59,7 @@ The Foldkit grid documentation uses the `SpatialFocus` and `Lasso` headless beha
 ## Toast provider positioning and helpers are narrower than Foldkit
 
 `effect-ui/src/ui/toast.ts` positions the whole provider viewport, while the Foldkit toast model stores a position on each toast. The Effect docs therefore render the Position example's controls but every toast appears in the provider's single bottom-end position. Effect also has no promise-toast helper that resolves a loading toast into success, and action callbacks cannot easily target dismissal from the child control that posted the toast. The docs currently show a static loading toast for Promise and omit the Basic example's visible Undo action.
+
+## Calendar locale support is not a true alternate-calendar implementation
+
+Effect `Calendar` accepts an Intl locale, so `fa-IR-u-ca-persian` localizes labels, but its month grid arithmetic remains Gregorian rather than implementing the Foldkit docs' Jalali conversion helpers. The Effect docs expose the same Persian example surface, but the dates are not a correct Jalali calendar. Cell sizing is also only adjustable through consumer CSS because the styled calendar does not expose Foldkit's cell-size token as a component option.
