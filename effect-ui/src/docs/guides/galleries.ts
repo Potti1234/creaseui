@@ -693,29 +693,61 @@ const previewMetric = (
       h.div.children(h.span.children(label), h.b.children(delta)),
       h.strong.children(value),
       h.p.children(detail),
+      h.small.children(
+        label === 'Total Revenue'
+          ? 'Visitors for the last 6 months'
+          : label === 'New Customers'
+            ? 'Acquisition needs attention'
+            : label === 'Active Accounts'
+              ? 'Engagement exceed targets'
+              : 'Meets growth projections',
+      ),
     )
 
 const previewSidebar = (h: Html.H<DocsMessage>, compact = false) =>
   h.aside.class('preview-sidebar', compact ? 'compact' : '').children(
     h.div.class('preview-brand').children('A', h.strong.children('Acme Inc.')),
     h.button.attrs({ type: 'button' }).children('⌘ Quick Create'),
+    h.span.class('preview-nav-label').children('Platform'),
     h.nav.children(
-      ...['Dashboard', 'Lifecycle', 'Analytics', 'Projects', 'Team'].map(
-        (item, index) =>
-          h.a
-            .key(item)
-            .attr('aria-current', index === 0 ? 'page' : undefined)
-            .children(item),
+      ...[
+        ['Dashboard', '⌘'],
+        ['Lifecycle', '↻'],
+        ['Analytics', '◉'],
+        ['Projects', '▣'],
+        ['Team', '✦'],
+      ].map(([item, icon], index) =>
+        h.a
+          .key(item ?? '')
+          .attr('aria-current', index === 0 ? 'page' : undefined)
+          .children(h.span.children(icon ?? ''), item ?? ''),
       ),
     ),
-    h.nav
-      .class('preview-secondary')
-      .children(
-        ...['Data Library', 'Reports', 'Word Assistant'].map(item =>
-          h.a.key(item).children(item),
-        ),
+    h.span.class('preview-nav-label').children('Documents'),
+    h.nav.class('preview-secondary').children(
+      ...[
+        ['Data Library', '▤'],
+        ['Reports', '▥'],
+        ['Word Assistant', '▧'],
+      ].map(([item, icon]) =>
+        h.a.key(item ?? '').children(h.span.children(icon ?? ''), item ?? ''),
       ),
-    h.div.class('preview-user').children('sc', h.span.children('CreaseUI')),
+    ),
+    h.nav.class('preview-secondary bottom').children(
+      ...[
+        ['Settings', '⚙'],
+        ['Get Help', '?'],
+        ['Search', '⌕'],
+      ].map(([item, icon]) =>
+        h.a.key(item ?? '').children(h.span.children(icon ?? ''), item ?? ''),
+      ),
+    ),
+    h.div
+      .class('preview-user')
+      .children(
+        'sc',
+        h.span.children('CreaseUI', h.small.children('m@example.com')),
+      ),
   )
 
 const dashboardPreview = (h: Html.H<DocsMessage>) =>
@@ -762,27 +794,75 @@ const dashboardPreview = (h: Html.H<DocsMessage>) =>
               'Steady performance increase',
             ),
           ),
-        h.section
-          .class('preview-panel preview-chart')
-          .children(
-            h.div.children(
-              h.h1.children('Total Visitors'),
-              h.p.children('Total for the last three months'),
-            ),
-            h.span.children('Last 3 months ⌄'),
-            h.div
-              .class('preview-line-chart')
-              .children(h.span.class('line one'), h.span.class('line two')),
-            h.footer.children(
-              h.span.children('■ Desktop'),
-              h.span.children('■ Mobile'),
-            ),
+        h.section.class('preview-panel preview-chart').children(
+          h.div.children(
+            h.h1.children('Total Visitors'),
+            h.p.children('Total for the last three months'),
           ),
+          h.span.children('Last 3 months ⌄'),
+          h.div.class('preview-line-chart').children(
+            h
+              .el('svg')
+              .attrs({ viewBox: '0 0 760 180', preserveAspectRatio: 'none' })
+              .children(
+                ...[35, 70, 105, 140].map(y =>
+                  h.el('line').attrs({
+                    x1: '0',
+                    x2: '760',
+                    y1: String(y),
+                    y2: String(y),
+                    stroke: 'var(--border)',
+                    'stroke-dasharray': '3 3',
+                  }),
+                ),
+                h.el('path').attrs({
+                  d: 'M0 105 C40 82 75 112 115 105 S185 78 220 75 S285 88 325 72 S390 58 430 70 S500 45 545 62 S625 82 665 70 S725 84 760 62 L760 180 L0 180 Z',
+                  fill: 'rgba(249,115,22,.13)',
+                  stroke: 'none',
+                }),
+                h.el('path').attrs({
+                  d: 'M0 105 C40 82 75 112 115 105 S185 78 220 75 S285 88 325 72 S390 58 430 70 S500 45 545 62 S625 82 665 70 S725 84 760 62',
+                  fill: 'none',
+                  stroke: '#f97316',
+                  'stroke-width': '2',
+                }),
+                h.el('path').attrs({
+                  d: 'M0 130 C45 112 78 136 118 132 S180 118 225 120 S286 102 330 108 S390 115 435 100 S505 98 550 110 S620 132 670 122 S730 112 760 108 L760 180 L0 180 Z',
+                  fill: 'rgba(16,185,129,.13)',
+                  stroke: 'none',
+                }),
+                h.el('path').attrs({
+                  d: 'M0 130 C45 112 78 136 118 132 S180 118 225 120 S286 102 330 108 S390 115 435 100 S505 98 550 110 S620 132 670 122 S730 112 760 108',
+                  fill: 'none',
+                  stroke: '#10b981',
+                  'stroke-width': '2',
+                }),
+              ),
+          ),
+          h.footer.children(
+            h.span.children('■ Desktop'),
+            h.span.children('■ Mobile'),
+          ),
+        ),
         h.section.class('preview-panel preview-table').children(
           h.div.children(
             h.h1.children('Document sections'),
-            h.button.attrs({ type: 'button' }).children('Customize Columns'),
+            h.button.attrs({ type: 'button' }).children('☷ Customize Columns'),
           ),
+          h.div
+            .class('preview-tabs')
+            .children(
+              h.span.class('active').children('Outline'),
+              h.span.children('Past Performance'),
+              h.span.children('Key Personnel'),
+            ),
+          h.div
+            .class('preview-table-head')
+            .children(
+              h.span.children('Header'),
+              h.span.children('Section Type'),
+              h.span.children('Status'),
+            ),
           ...[
             ['Introduction', 'Technical', 'Done'],
             ['Architecture', 'Design', 'In Process'],
