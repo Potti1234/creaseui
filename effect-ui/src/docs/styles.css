@@ -398,7 +398,8 @@ body:has(.effect-docs) {
   font-size: 0.875rem;
 }
 
-.docs-main h1 {
+.docs-main > h1,
+.docs-page-header h1 {
   margin: 0;
   font-size: 1.875rem;
   font-weight: 700;
