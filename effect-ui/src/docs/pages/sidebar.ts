@@ -66,13 +66,9 @@ const SidebarDemo = Html.component({
                     ],
                   })
                 : undefined,
-              kind === 'loading'
-                ? [
-                    sidebar.skeleton('82%'),
-                    sidebar.skeleton('64%'),
-                    sidebar.skeleton('74%'),
-                  ]
-                : undefined,
+              kind === 'loading' ? sidebar.skeleton('82%') : undefined,
+              kind === 'loading' ? sidebar.skeleton('64%') : undefined,
+              kind === 'loading' ? sidebar.skeleton('74%') : undefined,
             ],
           }),
         ],
