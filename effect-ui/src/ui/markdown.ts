@@ -35,7 +35,7 @@ const tailwind = {
   strong: 'font-semibold',
   deleted: 'text-muted-foreground line-through',
   inlineCode:
-    'rounded-sm bg-muted px-1 py-0.5 font-mono text-[0.9em] text-foreground',
+    'font-mono text-sm leading-[inherit] bg-muted px-1 py-0 rounded-[4px] break-words text-[inherit] leading-inherit text-foreground',
   image: 'h-auto max-w-full rounded-md',
   list: 'm-0 ps-6 data-ordered:list-decimal not-data-ordered:list-disc',
   listItem: 'min-w-0 py-1',

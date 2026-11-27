@@ -171,8 +171,10 @@ export const CodeBlock = <Msg>(
             'aria-controls': id,
           }),
         )
-      const viewport = h.pre
-        .class(styles.viewport)
+      const viewport = h.div
+        .class(
+          'm-0 min-w-0 overflow-auto focus-visible:outline-2 focus-visible:outline-ring',
+        )
         .attrs({
           'data-size': size,
           'data-slot': 'code-block-scroll-container',
@@ -187,35 +189,50 @@ export const CodeBlock = <Msg>(
             typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight,
         })
         .children(
-          h.code.attr('data-slot', 'code-block-code').children(
-            lines.map((line, index) =>
-              h.span
-                .key(String(index))
-                .class(styles.line)
-                .attrs({
-                  'data-slot': 'code-block-line',
-                  'data-highlighted': highlights.has(index + 1)
-                    ? ''
-                    : undefined,
-                  'data-line': lineNumbers ? String(index + 1) : undefined,
-                })
+          h.div
+            .class(
+              'flex min-w-fit',
+              headerText !== undefined && !lineNumbers ? '-mt-2' : undefined,
+            )
+            .children(
+              h.code
+                .class(
+                  'm-0 block flex-1 px-4 py-3 font-mono whitespace-pre text-foreground [tab-size:2]',
+                  size === 'sm' ? 'text-xs' : 'text-sm',
+                )
+                .attr('data-slot', 'code-block-code')
                 .children(
-                  lineNumbers
-                    ? h.span
-                        .class(styles.number)
-                        .attr('aria-hidden', 'true')
-                        .style({
-                          width: `calc(${String(lines.length).length}ch + 0.75rem)`,
-                        })
-                        .children(String(index + 1))
-                    : undefined,
-                  h.span
-                    .class(styles.body)
-                    .attr('data-wrapped', wrapped ? '' : undefined)
-                    .children(displayLine(line, tokens[index] ?? [])),
+                  lines.map((line, index) =>
+                    h.span
+                      .key(String(index))
+                      .class(styles.line)
+                      .attrs({
+                        'data-slot': 'code-block-line',
+                        'data-highlighted': highlights.has(index + 1)
+                          ? ''
+                          : undefined,
+                        'data-line': lineNumbers
+                          ? String(index + 1)
+                          : undefined,
+                      })
+                      .children(
+                        lineNumbers
+                          ? h.span
+                              .class(styles.number)
+                              .attr('aria-hidden', 'true')
+                              .style({
+                                width: `calc(${String(lines.length).length}ch + 0.75rem)`,
+                              })
+                              .children(String(index + 1))
+                          : undefined,
+                        h.span
+                          .class(styles.body)
+                          .attr('data-wrapped', wrapped ? '' : undefined)
+                          .children(displayLine(line, tokens[index] ?? [])),
+                      ),
+                  ),
                 ),
             ),
-          ),
         )
       return h.div
         .class(styles.root, className)
