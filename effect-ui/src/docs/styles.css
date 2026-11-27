@@ -1236,18 +1236,23 @@ body:has(.effect-docs) {
 
 .blocks-header h1 {
   margin: 0;
-  font-size: 2rem;
-  letter-spacing: -0.04em;
+  font-size: 3rem;
+  font-weight: 600;
+  line-height: 3.75rem;
+  letter-spacing: -0.075rem;
 }
 .blocks-header p {
-  max-width: 44rem;
+  max-width: 48rem;
+  margin-block-start: 1rem;
   color: var(--muted-foreground);
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 .blocks-toolbar {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  margin-block: 4.625rem 2.4375rem;
+  margin-block: 2rem 2.4375rem;
   border-bottom: 1px solid var(--border);
 }
 .blocks-toolbar nav {
@@ -2151,12 +2156,13 @@ body:has(.effect-docs) {
   border: 0;
   border-radius: 999px;
   background: transparent;
-  padding: 0.5rem 0.9rem;
+  height: 36px;
+  padding: 0 1rem;
   color: var(--muted-foreground);
   font-size: 0.875rem;
 }
 .blocks-toolbar nav button[aria-pressed='true'] {
-  background: var(--muted);
+  background: color-mix(in oklab, var(--muted) 72%, transparent);
   color: var(--foreground);
   font-weight: 500;
 }

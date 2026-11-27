@@ -1189,7 +1189,7 @@ const blocksGuide: DocsGuide = {
         .children(
           h.h1.children('Building Blocks for Effect UI'),
           h.p.children(
-            'Complete sidebars, dashboards and login layouts. Explore the same blocks across renderers, with live previews you can open full screen.',
+            'Complete sidebars, dashboards and login layouts. Explore the same blocks in Tailwind or StyleX, with live previews you can open full screen.',
           ),
         ),
       h.div.class('blocks-toolbar').children(
