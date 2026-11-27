@@ -344,20 +344,136 @@ const createGuide: DocsGuide = {
   title: 'Create',
   description: 'Create a new Effect UI project with CreaseUI.',
   view: h =>
-    h.div.children(
-      section(
-        h,
-        'create-project',
-        'Create project',
-        h.p.children(
-          'Install the components and renderer source into an Effect UI application with the shadcn CLI.',
-        ),
-        h.pre.children(
-          h.code.children(
-            'npx shadcn@latest add @crease-effect/effect-button\nnpx creaseui-lint init',
+    h.div.class('create-shell').children(
+      h.aside.class('create-panel').children(
+        h.div
+          .class('create-panel-title')
+          .children('Theme', h.span.children('☰')),
+        h.nav
+          .class('create-tabs')
+          .children(
+            h.span.attr('aria-current', 'page').children('Tokens'),
+            h.span.children('Themes'),
+            h.span.children('Color'),
+            h.span.children('Shape'),
+            h.span.children('Type'),
+            h.span.children('Motion'),
           ),
+        h.div
+          .class('create-mode')
+          .children(
+            h.span.attr('aria-current', 'page').children('Light'),
+            h.span.children('Dark'),
+          ),
+        ...[
+          'primary',
+          'primary-foreground',
+          'secondary',
+          'secondary-foreground',
+        ].map(token =>
+          h.div
+            .key(token)
+            .class('create-token')
+            .children(
+              h.span.class('create-token-swatch'),
+              h.div.children(
+                h.strong.children(token),
+                h.code.children('oklch(0.205 0 0)'),
+              ),
+            ),
         ),
+        h.button.attrs({ type: 'button' }).children('Open Preset'),
+        h.div
+          .class('create-panel-actions')
+          .children(
+            h.button.attrs({ type: 'button' }).children('Shuffle'),
+            h.button.attrs({ type: 'button' }).children('Reset'),
+          ),
+        h.button
+          .class('create-copy')
+          .attrs({ type: 'button' })
+          .children('Copy Registry JSON'),
       ),
+      h.main
+        .class('create-preview')
+        .children(
+          h.section
+            .class('create-card contribution')
+            .children(
+              h.h2.children('Contribution History'),
+              h.p.children('Last 6 months of activity'),
+              h.div
+                .class('contribution-bars')
+                .children(
+                  [42, 68, 48, 82, 52, 90].map(height =>
+                    h.span
+                      .key(String(height))
+                      .style({ height: `${String(height)}%` }),
+                  ),
+                ),
+              h.div
+                .class('contribution-months')
+                .children(
+                  ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'].map(month =>
+                    h.span.key(month).children(month),
+                  ),
+                ),
+              h.div
+                .class('create-card-row')
+                .children(
+                  h.div.children(
+                    h.small.children('UPCOMING'),
+                    h.strong.children('May 25, 2024'),
+                    h.p.children('$1,000 scheduled'),
+                  ),
+                  h.div.children(
+                    h.small.children('AUTO-SAVE PLAN'),
+                    h.strong.children('Accelerated'),
+                    h.p.children('Recurring weekly'),
+                  ),
+                ),
+              h.button.attrs({ type: 'button' }).children('View Full Report'),
+            ),
+          h.section
+            .class('create-card payout')
+            .children(
+              h.h2.children('Payout Threshold'),
+              h.p.children(
+                'Set the minimum balance required before a payout is triggered.',
+              ),
+              h.label.children('Preferred Currency'),
+              h.div
+                .class('create-input')
+                .children('USD — United States Dollar ⌄'),
+              h.label.children('Minimum Payout Amount'),
+              h.div.class('create-amount').children('$2500.00'),
+              h.div.class('create-slider').children(h.span),
+              h.label.children('Notes'),
+              h.div
+                .class('create-notes')
+                .children('Add any notes for this payout configuration…'),
+              h.button.attrs({ type: 'button' }).children('Save Threshold'),
+            ),
+          h.section
+            .class('create-card distribute')
+            .children(
+              h.div.class('create-plus').children('+'),
+              h.h2.children('Distribute Track'),
+            ),
+          h.section
+            .class('create-card balance')
+            .children(
+              h.p.children('Claimable Balance'),
+              h.strong.children('$0.00'),
+              h.span.children('● Pending Setup'),
+              h.div
+                .class('create-card-row')
+                .children(
+                  h.span.children('Net Royalties'),
+                  h.span.children('$0.00'),
+                ),
+            ),
+        ),
     ),
 }
 const blocksGuide: DocsGuide = {

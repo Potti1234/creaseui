@@ -1111,3 +1111,166 @@ body:has(.effect-docs) {
 .block-preview-card.wide {
   grid-column: 1 / -1;
 }
+
+.create-shell {
+  display: grid;
+  grid-template-columns: 16rem 1fr;
+  min-height: calc(100svh - 8rem);
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: color-mix(in oklab, var(--muted) 55%, transparent);
+}
+.create-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-right: 1px solid var(--border);
+  background: var(--background);
+  padding: 1rem;
+}
+.create-panel-title,
+.create-mode,
+.create-card-row,
+.create-panel-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.create-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem 0.75rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+.create-tabs [aria-current],
+.create-mode [aria-current] {
+  color: var(--foreground);
+  font-weight: 600;
+}
+.create-token {
+  display: flex;
+  gap: 0.625rem;
+  align-items: center;
+  font-size: 0.75rem;
+}
+.create-token strong,
+.create-token code {
+  display: block;
+}
+.create-token-swatch {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 0.25rem;
+  background: var(--primary);
+}
+.create-panel button,
+.create-card > button {
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background: var(--background);
+  padding: 0.5rem 0.75rem;
+}
+.create-copy,
+.create-card > button {
+  background: var(--primary) !important;
+  color: var(--primary-foreground);
+}
+.create-preview {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 1.5rem;
+  padding: 3rem 1.5rem;
+}
+.create-card {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  background: var(--card);
+  padding: 1.25rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+.create-card h2,
+.create-card p {
+  margin: 0;
+}
+.create-card p,
+.create-card label,
+.contribution-months,
+.create-card small {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+.contribution-bars {
+  display: flex;
+  height: 7rem;
+  align-items: end;
+  gap: 1rem;
+}
+.contribution-bars span {
+  width: 1.75rem;
+  border-radius: 0.25rem 0.25rem 0 0;
+  background: color-mix(in oklab, var(--muted-foreground) 35%, transparent);
+}
+.contribution-months {
+  display: flex;
+  gap: 1.35rem;
+}
+.create-input,
+.create-notes {
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  padding: 0.625rem;
+  color: var(--muted-foreground);
+}
+.create-notes {
+  min-height: 5rem;
+}
+.create-amount {
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-align: end;
+}
+.create-slider {
+  height: 0.25rem;
+  border-radius: 999px;
+  background: var(--muted);
+}
+.create-slider span {
+  display: block;
+  width: 32%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--foreground);
+}
+.create-plus {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  margin: 4rem auto 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  color: var(--muted-foreground);
+}
+.distribute h2 {
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.balance > strong {
+  font-size: 2rem;
+}
+@media (max-width: 800px) {
+  .create-shell,
+  .create-preview {
+    grid-template-columns: 1fr;
+  }
+  .create-panel {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+}
