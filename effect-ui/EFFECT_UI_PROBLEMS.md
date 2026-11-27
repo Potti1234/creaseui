@@ -67,3 +67,7 @@ Effect `Calendar` accepts an Intl locale, so `fa-IR-u-ca-persian` localizes labe
 ## Input Group addon composition is presentational only
 
 Effect `InputGroup` exposes addon slots and control parts, but it has no built-in input-group button or menu composition beyond class helpers. The docs reproduce the Dropdown, Button, copy, password-toggle, favorite, and info-popover examples visually with static buttons; those controls do not yet have the Foldkit examples' working menu, popover, copy, favorite, and password state interactions.
+
+## Combobox styled API lacks several documented composition hooks
+
+Effect `Combobox` owns popup/draft state but exposes only plain item labels. It has no consumer item renderer for the Custom Items example's flag/name/continent rows, no invalid prop or aria-invalid styling hook, and no auto-highlight option. The Effect docs reproduce those examples with plain items and static appearance. Input Group composition is also manual because the styled combobox cannot yet render through the input-group control part without a nested wrapper.
