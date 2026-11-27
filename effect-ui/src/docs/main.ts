@@ -82,11 +82,7 @@ const behaviorBySlug = new Map(behaviors.map(entry => [entry.slug, entry]))
 const effectText = (value: string): string =>
   value.replaceAll('Foldkit', 'Effect UI').replaceAll('foldkit', 'effect-ui')
 
-const slugify = (value: string) =>
-  value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
+const slugify = (value: string) => value.toLowerCase().replaceAll(' ', '-')
 
 const docsMain = (h: DocHtml) =>
   h.main.class('docs-main').attrs({ id: 'docs-main', tabindex: '-1' })
