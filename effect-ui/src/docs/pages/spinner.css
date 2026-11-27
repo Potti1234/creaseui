@@ -1,0 +1,41 @@
+.spinner-docs-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.spinner-docs-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.spinner-docs-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.spinner-docs-medium {
+  width: 100%;
+  max-width: 28rem;
+}
+.spinner-docs-narrow {
+  width: 100%;
+  max-width: 20rem;
+}
+.spinner-docs-custom {
+  color: var(--chart-2);
+}
+.spinner-docs-rtl {
+  direction: rtl;
+}
+.spinner-docs-item-end {
+  flex: none;
+  justify-content: flex-end;
+}
+.spinner-docs-amount {
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+.spinner-docs-send {
+  margin-inline-start: auto;
+}
