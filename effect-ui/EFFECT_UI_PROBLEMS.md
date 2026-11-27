@@ -19,3 +19,7 @@
 ## Select styled trigger, popup, and item styling diverge from Foldkit
 
 `effect-ui/src/ui/select.ts` originally used fixed-height/background trigger classes, allowed the popup to size itself independently of the trigger anchor, and used flatter menu-item padding. This made the same docs fixture render a 384px trigger/popup where Foldkit renders the shrink-to-fit 129px control. The branch now aligns the styled trigger, popup width, and option padding with the Foldkit implementation, although the inner option DOM still differs because the Effect kit exposes item parts differently.
+
+## Tabs styled sizing diverges from Foldkit
+
+`effect-ui/src/ui/tabs.ts` originally used a larger root gap, 4px list padding, always-on trigger gaps, fixed minimum-height triggers, and text underline styling for the line variant. This made the basic demo 214px high with a 327px tab list where Foldkit renders 206px and 313px. The branch now aligns the styled root/list/trigger sizing and line indicator treatment with the Foldkit implementation while retaining the kit's `data-active` state attribute.
