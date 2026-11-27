@@ -323,6 +323,7 @@ const codePanel = (
       CodeBlock(h, {
         id: `${id}-code`,
         language,
+        languageLabel: false,
         props: { code },
         width: '100%',
         container: 'section',
@@ -357,7 +358,11 @@ const exampleCardWithSource = (
         .children(
           implementation.view(h, { exampleIndex: index, instance, idPrefix }),
         ),
-      codePanel(h, idPrefix, implementation.source),
+      codePanel(
+        h,
+        idPrefix,
+        `// ${metadataBySlug[slug]?.title ?? slug} — ${implementation.title}\n${implementation.source}`,
+      ),
     )
 }
 
@@ -538,6 +543,13 @@ const component = (h: DocHtml, slug: string, title: string) => {
                 : (metadata.apiHref ?? 'https://github.com/Effect-TS/ui'),
             )
             .children(effectText(metadata.apiDescription ?? 'API reference')),
+          h.a
+            .class('docs-inline-link')
+            .attr(
+              'href',
+              `https://github.com/Potti1234/creaseui/blob/codex/effect-ui-port/effect-ui/src/ui/${slug}.ts`,
+            )
+            .children('Source'),
         ),
       ),
       migrationNotice(h, missing, entries.length),
@@ -753,6 +765,14 @@ const component = (h: DocHtml, slug: string, title: string) => {
 
 const guidePage = (h: DocHtml, { title, description, view }: DocsGuide) =>
   docsMain(h).children(
+    h.nav
+      .class('docs-breadcrumb')
+      .attr('aria-label', 'Breadcrumb')
+      .children(
+        h.a.attr('href', '/docs/getting-started').children('Docs'),
+        h.span.attr('aria-hidden', 'true').children('/'),
+        h.span.attr('aria-current', 'page').children(title),
+      ),
     h.h1.children(title),
     description === undefined
       ? undefined

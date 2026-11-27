@@ -102,7 +102,7 @@ const root = document.getElementById('root')
 if (root) Layer.launch(BrowserHost.mount(App, {}, root)).pipe(Effect.runFork)`
 
 export const gettingStarted: DocsGuide = {
-  title: 'Getting Started',
+  title: 'Get Started',
   description:
     'Install CreaseUI components in an Effect UI application and render your first view.',
   view: h =>

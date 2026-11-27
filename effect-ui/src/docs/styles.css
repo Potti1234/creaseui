@@ -308,7 +308,7 @@ body:has(.effect-docs) {
 
 .docs-layout {
   display: grid;
-  grid-template-columns: 13.75rem minmax(0, 1fr);
+  grid-template-columns: 11rem minmax(0, 1fr);
   gap: clamp(1.5rem, 4vw, 4rem);
 }
 
@@ -408,7 +408,7 @@ body:has(.effect-docs) {
 
 .docs-main h1 {
   margin: 0;
-  font-size: clamp(2.25rem, 5vw, 3rem);
+  font-size: 1.875rem;
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.045em;
