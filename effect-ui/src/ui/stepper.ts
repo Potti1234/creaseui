@@ -51,8 +51,8 @@ const glyphs = {
 >
 const tailwind = {
   root: 'grid min-w-0 gap-2',
-  list: 'm-0 flex min-w-0 list-none gap-2 p-0 data-[orientation=vertical]:flex-col',
-  item: 'flex min-w-0 flex-1 flex-col gap-1 data-[orientation=vertical]:flex-row data-disabled:opacity-50',
+  list: 'm-0 flex min-w-0 list-none gap-1 p-0 data-[orientation=vertical]:flex-col',
+  item: 'relative flex min-w-0 flex-1 flex-col gap-1 data-[orientation=vertical]:flex-row data-[orientation=vertical]:gap-0.5 data-disabled:opacity-50',
   track:
     'relative h-1 w-full shrink-0 overflow-hidden rounded-full bg-border data-[orientation=vertical]:h-auto data-[orientation=vertical]:w-1',
   onTrack:

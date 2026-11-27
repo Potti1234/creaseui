@@ -31,3 +31,7 @@
 ## Navigation Menu disclosure is not a real Popover
 
 `effect-ui/src/ui/navigation-menu.ts` composes disclosure entries with `CollapsibleBehavior` inline inside the navigation list. The Foldkit version uses the real Popover child integration with overlay positioning, hover-and-press intent, animated transitions, content focus, and a chevron trigger. The docs port can reproduce the basic disclosure content and links, but not the exact interaction surface or positioning.
+
+## Stepper geometry and collapse behavior diverge from Foldkit
+
+`effect-ui/src/ui/stepper.ts` uses a different DOM structure (`stepper` root containing a `stepper-list`) and different horizontal/on-track geometry from the Foldkit primitive. Basic vertical rows now match the Foldkit 156px four-step fixture, but horizontal examples shrink to different intrinsic widths, on-track labels do not occupy the same vertical space, and compact-collapse behavior does not reproduce the Foldkit examples exactly. The docs port keeps the same fixture data and interactions but cannot yet be considered pixel-identical for horizontal steppers.
