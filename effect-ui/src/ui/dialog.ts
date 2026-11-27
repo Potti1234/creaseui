@@ -24,6 +24,8 @@ export const Dialog = <Msg, R = never>(
     description,
     trigger,
     content,
+    className,
+    showCloseButton = true,
     ...options
   }: Omit<DialogOptions<Msg>, 'view' | 'fallback'> & {
     readonly title: string
@@ -38,6 +40,8 @@ export const Dialog = <Msg, R = never>(
     readonly content?:
       | View.Input<NoInfer<Msg>, R>
       | View.Children<NoInfer<Msg>, R>
+    readonly className?: string
+    readonly showCloseButton?: boolean
   },
   styles: typeof tailwind = tailwind,
 ) =>
@@ -49,12 +53,18 @@ export const Dialog = <Msg, R = never>(
         dialog.portal(h.dialog.attr('data-slot', 'dialog'))?.children(
           dialog.backdrop(h.div.class(styles.backdrop)),
           dialog.viewport(h.div.class(styles.viewport)).children(
-            dialog.popup(h.div.class(styles.popup)).children(
+            dialog.popup(h.div.class(styles.popup, className)).children(
               h.div
                 .class('flex flex-col gap-2 text-center sm:text-left')
                 .attr('data-slot', 'dialog-header')
                 .children(
-                  dialog.title(h.h2.class(styles.title)).children(title),
+                  dialog
+                    .title(
+                      h.h2
+                        .class(styles.title)
+                        .attr('data-slot', 'dialog-title'),
+                    )
+                    .children(title),
                   description === undefined
                     ? undefined
                     : dialog
@@ -63,7 +73,11 @@ export const Dialog = <Msg, R = never>(
                 ),
               content,
               dialog
-                .close(h.button.class(styles.close))
+                .close(
+                  h.button
+                    .class(styles.close)
+                    .attr('data-slot', 'dialog-close'),
+                )
                 .children(IconBehavior(h, { name: 'x', size: 'sm' })),
             ),
           ),

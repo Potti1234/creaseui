@@ -47,3 +47,7 @@
 ## Grid spatial-focus and lasso behaviors are missing
 
 The Foldkit grid documentation uses the `SpatialFocus` and `Lasso` headless behaviors for physical arrow-key navigation and pointer rectangle selection. `effect-ui/src/behaviors` has no corresponding implementations. The Effect docs currently reproduce the board/tile geometry and instructional copy statically, but arrow-key spatial movement, disabled-item skipping, drag selection, Shift-add, Escape-cancel, selection state, and live selection announcements are not yet ported.
+
+## Dialog styled composition is still narrower than Foldkit
+
+`effect-ui/src/ui/dialog.ts` now supports panel classes, a hideable close button, semantic slots, and an icon close button, but it still exposes only a trigger/title/description/content convenience shape. Foldkit's Dialog renderer exposes bound header, footer, close, close-button attribute, and initial-focus part composition. The Effect docs recreate the same visual footer and form examples manually inside `content`; they cannot yet reuse the same part-level composition API or mark footer buttons as dialog initial focus.
