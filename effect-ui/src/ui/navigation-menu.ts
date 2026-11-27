@@ -36,12 +36,12 @@ export type NavigationMenuProps<Msg, R = never> = {
 }
 
 const tailwind = {
-  root: 'relative min-w-0 max-w-full data-[layout=scroll]:overflow-x-auto data-[layout=responsive]:max-md:overflow-x-auto',
-  list: 'm-0 flex list-none items-center gap-1 p-0 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch data-[layout=scroll]:w-max data-[layout=responsive]:md:flex-wrap',
-  item: 'shrink-0',
-  link: 'inline-flex items-center gap-1 rounded-md border-0 bg-transparent px-3 py-2 text-start text-sm font-medium text-foreground no-underline outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring data-active:bg-accent aria-disabled:opacity-50 data-open:bg-accent',
+  root: 'relative z-10 flex max-w-max flex-1 items-center justify-center data-[layout=scroll]:max-w-full data-[layout=scroll]:overflow-x-auto data-[layout=responsive]:max-w-full',
+  list: 'group m-0 flex flex-1 list-none items-center justify-center gap-1 p-0 data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch data-[layout=scroll]:min-w-max data-[layout=scroll]:justify-start data-[layout=responsive]:max-md:flex-col data-[layout=responsive]:max-md:items-stretch',
+  item: '',
+  link: 'group inline-flex h-9 w-max items-center justify-center gap-1 rounded-md border-0 bg-background px-4 py-2 text-start text-sm font-medium text-foreground no-underline transition-colors outline-none hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 data-active:bg-accent/50 aria-disabled:opacity-50 data-open:bg-accent',
   panel:
-    'grid min-w-36 gap-2 rounded-md border bg-popover p-2 text-popover-foreground shadow-md hidden:hidden',
+    'grid w-max min-w-[min(16rem,calc(100vw-2rem))] gap-1 rounded-md border bg-popover p-2 text-popover-foreground shadow-md hidden:hidden',
 }
 
 export const NavigationMenu = <Msg, R = never>(

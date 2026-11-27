@@ -27,3 +27,7 @@
 ## Tree List styled row metrics diverge from Foldkit
 
 `effect-ui/src/ui/tree-list.ts` originally used 6px row padding, minimum-height rows, 24px toggle glyphs, extra action padding, and no per-row gap. The same project-file tree rendered 324px high with labels shifted 8px to the right versus Foldkit's 342px tree. The branch now aligns row padding, vertical pitch, toggle/spacer geometry, and horizontal label position with the Foldkit implementation, although Effect still uses nested button/anchor controls where Foldkit makes the row itself clickable.
+
+## Navigation Menu disclosure is not a real Popover
+
+`effect-ui/src/ui/navigation-menu.ts` composes disclosure entries with `CollapsibleBehavior` inline inside the navigation list. The Foldkit version uses the real Popover child integration with overlay positioning, hover-and-press intent, animated transitions, content focus, and a chevron trigger. The docs port can reproduce the basic disclosure content and links, but not the exact interaction surface or positioning.
