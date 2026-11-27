@@ -399,6 +399,12 @@ const overview: DocsGuide = {
   title: 'Behaviors',
   description:
     'Install interaction logic separately or use the same behavior through a styled CreaseUI component.',
+  toc: [
+    ['install', 'Install a behavior'],
+    ...groups.map(
+      group => [group.toLowerCase().replaceAll(' ', '-'), group] as const,
+    ),
+  ],
   view: h =>
     h.div.children(
       section(
@@ -450,6 +456,15 @@ export const behaviorGuides: Readonly<Record<string, DocsGuide>> = {
         {
           title: behavior.title,
           description: behavior.description,
+          toc: [
+            ['effect-ui', 'Effect UI'],
+            ...(demoExamples[behavior.slug] !== undefined ||
+            componentExamples[behavior.slug] !== undefined
+              ? [['examples', 'Examples'] as const]
+              : []),
+            ['usage-guide', 'Usage guide'],
+            ['source-exports', 'Source exports'],
+          ],
           view: h => behaviorDetail(h, behavior, reference),
         } satisfies DocsGuide,
       ]
