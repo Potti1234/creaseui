@@ -113,6 +113,7 @@ export const gettingStarted: DocsGuide = {
     ['configure-the-cli', 'Configure the CLI'],
     ['install-components', 'Install components'],
     ['use-components', 'Use components'],
+    ['agent-history', 'Agent & history'],
     ['next-steps', 'Next steps'],
   ],
   view: h =>
@@ -271,6 +272,53 @@ export const gettingStarted: DocsGuide = {
               ' in the document head. Client rendering adds the active styles to the document.',
             )
           : undefined,
+      ),
+      section(
+        h,
+        'agent-history',
+        'Agent & history',
+        h.p.children(
+          'Let an in-app agent help without handing it your component state. Describe the controls as data, validate a plan with Agent, and map RunStep back to your own messages. Observe selects changes; History records them and emits Apply when you seek or undo a source.',
+        ),
+        h.div
+          .class('agent-history-demo')
+          .children(
+            h.div
+              .class('agent-history-toolbar')
+              .children(
+                h.button.attrs({ type: 'button' }).children('Run agent'),
+                h.button.attrs({ type: 'button' }).children('Undo agent'),
+                h.button.attrs({ type: 'button' }).children('Back'),
+                h.button.attrs({ type: 'button' }).children('Forward'),
+              ),
+            h.div
+              .class('agent-history-grid')
+              .children(
+                h.div.children(
+                  h.strong.children('Release title'),
+                  h.p.children('Effects at scale'),
+                ),
+                h.div.children(
+                  h.strong.children('Publish'),
+                  h.p.children('Waiting for approval'),
+                ),
+                h.div.children(
+                  h.strong.children('Secret token'),
+                  h.p.children('••••••••'),
+                ),
+              ),
+            h.p
+              .class('docs-muted')
+              .children(
+                'The Effect UI Agent and History behaviors are not implemented yet; this static example preserves the guide’s walkthrough structure.',
+              ),
+          ),
+        h.p.children(
+          'Try Run agent, then approve publishing. Undo agent restores only agent edits; your own changes stay. Back and Forward seek through the same history. Secret controls redact both their values and previous values and cannot be restored.',
+        ),
+        h.p.children(
+          'For development-time inspection, keep the Effect UI message log and runtime inspection tools. These behaviors are for the user-facing experience: confirmation, redaction and per-control history.',
+        ),
       ),
       section(
         h,

@@ -2073,3 +2073,42 @@ body:has(.effect-docs) {
 .lint-rule-summary {
   margin-top: 0.15rem;
 }
+
+.agent-history-demo {
+  display: grid;
+  gap: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  background: var(--card);
+  padding: 1rem;
+}
+.agent-history-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.agent-history-toolbar button {
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background: var(--background);
+  padding: 0.45rem 0.7rem;
+}
+.agent-history-toolbar button:first-child {
+  border-color: var(--foreground);
+  background: var(--foreground);
+  color: var(--background);
+}
+.agent-history-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.agent-history-grid > div {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+.agent-history-grid p {
+  margin: 0.3rem 0 0;
+  color: var(--muted-foreground);
+}
