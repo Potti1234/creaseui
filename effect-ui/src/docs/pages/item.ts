@@ -106,9 +106,8 @@ const plusButton = (
     variant: 'outline',
     size,
     element: h.button.attrs({ 'aria-label': label }),
-  })
-    .class('rounded-full')
-    .children(Icon(h, { name: 'plus' }))
+    className: 'rounded-full',
+  }).children(Icon(h, { name: 'plus' }))
 
 const basic =
   (rtlMode: boolean): DocsExampleImplementation['view'] =>

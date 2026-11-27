@@ -115,8 +115,11 @@ const CalendarDemo = Html.component({
                   ['In a week', 7],
                   ['In 2 weeks', 14],
                 ].map(([label, days]) =>
-                  Button(h, { variant: 'ghost', size: 'sm' })
-                    .class('justify-start')
+                  Button(h, {
+                    variant: 'ghost',
+                    size: 'sm',
+                    className: 'justify-start',
+                  })
                     .on('click', () =>
                       Message.PickedPreset({ days: days as number }),
                     )

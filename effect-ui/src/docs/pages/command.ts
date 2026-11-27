@@ -143,9 +143,10 @@ const CommandDemo = Html.component({
         Dialog(h, {
           key: `${h.props.idPrefix}-dialog`,
           title: rtl ? 'قائمة الأوامر' : 'Command menu',
-          trigger: Button(h, { variant: 'outline' })
-            .class('w-fit')
-            .children('Open Menu'),
+          trigger: Button(h, {
+            variant: 'outline',
+            className: 'w-fit',
+          }).children('Open Menu'),
           content: palette,
           props: { open: model.open },
           onEmit: {

@@ -54,12 +54,14 @@ export const Button = <Msg, R = never>(
     variant = 'default',
     size = 'default',
     isLoading = false,
+    className,
     onPress,
     ...props
   }: Appearance &
     ButtonBehaviorProps & {
       readonly element?: ButtonElement<Msg, R>
       readonly isLoading?: boolean
+      readonly className?: string
       readonly onPress?: Msg
     } = {},
   classes: (
@@ -69,7 +71,7 @@ export const Button = <Msg, R = never>(
 ) =>
   ButtonBehavior(h, {
     element: (element ?? h.button).class(
-      classes({ variant, size }, isLoading || props.disabled === true),
+      `${classes({ variant, size }, isLoading || props.disabled === true)}${className === undefined ? '' : ` ${className}`}`,
     ),
     onPress,
     props: { ...props, disabled: isLoading || props.disabled === true },

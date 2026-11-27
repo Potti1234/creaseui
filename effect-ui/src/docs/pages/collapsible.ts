@@ -11,9 +11,11 @@ import { exampleApplicationSource } from './source'
 import './collapsible.css'
 
 const trigger = <Msg>(h: Html.H<Msg>, label: string) =>
-  Button(h, { variant: 'ghost', size: 'sm' })
-    .class('collapsible-docs-trigger')
-    .children(label, Icon(h, { name: 'chevron-down', size: 'sm' }))
+  Button(h, {
+    variant: 'ghost',
+    size: 'sm',
+    className: 'collapsible-docs-trigger',
+  }).children(label, Icon(h, { name: 'chevron-down', size: 'sm' }))
 
 const collapsible = (
   h: Html.H<DocsMessage>,

@@ -232,9 +232,9 @@ const InputDemo = Html.component({
         content = field(
           label(`${prefix}-badge`, [
             'Webhook URL ',
-            Badge(h, { variant: 'secondary' })
-              .class('ml-auto')
-              .children('Beta'),
+            Badge(h, { variant: 'secondary', className: 'ml-auto' }).children(
+              'Beta',
+            ),
           ] as never),
           input('webhookUrl', `${prefix}-badge`, {
             type: 'url',

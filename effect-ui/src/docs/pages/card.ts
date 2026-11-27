@@ -120,9 +120,10 @@ const loginCard = (
         className: 'card-docs-footer-column',
         children: [
           Button(h).class('card-docs-full').children(copy.login),
-          Button(h, { variant: 'outline' })
-            .class('card-docs-full')
-            .children(copy.google),
+          Button(h, {
+            variant: 'outline',
+            className: 'card-docs-full',
+          }).children(copy.google),
         ],
       }),
     ],
@@ -218,12 +219,14 @@ const small: DocsExampleImplementation['view'] = h =>
       card.footer({
         className: 'card-docs-footer-column',
         children: [
-          Button(h, { size: 'sm' })
-            .class('card-docs-full')
-            .children('Set up scheduled reports'),
-          Button(h, { variant: 'outline', size: 'sm' })
-            .class('card-docs-full')
-            .children("See what's new"),
+          Button(h, { size: 'sm', className: 'card-docs-full' }).children(
+            'Set up scheduled reports',
+          ),
+          Button(h, {
+            variant: 'outline',
+            size: 'sm',
+            className: 'card-docs-full',
+          }).children("See what's new"),
         ],
       }),
     ],
