@@ -7,7 +7,7 @@ type Options<Msg> = Parameters<typeof FieldBehavior<Msg>>[1]
 
 const tailwind = {
   root: 'grid min-w-0 gap-2 data-[layout=horizontal]:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] data-[layout=horizontal]:items-center md:data-[layout=responsive]:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:data-[layout=responsive]:items-center',
-  label: 'text-sm leading-none font-medium data-disabled:opacity-50',
+  label: 'text-sm leading-snug font-medium data-disabled:opacity-50',
   description: 'col-span-full m-0 text-sm text-muted-foreground',
   error: 'col-span-full m-0 text-sm text-destructive',
 }

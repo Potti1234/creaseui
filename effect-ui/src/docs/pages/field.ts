@@ -482,23 +482,40 @@ const view =
     }
     if (kind === 'fieldset')
       return h.fieldset
-        .class('grid w-full max-w-md gap-4 rounded-lg border p-4')
+        .class('m-0 flex w-full max-w-sm flex-col gap-6 border-0 p-0')
         .children(
           h.legend
-            .class('px-1 text-sm font-medium')
-            .children('Shipping address'),
-          simpleField(
-            h,
-            `${id}-street`,
-            'Street',
-            controlInput(h, `${id}-street-input`, 'Main Street 1'),
-          ) as never,
-          simpleField(
-            h,
-            `${id}-city2`,
-            'City',
-            controlInput(h, `${id}-city2-input`, 'Berlin'),
-          ) as never,
+            .class('mb-3 text-base font-medium')
+            .children('Address Information'),
+          h.p
+            .class('m-0 -mt-3 text-sm leading-normal text-muted-foreground')
+            .children('We need your address to deliver your order.'),
+          h.div
+            .class('@container/field-group flex w-full flex-col gap-7')
+            .children(
+              simpleField(
+                h,
+                `${id}-street`,
+                'Street Address',
+                controlInput(h, `${id}-street-input`, '123 Main St'),
+              ) as never,
+              h.div
+                .class('grid grid-cols-2 gap-4')
+                .children(
+                  simpleField(
+                    h,
+                    `${id}-city`,
+                    'City',
+                    controlInput(h, `${id}-city-input`, 'New York'),
+                  ) as never,
+                  simpleField(
+                    h,
+                    `${id}-zip`,
+                    'Postal Code',
+                    controlInput(h, `${id}-zip-input`, '90502'),
+                  ) as never,
+                ),
+            ),
         )
     return shell(
       simpleField(
