@@ -1,0 +1,9 @@
+.dropdown-menu-docs-demo {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+}
+.dropdown-menu-docs-status {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
