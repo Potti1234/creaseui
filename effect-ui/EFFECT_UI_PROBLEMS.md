@@ -39,3 +39,7 @@
 ## Date Range Input status affordances are structurally incomplete
 
 `effect-ui/src/ui/date-range-input.ts` now matches the Foldkit field, wrapper, trigger, and preset-panel geometry, but its public `status` API is only arbitrary message content. It does not expose the Foldkit status type or render the semantic status icon inside the input wrapper, and its calendar icon is decorative rather than a second working toggle button. Validation examples therefore match the message colors and layout but not the complete Foldkit DOM/interaction structure.
+
+## Date Time Input is only a loose date-plus-time composition
+
+`effect-ui/src/ui/date-time-input.ts` is a stateless wrapper that places separate `DateInput` and `TimeInput` controls in a two-column row. The Foldkit component is one combined date-time field with a calendar+time popover, adaptive bottom sheet behavior, integrated clear/status affordances, and a single committed value model. The docs port preserves the fixture values and time-option coverage, but the control structure, popover behavior, and validation presentation are substantially different.
