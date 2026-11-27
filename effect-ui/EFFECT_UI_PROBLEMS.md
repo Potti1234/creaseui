@@ -63,3 +63,7 @@ The Foldkit grid documentation uses the `SpatialFocus` and `Lasso` headless beha
 ## Calendar locale support is not a true alternate-calendar implementation
 
 Effect `Calendar` accepts an Intl locale, so `fa-IR-u-ca-persian` localizes labels, but its month grid arithmetic remains Gregorian rather than implementing the Foldkit docs' Jalali conversion helpers. The Effect docs expose the same Persian example surface, but the dates are not a correct Jalali calendar. Cell sizing is also only adjustable through consumer CSS because the styled calendar does not expose Foldkit's cell-size token as a component option.
+
+## Input Group addon composition is presentational only
+
+Effect `InputGroup` exposes addon slots and control parts, but it has no built-in input-group button or menu composition beyond class helpers. The docs reproduce the Dropdown, Button, copy, password-toggle, favorite, and info-popover examples visually with static buttons; those controls do not yet have the Foldkit examples' working menu, popover, copy, favorite, and password state interactions.

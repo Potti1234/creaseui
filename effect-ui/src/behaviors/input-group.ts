@@ -86,10 +86,18 @@ export const InputGroupBehavior = <Msg, R = never>(
     const children = addOns?.[align]
     if (children === undefined) return undefined
     const attrs = { 'data-slot': 'input-group-addon', 'data-align': align }
+    const alignment =
+      align === 'inline-start'
+        ? 'order-first pl-3 has-[>button]:ml-[-0.45rem] has-[>kbd]:ml-[-0.35rem]'
+        : align === 'inline-end'
+          ? 'order-last pr-3 has-[>button]:mr-[-0.45rem] has-[>kbd]:mr-[-0.35rem]'
+          : align === 'block-start'
+            ? 'order-first w-full justify-start px-3 pt-3 group-has-[>input]/input-group:pt-2.5 [.border-b]:pb-3'
+            : 'order-last w-full justify-start px-3 pb-3 group-has-[>input]/input-group:pb-2.5 [.border-t]:pt-3'
     return focusControlId === undefined
-      ? h.div.class(styles.addon).attrs(attrs).children(children)
+      ? h.div.class(styles.addon, alignment).attrs(attrs).children(children)
       : h.label
-          .class(styles.addon)
+          .class(styles.addon, alignment)
           .attrs({ ...attrs, for: focusControlId })
           .children(children)
   }
@@ -105,14 +113,10 @@ export const InputGroupBehavior = <Msg, R = never>(
       'data-invalid': invalid ? '' : undefined,
     })
     .children(
+      control(parts(h, styles)),
       addOn('block-start'),
-      h.div
-        .class(styles.row)
-        .children(
-          addOn('inline-start'),
-          control(parts(h, styles)),
-          addOn('inline-end'),
-        ),
+      addOn('inline-start'),
+      addOn('inline-end'),
       addOn('block-end'),
     )
 }
