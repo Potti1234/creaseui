@@ -2379,3 +2379,79 @@ body:has(.effect-docs) {
   color: var(--muted-foreground);
   font-size: 0.76rem;
 }
+
+.create-page {
+  width: 100%;
+  min-height: calc(100svh - 3.5rem);
+  padding: 0;
+}
+.create-page .create-shell {
+  display: block;
+  width: auto;
+  min-height: calc(100svh - 3.5rem);
+  margin: 0;
+  background: var(--muted);
+}
+.create-page .create-panel {
+  position: fixed;
+  z-index: 30;
+  top: 4.75rem;
+  bottom: 1.25rem;
+  left: 1.25rem;
+  width: 17.625rem;
+  height: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.create-page .create-preview {
+  width: auto;
+  min-width: max-content;
+  height: auto;
+  min-height: calc(100svh - 3.5rem);
+  margin-left: 20.625rem;
+  padding: 2.5rem 2.5rem 2.5rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.create-page .create-toolbar {
+  position: fixed;
+  z-index: 31;
+  top: 4.75rem;
+  right: 1.25rem;
+  left: auto;
+  transform: none;
+}
+.dark .create-page .create-shell {
+  background: var(--background);
+}
+
+.create-page .create-preview {
+  gap: 2.5rem;
+  padding-left: 2.5rem;
+}
+.create-page .create-column {
+  flex-basis: 23.9375rem;
+  gap: 2.5rem;
+}
+.create-page .create-column.wide {
+  flex-basis: 50.375rem;
+}
+.create-page .create-card.contribution {
+  min-height: 524px;
+}
+.create-page .create-card.distribute {
+  min-height: 382px;
+}
+.create-page .create-card.payout {
+  min-height: 520px;
+}
+.create-page .create-card.balance {
+  min-height: 397px;
+}
+.create-page .create-nested-grid {
+  min-height: 1368px;
+  align-content: stretch;
+}
+.create-page .create-nested-column {
+  min-height: 1368px;
+}

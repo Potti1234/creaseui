@@ -365,10 +365,12 @@ const createPlaceholder = (
   title: string,
   tone: 'compact' | 'regular' | 'large' = 'regular',
   lines = 3,
+  height?: number,
 ) =>
   h.section
     .key(title)
     .class(`create-card create-placeholder ${tone}`)
+    .style(height === undefined ? {} : { height: `${String(height)}px` })
     .children(
       h.div
         .class('create-placeholder-head')
@@ -579,10 +581,10 @@ const createGuide: DocsGuide = {
               ),
               h.button.attrs({ type: 'button' }).children('Upload'),
             ),
-          createPlaceholder(h, 'QR Connect', 'regular', 3),
-          createPlaceholder(h, 'Dividend Income', 'regular', 4),
-          createPlaceholder(h, 'Index Investing', 'regular', 4),
-          createPlaceholder(h, 'Syncing State', 'compact', 2),
+          createPlaceholder(h, 'QR Connect', 'regular', 5, 440),
+          createPlaceholder(h, 'Dividend Income', 'regular', 5, 459),
+          createPlaceholder(h, 'Dollar-Cost Averaging', 'regular', 4, 271),
+          createPlaceholder(h, 'Syncing your accounts', 'regular', 4, 344),
         ),
         createColumn(
           h,
@@ -636,51 +638,60 @@ const createGuide: DocsGuide = {
                   h.span.children('-$0.00'),
                 ),
             ),
-          createPlaceholder(h, 'Preferences', 'regular', 4),
-          createPlaceholder(h, 'Savings Progress', 'regular', 3),
-          createPlaceholder(h, 'Kitchen Island', 'regular', 5),
+          createPlaceholder(h, 'Preferences', 'regular', 5, 445),
+          createPlaceholder(h, 'Savings Progress', 'regular', 5, 448),
+          createPlaceholder(h, 'Kitchen Island', 'regular', 5, 369),
         ),
         h.div
           .key('planning')
           .class('create-column wide')
           .children(
-            createPlaceholder(h, 'Savings Targets', 'large', 5),
-            createPlaceholder(h, 'Recent Transactions', 'large', 6),
+            createPlaceholder(h, 'Savings Targets', 'large', 5, 462),
+            createPlaceholder(h, 'Recent Transactions', 'large', 6, 406),
             h.div
               .class('create-nested-grid')
               .children(
                 h.div
                   .class('create-nested-column')
                   .children(
-                    createPlaceholder(h, 'Sidebar Nav', 'regular', 5),
-                    createPlaceholder(h, 'FAQ', 'regular', 4),
+                    createPlaceholder(h, 'Sidebar Nav', 'regular', 5, 640),
+                    createPlaceholder(h, 'FAQ', 'regular', 4, 640),
                   ),
                 h.div
                   .class('create-nested-column')
                   .children(
-                    createPlaceholder(h, 'Payments', 'regular', 4),
-                    createPlaceholder(h, 'Front Door', 'regular', 3),
+                    createPlaceholder(h, 'Payments', 'regular', 4, 640),
+                    createPlaceholder(h, 'Front Door', 'regular', 3, 640),
                   ),
               ),
-            createPlaceholder(h, 'Release Catalog', 'large', 4),
+            createPlaceholder(h, 'Stocks', 'large', 5, 374),
           ),
         createColumn(
           h,
           'account',
-          createPlaceholder(h, 'Account Access', 'regular', 4),
-          createPlaceholder(h, 'Card Overview', 'regular', 5),
-          createPlaceholder(h, 'Transfer Funds', 'regular', 5),
-          createPlaceholder(h, 'Cover Art', 'compact', 3),
-          createPlaceholder(h, 'Loading Card', 'compact', 3),
+          createPlaceholder(h, 'Account Access', 'regular', 5, 415),
+          createPlaceholder(h, 'Card Balance', 'regular', 4, 336),
+          createPlaceholder(h, 'Transfer Funds', 'regular', 6, 579),
+          createPlaceholder(h, 'Cover Art', 'regular', 5, 503),
+          createPlaceholder(h, 'Loading Card', 'regular', 4, 374),
         ),
         createColumn(
           h,
           'utilities',
-          createPlaceholder(h, 'Receiving Method', 'regular', 4),
-          createPlaceholder(h, 'Power Usage', 'regular', 4),
-          createPlaceholder(h, 'Connect Bank', 'regular', 3),
-          createPlaceholder(h, 'Upcoming Payments', 'regular', 4),
-          createPlaceholder(h, 'Roller Shades', 'regular', 5),
+          createPlaceholder(h, 'Payout Preferences', 'regular', 5, 429),
+          createPlaceholder(h, 'Power Usage', 'regular', 5, 433),
+          createPlaceholder(h, 'Connect Bank', 'regular', 4, 382),
+          createPlaceholder(h, 'Upcoming Payments', 'regular', 6, 735),
+          createPlaceholder(h, 'Roller Shades', 'regular', 4, 362),
+        ),
+        createColumn(
+          h,
+          'stocks',
+          createPlaceholder(h, 'Stock Performance', 'regular', 5, 414),
+          createPlaceholder(h, 'Explore Catalog', 'regular', 4, 382),
+          createPlaceholder(h, 'Set a new milestone', 'regular', 4, 393),
+          createPlaceholder(h, 'Social Links', 'regular', 5, 455),
+          createPlaceholder(h, 'Notifications', 'regular', 5, 446),
         ),
       ),
     ),

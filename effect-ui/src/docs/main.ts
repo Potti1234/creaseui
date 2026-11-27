@@ -1053,7 +1053,7 @@ const Docs = Html.component({
                 guidePath.startsWith('/charts') ||
                 guidePath.startsWith('/blocks'))
             ? h.main
-                .class('site-page')
+                .class(guidePath === '/create' ? 'create-page' : 'site-page')
                 .attrs({ id: 'docs-main', tabindex: '-1' })
                 .children(guide.view(h, { blockCategory }))
             : h.div.class('docs-layout').children(
