@@ -3,6 +3,7 @@ import { Html } from '@effect/ui/html'
 import { Schema } from 'effect'
 
 import { Button, Calendar, Input, RangeCalendar } from '#components'
+import { calendarClasses } from '../../ui/calendar'
 import {
   defineComponentDocs,
   type DocsExampleImplementation,
@@ -52,38 +53,47 @@ const CalendarDemo = Html.component({
   view: (h, model) => {
     const kind = h.props.kind
     const single = (className?: string) =>
-      Calendar(h, {
-        key: `single-${kind}`,
-        props: {
-          today,
-          value: model.date,
-          locale:
-            kind === 'rtl'
-              ? 'de-DE'
-              : kind === 'jalali'
-                ? 'fa-IR-u-ca-persian'
-                : 'en-US',
-          ...(kind === 'booked'
-            ? {
-                disabledDates: [
-                  '2026-07-03',
-                  '2026-07-12',
-                  '2026-07-13',
-                  '2026-07-14',
-                  '2026-07-15',
-                ],
-              }
-            : {}),
+      Calendar(
+        h,
+        {
+          key: `single-${kind}`,
+          props: {
+            today,
+            value: model.date,
+            locale:
+              kind === 'rtl'
+                ? 'de-DE'
+                : kind === 'jalali'
+                  ? 'fa-IR-u-ca-persian'
+                  : 'en-US',
+            ...(kind === 'booked'
+              ? {
+                  disabledDates: [
+                    '2026-07-03',
+                    '2026-07-12',
+                    '2026-07-13',
+                    '2026-07-14',
+                    '2026-07-15',
+                  ],
+                }
+              : {}),
+          },
+          ...(className === undefined ? {} : { className }),
+          captionLayout: kind === 'selector' ? 'dropdown' : undefined,
+          weekNumbers: kind === 'weeks',
+          direction: kind === 'rtl' ? 'rtl' : undefined,
+          onEmit: {
+            Picked: ({ date }) =>
+              Message.PickedDate({ value: String(date).slice(0, 10) }),
+          },
         },
-        ...(className === undefined ? {} : { className }),
-        captionLayout: kind === 'selector' ? 'dropdown' : undefined,
-        weekNumbers: kind === 'weeks',
-        direction: kind === 'rtl' ? 'rtl' : undefined,
-        onEmit: {
-          Picked: ({ date }) =>
-            Message.PickedDate({ value: String(date).slice(0, 10) }),
-        },
-      })
+        kind === 'presets' || kind === 'time'
+          ? {
+              ...calendarClasses,
+              root: calendarClasses.root.replace('p-3', 'p-0'),
+            }
+          : undefined,
+      )
     switch (kind) {
       case 'range':
         return RangeCalendar(h, {
@@ -101,10 +111,17 @@ const CalendarDemo = Html.component({
         })
       case 'presets':
         return h.div
-          .class('w-fit overflow-hidden rounded-lg border bg-background')
+          .class(
+            kind === 'presets' || kind === 'time'
+              ? 'flex w-fit flex-col gap-4 overflow-hidden rounded-xl border bg-card py-4 shadow-sm'
+              : 'w-fit overflow-hidden rounded-lg border bg-background',
+          )
+          .style(kind === 'presets' ? { width: '300px' } : {})
           .children(
-            single('border-0'),
-            h.div.class('flex flex-wrap gap-2 border-t p-4').children(
+            single(
+              kind === 'presets' ? 'border-0 calendar-presets' : 'border-0',
+            ),
+            h.div.class('flex flex-wrap gap-2 border-t px-4 pt-4').children(
               [
                 ['Today', 0],
                 ['Tomorrow', 1],
@@ -112,7 +129,11 @@ const CalendarDemo = Html.component({
                 ['In a week', 7],
                 ['In 2 weeks', 14],
               ].map(([label, days]) =>
-                Button(h, { variant: 'outline', size: 'sm' })
+                Button(h, {
+                  variant: 'outline',
+                  size: 'sm',
+                  className: 'flex-1',
+                })
                   .on('click', () =>
                     Message.PickedPreset({ days: days as number }),
                   )
@@ -122,10 +143,12 @@ const CalendarDemo = Html.component({
           )
       case 'time':
         return h.div
-          .class('w-fit overflow-hidden rounded-lg border bg-background')
+          .class(
+            'flex w-fit flex-col gap-4 overflow-hidden rounded-xl border bg-card py-4 shadow-sm',
+          )
           .children(
-            single('border-0'),
-            h.div.class('flex flex-col gap-4 border-t p-4').children(
+            h.div.class('px-4').children(single('border-0')),
+            h.div.class('flex flex-col gap-7 border-t px-4 pt-4').children(
               ['Start Time', 'End Time'].map((label, index) =>
                 h.label.class('grid gap-2 text-sm font-medium').children(
                   label,

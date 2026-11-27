@@ -2112,3 +2112,17 @@ body:has(.effect-docs) {
   margin: 0.3rem 0 0;
   color: var(--muted-foreground);
 }
+
+.calendar-presets thead th,
+.calendar-presets thead button,
+.calendar-presets tbody td button {
+  width: 2.375rem;
+  height: 2.375rem;
+}
+.calendar-presets thead th {
+  padding: 0;
+}
+.calendar-presets > div:first-child,
+.calendar-presets > div:first-child button {
+  min-height: 2.375rem;
+}

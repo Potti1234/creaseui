@@ -295,21 +295,6 @@ export const calendarView = <Msg>(
         )
         .children(later),
     ),
-    captionLayout === 'dropdown'
-      ? calendar.monthPicker(
-          h.input
-            .class(styles.monthPicker)
-            .attrs({
-              type: 'month',
-              'aria-label': 'Choose month and year',
-              'data-slot': 'calendar-month-picker',
-              min: min?.slice(0, 7),
-              max: max?.slice(0, 7),
-              disabled: disabled ? '' : undefined,
-            })
-            .value(DateTime.formatIsoDateUtc(calendar.month).slice(0, 7)),
-        )
-      : undefined,
     calendar.grid(h.table.class(styles.table)).children(
       h.thead.children(
         h.tr.children(
