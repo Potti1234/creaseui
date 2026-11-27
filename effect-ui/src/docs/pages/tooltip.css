@@ -1,0 +1,14 @@
+.tooltip-docs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.tooltip-docs-rtl {
+  direction: rtl;
+}
+.tooltip-docs-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
