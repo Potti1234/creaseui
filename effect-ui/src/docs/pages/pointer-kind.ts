@@ -11,9 +11,11 @@ const view =
   (serverHint: boolean): DocsExampleImplementation['view'] =>
   (h: Html.H<DocsMessage>) =>
     h.div
-      .class('w-full max-w-sm rounded-lg border bg-card p-4')
+      .class('grid w-full max-w-sm gap-4')
       .children(
-        h.p.class('mb-4 font-medium').children('Your pointer capabilities'),
+        h.p
+          .class('m-0 text-sm font-medium')
+          .children('Your pointer capabilities'),
         h.div
           .class('grid gap-2')
           .children(
@@ -29,16 +31,16 @@ const view =
                 .children(
                   h.span.class('text-sm text-muted-foreground').children(label),
                   h.code
-                    .class('rounded bg-muted px-1.5 py-0.5 text-xs')
+                    .class('rounded-md bg-muted px-2 py-1 font-mono text-xs')
                     .children(value),
                 ),
             ),
           ),
         h.p
-          .class('mt-4 rounded-md bg-muted px-3 py-2 text-sm font-medium')
+          .class('m-0 border-t pt-4 text-sm font-medium')
           .children(serverHint ? 'Tap to open' : 'Hover to open'),
         h.p
-          .class('mt-3 text-xs text-muted-foreground')
+          .class('m-0 text-xs text-muted-foreground')
           .children(
             serverHint
               ? 'Seeded with Sec-CH-UA-Mobile: ?1, then reconciled with this device.'
