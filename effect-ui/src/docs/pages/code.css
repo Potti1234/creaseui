@@ -1,0 +1,9 @@
+.code-docs-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.code-docs-item {
+  display: flex;
+  flex-direction: column;
+}
