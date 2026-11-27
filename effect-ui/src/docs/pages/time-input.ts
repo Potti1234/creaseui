@@ -204,6 +204,45 @@ const view =
       key: `${context.idPrefix}-${kind}`,
       props: { kind, idPrefix: context.idPrefix },
     })
+const wheelsView: DocsExampleImplementation['view'] = h =>
+  h.div
+    .class(
+      'flex overflow-hidden rounded-md border bg-background text-sm shadow-xs',
+    )
+    .children(
+      ...['Hour', 'Minute', 'Period'].map((label, column) =>
+        h.div
+          .key(label)
+          .class(
+            'flex h-48 w-20 flex-col overflow-y-auto border-r last:border-r-0',
+          )
+          .children(
+            h.div
+              .class(
+                'sticky top-0 bg-muted px-2 py-1 text-center text-xs text-muted-foreground',
+              )
+              .children(label),
+            ...Array.from({ length: column === 2 ? 2 : 24 }, (_, index) => {
+              const value =
+                column === 2
+                  ? index === 0
+                    ? 'AM'
+                    : 'PM'
+                  : String(index).padStart(2, '0')
+              return h.div
+                .key(value)
+                .class(
+                  'px-2 py-1.5 text-center',
+                  index === 10
+                    ? 'bg-accent font-medium text-accent-foreground'
+                    : 'text-muted-foreground',
+                )
+                .children(value)
+            }),
+          ),
+      ),
+    ) as never
+
 const source = exampleApplicationSource({
   imports: `import { TimeInput } from '@/ui/effect/ui'`,
   body: `TimeInput(h, {
@@ -223,5 +262,6 @@ export const componentDocs = defineComponentDocs({
     { title: 'TimeInput — Increment', view: view('increment'), source },
     { title: 'TimeInput — States', view: view('states'), source },
     { title: 'Hour and Minute Picker', view: view('picker'), source },
+    { title: 'Time wheels', view: wheelsView, source },
   ],
 })
