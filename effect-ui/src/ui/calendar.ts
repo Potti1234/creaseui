@@ -22,17 +22,17 @@ type VisualOptions = {
 }
 
 export const calendarClasses = {
-  root: 'w-fit rounded-lg border bg-background p-3 text-foreground',
+  root: 'w-fit bg-background p-3 text-foreground',
   header: 'mb-2 flex items-center justify-between gap-2',
   navigation:
-    'grid size-9 place-items-center rounded-md border border-input bg-background text-sm hover:bg-muted focus-visible:outline-2 disabled:opacity-50',
+    'grid size-8 place-items-center rounded-md border-0 bg-transparent text-sm hover:bg-accent focus-visible:outline-2 disabled:opacity-50',
   month: 'text-sm font-medium',
   monthPicker:
     'mt-1 mb-2 rounded-md border border-input bg-background px-2 py-1 text-sm',
   table: 'border-collapse',
-  weekday: 'h-8 px-1 text-xs font-normal text-muted-foreground',
-  cell: 'p-0 text-center',
-  day: 'size-9 rounded-md text-sm tabular-nums hover:bg-muted focus-visible:outline-2 data-outside-month:text-muted-foreground data-disabled:opacity-50 data-unavailable:opacity-50 data-selected:bg-primary data-selected:text-primary-foreground data-selected:hover:bg-primary/80 data-in-range:not-data-range-start:not-data-range-end:rounded-none data-in-range:not-data-range-start:not-data-range-end:bg-accent data-in-range:not-data-range-start:not-data-range-end:text-accent-foreground data-range-start:bg-primary data-range-start:text-primary-foreground data-range-end:bg-primary data-range-end:text-primary-foreground',
+  weekday: 'h-8 w-8 px-0 text-[0.8rem] font-normal text-muted-foreground',
+  cell: 'p-0 pb-2 text-center',
+  day: 'size-8 rounded-md data-today:bg-accent data-today:text-accent-foreground text-sm tabular-nums hover:bg-muted focus-visible:outline-2 data-outside-month:text-muted-foreground data-disabled:opacity-50 data-unavailable:opacity-50 data-selected:bg-primary data-selected:text-primary-foreground data-selected:hover:bg-primary/80 data-in-range:not-data-range-start:not-data-range-end:rounded-none data-in-range:not-data-range-start:not-data-range-end:bg-accent data-in-range:not-data-range-start:not-data-range-end:text-accent-foreground data-range-start:bg-primary data-range-start:text-primary-foreground data-range-end:bg-primary data-range-end:text-primary-foreground',
 }
 
 const visualWeek = (dates: readonly DateTime.Utc[]) => {
@@ -330,7 +330,22 @@ export const calendarView = <Msg>(
         ),
       ),
       h.tbody.children(
-        calendar.weeks.map(week =>
+        (() => {
+          const weeks = [...calendar.weeks]
+          while (weeks.length < 6) {
+            const last = weeks.at(-1)?.at(-1)
+            if (last === undefined) break
+            const time = DateTime.toDateUtc(last).getTime()
+            weeks.push(
+              Array.from({ length: 7 }, (_, index) =>
+                DateTime.makeUnsafe(
+                  new Date(time + (index + 1) * 86_400_000).toISOString(),
+                ),
+              ),
+            )
+          }
+          return weeks
+        })().map(week =>
           h.tr.key(String(week[0]?.epochMilliseconds)).children(
             weekNumbers
               ? h.th

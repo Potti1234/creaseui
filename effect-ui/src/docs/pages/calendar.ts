@@ -10,8 +10,8 @@ import {
 } from '../types'
 import { exampleApplicationSource } from './source'
 
-const today = '2026-07-08'
-const initialRange = { start: '2026-07-09', end: '2026-07-17' }
+const today = '2026-07-28'
+const initialRange = { start: '2026-07-14', end: '2026-07-20' }
 const Message = UiSchema.TaggedEnum({
   PickedDate: { value: Schema.NullOr(Schema.String) },
   PickedRange: {
@@ -43,7 +43,7 @@ const CalendarDemo = Html.component({
   }),
   message: Message,
 }).make({
-  init: () => ({ date: '2026-07-08', range: initialRange }),
+  init: () => ({ date: '2026-07-18', range: initialRange }),
   update: {
     PickedDate: ($, { value }) => $.evolve({ date: value }),
     PickedRange: ($, { value }) => $.evolve({ range: value }),
