@@ -40,7 +40,43 @@ const view =
   (kind: string): DocsExampleImplementation['view'] =>
   (h: Html.H<DocsMessage>, context) => {
     const id = context.idPrefix
-    if (kind === 'payment') {
+    if (kind === 'payment' || kind === 'rtl') {
+      const rtl = kind === 'rtl'
+      const copy = rtl
+        ? {
+            paymentMethod: 'طريقة الدفع',
+            secureTransactions: 'جميع المعاملات آمنة ومشفرة',
+            nameOnCard: 'الاسم على البطاقة',
+            cardNumber: 'رقم البطاقة',
+            cardNumberDescription: 'أدخل رقم البطاقة المكون من 16 رقمًا',
+            month: 'الشهر',
+            year: 'السنة',
+            billingAddress: 'عنوان الفوترة',
+            billingAddressDescription:
+              'عنوان الفوترة المرتبط بطريقة الدفع الخاصة بك',
+            sameAsShipping: 'نفس عنوان الشحن',
+            comments: 'تعليقات',
+            commentsPlaceholder: 'أضف أي تعليقات إضافية',
+            submit: 'إرسال',
+            cancel: 'إلغاء',
+          }
+        : {
+            paymentMethod: 'Payment Method',
+            secureTransactions: 'All transactions are secure and encrypted',
+            nameOnCard: 'Name on Card',
+            cardNumber: 'Card Number',
+            cardNumberDescription: 'Enter your 16-digit card number',
+            month: 'Month',
+            year: 'Year',
+            billingAddress: 'Billing Address',
+            billingAddressDescription:
+              'The billing address associated with your payment method',
+            sameAsShipping: 'Same as shipping address',
+            comments: 'Comments',
+            commentsPlaceholder: 'Add any additional comments',
+            submit: 'Submit',
+            cancel: 'Cancel',
+          }
       const fieldLabel = 'text-sm leading-snug font-medium'
       const input =
         'h-8 w-full min-w-0 rounded-md border border-input bg-background px-2.5 py-1 text-sm shadow-xs outline-none placeholder:text-muted-foreground'
@@ -64,6 +100,7 @@ const view =
             h.select.class(input).children(h.option.children(placeholder)),
           )
       return h.div
+        .attrs(rtl ? { dir: 'rtl' } : {})
         .class('flex w-full max-w-md flex-col gap-7')
         .children(
           h.fieldset
@@ -71,29 +108,29 @@ const view =
             .children(
               h.legend
                 .class('mb-0 text-base font-medium')
-                .children('Payment Method'),
+                .children(copy.paymentMethod),
               h.p
                 .class('m-0 -mt-4 text-sm text-muted-foreground')
-                .children('All transactions are secure and encrypted'),
+                .children(copy.secureTransactions),
               h.div
                 .class('mt-6 flex w-full flex-col gap-7')
                 .children(
                   field(
-                    'Name on Card',
+                    copy.nameOnCard,
                     h.input.class(input).attrs({ placeholder: 'Evil Rabbit' }),
                   ) as never,
                   field(
-                    'Card Number',
+                    copy.cardNumber,
                     h.input
                       .class(input)
                       .attrs({ placeholder: '1234 5678 9012 3456' }),
-                    'Enter your 16-digit card number',
+                    copy.cardNumberDescription,
                   ) as never,
                   h.div
                     .class('grid grid-cols-3 gap-4')
                     .children(
-                      select('Month', 'MM') as never,
-                      select('Year', 'YYYY') as never,
+                      select(copy.month, 'MM') as never,
+                      select(copy.year, 'YYYY') as never,
                       field(
                         'CVV',
                         h.input.class(input).attrs({ placeholder: '123' }),
@@ -107,34 +144,32 @@ const view =
             .children(
               h.legend
                 .class('mb-0 text-base font-medium')
-                .children('Billing Address'),
+                .children(copy.billingAddress),
               h.p
                 .class('m-0 -mt-4 text-sm text-muted-foreground')
-                .children(
-                  'The billing address associated with your payment method',
-                ),
+                .children(copy.billingAddressDescription),
               h.label
                 .class('flex items-center gap-2 text-sm font-medium')
                 .children(
                   h.input
                     .class('size-4 accent-primary')
                     .attrs({ type: 'checkbox', checked: '' }),
-                  'Same as shipping address',
+                  copy.sameAsShipping,
                 ),
             ),
           h.div
             .class('mt-5 flex w-full flex-col gap-2')
             .children(
-              h.label.class(fieldLabel).children('Comments'),
+              h.label.class(fieldLabel).children(copy.comments),
               h.textarea
                 .class(input + ' min-h-16 resize-none')
-                .attrs({ placeholder: 'Add any additional comments' }),
+                .attrs({ placeholder: copy.commentsPlaceholder }),
             ),
           h.div
             .class('flex items-center gap-2')
             .children(
-              Button(h, {}).children('Submit') as never,
-              Button(h, { variant: 'outline' }).children('Cancel') as never,
+              Button(h, {}).children(copy.submit) as never,
+              Button(h, { variant: 'outline' }).children(copy.cancel) as never,
             ),
         )
     }
@@ -258,19 +293,6 @@ const view =
             `${id}-last`,
             'Last name',
             controlInput(h, `${id}-last-input`, 'Lee'),
-          ) as never,
-        )
-    if (kind === 'rtl')
-      return h.div
-        .attrs({ dir: 'rtl' })
-        .class('w-full max-w-sm')
-        .children(
-          simpleField(
-            h,
-            `${id}-arabic`,
-            'البريد الإلكتروني',
-            controlInput(h, `${id}-arabic-input`, 'name@example.com', 'email'),
-            'سنرسل التحديثات إلى هذا العنوان.',
           ) as never,
         )
     if (kind === 'responsive')
