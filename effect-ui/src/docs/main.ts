@@ -221,10 +221,7 @@ const docsHeader = (h: DocHtml, dark: boolean) =>
             type: 'button',
             'aria-label': 'Search documentation',
           })
-          .on('click', () => {
-            document.querySelector<HTMLInputElement>('.docs-filter')?.focus()
-            return undefined
-          })
+          .on('click', () => DocsMessage.OpenedSearch())
           .children(
             h.span.children('⌕'),
             h.span.class('docs-search-label').children('Search docs…'),
@@ -770,6 +767,96 @@ const notFound = (h: DocHtml) =>
     h.p.children(h.a.attr('href', catalogPath).children('Browse components')),
   )
 
+const searchDialog = (
+  h: DocHtml,
+  query: string,
+  groups: ReturnType<typeof groupedEntries>,
+) => {
+  const term = query.trim().toLowerCase()
+  const behaviorResults = behaviors.filter(
+    entry =>
+      entry.kind === 'primitive' &&
+      (term === '' ||
+        entry.title.toLowerCase().includes(term) ||
+        entry.description.toLowerCase().includes(term)),
+  )
+  const guideResults = guideLinks.filter(
+    entry => term === '' || entry.label.toLowerCase().includes(term),
+  )
+  return h.div.class('docs-search-backdrop').children(
+    h.div
+      .class('docs-search-dialog')
+      .attrs({
+        role: 'dialog',
+        'aria-modal': 'true',
+        'aria-label': 'Search documentation',
+      })
+      .children(
+        h.div.class('docs-search-bar').children(
+          h.input
+            .class('docs-search-input')
+            .attrs({
+              type: 'search',
+              placeholder: 'Search documentation…',
+              'aria-label': 'Search documentation',
+            })
+            .value(query)
+            .on('input', ({ value }) => DocsMessage.Filtered({ query: value })),
+          h.button
+            .class('docs-search-close')
+            .attrs({ type: 'button', 'aria-label': 'Close search' })
+            .on('click', DocsMessage.ClosedSearch())
+            .children('×'),
+        ),
+        h.div.class('docs-search-results').children(
+          guideResults.length === 0
+            ? undefined
+            : h.div.class('docs-search-group').children(
+                h.h2.children('Guides'),
+                guideResults.map(entry =>
+                  h.a
+                    .key(entry.href)
+                    .attr('href', entry.href)
+                    .children(entry.label),
+                ),
+              ),
+          groups.map(group =>
+            h.div
+              .key(group.label)
+              .class('docs-search-group')
+              .children(
+                h.h2.children(group.label),
+                group.entries.map(entry =>
+                  h.a
+                    .key(entry.slug)
+                    .attr('href', componentPath(entry.slug))
+                    .children(entry.title),
+                ),
+              ),
+          ),
+          behaviorResults.length === 0
+            ? undefined
+            : h.div.class('docs-search-group').children(
+                h.h2.children('Behaviors'),
+                behaviorResults.map(entry =>
+                  h.a
+                    .key(entry.slug)
+                    .attr('href', entry.docs)
+                    .children(entry.title),
+                ),
+              ),
+          groups.length === 0 &&
+            behaviorResults.length === 0 &&
+            guideResults.length === 0
+            ? h.p
+                .class('docs-muted')
+                .children('No documentation matches your search.')
+            : undefined,
+        ),
+      ),
+  )
+}
+
 const initialDark = (() => {
   try {
     const stored = window.localStorage.getItem('creaseui-effect-docs-theme')
@@ -783,15 +870,21 @@ const initialDark = (() => {
 
 const Docs = Html.component({
   name: 'CreaseEffectDocs',
-  model: Schema.Struct({ query: Schema.String, dark: Schema.Boolean }),
+  model: Schema.Struct({
+    query: Schema.String,
+    dark: Schema.Boolean,
+    searchOpen: Schema.Boolean,
+  }),
   message: DocsMessage,
 }).make({
-  init: () => ({ query: '', dark: initialDark }),
+  init: () => ({ query: '', dark: initialDark, searchOpen: false }),
   update: {
     Filtered: ($, { query }) => $.evolve({ query }),
     ToggledTheme: $ => $.evolve({ dark: value => !value }),
+    OpenedSearch: $ => $.evolve({ searchOpen: true }),
+    ClosedSearch: $ => $.evolve({ searchOpen: false }),
   },
-  view: (h, { query, dark }) => {
+  view: (h, { query, dark, searchOpen }) => {
     const groups = groupedEntries(query)
     return h.div
       .class('effect-docs', dark ? 'dark' : 'light')
@@ -801,6 +894,7 @@ const Docs = Html.component({
           .attr('href', '#docs-main')
           .children('Skip to content'),
         docsHeader(h, dark),
+        searchOpen ? searchDialog(h, query, groups) : undefined,
         h.div
           .class('docs-frame', 'docs-layout')
           .children(

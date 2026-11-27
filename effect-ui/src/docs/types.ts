@@ -6,6 +6,8 @@ import { Schema } from 'effect'
 export const DocsMessage = UiSchema.TaggedEnum({
   Filtered: { query: Schema.String },
   ToggledTheme: {},
+  OpenedSearch: {},
+  ClosedSearch: {},
 })
 export type DocsMessage = typeof DocsMessage.Type
 
