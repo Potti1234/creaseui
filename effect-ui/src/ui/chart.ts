@@ -419,7 +419,10 @@ export const AreaChart = <Msg>(
         ariaLabel,
         Html.classNames(styles.chart, className),
       )
-        .attrs(height === undefined ? {} : { style: `height:${height}` })
+        .attrs({
+          ...(height === undefined ? {} : { style: `height:${height}` }),
+          preserveAspectRatio: 'none',
+        })
         .children(
           h.el('defs').children(gradient(h, gradientId, color, '0.16')),
           [14, 25, 36].map(y => baseline(h, 0, 100, y)),
