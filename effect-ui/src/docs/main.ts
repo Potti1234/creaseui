@@ -2,7 +2,7 @@ import type { Html as HtmlTypes } from '@effect/ui/html'
 import { BrowserHost, Html, HtmlSubscription } from '@effect/ui/html'
 import { Effect, Layer, Schema } from 'effect'
 
-import { CodeBlock } from '#components'
+import { CodeBlock, Icon } from '#components'
 import {
   behaviors,
   componentBehaviors,
@@ -34,6 +34,13 @@ const route = docsRoute(location.pathname)
 const guidePath = location.pathname.replace(/\/+$/, '')
 const guide = guides[guidePath]
 const renderer = docsRenderer(import.meta.env.MODE)
+const rendererIndex = rendererChoices.findIndex(
+  choice => choice.value === renderer,
+)
+const otherRenderer =
+  rendererChoices[(rendererIndex + 1) % rendererChoices.length] ??
+  rendererChoices[0]
+const otherRendererPath = rendererPath(location, renderer, otherRenderer.value)
 if (
   route.tag === 'component' &&
   location.pathname !== componentPath(route.slug)
@@ -227,9 +234,19 @@ const docsHeader = (
           })
           .on('click', () => DocsMessage.OpenedSearch())
           .children(
-            h.span.children('⌕'),
+            Icon(h, { name: 'search', size: 'sm' }),
             h.span.class('docs-search-label').children('Search docs…'),
             h.kbd.children('Ctrl/⌘ K'),
+          ),
+        h.a
+          .class('docs-renderer-link')
+          .attrs({
+            href: otherRendererPath ?? location.href,
+            'aria-label': `View this page in ${otherRenderer.label}`,
+          })
+          .children(
+            h.span.class('docs-renderer-label').children(otherRenderer.label),
+            Icon(h, { name: 'arrow-up-right', size: 'sm' }),
           ),
         h.a
           .class('docs-github-link')
@@ -238,24 +255,9 @@ const docsHeader = (
             target: '_blank',
             rel: 'noreferrer',
             'aria-label': 'GitHub repository',
+            title: 'GitHub repository',
           })
-          .children('GitHub'),
-        h.nav
-          .class('docs-renderers')
-          .attr('aria-label', 'Renderer')
-          .children(
-            rendererChoices.map(({ value, label }) => {
-              const href = rendererPath(location, renderer, value)
-              return href === undefined
-                ? h.span.children(label)
-                : h.a
-                    .attrs({
-                      href,
-                      'aria-current': value === renderer ? 'true' : undefined,
-                    })
-                    .children(label)
-            }),
-          ),
+          .children(Icon(h, { name: 'github', size: 'sm' })),
         h.button
           .class('docs-theme-toggle')
           .attrs({
@@ -272,11 +274,13 @@ const docsHeader = (
             )
             return DocsMessage.ToggledTheme()
           })
-          .children(dark ? '☀' : '☾'),
+          .children(Icon(h, { name: dark ? 'sun' : 'moon', size: 'sm' })),
         h.details
           .class('docs-mobile-nav')
           .children(
-            h.summary.attr('aria-label', 'Browse docs').children('☰'),
+            h.summary
+              .attr('aria-label', 'Browse docs')
+              .children(Icon(h, { name: 'menu', size: 'sm' })),
             sidebar(h, query, groups),
           ),
       ),
