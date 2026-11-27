@@ -495,7 +495,9 @@ const component = (h: DocHtml, slug: string, title: string) => {
         ),
       h.header.class('docs-page-header').children(
         h.h1.children(title),
-        h.p.class('docs-description').children(metadata.description),
+        h.p
+          .class('docs-description')
+          .children(effectText(metadata.description)),
         h.div.class('docs-page-meta').children(
           h.span
             .class('docs-kind-badge')
@@ -627,7 +629,7 @@ const component = (h: DocHtml, slug: string, title: string) => {
               ? undefined
               : h.p
                   .class('docs-example-description')
-                  .children(meta.description),
+                  .children(effectText(meta.description)),
             implementation === undefined
               ? h.div
                   .class('docs-pending')

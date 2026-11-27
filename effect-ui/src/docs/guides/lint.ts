@@ -86,9 +86,25 @@ const detail = (ruleId: string): DocsGuide | undefined => {
             item.title,
             h.p.class('docs-muted').children(item.description),
             h.h3.children('Bad'),
-            code(h, `${item.id}-bad`, item.bad.trimStart()) as never,
+            code(
+              h,
+              `${item.id}-bad`,
+              item.bad
+                .trimStart()
+                .replaceAll('foldkit/html', '@effect/ui/html')
+                .replaceAll('Foldkit', 'Effect UI')
+                .replaceAll('foldkit', 'effect-ui'),
+            ) as never,
             h.h3.children('Good'),
-            code(h, `${item.id}-good`, item.good.trimStart()) as never,
+            code(
+              h,
+              `${item.id}-good`,
+              item.good
+                .trimStart()
+                .replaceAll('foldkit/html', '@effect/ui/html')
+                .replaceAll('Foldkit', 'Effect UI')
+                .replaceAll('foldkit', 'effect-ui'),
+            ) as never,
             h.p.children(
               'Expected diagnostic target: ',
               h.code.children(item.expect),
