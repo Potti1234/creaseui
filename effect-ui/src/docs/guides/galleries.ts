@@ -364,47 +364,76 @@ const blocksGuide: DocsGuide = {
   title: 'Blocks',
   description: 'Building Blocks for Effect UI',
   view: h =>
-    h.div.children(
-      h.div.class('grid gap-4 md:grid-cols-2 xl:grid-cols-3').children(
+    h.div.class('blocks-gallery').children(
+      h.header
+        .class('blocks-header')
+        .children(
+          h.h1.children('Building Blocks for Effect UI'),
+          h.p.children(
+            'Complete sidebars, dashboards and login layouts. Explore the same blocks across renderers, with live previews you can open full screen.',
+          ),
+        ),
+      h.div
+        .class('blocks-toolbar')
+        .children(
+          h.nav
+            .attr('aria-label', 'Block categories')
+            .children(
+              h.a.attr('aria-current', 'page').children('All blocks'),
+              h.a.children('Dashboards'),
+              h.a.children('Sidebars'),
+              h.a.children('Authentication'),
+              h.a.children('Tables'),
+            ),
+          h.a.class('blocks-playground').children('Table playground ↗'),
+        ),
+      h.p
+        .class('blocks-count')
+        .children(`${String(blocks.length)} blocks · Tailwind`),
+      h.div.class('blocks-list').children(
         blocks.map(([name, description]) =>
           h.article
             .key(name)
-            .class('overflow-hidden rounded-xl border bg-card shadow-xs')
+            .class('block-row')
             .children(
-              h.div
-                .class(
-                  'flex h-32 items-center justify-center border-b bg-muted/40',
-                )
+              h.header
+                .class('block-row-header')
                 .children(
+                  h.div.children(
+                    h.h2.children(name),
+                    h.p.children(description),
+                  ),
                   h.div
-                    .class('grid w-4/5 grid-cols-3 gap-2')
+                    .class('block-actions')
                     .children(
-                      h.div.class('h-16 rounded-md border bg-background'),
-                      h.div
-                        .class('col-span-2 grid gap-2')
-                        .children(
-                          h.div.class('h-7 rounded-md border bg-background'),
-                          h.div.class('h-7 rounded-md border bg-background'),
-                        ),
+                      h.button.attrs({ type: 'button' }).children('Code'),
+                      h.a.children('Open ↗'),
                     ),
                 ),
               h.div
-                .class('p-4')
+                .class('block-preview')
                 .children(
-                  h.h3.class('font-mono text-sm font-medium').children(name),
-                  h.p
-                    .class('mt-1 text-sm text-muted-foreground')
-                    .children(description),
+                  h.div.class('block-preview-sidebar'),
+                  h.div
+                    .class('block-preview-main')
+                    .children(
+                      h.div.class('block-preview-bar'),
+                      h.div
+                        .class('block-preview-content')
+                        .children(
+                          h.div.class('block-preview-card'),
+                          h.div.class('block-preview-card'),
+                          h.div.class('block-preview-card wide'),
+                        ),
+                    ),
                 ),
             ),
         ),
       ),
-      h.div
-        .class('docs-pending')
+      h.p
+        .class('chart-gallery-note')
         .children(
-          h.p.children(
-            'Live block preview pages and copyable per-renderer block source are pending migration.',
-          ),
+          'Live block iframe previews and copyable per-renderer block source are still pending migration; these rows preserve the catalog and page structure.',
         ),
     ),
 }
