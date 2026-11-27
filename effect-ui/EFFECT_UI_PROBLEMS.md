@@ -51,3 +51,7 @@ The Foldkit grid documentation uses the `SpatialFocus` and `Lasso` headless beha
 ## Dialog styled composition is still narrower than Foldkit
 
 `effect-ui/src/ui/dialog.ts` now supports panel classes, a hideable close button, semantic slots, and an icon close button, but it still exposes only a trigger/title/description/content convenience shape. Foldkit's Dialog renderer exposes bound header, footer, close, close-button attribute, and initial-focus part composition. The Effect docs recreate the same visual footer and form examples manually inside `content`; they cannot yet reuse the same part-level composition API or mark footer buttons as dialog initial focus.
+
+## Data Grid is structurally different from the Foldkit grid
+
+`effect-ui/src/ui/data-grid.ts` renders a native table plus a simpler toolbar/viewport composition. The Foldkit data grid uses a custom virtualized `div` grid with different row metrics, selection/index cells, toolbar panels, focus movement, range highlighting, and editor layering. The Effect docs reuse the same people, column variants, widths, and RTL fixture, but the rendered geometry and interaction surface are not close enough to call the examples 1:1.
