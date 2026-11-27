@@ -39,6 +39,7 @@ const initialValues: Record<string, readonly (string | null)[]> = {
   ],
   validation: ['2026-01-25', '2026-12-25', '2026-03-10'],
   single: [null],
+  description: [null],
   constraints: [null],
 }
 
