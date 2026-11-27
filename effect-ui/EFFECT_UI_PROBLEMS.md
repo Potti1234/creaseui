@@ -5,3 +5,9 @@
 - Effect HTML element builders frequently expose their environment parameter as `any` or infer it as `unknown` after ordinary composition, even for static content. Strict `View.Input<Msg, never>` example types therefore reject otherwise valid composed `Button`/`Icon` content unless helpers are explicitly typed with the docs message type.
 
 - `Tooltip` trigger input is typed as a button or anchor element only. The Foldkit docs' disabled-button example uses a non-focusable `span` trigger so the explanation remains hoverable while the action is unavailable; the Effect API cannot express that trigger type directly, so the port currently uses a disabled button approximation.
+
+- `DropdownMenu`'s backdrop is rendered as a manual popover. Because the styled wrapper originally gave it no background class, the browser's popover user-agent background painted the whole page white while a menu was open. The branch now overrides it with `bg-transparent`.
+
+- `DropdownMenu`'s styled menu composition diverged from the Foldkit/shadcn reference in several details: minimum width, group-label size/color, missing separators between groups, check/radio indicator structure, label wrapping, shortcut tracking, and disabled/icon CSS. The branch aligns those styles and item composition with the reference implementation.
+
+- `DropdownMenu` submenu triggers are consumer-provided elements. Unlike ordinary items, they do not automatically receive the standard menu-item data attributes or the trailing chevron, so the docs must remember to compose the chevron themselves and the rendered submenu trigger still lacks the same `data-slot` surface as ordinary items.
