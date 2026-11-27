@@ -215,6 +215,30 @@ const docsHeader = (h: DocHtml, dark: boolean) =>
           h.a.attr('href', '/blocks').children('Blocks'),
         ),
       h.div.class('docs-header-actions').children(
+        h.button
+          .class('docs-search-trigger')
+          .attrs({
+            type: 'button',
+            'aria-label': 'Search documentation',
+          })
+          .on('click', () => {
+            document.querySelector<HTMLInputElement>('.docs-filter')?.focus()
+            return undefined
+          })
+          .children(
+            h.span.children('⌕'),
+            h.span.class('docs-search-label').children('Search docs…'),
+            h.kbd.children('Ctrl/⌘ K'),
+          ),
+        h.a
+          .class('docs-github-link')
+          .attrs({
+            href: 'https://github.com/Potti1234/creaseui',
+            target: '_blank',
+            rel: 'noreferrer',
+            'aria-label': 'GitHub repository',
+          })
+          .children('GitHub'),
         h.nav
           .class('docs-renderers')
           .attr('aria-label', 'Renderer')

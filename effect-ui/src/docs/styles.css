@@ -97,6 +97,32 @@ body:has(.effect-docs) {
   gap: 0.5rem;
 }
 
+.docs-search-trigger,
+.docs-github-link {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+  color: var(--muted-foreground);
+  padding: 0 0.625rem;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+.docs-search-trigger kbd {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+@media (width < 800px) {
+  .docs-search-label,
+  .docs-search-trigger kbd,
+  .docs-github-link {
+    display: none;
+  }
+}
+
 .docs-renderers {
   gap: 0.125rem;
   padding: 0.125rem;
