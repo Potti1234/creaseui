@@ -1,0 +1,25 @@
+.overflow-docs-frame {
+  border: 1px dashed var(--border);
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+  max-width: 25rem;
+  width: 100%;
+}
+.overflow-docs-center {
+  margin-inline: auto;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.overflow-docs-card {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card);
+  padding: 0.5rem;
+}
+.overflow-docs-resizable {
+  resize: horizontal;
+  overflow: hidden;
+  max-width: 100%;
+}
