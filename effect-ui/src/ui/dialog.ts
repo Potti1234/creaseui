@@ -2,6 +2,7 @@ import type { View } from '@effect/ui'
 import type { Html } from '@effect/ui/html'
 
 import { DialogBehavior } from '../behaviors/dialog'
+import { IconBehavior } from '../behaviors/icon'
 
 type DialogOptions<Msg> = Parameters<typeof DialogBehavior<Msg>>[1]
 const tailwind = {
@@ -13,7 +14,7 @@ const tailwind = {
   title: 'pr-14 text-lg leading-none font-semibold',
   description: 'text-sm text-muted-foreground',
   close:
-    'absolute top-4 right-4 cursor-pointer rounded-sm text-sm text-muted-foreground hover:text-foreground focus-visible:outline-2',
+    'absolute top-4 right-4 cursor-pointer rounded-xs opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-2',
 }
 
 export const Dialog = <Msg, R = never>(
@@ -45,28 +46,27 @@ export const Dialog = <Msg, R = never>(
     view: dialog =>
       h.div(
         dialog.trigger(trigger),
-        dialog
-          .portal(h.dialog.attr('data-slot', 'dialog'))
-          ?.children(
-            dialog.backdrop(h.div.class(styles.backdrop)),
-            dialog
-              .viewport(h.div.class(styles.viewport))
-              .children(
-                dialog
-                  .popup(h.div.class(styles.popup))
-                  .children(
-                    dialog.title(h.h2.class(styles.title)).children(title),
-                    description === undefined
-                      ? undefined
-                      : dialog
-                          .description(h.p.class(styles.description))
-                          .children(description),
-                    content,
-                    dialog
-                      .close(h.button.class(styles.close))
-                      .children('Close'),
-                  ),
-              ),
+        dialog.portal(h.dialog.attr('data-slot', 'dialog'))?.children(
+          dialog.backdrop(h.div.class(styles.backdrop)),
+          dialog.viewport(h.div.class(styles.viewport)).children(
+            dialog.popup(h.div.class(styles.popup)).children(
+              h.div
+                .class('flex flex-col gap-2 text-center sm:text-left')
+                .attr('data-slot', 'dialog-header')
+                .children(
+                  dialog.title(h.h2.class(styles.title)).children(title),
+                  description === undefined
+                    ? undefined
+                    : dialog
+                        .description(h.p.class(styles.description))
+                        .children(description),
+                ),
+              content,
+              dialog
+                .close(h.button.class(styles.close))
+                .children(IconBehavior(h, { name: 'x', size: 'sm' })),
+            ),
           ),
+        ),
       ),
   })

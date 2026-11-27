@@ -33,13 +33,13 @@ export type CommandProps<Msg, R = never> = Omit<
 }
 
 const tailwind = {
-  root: 'flex w-full min-w-0 flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
-  inputGroup: 'flex min-w-0 items-center gap-2 border-b px-3',
+  root: 'flex h-full w-full min-w-0 flex-col overflow-hidden rounded-md bg-popover leading-6 text-popover-foreground',
+  inputGroup: 'flex h-9 min-w-0 items-center gap-2 border-b px-3',
   input:
-    'h-11 w-full bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50',
+    'h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
   searchIcon: 'size-4 shrink-0 text-muted-foreground',
   list: 'max-h-[300px] overflow-x-hidden overflow-y-auto p-1',
-  group: 'overflow-hidden text-foreground',
+  group: 'overflow-hidden p-1 text-foreground',
   groupHeading: 'px-2 py-1.5 text-xs font-medium text-muted-foreground',
   separator: '-mx-1 h-px bg-border',
   item: 'relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:opacity-50',
@@ -151,32 +151,31 @@ export const Command = <Msg, R = never>(
                   })
                   return key === undefined
                     ? contents
-                    : h.div
-                        .key(`group:${index}`)
-                        .class(styles.group)
-                        .children(
-                          index === 0
-                            ? undefined
-                            : h.div
-                                .class(styles.separator)
-                                .attr('role', 'separator'),
-                          combobox
-                            .group({
-                              element: h.div.attr('data-slot', 'command-group'),
-                              group: key,
-                            })
-                            .children(
-                              combobox
-                                .groupLabel({
-                                  element: h.div
-                                    .class(styles.groupHeading)
-                                    .attr('data-slot', 'command-group-heading'),
-                                  group: key,
-                                })
-                                .children(groupHeading?.(key) ?? key),
-                              contents,
-                            ),
-                        )
+                    : h.div.key(`group:${index}`).children(
+                        index === 0
+                          ? undefined
+                          : h.div
+                              .class(styles.separator)
+                              .attr('role', 'separator'),
+                        combobox
+                          .group({
+                            element: h.div
+                              .class(styles.group)
+                              .attr('data-slot', 'command-group'),
+                            group: key,
+                          })
+                          .children(
+                            combobox
+                              .groupLabel({ element: h.div, group: key })
+                              .children(
+                                h.span
+                                  .class(styles.groupHeading)
+                                  .attr('data-slot', 'command-group-heading')
+                                  .children(groupHeading?.(key) ?? key),
+                              ),
+                            contents,
+                          ),
+                      )
                 })
                 .flat(),
             ),
