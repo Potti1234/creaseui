@@ -110,6 +110,7 @@ export const LogStream = <Msg, R = never>(
                           .trigger(
                             h.button
                               .class(styles.row, styles.expander)
+                              .attr('data-variant', variant)
                               .style({ gridTemplateColumns: columns }),
                           )
                           .children(cells(entry)),
