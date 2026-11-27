@@ -1,0 +1,39 @@
+.button-docs-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.button-docs-rtl {
+  direction: rtl;
+}
+.button-docs-sizes {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2rem;
+}
+@media (min-width: 640px) {
+  .button-docs-sizes {
+    flex-direction: row;
+  }
+}
+.button-docs-size-tier {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.button-docs-rounded {
+  border-radius: 9999px;
+}
+.button-docs-rtl-flip {
+  transform: rotate(180deg);
+}
+.button-docs-back-group {
+  display: none;
+}
+@media (min-width: 640px) {
+  .button-docs-back-group {
+    display: flex;
+  }
+}
