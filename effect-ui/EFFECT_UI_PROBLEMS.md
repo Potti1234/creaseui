@@ -11,3 +11,7 @@
 - `DropdownMenu`'s styled menu composition diverged from the Foldkit/shadcn reference in several details: minimum width, group-label size/color, missing separators between groups, check/radio indicator structure, label wrapping, shortcut tracking, and disabled/icon CSS. The branch aligns those styles and item composition with the reference implementation.
 
 - `DropdownMenu` submenu triggers are consumer-provided elements. Unlike ordinary items, they do not automatically receive the standard menu-item data attributes or the trailing chevron, so the docs must remember to compose the chevron themselves and the rendered submenu trigger still lacks the same `data-slot` surface as ordinary items.
+
+## Popover styled popup styling diverges from Foldkit
+
+`effect-ui/src/ui/popover.ts` originally added `grid`, `gap-2`, `text-sm`, sizing clamps, and scrolling behavior that the Foldkit/shadcn-style popover does not have. That compressed custom content and changed inherited heading text from 16px to 14px. The branch now aligns the styled popup classes with the Foldkit implementation.

@@ -7,7 +7,7 @@ type PopoverOptions<Msg> = Parameters<typeof PopoverBehavior<Msg>>[1]
 
 const tailwind = {
   popup:
-    'grid w-max max-w-[min(var(--available-width,100vw),calc(100vw-2rem))] max-h-(--available-height) origin-(--transform-origin) gap-2 overflow-auto rounded-md border bg-popover p-4 text-sm text-popover-foreground shadow-md outline-none transition-[opacity,scale] duration-150 data-starting-style:scale-95 data-starting-style:opacity-0 data-ending-style:scale-95 data-ending-style:opacity-0 motion-reduce:transition-none',
+    'z-50 w-max max-w-[calc(100vw-2rem)] origin-(--transform-origin) rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none transition duration-200 ease-out data-starting-style:scale-95 data-starting-style:opacity-0 data-ending-style:scale-95 data-ending-style:opacity-0 motion-reduce:transition-none',
   title: 'm-0 text-sm leading-none font-semibold',
   description: 'm-0 text-sm text-muted-foreground',
 }
