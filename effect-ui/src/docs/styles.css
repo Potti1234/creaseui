@@ -595,6 +595,24 @@ body:has(.effect-docs) {
 .guide-main .docs-article {
   margin-block-start: 3rem;
 }
+
+.guide-main .docs-article h2 {
+  margin-block: 0;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  letter-spacing: normal;
+}
+.guide-main .docs-article h3 {
+  margin-block: 0;
+  font-size: 1.0625rem;
+  line-height: 1.5rem;
+  letter-spacing: normal;
+}
+
+.guide-main .docs-article section > * + * {
+  margin-block-start: 1rem;
+}
+
 .guide-main .docs-article section + section {
   margin-block-start: 3rem;
 }

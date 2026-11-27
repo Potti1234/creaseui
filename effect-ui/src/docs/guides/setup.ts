@@ -416,8 +416,6 @@ const themeTokens = [
   ['--accent', 'Hover and highlighted surfaces'],
   ['--accent-foreground', 'Text on highlighted surfaces'],
   ['--destructive', 'Destructive actions and error state'],
-  ['--success', 'Success state'],
-  ['--warning', 'Warning state'],
   ['--border', 'Dividers and surface borders'],
   ['--input', 'Form control borders and surfaces'],
   ['--ring', 'Keyboard focus ring'],
