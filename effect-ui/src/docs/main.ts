@@ -448,10 +448,17 @@ const component = (h: DocHtml, slug: string, title: string) => {
       section => [section.id, section.title] as const,
     ),
     ['composition', 'Composition'],
-    ...visibleEntries.map(
-      ({ meta }) =>
-        [meta.sectionId ?? slugify(meta.title), meta.title] as const,
-    ),
+    ...visibleEntries.map(({ meta, index: exampleIndex }) => {
+      const baseId = meta.sectionId ?? slugify(meta.title)
+      const id = visibleEntries.some(
+        (entry, index) =>
+          index !== exampleIndex &&
+          (entry.meta.sectionId ?? slugify(entry.meta.title)) === baseId,
+      )
+        ? `${baseId}-${String(exampleIndex)}`
+        : baseId
+      return [id, meta.title] as const
+    }),
     ...(metadata.styling === undefined
       ? []
       : [['styling', 'Styling'] as const]),
@@ -596,7 +603,14 @@ const component = (h: DocHtml, slug: string, title: string) => {
             )
         : undefined,
       visibleEntries.map(({ meta, index: exampleIndex, implementation }) => {
-        const id = meta.sectionId ?? slugify(meta.title)
+        const baseId = meta.sectionId ?? slugify(meta.title)
+        const id = visibleEntries.some(
+          (entry, index) =>
+            index !== exampleIndex &&
+            (entry.meta.sectionId ?? slugify(entry.meta.title)) === baseId,
+        )
+          ? `${baseId}-${String(exampleIndex)}`
+          : baseId
         return h.section
           .key(id)
           .attr('id', id)
