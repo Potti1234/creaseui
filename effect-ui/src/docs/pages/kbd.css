@@ -1,0 +1,41 @@
+.kbd-docs-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.kbd-docs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.kbd-docs-muted {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+.kbd-docs-input-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 20rem;
+}
+.kbd-docs-rtl {
+  direction: rtl;
+}
+.kbd-docs-tooltip-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.kbd-docs-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
