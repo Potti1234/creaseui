@@ -24,7 +24,7 @@ const tailwind = {
   group: 'grid min-w-0 gap-1',
   groupLabel:
     'truncate px-2 py-1 text-xs font-medium text-sidebar-foreground/70 data-icon-only:sr-only',
-  menu: 'm-0 grid min-w-0 list-none gap-0.5 p-0',
+  menu: 'm-0 flex w-full min-w-0 list-none flex-col gap-1 p-0',
   menuItem: 'relative min-w-0',
   menuButton:
     'flex min-h-8 w-full min-w-0 items-center gap-2 rounded-md border-0 bg-transparent px-2 py-1 text-start text-sm text-inherit no-underline outline-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring data-active:bg-sidebar-accent data-active:font-medium data-[variant=outline]:ring-1 data-[variant=outline]:ring-sidebar-border data-[variant=primary]:bg-primary data-[variant=primary]:text-primary-foreground data-[size=sm]:min-h-7 data-[size=lg]:min-h-10 data-icon-only:justify-center aria-disabled:opacity-50 disabled:opacity-50',

@@ -246,19 +246,201 @@ const SidebarDemo = Html.component({
     } as any)
   },
 })
+const staticIcon = (h: Html.H<DocsMessage>, name: string) =>
+  h.span
+    .class('inline-grid shrink-0 place-items-center')
+    .attr('aria-hidden', 'true')
+    .children(Icon(h, { name: name as never, size: 'sm' }))
+
+const staticRow = (
+  h: Html.H<DocsMessage>,
+  options: {
+    readonly label: string
+    readonly icon: string
+    readonly active?: boolean
+    readonly variant?: 'outline' | 'primary'
+    readonly badge?: string
+    readonly action?: boolean
+  },
+) =>
+  h.li.class('relative min-w-0').children(
+    h.button
+      .class(
+        options.variant === 'primary'
+          ? 'flex h-8 w-full min-w-0 items-center gap-2 rounded-md border-0 bg-primary p-2 text-start text-sm font-semibold text-primary-foreground'
+          : options.variant === 'outline'
+            ? 'flex h-8 w-full min-w-0 items-center gap-2 rounded-md border-0 bg-background p-2 text-start text-sm shadow-[0_0_0_1px_var(--sidebar-border)]'
+            : options.active === true
+              ? 'flex h-8 w-full min-w-0 items-center gap-2 rounded-md border-0 bg-sidebar-accent p-2 text-start text-sm font-medium'
+              : 'flex h-8 w-full min-w-0 items-center gap-2 rounded-md border-0 bg-transparent p-2 text-start text-sm',
+      )
+      .attrs({ type: 'button' })
+      .children(
+        staticIcon(h, options.icon),
+        h.span.class('min-w-0 truncate').children(options.label),
+        options.badge === undefined
+          ? undefined
+          : h.span
+              .class('ms-auto shrink-0 px-1 text-xs tabular-nums')
+              .children(options.badge),
+      ),
+    options.action === true
+      ? h.button
+          .class(
+            'absolute end-1 top-1.5 flex size-5 items-center justify-center rounded-md border-0 bg-transparent p-0 hover:bg-sidebar-accent',
+          )
+          .attrs({ type: 'button', 'aria-label': `${options.label} actions` })
+          .children(Icon(h, { name: 'ellipsis', size: 'sm' }))
+      : undefined,
+  )
+
+const staticPanel = (h: Html.H<DocsMessage>, kind: string) => {
+  const workspaceRow = staticRow(h, {
+    label: 'Overview',
+    icon: 'gauge',
+    active: true,
+    badge: '12',
+  })
+  const rows =
+    kind === 'primitives'
+      ? [
+          workspaceRow,
+          staticRow(h, {
+            label: 'Inbox',
+            icon: 'inbox',
+            variant: 'outline',
+            action: true,
+          }),
+          staticRow(h, {
+            label: 'Create project',
+            icon: 'plus',
+            variant: 'primary',
+          }),
+        ]
+      : kind === 'nested'
+        ? [
+            h.li.class('relative min-w-0').children(
+              h.button
+                .class(
+                  'flex h-8 w-full min-w-0 items-center gap-2 rounded-md border-0 bg-transparent p-2 text-start text-sm',
+                )
+                .attrs({ type: 'button', 'aria-expanded': 'true' })
+                .children(
+                  staticIcon(h, 'book-open'),
+                  h.span.class('min-w-0 truncate').children('Documentation'),
+                  h.span
+                    .class('ms-auto shrink-0 px-1')
+                    .children(Icon(h, { name: 'chevron-down', size: 'sm' })),
+                ),
+              h.ul
+                .class(
+                  'ms-3 grid min-w-0 list-none gap-0.5 border-s border-sidebar-border ps-2',
+                )
+                .children(
+                  ['Introduction', 'Components', 'Changelog'].map(label =>
+                    h.li
+                      .key(label)
+                      .class('relative min-w-0')
+                      .children(
+                        h.a
+                          .class(
+                            label === 'Components'
+                              ? 'flex min-h-7 w-full min-w-0 items-center rounded-md bg-sidebar-accent p-2 text-start text-sm font-medium'
+                              : 'flex min-h-7 w-full min-w-0 items-center rounded-md px-2 py-1 text-start text-sm',
+                          )
+                          .attr('href', '#')
+                          .children(label),
+                      ),
+                  ),
+                ),
+            ),
+          ]
+        : ['82%', '68%', '76%', '58%'].map(width =>
+            h.li
+              .key(width)
+              .class('relative min-w-0')
+              .children(
+                h.div
+                  .class('flex min-h-8 items-center gap-2 px-2 py-1')
+                  .children(
+                    h.span.class(
+                      'size-4 shrink-0 rounded-md bg-sidebar-accent',
+                    ),
+                    h.span
+                      .class(
+                        'h-3 rounded-sm bg-sidebar-accent motion-safe:animate-pulse',
+                      )
+                      .style({ width }),
+                  ),
+              ),
+          )
+  return h.div
+    .class('flex h-80 w-full items-stretch justify-center bg-muted/30 p-4')
+    .children(
+      h.div
+        .class(
+          'h-full min-h-0 w-full max-w-[18rem] overflow-hidden rounded-lg border bg-background',
+        )
+        .children(
+          h.div
+            .class(
+              'flex h-full min-h-0 flex-col bg-sidebar text-sidebar-foreground',
+            )
+            .children(
+              h.div
+                .class('flex min-w-0 flex-col gap-2 p-2')
+                .children(
+                  h.div
+                    .class('px-2 py-1 text-sm font-semibold')
+                    .children(
+                      kind === 'loading'
+                        ? 'Loading projects'
+                        : 'Crease Workspace',
+                    ),
+                ),
+              h.div
+                .class(
+                  'flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-auto p-2',
+                )
+                .children(
+                  h.div
+                    .class('grid min-w-0 gap-1')
+                    .children(
+                      h.div
+                        .class(
+                          'truncate px-2 py-1 text-xs font-medium text-sidebar-foreground/70',
+                        )
+                        .children(
+                          kind === 'nested' ? 'Resources' : 'Workspace',
+                        ),
+                      h.ul
+                        .class(
+                          'm-0 flex w-full min-w-0 list-none flex-col gap-1 p-0',
+                        )
+                        .attr('role', 'list')
+                        .children(rows),
+                    ),
+                ),
+            ),
+        ),
+    )
+}
+
 const view =
   (kind: string): DocsExampleImplementation['view'] =>
   (h: Html.H<DocsMessage>, context) =>
-    h.div
-      .class(
-        'relative h-[26rem] min-h-0 w-full overflow-hidden rounded-lg border bg-background',
-      )
-      .children(
-        SidebarDemo(h, {
-          key: `${context.idPrefix}-${kind}`,
-          props: { kind, idPrefix: context.idPrefix },
-        }) as never,
-      )
+    kind === 'primitives' || kind === 'nested' || kind === 'loading'
+      ? staticPanel(h, kind)
+      : h.div
+          .class(
+            'relative h-[26rem] min-h-0 w-full overflow-hidden rounded-lg border bg-background',
+          )
+          .children(
+            SidebarDemo(h, {
+              key: `${context.idPrefix}-${kind}`,
+              props: { kind, idPrefix: context.idPrefix },
+            }) as never,
+          )
 const source = exampleApplicationSource({
   imports: `import { Icon, Sidebar } from '@/ui/effect/ui'`,
   body: `Sidebar(h, {
