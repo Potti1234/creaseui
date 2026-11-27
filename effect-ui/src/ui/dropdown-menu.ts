@@ -85,6 +85,7 @@ export const MenuPopup = <Msg, R = never>(
     groupLabel,
   }: MenuUiOptions<NoInfer<Msg>, R>,
   styles: typeof menuStyles,
+  omitBackdrop = false,
 ) => {
   const decorated = items.map(item => ({
     item,
@@ -185,7 +186,7 @@ export const MenuPopup = <Msg, R = never>(
   }
 
   return h.div.children(
-    parts.backdrop(h.div.class(styles.backdrop)),
+    omitBackdrop ? undefined : parts.backdrop(h.div.class(styles.backdrop)),
     parts.positioner(h.div.class(styles.positioner)).children(
       parts
         .popup(
@@ -283,6 +284,13 @@ export const DropdownMenu = <Msg, R = never>(
                 ),
               ),
             }),
-        MenuPopup(h, menu, options.props.items, options, styles),
+        MenuPopup(
+          h,
+          menu,
+          options.props.items,
+          options,
+          styles,
+          options.parentMenu !== undefined,
+        ),
       ),
   })

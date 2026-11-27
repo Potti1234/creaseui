@@ -23,9 +23,11 @@ export type MenubarProps<Msg, R = never> = {
     readonly label: View.Input<Msg, R>
     readonly accessibleLabel?: string
     readonly disabled?: boolean
+    readonly selected?: boolean
     readonly items: readonly MenuItem[]
     readonly decorateItem?: (item: MenuItem) => MenuAppearance<Msg, R>
     readonly groupLabel?: (group: string) => string
+    readonly popupClassName?: string
   }[]
 }
 
@@ -70,14 +72,18 @@ export const Menubar = <Msg, R = never>(
               label,
               accessibleLabel,
               disabled,
+              selected,
               items,
               decorateItem,
               groupLabel,
+              popupClassName,
             }) =>
               DropdownMenuBehavior(h, {
                 key: id,
                 props: {
                   open: openMenu === id,
+                  align: 'start',
+                  sideOffset: 4,
                   items,
                   disabled: disabled === true,
                 },
@@ -100,10 +106,21 @@ export const Menubar = <Msg, R = never>(
                     .children(
                       menu
                         .trigger({
-                          element: h.button.class(styles.trigger).attrs({
-                            'data-slot': 'menubar-trigger',
-                            'aria-label': accessibleLabel,
-                          }),
+                          element: h.button
+                            .class(
+                              styles.trigger,
+                              selected === true
+                                ? 'underline decoration-2 underline-offset-4'
+                                : undefined,
+                            )
+                            .attrs({
+                              'data-slot': 'menubar-trigger',
+                              'aria-label': accessibleLabel,
+                              'data-selected':
+                                selected === true ? '' : undefined,
+                              'aria-current':
+                                selected === true ? 'true' : undefined,
+                            }),
                         })
                         .children(label),
                       MenuPopup(
@@ -118,6 +135,9 @@ export const Menubar = <Msg, R = never>(
                             ? {}
                             : { decorateItem }),
                           ...(groupLabel === undefined ? {} : { groupLabel }),
+                          ...(popupClassName === undefined
+                            ? {}
+                            : { className: popupClassName }),
                         },
                         popupStyles,
                       ),
