@@ -990,38 +990,60 @@ const Docs = Html.component({
   view: (h, { query, dark, searchOpen, search }) => {
     const groups = groupedEntries(query)
     const searchGroups = groupedEntries(search)
-    return h.div
-      .class('effect-docs', dark ? 'dark' : 'light')
-      .children(
-        h.a
-          .class('docs-skip')
-          .attr('href', '#docs-main')
-          .children('Skip to content'),
-        docsHeader(h, dark, query, groups),
-        searchOpen ? searchDialog(h, search, searchGroups) : undefined,
-        guide !== undefined &&
-          (guidePath === '/create' ||
-            guidePath.startsWith('/charts') ||
-            guidePath.startsWith('/blocks'))
-          ? h.main
-              .class('site-page')
-              .attrs({ id: 'docs-main', tabindex: '-1' })
-              .children(guide.view(h))
-          : h.div
-              .class('docs-layout')
-              .children(
-                h.aside
-                  .class('docs-sidebar')
-                  .children(sidebar(h, query, groups)),
-                guide !== undefined
-                  ? guidePage(h, guide)
-                  : route.tag === 'catalog'
-                    ? catalog(h, groups)
-                    : route.tag === 'component'
-                      ? component(h, route.slug, route.title)
-                      : notFound(h),
-              ),
-      )
+    return h.div.class('effect-docs', dark ? 'dark' : 'light').children(
+      h.a
+        .class('docs-skip')
+        .attr('href', '#docs-main')
+        .children('Skip to content'),
+      docsHeader(h, dark, query, groups),
+      searchOpen ? searchDialog(h, search, searchGroups) : undefined,
+      guide !== undefined &&
+        (guidePath === '/create' ||
+          guidePath.startsWith('/charts') ||
+          guidePath.startsWith('/blocks'))
+        ? h.main
+            .class('site-page')
+            .attrs({ id: 'docs-main', tabindex: '-1' })
+            .children(guide.view(h))
+        : h.div.class('docs-layout').children(
+            h.aside.class('docs-sidebar').children(
+              guidePath.startsWith('/docs/tutorial')
+                ? h.nav.class('docs-component-nav').children(
+                    h.div.children(
+                      h.p.class('docs-nav-group-title').children('Tutorial'),
+                      h.ul.children(
+                        Object.entries(guides)
+                          .filter(([path]) => path.startsWith('/docs/tutorial'))
+                          .map(([path, entry]) =>
+                            h.li.key(path).children(
+                              h.a
+                                .class('docs-nav-link')
+                                .attrs({
+                                  href: path,
+                                  'aria-current':
+                                    guidePath === path ? 'page' : undefined,
+                                })
+                                .children(
+                                  path === '/docs/tutorial'
+                                    ? 'Overview: the short version'
+                                    : entry.title,
+                                ),
+                            ),
+                          ),
+                      ),
+                    ),
+                  )
+                : sidebar(h, query, groups),
+            ),
+            guide !== undefined
+              ? guidePage(h, guide)
+              : route.tag === 'catalog'
+                ? catalog(h, groups)
+                : route.tag === 'component'
+                  ? component(h, route.slug, route.title)
+                  : notFound(h),
+          ),
+    )
   },
 })
 
