@@ -432,15 +432,22 @@ const overview: DocsGuide = {
           h,
           group.toLowerCase().replaceAll(' ', '-'),
           group,
-          h.ul.children(
-            primitives
-              .filter(behavior => behavior.group === group)
-              .map(behavior =>
-                h.li.children(
-                  h.a.attr('href', behavior.docs).children(behavior.title),
+          h.div
+            .class('behavior-card-grid')
+            .children(
+              primitives
+                .filter(behavior => behavior.group === group)
+                .map(behavior =>
+                  h.a
+                    .key(behavior.slug)
+                    .class('behavior-card')
+                    .attr('href', behavior.docs)
+                    .children(
+                      h.strong.children(behavior.title),
+                      h.span.children(behavior.description),
+                    ),
                 ),
-              ),
-          ),
+            ),
         ),
       ),
     ),
