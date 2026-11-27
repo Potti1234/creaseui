@@ -983,7 +983,7 @@ const Docs = Html.component({
         docsHeader(h, dark, query, groups),
         searchOpen ? searchDialog(h, search, searchGroups) : undefined,
         h.div
-          .class('docs-frame', 'docs-layout')
+          .class('docs-layout')
           .children(
             h.aside.class('docs-sidebar').children(sidebar(h, query, groups)),
             guide !== undefined
