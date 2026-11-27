@@ -14,7 +14,8 @@ const docsRouting = (): Plugin => {
     next: () => void,
   ) => {
     const pathname = request.url?.split('?')[0] ?? ''
-    if (/^\/docs(?:\/[^.?]*)?$/.test(pathname)) request.url = '/docs/index.html'
+    if (/^(?:\/docs|\/charts|\/blocks|\/create)(?:\/[^.?]*)?$/.test(pathname))
+      request.url = '/docs/index.html'
     next()
   }
   return {

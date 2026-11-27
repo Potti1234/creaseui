@@ -201,14 +201,18 @@ const sidebar = (
 const docsHeader = (h: DocHtml, dark: boolean) =>
   h.header.class('docs-header').children(
     h.div.class('docs-frame', 'docs-header-content').children(
-      h.a.class('docs-brand').attr('href', catalogPath).children('CreaseUI'),
+      h.a
+        .class('docs-brand')
+        .attr('href', '/docs/getting-started')
+        .children('crease/ui'),
       h.nav
         .class('docs-global-nav')
         .attr('aria-label', 'Documentation')
         .children(
-          h.a.attr('href', catalogPath).children('Components'),
-          h.a.attr('href', '/docs/behaviors').children('Behaviors'),
-          h.a.attr('href', '/').children('Preview'),
+          h.a.attr('href', '/docs/getting-started').children('Docs'),
+          h.a.attr('href', '/create').children('Create'),
+          h.a.attr('href', '/charts/area').children('Charts'),
+          h.a.attr('href', '/blocks').children('Blocks'),
         ),
       h.div.class('docs-header-actions').children(
         h.nav

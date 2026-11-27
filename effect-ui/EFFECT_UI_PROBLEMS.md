@@ -77,3 +77,6 @@ Effect `Combobox` owns popup/draft state but exposes only plain item labels. It 
 - Pointer Kind and Avoid Keyboard have no Effect UI behavior implementations; their docs examples cannot yet reproduce the live media-query/viewport behavior of the Foldkit versions.
 - Connect has no Effect UI behavior implementation; keyboard/pointer connection examples are visual documentation placeholders rather than interactive port-connection drafts.
 - Effect UI chart helpers cover simple SVG bar/area/donut charts, but the Foldkit docs' full ECharts lifecycle, radar, radial, tooltip, and synchronized interactive examples require substantial manual composition or are only approximated.
+- Tutorial chapter pages currently migrate navigation, summaries and repository checkpoints, but the Foldkit interactive essay runtimes remain unported.
+- Chart gallery pages expose the same categories and card inventory, but the full interactive Apache ECharts gallery is approximated by static chart-shaped previews.
+- Blocks exposes the block catalog and representative previews, but live block preview pages and copyable per-renderer block source remain unported.
