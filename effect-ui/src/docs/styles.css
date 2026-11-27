@@ -413,8 +413,10 @@ body:has(.effect-docs) {
   padding: clamp(1.5rem, 4vw, 2.5rem);
 }
 
-.docs-example-stage > * {
-  max-width: 100%;
+@layer base {
+  :where(.docs-example-stage) > * {
+    max-width: 100%;
+  }
 }
 
 .docs-example-card[data-layout='full-bleed'] .docs-example-stage {
@@ -422,7 +424,7 @@ body:has(.effect-docs) {
   align-items: stretch;
 }
 
-.docs-example-card[data-layout='full-bleed'] .docs-example-stage > * {
+.docs-example-card[data-layout='full-bleed'] :where(.docs-example-stage) > * {
   flex: 1;
 }
 
