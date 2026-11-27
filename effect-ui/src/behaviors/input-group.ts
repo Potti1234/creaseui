@@ -39,7 +39,10 @@ const parts = <Msg>(h: Html.H<Msg>, styles: Classes) => ({
       .attr('data-slot', 'input-group-control'),
   textarea: <R = never>(control: Textarea<NoInfer<Msg>, R>) =>
     control
-      .class(styles.control, control.elementAttrs.class)
+      .class(
+        `${(styles.control ?? '').replace('h-8', 'min-h-16').replace('px-2.5 py-1', 'px-3 py-2')} field-sizing-content resize-none`,
+        control.elementAttrs.class,
+      )
       .attr('data-slot', 'input-group-control'),
   button: <R = never>(
     control: Button<NoInfer<Msg>, R>,

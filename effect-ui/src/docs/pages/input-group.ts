@@ -89,51 +89,55 @@ const fixture = (h: H, kind: string) => {
           }),
           'Icon positioned at the end.',
         )(h),
-        field(
-          'Input',
-          inputGroup(h, 'align-block-input', {
-            placeholder: 'Enter your name',
-            blockStart: 'Full Name',
-          }),
-          'Header positioned above the input.',
-        )(h),
-        field(
-          'Textarea',
-          inputGroup(h, 'align-block-area', {
-            textarea: true,
-            placeholder: "console.log('Hello, world!');",
-            blockStart: [
-              icon(h, 'file-code'),
-              h.span.class('font-mono').children('script.js'),
-              h.span.class('ms-auto').children(buttonIcon(h, 'copy', 'Copy')),
-            ],
-          }),
-          'Header positioned above the textarea.',
-        )(h),
-        field(
-          'Input',
-          inputGroup(h, 'align-end-input', {
-            placeholder: 'Enter amount',
-            blockEnd: 'USD',
-          }),
-          'Footer positioned below the input.',
-        )(h),
-        field(
-          'Textarea',
-          inputGroup(h, 'align-end-area', {
-            textarea: true,
-            placeholder: 'Write a comment...',
-            blockEnd: [
-              h.span.children('0/280'),
-              h.button
-                .class(
-                  'ms-auto rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground',
-                )
-                .children('Post'),
-            ],
-          }),
-          'Footer positioned below the textarea.',
-        )(h),
+        h.div.class('flex w-full flex-col gap-7').children(
+          field(
+            'Input',
+            inputGroup(h, 'align-block-input', {
+              placeholder: 'Enter your name',
+              blockStart: 'Full Name',
+            }),
+            'Header positioned above the input.',
+          )(h),
+          field(
+            'Textarea',
+            inputGroup(h, 'align-block-area', {
+              textarea: true,
+              placeholder: "console.log('Hello, world!');",
+              blockStart: [
+                icon(h, 'file-code'),
+                h.span.class('font-mono').children('script.js'),
+                h.span.class('ms-auto').children(buttonIcon(h, 'copy', 'Copy')),
+              ],
+            }),
+            'Header positioned above the textarea.',
+          )(h),
+        ),
+        h.div.class('flex w-full flex-col gap-7').children(
+          field(
+            'Input',
+            inputGroup(h, 'align-end-input', {
+              placeholder: 'Enter amount',
+              blockEnd: 'USD',
+            }),
+            'Footer positioned below the input.',
+          )(h),
+          field(
+            'Textarea',
+            inputGroup(h, 'align-end-area', {
+              textarea: true,
+              placeholder: 'Write a comment...',
+              blockEnd: [
+                h.span.children('0/280'),
+                h.button
+                  .class(
+                    'ms-auto flex h-8 items-center gap-1.5 rounded-md bg-primary px-2.5 text-sm text-primary-foreground',
+                  )
+                  .children('Post'),
+              ],
+            }),
+            'Footer positioned below the textarea.',
+          )(h),
+        ),
       )
     case 'icon':
       return h.div.class('grid w-full max-w-sm gap-6').children(
@@ -248,19 +252,25 @@ const fixture = (h: H, kind: string) => {
       return h.div.class('grid w-full max-w-md gap-4').children(
         inputGroup(h, 'textarea-code', {
           textarea: true,
-          className: '[&_textarea]:min-h-50 [&_textarea]:font-mono',
-          placeholder: 'Paste your code here...',
+          className: '[&_textarea]:min-h-[200px] [&_textarea]:font-mono',
+          placeholder: "console.log('Hello, world!');",
           blockStart: [
             icon(h, 'file-code'),
             h.span.class('font-mono').children('script.js'),
+            h.span
+              .class('ms-auto flex items-center gap-1')
+              .children(
+                buttonIcon(h, 'refresh-cw', 'Refresh'),
+                buttonIcon(h, 'copy', 'Copy'),
+              ),
           ],
           blockEnd: [
             h.span.children('Line 1, Column 1'),
             h.button
               .class(
-                'ms-auto rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground',
+                'ms-auto flex h-8 items-center gap-1.5 rounded-md bg-primary px-2.5 text-sm text-primary-foreground',
               )
-              .children('Run'),
+              .children('Run ', icon(h, 'corner-down-left')),
           ],
         }),
       )
@@ -273,7 +283,7 @@ const fixture = (h: H, kind: string) => {
               h.span.children('0/280'),
               h.button
                 .class(
-                  'ms-auto rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground',
+                  'ms-auto flex h-8 items-center gap-1.5 rounded-md bg-primary px-2.5 text-sm text-primary-foreground',
                 )
                 .children('Post'),
             ],
@@ -305,19 +315,31 @@ const fixture = (h: H, kind: string) => {
             placeholder: 'جاري البحث...',
             end: Spinner(h, { isDecorative: true }),
           }),
-          inputGroup(h, 'rtl-area', {
+          inputGroup(h, 'rtl-saving', {
             dir: 'rtl',
-            textarea: true,
-            placeholder: 'اكتب تعليقًا...',
-            blockEnd: [
-              h.span.children('٠/٢٨٠'),
-              h.button
-                .class(
-                  'ms-auto rounded-md bg-primary px-2 py-1 text-xs text-primary-foreground',
-                )
-                .children('نشر'),
+            placeholder: 'جاري حفظ التغييرات...',
+            end: [
+              h.span.children('جاري الحفظ...'),
+              Spinner(h, { isDecorative: true }),
             ],
           }),
+          field(
+            'منطقة النص',
+            inputGroup(h, 'rtl-area', {
+              dir: 'rtl',
+              textarea: true,
+              placeholder: 'اكتب تعليقًا...',
+              blockEnd: [
+                h.span.children('٠/٢٨٠'),
+                h.button
+                  .class(
+                    'ms-auto flex h-8 items-center gap-1.5 rounded-md bg-primary px-2.5 text-sm text-primary-foreground',
+                  )
+                  .children('نشر'),
+              ],
+            }),
+            'تذييل موضع أسفل منطقة النص.',
+          )(h),
         )
   }
 }
