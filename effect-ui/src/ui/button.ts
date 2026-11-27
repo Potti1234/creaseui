@@ -68,18 +68,18 @@ export const Button = <Msg, R = never>(
   ) => string = buttonClasses,
 ) =>
   ButtonBehavior(h, {
-    element,
+    element: (element ?? h.button).class(
+      classes({ variant, size }, isLoading || props.disabled === true),
+    ),
     onPress,
     props: { ...props, disabled: isLoading || props.disabled === true },
+  }).attrs({
+    'aria-busy': isLoading ? 'true' : undefined,
+    'data-slot': 'button',
+    'data-size': size,
+    'data-state': isLoading ? 'loading' : 'idle',
+    'data-variant': variant,
   })
-    .class(classes({ variant, size }, isLoading || props.disabled === true))
-    .attrs({
-      'aria-busy': isLoading ? 'true' : undefined,
-      'data-slot': 'button',
-      'data-size': size,
-      'data-state': isLoading ? 'loading' : 'idle',
-      'data-variant': variant,
-    })
 
 export const ButtonLink = <Msg>(
   h: Html.H<Msg>,

@@ -65,7 +65,7 @@ const itemButton = <Msg>(h: Html.H<Msg>, item: ButtonItem) => {
       ? Spinner(h, { isDecorative: true, dataIcon: 'inline-end' })
       : undefined,
   ]
-  return Button(h, {
+  const button = Button(h, {
     ...(item.ariaLabel === undefined
       ? {}
       : { element: h.button.attrs({ 'aria-label': item.ariaLabel }) }),
@@ -73,8 +73,9 @@ const itemButton = <Msg>(h: Html.H<Msg>, item: ButtonItem) => {
     ...(item.size === undefined ? {} : { size: item.size }),
     ...(item.disabled === true ? { disabled: true } : {}),
   })
-    .class(item.rounded === true ? 'button-docs-rounded' : undefined)
-    .children(content)
+  return (
+    item.rounded === true ? button.class('button-docs-rounded') : button
+  ).children(content)
 }
 
 const itemsExample =

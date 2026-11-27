@@ -240,7 +240,13 @@ const docsHeader = (h: DocHtml, dark: boolean) =>
               : 'Switch to dark theme',
             title: dark ? 'Switch to light theme' : 'Switch to dark theme',
           })
-          .on('click', DocsMessage.ToggledTheme())
+          .on('click', () => {
+            window.localStorage.setItem(
+              'creaseui-effect-docs-theme',
+              dark ? 'light' : 'dark',
+            )
+            return DocsMessage.ToggledTheme()
+          })
           .children(dark ? '☀' : '☾'),
       ),
     ),
