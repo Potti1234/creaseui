@@ -33,7 +33,7 @@ const render =
       .children(
         items.map((item, index) =>
           CircularProgress(h, {
-            key: `progress-${index}`,
+            key: `${context.idPrefix}-progress-${index}`,
             value: item.value ?? 0,
             ...(item.max === undefined ? {} : { max: item.max }),
             label: item.label ?? 'Progress',
