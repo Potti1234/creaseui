@@ -548,10 +548,9 @@ body:has(.effect-docs) {
 }
 
 .docs-code-clip {
-  max-height: 7.25rem;
+  max-height: 0;
   padding-bottom: 2.75rem;
   overflow: hidden;
-  mask-image: linear-gradient(to bottom, black 35%, transparent 100%);
 }
 
 .docs-code-checkbox:checked ~ .docs-code-clip {
