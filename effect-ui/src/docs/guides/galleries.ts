@@ -1795,9 +1795,143 @@ const dashboardSkeleton = (h: Html.H<DocsMessage>, name: string) =>
         ),
     )
 
+const executivePreview = (h: Html.H<DocsMessage>) =>
+  h.div.class('exec-shell').children(
+    h.aside.class('exec-sidebar').children(
+      h.div
+        .class('exec-brand')
+        .children('OS', h.strong.children('Orbit Studio')),
+      h.span.class('preview-nav-label').children('Workspace'),
+      h.nav.children(
+        ...['Overview', 'Growth', 'Projects', 'Services', 'Incidents'].map(
+          (item, index) =>
+            h.a
+              .key(item)
+              .attr('aria-current', index === 0 ? 'page' : undefined)
+              .children(item),
+        ),
+      ),
+      h.div.class('exec-user').children('AL', h.span.children('Alex Lee')),
+    ),
+    h.main.class('exec-main').children(
+      h.header
+        .class('preview-topbar')
+        .children(
+          h.span.children('☰'),
+          h.span.children('Orbit Studio'),
+          h.span.children('Executive summary'),
+        ),
+      h.div.class('exec-content').children(
+        h.div.class('exec-body').children(
+          h.header
+            .class('exec-heading')
+            .children(
+              h.div.children(
+                h.h1.children('Executive summary'),
+                h.p.children(
+                  'Quarterly business review · updated 12 minutes ago',
+                ),
+              ),
+              h.div
+                .class('exec-actions')
+                .children(
+                  h.span.children('Week'),
+                  h.span.attr('aria-current', 'page').children('Quarter'),
+                  h.span.children('Export'),
+                ),
+            ),
+          h.div.class('exec-metrics').children(
+            ...[
+              ['Revenue', '+8.4% QoQ', '$4.82M'],
+              ['Gross margin', '-0.6 pts', '71.2%'],
+              ['Net retention', '+3.1 pts', '118%'],
+              ['Pipeline', '+16% QoQ', '$12.4M'],
+            ].map(([label, delta, value]) =>
+              h.section
+                .key(label ?? '')
+                .children(
+                  h.div.children(
+                    h.span.children(label ?? ''),
+                    h.b.children(delta ?? ''),
+                  ),
+                  h.strong.children(value ?? ''),
+                ),
+            ),
+          ),
+          h.section.class('exec-objectives').children(
+            h.h2.children('Objective attainment'),
+            h.p.children(
+              'Company objectives weighted by expected business impact',
+            ),
+            ...[
+              ['Expand enterprise', '78%'],
+              ['Improve activation', '64%'],
+              ['Reduce infrastructure cost', '41%'],
+            ].map(([label, value]) =>
+              h.div
+                .key(label ?? '')
+                .class('exec-objective')
+                .children(
+                  h.span.children(label ?? ''),
+                  h.div.children(h.i.style({ width: value ?? '' })),
+                  h.strong.children(value ?? ''),
+                ),
+            ),
+          ),
+          h.div
+            .class('exec-charts')
+            .children(
+              h.section.children(
+                h.h2.children('Revenue trend'),
+                h.p.children('Trailing eight periods'),
+                h.div.class('exec-area-chart'),
+              ),
+              h.section.children(
+                h.h2.children('Customer growth'),
+                h.p.children('New accounts by period'),
+                h.div
+                  .class('exec-bar-chart')
+                  .children(
+                    ...[38, 62, 46, 76, 58, 84, 68, 92].map(height =>
+                      h.i.key(String(height)).style({ height: `${height}%` }),
+                    ),
+                  ),
+              ),
+            ),
+        ),
+        h.aside.class('exec-insights').children(
+          h.h2.children('What changed & why'),
+          h.p.children('Generated from weekly operating data'),
+          ...[
+            [
+              'Enterprise expansion',
+              'Pipeline growth is concentrated in larger annual contracts.',
+            ],
+            [
+              'Retention improved',
+              'Activation changes reduced early churn by 1.8 points.',
+            ],
+            [
+              'Margin watch',
+              'Infrastructure costs grew faster than usage in Europe.',
+            ],
+          ].map(([title, copy]) =>
+            h.section
+              .key(title ?? '')
+              .children(
+                h.strong.children(title ?? ''),
+                h.p.children(copy ?? ''),
+              ),
+          ),
+        ),
+      ),
+    ),
+  )
+
 const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'dashboard-01' || name === 'chart-analytics-dashboard')
     return dashboardPreview(h)
+  if (name === 'creaseui-executive-summary') return executivePreview(h)
   if (name.startsWith('sidebar-') || name === 'app-shell-01')
     return sidebarOnlyPreview(h, name)
   if (name === 'login-03') return loginPreview(h, false)
