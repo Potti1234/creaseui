@@ -127,6 +127,130 @@ const galleryKind = (slug: string): ChartFamilyKind =>
   slug === 'tooltip' ? 'bar' : (slug as ChartFamilyKind)
 const galleryHostId = (slug: string, example: string) =>
   `gallery-${slug}-${example.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+const pieGalleryOption = (theme: any, example: string): any => {
+  const browserNames = ['Chrome', 'Safari', 'Firefox', 'Edge', 'Other']
+  const browserValues = [275, 200, 187, 173, 90]
+  const palette = [
+    theme.chart1,
+    theme.chart2,
+    theme.chart3,
+    theme.chart4,
+    theme.chart5,
+  ]
+  const donut =
+    example === 'Donut' ||
+    example === 'Donut Active' ||
+    example === 'Donut Text'
+  const legend = example === 'Legend'
+  const labelInside = example === 'Label List'
+  const label =
+    example === 'Label' || example === 'Label List'
+      ? 'name'
+      : example === 'Custom Label'
+        ? 'value'
+        : undefined
+  const values =
+    example === 'Donut Text' ? [275, 200, 287, 173, 190] : browserValues
+  const data = (names: readonly string[], items: readonly number[]) =>
+    names.map((name, index) => ({
+      name,
+      value: items[index] ?? 0,
+      selected: example === 'Donut Active' && index === 0,
+      itemStyle: { color: palette[index] ?? theme.chart1 },
+    }))
+  if (example === 'Stacked') {
+    const monthNames = ['January', 'February', 'March', 'April', 'May']
+    return {
+      tooltip: tooltipOptions(theme, { trigger: 'item' }),
+      series: [
+        {
+          name: 'Desktop',
+          type: 'pie',
+          radius: ['0%', '48%'],
+          itemStyle: { borderColor: theme.background, borderWidth: 2 },
+          label: { show: false },
+          data: data(monthNames, [186, 305, 237, 173, 209]),
+        },
+        {
+          name: 'Mobile',
+          type: 'pie',
+          radius: ['56%', '72%'],
+          itemStyle: { borderColor: theme.background, borderWidth: 2 },
+          label: { show: false },
+          data: data(monthNames, [80, 200, 120, 190, 130]),
+        },
+      ],
+    }
+  }
+  const centerSeries =
+    example === 'Donut Text'
+      ? [
+          {
+            name: 'Total',
+            type: 'pie',
+            radius: ['0%', '1%'],
+            center: ['50%', '50%'],
+            silent: true,
+            tooltip: { show: false },
+            labelLine: { show: false },
+            label: {
+              show: true,
+              position: 'center',
+              color: theme.foreground,
+              fontSize: 28,
+              fontWeight: 700,
+              fontFamily: theme.fontFamily,
+              lineHeight: 26,
+              formatter: '1,125\n{muted|Visitors}',
+              rich: {
+                muted: {
+                  color: theme.mutedForeground,
+                  fontSize: 12,
+                  fontWeight: 400,
+                  fontFamily: theme.fontFamily,
+                  lineHeight: 24,
+                },
+              },
+            },
+            data: [{ value: 1, itemStyle: { color: 'transparent' } }],
+          },
+        ]
+      : []
+  return {
+    tooltip: tooltipOptions(theme, { trigger: 'item' }),
+    ...(legend
+      ? { legend: { ...legendOptions(theme), data: [...browserNames] } }
+      : {}),
+    series: [
+      {
+        name: 'Visitors',
+        type: 'pie',
+        radius: donut ? ['48%', '72%'] : ['0%', '72%'],
+        center: ['50%', legend ? '43%' : '50%'],
+        selectedMode: example === 'Donut Active' ? 'single' : false,
+        selectedOffset: 10,
+        avoidLabelOverlap: true,
+        itemStyle: {
+          borderColor:
+            example === 'No Separator' ? 'transparent' : theme.background,
+          borderWidth: example === 'No Separator' ? 0 : 2,
+        },
+        label: {
+          show: label !== undefined,
+          position: labelInside ? 'inside' : 'outside',
+          color: labelInside ? theme.background : theme.foreground,
+          fontSize: 12,
+          fontFamily: theme.fontFamily,
+          formatter: label === 'value' ? '{c}' : '{b}',
+        },
+        labelLine: { show: !labelInside },
+        data: data(browserNames, values),
+      },
+      ...centerSeries,
+    ],
+  }
+}
+
 const customizeGalleryOption = (
   option: any,
   slug: string,
@@ -248,6 +372,8 @@ const customizeGalleryOption = (
     option.series = [mobileSeries, desktopSeries]
     return option
   }
+  if (slug === 'pie' && theme !== undefined && example !== 'Interactive')
+    return pieGalleryOption(theme, example)
   if (slug === 'bar' && theme !== undefined) {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
     const desktopData = [186, 305, 237, 73, 209, 214]
