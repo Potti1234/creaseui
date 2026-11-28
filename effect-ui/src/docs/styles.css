@@ -4679,3 +4679,21 @@ body:has(.effect-docs) {
 .saved-rail {
   margin-top: -1.75rem;
 }
+.create-page .distribute .create-plus {
+  margin-top: 1.875rem;
+}
+.create-page .distribute h2 {
+  margin-bottom: -0.9375rem;
+}
+.create-page .distribute button {
+  margin-top: 1.625rem;
+}
+.create-page .distribute .create-plus {
+  margin-top: 1.5rem;
+}
+.create-page .distribute h2 {
+  margin-bottom: -1.3125rem;
+}
+.create-page .distribute button {
+  margin-top: 1.3125rem;
+}
