@@ -378,6 +378,110 @@ const customizeGalleryOption = (
       return option
     }
   }
+  if (slug === 'line' && theme !== undefined) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+    const desktopData = [186, 305, 237, 73, 209, 214]
+    const mobileData = [80, 200, 120, 190, 130, 140]
+    const line = (
+      name: string,
+      color: string,
+      data: readonly unknown[],
+    ): any => ({
+      name,
+      type: 'line',
+      smooth: 0.4,
+      lineStyle: { width: 2, color },
+      itemStyle: { color },
+      data: [...data],
+    })
+    option.grid = compactGrid()
+    option.xAxis = categoryAxis(theme, months)
+    option.yAxis = valueAxis(theme)
+    option.tooltip = tooltipOptions(theme)
+    delete option.legend
+    if (example === 'Default' || example === 'Linear' || example === 'Step') {
+      const desktopSeries = line('Desktop', theme.chart1, desktopData)
+      if (example === 'Linear') desktopSeries.smooth = false
+      if (example === 'Step') {
+        delete desktopSeries.smooth
+        desktopSeries.step = 'middle'
+      }
+      option.series = [desktopSeries]
+      return option
+    }
+    if (example === 'Multiple') {
+      option.legend = legendOptions(theme)
+      option.series = [
+        line('Desktop', theme.chart1, desktopData),
+        line('Mobile', theme.chart2, mobileData),
+      ]
+      return option
+    }
+    if (example === 'Dots' || example === 'Custom Dots') {
+      const desktopSeries = line('Desktop', theme.chart1, desktopData)
+      desktopSeries.symbolSize = example === 'Dots' ? 8 : 24
+      if (example === 'Custom Dots')
+        desktopSeries.symbol =
+          'path://M10 0h4v7.1a5 5 0 1 1-4 0V0zm2 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm-2 8h4v7h-4z'
+      option.series = [desktopSeries]
+      return option
+    }
+    if (example === 'Dots Colors' || example === 'Custom Label') {
+      const browsers = ['chrome', 'safari', 'firefox', 'edge', 'other']
+      const values = [275, 200, 187, 173, 90]
+      const colors = [
+        theme.chart1,
+        theme.chart2,
+        theme.chart3,
+        theme.chart4,
+        theme.chart5,
+      ]
+      option.grid = compactGrid({ top: 36, left: 24, right: 24 })
+      option.xAxis = {
+        type: 'category',
+        data: browsers,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { color: theme.mutedForeground, fontSize: 12 },
+      }
+      const series = line(
+        'Visitors',
+        theme.chart2,
+        values.map((value, index) => ({
+          value,
+          itemStyle: { color: colors[index] ?? theme.chart1 },
+          ...(example === 'Custom Label'
+            ? { label: { formatter: browsers[index] ?? '' } }
+            : {}),
+        })),
+      )
+      series.symbolSize = example === 'Dots Colors' ? 10 : 8
+      if (example === 'Custom Label')
+        series.label = {
+          show: true,
+          position: 'top',
+          distance: 12,
+          color: theme.foreground,
+          fontSize: 12,
+        }
+      option.series = [series]
+      return option
+    }
+    if (example === 'Label') {
+      option.grid = compactGrid({ top: 32 })
+      const desktopSeries = line('Desktop', theme.chart1, desktopData)
+      desktopSeries.symbolSize = 8
+      desktopSeries.label = {
+        show: true,
+        position: 'top',
+        distance: 12,
+        color: theme.foreground,
+        fontSize: 12,
+      }
+      option.series = [desktopSeries]
+      return option
+    }
+  }
   if (slug === 'area' || slug === 'line')
     first.data = [186, 305, 237, 73, 209, 214]
   if ((slug === 'area' || slug === 'line') && example === 'Linear')
