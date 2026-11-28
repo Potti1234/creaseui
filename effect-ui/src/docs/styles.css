@@ -4873,3 +4873,27 @@ body:has(.effect-docs) {
 .create-page .create-dividend-income .create-dividend-row:first-of-type {
   margin-top: 1.1875rem;
 }
+.create-page .create-syncing-your-accounts {
+  text-align: center;
+}
+.create-page .create-syncing-your-accounts .create-sync-icon {
+  width: 1.4375rem;
+  height: 1.4375rem;
+  margin: 3.75rem auto 0.8125rem;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+.create-page .create-syncing-your-accounts > p {
+  width: 17.3125rem;
+  margin-inline: auto;
+  line-height: 1.4375rem;
+}
+.create-page .create-syncing-your-accounts button {
+  display: grid;
+  width: 4.25rem;
+  height: 2.25rem;
+  place-items: center;
+  justify-self: center;
+  margin-top: 0.6875rem;
+  padding: 0;
+}
