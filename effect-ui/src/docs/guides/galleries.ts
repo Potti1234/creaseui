@@ -1031,6 +1031,24 @@ const createColumn = (
     .class('create-column')
     .children(...cards)
 
+const createTokenRow = (
+  h: Html.H<DocsMessage>,
+  token: string,
+  value: string,
+  color: string,
+  contrast = '',
+) =>
+  h.div
+    .key(`extra-${token}`)
+    .class('create-token')
+    .children(
+      h.span.class('create-token-swatch').style({ background: color }),
+      h.div.children(h.strong.children(token), h.code.children(value)),
+      contrast === ''
+        ? undefined
+        : h.span.class('create-contrast').children(contrast),
+    )
+
 const createGuide: DocsGuide = {
   title: 'Create',
   description: 'Create a new Effect UI project with CreaseUI.',
@@ -1050,76 +1068,139 @@ const createGuide: DocsGuide = {
             h.span.children('Type'),
             h.span.children('Motion'),
           ),
-        h.div.class('create-mode').children(
-          h.span
-            .attr('aria-current', 'page')
-            .on('click', DocsMessage.SelectedTheme({ dark: false }))
-            .children('Light'),
-          h.span
-            .on('click', DocsMessage.SelectedTheme({ dark: true }))
-            .children('Dark'),
-        ),
-        h.div.class('create-token-section').children('PRIMARY'),
-        ...[
-          ['primary', 'oklch(0.21 0 0)', '#171717', ''],
-          ['primary-foreground', 'oklch(0.985 0 0)', '#fafafa', '17.0'],
-        ].map(([token, value, color, contrast]) =>
-          h.div
-            .key(token ?? '')
-            .class('create-token')
-            .children(
-              h.span
-                .class('create-token-swatch')
-                .style({ background: color ?? '' }),
-              h.div.children(
-                h.strong.children(token ?? ''),
-                h.code.children(value ?? ''),
+        h.div.class('create-token-scroll').children(
+          h.div.class('create-mode').children(
+            h.span
+              .attr('aria-current', 'page')
+              .on('click', DocsMessage.SelectedTheme({ dark: false }))
+              .children('Light'),
+            h.span
+              .on('click', DocsMessage.SelectedTheme({ dark: true }))
+              .children('Dark'),
+          ),
+          h.div.class('create-token-section').children('Primary'),
+          ...[
+            ['primary', 'oklch(0.21 0 0)', '#171717', ''],
+            ['primary-foreground', 'oklch(0.985 0 0)', '#fafafa', '17.0'],
+          ].map(([token, value, color, contrast]) =>
+            h.div
+              .key(token ?? '')
+              .class('create-token')
+              .children(
+                h.span
+                  .class('create-token-swatch')
+                  .style({ background: color ?? '' }),
+                h.div.children(
+                  h.strong.children(token ?? ''),
+                  h.code.children(value ?? ''),
+                ),
+                contrast === ''
+                  ? undefined
+                  : h.span.class('create-contrast').children(contrast ?? ''),
               ),
-              contrast === ''
-                ? undefined
-                : h.span.class('create-contrast').children(contrast ?? ''),
-            ),
-        ),
-        h.div.class('create-token-section').children('SECONDARY'),
-        ...[
-          ['secondary', 'oklch(0.923 0 0)', '#ebebeb', ''],
-          ['secondary-foreground', 'oklch(0.205 0 0)', '#343434', '14.3'],
-        ].map(([token, value, color, contrast]) =>
-          h.div
-            .key(token ?? '')
-            .class('create-token')
-            .children(
-              h.span
-                .class('create-token-swatch')
-                .style({ background: color ?? '' }),
-              h.div.children(
-                h.strong.children(token ?? ''),
-                h.code.children(value ?? ''),
+          ),
+          h.div.class('create-token-section').children('Secondary'),
+          ...[
+            ['secondary', 'oklch(0.923 0 0)', '#ebebeb', ''],
+            ['secondary-foreground', 'oklch(0.205 0 0)', '#343434', '14.3'],
+          ].map(([token, value, color, contrast]) =>
+            h.div
+              .key(token ?? '')
+              .class('create-token')
+              .children(
+                h.span
+                  .class('create-token-swatch')
+                  .style({ background: color ?? '' }),
+                h.div.children(
+                  h.strong.children(token ?? ''),
+                  h.code.children(value ?? ''),
+                ),
+                contrast === ''
+                  ? undefined
+                  : h.span.class('create-contrast').children(contrast ?? ''),
               ),
-              contrast === ''
-                ? undefined
-                : h.span.class('create-contrast').children(contrast ?? ''),
-            ),
-        ),
-        h.div.class('create-token-section').children('ACCENT'),
-        ...[
-          ['accent', 'oklch(0.923 0 0)', '#ebebeb', ''],
-          ['accent-foreground', 'oklch(0.205 0 0)', '#343434', ''],
-          ['muted', 'oklch(0.923 0 0)', '#ebebeb', ''],
-          ['muted-foreground', 'oklch(0.556 0 0)', '#737373', ''],
-        ].map(([token, value, color]) =>
-          h.div
-            .key(token ?? '')
-            .class('create-token')
-            .children(
-              h.span
-                .class('create-token-swatch')
-                .style({ background: color ?? '' }),
-              h.div.children(
-                h.strong.children(token ?? ''),
-                h.code.children(value ?? ''),
+          ),
+          h.div.class('create-token-section').children('Accent'),
+          ...[
+            ['accent', 'oklch(0.923 0 0)', '#ebebeb', ''],
+            ['accent-foreground', 'oklch(0.205 0 0)', '#343434', ''],
+          ].map(([token, value, color]) =>
+            h.div
+              .key(token ?? '')
+              .class('create-token')
+              .children(
+                h.span
+                  .class('create-token-swatch')
+                  .style({ background: color ?? '' }),
+                h.div.children(
+                  h.strong.children(token ?? ''),
+                  h.code.children(value ?? ''),
+                ),
               ),
-            ),
+          ),
+          h.div.class('create-token-section').children('Base'),
+          ...[
+            ['background', 'oklch(1 0 0)', '#ffffff'],
+            ['foreground', 'oklch(0.205 0 0)', '#343434'],
+          ].map(([token, value, color]) =>
+            createTokenRow(h, token ?? '', value ?? '', color ?? ''),
+          ),
+          h.div.class('create-token-section').children('Card'),
+          ...[
+            ['card', 'oklch(1 0 0)', '#ffffff'],
+            ['card-foreground', 'oklch(0.205 0 0)', '#343434'],
+          ].map(([token, value, color]) =>
+            createTokenRow(h, token ?? '', value ?? '', color ?? ''),
+          ),
+          h.div.class('create-token-section').children('Popover'),
+          ...[
+            ['popover', 'oklch(1 0 0)', '#ffffff'],
+            ['popover-foreground', 'oklch(0.205 0 0)', '#343434'],
+          ].map(([token, value, color]) =>
+            createTokenRow(h, token ?? '', value ?? '', color ?? ''),
+          ),
+          h.div.class('create-token-section').children('Muted'),
+          ...[
+            ['muted', 'oklch(0.923 0 0)', '#ebebeb'],
+            ['muted-foreground', 'oklch(0.556 0 0)', '#737373'],
+          ].map(([token, value, color]) =>
+            createTokenRow(h, token ?? '', value ?? '', color ?? ''),
+          ),
+          h.div.class('create-token-section').children('Destructive'),
+          ...[
+            ['destructive', 'oklch(0.577 0.245 27.325)', '#c94436'],
+            ['destructive-foreground', 'oklch(0.985 0 0)', '#fafafa'],
+          ].map(([token, value, color]) =>
+            createTokenRow(h, token ?? '', value ?? '', color ?? ''),
+          ),
+          h.div.class('create-token-section').children('Border & Input'),
+          ...[
+            ['border', 'oklch(0.885 0 0)', '#e0e0e0'],
+            ['input', 'oklch(0.885 0 0)', '#e0e0e0'],
+            ['ring', 'oklch(0.21 0 0)', '#171717'],
+          ].map(([token, value, color]) =>
+            createTokenRow(h, token ?? '', value ?? '', color ?? ''),
+          ),
+          h.div.class('create-token-section').children('Chart'),
+          ...[
+            ['chart-1', 'oklch(0.205 0 0)', '#343434'],
+            ['chart-2', 'oklch(0.922 0 0)', '#e9e9e9'],
+            ['chart-3', 'oklch(0.556 0 0)', '#737373'],
+            ['chart-4', 'oklch(0.72 0 0)', '#a3a3a3'],
+            ['chart-5', 'oklch(0.82 0 0)', '#d4d4d4'],
+          ].map(([token, value, color]) =>
+            createTokenRow(h, token ?? '', value ?? '', color ?? ''),
+          ),
+          h.div.class('create-token-section').children('Sidebar'),
+          ...[
+            ['sidebar', 'oklch(0.923 0 0)', '#ebebeb'],
+            ['sidebar-foreground', 'oklch(0.205 0 0)', '#343434'],
+            ['sidebar-primary', 'oklch(0.21 0 0)', '#171717'],
+            ['sidebar-primary-foreground', 'oklch(0.985 0 0)', '#fafafa'],
+            ['sidebar-accent', 'oklch(0.923 0 0)', '#ebebeb'],
+          ].map(([token, value, color]) =>
+            createTokenRow(h, token ?? '', value ?? '', color ?? ''),
+          ),
         ),
         h.div
           .class('create-preset-row')

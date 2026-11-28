@@ -3315,3 +3315,16 @@ body:has(.effect-docs) {
 .preview-table-footer {
   min-height: 1.8125rem;
 }
+
+.create-page .create-panel {
+  overflow: hidden;
+}
+.create-token-scroll {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
