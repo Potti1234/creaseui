@@ -4422,3 +4422,116 @@ body:has(.effect-docs) {
 .checkout-content {
   grid-template-columns: minmax(0, 1fr) 22.1875rem;
 }
+
+.data-shell {
+  min-height: 896px;
+}
+.data-content {
+  padding: 2rem 1.75rem 2rem 2rem;
+}
+.data-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 2.4rem;
+}
+.data-controls span,
+.data-controls strong {
+  display: inline-flex;
+  height: 2rem;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  padding-inline: 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.data-controls strong {
+  margin-left: auto;
+}
+.data-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.data-metrics section {
+  min-height: 10rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--card);
+  padding: 1rem;
+}
+.data-metrics section > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+}
+.data-metrics b {
+  font-size: 0.75rem;
+}
+.data-metrics strong {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 1.35rem;
+}
+.data-sparkline {
+  height: 3.5rem;
+  margin-top: 0.8rem;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(
+    135deg,
+    transparent 48%,
+    var(--muted-foreground) 49%,
+    transparent 51%
+  );
+  opacity: 0.5;
+}
+.data-metrics footer {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+.data-breakdowns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.data-table {
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--card);
+  padding: 1rem;
+}
+.data-table h2 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+}
+.data-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr 0.7fr;
+  min-height: 2.35rem;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  font-size: 0.8125rem;
+}
+.data-row.head {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+.data-metrics,
+.data-breakdowns {
+  max-width: 60rem;
+}
+.data-metrics {
+  margin-top: 2.125rem;
+}
+.data-breakdowns {
+  margin-top: 2.4rem;
+}
+.data-metrics {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}

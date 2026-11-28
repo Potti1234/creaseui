@@ -2947,6 +2947,145 @@ const checkoutFormPreview = (h: Html.H<DocsMessage>) =>
     ),
   )
 
+const dataDashboardPreview = (h: Html.H<DocsMessage>) =>
+  h.div.class('exec-shell data-shell').children(
+    blockSidebar(h, 'northwind') as never,
+    h.main.class('exec-main').children(
+      h.header
+        .class('preview-topbar')
+        .children(
+          h.span.children('☰'),
+          h.span.children('Northwind'),
+          h.span.children('Metrics'),
+        ),
+      h.div.class('data-content').children(
+        h.header
+          .class('exec-heading')
+          .children(
+            h.div.children(
+              h.h1.children('Data dashboard'),
+              h.p.children('Comparison reporting · refreshed 8 minutes ago'),
+            ),
+            h.div
+              .class('exec-actions')
+              .children(h.span.children('Save view'), h.span.children('Share')),
+          ),
+        h.div
+          .class('data-controls')
+          .children(
+            h.span.children('Last 30 days'),
+            h.span.children('All channels'),
+            h.span.children('All regions'),
+            h.span.children('Compare: prior period'),
+            h.strong.children('Export'),
+          ),
+        h.div.class('data-metrics').children(
+          ...[
+            [
+              'Revenue',
+              '+12.1%',
+              '$182.4K',
+              'vs 7d +4.2%',
+              'vs 30d +9.8%',
+              'plan −1.2%',
+            ],
+            [
+              'Active sessions',
+              '+6.4%',
+              '48.2K',
+              'vs 7d +1.9%',
+              'vs 30d +6.4%',
+              'plan +2.0%',
+            ],
+            [
+              'Conversion',
+              '−0.3%',
+              '3.42%',
+              'vs 7d −0.3%',
+              'vs 30d +0.4%',
+              'plan −0.2%',
+            ],
+            [
+              'Activation',
+              '+3.7%',
+              '41.8%',
+              'vs 7d +0.9%',
+              'vs 30d +3.7%',
+              'plan +1.4%',
+            ],
+          ].map(([label, delta, value, a, b, c]) =>
+            h.section
+              .key(label ?? '')
+              .children(
+                h.div.children(
+                  h.span.children(label ?? ''),
+                  h.b.children(delta ?? ''),
+                ),
+                h.strong.children(value ?? ''),
+                h.div.class('data-sparkline'),
+                h.footer.children(
+                  h.span.children(a ?? ''),
+                  h.span.children(b ?? ''),
+                  h.span.children(c ?? ''),
+                ),
+              ),
+          ),
+        ),
+        h.div.class('data-breakdowns').children(
+          ...(
+            [
+              [
+                'Breakdown by channel',
+                'Channel',
+                [
+                  ['Organic search', '$74.2K', '$66.8K', '+11.1%'],
+                  ['Direct', '$41.9K', '$40.1K', '+4.5%'],
+                  ['Referral', '$32.6K', '$35.4K', '−7.9%'],
+                  ['Paid social', '$33.7K', '$25.2K', '+33.7%'],
+                ],
+              ],
+              [
+                'Breakdown by region',
+                'Region',
+                [
+                  ['North America', '$96.4K', '$88.2K', '+9.3%'],
+                  ['Europe', '$58.1K', '$55.6K', '+4.5%'],
+                  ['Asia Pacific', '$21.3K', '$19.8K', '+7.6%'],
+                  ['Other', '$6.6K', '$7.9K', '−16.5%'],
+                ],
+              ],
+            ] as const
+          ).map(([title, first, rows]) =>
+            h.section
+              .key(title)
+              .class('data-table')
+              .children(
+                h.h2.children(title),
+                h.div
+                  .class('data-row head')
+                  .children(
+                    h.span.children(first),
+                    h.span.children('This period'),
+                    h.span.children('Prior'),
+                    h.span.children('Delta'),
+                  ),
+                ...rows.map(row =>
+                  h.div
+                    .key(row[0])
+                    .class('data-row')
+                    .children(
+                      row.map((cell, index) =>
+                        h.span.key(`${row[0]}-${index}`).children(cell),
+                      ),
+                    ),
+                ),
+              ),
+          ),
+        ),
+      ),
+    ),
+  )
+
 const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'dashboard-01' || name === 'chart-analytics-dashboard')
     return dashboardPreview(h)
@@ -2959,6 +3098,7 @@ const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'creaseui-inbox-table') return inboxTablePreview(h)
   if (name === 'creaseui-order-detail') return orderDetailPreview(h)
   if (name === 'creaseui-checkout-form') return checkoutFormPreview(h)
+  if (name === 'creaseui-data-dashboard') return dataDashboardPreview(h)
   if (name.startsWith('sidebar-') || name === 'app-shell-01')
     return sidebarOnlyPreview(h, name)
   if (name === 'login-03') return loginPreview(h, false)
