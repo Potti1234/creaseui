@@ -476,6 +476,56 @@ const customizeGalleryOption = (
     option.series = [mobileSeries, desktopSeries]
     return option
   }
+  if (slug === 'tooltip' && theme !== undefined) {
+    const dates = [
+      '2024-07-15',
+      '2024-07-16',
+      '2024-07-17',
+      '2024-07-18',
+      '2024-07-19',
+      '2024-07-20',
+    ]
+    const weekday = (date: string): string =>
+      new Intl.DateTimeFormat('en-US', {
+        weekday: 'short',
+        timeZone: 'UTC',
+      }).format(new Date(`${date}T00:00:00Z`))
+    return {
+      grid: compactGrid(),
+      xAxis: {
+        type: 'category',
+        data: [...dates],
+        boundaryGap: true,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: {
+          color: theme.mutedForeground,
+          fontSize: 12,
+          fontFamily: theme.fontFamily,
+          margin: 10,
+          formatter: (value: string) => weekday(String(value)),
+        },
+      },
+      yAxis: valueAxis(theme),
+      tooltip: tooltipOptions(theme),
+      series: [
+        {
+          name: 'Running',
+          type: 'bar',
+          stack: 'activities',
+          itemStyle: { color: theme.chart1, borderRadius: [0, 0, 4, 4] },
+          data: [450, 380, 520, 140, 600, 480],
+        },
+        {
+          name: 'Swimming',
+          type: 'bar',
+          stack: 'activities',
+          itemStyle: { color: theme.chart2, borderRadius: [4, 4, 0, 0] },
+          data: [300, 420, 120, 550, 350, 400],
+        },
+      ],
+    }
+  }
   if (slug === 'radar' && theme !== undefined)
     return radarGalleryOption(theme, example)
   if (
