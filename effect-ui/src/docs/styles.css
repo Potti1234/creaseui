@@ -4897,3 +4897,75 @@ body:has(.effect-docs) {
   margin-top: 0.6875rem;
   padding: 0;
 }
+
+.balance-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.75rem;
+}
+.balance-card-grid p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+}
+.balance-card-grid h3 {
+  margin: 0.5rem 0 0;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.balance-card-grid .balance-available {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+}
+.balance-activity-head {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3.25rem;
+  font-size: 0.8125rem;
+}
+.balance-activity-head strong {
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+.balance-activity-chart {
+  display: flex;
+  height: 4.5rem;
+  align-items: end;
+  gap: 1rem;
+  margin-top: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+.balance-activity-chart i {
+  width: 0.45rem;
+  border-radius: 999px 999px 0 0;
+  background: var(--foreground);
+}
+.balance-months {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.45rem;
+  color: var(--muted-foreground);
+  font-size: 0.625rem;
+}
+.create-page .create-card-balance {
+  padding-top: 1.75rem;
+}
+.balance-card-grid h3 {
+  margin-top: 0.75rem;
+}
+.balance-card-grid .balance-available {
+  margin-top: 0.75rem;
+}
+.balance-activity-head {
+  margin-top: 3rem;
+}
+.balance-activity-head strong {
+  font-size: 0.75rem;
+}
+.balance-activity-head {
+  font-size: 0.875rem;
+}
+.balance-activity-head strong {
+  font-size: 0.875rem;
+}

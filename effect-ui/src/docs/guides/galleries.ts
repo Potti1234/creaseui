@@ -590,6 +590,40 @@ const createPlaceholderChildren = (
         ),
     ]
   }
+  if (title === 'Card Balance') {
+    return [
+      h.div
+        .class('balance-card-grid')
+        .children(
+          h.div.children(
+            h.p.children('Card Balance'),
+            h.h3.children('US$12.94'),
+            h.p.class('balance-available').children('US$11,337.06 Available'),
+          ),
+          h.div.children(h.p.children('Payment Due'), h.h3.children('1 Apr')),
+        ),
+      h.div
+        .class('balance-activity-head')
+        .children(
+          h.span.children('Yearly Activity'),
+          h.strong.children('+US$0.25 Daily Cash'),
+        ),
+      h.div
+        .class('balance-activity-chart')
+        .children(
+          ...[28, 42, 35, 58, 48, 70, 52, 76, 62, 82, 68, 88].map(height =>
+            h.i.key(String(height)).style({ height: `${String(height)}%` }),
+          ),
+        ),
+      h.div
+        .class('balance-months')
+        .children(
+          ...['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'].map(
+            (month, index) => h.span.key(`${month}-${index}`).children(month),
+          ),
+        ),
+    ]
+  }
   if (title === 'Transfer Funds') {
     return [
       createHeading(
