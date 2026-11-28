@@ -1199,7 +1199,15 @@ const createPlaceholderChildren = (
   }
   if (title === 'Home') {
     return [
-      createHeading(h, 'Home', 'Account options', 'Payments'),
+      h.div
+        .class('create-breadcrumb')
+        .children(
+          h.span.children('Home'),
+          h.small.children('›'),
+          h.span.class('create-breadcrumb-options').children('⋯'),
+          h.small.children('›'),
+          h.strong.children('Payments'),
+        ),
       ...[
         [
           'Change transfer limit',
@@ -1211,17 +1219,21 @@ const createPlaceholderChildren = (
       ].map(([name, description]) =>
         h.div
           .key(name ?? '')
-          .class('create-toggle-row')
+          .class('create-home-row')
           .children(
-            h.div.children(
-              h.strong.children(name ?? ''),
-              h.p.children(description ?? ''),
-            ),
-            h.span.children('›'),
+            h.div.class('create-home-icon'),
+            h.div
+              .class('create-home-copy')
+              .children(
+                h.strong.children(name ?? ''),
+                h.p.children(description ?? ''),
+              ),
+            h.span.class('create-home-chevron').children('›'),
           ),
       ),
     ]
   }
+
   if (title === 'Front Door') {
     return [
       createHeading(h, 'Front Door', 'Smart Lock Pro', 'Locked'),
