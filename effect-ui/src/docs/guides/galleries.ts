@@ -2564,6 +2564,108 @@ const incidentConsolePreview = (h: Html.H<DocsMessage>) =>
     ),
   )
 
+const inboxSidebar = (h: Html.H<DocsMessage>) =>
+  h.aside.class('exec-sidebar inbox-sidebar').children(
+    h.div
+      .class('preview-brand')
+      .children(h.b.children('N'), h.span.children('Northwind')),
+    h.nav.children(
+      ...['Inbox', 'Starred', 'Sent', 'Drafts', 'Archive'].map((item, index) =>
+        h.span
+          .key(item)
+          .attr('data-active', index === 0 ? 'true' : 'false')
+          .children(item),
+      ),
+    ),
+    h.nav
+      .class('inbox-labels')
+      .children(
+        ...['Customers', 'Ops', 'Receipts'].map(item =>
+          h.span.key(item).children(item),
+        ),
+      ),
+    h.div
+      .class('preview-user')
+      .children(h.b.children('JL'), h.span.children('Jules Lane')),
+  )
+
+const inboxTablePreview = (h: Html.H<DocsMessage>) =>
+  h.div.class('exec-shell inbox-shell').children(
+    inboxSidebar(h) as never,
+    h.main.class('exec-main').children(
+      h.header
+        .class('preview-topbar')
+        .children(
+          h.span.children('☰'),
+          h.span.children('Northwind'),
+          h.span.children('Inbox'),
+        ),
+      h.div.class('service-content inbox-content').children(
+        h.div.class('inbox-page').children(
+          h.header
+            .class('exec-heading')
+            .children(
+              h.div.children(
+                h.h1.children('Inbox'),
+                h.p.children('Customer and operations mail for Northwind.'),
+              ),
+              h.div
+                .class('exec-actions')
+                .children(
+                  h.span.children('Search mail'),
+                  h.span.children('Compose'),
+                ),
+            ),
+          h.section.class('inbox-list').children(
+            h.h2.children('Messages'),
+            h.div
+              .class('inbox-tabs')
+              .children(
+                h.span.attr('data-active', 'true').children('All'),
+                h.span.children('Unread'),
+                h.span.children('Starred'),
+                h.strong.children('Newest first'),
+              ),
+            h.div
+              .class('inbox-row head')
+              .children(
+                h.span.children('Sender'),
+                h.span.children('Subject'),
+                h.span.children('Tags'),
+                h.span.children('Received'),
+              ),
+            ...[
+              ['Nora Patel', 'Re: Q4 restock forecast', 'Customers', '9:41 AM'],
+              [
+                'Ops Bot',
+                'Deploy finished: storefront v2.31',
+                'Ops',
+                '9:12 AM',
+              ],
+              ['Kofi Mensah', 'Invoice #2184 paid', 'Receipts', 'Yesterday'],
+              [
+                'Priya Nair',
+                'Question about the trade program',
+                'Customers',
+                'Yesterday',
+              ],
+              ['Liam Ortiz', 'Dock schedule for October', 'Ops', 'Monday'],
+            ].map(row =>
+              h.div
+                .key(row[0] ?? '')
+                .class('inbox-row')
+                .children(
+                  row.map((cell, index) =>
+                    h.span.key(`${row[0] ?? ''}-${index}`).children(cell ?? ''),
+                  ),
+                ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  )
+
 const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'dashboard-01' || name === 'chart-analytics-dashboard')
     return dashboardPreview(h)
@@ -2573,6 +2675,7 @@ const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'creaseui-service-monitoring') return serviceMonitoringPreview(h)
   if (name === 'creaseui-incident-console') return incidentConsolePreview(h)
   if (name === 'creaseui-kanban-board') return kanbanPreview(h)
+  if (name === 'creaseui-inbox-table') return inboxTablePreview(h)
   if (name.startsWith('sidebar-') || name === 'app-shell-01')
     return sidebarOnlyPreview(h, name)
   if (name === 'login-03') return loginPreview(h, false)

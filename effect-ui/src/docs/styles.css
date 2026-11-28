@@ -4012,3 +4012,73 @@ body:has(.effect-docs) {
 .incident-shell {
   min-height: 896px;
 }
+
+.inbox-shell {
+  min-height: 896px;
+}
+.inbox-sidebar nav {
+  gap: 0;
+}
+.inbox-labels {
+  margin-top: 3rem;
+}
+.inbox-content {
+  display: block;
+  padding-inline: 1.75rem;
+}
+.inbox-list {
+  margin-left: 0.8125rem;
+}
+.inbox-list h2 {
+  margin: 1.8rem 0 0;
+  font-size: 1rem;
+}
+.inbox-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+}
+.inbox-tabs span,
+.inbox-tabs strong {
+  display: inline-flex;
+  height: 2rem;
+  align-items: center;
+  border-radius: 0.4rem;
+  padding-inline: 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+.inbox-tabs span[data-active='true'] {
+  background: var(--secondary);
+}
+.inbox-tabs strong {
+  margin-left: auto;
+  border: 1px solid var(--border);
+}
+.inbox-row {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr 6.5rem 5.5rem;
+  min-height: 3rem;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8125rem;
+}
+.inbox-row.head {
+  margin-top: 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+.inbox-list h2 {
+  margin-top: 2.2375rem;
+}
+.inbox-tabs {
+  margin-top: 2.625rem;
+}
+.inbox-row {
+  margin-left: -0.8125rem;
+}
+.inbox-row.head {
+  min-height: 2.55rem;
+  margin-top: -0.2rem;
+}
