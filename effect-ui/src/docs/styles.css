@@ -6370,3 +6370,31 @@ body:has(.effect-docs) {
 .create-page .create-social-links .create-social-actions {
   margin-top: 0.0625rem;
 }
+.create-page .create-card.distribute {
+  align-content: start;
+  gap: 0;
+  padding-top: 1.5rem;
+}
+.create-page .create-card.distribute .create-plus {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 3rem auto 0;
+}
+.create-page .create-card.distribute h2 {
+  display: table;
+  margin: 2rem auto 0;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+.create-page .create-card.distribute p {
+  width: 14.3125rem;
+  margin: 0.5rem auto 0;
+  font-size: 0.875rem;
+  line-height: 1.417rem;
+  text-align: center;
+}
+.create-page .create-card.distribute button {
+  width: 7.6875rem;
+  height: 2.25rem;
+  margin-top: 1.5rem;
+}
