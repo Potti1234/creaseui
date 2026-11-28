@@ -3214,3 +3214,45 @@ body:has(.effect-docs) {
 .lint-overview section > * {
   margin-block: 0 !important;
 }
+.preview-sidebar {
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+.preview-nav-label {
+  display: flex;
+  height: 2rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+.preview-sidebar nav {
+  gap: 0;
+  margin-top: 0;
+}
+.preview-sidebar nav a {
+  display: flex;
+  height: 2rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+}
+.preview-sidebar nav.bottom {
+  margin-top: 0;
+}
+.preview-sidebar > nav:not(.preview-secondary) {
+  margin-top: -0.25rem;
+}
+.preview-sidebar > nav:not(.preview-secondary) a {
+  height: 2.25rem;
+}
+.preview-sidebar > nav.preview-secondary {
+  margin-top: -0.5rem;
+}
+.preview-sidebar > nav.preview-secondary.bottom {
+  margin-top: 1rem;
+}
+.preview-sidebar nav a {
+  height: 2.25rem;
+}
+.preview-sidebar > nav.preview-secondary.bottom {
+  margin-top: 0.75rem;
+}
