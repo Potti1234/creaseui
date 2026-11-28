@@ -3682,3 +3682,126 @@ body:has(.effect-docs) {
 .kanban-content {
   padding: 0.75rem;
 }
+
+.project-shell {
+  min-height: 1379px;
+}
+.project-top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.project-panel {
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--card);
+  padding: 1rem;
+}
+.project-panel h2 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.25rem;
+}
+.project-panel > p,
+.workstream-head p {
+  margin: 0.25rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+}
+.project-progress {
+  min-height: 20rem;
+}
+.project-donut {
+  display: grid;
+  width: 12rem;
+  height: 12rem;
+  place-items: center;
+  margin: 1.5rem auto 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--foreground) 0 68%, var(--muted) 68% 100%);
+}
+.project-donut::before {
+  position: absolute;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  background: var(--card);
+  content: '';
+}
+.project-donut span {
+  position: relative;
+  font-size: 1.5rem;
+  font-weight: 650;
+}
+.timeline-panel {
+  margin-top: 1rem;
+  min-height: 13.5rem;
+}
+.timeline-row {
+  display: grid;
+  grid-template-columns: 1rem 1fr 6rem;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.timeline-row i {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--muted-foreground);
+}
+.timeline-row i[data-status='done'] {
+  background: #16a34a;
+}
+.timeline-row i[data-status='track'] {
+  background: #2563eb;
+}
+.timeline-row i[data-status='risk'] {
+  background: #d97706;
+}
+.timeline-row strong {
+  font-size: 0.75rem;
+}
+.workstream-panel {
+  margin-top: 1rem;
+}
+.workstream-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 0.7fr 0.7fr 0.8fr;
+  min-height: 2.75rem;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+}
+.workstream-row.head {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+.risk-panel {
+  margin-top: 1rem;
+}
+.risk-panel article {
+  margin-top: 1rem;
+  border-left: 3px solid #d97706;
+  padding-left: 0.75rem;
+}
+.risk-panel article p {
+  margin: 0.25rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+}
+.project-progress {
+  min-height: 23.75rem;
+}
+.workstream-row {
+  min-height: 2.15rem;
+  margin-top: 0.35rem;
+}
+.risk-panel {
+  min-height: 13.4375rem;
+}
+.workstream-row {
+  min-height: 2.55rem;
+}

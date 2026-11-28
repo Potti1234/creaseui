@@ -2238,11 +2238,135 @@ const kanbanPreview = (h: Html.H<DocsMessage>) =>
     ),
   )
 
+const projectStatusPreview = (h: Html.H<DocsMessage>) =>
+  h.div.class('exec-shell project-shell').children(
+    blockSidebar(h, 'orbit') as never,
+    h.main.class('exec-main').children(
+      h.header
+        .class('preview-topbar')
+        .children(
+          h.span.children('☰'),
+          h.span.children('Orbit Studio'),
+          h.span.children('Projects'),
+        ),
+      h.div.class('funnel-content project-content').children(
+        h.header
+          .class('exec-heading')
+          .children(
+            h.div.children(
+              h.h1.children('Project Atlas'),
+              h.p.children('Launch status · General availability'),
+            ),
+            h.div
+              .class('exec-actions')
+              .children(
+                h.span.children('Phase: All'),
+                h.span.children('Update status'),
+              ),
+          ),
+        h.div
+          .class('project-top-grid')
+          .children(
+            h.section
+              .class('project-panel project-progress')
+              .children(
+                h.h2.children('Task progress'),
+                h.p.children('Weighted by story points · 68% complete'),
+                h.div.class('project-donut').children(h.span.children('68%')),
+              ),
+            h.section
+              .class('project-panel')
+              .children(
+                h.h2.children('Scope burndown'),
+                h.p.children('Remaining story points'),
+                h.div.class('exec-area-chart'),
+              ),
+          ),
+        h.section.class('project-panel timeline-panel').children(
+          h.h2.children('Launch timeline'),
+          h.p.children('Release milestones and completion'),
+          ...[
+            ['Foundation', 'Done'],
+            ['Private beta', 'On track'],
+            ['General availability', 'At risk'],
+          ].map(([label, status], index) =>
+            h.div
+              .key(label ?? '')
+              .class('timeline-row')
+              .children(
+                h.i.attr(
+                  'data-status',
+                  index === 0 ? 'done' : index === 1 ? 'track' : 'risk',
+                ),
+                h.span.children(label ?? ''),
+                h.strong.children(status ?? ''),
+              ),
+          ),
+        ),
+        h.section.class('project-panel workstream-panel').children(
+          h.div
+            .class('workstream-head')
+            .children(
+              h.div.children(
+                h.h2.children('Workstreams'),
+                h.p.children('All Beta GA'),
+              ),
+            ),
+          h.div
+            .class('workstream-row head')
+            .children(
+              h.span.children('Workstream'),
+              h.span.children('Owner'),
+              h.span.children('Complete'),
+              h.span.children('Due'),
+              h.span.children('Status'),
+            ),
+          ...[
+            ['Core platform', 'Maya Chen', '82%', 'Sep 12', 'On track'],
+            ['Migration tooling', 'Ibrahim Noor', '63%', 'Sep 18', 'Watch'],
+            ['Documentation', 'Jo Park', '48%', 'Sep 24', 'On track'],
+            ['Partner rollout', 'Ana Silva', '29%', 'Oct 03', 'Blocked'],
+          ].map(row =>
+            h.div
+              .key(row[0] ?? '')
+              .class('workstream-row')
+              .children(
+                row.map((cell, index) =>
+                  h.span.key(`${row[0] ?? ''}-${index}`).children(cell ?? ''),
+                ),
+              ),
+          ),
+        ),
+        h.section.class('project-panel risk-panel').children(
+          h.h2.children('Blockers & risks'),
+          ...[
+            [
+              'Partner API approval',
+              'External review is two days behind the launch plan.',
+            ],
+            [
+              'Migration throughput',
+              'Large accounts need a second batch window.',
+            ],
+          ].map(([title, copy]) =>
+            h.article
+              .key(title ?? '')
+              .children(
+                h.strong.children(title ?? ''),
+                h.p.children(copy ?? ''),
+              ),
+          ),
+        ),
+      ),
+    ),
+  )
+
 const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'dashboard-01' || name === 'chart-analytics-dashboard')
     return dashboardPreview(h)
   if (name === 'creaseui-executive-summary') return executivePreview(h)
   if (name === 'creaseui-cohort-funnel') return funnelPreview(h)
+  if (name === 'creaseui-project-status') return projectStatusPreview(h)
   if (name === 'creaseui-kanban-board') return kanbanPreview(h)
   if (name.startsWith('sidebar-') || name === 'app-shell-01')
     return sidebarOnlyPreview(h, name)
