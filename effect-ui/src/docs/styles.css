@@ -4828,3 +4828,20 @@ body:has(.effect-docs) {
 .create-page .balance-note {
   margin-top: 2.1125rem;
 }
+.create-page .create-qr-panel {
+  place-items: start;
+  margin-top: 1.75rem;
+}
+.create-page .create-qr-panel + h2 {
+  margin-top: 0.75rem;
+}
+.create-page .create-qr-panel + h2 + p {
+  margin-top: -0.5rem;
+}
+.create-page .create-qr-panel + h2 + p + button {
+  margin-top: 1.375rem;
+}
+.create-page .create-qr-panel + h2 + p + button {
+  height: 2.25rem;
+  padding: 0;
+}
