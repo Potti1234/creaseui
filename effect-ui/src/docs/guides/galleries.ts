@@ -127,6 +127,110 @@ const galleryKind = (slug: string): ChartFamilyKind =>
   slug === 'tooltip' ? 'bar' : (slug as ChartFamilyKind)
 const galleryHostId = (slug: string, example: string) =>
   `gallery-${slug}-${example.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+const radarGalleryOption = (theme: any, example: string): any => {
+  const months = ['January', 'February', 'March', 'April', 'May', 'June']
+  const desktopDefault = [186, 305, 237, 273, 209, 214]
+  const desktopMulti = [186, 305, 237, 73, 209, 214]
+  const mobileMulti = [80, 200, 120, 190, 130, 140]
+  const multi =
+    example === 'Multiple' ||
+    example === 'Legend' ||
+    example === 'Icons' ||
+    example === 'Custom Label' ||
+    example === 'Radius'
+  const linesOnly = example === 'Lines Only'
+  const desktop =
+    example === 'Grid Fill' || example === 'Grid Circle Fill'
+      ? [186, 285, 237, 203, 209, 264]
+      : example === 'Grid Circle No Lines'
+        ? [186, 305, 237, 203, 209, 214]
+        : linesOnly
+          ? [186, 185, 207, 173, 160, 174]
+          : multi
+            ? desktopMulti
+            : desktopDefault
+  const mobile = multi
+    ? mobileMulti
+    : linesOnly
+      ? [160, 170, 180, 160, 190, 204]
+      : undefined
+  const dots = example === 'Dots' || example === 'Grid None'
+  const legend = example === 'Legend' || example === 'Icons'
+  const shape = example.startsWith('Grid Circle') ? 'circle' : 'polygon'
+  const splitLine = example !== 'Grid None'
+  const axisLine = !(
+    example === 'Grid Circle No Lines' ||
+    example === 'Grid Custom' ||
+    example === 'Grid None' ||
+    linesOnly
+  )
+  const splitArea = example === 'Grid Fill' || example === 'Grid Circle Fill'
+  const customLabels = example === 'Custom Label'
+  const point = (
+    name: string,
+    color: string,
+    value: readonly number[],
+    opacity: number,
+    showDots: boolean,
+  ) => ({
+    name,
+    value: [...value],
+    lineStyle: { color, width: linesOnly ? 2 : 1 },
+    itemStyle: { color },
+    areaStyle: { color: colorWithOpacity(color, linesOnly ? 0 : opacity) },
+    symbol: showDots ? 'circle' : 'none',
+    symbolSize: showDots ? 8 : 0,
+  })
+  return {
+    tooltip: tooltipOptions(theme, { trigger: 'item' }),
+    ...(legend
+      ? {
+          legend: {
+            ...legendOptions(theme),
+            data: mobile === undefined ? ['Desktop'] : ['Desktop', 'Mobile'],
+          },
+        }
+      : {}),
+    radar: {
+      center: ['50%', legend ? '44%' : '50%'],
+      radius: legend ? '62%' : '68%',
+      shape,
+      indicator: months.map((month, index) => ({
+        name: customLabels
+          ? `${String(desktop[index] ?? 0)}/${String(mobile?.[index] ?? 0)}\n${month}`
+          : month,
+        max: 350,
+      })),
+      axisName: {
+        color: theme.mutedForeground,
+        fontSize: customLabels ? 11 : 12,
+        fontFamily: theme.fontFamily,
+      },
+      splitNumber: example === 'Grid Custom' ? 1 : 5,
+      axisLine: { show: axisLine, lineStyle: { color: theme.border } },
+      splitLine: { show: splitLine, lineStyle: { color: theme.border } },
+      splitArea: {
+        show: splitArea,
+        areaStyle: {
+          color: [colorWithOpacity(theme.chart1, 0.2), 'transparent'],
+        },
+      },
+      axisNameGap: 8,
+    },
+    series: [
+      {
+        type: 'radar',
+        data: [
+          point('Desktop', theme.chart1, desktop, 0.6, dots),
+          ...(mobile === undefined
+            ? []
+            : [point('Mobile', theme.chart2, mobile, 0.45, false)]),
+        ],
+      },
+    ],
+  }
+}
+
 const pieGalleryOption = (theme: any, example: string): any => {
   const browserNames = ['Chrome', 'Safari', 'Firefox', 'Edge', 'Other']
   const browserValues = [275, 200, 187, 173, 90]
@@ -372,6 +476,8 @@ const customizeGalleryOption = (
     option.series = [mobileSeries, desktopSeries]
     return option
   }
+  if (slug === 'radar' && theme !== undefined)
+    return radarGalleryOption(theme, example)
   if (
     slug === 'radial' &&
     theme !== undefined &&
