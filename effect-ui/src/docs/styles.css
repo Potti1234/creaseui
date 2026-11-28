@@ -4706,3 +4706,12 @@ body:has(.effect-docs) {
 .create-page .distribute button {
   margin-top: 1rem;
 }
+.create-page .distribute .create-plus {
+  margin-top: 1.125rem;
+}
+.create-page .distribute h2 {
+  margin-bottom: -2rem;
+}
+.create-page .distribute button {
+  margin-top: 0.875rem;
+}
