@@ -3524,3 +3524,85 @@ body:has(.effect-docs) {
 .exec-objectives {
   min-height: 14.8125rem;
 }
+
+.funnel-shell {
+  min-height: 1216px;
+}
+.funnel-content {
+  padding: 2rem;
+}
+.funnel-content .exec-metrics {
+  margin-top: 2rem;
+}
+.funnel-panel {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--card);
+  padding: 1rem;
+}
+.funnel-panel h2 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.25rem;
+}
+.funnel-panel > p {
+  margin: 0.25rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+}
+.funnel-row {
+  display: grid;
+  grid-template-columns: 8rem 1fr 4rem;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 0.8125rem;
+}
+.funnel-row div {
+  height: 1.75rem;
+  border-radius: 0.3rem;
+  background: var(--muted);
+}
+.funnel-row i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: color-mix(in oklab, var(--foreground) 80%, transparent);
+}
+.funnel-chart-panel .exec-area-chart {
+  height: 15rem;
+}
+.cohort-table {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+.cohort-row {
+  display: grid;
+  grid-template-columns: 1fr repeat(4, 5rem);
+  min-height: 2.375rem;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-inline: 0.75rem;
+  font-size: 0.8125rem;
+}
+.cohort-row:first-child {
+  border-top: 0;
+}
+.cohort-row.head {
+  color: var(--muted-foreground);
+}
+.funnel-content > .funnel-panel:first-of-type {
+  min-height: 16.25rem;
+  margin-top: 1.625rem;
+}
+.funnel-chart-panel {
+  min-height: 21.75rem;
+}
+.cohort-panel {
+  min-height: 14.375rem;
+}
+.cohort-row {
+  min-height: 2.125rem;
+}

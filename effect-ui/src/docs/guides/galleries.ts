@@ -1928,10 +1928,131 @@ const executivePreview = (h: Html.H<DocsMessage>) =>
     ),
   )
 
+const funnelPreview = (h: Html.H<DocsMessage>) =>
+  h.div.class('exec-shell funnel-shell').children(
+    h.aside.class('exec-sidebar').children(
+      h.div
+        .class('exec-brand')
+        .children('OS', h.strong.children('Orbit Studio')),
+      h.span.class('preview-nav-label').children('Workspace'),
+      h.nav.children(
+        ...['Overview', 'Growth', 'Projects', 'Services', 'Incidents'].map(
+          item =>
+            h.a
+              .key(item)
+              .attr('aria-current', item === 'Growth' ? 'page' : undefined)
+              .children(item),
+        ),
+      ),
+      h.div.class('exec-user').children('AL', h.span.children('Alex Lee')),
+    ),
+    h.main.class('exec-main').children(
+      h.header
+        .class('preview-topbar')
+        .children(
+          h.span.children('☰'),
+          h.span.children('Orbit Studio'),
+          h.span.children('Growth funnel'),
+        ),
+      h.div.class('funnel-content').children(
+        h.header
+          .class('exec-heading')
+          .children(
+            h.div.children(
+              h.h1.children('Growth funnel'),
+              h.p.children('Acquisition and retention performance'),
+            ),
+            h.div
+              .class('exec-actions')
+              .children(
+                h.span.children('30 days'),
+                h.span.children('All segments'),
+              ),
+          ),
+        h.div.class('exec-metrics').children(
+          ...[
+            ['Visitor', 'signup', '+1.2 pts', '14.8%'],
+            ['Signup', 'active', '+4.8 pts', '62.4%'],
+            ['Active', 'paid', '-0.9 pts', '18.1%'],
+            ['Overall conversion', '', '+0.2 pts', '1.67%'],
+          ].map(([from, to, delta, value]) =>
+            h.section
+              .key((from ?? '') + (to ?? ''))
+              .children(
+                h.div.children(
+                  h.span.children(
+                    `${from ?? ''}${to === '' ? '' : ` → ${to ?? ''}`}`,
+                  ),
+                  h.b.children(delta ?? ''),
+                ),
+                h.strong.children(value ?? ''),
+              ),
+          ),
+        ),
+        h.section.class('funnel-panel').children(
+          h.h2.children('Conversion funnel'),
+          h.p.children('Last 30 days · all acquisition channels'),
+          ...[
+            ['Visited', '100k', '100%'],
+            ['Signed up', '72k', '72%'],
+            ['Activated', '48k', '48%'],
+            ['Subscribed', '21k', '21%'],
+          ].map(([label, value, width]) =>
+            h.div
+              .key(label ?? '')
+              .class('funnel-row')
+              .children(
+                h.span.children(label ?? ''),
+                h.div.children(h.i.style({ width: width ?? '' })),
+                h.strong.children(value ?? ''),
+              ),
+          ),
+        ),
+        h.section
+          .class('funnel-panel funnel-chart-panel')
+          .children(
+            h.h2.children('Conversion over time'),
+            h.p.children('Weekly visitor-to-paid conversion'),
+            h.div.class('exec-area-chart'),
+          ),
+        h.section.class('funnel-panel cohort-panel').children(
+          h.h2.children('Cohort retention'),
+          h.p.children('Weekly activation retention'),
+          h.div.class('cohort-table').children(
+            h.div
+              .class('cohort-row head')
+              .children(
+                h.span.children('Cohort'),
+                h.span.children('Week 0'),
+                h.span.children('Week 1'),
+                h.span.children('Week 2'),
+                h.span.children('Week 3'),
+              ),
+            ...[
+              ['Aug 04', '100%', '68%', '51%', '43%'],
+              ['Aug 11', '100%', '71%', '55%', '—'],
+              ['Aug 18', '100%', '74%', '—', '—'],
+            ].map(row =>
+              h.div
+                .key(row[0] ?? '')
+                .class('cohort-row')
+                .children(
+                  row.map((cell, index) =>
+                    h.span.key(`${row[0] ?? ''}-${index}`).children(cell ?? ''),
+                  ),
+                ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  )
+
 const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'dashboard-01' || name === 'chart-analytics-dashboard')
     return dashboardPreview(h)
   if (name === 'creaseui-executive-summary') return executivePreview(h)
+  if (name === 'creaseui-cohort-funnel') return funnelPreview(h)
   if (name.startsWith('sidebar-') || name === 'app-shell-01')
     return sidebarOnlyPreview(h, name)
   if (name === 'login-03') return loginPreview(h, false)
