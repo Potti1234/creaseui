@@ -1727,11 +1727,87 @@ const tablePreview = (h: Html.H<DocsMessage>) =>
     ),
   )
 
+const blockSidebar = (
+  h: Html.H<DocsMessage>,
+  product: 'orbit' | 'northwind',
+) => {
+  const isOrbit = product === 'orbit'
+  const items = isOrbit
+    ? ['Overview', 'Growth', 'Projects', 'Services', 'Incidents']
+    : ['Board', 'Inbox', 'Orders', 'Catalog', 'Checkout', 'Metrics']
+  return h.aside.class('exec-sidebar').children(
+    h.div
+      .class('exec-brand')
+      .children(
+        isOrbit ? 'OS' : 'NW',
+        h.strong.children(isOrbit ? 'Orbit Studio' : 'Northwind'),
+      ),
+    h.span.class('preview-nav-label').children('Workspace'),
+    h.nav.children(
+      ...items.map((item, index) =>
+        h.a
+          .key(item)
+          .attr('aria-current', index === 0 ? 'page' : undefined)
+          .children(item),
+      ),
+    ),
+    h.div
+      .class('exec-user')
+      .children(
+        isOrbit ? 'AL' : 'JL',
+        h.span.children(isOrbit ? 'Alex Lee' : 'Jules Lane'),
+      ),
+  )
+}
+
+const skeletonTitles: Readonly<Record<string, readonly [string, string]>> = {
+  'creaseui-project-status': [
+    'Project Atlas',
+    'Launch status · General availability',
+  ],
+  'creaseui-service-monitoring': [
+    'Service monitoring',
+    'Production · all systems checked',
+  ],
+  'creaseui-incident-console': [
+    'Incident console',
+    '6 active · 2 require attention',
+  ],
+  'creaseui-kanban-board': [
+    'Sprint board',
+    'Atlas release · sprint 14 · 11 open tasks',
+  ],
+  'creaseui-inbox-table': ['Inbox', '12 unread · synced 1 minute ago'],
+  'creaseui-order-detail': [
+    'Order #1043',
+    'Placed Sep 18 · 2:41 PM · Storefront',
+  ],
+  'creaseui-checkout-form': ['Checkout', 'Order #1043 · 3 items'],
+  'creaseui-data-dashboard': [
+    'Data dashboard',
+    'Comparison reporting · refreshed 8 minutes ago',
+  ],
+  'creaseui-card-grid': [
+    'Asset catalog',
+    'Curated templates, icon sets and fonts',
+  ],
+}
+
 const dashboardSkeleton = (h: Html.H<DocsMessage>, name: string) =>
   h.div
     .class('preview-shell')
     .children(
-      previewSidebar(h),
+      name.startsWith('creaseui-')
+        ? blockSidebar(
+            h,
+            skeletonTitles[name] !== undefined &&
+              (name === 'creaseui-project-status' ||
+                name === 'creaseui-service-monitoring' ||
+                name === 'creaseui-incident-console')
+              ? 'orbit'
+              : 'northwind',
+          )
+        : previewSidebar(h),
       h.main
         .class('preview-main')
         .children(
@@ -1739,8 +1815,19 @@ const dashboardSkeleton = (h: Html.H<DocsMessage>, name: string) =>
             .class('preview-topbar')
             .children(
               h.span.children('☰'),
-              h.span.children('CreaseUI'),
-              h.span.children('GitHub'),
+              h.span.children(
+                skeletonTitles[name] !== undefined
+                  ? name.startsWith('creaseui-kanban') ||
+                    name.startsWith('creaseui-inbox') ||
+                    name.startsWith('creaseui-order') ||
+                    name.startsWith('creaseui-checkout') ||
+                    name.startsWith('creaseui-data') ||
+                    name.startsWith('creaseui-card')
+                    ? 'Northwind'
+                    : 'Orbit Studio'
+                  : 'CreaseUI',
+              ),
+              h.span.children(skeletonTitles[name]?.[0] ?? 'GitHub'),
             ),
           h.div
             .class('preview-content')
@@ -1775,8 +1862,10 @@ const dashboardSkeleton = (h: Html.H<DocsMessage>, name: string) =>
                 .class('preview-panel preview-chart')
                 .children(
                   h.div.children(
-                    h.h1.children(name),
-                    h.p.children('Live block preview'),
+                    h.h1.children(skeletonTitles[name]?.[0] ?? name),
+                    h.p.children(
+                      skeletonTitles[name]?.[1] ?? 'Live block preview',
+                    ),
                   ),
                   h.div
                     .class('preview-line-chart')
