@@ -361,11 +361,548 @@ const blocks = [
   ['login-04', 'A split login layout with a form and image panel.'],
 ] as const
 
+const createHeading = (
+  h: Html.H<DocsMessage>,
+  title: string,
+  subtitle?: string,
+  action?: string,
+) =>
+  h.div
+    .class('create-card-heading')
+    .children(
+      h.div.children(
+        h.h2.children(title),
+        subtitle === undefined ? undefined : h.p.children(subtitle),
+      ),
+      action === undefined
+        ? undefined
+        : h.button.attrs({ type: 'button' }).children(action),
+    )
+
+const createLine = (h: Html.H<DocsMessage>, label: string, value: string) =>
+  h.div
+    .key(`${label}-${value}`)
+    .class('create-line')
+    .children(h.span.children(label), h.strong.children(value))
+
+const createField = (h: Html.H<DocsMessage>, label: string, value = '') =>
+  h.div
+    .key(label)
+    .class('create-field')
+    .children(
+      h.label.children(label),
+      h.div.class('create-input').children(value),
+    )
+
+const createActions = (
+  h: Html.H<DocsMessage>,
+  primary: string,
+  secondary?: string,
+) =>
+  h.div
+    .class('create-actions')
+    .children(
+      secondary === undefined
+        ? undefined
+        : h.button.attrs({ type: 'button' }).children(secondary),
+      h.button.attrs({ type: 'button' }).children(primary),
+    )
+
 const createPlaceholderChildren = (
   h: Html.H<DocsMessage>,
   title: string,
   lines: number,
 ): View.Input<DocsMessage>[] => {
+  if (title === 'Preferences') {
+    return [
+      createHeading(
+        h,
+        'Preferences',
+        'Manage your account settings and notifications.',
+        'Close Preferences',
+      ),
+      createField(h, 'Default Currency', 'USD — United States Dollar ⌄'),
+      ...[
+        [
+          'Public Statistics',
+          'Allow others to see your total stream count and listening activity',
+        ],
+        [
+          'Email Notifications',
+          'Monthly royalty reports and distribution updates',
+        ],
+      ].map(([name, description]) =>
+        h.div
+          .key(name ?? '')
+          .class('create-toggle-row')
+          .children(
+            h.div.children(
+              h.strong.children(name ?? ''),
+              h.p.children(description ?? ''),
+            ),
+            h.span.class('create-toggle').children(h.span),
+          ),
+      ),
+      createActions(h, 'Save Preferences', 'Reset'),
+    ]
+  }
+  if (title === 'Savings Progress') {
+    return [
+      h.div
+        .class('create-savings-total')
+        .children(h.strong.children('$24,000'), h.p.children('80% of $30,000')),
+      h.div.class('create-progress').children(h.span.style({ width: '80%' })),
+      createLine(h, 'Projected Finish', 'October 2024'),
+      createLine(h, 'Monthly Average', '$1,250'),
+      createLine(h, 'Top Contributor', 'Auto-Transfer'),
+    ]
+  }
+  if (title === 'Kitchen Island') {
+    return [
+      createHeading(h, 'Kitchen Island', 'Hue Color Ambient'),
+      h.div
+        .class('create-toggle-row')
+        .children(
+          h.strong.children('Kitchen Island enabled'),
+          h.span.class('create-toggle on').children(h.span),
+        ),
+      h.div
+        .class('create-chip-row')
+        .children(
+          ['Cooking', 'Dining', 'Nightlight', 'Focus'].map(scene =>
+            h.span.key(scene).children(scene),
+          ),
+        ),
+      ...['Brightness', 'Color Temp', 'Volume', 'Fade'].map(label =>
+        h.div
+          .key(label)
+          .class('create-slider-row')
+          .children(
+            h.span.children(label),
+            h.div.class('create-slider').children(h.span),
+          ),
+      ),
+    ]
+  }
+  if (title === 'Savings Targets') {
+    return [
+      createHeading(
+        h,
+        'Savings Targets',
+        'Active milestones for 2024',
+        'New Goal',
+      ),
+      ...[
+        ['RETIREMENT', '$420,000', '65% achieved', '$273,000', '65%'],
+        ['REAL ESTATE', '$85,000', '32% achieved', '$27,200', '32%'],
+      ].map(([name, target, achieved, saved, width]) =>
+        h.div
+          .key(name ?? '')
+          .class('create-target')
+          .children(
+            h.small.children(name ?? ''),
+            h.div
+              .class('create-line')
+              .children(
+                h.strong.children(target ?? ''),
+                h.span.children(achieved ?? ''),
+              ),
+            h.div
+              .class('create-progress')
+              .children(h.span.style({ width: width ?? '0%' })),
+            h.p.children(saved ?? ''),
+          ),
+      ),
+      h.p
+        .class('create-warning')
+        .children('You have not met your targets for this year.'),
+    ]
+  }
+  if (title === 'Buy Investment') {
+    return [
+      h.h2.children('Buy Investment'),
+      createField(h, 'Amount to Invest', '$'),
+      h.div.class('create-chip-row').children(
+        ['Market Order', 'Limit Order', 'Stop Order'].map((order, index) =>
+          h.span
+            .key(order)
+            .class(index === 0 ? 'selected' : '')
+            .children(order),
+        ),
+      ),
+      h.p.children('Market orders execute at the current price.'),
+      createLine(h, 'Estimated Shares', '1.95'),
+      createLine(h, 'Buying Power', '$12,450.00'),
+      h.button.attrs({ type: 'button' }).children('Review Order'),
+      h.p.children(
+        'Trades are typically executed within minutes during market hours.',
+      ),
+    ]
+  }
+  if (title === 'Recent Transactions') {
+    return [
+      createHeading(
+        h,
+        'Recent Transactions',
+        'Your latest account activity.',
+        'View All',
+      ),
+      ...[
+        ['Blue Bottle Coffee', 'Food & Drink', 'Today, 10:24 AM', '-$6.50'],
+        ['Whole Foods Market', 'Groceries', 'Yesterday', '-$142.30'],
+        ['Stripe Payout', 'Income', 'Oct 12', '+$4,200.00'],
+        ['Uber Technologies', 'Transport', 'Oct 11', '-$24.10'],
+        ['Netflix Subscription', 'Entertainment', 'Oct 10', '-$19.99'],
+      ].map(([name, category, date, amount]) =>
+        h.div
+          .key(name ?? '')
+          .class('create-transaction')
+          .children(
+            h.div.children(
+              h.strong.children(name ?? ''),
+              h.span.children(category ?? ''),
+            ),
+            h.span.children(date ?? ''),
+            h.strong
+              .class(amount?.startsWith('+') ? 'positive' : '')
+              .children(amount ?? ''),
+          ),
+      ),
+    ]
+  }
+  if (title === 'Account Access') {
+    return [
+      createHeading(
+        h,
+        'Account Access',
+        'Update your credentials or re-authenticate.',
+      ),
+      createField(h, 'Email Address'),
+      createField(h, 'Current Password', 'FORGOT?'),
+      h.button.attrs({ type: 'button' }).children('Update Security'),
+      h.div
+        .class('create-danger')
+        .children(
+          h.strong.children('Danger Zone'),
+          h.p.children('Archive account and remove catalog'),
+        ),
+    ]
+  }
+  if (title === 'Transfer Funds') {
+    return [
+      createHeading(
+        h,
+        'Transfer Funds',
+        'Move money between your connected accounts.',
+        'Close Transfer Funds',
+      ),
+      createField(h, 'Amount to Transfer', '$'),
+      createField(h, 'From Account', 'Main Checking (··8402) — $12,450.00 ⌄'),
+      createField(
+        h,
+        'To Account',
+        'High Yield Savings (··1192) — $42,100.00 ⌄',
+      ),
+      createLine(h, 'Estimated arrival', 'Today, Apr 14'),
+      createLine(h, 'Transaction fee', '$0.00'),
+      createLine(h, 'Total amount', '$1,200.00'),
+      h.button.attrs({ type: 'button' }).children('Confirm Transfer'),
+    ]
+  }
+  if (title === 'Cover Art') {
+    return [
+      h.small.children('COVER ART'),
+      h.div
+        .class('create-upload-box')
+        .children(
+          h.div.class('create-plus').children('+'),
+          h.h2.children('Upload Artwork'),
+          h.p.children('Minimum 3000 × 3000px'),
+          h.p.children('JPEG or PNG only'),
+        ),
+    ]
+  }
+  if (title === 'Payout Preferences') {
+    return [
+      createHeading(
+        h,
+        'Payout Preferences',
+        'Receiving Method',
+        'Close Receiving Method',
+      ),
+      createField(h, 'Account Holder Name'),
+      h.div.class('create-method-grid').children(
+        ['Bank Transfer', 'SWIFT / IBAN', 'PayPal', 'Instant Payout'].map(
+          (method, index) =>
+            h.div
+              .key(method)
+              .class(index === 0 ? 'selected' : '')
+              .children(method),
+        ),
+      ),
+      createField(h, 'IBAN / Account Number'),
+      h.button.attrs({ type: 'button' }).children('Save Payout Settings'),
+    ]
+  }
+  if (title === 'Power Usage') {
+    return [
+      createHeading(h, 'Power Usage', 'Whole Home'),
+      h.div
+        .class('create-power-chart')
+        .children(
+          [35, 48, 31, 66, 82, 57, 73, 44].map((height, index) =>
+            h.span.key(String(index)).style({ height: `${String(height)}%` }),
+          ),
+        ),
+      h.div
+        .class('create-power-times')
+        .children(
+          ['6a', '8a', '10a', '12p', '2p', '4p', '6p', '8p'].map(time =>
+            h.span.key(time).children(time),
+          ),
+        ),
+      createLine(h, 'Currently Using', '3.4 kW'),
+      createLine(h, 'Solar Gen', '+1.2 kW'),
+      createLine(h, 'Battery Level', '85%'),
+    ]
+  }
+  if (title === 'Connect Bank') {
+    return [
+      h.div
+        .class('create-center-empty')
+        .children(
+          h.div.class('create-plus').children('+'),
+          h.h2.children('Connect Bank'),
+          h.p.children(
+            'Link your payout method to receive monthly royalty distributions automatically.',
+          ),
+          h.button.attrs({ type: 'button' }).children('Set Up Payouts'),
+        ),
+    ]
+  }
+  if (title === 'Upcoming Payments') {
+    return [
+      createHeading(
+        h,
+        'Upcoming Payments',
+        'Select a date to view scheduled payments.',
+      ),
+      h.div.class('create-mini-calendar').children(
+        h.strong.children('November 2026'),
+        h.div.class('create-calendar-grid').children(
+          ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day =>
+            h.small.key(day).children(day),
+          ),
+          ...Array.from({ length: 35 }, (_, index) =>
+            h.span
+              .key(String(index))
+              .children(index < 5 ? '' : index > 34 ? '' : String(index - 4)),
+          ),
+        ),
+      ),
+      ...[
+        ['Netflix Subscription', 'Apr 15, 2024', '$19.99'],
+        ['Rent Payment', 'Apr 1, 2024', '$2,400.00'],
+        ['Auto Insurance', 'Apr 22, 2024', '$186.00'],
+      ].map(([name, date, amount]) =>
+        h.div
+          .key(name ?? '')
+          .class('create-transaction')
+          .children(
+            h.div.children(
+              h.strong.children(name ?? ''),
+              h.span.children(date ?? ''),
+            ),
+            h.strong.children(amount ?? ''),
+          ),
+      ),
+    ]
+  }
+  if (title === 'Roller Shades') {
+    return [
+      createHeading(h, 'Living Room', 'Roller Shades', 'OPEN'),
+      h.div.class('create-shade-visual').children(h.span),
+      h.div.class('create-chip-row').children(
+        ['Open', 'Half', 'Closed'].map((mode, index) =>
+          h.span
+            .key(mode)
+            .class(index === 0 ? 'selected' : '')
+            .children(mode),
+        ),
+      ),
+    ]
+  }
+  if (title === 'Stock Performance') {
+    return [
+      createHeading(h, 'Stock Performance', '6-month price history.'),
+      createField(h, 'Ticker', 'VOO ⌄'),
+      h.div.class('create-stock-chart').children(h.span, h.span, h.span),
+    ]
+  }
+  if (title === 'Explore Catalog') {
+    return [
+      h.div
+        .class('create-center-empty')
+        .children(
+          h.div.class('create-plus').children('⌘'),
+          h.h2.children('Explore Catalog'),
+          h.p.children(
+            'Check your ISRC codes, metadata, and visual assets before going live.',
+          ),
+          h.button.attrs({ type: 'button' }).children('View Catalog'),
+        ),
+    ]
+  }
+  if (title === 'Set a new milestone') {
+    return [
+      createHeading(
+        h,
+        'Set a new milestone',
+        "Define your financial target and we'll help you pace your savings.",
+      ),
+      createField(h, 'Goal Name'),
+      createField(h, 'Target Amount'),
+      createField(h, 'Target Date'),
+      createActions(h, 'Create Goal', 'Cancel'),
+    ]
+  }
+  if (title === 'Social Links') {
+    return [
+      h.h2.children('Social Links'),
+      createField(h, 'Spotify Artist URL'),
+      createField(h, 'Instagram Handle'),
+      createField(h, 'SoundCloud URL'),
+      createField(h, 'Website'),
+      createActions(h, 'Save Changes', 'Discard'),
+    ]
+  }
+  if (title === 'Notifications') {
+    return [
+      createHeading(
+        h,
+        'Notifications',
+        'Choose what you want to be notified about.',
+      ),
+      h.div
+        .class('create-line')
+        .children(
+          h.span.children('Select all'),
+          h.span.class('create-toggle').children(h.span),
+        ),
+      ...[
+        ['Transaction alerts', 'Deposits, withdrawals, and transfers.'],
+        ['Security alerts', 'Login attempts and account changes.'],
+        ['Goal milestones', 'Updates at 25%, 50%, 75%, and 100%.'],
+        ['Market updates', 'Daily portfolio summary and price alerts.'],
+      ].map(([name, description]) =>
+        h.div
+          .key(name ?? '')
+          .class('create-toggle-row')
+          .children(
+            h.div.children(
+              h.strong.children(name ?? ''),
+              h.p.children(description ?? ''),
+            ),
+            h.span.class('create-toggle').children(h.span),
+          ),
+      ),
+      h.button.attrs({ type: 'button' }).children('Save Preferences'),
+    ]
+  }
+  if (title === 'Sidebar Nav') {
+    return [
+      h.div.class('create-sidebar-demo').children(
+        h.div
+          .class('create-sidebar-brand')
+          .children('⌘', h.strong.children('Ledger')),
+        ...[
+          'Overview',
+          'Dashboard',
+          'Transactions',
+          'Investments',
+          'Accounts',
+          'Reports',
+          'Settings',
+        ].map((item, index) =>
+          h.span
+            .key(item)
+            .class(index === 1 ? 'selected' : '')
+            .children(item),
+        ),
+      ),
+    ]
+  }
+  if (title === 'General') {
+    return [
+      h.div.class('create-chip-row').children(
+        ['General', 'Billing', 'Goals'].map((tab, index) =>
+          h.span
+            .key(tab)
+            .class(index === 0 ? 'selected' : '')
+            .children(tab),
+        ),
+      ),
+      ...[
+        [
+          'How secure is my financial data with Ledger?',
+          'We use bank-level AES-256 encryption, SOC 2 Type II certified infrastructure, and never store your credentials. All connections use read-only access tokens. We are a SEC registered investment advisor.',
+        ],
+        [
+          'How do I connect my bank or investment accounts?',
+          'Go to Settings > Linked Accounts and search for your institution. We support over 12,000 banks and brokerages via Plaid and MX.',
+        ],
+        [
+          'Can I export my data for tax purposes?',
+          'Yes. Navigate to Reports > Tax Export to download a CSV or PDF summary of your transactions, dividends, and capital gains for any tax year.',
+        ],
+      ].map(([question, answer]) =>
+        h.details
+          .key(question ?? '')
+          .class('create-faq-item')
+          .children(
+            h.summary.children(question ?? ''),
+            h.p.children(answer ?? ''),
+          ),
+      ),
+      createActions(h, 'Learn More', 'Contact Support'),
+    ]
+  }
+  if (title === 'Home') {
+    return [
+      createHeading(h, 'Home', 'Account options', 'Payments'),
+      ...[
+        [
+          'Change transfer limit',
+          'Adjust how much you can send from your balance.',
+        ],
+        ['Scheduled transfers', 'Set up a transfer to send at a later date.'],
+        ['Direct Debits', 'Set up and manage regular payments.'],
+        ['Recurring card payments', 'Manage your repeated card transactions.'],
+      ].map(([name, description]) =>
+        h.div
+          .key(name ?? '')
+          .class('create-toggle-row')
+          .children(
+            h.div.children(
+              h.strong.children(name ?? ''),
+              h.p.children(description ?? ''),
+            ),
+            h.span.children('›'),
+          ),
+      ),
+    ]
+  }
+  if (title === 'Front Door') {
+    return [
+      createHeading(h, 'Front Door', 'Smart Lock Pro', 'Locked'),
+      h.div
+        .class('create-lock-visual')
+        .children(
+          h.div.class('create-lock-icon').children('●'),
+          h.strong.children('Live'),
+        ),
+    ]
+  }
   if (title === 'QR Connect') {
     return [
       h.div
@@ -736,7 +1273,12 @@ const createGuide: DocsGuide = {
           .key('planning')
           .class('create-column wide')
           .children(
-            createPlaceholder(h, 'Savings Targets', 'large', 5, 462),
+            h.div
+              .class('create-split-row')
+              .children(
+                createPlaceholder(h, 'Savings Targets', 'large', 5, 462),
+                createPlaceholder(h, 'Buy Investment', 'large', 5, 462),
+              ),
             createPlaceholder(h, 'Recent Transactions', 'large', 6, 406),
             h.div
               .class('create-nested-grid')
@@ -744,14 +1286,14 @@ const createGuide: DocsGuide = {
                 h.div
                   .class('create-nested-column')
                   .children(
-                    createPlaceholder(h, 'Sidebar Nav', 'regular', 5, 640),
-                    createPlaceholder(h, 'FAQ', 'regular', 4, 640),
+                    createPlaceholder(h, 'Sidebar Nav', 'regular', 5, 1002),
+                    createPlaceholder(h, 'General', 'regular', 4, 426),
                   ),
                 h.div
                   .class('create-nested-column')
                   .children(
-                    createPlaceholder(h, 'Payments', 'regular', 4, 640),
-                    createPlaceholder(h, 'Front Door', 'regular', 3, 640),
+                    createPlaceholder(h, 'Home', 'regular', 4, 475),
+                    createPlaceholder(h, 'Front Door', 'regular', 3, 307),
                   ),
               ),
             createPlaceholder(h, 'Stocks', 'large', 5, 374),
