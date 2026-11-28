@@ -532,24 +532,39 @@ const createPlaceholderChildren = (
   if (title === 'Buy Investment') {
     return [
       h.h2.children('Buy Investment'),
-      createField(h, 'Amount to Invest', '$'),
-      h.div.class('create-chip-row').children(
-        ['Market Order', 'Limit Order', 'Stop Order'].map((order, index) =>
-          h.span
-            .key(order)
-            .class(index === 0 ? 'selected' : '')
-            .children(order),
+      h.div
+        .class('create-buy-field')
+        .children(
+          h.label.children('Amount to Invest'),
+          h.div
+            .class('create-money-input')
+            .children(h.span.children('$'), h.strong.children('1,000.00')),
         ),
-      ),
-      h.p.children('Market orders execute at the current price.'),
+      h.div
+        .class('create-buy-field')
+        .children(
+          h.label.children('Order Type'),
+          h.div
+            .class('create-select-input')
+            .children(
+              h.span.children('Market Order'),
+              h.span.class('create-select-chevron').children('⌄'),
+            ),
+        ),
+      h.p
+        .class('create-buy-description')
+        .children('Market orders execute at the current price.'),
       createLine(h, 'Estimated Shares', '1.95'),
       createLine(h, 'Buying Power', '$12,450.00'),
       h.button.attrs({ type: 'button' }).children('Review Order'),
-      h.p.children(
-        'Trades are typically executed within minutes during market hours.',
-      ),
+      h.p
+        .class('create-buy-note')
+        .children(
+          'Trades are typically executed within minutes during market hours.',
+        ),
     ]
   }
+
   if (title === 'Recent Transactions') {
     return [
       createHeading(
