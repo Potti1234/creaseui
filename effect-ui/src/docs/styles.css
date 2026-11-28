@@ -3202,3 +3202,7 @@ body:has(.effect-docs) {
   font-size: 0.8rem;
   white-space: nowrap;
 }
+
+.guide-main:has(.lint-overview) {
+  padding-block-start: 3.5rem;
+}

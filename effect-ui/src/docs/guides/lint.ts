@@ -33,33 +33,35 @@ const overview: DocsGuide = {
   description:
     'Every rule Crease UI adds, with the bad UI pattern it catches, the diagnostic it reports and the pattern to use instead.',
   view: h =>
-    h.div.children(
-      ...LINT_RULE_GROUPS.map(group =>
-        section(
-          h,
-          group.id,
-          group.label,
-          h.p.class('docs-muted').children(group.description),
-          h.ul
-            .class('docs-compact-list')
-            .children(
-              group.rules.map(rule =>
-                h.li
-                  .key(rule.id)
-                  .children(
-                    h.a
-                      .class('docs-inline-link lint-rule-title')
-                      .attr('href', ruleLink(rule.id))
-                      .children(rule.title),
-                    h.div
-                      .class('docs-muted lint-rule-summary')
-                      .children(rule.summary),
-                  ),
+    h.div
+      .class('lint-overview')
+      .children(
+        ...LINT_RULE_GROUPS.map(group =>
+          section(
+            h,
+            group.id,
+            group.label,
+            h.p.class('docs-muted').children(group.description),
+            h.ul
+              .class('docs-compact-list')
+              .children(
+                group.rules.map(rule =>
+                  h.li
+                    .key(rule.id)
+                    .children(
+                      h.a
+                        .class('docs-inline-link lint-rule-title')
+                        .attr('href', ruleLink(rule.id))
+                        .children(rule.title),
+                      h.div
+                        .class('docs-muted lint-rule-summary')
+                        .children(rule.summary),
+                    ),
+                ),
               ),
-            ),
+          ),
         ),
       ),
-    ),
 }
 const detail = (ruleId: string): DocsGuide | undefined => {
   const rule = findLintRule(ruleId)
