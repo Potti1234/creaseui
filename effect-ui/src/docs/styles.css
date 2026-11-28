@@ -4969,3 +4969,77 @@ body:has(.effect-docs) {
 .balance-activity-head strong {
   font-size: 0.875rem;
 }
+
+.create-page .create-stocks {
+  padding-inline: 1.5rem;
+}
+.stock-tabs {
+  display: flex;
+  justify-content: end;
+  gap: 0.25rem;
+}
+.stock-tabs span {
+  display: inline-flex;
+  height: 2.25rem;
+  align-items: center;
+  border-radius: 0.4rem;
+  padding-inline: 0.8rem;
+  font-size: 0.875rem;
+}
+.stock-tabs span[data-active='true'] {
+  background: var(--secondary);
+}
+.stock-items {
+  margin-top: 1.2rem;
+}
+.stock-row {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr 4.5rem 5.8rem;
+  min-height: 4.125rem;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+}
+.stock-symbol {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+.stock-name strong {
+  font-size: 0.875rem;
+}
+.stock-name p {
+  margin: 0.25rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+.stock-type {
+  border-radius: 999px;
+  background: var(--secondary);
+  padding: 0.2rem 0.55rem;
+  font-size: 0.75rem;
+  text-align: center;
+}
+.stock-value {
+  display: grid;
+  justify-items: end;
+}
+.stock-value span {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+.stock-value strong {
+  font-size: 0.875rem;
+}
+.create-page .create-nested-grid,
+.create-page .create-nested-column {
+  min-height: 1188px;
+}
+.stock-row {
+  padding-inline: 0.8125rem;
+}

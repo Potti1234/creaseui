@@ -812,6 +812,64 @@ const createPlaceholderChildren = (
       createActions(h, 'Save Changes', 'Discard'),
     ]
   }
+  if (title === 'Stocks') {
+    return [
+      h.div.class('stock-tabs').children(
+        ...['Stocks', 'ETFs', 'REITs'].map((tab, index) =>
+          h.span
+            .key(tab)
+            .attr('data-active', index === 0 ? 'true' : 'false')
+            .children(tab),
+        ),
+      ),
+      h.div.class('stock-items').children(
+        ...[
+          [
+            'VOO',
+            'Vanguard S&P 500 ETF',
+            '112 Shares · Jan 2021',
+            'ETF',
+            '$48,230.40',
+          ],
+          [
+            'VIG',
+            'Vanguard Dividend Appreciation',
+            '450 Shares · Mar 2022',
+            'ETF',
+            '$26,033.79',
+          ],
+          ['AAPL', 'Apple Inc.', '85 Shares · Nov 2020', 'Stock', '$18,488.90'],
+          [
+            'O',
+            'Realty Income Corp',
+            '320 Shares · Jun 2023',
+            'REIT',
+            '$15,136.59',
+          ],
+        ].map(([symbol, name, meta, type, value]) =>
+          h.div
+            .key(symbol ?? '')
+            .class('stock-row')
+            .children(
+              h.div.class('stock-symbol').children(symbol ?? ''),
+              h.div
+                .class('stock-name')
+                .children(
+                  h.strong.children(name ?? ''),
+                  h.p.children(meta ?? ''),
+                ),
+              h.span.class('stock-type').children(type ?? ''),
+              h.div
+                .class('stock-value')
+                .children(
+                  h.span.children('Value'),
+                  h.strong.children(value ?? ''),
+                ),
+            ),
+        ),
+      ),
+    ]
+  }
   if (title === 'Notifications') {
     return [
       createHeading(
@@ -1416,7 +1474,7 @@ const createGuide: DocsGuide = {
                 h.div
                   .class('create-nested-column')
                   .children(
-                    createPlaceholder(h, 'Sidebar Nav', 'regular', 5, 1002),
+                    createPlaceholder(h, 'Sidebar Nav', 'regular', 5, 722),
                     createPlaceholder(h, 'General', 'regular', 4, 426),
                   ),
                 h.div
