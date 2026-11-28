@@ -372,6 +372,78 @@ const customizeGalleryOption = (
     option.series = [mobileSeries, desktopSeries]
     return option
   }
+  if (
+    slug === 'radial' &&
+    theme !== undefined &&
+    (example === 'Simple' || example === 'Grid' || example === 'Label')
+  ) {
+    const data = [
+      { name: 'Chrome', value: 275, itemStyle: { color: theme.chart1 } },
+      { name: 'Safari', value: 200, itemStyle: { color: theme.chart2 } },
+      { name: 'Firefox', value: 187, itemStyle: { color: theme.chart3 } },
+      { name: 'Edge', value: 173, itemStyle: { color: theme.chart4 } },
+      { name: 'Other', value: 90, itemStyle: { color: theme.chart5 } },
+    ]
+    return {
+      polar: { radius: ['25%', example === 'Grid' ? '84%' : '92%'] },
+      angleAxis: {
+        type: 'value',
+        min: 0,
+        max: 300,
+        startAngle: example === 'Label' ? -90 : 90,
+        ...(example === 'Label' ? { endAngle: 270 } : {}),
+        show: false,
+      },
+      radiusAxis: {
+        type: 'category',
+        data: data.map(item => item.name),
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { show: false },
+        ...(example === 'Grid'
+          ? {
+              splitLine: {
+                show: true,
+                lineStyle: { color: theme.border, width: 1 },
+              },
+            }
+          : {}),
+      },
+      tooltip: tooltipOptions(theme, { trigger: 'item' }),
+      series: [
+        {
+          name: 'Visitors',
+          type: 'bar',
+          coordinateSystem: 'polar',
+          roundCap: true,
+          barWidth: '65%',
+          ...(example === 'Grid'
+            ? {}
+            : {
+                showBackground: true,
+                backgroundStyle: {
+                  color: colorWithOpacity(theme.mutedForeground, 0.12),
+                },
+              }),
+          ...(example === 'Label'
+            ? {
+                label: {
+                  show: true,
+                  position: 'insideStart',
+                  distance: 8,
+                  rotate: 0,
+                  color: theme.background,
+                  fontSize: 11,
+                  fontFamily: theme.fontFamily,
+                  formatter: (params: any) => String(params.name).toLowerCase(),
+                },
+              }
+            : {}),
+          data,
+        },
+      ],
+    }
+  }
   if (slug === 'pie' && theme !== undefined && example !== 'Interactive')
     return pieGalleryOption(theme, example)
   if (slug === 'bar' && theme !== undefined) {
