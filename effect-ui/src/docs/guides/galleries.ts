@@ -2361,12 +2361,118 @@ const projectStatusPreview = (h: Html.H<DocsMessage>) =>
     ),
   )
 
+const serviceMonitoringPreview = (h: Html.H<DocsMessage>) =>
+  h.div.class('exec-shell service-shell').children(
+    blockSidebar(h, 'orbit') as never,
+    h.main.class('exec-main').children(
+      h.header
+        .class('preview-topbar')
+        .children(
+          h.span.children('☰'),
+          h.span.children('Orbit Studio'),
+          h.span.children('Services'),
+        ),
+      h.div.class('service-content').children(
+        h.div.class('service-main').children(
+          h.header
+            .class('exec-heading')
+            .children(
+              h.div.children(
+                h.h1.children('Service monitoring'),
+                h.p.children('Production · all systems checked 34 seconds ago'),
+              ),
+              h.div
+                .class('exec-actions')
+                .children(
+                  h.span.children('1h'),
+                  h.span.children('1d'),
+                  h.span.children('Region: Global'),
+                ),
+            ),
+          h.div.class('exec-metrics').children(
+            ...[
+              ['Availability', '+0.02 pts', '99.94%'],
+              ['P95 latency', '+31ms', '184ms'],
+              ['Requests', '+12%', '28.4k/s'],
+              ['Error rate', '+0.06 pts', '0.18%'],
+            ].map(([label, delta, value]) =>
+              h.section
+                .key(label ?? '')
+                .children(
+                  h.div.children(
+                    h.span.children(label ?? ''),
+                    h.b.children(delta ?? ''),
+                  ),
+                  h.strong.children(value ?? ''),
+                ),
+            ),
+          ),
+          h.div
+            .class('service-charts')
+            .children(
+              h.section.children(
+                h.h2.children('Request volume'),
+                h.p.children('Requests per second'),
+                h.div.class('exec-area-chart'),
+              ),
+              h.section.children(
+                h.h2.children('P95 latency'),
+                h.p.children('Milliseconds by interval'),
+                h.div
+                  .class('exec-bar-chart')
+                  .children(
+                    ...[42, 58, 45, 72, 64, 82, 70, 88].map(height =>
+                      h.i.key(String(height)).style({ height: `${height}%` }),
+                    ),
+                  ),
+              ),
+            ),
+        ),
+        h.aside.class('service-rail').children(
+          h.section.children(
+            h.h2.children('Active alerts'),
+            ...[
+              ['Elevated latency', 'api-eu-west · started 8m ago'],
+              ['Queue saturation', 'worker-billing · started 21m ago'],
+            ].map(([title, copy]) =>
+              h.article
+                .key(title ?? '')
+                .children(
+                  h.strong.children(title ?? ''),
+                  h.p.children(copy ?? ''),
+                ),
+            ),
+          ),
+          h.section.class('service-health').children(
+            h.h2.children('Service health'),
+            ...[
+              ['API gateway', '99.99%', 'Healthy'],
+              ['Billing worker', '98.72%', 'Degraded'],
+              ['Search index', '99.91%', 'Healthy'],
+              ['Email delivery', '99.43%', 'Watch'],
+            ].map(([service, uptime, status]) =>
+              h.div
+                .key(service ?? '')
+                .class('service-health-row')
+                .children(
+                  h.span.children(service ?? ''),
+                  h.span.children(uptime ?? ''),
+                  h.strong.children(status ?? ''),
+                ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  )
+
 const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'dashboard-01' || name === 'chart-analytics-dashboard')
     return dashboardPreview(h)
   if (name === 'creaseui-executive-summary') return executivePreview(h)
   if (name === 'creaseui-cohort-funnel') return funnelPreview(h)
   if (name === 'creaseui-project-status') return projectStatusPreview(h)
+  if (name === 'creaseui-service-monitoring') return serviceMonitoringPreview(h)
   if (name === 'creaseui-kanban-board') return kanbanPreview(h)
   if (name.startsWith('sidebar-') || name === 'app-shell-01')
     return sidebarOnlyPreview(h, name)

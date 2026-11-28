@@ -3805,3 +3805,93 @@ body:has(.effect-docs) {
 .workstream-row {
   min-height: 2.55rem;
 }
+
+.service-shell {
+  min-height: 896px;
+}
+.service-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 21.5rem;
+  gap: 1.5rem;
+  padding: 1.75rem 1.25rem 2rem;
+}
+.service-main .exec-metrics {
+  margin-top: 2rem;
+}
+.service-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.service-charts section,
+.service-rail section {
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--card);
+  padding: 1rem;
+}
+.service-charts h2,
+.service-rail h2 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.25rem;
+}
+.service-charts p,
+.service-rail article p {
+  margin: 0.25rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+}
+.service-charts .exec-area-chart,
+.service-charts .exec-bar-chart {
+  height: 12rem;
+}
+.service-rail {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+.service-rail article {
+  margin-top: 1rem;
+  border-left: 3px solid #d97706;
+  padding-left: 0.75rem;
+}
+.service-health {
+  margin-top: 1rem;
+}
+.service-health-row {
+  display: grid;
+  grid-template-columns: 1fr 4rem 4.5rem;
+  gap: 0.75rem;
+  border-top: 1px solid var(--border);
+  padding-block: 0.65rem;
+  font-size: 0.8125rem;
+}
+.service-health-row strong {
+  font-size: 0.75rem;
+}
+.service-content {
+  grid-template-columns: minmax(0, 1fr) 22.5rem;
+  padding-inline: 1.75rem;
+}
+.service-rail section {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+.service-main .exec-metrics {
+  margin-top: 1.2rem;
+}
+.service-main .exec-metrics section {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+.service-main .exec-metrics {
+  margin-top: 2.25rem;
+}
+.service-rail article {
+  min-height: 3.5rem;
+  margin-bottom: 1.25rem;
+}
