@@ -587,14 +587,18 @@ const createPlaceholderChildren = (
   if (title === 'Savings Progress') {
     return [
       h.div
-        .class('create-savings-total')
+        .class('create-savings-ring')
         .children(h.strong.children('$24,000'), h.p.children('80% of $30,000')),
-      h.div.class('create-progress').children(h.span.style({ width: '80%' })),
-      createLine(h, 'Projected Finish', 'October 2024'),
-      createLine(h, 'Monthly Average', '$1,250'),
-      createLine(h, 'Top Contributor', 'Auto-Transfer'),
+      h.div
+        .class('create-savings-rows')
+        .children(
+          createLine(h, 'Projected Finish', 'October 2024'),
+          createLine(h, 'Monthly Average', '$1,250'),
+          createLine(h, 'Top Contributor', 'Auto-Transfer'),
+        ),
     ]
   }
+
   if (title === 'Kitchen Island') {
     return [
       createHeading(h, 'Kitchen Island', 'Hue Color Ambient'),
