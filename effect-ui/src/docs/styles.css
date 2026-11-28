@@ -5322,3 +5322,29 @@ body:has(.effect-docs) {
   margin-top: 0.9375rem;
   padding: 0;
 }
+.create-page .create-transfer-funds {
+  padding-top: 1.75rem;
+}
+.create-page .create-transfer-funds > .create-field:nth-of-type(2) {
+  margin-top: 1rem;
+}
+.create-page .create-transfer-funds > .create-field:nth-of-type(3) {
+  margin-top: 0.75rem;
+}
+.create-page .create-transfer-funds > .create-field:nth-of-type(4) {
+  margin-top: 0.6875rem;
+}
+.create-page .create-transfer-funds > .create-line:nth-of-type(5) {
+  margin-top: 1.5rem;
+}
+.create-page .create-transfer-funds > .create-line:nth-of-type(6) {
+  margin-top: 0.75rem;
+}
+.create-page .create-transfer-funds > .create-line:nth-of-type(7) {
+  margin-top: 0.75rem;
+}
+.create-page .create-transfer-funds > button {
+  height: 2.25rem;
+  margin-top: 1.625rem;
+  padding: 0;
+}
