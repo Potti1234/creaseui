@@ -2666,6 +2666,149 @@ const inboxTablePreview = (h: Html.H<DocsMessage>) =>
     ),
   )
 
+const orderDetailPreview = (h: Html.H<DocsMessage>) =>
+  h.div.class('exec-shell order-shell').children(
+    blockSidebar(h, 'northwind') as never,
+    h.main.class('exec-main').children(
+      h.header
+        .class('preview-topbar')
+        .children(
+          h.span.children('☰'),
+          h.span.children('Northwind'),
+          h.span.children('Orders'),
+        ),
+      h.div.class('service-content order-content').children(
+        h.div.class('order-main').children(
+          h.header
+            .class('exec-heading order-heading')
+            .children(
+              h.div.children(
+                h.h1.children('Order #1043'),
+                h.p.children('Placed Sep 18 · 2:41 PM · Storefront'),
+                h.div
+                  .class('order-status')
+                  .children(
+                    h.span.children('Paid'),
+                    h.span.children('Fulfilling'),
+                  ),
+              ),
+              h.div
+                .class('exec-actions')
+                .children(
+                  h.span.children('Refund'),
+                  h.span.children('Print'),
+                  h.span.children('Mark fulfilled'),
+                ),
+            ),
+          h.section.class('order-summary').children(
+            ...[
+              ['Customer', 'Robin Adler', 'robin@adlergoods.com'],
+              ['Channel', 'Storefront', 'Web checkout'],
+              ['Delivery', 'Express', 'Arrives Sep 22'],
+              ['Total', '$248.00', '3 items'],
+            ].map(([label, value, detail]) =>
+              h.div
+                .key(label ?? '')
+                .children(
+                  h.span.children(label ?? ''),
+                  h.strong.children(value ?? ''),
+                  h.small.children(detail ?? ''),
+                ),
+            ),
+          ),
+          h.section.class('order-lines').children(
+            h.h2.children('Line items'),
+            h.div
+              .class('order-row head')
+              .children(
+                h.span.children('Item'),
+                h.span.children('SKU'),
+                h.span.children('Qty'),
+                h.span.children('Price'),
+                h.span.children('Total'),
+              ),
+            ...[
+              [
+                'Canvas Field Jacket',
+                'JK-102 · Olive / M',
+                '1',
+                '$168.00',
+                '$168.00',
+              ],
+              [
+                'Merino Crew Sock · 3 pack',
+                'SK-310 · Charcoal',
+                '2',
+                '$32.00',
+                '$64.00',
+              ],
+              ['Enamel Camp Mug', 'MG-205 · Cream', '1', '$16.00', '$16.00'],
+            ].map(row =>
+              h.div
+                .key(row[0] ?? '')
+                .class('order-row')
+                .children(
+                  row.map((cell, index) =>
+                    h.span.key(`${row[0] ?? ''}-${index}`).children(cell ?? ''),
+                  ),
+                ),
+            ),
+            h.div.class('order-totals').children(
+              ...[
+                ['Subtotal', '$248.00'],
+                ['Shipping', '$12.00'],
+                ['Tax', '$0.00'],
+                ['Total', '$272.00'],
+              ].map(([label, value]) =>
+                h.div
+                  .key(label ?? '')
+                  .children(
+                    h.span.children(label ?? ''),
+                    h.strong.children(value ?? ''),
+                  ),
+              ),
+            ),
+          ),
+          h.section
+            .class('order-delivery')
+            .children(
+              h.h2.children('Delivery'),
+              h.div
+                .class('delivery-cards')
+                .children(
+                  h.article.children(
+                    h.strong.children('Address'),
+                    h.p.children('Robin Adler · 44 Beacon St, Boston MA 02108'),
+                  ),
+                  h.article.children(
+                    h.strong.children('Method'),
+                    h.p.children('Express · delivered by carrier'),
+                  ),
+                ),
+            ),
+        ),
+        h.aside.class('service-rail order-activity').children(
+          h.h2.children('Activity'),
+          h.p.children('Most recent first'),
+          h.div.class('incident-timeline').children(
+            ...[
+              ['Label created', 'UPS 1Z 999 AA1 0123 4567 84 · 4:12 PM'],
+              ['Payment captured', '$248.00 on Visa ·· 4242 · 2:44 PM'],
+              ['Order placed', 'Storefront checkout · 2:41 PM'],
+            ].map(([title, copy]) =>
+              h.div
+                .key(title ?? '')
+                .children(
+                  h.strong.children(title ?? ''),
+                  h.p.children(copy ?? ''),
+                ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  )
+
 const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'dashboard-01' || name === 'chart-analytics-dashboard')
     return dashboardPreview(h)
@@ -2676,6 +2819,7 @@ const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'creaseui-incident-console') return incidentConsolePreview(h)
   if (name === 'creaseui-kanban-board') return kanbanPreview(h)
   if (name === 'creaseui-inbox-table') return inboxTablePreview(h)
+  if (name === 'creaseui-order-detail') return orderDetailPreview(h)
   if (name.startsWith('sidebar-') || name === 'app-shell-01')
     return sidebarOnlyPreview(h, name)
   if (name === 'login-03') return loginPreview(h, false)
