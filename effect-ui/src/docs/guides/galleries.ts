@@ -821,17 +821,20 @@ const createPlaceholderChildren = (
   }
   if (title === 'Cover Art') {
     return [
-      h.small.children('COVER ART'),
+      h.small.class('create-cover-label').children('Cover Art'),
       h.div
         .class('create-upload-box')
-        .children(
-          h.div.class('create-plus').children('+'),
-          h.h2.children('Upload Artwork'),
-          h.p.children('Minimum 3000 × 3000px'),
-          h.p.children('JPEG or PNG only'),
-        ),
+        .children(h.span.class('create-image-icon')),
+      h.button
+        .class('create-upload-button')
+        .attrs({ type: 'button' })
+        .children('Upload Artwork'),
+      h.p
+        .class('create-upload-note')
+        .children('Minimum 3000 × 3000px\nJPEG or PNG only'),
     ]
   }
+
   if (title === 'Payout Preferences') {
     return [
       h.button
