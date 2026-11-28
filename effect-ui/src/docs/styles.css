@@ -3121,3 +3121,63 @@ body:has(.effect-docs) {
 .tutorial-essay section + section {
   margin-top: 3.75rem;
 }
+
+.behavior-docs-index-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.behavior-docs-index-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  padding-block: 0.65rem;
+  border-block-end: 1px solid var(--border);
+}
+.behavior-docs-index-list li:first-child {
+  border-block-start: 1px solid var(--border);
+}
+.behavior-docs-index-list p {
+  margin: 0;
+}
+.behavior-docs-link {
+  color: var(--foreground);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--muted-foreground);
+  text-underline-offset: 0.2em;
+}
+.behavior-docs-muted {
+  color: var(--muted-foreground);
+  overflow-wrap: anywhere;
+}
+.behavior-docs-index-list {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.guide-main:has(.behavior-overview) {
+  padding-block-start: 4.75rem;
+}
+.guide-main:has(.behavior-overview) > h1 {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+.guide-main:has(.behavior-overview) > .docs-description {
+  margin-block-start: 0.4rem;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.behavior-docs-link-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.behavior-overview > nav {
+  margin-bottom: 2.25rem;
+}

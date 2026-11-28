@@ -398,33 +398,24 @@ const groups = Array.from(new Set(primitives.map(behavior => behavior.group)))
 const overview: DocsGuide = {
   title: 'Behaviors',
   description:
-    'Install interaction logic separately or use the same behavior through a styled CreaseUI component.',
+    'Compose these headless Foldkit primitives to build existing and custom components.',
   toc: [
-    ['install', 'Install a behavior'],
     ...groups.map(
       group => [group.toLowerCase().replaceAll(' ', '-'), group] as const,
     ),
   ],
   view: h =>
-    h.div.children(
-      section(
-        h,
-        'install',
-        'Install a behavior',
-        h.p.children(
-          'Behavior items provide native element parts and typed interaction events. The styled components use the same behavior source.',
-        ),
-        h.pre.children(
-          h.code.children(
-            'npx shadcn@latest add @crease-effect/effect-popover-behavior',
+    h.div.class('behavior-overview').children(
+      h.nav.attr('aria-label', 'Behavior categories').children(
+        h.ul.class('behavior-docs-link-list').children(
+          groups.map(group =>
+            h.li.key(group).children(
+              h.a
+                .class('behavior-docs-link')
+                .attr('href', `#${group.toLowerCase().replaceAll(' ', '-')}`)
+                .children(group),
+            ),
           ),
-        ),
-        h.p.children(
-          'Import ',
-          h.code.children('PopoverBehavior'),
-          ' from ',
-          h.code.children('@/ui/effect/behaviors/popover'),
-          ' and decorate your own element builders with the supplied parts.',
         ),
       ),
       ...groups.map(group =>
@@ -432,19 +423,22 @@ const overview: DocsGuide = {
           h,
           group.toLowerCase().replaceAll(' ', '-'),
           group,
-          h.div
-            .class('behavior-card-grid')
+          h.ul
+            .class('behavior-docs-index-list')
             .children(
               primitives
                 .filter(behavior => behavior.group === group)
                 .map(behavior =>
-                  h.a
+                  h.li
                     .key(behavior.slug)
-                    .class('behavior-card')
-                    .attr('href', behavior.docs)
                     .children(
-                      h.strong.children(behavior.title),
-                      h.span.children(behavior.description),
+                      h.a
+                        .class('behavior-docs-link')
+                        .attr('href', behavior.docs)
+                        .children(behavior.title),
+                      h.p
+                        .class('behavior-docs-muted')
+                        .children(behavior.description),
                     ),
                 ),
             ),
