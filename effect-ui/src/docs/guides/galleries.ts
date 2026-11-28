@@ -992,9 +992,23 @@ const createPlaceholderChildren = (
   }
   if (title === 'Roller Shades') {
     return [
-      createHeading(h, 'Living Room', 'Roller Shades', 'OPEN'),
+      h.div
+        .class('create-card-heading')
+        .children(
+          h.div.children(
+            h.h2.children('Living Room'),
+            h.p.class('create-shade-subtitle').children('Roller Shades'),
+          ),
+        ),
       h.div.class('create-shade-visual').children(h.span),
-      h.div.class('create-chip-row').children(
+      h.div
+        .class('create-shade-control')
+        .children(
+          h.span.children('Open'),
+          h.div.class('create-shade-slider').children(h.i, h.b),
+          h.span.children('Close'),
+        ),
+      h.div.class('create-chip-row create-shade-modes').children(
         ['Open', 'Half', 'Closed'].map((mode, index) =>
           h.span
             .key(mode)
@@ -1004,6 +1018,7 @@ const createPlaceholderChildren = (
       ),
     ]
   }
+
   if (title === 'Stock Performance') {
     return [
       createHeading(h, 'Stock Performance', '6-month price history.'),

@@ -6043,3 +6043,75 @@ body:has(.effect-docs) {
   width: 20.3125rem;
   gap: 0;
 }
+
+.create-page .create-shade-subtitle {
+  margin-top: 0.25rem;
+}
+.create-page .create-roller-shades .create-shade-visual {
+  width: 20.3125rem;
+  height: 8rem;
+  margin-top: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--muted);
+}
+.create-page .create-roller-shades .create-shade-visual span {
+  width: calc(100% - 2px);
+  height: 3.9375rem;
+  margin: 1px;
+  border-radius: 0;
+  background: var(--muted-foreground);
+}
+.create-page .create-shade-control {
+  display: flex;
+  height: 1.5rem;
+  align-items: center;
+  margin-top: 0.75rem;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+.create-page .create-shade-slider {
+  position: relative;
+  width: 13.875rem;
+  height: 0.375rem;
+  border-radius: 999px;
+  background: var(--muted);
+}
+.create-page .create-shade-slider i {
+  display: block;
+  width: 50%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary);
+}
+.create-page .create-shade-slider b {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid var(--primary);
+  border-radius: 50%;
+  background: white;
+  transform: translate(-50%, -50%);
+}
+.create-page .create-shade-modes {
+  display: grid;
+  grid-template-columns: 6.625rem 6.5625rem 6.5625rem;
+  gap: 0.25rem;
+  margin-top: 1rem;
+}
+.create-page .create-shade-modes span {
+  display: grid;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  padding: 0;
+}
+.create-page .create-shade-control {
+  margin-top: 0.25rem;
+}
+.create-page .create-shade-modes {
+  margin-top: 0.875rem;
+}
