@@ -1047,10 +1047,37 @@ const createPlaceholderChildren = (
         'Set a new milestone',
         "Define your financial target and we'll help you pace your savings.",
       ),
-      createField(h, 'Goal Name'),
-      createField(h, 'Target Amount'),
-      createField(h, 'Target Date'),
-      createActions(h, 'Create Goal', 'Cancel'),
+      h.label.class('create-goal-field').children(
+        h.span.children('Goal Name'),
+        h.input.attrs({
+          placeholder: 'e.g. New Car, Home Downpayment',
+          type: 'text',
+        }),
+      ),
+      h.div
+        .class('create-goal-grid')
+        .children(
+          h.label
+            .class('create-goal-field')
+            .children(
+              h.span.children('Target Amount'),
+              h.input.attrs({ placeholder: '$0.00', type: 'text' }),
+            ),
+          h.label
+            .class('create-goal-field')
+            .children(
+              h.span.children('Target Date'),
+              h.input.attrs({ placeholder: 'mm/dd/yyyy', type: 'text' }),
+            ),
+        ),
+      h.button
+        .class('create-goal-primary')
+        .attrs({ type: 'button' })
+        .children('Create Goal'),
+      h.button
+        .class('create-goal-secondary')
+        .attrs({ type: 'button' })
+        .children('Cancel'),
     ]
   }
   if (title === 'Social Links') {
