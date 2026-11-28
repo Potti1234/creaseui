@@ -5158,3 +5158,68 @@ body:has(.effect-docs) {
 .create-page .create-split-row > * {
   min-width: 0;
 }
+
+.create-page .create-recent-transactions .create-transaction {
+  grid-template-columns: 3.5rem minmax(0, 1fr) 11.5rem 5rem 2rem;
+  height: 3.5625rem;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: -0.75rem;
+  padding-block: 0;
+}
+.create-page .create-recent-transactions .create-transaction:first-of-type {
+  margin-top: 1.25rem;
+}
+.create-page .create-transaction-icon {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  justify-self: center;
+  border-radius: 0.5rem;
+  background: var(--muted);
+  font-size: 0.85rem;
+}
+.create-page .create-transaction-name {
+  display: grid;
+  min-width: 0;
+}
+.create-page .create-transaction-name strong {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.create-page .create-transaction-name span,
+.create-page .create-transaction-date {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.create-page .create-transaction-amount {
+  font-size: 0.875rem;
+  text-align: right;
+}
+.create-page .create-transaction-menu {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+.create-page .create-recent-transactions .create-transaction {
+  grid-template-columns: 3.5rem 15.3125rem 13.6875rem 9.1875rem 2rem;
+}
+.create-page .create-recent-transactions > .create-transaction:nth-of-type(2) {
+  margin-top: 2rem;
+}
+.create-page .create-transaction-menu {
+  margin-left: 0.5rem;
+}
+.create-page .create-recent-transactions > .create-transaction:nth-of-type(2) {
+  margin-top: 1.25rem;
+}
+.create-page .create-transaction-amount {
+  justify-self: end;
+  width: auto;
+}

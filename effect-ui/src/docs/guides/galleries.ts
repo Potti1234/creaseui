@@ -559,28 +559,47 @@ const createPlaceholderChildren = (
         'View All',
       ),
       ...[
-        ['Blue Bottle Coffee', 'Food & Drink', 'Today, 10:24 AM', '-$6.50'],
-        ['Whole Foods Market', 'Groceries', 'Yesterday', '-$142.30'],
-        ['Stripe Payout', 'Income', 'Oct 12', '+$4,200.00'],
-        ['Uber Technologies', 'Transport', 'Oct 11', '-$24.10'],
-        ['Netflix Subscription', 'Entertainment', 'Oct 10', '-$19.99'],
-      ].map(([name, category, date, amount]) =>
+        [
+          '☕',
+          'Blue Bottle Coffee',
+          'Food & Drink',
+          'Today, 10:24 AM',
+          '-$6.50',
+        ],
+        ['🛒', 'Whole Foods Market', 'Groceries', 'Yesterday', '-$142.30'],
+        ['💳', 'Stripe Payout', 'Income', 'Oct 12', '+$4,200.00'],
+        ['🚗', 'Uber Technologies', 'Transport', 'Oct 11', '-$24.10'],
+        ['▶', 'Netflix Subscription', 'Entertainment', 'Oct 10', '-$19.99'],
+      ].map(([icon, name, category, date, amount]) =>
         h.div
           .key(name ?? '')
           .class('create-transaction')
           .children(
-            h.div.children(
-              h.strong.children(name ?? ''),
-              h.span.children(category ?? ''),
-            ),
-            h.span.children(date ?? ''),
+            h.div.class('create-transaction-icon').children(icon ?? ''),
+            h.div
+              .class('create-transaction-name')
+              .children(
+                h.strong.children(name ?? ''),
+                h.span.children(category ?? ''),
+              ),
+            h.span.class('create-transaction-date').children(date ?? ''),
             h.strong
-              .class(amount?.startsWith('+') ? 'positive' : '')
+              .class(
+                `create-transaction-amount ${amount?.startsWith('+') ? 'positive' : ''}`,
+              )
               .children(amount ?? ''),
+            h.button
+              .class('create-transaction-menu')
+              .attrs({
+                type: 'button',
+                'aria-label': `Open actions for ${name ?? 'transaction'}`,
+              })
+              .children('⋯'),
           ),
       ),
     ]
   }
+
   if (title === 'Account Access') {
     return [
       createHeading(
