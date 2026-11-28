@@ -248,6 +248,136 @@ const customizeGalleryOption = (
     option.series = [mobileSeries, desktopSeries]
     return option
   }
+  if (slug === 'bar' && theme !== undefined) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+    const desktopData = [186, 305, 237, 73, 209, 214]
+    const mobileData = [80, 200, 120, 190, 130, 140]
+    const bar = (
+      color: string,
+      data: readonly unknown[],
+      radius: number | readonly number[],
+    ): any => ({
+      type: 'bar',
+      itemStyle: { color, borderRadius: radius },
+      data: [...data],
+    })
+    option.grid = compactGrid({ bottom: 28 })
+    option.xAxis = categoryAxis(theme, months, { boundaryGap: true })
+    option.yAxis = valueAxis(theme)
+    option.tooltip = tooltipOptions(theme)
+    delete option.legend
+    if (example === 'Default') {
+      option.series = [
+        { ...bar(theme.chart1, desktopData, 8), name: 'Desktop' },
+      ]
+      return option
+    }
+    if (example === 'Horizontal') {
+      option.xAxis = {
+        type: 'value',
+        splitLine: { lineStyle: { color: theme.border, type: 'dashed' } },
+      }
+      option.yAxis = {
+        type: 'category',
+        data: months,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { color: theme.mutedForeground, fontSize: 12 },
+      }
+      option.series = [bar(theme.chart1, desktopData, 5)]
+      return option
+    }
+    if (example === 'Multiple') {
+      option.series = [
+        { ...bar(theme.chart1, desktopData, 4), name: 'Desktop' },
+        { ...bar(theme.chart2, mobileData, 4), name: 'Mobile' },
+      ]
+      return option
+    }
+    if (example === 'Stacked') {
+      option.legend = legendOptions(theme)
+      option.series = [
+        {
+          ...bar(theme.chart1, desktopData, [0, 0, 4, 4]),
+          name: 'Desktop',
+          stack: 'total',
+        },
+        {
+          ...bar(theme.chart2, mobileData, [4, 4, 0, 0]),
+          name: 'Mobile',
+          stack: 'total',
+        },
+      ]
+      return option
+    }
+    if (example === 'Label') {
+      option.grid = compactGrid({ top: 28 })
+      const series = bar(theme.chart1, desktopData, 8)
+      series.label = { position: 'top', fontSize: 12, color: theme.foreground }
+      option.series = [series]
+      return option
+    }
+    if (example === 'Negative') {
+      const visitors = [186, 205, -207, 173, -209, 214]
+      option.grid = compactGrid({ top: 32 })
+      option.series = [
+        {
+          type: 'bar',
+          label: {
+            position: 'top',
+            color: theme.foreground,
+            formatter: (params: any) => months[params.dataIndex] ?? '',
+          },
+          data: visitors.map(value => ({
+            value,
+            itemStyle: { color: value > 0 ? theme.chart1 : theme.chart2 },
+          })),
+        },
+      ]
+      return option
+    }
+    if (example === 'Mixed' || example === 'Active') {
+      const browsers = ['Chrome', 'Safari', 'Firefox', 'Edge', 'Other']
+      const values =
+        example === 'Mixed'
+          ? [275, 200, 187, 173, 90]
+          : [187, 200, 275, 173, 90]
+      const colors = [
+        theme.chart1,
+        theme.chart2,
+        theme.chart3,
+        theme.chart4,
+        theme.chart5,
+      ]
+      if (example === 'Mixed') {
+        option.xAxis = {
+          type: 'value',
+          splitLine: { lineStyle: { color: theme.border, type: 'dashed' } },
+        }
+        option.yAxis = {
+          type: 'category',
+          data: browsers,
+          axisLine: { show: false },
+          axisTick: { show: false },
+          axisLabel: { color: theme.mutedForeground, fontSize: 12 },
+        }
+      } else {
+        option.xAxis = categoryAxis(theme, browsers, { boundaryGap: true })
+        option.yAxis = valueAxis(theme)
+      }
+      option.series = [
+        {
+          type: 'bar',
+          itemStyle: { borderRadius: example === 'Mixed' ? 5 : 8 },
+          data: values.map((value, index) => ({
+            value,
+            itemStyle: { color: colors[index] ?? theme.chart1 },
+          })),
+        },
+      ]
+      return option
+    }
+  }
   if (slug === 'area' || slug === 'line')
     first.data = [186, 305, 237, 73, 209, 214]
   if ((slug === 'area' || slug === 'line') && example === 'Linear')
