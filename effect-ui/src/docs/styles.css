@@ -6434,3 +6434,7 @@ body:has(.effect-docs) {
 .create-page .create-home-row:first-of-type {
   margin-top: 3.75rem;
 }
+.create-page .create-contribution-history .contribution-months {
+  gap: 1.9375rem;
+  padding-left: 0.9375rem;
+}
