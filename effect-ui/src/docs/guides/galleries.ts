@@ -1179,7 +1179,7 @@ const createPlaceholderChildren = (
   }
   if (title === 'General') {
     return [
-      h.div.class('create-chip-row').children(
+      h.div.class('create-chip-row create-general-tabs').children(
         ['General', 'Billing', 'Goals'].map((tab, index) =>
           h.span
             .key(tab)
@@ -1187,31 +1187,45 @@ const createPlaceholderChildren = (
             .children(tab),
         ),
       ),
-      ...[
-        [
-          'How secure is my financial data with Ledger?',
-          'We use bank-level AES-256 encryption, SOC 2 Type II certified infrastructure, and never store your credentials. All connections use read-only access tokens. We are a SEC registered investment advisor.',
-        ],
-        [
-          'How do I connect my bank or investment accounts?',
-          'Go to Settings > Linked Accounts and search for your institution. We support over 12,000 banks and brokerages via Plaid and MX.',
-        ],
-        [
-          'Can I export my data for tax purposes?',
-          'Yes. Navigate to Reports > Tax Export to download a CSV or PDF summary of your transactions, dividends, and capital gains for any tax year.',
-        ],
-      ].map(([question, answer]) =>
-        h.details
-          .key(question ?? '')
-          .class('create-faq-item')
-          .children(
-            h.summary.children(question ?? ''),
-            h.p.children(answer ?? ''),
+      h.div
+        .class('create-faq-item open')
+        .children(
+          h.div
+            .class('create-faq-question')
+            .children(
+              h.span.children('How secure is my financial data with Ledger?'),
+              h.small.children('⌄'),
+            ),
+          h.p.children(
+            'We use bank-level AES-256 encryption, SOC 2 Type II certified infrastructure, and never store your credentials. All connections use read-only access tokens. We are a SEC registered investment advisor.',
           ),
-      ),
-      createActions(h, 'Learn More', 'Contact Support'),
+        ),
+      h.div
+        .class('create-faq-item')
+        .children(
+          h.div
+            .class('create-faq-question')
+            .children(
+              h.span.children(
+                'How do I connect my bank or investment accounts?',
+              ),
+              h.small.children('›'),
+            ),
+        ),
+      h.div
+        .class('create-faq-item')
+        .children(
+          h.div
+            .class('create-faq-question')
+            .children(
+              h.span.children('Can I export my data for tax purposes?'),
+              h.small.children('›'),
+            ),
+        ),
+      createActions(h, 'Contact Support', 'Learn More'),
     ]
   }
+
   if (title === 'Home') {
     return [
       h.div
