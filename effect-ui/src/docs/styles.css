@@ -4697,3 +4697,12 @@ body:has(.effect-docs) {
 .create-page .distribute button {
   margin-top: 1.3125rem;
 }
+.create-page .distribute .create-plus {
+  margin-top: 1.25rem;
+}
+.create-page .distribute h2 {
+  margin-bottom: -1.5625rem;
+}
+.create-page .distribute button {
+  margin-top: 1rem;
+}
