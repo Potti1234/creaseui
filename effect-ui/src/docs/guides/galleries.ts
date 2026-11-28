@@ -1445,11 +1445,15 @@ const dashboardPreview = (h: Html.H<DocsMessage>) =>
             ),
           ),
         h.section.class('preview-panel preview-chart').children(
-          h.div.children(
-            h.h1.children('Total Visitors'),
-            h.p.children('Total for the last three months'),
-          ),
-          h.span.children('Last 3 months ⌄'),
+          h.div
+            .class('preview-chart-header')
+            .children(
+              h.div.children(
+                h.h1.children('Total Visitors'),
+                h.p.children('Total for the last three months'),
+              ),
+              h.span.children('Last 3 months ⌄'),
+            ),
           h.div.class('preview-line-chart').children(
             h
               .el('svg')
