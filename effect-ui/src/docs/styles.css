@@ -3606,3 +3606,79 @@ body:has(.effect-docs) {
 .cohort-row {
   min-height: 2.125rem;
 }
+
+.kanban-shell {
+  min-height: 800px;
+}
+.kanban-content {
+  padding: 0.75rem;
+}
+.kanban-columns {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.kanban-column {
+  min-height: 38rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: color-mix(in oklab, var(--muted) 42%, transparent);
+  padding: 0.75rem;
+}
+.kanban-column > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 0.25rem;
+}
+.kanban-column h2 {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+}
+.kanban-column header span {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+.kanban-column article {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  background: var(--card);
+  padding: 0.75rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+}
+.kanban-column article div {
+  display: flex;
+  justify-content: space-between;
+}
+.kanban-column article b {
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.kanban-column article span {
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+}
+.kanban-column article strong {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+.kanban-content {
+  padding: 0.625rem;
+}
+.kanban-columns {
+  gap: 0.9375rem;
+  margin-top: 1.1875rem;
+}
+.kanban-column > header {
+  padding-inline: 0;
+}
+.kanban-content {
+  padding: 0.75rem;
+}

@@ -2137,11 +2137,113 @@ const funnelPreview = (h: Html.H<DocsMessage>) =>
     ),
   )
 
+const kanbanPreview = (h: Html.H<DocsMessage>) =>
+  h.div.class('exec-shell kanban-shell').children(
+    blockSidebar(h, 'northwind') as never,
+    h.main.class('exec-main').children(
+      h.header
+        .class('preview-topbar')
+        .children(
+          h.span.children('☰'),
+          h.span.children('Northwind'),
+          h.span.children('Sprint board'),
+        ),
+      h.div.class('kanban-content').children(
+        h.header
+          .class('exec-heading')
+          .children(
+            h.div.children(
+              h.h1.children('Sprint board'),
+              h.p.children('Atlas release · sprint 14 · 11 open tasks'),
+            ),
+            h.div
+              .class('exec-actions')
+              .children(
+                h.span.children('All assignees'),
+                h.span.children('This sprint'),
+                h.span.children('New task'),
+              ),
+          ),
+        h.div.class('kanban-columns').children(
+          ...(
+            [
+              [
+                'Backlog',
+                '3',
+                [
+                  ['Reporting', 'Usage analytics for admin roles', 'MC4'],
+                  ['Feature', 'Bulk import wizard for inventory', 'IN2'],
+                  ['Design', 'Empty state for archived projects', 'JP1'],
+                ],
+              ],
+              [
+                'In progress',
+                '3 / 3',
+                [
+                  ['Feature', 'Keyboard shortcuts for the board', 'AS6'],
+                  ['Bug', 'Migration retries on large accounts', 'IN3'],
+                  ['Feature', 'Granular notification preferences', 'MC5'],
+                ],
+              ],
+              [
+                'Review',
+                '2',
+                [
+                  ['Reporting', 'Session timeline for audit log', 'AS2'],
+                  ['QA', 'Regression test for invite flow', 'JP1'],
+                ],
+              ],
+              [
+                'Done',
+                '3',
+                [
+                  ['Design', 'Compact density for list views', 'MC8'],
+                  ['Ops', 'Webhook replay tooling', 'IN2'],
+                  ['Ops', 'Staging environment refresh', 'AS1'],
+                ],
+              ],
+            ] as ReadonlyArray<
+              readonly [
+                string,
+                string,
+                ReadonlyArray<readonly [string, string, string]>,
+              ]
+            >
+          ).map(([column, count, cards]) =>
+            h.section
+              .key(column ?? '')
+              .class('kanban-column')
+              .children(
+                h.header.children(
+                  h.h2.children(column ?? ''),
+                  h.span.children(count ?? ''),
+                ),
+                ...(
+                  cards as ReadonlyArray<readonly [string, string, string]>
+                ).map(([kind, title, owner]) =>
+                  h.article
+                    .key(title)
+                    .children(
+                      h.div.children(
+                        h.b.children(kind),
+                        h.span.children(owner),
+                      ),
+                      h.strong.children(title),
+                    ),
+                ),
+              ),
+          ),
+        ),
+      ),
+    ),
+  )
+
 const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'dashboard-01' || name === 'chart-analytics-dashboard')
     return dashboardPreview(h)
   if (name === 'creaseui-executive-summary') return executivePreview(h)
   if (name === 'creaseui-cohort-funnel') return funnelPreview(h)
+  if (name === 'creaseui-kanban-board') return kanbanPreview(h)
   if (name.startsWith('sidebar-') || name === 'app-shell-01')
     return sidebarOnlyPreview(h, name)
   if (name === 'login-03') return loginPreview(h, false)
