@@ -2809,6 +2809,144 @@ const orderDetailPreview = (h: Html.H<DocsMessage>) =>
     ),
   )
 
+const checkoutFormPreview = (h: Html.H<DocsMessage>) =>
+  h.div.class('exec-shell checkout-shell').children(
+    blockSidebar(h, 'northwind') as never,
+    h.main.class('exec-main').children(
+      h.header
+        .class('preview-topbar')
+        .children(
+          h.span.children('☰'),
+          h.span.children('Northwind'),
+          h.span.children('Checkout'),
+        ),
+      h.div.class('service-content checkout-content').children(
+        h.div.class('checkout-main').children(
+          h.header
+            .class('exec-heading checkout-heading')
+            .children(
+              h.div.children(
+                h.h1.children('Checkout'),
+                h.p.children('Order #1043 · 3 items'),
+              ),
+              h.span.class('checkout-secure').children('Secure'),
+            ),
+          h.section
+            .class('checkout-section')
+            .children(
+              h.h2.children('Contact'),
+              h.p.children('Receipt and tracking go here'),
+              h.div
+                .class('checkout-grid')
+                .children(
+                  h.label.children(h.span.children('Email'), h.i),
+                  h.label.children(h.span.children('Phone'), h.i),
+                ),
+            ),
+          h.section
+            .class('checkout-section shipping-section')
+            .children(
+              h.h2.children('Shipping'),
+              h.div
+                .class('checkout-grid')
+                .children(
+                  h.label.children(h.span.children('First name'), h.i),
+                  h.label.children(h.span.children('Last name'), h.i),
+                  h.label
+                    .class('wide')
+                    .children(h.span.children('Address'), h.i),
+                  h.label.children(h.span.children('City'), h.i),
+                  h.label.children(h.span.children('Postal code'), h.i),
+                  h.label
+                    .class('wide')
+                    .children(
+                      h.span.children('Country'),
+                      h.i.children('United States'),
+                    ),
+                ),
+            ),
+          h.section.class('checkout-section delivery-section').children(
+            h.h2.children('Delivery method'),
+            h.p.children('Affects the order total'),
+            ...[
+              ['Standard', 'Free · arrives Sep 28'],
+              ['Express', '$12.00 · arrives Sep 22'],
+              ['Store pickup', 'Free · South End depot'],
+            ].map(([label, detail], index) =>
+              h.div
+                .key(label ?? '')
+                .class('delivery-option')
+                .attr('data-active', index === 1 ? 'true' : 'false')
+                .children(
+                  h.b,
+                  h.div.children(
+                    h.strong.children(label ?? ''),
+                    h.p.children(detail ?? ''),
+                  ),
+                ),
+            ),
+          ),
+          h.section
+            .class('checkout-section payment-section')
+            .children(
+              h.h2.children('Payment'),
+              h.div
+                .class('checkout-grid')
+                .children(
+                  h.label
+                    .class('wide')
+                    .children(h.span.children('Card number'), h.i),
+                  h.label.children(h.span.children('Expiry'), h.i),
+                  h.label.children(h.span.children('CVC'), h.i),
+                ),
+              h.div.class('wallet-divider').children('Or pay with'),
+              h.div.class('wallet-button').children('Wallet'),
+            ),
+        ),
+        h.aside.class('service-rail checkout-summary').children(
+          h.h2.children('Order summary'),
+          h.p.children('Updates as delivery changes'),
+          ...[
+            ['Canvas Field Jacket', 'Qty 1', '$168.00'],
+            ['Merino Crew Sock · 3 pack', 'Qty 2', '$64.00'],
+            ['Enamel Camp Mug', 'Qty 1', '$16.00'],
+          ].map(([name, qty, price]) =>
+            h.div
+              .key(name ?? '')
+              .class('summary-item')
+              .children(
+                h.b,
+                h.div.children(
+                  h.strong.children(name ?? ''),
+                  h.p.children(qty ?? ''),
+                ),
+                h.span.children(price ?? ''),
+              ),
+          ),
+          h.div.class('summary-totals').children(
+            ...[
+              ['Subtotal', '$248.00'],
+              ['Shipping', '$8.00'],
+              ['Tax', '$12.40'],
+              ['Total', '$268.40'],
+            ].map(([label, value]) =>
+              h.div
+                .key(label ?? '')
+                .children(
+                  h.span.children(label ?? ''),
+                  h.strong.children(value ?? ''),
+                ),
+            ),
+          ),
+          h.div.class('pay-button').children('Pay $268.40'),
+          h.p
+            .class('checkout-note')
+            .children('Secure checkout · 30-day returns'),
+        ),
+      ),
+    ),
+  )
+
 const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'dashboard-01' || name === 'chart-analytics-dashboard')
     return dashboardPreview(h)
@@ -2820,6 +2958,7 @@ const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'creaseui-kanban-board') return kanbanPreview(h)
   if (name === 'creaseui-inbox-table') return inboxTablePreview(h)
   if (name === 'creaseui-order-detail') return orderDetailPreview(h)
+  if (name === 'creaseui-checkout-form') return checkoutFormPreview(h)
   if (name.startsWith('sidebar-') || name === 'app-shell-01')
     return sidebarOnlyPreview(h, name)
   if (name === 'login-03') return loginPreview(h, false)
