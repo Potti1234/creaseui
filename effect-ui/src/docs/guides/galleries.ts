@@ -1083,13 +1083,34 @@ const createPlaceholderChildren = (
   if (title === 'Social Links') {
     return [
       h.h2.children('Social Links'),
-      createField(h, 'Spotify Artist URL'),
-      createField(h, 'Instagram Handle'),
-      createField(h, 'SoundCloud URL'),
-      createField(h, 'Website'),
-      createActions(h, 'Save Changes', 'Discard'),
+      ...[
+        ['Spotify Artist URL', ''],
+        ['Instagram Handle', ''],
+        ['SoundCloud URL', 'soundcloud.com/username'],
+        ['Website', 'https://yoursite.com'],
+      ].map(([label, placeholder]) =>
+        h.label
+          .key(label ?? '')
+          .class('create-social-field')
+          .children(
+            h.span.children(label ?? ''),
+            h.div
+              .class('create-social-input')
+              .children(
+                h.i,
+                h.input.attrs({ placeholder: placeholder ?? '', type: 'text' }),
+              ),
+          ),
+      ),
+      h.div
+        .class('create-social-actions')
+        .children(
+          h.button.attrs({ type: 'button' }).children('Discard'),
+          h.button.attrs({ type: 'button' }).children('Save Changes'),
+        ),
     ]
   }
+
   if (title === 'Stocks') {
     return [
       h.div.class('stock-tabs').children(
