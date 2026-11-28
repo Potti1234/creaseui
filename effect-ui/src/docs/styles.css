@@ -6398,3 +6398,18 @@ body:has(.effect-docs) {
   height: 2.25rem;
   margin-top: 1.5rem;
 }
+.create-page .create-syncing-your-accounts {
+  gap: 0;
+}
+.create-page .create-syncing-your-accounts h2 {
+  display: table;
+  margin: 0.5rem auto 0;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+.create-page .create-syncing-your-accounts > p {
+  margin-top: 0.5rem;
+}
+.create-page .create-syncing-your-accounts button {
+  margin-top: 1.5rem;
+}
