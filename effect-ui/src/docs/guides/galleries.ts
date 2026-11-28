@@ -176,7 +176,9 @@ const galleryChart = (h: any, slug: string, example: string) =>
   EChart(h, {
     hostId: galleryHostId(slug, example),
     ariaLabel: `${example} chart`,
-    accessibleAlternative: h.p.children(`${example} chart data.`),
+    accessibleAlternative: h.p.children(
+      `${example === 'Default' ? singularChartTitle(slug) : example} chart showing total visitors for the last 6 months`,
+    ),
     toMessage: () => DocsMessage.ChartEvent(),
     className: 'w-full',
   }) as never
@@ -270,7 +272,7 @@ const chartDetail = (
               h.footer.children(
                 h.p
                   .class('chart-trend')
-                  .children('Trending up by 5.2% this month ↗'),
+                  .children('Trending up by 5.2% this month'),
                 h.p.children('January - June 2024'),
               ),
             ),
