@@ -5999,3 +5999,47 @@ body:has(.effect-docs) {
   font-size: 0.75rem;
   font-weight: 500;
 }
+.create-page .create-connect-bank .create-center-empty,
+.create-page .create-explore-catalog .create-center-empty {
+  display: flex;
+  align-items: center;
+  align-content: flex-start;
+  flex-direction: column;
+  padding: 0;
+}
+.create-page .create-connect-bank .create-plus,
+.create-page .create-explore-catalog .create-plus {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 3rem 0 0;
+}
+.create-page .create-connect-bank .create-center-empty h2,
+.create-page .create-explore-catalog .create-center-empty h2 {
+  margin-top: 2rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+.create-page .create-connect-bank .create-center-empty p,
+.create-page .create-explore-catalog .create-center-empty p {
+  width: 14.3125rem;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.421875rem;
+}
+.create-page .create-connect-bank .create-center-empty button {
+  width: 7.8125rem;
+  height: 2.25rem;
+  margin-top: 1.5rem;
+  padding: 0;
+}
+.create-page .create-explore-catalog .create-center-empty button {
+  width: 7rem;
+  height: 2.25rem;
+  margin-top: 1.5rem;
+  padding: 0;
+}
+.create-page .create-connect-bank .create-center-empty,
+.create-page .create-explore-catalog .create-center-empty {
+  width: 20.3125rem;
+  gap: 0;
+}
