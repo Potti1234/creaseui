@@ -4715,3 +4715,23 @@ body:has(.effect-docs) {
 .create-page .distribute button {
   margin-top: 0.875rem;
 }
+.create-page .create-card h2 {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+.create-page .create-card p {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.create-page .create-card {
+  align-content: start;
+}
+.create-page .contribution-bars {
+  height: 10.7rem;
+}
+.create-page .contribution .create-card-row {
+  margin-top: 1.25rem;
+}
+.create-page .contribution > button {
+  margin-top: 1.9375rem;
+}
