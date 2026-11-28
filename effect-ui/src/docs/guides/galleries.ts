@@ -369,17 +369,22 @@ const createHeading = (
   subtitle?: string,
   action?: string,
 ) =>
-  h.div
-    .class('create-card-heading')
-    .children(
-      h.div.children(
-        h.h2.children(title),
-        subtitle === undefined ? undefined : h.p.children(subtitle),
-      ),
-      action === undefined
-        ? undefined
-        : h.button.attrs({ type: 'button' }).children(action),
-    )
+  h.div.class('create-card-heading').children(
+    h.div.children(
+      h.h2.children(title),
+      subtitle === undefined ? undefined : h.p.children(subtitle),
+    ),
+    action === undefined
+      ? undefined
+      : h.button
+          .class(
+            action?.startsWith('Close')
+              ? 'create-icon-action'
+              : 'create-text-action',
+          )
+          .attrs({ type: 'button' })
+          .children(action),
+  )
 
 const createLine = (h: Html.H<DocsMessage>, label: string, value: string) =>
   h.div
@@ -495,24 +500,28 @@ const createPlaceholderChildren = (
         'New Goal',
       ),
       ...[
-        ['RETIREMENT', '$420,000', '65% achieved', '$273,000', '65%'],
-        ['REAL ESTATE', '$85,000', '32% achieved', '$27,200', '32%'],
+        ['Retirement', '$420,000', '65% achieved', '$273,000', '65%'],
+        ['Real Estate', '$85,000', '32% achieved', '$27,200', '32%'],
       ].map(([name, target, achieved, saved, width]) =>
         h.div
           .key(name ?? '')
           .class('create-target')
           .children(
-            h.small.children(name ?? ''),
             h.div
-              .class('create-line')
+              .class('create-target-body')
               .children(
-                h.strong.children(target ?? ''),
-                h.span.children(achieved ?? ''),
+                h.small.children(name ?? ''),
+                h.strong.class('create-target-value').children(target ?? ''),
+                h.div
+                  .class('create-progress')
+                  .children(h.span.style({ width: width ?? '0%' })),
               ),
             h.div
-              .class('create-progress')
-              .children(h.span.style({ width: width ?? '0%' })),
-            h.p.children(saved ?? ''),
+              .class('create-target-footer')
+              .children(
+                h.span.children(achieved ?? ''),
+                h.span.children(saved ?? ''),
+              ),
           ),
       ),
       h.p

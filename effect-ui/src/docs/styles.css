@@ -5043,3 +5043,118 @@ body:has(.effect-docs) {
 .stock-row {
   padding-inline: 0.8125rem;
 }
+.create-page .create-nested-column {
+  gap: 2.5rem;
+}
+
+.create-page .create-card-heading button.create-text-action {
+  display: inline-flex;
+  width: auto;
+  height: 2rem;
+  align-items: center;
+  padding-inline: 0.75rem;
+  font-size: 0.75rem;
+}
+.create-page .create-card-heading button.create-text-action::before {
+  content: none;
+}
+
+.create-page .create-savings-targets {
+  padding-top: 1.75rem;
+}
+.create-page .create-savings-targets .create-card-heading h2 {
+  margin-bottom: 0.25rem;
+}
+.create-page .create-target {
+  margin-inline: 0.8125rem;
+}
+.create-page .create-target > small {
+  font-size: 0.875rem;
+  line-height: 1rem;
+}
+.create-page .create-target .create-line strong {
+  font-size: 1.5rem;
+  line-height: 2.25rem;
+}
+.create-page .create-target {
+  min-height: 8.875rem;
+  margin-inline: 0;
+}
+.create-page .create-target:first-of-type {
+  margin-top: 0.75rem;
+}
+.create-page .create-target + .create-target {
+  margin-top: -0.125rem;
+}
+.create-page .create-target:first-of-type {
+  margin-top: 1.5rem;
+}
+.create-page .create-target + .create-target {
+  margin-top: 0;
+}
+.create-page .create-savings-targets > .create-target:nth-of-type(2) {
+  margin-top: 0.75rem;
+}
+.create-page .create-savings-targets > .create-target:nth-of-type(3) {
+  margin-top: 0.125rem;
+}
+
+.create-page .create-target {
+  align-content: start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+.create-page .create-target-value {
+  font-size: 1.5rem;
+  line-height: 2.25rem;
+}
+.create-page .create-target .create-progress {
+  height: 0.5rem;
+}
+.create-page .create-target-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+.create-page .create-target-footer span:first-child {
+  color: var(--muted-foreground);
+}
+
+.create-page .create-target {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.create-page .create-target-body {
+  display: grid;
+  width: 8.8125rem;
+  flex: none;
+  gap: 0.75rem;
+}
+.create-page .create-target-body small,
+.create-page .create-target-body strong {
+  width: auto;
+}
+.create-page .create-target-footer {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+}
+.create-page .create-target-body {
+  align-self: stretch;
+  align-content: start;
+}
+.create-page .create-target-footer span {
+  white-space: nowrap;
+}
+.create-page .create-savings-targets .create-warning {
+  margin-top: 0.625rem;
+}
+.create-page .create-target-footer {
+  width: 10.625rem;
+  flex: none;
+}
+.create-page .create-split-row > * {
+  min-width: 0;
+}
