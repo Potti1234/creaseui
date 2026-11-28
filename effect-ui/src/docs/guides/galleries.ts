@@ -1236,15 +1236,21 @@ const createPlaceholderChildren = (
 
   if (title === 'Front Door') {
     return [
-      createHeading(h, 'Front Door', 'Smart Lock Pro', 'Locked'),
+      h.div
+        .class('create-card-heading')
+        .children(
+          h.div.children(
+            h.h2.children('Front Door'),
+            h.p.class('create-front-door-subtitle').children('Smart Lock Pro'),
+          ),
+          h.span.class('create-lock-status').children('Locked', h.i),
+        ),
       h.div
         .class('create-lock-visual')
-        .children(
-          h.div.class('create-lock-icon').children('●'),
-          h.strong.children('Live'),
-        ),
+        .children(h.span.class('create-live-badge').children('Live')),
     ]
   }
+
   if (title === 'QR Connect') {
     return [
       h.div

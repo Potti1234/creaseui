@@ -5950,3 +5950,52 @@ body:has(.effect-docs) {
 .create-page .create-home-row:first-of-type {
   margin-top: 2.5rem;
 }
+
+.create-page .create-front-door-subtitle {
+  margin-top: 0.25rem;
+}
+.create-page .create-lock-status {
+  display: flex;
+  height: 1.25rem;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+.create-page .create-lock-status i {
+  width: 1rem;
+  height: 1rem;
+  border: 1.5px solid currentcolor;
+  border-radius: 0.25rem;
+}
+.create-page .create-front-door .create-lock-visual {
+  position: relative;
+  display: block;
+  width: 20.5625rem;
+  height: 11.5625rem;
+  margin-top: 0.75rem;
+  border-radius: 0.5rem;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      var(--border) 10px,
+      var(--border) 11px
+    ),
+    var(--muted);
+}
+.create-page .create-live-badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: grid;
+  width: 2.625rem;
+  height: 1.25rem;
+  place-items: center;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--destructive, red) 10%, transparent);
+  color: var(--destructive, red);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
