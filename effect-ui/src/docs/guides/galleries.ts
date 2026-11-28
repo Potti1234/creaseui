@@ -908,7 +908,13 @@ const createPlaceholderChildren = (
         'Select a date to view scheduled payments.',
       ),
       h.div.class('create-mini-calendar').children(
-        h.strong.children('November 2026'),
+        h.div
+          .class('create-calendar-header')
+          .children(
+            h.button.attrs({ type: 'button' }).children('‹'),
+            h.strong.children('November 2026'),
+            h.button.attrs({ type: 'button' }).children('›'),
+          ),
         h.div.class('create-calendar-grid').children(
           ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day =>
             h.small.key(day).children(day),
@@ -916,7 +922,7 @@ const createPlaceholderChildren = (
           ...Array.from({ length: 35 }, (_, index) =>
             h.span
               .key(String(index))
-              .children(index < 5 ? '' : index > 34 ? '' : String(index - 4)),
+              .children(String(index < 30 ? index + 1 : index - 29)),
           ),
         ),
       ),

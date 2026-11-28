@@ -5507,3 +5507,86 @@ body:has(.effect-docs) {
 .create-page .create-sidebar-nav-group small {
   margin-bottom: -0.25rem;
 }
+
+.create-page .create-upcoming-payments .create-mini-calendar {
+  height: 24.125rem;
+  margin-top: 1rem;
+  padding-inline: 1.5625rem;
+}
+.create-page .create-calendar-header {
+  display: flex;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.5625rem;
+}
+.create-page .create-calendar-header strong {
+  display: grid;
+  width: 8.6875rem;
+  height: 2rem;
+  place-items: center;
+  font-size: 0.875rem;
+}
+.create-page .create-calendar-header button {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+.create-page .create-upcoming-payments .create-calendar-grid {
+  grid-template-columns: repeat(7, 2.5rem);
+  column-gap: 0;
+  row-gap: 0.5rem;
+  width: 17.5rem;
+  margin-top: 1rem;
+}
+.create-page .create-upcoming-payments .create-calendar-grid small,
+.create-page .create-upcoming-payments .create-calendar-grid span {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  font-size: 0.875rem;
+}
+.create-page .create-upcoming-payments > .create-transaction {
+  grid-template-columns: minmax(0, 1fr) auto;
+  height: 4.375rem;
+  align-items: center;
+  padding-block: 0;
+}
+.create-page .create-upcoming-payments .create-transaction > div {
+  display: grid;
+  gap: 0.25rem;
+  padding-left: 0.8125rem;
+}
+.create-page .create-upcoming-payments .create-transaction > strong {
+  padding-right: 0.8125rem;
+}
+.create-page .create-upcoming-payments .create-mini-calendar {
+  gap: 0;
+}
+.create-page .create-upcoming-payments > .create-transaction {
+  width: 20.3125rem;
+}
+.create-page .create-upcoming-payments > .create-transaction:nth-of-type(2) {
+  margin-top: 0.25rem;
+}
+.create-page
+  .create-upcoming-payments
+  > .create-transaction
+  + .create-transaction {
+  margin-top: -0.75rem;
+}
+.create-page .create-upcoming-payments .create-mini-calendar {
+  align-content: start;
+}
+.create-page .create-upcoming-payments .create-transaction > strong {
+  margin-right: 0.8125rem;
+  padding-right: 0;
+}
+.create-page .create-upcoming-payments > .create-transaction:nth-of-type(3) {
+  margin-top: 0.25rem;
+}
