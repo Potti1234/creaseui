@@ -872,6 +872,23 @@ const guidePage = (
         )
 }
 
+const tutorialPage = (h: DocHtml, guide: DocsGuide) =>
+  docsMain(h, 'guide-main tutorial-main').children(
+    h.header
+      .class('tutorial-breadcrumb')
+      .children(
+        h.a.attr('href', '/docs/getting-started').children('Docs'),
+        h.span.attr('aria-hidden', 'true').children('/'),
+        h.span.attr('aria-current', 'page').children('Tutorial'),
+      ),
+    h.span
+      .class('tutorial-intro')
+      .children(
+        'The condensed overview — the full fifteen-chapter guide walks through every step.',
+      ),
+    h.div.class('tutorial-shell').children(guide.view(h)),
+  )
+
 const notFound = (h: DocHtml) =>
   docsMain(h).children(
     h.h1.children('Page not found'),
@@ -1085,7 +1102,9 @@ const Docs = Html.component({
                     : sidebar(h, query, groups),
                 ),
                 guide !== undefined
-                  ? guidePage(h, guide)
+                  ? guidePath === '/docs/tutorial'
+                    ? tutorialPage(h, guide)
+                    : guidePage(h, guide)
                   : route.tag === 'catalog'
                     ? catalog(h, groups)
                     : route.tag === 'component'

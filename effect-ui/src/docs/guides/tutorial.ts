@@ -8,38 +8,54 @@ const tagHref = (tag: string | null) =>
 const chapterPath = (id: string) =>
   id === 'short' ? '/docs/tutorial' : `/docs/tutorial/${id}`
 const ordered = TUTORIAL_CHAPTERS.filter(chapter => chapter.id !== 'short')
-const tutorialCode = (h: Parameters<DocsGuide['view']>[0], code: string) =>
-  h.pre.class('tutorial-code').children(h.code.children(code))
+const tutorialCode = (
+  h: Parameters<DocsGuide['view']>[0],
+  filename: string,
+  code: string,
+) =>
+  h.div
+    .class('tutorial-code-block')
+    .children(
+      h.div.class('tutorial-code-header').children(filename),
+      h.pre.class('tutorial-code').children(h.code.children(code)),
+    )
 
 const tutorialTable = (
   h: Parameters<DocsGuide['view']>[0],
   rows: ReadonlyArray<readonly [string, string, string]>,
 ) =>
-  h.div
-    .class('tutorial-table-wrap')
+  h.figure
+    .class('tutorial-figure')
     .children(
-      h.table
-        .class('tutorial-table')
+      h.div
+        .class('tutorial-table-wrap')
         .children(
-          h.thead.children(
-            h.tr.children(
-              h.th.children('File'),
-              h.th.children('Holds'),
-              h.th.children('Checked by'),
-            ),
-          ),
-          h.tbody.children(
-            rows.map(row =>
-              h.tr
-                .key(row[0])
-                .children(
-                  h.td.children(h.code.children(row[0])),
-                  h.td.children(row[1]),
-                  h.td.children(h.code.children(row[2])),
+          h.table
+            .class('tutorial-table')
+            .children(
+              h.thead.children(
+                h.tr.children(
+                  h.th.children('File'),
+                  h.th.children('Holds'),
+                  h.th.children('Checked by'),
                 ),
+              ),
+              h.tbody.children(
+                rows.map(row =>
+                  h.tr
+                    .key(row[0])
+                    .children(
+                      h.td.children(h.code.children(row[0])),
+                      h.td.children(row[1]),
+                      h.td.children(h.code.children(row[2])),
+                    ),
+                ),
+              ),
             ),
-          ),
         ),
+      h.figcaption.children(
+        'The files of Crease Tasks that carry decisions, and the check that reads each one.',
+      ),
     )
 
 const chapterRef = (n: number) => `chapter ${n}`
@@ -121,6 +137,7 @@ const index: DocsGuide = {
         ),
         tutorialCode(
           h,
+          'terminal',
           `npx shadcn@latest add Potti1234/creaseui/crease-theme --yes
 npx shadcn@latest add Potti1234/creaseui/button Potti1234/creaseui/item --yes
 npx creaseui-lint init --renderer tailwind   # writes crease.lock.json and eslint.config.js`,
@@ -167,6 +184,7 @@ npx creaseui-lint init --renderer tailwind   # writes crease.lock.json and eslin
         ),
         tutorialCode(
           h,
+          'package.json',
           `"lint": "eslint src --max-warnings 13",
 "check": "tsc --noEmit && eslint src --max-warnings 0 && creaseui-lint doctor && creaseui-lint css && vitest run",
 "scope": "creaseui-lint scope --baseline HEAD"`,
@@ -227,26 +245,6 @@ npx creaseui-lint init --renderer tailwind   # writes crease.lock.json and eslin
         h.p.children(
           `The installed components are your files, so a crease update is a diff to merge. Limit the upstream diff to the files in crease.lock.json. Where upstream fixed something you worked around, take upstream and delete the workaround; where only upstream changed, take it; where both changed, merge with git merge-file and keep your product decisions. Record it as a design-system change (${chapterRef(15)}).`,
         ),
-      ),
-      section(
-        h,
-        'chapters',
-        'Chapters',
-        h.ol
-          .class('docs-compact-list')
-          .children(
-            ordered.map(chapter =>
-              h.li
-                .key(chapter.id)
-                .children(
-                  h.a
-                    .class('docs-inline-link')
-                    .attr('href', chapterPath(chapter.id))
-                    .children(`${chapter.id}. ${chapter.title}`),
-                  h.span.class('docs-muted').children(` ${chapter.summary}`),
-                ),
-            ),
-          ),
       ),
       h.footer
         .class('tutorial-footer')
