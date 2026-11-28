@@ -3206,3 +3206,11 @@ body:has(.effect-docs) {
 .guide-main:has(.lint-overview) {
   padding-block-start: 3.5rem;
 }
+.lint-overview section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.lint-overview section > * {
+  margin-block: 0 !important;
+}
