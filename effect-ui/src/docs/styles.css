@@ -2599,7 +2599,7 @@ body:has(.effect-docs) {
 .create-card-row {
   align-items: stretch;
 }
-.create-card-row > div {
+.contribution .create-card-row > div {
   display: grid;
   flex: 1;
   gap: 0.2rem;
@@ -4758,4 +4758,31 @@ body:has(.effect-docs) {
   place-items: center;
   justify-self: center;
   padding: 0;
+}
+.create-page .create-card.payout {
+  padding-top: 1.75rem;
+}
+.create-page .payout > h2 {
+  margin-bottom: -0.5rem;
+}
+.create-page .payout > label:first-of-type {
+  margin-top: 0.75rem;
+}
+.create-page .payout > .create-card-row:first-of-type {
+  margin-top: 0.6875rem;
+}
+.create-page .payout > label:last-of-type {
+  margin-top: 0.875rem;
+}
+.create-page .payout > button {
+  margin-top: 1.875rem;
+}
+.create-page .payout > .create-card-row:first-of-type {
+  margin-top: 0.8125rem;
+}
+.create-page .payout > .create-card-row:first-of-type > label {
+  align-self: center;
+}
+.create-page .payout > label:last-of-type {
+  margin-top: 1.5625rem;
 }
