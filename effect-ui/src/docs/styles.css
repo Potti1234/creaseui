@@ -4735,3 +4735,27 @@ body:has(.effect-docs) {
 .create-page .contribution > button {
   margin-top: 1.9375rem;
 }
+.create-page .create-card.distribute {
+  align-content: space-evenly;
+}
+.create-page .distribute .create-plus {
+  margin: 0 auto;
+}
+.create-page .distribute h2 {
+  margin-bottom: 0;
+}
+.create-page .distribute button {
+  margin-top: 0;
+}
+.create-page .distribute p {
+  width: 14.3125rem;
+  margin-inline: auto;
+}
+.create-page .distribute button {
+  display: grid;
+  width: 7.6875rem;
+  height: 2.25rem;
+  place-items: center;
+  justify-self: center;
+  padding: 0;
+}
