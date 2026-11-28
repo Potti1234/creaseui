@@ -873,22 +873,46 @@ const createPlaceholderChildren = (
       h.div
         .class('create-power-chart')
         .children(
-          [35, 48, 31, 66, 82, 57, 73, 44].map((height, index) =>
-            h.span.key(String(index)).style({ height: `${String(height)}%` }),
+          ...[32, 76, 84, 65, 92, 78, 103, 86].map((height, index) =>
+            h.span.key(String(index)).style({ height: `${String(height)}px` }),
+          ),
+          h.div
+            .class('create-power-times')
+            .children(
+              ['6a', '8a', '10a', '12p', '2p', '4p', '6p', '8p'].map(time =>
+                h.small.key(time).children(time),
+              ),
+            ),
+        ),
+      h.div.class('create-power-separator'),
+      h.div
+        .class('create-power-stats')
+        .children(
+          h.div.children(
+            h.span.children('Currently Using'),
+            h.strong.children('3.4 kW'),
+          ),
+          h.div.children(
+            h.span.children('Solar Gen'),
+            h.strong.children('+1.2 kW'),
           ),
         ),
       h.div
-        .class('create-power-times')
+        .class('create-power-footer')
         .children(
-          ['6a', '8a', '10a', '12p', '2p', '4p', '6p', '8p'].map(time =>
-            h.span.key(time).children(time),
-          ),
+          h.span.children('Battery Level'),
+          h.div
+            .class('create-power-battery')
+            .children(
+              h.div
+                .class('create-progress')
+                .children(h.span.style({ width: '85%' })),
+              h.strong.children('85%'),
+            ),
         ),
-      createLine(h, 'Currently Using', '3.4 kW'),
-      createLine(h, 'Solar Gen', '+1.2 kW'),
-      createLine(h, 'Battery Level', '85%'),
     ]
   }
+
   if (title === 'Connect Bank') {
     return [
       h.div

@@ -5636,3 +5636,81 @@ body:has(.effect-docs) {
 .create-page .create-cover-art .create-upload-note {
   line-height: 1rem;
 }
+
+.create-page .create-power-usage .create-power-chart {
+  position: relative;
+  display: flex;
+  height: 8.75rem;
+  align-items: flex-end;
+  gap: 0.625rem;
+  margin-top: 0.75rem;
+  border-bottom: 0;
+  padding-left: 3.1875rem;
+}
+.create-page .create-power-usage .create-power-chart > span {
+  width: 1.1875rem;
+  flex: none;
+  border-radius: 0.125rem;
+  background: var(--chart-2);
+}
+.create-page .create-power-times {
+  position: absolute;
+  bottom: 0.1875rem;
+  left: 3.1875rem;
+  display: flex;
+  gap: 0.625rem;
+}
+.create-page .create-power-times small {
+  width: 1.1875rem;
+  color: var(--muted-foreground);
+  font-size: 0.625rem;
+  text-align: center;
+}
+.create-page .create-power-separator {
+  height: 1px;
+  margin-top: 0.25rem;
+  background: var(--border);
+}
+.create-page .create-power-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 0.25rem;
+  gap: 1rem;
+}
+.create-page .create-power-stats > div {
+  display: grid;
+  gap: 0.125rem;
+}
+.create-page .create-power-stats span,
+.create-page .create-power-footer > span {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.create-page .create-power-stats strong {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+.create-page .create-power-footer {
+  display: grid;
+  margin-top: 1.375rem;
+  gap: 0.25rem;
+}
+.create-page .create-power-battery {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.create-page .create-power-battery .create-progress {
+  height: 0.5rem;
+  flex: 1;
+}
+.create-page .create-power-usage .create-power-chart,
+.create-page .create-power-usage .create-power-separator,
+.create-page .create-power-usage .create-power-stats,
+.create-page .create-power-usage .create-power-footer {
+  width: 20.3125rem;
+}
+.create-page .create-power-usage .create-power-chart {
+  margin-top: 1rem;
+}
