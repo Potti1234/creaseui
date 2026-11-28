@@ -415,6 +415,137 @@ const createActions = (
       h.button.attrs({ type: 'button' }).children(primary),
     )
 
+const createSidebarNavCard = (
+  h: Html.H<DocsMessage>,
+  key: string,
+  sections: ReadonlyArray<readonly [string, ReadonlyArray<string>]>,
+) =>
+  h.section
+    .key(key)
+    .class('create-card create-sidebar-nav-card')
+    .children(
+      ...sections.map(([label, items]) =>
+        h.div
+          .key(label)
+          .class('create-sidebar-nav-group')
+          .children(
+            h.small.children(label),
+            ...items.map((item, index) =>
+              h.span
+                .key(item)
+                .class(label === 'Overview' && index === 0 ? 'selected' : '')
+                .children(item),
+            ),
+          ),
+      ),
+    )
+
+const createSidebarNavPair = (h: Html.H<DocsMessage>) =>
+  h.div
+    .key('Sidebar Nav')
+    .class('create-sidebar-nav-pair')
+    .children(
+      createSidebarNavCard(h, 'sidebar-overview', [
+        [
+          'Overview',
+          ['Dashboard', 'Transactions', 'Investments', 'Accounts', 'Spending'],
+        ],
+        ['Planning', ['Goals', 'Budget', 'Reports', 'Documents']],
+      ]),
+      createSidebarNavCard(h, 'sidebar-account', [
+        [
+          'Account',
+          ['Profile', 'Billing', 'Notifications', 'Security', 'Appearance'],
+        ],
+        ['Support', ['Help Center', 'Contact Us', 'Documentation', 'Status']],
+      ]),
+    )
+
+const createBalanceMiniCard = (
+  h: Html.H<DocsMessage>,
+  key: string,
+  label: string,
+  value: string,
+  detail?: string,
+  action?: string,
+) =>
+  h.section
+    .key(key)
+    .class('create-card create-balance-mini-card')
+    .children(
+      h.p.children(label),
+      h.h3.children(value),
+      detail === undefined
+        ? undefined
+        : h.p.class('balance-available').children(detail),
+      action === undefined
+        ? undefined
+        : h.button.attrs({ type: 'button' }).children(action),
+    )
+
+const createCardBalanceComposition = (h: Html.H<DocsMessage>) =>
+  h.div
+    .key('Card Balance')
+    .class('create-balance-composition')
+    .children(
+      createBalanceMiniCard(
+        h,
+        'card-balance',
+        'Card Balance',
+        'US$12.94',
+        'US$11,337.06 Available',
+      ),
+      createBalanceMiniCard(
+        h,
+        'payment-due',
+        'Payment Due',
+        '1 Apr',
+        undefined,
+        'Pay Early',
+      ),
+      h.section
+        .key('yearly-activity')
+        .class('create-card create-balance-activity-card')
+        .children(
+          h.div
+            .class('balance-activity-head')
+            .children(
+              h.span.children('Yearly Activity'),
+              h.strong.children('+US$0.25 Daily Cash'),
+            ),
+          h.div
+            .class('balance-activity-chart')
+            .children(
+              ...[24, 33, 21, 36, 27, 30, 39, 24, 33, 42, 27, 48].map(
+                (height, index) =>
+                  h.i
+                    .key(`${String(height)}-${String(index)}`)
+                    .style({ height: `${String(height)}px` }),
+              ),
+            ),
+          h.div
+            .class('balance-months')
+            .children(
+              ...[
+                'J',
+                'F',
+                'M',
+                'A',
+                'M',
+                'J',
+                'J',
+                'A',
+                'S',
+                'O',
+                'N',
+                'D',
+              ].map((month, index) =>
+                h.span.key(`${month}-${index}`).children(month),
+              ),
+            ),
+        ),
+    )
+
 const createPlaceholderChildren = (
   h: Html.H<DocsMessage>,
   title: string,
@@ -1527,7 +1658,7 @@ const createGuide: DocsGuide = {
                 h.div
                   .class('create-nested-column')
                   .children(
-                    createPlaceholder(h, 'Sidebar Nav', 'regular', 5, 722),
+                    createSidebarNavPair(h),
                     createPlaceholder(h, 'General', 'regular', 4, 426),
                   ),
                 h.div
@@ -1543,7 +1674,7 @@ const createGuide: DocsGuide = {
           h,
           'account',
           createPlaceholder(h, 'Account Access', 'regular', 5, 415),
-          createPlaceholder(h, 'Card Balance', 'regular', 4, 336),
+          createCardBalanceComposition(h),
           createPlaceholder(h, 'Transfer Funds', 'regular', 6, 579),
           createPlaceholder(h, 'Cover Art', 'regular', 5, 503),
           createPlaceholder(h, 'Loading Card', 'regular', 4, 374),
