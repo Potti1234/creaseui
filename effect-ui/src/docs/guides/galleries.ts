@@ -1454,7 +1454,7 @@ const dashboardPreview = (h: Html.H<DocsMessage>) =>
                 h.h1.children('Total Visitors'),
                 h.p.children('Total for the last three months'),
               ),
-              h.span.children('Last 3 months ⌄'),
+              h.span.children('Last 3 months'),
             ),
           h.div.class('preview-line-chart').children(
             h
@@ -1494,10 +1494,6 @@ const dashboardPreview = (h: Html.H<DocsMessage>) =>
                   'stroke-width': '2',
                 }),
               ),
-          ),
-          h.footer.children(
-            h.span.children('■ Desktop'),
-            h.span.children('■ Mobile'),
           ),
         ),
         h.section.class('preview-panel preview-table').children(

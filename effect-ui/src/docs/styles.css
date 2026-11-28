@@ -3256,3 +3256,22 @@ body:has(.effect-docs) {
 .preview-sidebar > nav.preview-secondary.bottom {
   margin-top: 0.75rem;
 }
+
+.preview-chart-header > span {
+  border: 0;
+  padding: 0;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+}
+.preview-line-chart {
+  height: 16rem;
+  margin-top: 1rem;
+}
+.preview-line-chart svg {
+  height: 16rem;
+}
+
+.preview-chart-header > span {
+  display: inline-flex;
+  width: 6.125rem;
+}
