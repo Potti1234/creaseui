@@ -1,4 +1,13 @@
 import { UiSchema } from '@effect/ui'
+
+import {
+  areaGradient,
+  categoryAxis,
+  registerChart,
+  shadcnTooltip,
+  updateAnimation,
+  valueAxis,
+} from '../../behaviors/chart'
 import { Html } from '@effect/ui/html'
 import { Schema } from 'effect'
 
@@ -7,6 +16,7 @@ import {
   Badge,
   Button,
   ButtonLink,
+  EChart,
   Icon,
   InteractiveAreaChart,
   Kbd,
@@ -20,6 +30,7 @@ const Message = UiSchema.TaggedEnum({
   SelectedFont: { value: Schema.String },
   SelectedPeriod: { value: Schema.String },
   SelectedSeries: { value: Schema.String },
+  ChartEvent: {},
 })
 type Message = typeof Message.Type
 
@@ -54,7 +65,9 @@ const sectionHeader = (h: Html.H<Message>, title: string, copy: string) =>
         )
         .children(title),
       h.p
-        .class('max-w-xl leading-relaxed text-pretty text-muted-foreground')
+        .class(
+          'max-w-xl text-base leading-relaxed text-pretty text-muted-foreground',
+        )
         .children(copy),
     )
 
@@ -113,7 +126,7 @@ const sparkline = (h: Html.H<Message>, id: string) =>
 const hero = (h: Html.H<Message>) =>
   h.section
     .class(
-      'mx-auto grid w-full max-w-[1200px] items-center gap-12 px-4 py-16 md:grid-cols-2 md:px-8 md:py-20',
+      'mx-auto grid w-full max-w-[1200px] items-center gap-12 px-4 py-16 md:grid-cols-2 md:px-8 md:py-24',
     )
     .children(
       h.div.class('flex flex-col items-start gap-6').children(
@@ -155,7 +168,7 @@ const hero = (h: Html.H<Message>) =>
       h.div.class('grid w-full max-w-xl gap-4 justify-self-end').children(
         cardShell(
           h,
-          'min-h-52 p-6',
+          'min-h-[250px] p-6',
           h.h3.class('text-base font-medium').children('Revenue'),
           h.p
             .class('mt-1 text-sm text-muted-foreground')
@@ -512,7 +525,7 @@ const studio = (
           h.div.class('landing-studio min-w-0').children(
             h.div
               .class(
-                'grid min-h-[420px] place-items-center rounded-2xl bg-muted/40 p-5 sm:p-10',
+                'grid min-h-[454px] place-items-center rounded-2xl bg-muted/40 p-5 sm:p-10',
               )
               .children(
                 h.div
@@ -600,6 +613,11 @@ const studio = (
                     ),
                   ),
               ),
+            h.p
+              .class(
+                'mt-3 text-center font-mono text-[11px] text-muted-foreground',
+              )
+              .children('--primary · --radius · --font-sans'),
           ),
         ),
     )
@@ -726,7 +744,7 @@ const detailCard = (
 ) =>
   h.div
     .class(
-      'flex min-w-0 flex-col rounded-2xl bg-background shadow-[0_0_0_1px_var(--border)]',
+      `detail-card detail-${title.toLowerCase().replace(/[^a-z]+/g, '-')} flex min-w-0 flex-col rounded-2xl bg-background shadow-[0_0_0_1px_var(--border)]`,
     )
     .children(
       h.div
@@ -764,7 +782,7 @@ const playground = (h: Html.H<Message>) =>
           subtleLink(
             h,
             '/docs/components/combobox',
-            'Browse all components',
+            'Browse 125 components',
             Icon(h, { name: 'arrow-up-right', size: 'sm' }) as never,
           ),
         ),
@@ -858,6 +876,77 @@ const playground = (h: Html.H<Message>) =>
         ),
     )
 
+const LANDING_CHART_DATA = {
+  week: {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    visitors: [184, 230, 195, 286, 312, 249, 340],
+    signups: [62, 84, 71, 104, 117, 96, 128],
+  },
+  month: {
+    labels: [
+      'Jun 1',
+      'Jun 5',
+      'Jun 10',
+      'Jun 15',
+      'Jun 20',
+      'Jun 25',
+      'Jun 30',
+    ],
+    visitors: [820, 1140, 960, 1530, 1210, 1780, 2040],
+    signups: [250, 390, 320, 570, 430, 680, 820],
+  },
+  quarter: {
+    labels: ['Apr 1', 'Apr 15', 'May 1', 'May 15', 'Jun 1', 'Jun 15', 'Jun 30'],
+    visitors: [2300, 2840, 2520, 3710, 3280, 4250, 4860],
+    signups: [780, 940, 830, 1320, 1140, 1670, 1960],
+  },
+} as const
+const landingChartSlots = Array.from(
+  { length: 7 },
+  (_, index) => `slot-${String(index)}`,
+)
+registerChart('landing-chart', (theme, variant) => {
+  const [period = 'month', series = 'both'] = variant.split(':')
+  const data =
+    LANDING_CHART_DATA[period as keyof typeof LANDING_CHART_DATA] ??
+    LANDING_CHART_DATA.month
+  return {
+    ...updateAnimation(),
+    grid: { left: 8, right: 8, top: 18, bottom: 34, containLabel: true },
+    xAxis: categoryAxis(theme, landingChartSlots, {
+      axisLabel: { formatter: (_name, index) => data.labels[index] ?? '' },
+    }),
+    yAxis: valueAxis(theme, { showLabels: true }),
+    tooltip: shadcnTooltip(theme, {
+      formatHeading: (_name, index) => data.labels[index] ?? '',
+    }),
+    series: [
+      {
+        id: 'visitors',
+        name: 'Visitors',
+        type: 'line' as const,
+        smooth: 0.35,
+        showSymbol: false,
+        lineStyle: { width: 2, color: theme.chart1 },
+        itemStyle: { color: theme.chart1 },
+        areaStyle: { color: areaGradient(theme.chart1) },
+        data: series === 'signups' ? [] : [...data.visitors],
+      },
+      {
+        id: 'signups',
+        name: 'Signups',
+        type: 'line' as const,
+        smooth: 0.35,
+        showSymbol: false,
+        lineStyle: { width: 2, color: theme.chart2 },
+        itemStyle: { color: theme.chart2 },
+        areaStyle: { color: areaGradient(theme.chart2) },
+        data: series === 'visitors' ? [] : [...data.signups],
+      },
+    ],
+  }
+})
+
 const chartSection = (h: Html.H<Message>, period: string, series: string) =>
   h.section
     .class('mx-auto w-full max-w-[1200px] px-4 py-14 md:px-8 md:py-20')
@@ -884,20 +973,25 @@ const chartSection = (h: Html.H<Message>, period: string, series: string) =>
                     'mt-2 text-3xl font-semibold tracking-tight tabular-nums',
                   )
                   .children(
-                    period === '7d'
-                      ? '9,480'
-                      : period === '30d'
-                        ? '42,104'
-                        : '128,492',
+                    (series === 'signups'
+                      ? LANDING_CHART_DATA[
+                          period as keyof typeof LANDING_CHART_DATA
+                        ].signups
+                      : LANDING_CHART_DATA[
+                          period as keyof typeof LANDING_CHART_DATA
+                        ].visitors
+                    )
+                      .reduce((sum, value) => sum + value, 0)
+                      .toLocaleString('en-US'),
                   ),
               ),
               h.div
                 .class('flex rounded-full bg-muted/70 p-1')
                 .children(
-                  ['7d', '30d', '90d'].map(value =>
+                  ['week', 'month', 'quarter'].map(value =>
                     pill(
                       h,
-                      { '7d': '7 days', '30d': '30 days', '90d': '90 days' }[
+                      { week: '7 days', month: '30 days', quarter: '90 days' }[
                         value
                       ]!,
                       value === period,
@@ -921,10 +1015,15 @@ const chartSection = (h: Html.H<Message>, period: string, series: string) =>
             ),
           ),
           h.div.class('mt-4').children(
-            InteractiveAreaChart(h, {
-              id: `landing-chart-${period}-${series}`,
-              data: trend,
+            EChart(h, {
+              hostId: 'landing-chart',
               ariaLabel: 'Visitors and signups over time',
+              accessibleAlternative: h.p.children(
+                'Chart data is available in the interactive chart controls.',
+              ),
+              toMessage: () => Message.ChartEvent(),
+              variant: `${period}:${series}`,
+              className: 'landing-chart-frame',
             }) as never,
           ),
           h.div
@@ -951,7 +1050,7 @@ const chartSection = (h: Html.H<Message>, period: string, series: string) =>
               subtleLink(
                 h,
                 '/charts/area',
-                'Explore 52 more examples',
+                'Explore 70 chart examples',
                 Icon(h, { name: 'arrow-up-right', size: 'sm' }) as never,
               ),
             ),
@@ -1179,7 +1278,7 @@ export const LandingPage = Html.component({
     accent: 'green',
     radius: 'large',
     font: 'inter',
-    period: '7d',
+    period: 'month',
     series: 'both',
   }),
   update: {
@@ -1191,6 +1290,7 @@ export const LandingPage = Html.component({
     SelectedFont: ($, { value }) => $.evolve({ font: value }),
     SelectedPeriod: ($, { value }) => $.evolve({ period: value }),
     SelectedSeries: ($, { value }) => $.evolve({ series: value }),
+    ChartEvent: $ => $,
   },
   view: (h, model) =>
     h.div

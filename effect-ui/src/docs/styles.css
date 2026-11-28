@@ -2973,3 +2973,46 @@ body:has(.effect-docs) {
 .create-page .create-card {
   padding: 1.5rem;
 }
+
+.landing-chart-frame [data-slot='echart'] {
+  height: 320px;
+  aspect-ratio: auto;
+}
+.landing-map {
+  height: 420px !important;
+}
+
+.detail-combobox {
+  order: 1;
+}
+.detail-date-range {
+  order: 2;
+}
+.detail-dialog {
+  order: 3;
+}
+.detail-data-table {
+  order: 4;
+}
+.detail-command-palette {
+  order: 5;
+}
+.detail-form-validation {
+  order: 6;
+}
+@media (width >= 1024px) {
+  .detail-combobox,
+  .detail-date-range,
+  .detail-dialog {
+    height: 293px;
+  }
+  .detail-data-table,
+  .detail-command-palette,
+  .detail-form-validation {
+    height: 337px;
+  }
+}
+
+.site-page:has([data-landing-tour]) {
+  padding-top: 0;
+}
