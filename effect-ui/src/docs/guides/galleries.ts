@@ -2,7 +2,16 @@ import type { View } from '@effect/ui'
 import type { Html } from '@effect/ui/html'
 
 import { EChart } from '#components'
-import { registerChart } from '../../behaviors/chart'
+import {
+  areaGradient,
+  categoryAxis,
+  colorWithOpacity,
+  compactGrid,
+  legendOptions,
+  registerChart,
+  tooltipOptions,
+  valueAxis,
+} from '../../behaviors/chart'
 import { familyOption, type ChartFamilyKind } from '../pages/chart-echarts'
 import { DocsMessage, type DocsGuide } from '../types'
 import { section } from './setup'
@@ -118,9 +127,127 @@ const galleryKind = (slug: string): ChartFamilyKind =>
   slug === 'tooltip' ? 'bar' : (slug as ChartFamilyKind)
 const galleryHostId = (slug: string, example: string) =>
   `gallery-${slug}-${example.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
-const customizeGalleryOption = (option: any, slug: string, example: string) => {
+const customizeGalleryOption = (
+  option: any,
+  slug: string,
+  example: string,
+  theme?: any,
+) => {
   const series = Array.isArray(option.series) ? [...option.series] : []
   const first = { ...(series[0] ?? {}) }
+  if (slug === 'area' && theme !== undefined) {
+    const desktopData = [186, 305, 237, 73, 209, 214]
+    const mobileData = [80, 200, 120, 190, 130, 140]
+    const line = (
+      name: string,
+      color: string,
+      data: readonly number[],
+      opacity = 0.4,
+    ): any => ({
+      name,
+      type: 'line',
+      smooth: 0.4,
+      stack: 'total',
+      showSymbol: false,
+      lineStyle: { width: 2, color },
+      itemStyle: { color },
+      areaStyle: { color: colorWithOpacity(color, opacity) },
+      data: [...data],
+    })
+    option.grid = compactGrid()
+    option.xAxis = categoryAxis(theme, [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+    ])
+    option.yAxis = valueAxis(theme)
+    option.tooltip = tooltipOptions(theme)
+    if (example === 'Default' || example === 'Linear') {
+      const desktopSeries = line('Desktop', theme.chart1, desktopData)
+      delete desktopSeries.stack
+      if (example === 'Linear') desktopSeries.smooth = false
+      option.series = [desktopSeries]
+      return option
+    }
+    if (example === 'Step') {
+      const desktopSeries = line('Desktop', theme.chart1, desktopData)
+      delete desktopSeries.stack
+      delete desktopSeries.smooth
+      desktopSeries.step = 'middle'
+      option.series = [desktopSeries]
+      return option
+    }
+    if (example === 'Stacked Expanded') {
+      const raw = [
+        { desktop: 186, mobile: 80, other: 45 },
+        { desktop: 305, mobile: 200, other: 100 },
+        { desktop: 237, mobile: 120, other: 150 },
+        { desktop: 73, mobile: 190, other: 50 },
+        { desktop: 209, mobile: 130, other: 100 },
+        { desktop: 214, mobile: 140, other: 160 },
+      ]
+      const share = (
+        row: (typeof raw)[number],
+        key: 'desktop' | 'mobile' | 'other',
+      ) => row[key] / (row.desktop + row.mobile + row.other)
+      option.grid = compactGrid({ top: 12 })
+      option.yAxis = {
+        type: 'value',
+        max: 1,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: {
+          show: false,
+          formatter: (value: number) => `${String(Math.round(value * 100))}%`,
+        },
+        splitLine: { lineStyle: { color: theme.border, type: 'dashed' } },
+      }
+      option.tooltip = {
+        ...tooltipOptions(theme),
+        valueFormatter: (value: number) =>
+          `${String(Math.round(Number(value) * 100))}%`,
+      }
+      option.series = [
+        line(
+          'Other',
+          theme.chart3,
+          raw.map(row => share(row, 'other')),
+          0.1,
+        ),
+        line(
+          'Mobile',
+          theme.chart2,
+          raw.map(row => share(row, 'mobile')),
+        ),
+        line(
+          'Desktop',
+          theme.chart1,
+          raw.map(row => share(row, 'desktop')),
+        ),
+      ]
+      return option
+    }
+    const mobileSeries = line('Mobile', theme.chart2, mobileData)
+    const desktopSeries = line('Desktop', theme.chart1, desktopData)
+    if (example === 'Gradient') {
+      mobileSeries.areaStyle = { color: areaGradient(theme.chart2) }
+      desktopSeries.areaStyle = { color: areaGradient(theme.chart1) }
+    }
+    if (example === 'Axes') {
+      option.grid = compactGrid({ left: 0 })
+      option.yAxis = {
+        ...valueAxis(theme, { showLabels: true }),
+        splitNumber: 2,
+      }
+    }
+    if (example === 'Legend' || example === 'Icons')
+      option.legend = legendOptions(theme)
+    option.series = [mobileSeries, desktopSeries]
+    return option
+  }
   if (slug === 'area' || slug === 'line')
     first.data = [186, 305, 237, 73, 209, 214]
   if ((slug === 'area' || slug === 'line') && example === 'Linear')
@@ -137,7 +264,7 @@ const customizeGalleryOption = (option: any, slug: string, example: string) => {
   ) {
     const second = {
       ...first,
-      data: [80, 200, 174, 190, 130, 140],
+      data: [80, 200, 120, 190, 130, 140],
       name: 'Mobile',
     }
     if (example.includes('Stacked')) {
@@ -168,6 +295,7 @@ for (const [slug, , examples] of chartGroups) {
         familyOption(galleryKind(slug), theme),
         slug,
         example,
+        theme,
       ),
     )
   }
