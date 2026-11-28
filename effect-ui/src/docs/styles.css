@@ -6413,3 +6413,21 @@ body:has(.effect-docs) {
 .create-page .create-syncing-your-accounts button {
   margin-top: 1.5rem;
 }
+.create-page .create-balance-activity-card {
+  gap: 0;
+  padding-inline: 1.5rem;
+}
+.create-page .create-balance-activity-card .balance-activity-head {
+  margin-top: 0;
+}
+.create-page .create-balance-activity-card .balance-activity-chart {
+  height: 4.125rem;
+  margin-top: 0.5rem;
+  border-bottom: 0;
+}
+.create-page .create-balance-activity-card .balance-months {
+  margin-top: 0;
+  padding-inline: 0.8125rem;
+  font-size: 0.625rem;
+  line-height: 0.75rem;
+}
