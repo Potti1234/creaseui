@@ -3086,6 +3086,97 @@ const dataDashboardPreview = (h: Html.H<DocsMessage>) =>
     ),
   )
 
+const cardGridPreview = (h: Html.H<DocsMessage>) =>
+  h.div.class('exec-shell cards-shell').children(
+    blockSidebar(h, 'northwind') as never,
+    h.main.class('exec-main').children(
+      h.header
+        .class('preview-topbar')
+        .children(
+          h.span.children('☰'),
+          h.span.children('Northwind'),
+          h.span.children('Catalog'),
+        ),
+      h.div.class('cards-content').children(
+        h.div.class('cards-main').children(
+          h.header
+            .class('exec-heading')
+            .children(
+              h.div.children(
+                h.h1.children('Asset catalog'),
+                h.p.children('Curated templates, icon sets and fonts'),
+              ),
+              h.div
+                .class('exec-actions')
+                .children(
+                  h.span.children('Newest first'),
+                  h.span.children('Upload'),
+                ),
+            ),
+          h.div
+            .class('asset-search')
+            .children(h.span.children('Search assets'), h.i),
+          h.div.class('asset-tabs').children(
+            ...['All', 'Templates', 'Icon sets', 'Fonts', 'Presets'].map(
+              (item, index) =>
+                h.span
+                  .key(item)
+                  .attr('data-active', index === 0 ? 'true' : 'false')
+                  .children(item),
+            ),
+          ),
+          h.div.class('asset-grid').children(
+            ...[
+              ['Studio Portfolio', 'Template', '$48', 'Saved'],
+              ['Field Notes Blog', 'Template', '$32', 'Save'],
+              ['Waypoint · 420 icons', 'Icon set', '$24', 'Saved'],
+              ['Meridian · 260 icons', 'Icon set', '$18', 'Save'],
+              ['Copper Sans family', 'Font', '$64', 'Save'],
+              ['Ledger Mono', 'Font', '$40', 'Save'],
+              ['Atlas Docs theme', 'Template', '$56', 'Save'],
+              ['Ember chart presets', 'Preset', '$12', 'Save'],
+            ].map(([title, type, price, action]) =>
+              h.article
+                .key(title ?? '')
+                .children(
+                  h.div.class('asset-thumb'),
+                  h.strong.children(title ?? ''),
+                  h.span.children(type ?? ''),
+                  h.footer.children(
+                    h.em.children(price ?? ''),
+                    h.b
+                      .attr('data-saved', action === 'Saved' ? 'true' : 'false')
+                      .children(action ?? ''),
+                  ),
+                ),
+            ),
+          ),
+        ),
+        h.aside.class('service-rail saved-rail').children(
+          h.h2.children('Saved for later'),
+          h.p.children('Two products saved for later'),
+          ...[
+            ['Studio Portfolio', 'Template', '$48'],
+            ['Waypoint · 420 icons', 'Icon set', '$24'],
+          ].map(([title, type, price]) =>
+            h.div
+              .key(title ?? '')
+              .class('saved-item')
+              .children(
+                h.i,
+                h.div.children(
+                  h.strong.children(title ?? ''),
+                  h.p.children(type ?? ''),
+                ),
+                h.span.children(price ?? ''),
+              ),
+          ),
+          h.div.class('move-cart').children('Move all to cart'),
+        ),
+      ),
+    ),
+  )
+
 const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'dashboard-01' || name === 'chart-analytics-dashboard')
     return dashboardPreview(h)
@@ -3099,6 +3190,7 @@ const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'creaseui-order-detail') return orderDetailPreview(h)
   if (name === 'creaseui-checkout-form') return checkoutFormPreview(h)
   if (name === 'creaseui-data-dashboard') return dataDashboardPreview(h)
+  if (name === 'creaseui-card-grid') return cardGridPreview(h)
   if (name.startsWith('sidebar-') || name === 'app-shell-01')
     return sidebarOnlyPreview(h, name)
   if (name === 'login-03') return loginPreview(h, false)
