@@ -703,26 +703,36 @@ const createPlaceholderChildren = (
   }
   if (title === 'Payout Preferences') {
     return [
-      createHeading(
-        h,
-        'Payout Preferences',
-        'Receiving Method',
-        'Close Receiving Method',
-      ),
+      h.button
+        .class('create-icon-action create-payout-close')
+        .attrs({ type: 'button' })
+        .children('Close Receiving Method'),
+      h.h2.class('create-payout-title').children('Receiving Method'),
       createField(h, 'Account Holder Name'),
       h.div.class('create-method-grid').children(
-        ['Bank Transfer', 'SWIFT / IBAN', 'PayPal', 'Instant Payout'].map(
-          (method, index) =>
-            h.div
-              .key(method)
-              .class(index === 0 ? 'selected' : '')
-              .children(method),
+        ...[
+          ['Bank Transfer', 'SWIFT / IBAN', true],
+          ['PayPal', 'Instant Payout', false],
+        ].map(([label, description, selected]) =>
+          h.div
+            .key(String(label))
+            .class('create-method-choice')
+            .children(
+              h.span
+                .class(selected ? 'create-radio selected' : 'create-radio')
+                .children(''),
+              h.div.children(
+                h.strong.children(String(label)),
+                h.p.children(String(description)),
+              ),
+            ),
         ),
       ),
       createField(h, 'IBAN / Account Number'),
       h.button.attrs({ type: 'button' }).children('Save Payout Settings'),
     ]
   }
+
   if (title === 'Power Usage') {
     return [
       createHeading(h, 'Power Usage', 'Whole Home'),
