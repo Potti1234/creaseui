@@ -6431,3 +6431,6 @@ body:has(.effect-docs) {
   font-size: 0.625rem;
   line-height: 0.75rem;
 }
+.create-page .create-home-row:first-of-type {
+  margin-top: 3.75rem;
+}
