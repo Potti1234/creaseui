@@ -2466,6 +2466,104 @@ const serviceMonitoringPreview = (h: Html.H<DocsMessage>) =>
     ),
   )
 
+const incidentConsolePreview = (h: Html.H<DocsMessage>) =>
+  h.div.class('exec-shell incident-shell').children(
+    blockSidebar(h, 'orbit') as never,
+    h.main.class('exec-main').children(
+      h.header
+        .class('preview-topbar')
+        .children(
+          h.span.children('☰'),
+          h.span.children('Orbit Studio'),
+          h.span.children('Incidents'),
+        ),
+      h.div.class('service-content incident-content').children(
+        h.div.class('service-main').children(
+          h.header
+            .class('exec-heading')
+            .children(
+              h.div.children(
+                h.h1.children('Incident console'),
+                h.p.children('Coordinate response across production services.'),
+              ),
+              h.div
+                .class('exec-actions incident-actions')
+                .children(
+                  h.span.children('All'),
+                  h.span.children('Triggered'),
+                  h.span.children('Create incident'),
+                ),
+            ),
+          h.section.class('incident-list').children(
+            h.h2.children('Active incidents'),
+            h.div
+              .class('incident-filter')
+              .children(
+                h.span.children('Search incidents'),
+                h.span.children('Status: Open'),
+              ),
+            h.div
+              .class('incident-table head')
+              .children(
+                h.span.children('Incident'),
+                h.span.children('Severity'),
+                h.span.children('Owner'),
+                h.span.children('Status'),
+              ),
+            ...[
+              ['INC-2048 Checkout latency', 'SEV-1', 'Platform', 'Triggered'],
+              ['INC-2047 Delayed invoices', 'SEV-2', 'Billing', 'Acknowledged'],
+              ['INC-2044 Search freshness', 'SEV-3', 'Search', 'Mitigating'],
+              ['INC-2041 Email retries', 'SEV-3', 'Messaging', 'Monitoring'],
+            ].map(row =>
+              h.div
+                .key(row[0] ?? '')
+                .class('incident-table')
+                .children(
+                  row.map((cell, index) =>
+                    h.span.key(`${row[0] ?? ''}-${index}`).children(cell ?? ''),
+                  ),
+                ),
+            ),
+          ),
+        ),
+        h.aside.class('service-rail incident-detail').children(
+          h.h2.children('Incident INC-2048'),
+          h.p.children('Checkout API latency'),
+          ...[
+            ['Severity', 'SEV-1'],
+            ['Owner', 'On-call Platform'],
+            ['Started', '14:32 UTC'],
+          ].map(([label, value]) =>
+            h.div
+              .key(label ?? '')
+              .class('incident-meta')
+              .children(
+                h.span.children(label ?? ''),
+                h.strong.children(value ?? ''),
+              ),
+          ),
+          h.div.class('incident-timeline').children(
+            ...[
+              ['14:32', 'Latency alert triggered for checkout API.'],
+              ['14:38', 'Database connection pool reached capacity.'],
+              ['14:47', 'Traffic shifted away from eu-west-1.'],
+            ]
+              .reverse()
+              .map(([time, copy]) =>
+                h.div
+                  .key(time ?? '')
+                  .children(
+                    h.span.children(time ?? ''),
+                    h.p.children(copy ?? ''),
+                  ),
+              ),
+          ),
+        ),
+      ),
+    ),
+  )
+
 const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'dashboard-01' || name === 'chart-analytics-dashboard')
     return dashboardPreview(h)
@@ -2473,6 +2571,7 @@ const blockPreviewView = (h: Html.H<DocsMessage>, name: string) => {
   if (name === 'creaseui-cohort-funnel') return funnelPreview(h)
   if (name === 'creaseui-project-status') return projectStatusPreview(h)
   if (name === 'creaseui-service-monitoring') return serviceMonitoringPreview(h)
+  if (name === 'creaseui-incident-console') return incidentConsolePreview(h)
   if (name === 'creaseui-kanban-board') return kanbanPreview(h)
   if (name.startsWith('sidebar-') || name === 'app-shell-01')
     return sidebarOnlyPreview(h, name)

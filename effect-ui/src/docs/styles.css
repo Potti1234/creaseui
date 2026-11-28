@@ -3895,3 +3895,120 @@ body:has(.effect-docs) {
   min-height: 3.5rem;
   margin-bottom: 1.25rem;
 }
+
+.incident-shell {
+  min-height: 1030px;
+}
+.incident-list h2 {
+  margin: 1.8rem 0 0;
+  font-size: 1rem;
+  line-height: 1.25rem;
+}
+.incident-filter {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.6rem;
+}
+.incident-filter span {
+  display: inline-flex;
+  width: 15rem;
+  height: 2.25rem;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  padding-inline: 0.75rem;
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+}
+.incident-filter span + span {
+  width: 9rem;
+}
+.incident-table {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr 0.9fr 1fr;
+  min-height: 2.35rem;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8125rem;
+}
+.incident-table.head {
+  margin-top: 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+.incident-detail h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+.incident-detail > p {
+  margin: 0.25rem 0 1.25rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+.incident-meta {
+  display: flex;
+  justify-content: space-between;
+  padding-block: 0.6rem;
+  font-size: 0.8125rem;
+}
+.incident-meta span {
+  color: var(--muted-foreground);
+}
+.incident-timeline {
+  margin-top: 1.5rem;
+}
+.incident-timeline > div {
+  position: relative;
+  min-height: 4.5rem;
+  border-left: 1px solid var(--border);
+  padding-left: 3.25rem;
+}
+.incident-timeline span {
+  position: absolute;
+  left: 0.9rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+.incident-timeline p {
+  margin: 0;
+  font-size: 0.8125rem;
+}
+.incident-list {
+  margin-left: 0.8125rem;
+}
+.incident-list h2 {
+  margin-top: 2.25rem;
+}
+.incident-detail {
+  display: block;
+}
+.incident-detail > * + * {
+  margin-top: 0;
+}
+.incident-detail > p {
+  margin-bottom: 0;
+}
+.incident-meta {
+  padding-block: 0.25rem;
+}
+.incident-timeline {
+  margin-top: 4.9rem;
+}
+.incident-timeline > div:nth-child(1) {
+  min-height: 4.9375rem;
+}
+.incident-timeline > div:nth-child(2) {
+  min-height: 6.1875rem;
+}
+.incident-detail > p {
+  margin-bottom: 0.2rem;
+}
+.incident-meta {
+  padding-block: 0.4rem;
+}
+.incident-timeline {
+  margin-top: 2.2rem;
+}
+.incident-shell {
+  min-height: 896px;
+}
