@@ -1,0 +1,29 @@
+.stat-docs-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 1rem;
+  width: 100%;
+  max-width: 48rem;
+}
+.stat-docs-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  background: var(--card);
+}
+.stat-docs-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 2rem;
+}
+.stat-docs-single {
+  width: 100%;
+  max-width: 20rem;
+}
+.stat-docs-sparkline {
+  height: 2.25rem;
+  width: 100%;
+  color: var(--primary);
+  display: block;
+}

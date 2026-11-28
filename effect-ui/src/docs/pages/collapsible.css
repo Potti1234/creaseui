@@ -1,0 +1,88 @@
+.collapsible-docs-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 1rem;
+  width: 100%;
+  max-width: 24rem;
+}
+.collapsible-docs-card-small {
+  max-width: 20rem;
+}
+.collapsible-docs-trigger {
+  width: 100%;
+  justify-content: space-between;
+}
+.collapsible-docs-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+.collapsible-docs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.collapsible-docs-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0;
+}
+.collapsible-docs-muted {
+  color: var(--muted-foreground);
+  margin: 0;
+}
+.collapsible-docs-input {
+  height: 2.25rem;
+  width: 100%;
+  border: 1px solid var(--input);
+  border-radius: 0.375rem;
+  padding: 0 0.75rem;
+  background: var(--background);
+}
+.collapsible-docs-tree {
+  width: 100%;
+  max-width: 20rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.875rem;
+  display: grid;
+  gap: 0.25rem;
+}
+.collapsible-docs-tree-children {
+  display: grid;
+  gap: 0.25rem;
+  padding-inline-start: 1rem;
+  padding-top: 0.25rem;
+}
+.collapsible-docs-file {
+  color: var(--muted-foreground);
+  display: block;
+  padding-inline-start: 1rem;
+}
+.collapsible-docs-rtl {
+  direction: rtl;
+  display: flex;
+  width: 20rem;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.collapsible-docs-order {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-inline: 1rem;
+}
+.collapsible-docs-box {
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+.collapsible-docs-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

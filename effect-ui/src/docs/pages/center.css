@@ -1,0 +1,28 @@
+.center-docs-heading {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+}
+
+.center-docs-body {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.center-docs-card-wide {
+  width: min(100%, 32.5rem);
+}
+
+.center-docs-card {
+  width: min(100%, 25rem);
+}
+
+.center-docs-small-body {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}

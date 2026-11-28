@@ -1,0 +1,26 @@
+.token-docs-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.token-docs-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+.token-docs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.token-docs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.token-docs-caption {
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  color: var(--muted-foreground);
+}

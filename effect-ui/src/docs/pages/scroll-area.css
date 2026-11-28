@@ -1,0 +1,40 @@
+.scroll-area-docs-tags {
+  height: 18rem;
+  width: 12rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+.scroll-area-docs-tags-content {
+  padding: 1rem;
+}
+.scroll-area-docs-heading {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  margin: 0 0 1rem;
+}
+.scroll-area-docs-tag {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.scroll-area-docs-horizontal {
+  width: 20rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  overflow: hidden;
+  padding: 1rem;
+}
+.scroll-area-docs-horizontal-content {
+  display: flex;
+  gap: 0.75rem;
+  width: max-content;
+}
+.scroll-area-docs-pill {
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  white-space: nowrap;
+}

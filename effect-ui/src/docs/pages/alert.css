@@ -1,0 +1,21 @@
+.alert-docs-grid {
+  display: grid;
+  width: 100%;
+  max-width: 28rem;
+  gap: 1rem;
+}
+.alert-docs-rtl {
+  direction: rtl;
+}
+.alert-docs-action {
+  grid-column-start: 2;
+  margin-top: 0.5rem;
+}
+.alert-docs-custom {
+  border-color: light-dark(oklch(0.828 0.189 84.429), oklch(0.473 0.137 80.58));
+  background-color: light-dark(
+    oklch(0.987 0.022 95.277),
+    oklch(0.279 0.077 45.635)
+  );
+  color: light-dark(oklch(0.473 0.137 80.58), oklch(0.987 0.022 95.277));
+}

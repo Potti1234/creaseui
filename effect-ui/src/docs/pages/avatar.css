@@ -1,0 +1,28 @@
+.avatar-docs-plain {
+  display: flex;
+  align-items: center;
+}
+.avatar-docs-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+}
+.avatar-docs-sizes {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.avatar-docs-rtl {
+  direction: rtl;
+}
+.avatar-docs-grayscale {
+  filter: grayscale(1);
+}
+.avatar-docs-trigger {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}

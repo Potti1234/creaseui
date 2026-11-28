@@ -1,0 +1,47 @@
+.label-docs-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.label-docs-wrapper {
+  width: 100%;
+  max-width: 28rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.label-docs-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.label-docs-field {
+  display: grid;
+  gap: 0.5rem;
+}
+.label-docs-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+.label-docs-description,
+.label-docs-error {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+.label-docs-error {
+  color: var(--destructive);
+}
+.label-docs-control {
+  height: 2.25rem;
+  width: 100%;
+  border: 1px solid var(--input);
+  border-radius: 0.375rem;
+  padding: 0 0.75rem;
+  background: var(--background);
+  font-size: 0.875rem;
+}
+textarea.label-docs-control {
+  min-height: 5rem;
+  padding-block: 0.5rem;
+}

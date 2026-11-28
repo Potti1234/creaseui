@@ -1,0 +1,112 @@
+.skeleton-docs-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.skeleton-docs-fit {
+  width: fit-content;
+}
+.skeleton-docs-column {
+  display: flex;
+  flex-direction: column;
+}
+.skeleton-docs-gap2 {
+  gap: 0.5rem;
+}
+.skeleton-docs-gap3 {
+  gap: 0.75rem;
+}
+.skeleton-docs-gap7 {
+  gap: 1.75rem;
+}
+.skeleton-docs-rtl {
+  direction: rtl;
+}
+.skeleton-docs-xs {
+  width: 100%;
+  max-width: 20rem;
+}
+.skeleton-docs-sm {
+  width: 100%;
+  max-width: 24rem;
+}
+.skeleton-docs-grid {
+  display: grid;
+  gap: 0.5rem;
+}
+.skeleton-docs-flex {
+  display: flex;
+  gap: 1rem;
+}
+.skeleton-docs-flex1 {
+  flex: 1;
+}
+.sk-circle-12 {
+  height: 3rem;
+  width: 3rem;
+}
+.sk-circle-10 {
+  height: 2.5rem;
+  width: 2.5rem;
+  flex-shrink: 0;
+}
+.sk-w62 {
+  height: 1rem;
+  width: 15.625rem;
+}
+.sk-w50 {
+  height: 1rem;
+  width: 12.5rem;
+}
+.sk-w37 {
+  height: 1rem;
+  width: 9.375rem;
+}
+.sk-w25 {
+  height: 1rem;
+  width: 6.25rem;
+}
+.sk-w2thirds {
+  height: 1rem;
+  width: 66.6667%;
+}
+.sk-whalf {
+  height: 1rem;
+  width: 50%;
+}
+.sk-video {
+  aspect-ratio: 16/9;
+  width: 100%;
+}
+.sk-line {
+  height: 1rem;
+  width: 100%;
+}
+.sk-w3quarter {
+  height: 1rem;
+  width: 75%;
+}
+.sk-w20 {
+  height: 1rem;
+  width: 5rem;
+}
+.sk-input {
+  height: 2rem;
+  width: 100%;
+}
+.sk-w24 {
+  height: 2rem;
+  width: 6rem;
+}
+.sk-table-a {
+  height: 1rem;
+  flex: 1;
+}
+.sk-table-b {
+  height: 1rem;
+  width: 6rem;
+}
+.sk-table-c {
+  height: 1rem;
+  width: 5rem;
+}

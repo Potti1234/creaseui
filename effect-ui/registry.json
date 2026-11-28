@@ -1,0 +1,4388 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "items": [
+    {
+      "name": "effect-button-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/button.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/button.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-dialog-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/dialog.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/dialog.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-combobox-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/combobox.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/combobox.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-calendar-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/calendar.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/calendar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-select-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/select.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/select.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-popover-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/popover.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/popover.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-button",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-button-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/button.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/button.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-dialog",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-dialog-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/dialog.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/dialog.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-combobox",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-combobox-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/combobox.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/combobox.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-calendar",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-calendar-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/calendar.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/calendar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-select",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-select-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/select.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/select.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-popover",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-popover-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/popover.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/popover.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-checkbox-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/checkbox.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/checkbox.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-checkbox",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-checkbox-behavior",
+        "@crease-effect/effect-icon-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/checkbox.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/checkbox.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-switch-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/switch.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/switch.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-switch",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-switch-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/switch.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/switch.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tooltip-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/tooltip.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/tooltip.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tooltip",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-tooltip-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/tooltip.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/tooltip.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tabs-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/tabs.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/tabs.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tabs",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-tabs-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/tabs.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/tabs.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-accordion-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/accordion.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/accordion.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-accordion",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-accordion-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/accordion.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/accordion.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-collapsible-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/collapsible.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/collapsible.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-collapsible",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-collapsible-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/collapsible.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/collapsible.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-progress-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/progress.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/progress.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-progress",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-progress-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/progress.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/progress.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-separator-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/separator.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/separator.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-separator",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-separator-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/separator.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/separator.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toggle-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/toggle.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/toggle.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toggle",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-toggle-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/toggle.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/toggle.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-input-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-radio-group-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/radio-group.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/radio-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-radio-group",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-radio-group-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/radio-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/radio-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-slider-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/slider.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/slider.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-slider",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-slider-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/slider.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/slider.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-field-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/field.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/field.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-field",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-field-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/field.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/field.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-fieldset-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/fieldset.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/fieldset.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-fieldset",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-fieldset-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/fieldset.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/fieldset.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-aspect-ratio-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/aspect-ratio.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/aspect-ratio.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-aspect-ratio",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-aspect-ratio-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/aspect-ratio.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/aspect-ratio.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-blockquote-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/blockquote.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/blockquote.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-blockquote",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-blockquote-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/blockquote.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/blockquote.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-badge-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/badge.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/badge.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-badge",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-badge-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/badge.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/badge.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-kbd-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/kbd.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/kbd.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-kbd",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-kbd-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/kbd.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/kbd.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-label-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/label.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/label.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-label",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-label-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/label.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/label.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-visually-hidden-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/visually-hidden.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/visually-hidden.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-visually-hidden",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-visually-hidden-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/visually-hidden.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/visually-hidden.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-status-dot-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/status-dot.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/status-dot.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-status-dot",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-status-dot-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/status-dot.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/status-dot.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-skeleton-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/skeleton.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/skeleton.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-skeleton",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-skeleton-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/skeleton.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/skeleton.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-spinner-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/spinner.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/spinner.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-spinner",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-spinner-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/spinner.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/spinner.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-center-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-layout-utils"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/center.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/center.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-center",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-center-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/center.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/center.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-direction-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/direction.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/direction.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-direction",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-direction-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/direction.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/direction.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toggle-group-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/toggle-group.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/toggle-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toggle-group",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-toggle-group-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/toggle-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/toggle-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-input-otp-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/input-otp.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/input-otp.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-input-otp",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-input-otp-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/input-otp.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/input-otp.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-number-input-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/number-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/number-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-number-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-number-input-behavior",
+        "@crease-effect/effect-field-status"
+      ],
+      "files": [
+        {
+          "path": "src/ui/number-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/number-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-avatar-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/avatar.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/avatar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-avatar",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-avatar-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/avatar.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/avatar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-alert-dialog-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/alert-dialog.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/alert-dialog.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-alert-dialog",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-alert-dialog-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/alert-dialog.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/alert-dialog.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-layout-utils",
+      "type": "registry:lib",
+      "files": [{ "path": "src/behaviors/layout.ts", "type": "registry:lib", "target": "@ui/effect/behaviors/layout.ts" }]
+    },
+    {
+      "name": "effect-stack-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-layout-utils"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/stack.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/stack.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-stack",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-stack-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/stack.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/stack.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-grid-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-layout-utils"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/grid.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/grid.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-grid",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-grid-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/grid.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/grid.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-section-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-layout-utils"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/section.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/section.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-section",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-section-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/section.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/section.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-textarea-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/textarea.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/textarea.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-textarea",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-textarea-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/textarea.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/textarea.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-native-select-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/native-select.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/native-select.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-native-select",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-native-select-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/native-select.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/native-select.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-form-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/form.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/form.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-form",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-form-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/form.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/form.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-card-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/card.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/card.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-card",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-card-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/card.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/card.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-alert-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/alert.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/alert.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-alert",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-alert-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/alert.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/alert.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-empty-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/empty.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/empty.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-empty",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-empty-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/empty.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/empty.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-table-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/table.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/table.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-table",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-table-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/table.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/table.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-code-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/code.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/code.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-code",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-code-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/code.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/code.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-typography-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/typography.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/typography.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-typography",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-typography-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/typography.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/typography.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-text-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/text.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/text.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-text",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-text-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/text.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/text.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-heading-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-text-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/heading.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/heading.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-heading",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-heading-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/heading.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/heading.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-scroll-area-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/scroll-area.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/scroll-area.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-scroll-area",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-scroll-area-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/scroll-area.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/scroll-area.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toolbar-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/toolbar.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/toolbar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toolbar",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-toolbar-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/toolbar.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/toolbar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-breadcrumb-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/breadcrumb.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/breadcrumb.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-breadcrumb",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-breadcrumb-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/breadcrumb.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/breadcrumb.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-avatar-group-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/avatar-group.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/avatar-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-avatar-group",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-avatar-group-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/avatar-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/avatar-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-dropdown-menu-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/dropdown-menu.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/dropdown-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-dropdown-menu",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-dropdown-menu-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/dropdown-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/dropdown-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-context-menu-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/context-menu.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/context-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-context-menu",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-context-menu-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/context-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/context-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-drawer-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/drawer.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/drawer.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-drawer",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-drawer-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/drawer.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/drawer.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-sheet-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/sheet.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/sheet.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-sheet",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-drawer",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-sheet-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/sheet.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/sheet.ts"
+        },
+        {
+          "path": "src/ui/sheet.css",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/sheet.css"
+        },
+        {
+          "path": "src/ui/sheet-styles.d.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/ui/sheet-styles.d.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-circular-progress-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/circular-progress.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/circular-progress.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-circular-progress",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-circular-progress-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/circular-progress.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/circular-progress.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-stat-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/stat.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/stat.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-stat",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-stat-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/stat.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/stat.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-bubble-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/bubble.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/bubble.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-bubble",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-bubble-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/bubble.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/bubble.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-token-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/token.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/token.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-token",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-token-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/token.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/token.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-style-utilities",
+      "type": "registry:lib",
+      "dependencies": [
+        "maplibre-gl@6.13.0"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-style.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-style.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-layer-utilities",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "maplibre-gl@6.13.0"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-layers.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-layers.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-style-utilities", "@crease-effect/effect-map-layer-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map.ts"
+        },
+        { "path": "src/behaviors/map-assets.d.ts", "type": "registry:lib", "target": "@ui/effect/behaviors/map-assets.d.ts" }
+      ]
+    },
+    {
+      "name": "effect-map",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-map-styles",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-controls-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-localization-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-controls.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-controls.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-controls",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-map",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-controls-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-controls.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-controls.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-marker-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-marker.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-marker.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-marker",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-map",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-marker-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-marker.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-marker.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-popup-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-localization-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-popup.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-popup.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-popup",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-map",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-popup-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-popup.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-popup.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-styles-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-style-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-styles.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-styles.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-styles",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-styles-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-styles.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-styles.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-localization-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-style-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-localization.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-localization.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-localization",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-localization-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-localization.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-localization.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-route-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-layer-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-route.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-route.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-route",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-route-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-route.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-route.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-arc-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-layer-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-arc.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-arc.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-arc",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-arc-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-arc.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-arc.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-cluster-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-layer-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-cluster.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-cluster.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-cluster",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-cluster-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-cluster.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-cluster.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-geojson-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-map-layer-utilities"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/map-geojson.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/map-geojson.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-map-geojson",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-map-geojson-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/map-geojson.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/map-geojson.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-input-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/date-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/date-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-date-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/date-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/date-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-time-input-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/time-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/time-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-time-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-time-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/time-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/time-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-time-input-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-time-input-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/date-time-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/date-time-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-time-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-date-input",
+        "@crease-effect/effect-time-input",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-date-time-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/date-time-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/date-time-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-picker-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-calendar-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/date-picker.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/date-picker.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-picker",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-date-picker-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/date-picker.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/date-picker.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-range-input-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-calendar-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/date-range-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/date-range-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-date-range-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-date-range-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/date-range-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/date-range-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-icon-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/icon.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/icon.ts"
+        },
+        {
+          "path": "src/behaviors/icon-nodes.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/icon-nodes.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-icon",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-icon-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/icon.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/icon.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-field-status-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-icon-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/field-status.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/field-status.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-field-status",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-field-status-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/field-status.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/field-status.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-indicator-behavior",
+      "type": "registry:lib",
+      "registryDependencies": ["@crease-effect/effect-icon-behavior"],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/indicator.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/indicator.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-indicator",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-indicator-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/indicator.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/indicator.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-input-group-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/input-group.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/input-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-input-group",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-input-group-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/input-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/input-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-button-group-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/button-group.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/button-group.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-button-group",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-button-group-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/button-group.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/button-group.ts"
+        },
+        {
+          "path": "src/ui/button-group.css",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/button-group.css"
+        },
+        {
+          "path": "src/ui/button-group-styles.d.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/ui/button-group-styles.d.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-link-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/effect-text-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/link.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/link.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-link",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-tooltip",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-link-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/link.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/link.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-pagination-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/pagination.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/pagination.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-pagination",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-pagination-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/pagination.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/pagination.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-thumbnail-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/thumbnail.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/thumbnail.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-thumbnail",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-thumbnail-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/thumbnail.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/thumbnail.ts"
+        },
+        {
+          "path": "src/ui/thumbnail.css",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/thumbnail.css"
+        },
+        {
+          "path": "src/ui/thumbnail-styles.d.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/ui/thumbnail-styles.d.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-focus-popover-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/focus-popover.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/focus-popover.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-hover-card-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-focus-popover-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/hover-card.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/hover-card.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-hover-card",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-hover-card-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/hover-card.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/hover-card.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-info-tip-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/effect-focus-popover-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/info-tip.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/info-tip.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-info-tip",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-info-tip-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/info-tip.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/info-tip.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-item-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/item.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/item.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-item",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-item-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/item.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/item.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-list-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/list.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-list",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-list-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/list.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-marker-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/marker.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/marker.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-marker",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-marker-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/marker.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/marker.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-metadata-list-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/metadata-list.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/metadata-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-metadata-list",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-metadata-list-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/metadata-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/metadata-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-file-input-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/file-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/file-input.ts"
+        },
+        {
+          "path": "src/behaviors/file-input-form.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/file-input-form.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-file-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-file-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/file-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/file-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toast-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/toast.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/toast.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-toast",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-toast-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/toast.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/toast.ts"
+        },
+        {
+          "path": "src/ui/toast.css",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/toast.css"
+        },
+        {
+          "path": "src/ui/toast-styles.d.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/ui/toast-styles.d.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-action-bar-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-toolbar-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/action-bar.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/action-bar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-action-bar",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-action-bar-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/action-bar.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/action-bar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-menubar-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/menubar.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/menubar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-menubar",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-menubar-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/menubar.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/menubar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-navigation-menu-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/navigation-menu.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/navigation-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-navigation-menu",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-collapsible-behavior",
+        "@crease-effect/effect-link-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-navigation-menu-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/navigation-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/navigation-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-more-menu-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-dropdown-menu-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/more-menu.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/more-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-more-menu",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-button",
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-more-menu-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/more-menu.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/more-menu.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-mobile-nav-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-drawer-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/mobile-nav.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/mobile-nav.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-mobile-nav",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-drawer",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-mobile-nav-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/mobile-nav.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/mobile-nav.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-top-nav-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-navigation-menu-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/top-nav.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/top-nav.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-top-nav",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/effect-popover",
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-top-nav-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/top-nav.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/top-nav.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-message-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/message.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/message.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-message",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-message-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/message.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/message.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-chat-reasoning-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-collapsible-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/chat-reasoning.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/chat-reasoning.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-chat-reasoning",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-chat-reasoning-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/chat-reasoning.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/chat-reasoning.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-message-scroller-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/message-scroller.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/message-scroller.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-message-scroller",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-scroll-area-behavior",
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-message-scroller-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/message-scroller.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/message-scroller.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-log-stream-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-message-scroller-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/log-stream.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/log-stream.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-log-stream",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-message-scroller",
+        "@crease-effect/effect-collapsible-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-log-stream-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/log-stream.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/log-stream.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-attachment-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/attachment.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/attachment.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-attachment",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-attachment-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/attachment.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/attachment.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-selectable-card-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-checkbox-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/selectable-card.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/selectable-card.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-selectable-card",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-selectable-card-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/selectable-card.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/selectable-card.ts"
+        },
+        {
+          "path": "src/ui/selectable-card.css",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/selectable-card.css"
+        },
+        {
+          "path": "src/ui/selectable-card-styles.d.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/ui/selectable-card-styles.d.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-timer-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/timer.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/timer.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-timer",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-text-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-timer-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/timer.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/timer.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-timestamp-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/timestamp.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/timestamp.ts"
+        },
+        {
+          "path": "src/behaviors/timestamp-format.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/timestamp-format.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-timestamp",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-text-behavior",
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/effect-hover-card",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-timestamp-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/timestamp.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/timestamp.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-banner-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-collapsible-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/banner.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/banner.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-banner",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-banner-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/banner.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/banner.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-carousel-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "embla-carousel@8.6.0",
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/carousel.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/carousel.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-carousel",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-carousel-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/carousel.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/carousel.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-resizable-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/resizable.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/resizable.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-resizable",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-resizable-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/resizable.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/resizable.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-stepper-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/stepper.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/stepper.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-stepper",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-stepper-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/stepper.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/stepper.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-color-picker-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/color-picker.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/color-picker.ts"
+        },
+        {
+          "path": "src/behaviors/color-math.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/color-math.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-color-picker",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-color-picker-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/color-picker.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/color-picker.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-sidebar-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/sidebar.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/sidebar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-sidebar",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-sidebar-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/sidebar.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/sidebar.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-code-block-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/code-block.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/code-block.ts"
+        },
+        {
+          "path": "src/behaviors/code-tokenization.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/code-tokenization.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-code-block",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-code-block-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/code-block.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/code-block.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-markdown-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/markdown.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/markdown.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-markdown",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-code-block",
+        "@crease-effect/effect-heading-behavior",
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/effect-link-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-markdown-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/markdown.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/markdown.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-overflow-list-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/overflow-list.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/overflow-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-overflow-list",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-overflow-list-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/overflow-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/overflow-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-lightbox-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/lightbox.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/lightbox.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-lightbox",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-lightbox-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/lightbox.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/lightbox.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-command-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/command.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/command.ts"
+        },
+        {
+          "path": "src/behaviors/command-text-match.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/command-text-match.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-command",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-command-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/command.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/command.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-multi-selector-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/multi-selector.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/multi-selector.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-multi-selector",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-multi-selector-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/multi-selector.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/multi-selector.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-list-input-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/list-input.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/list-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-list-input",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-list-input-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/list-input.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/list-input.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tokenizer-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/tokenizer.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/tokenizer.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tokenizer",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-tokenizer-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/tokenizer.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/tokenizer.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-transfer-list-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/transfer-list.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/transfer-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-transfer-list",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-transfer-list-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/transfer-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/transfer-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tree-list-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/tree-list.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/tree-list.ts"
+        },
+        {
+          "path": "src/behaviors/tree-list-reorder.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/tree-list-reorder.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-tree-list",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-icon-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-tree-list-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/tree-list.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/tree-list.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-chart-behavior",
+      "type": "registry:lib",
+      "dependencies": [
+        "echarts@6.1.0",
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/chart.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/chart.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-chart",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-chart-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/chart.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/chart.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-data-table-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/data-table.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/data-table.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-data-table",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar",
+        "@crease-effect/effect-popover-behavior",
+        "@crease-effect/effect-table-behavior",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-data-table-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/data-table.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/data-table.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-data-grid-behavior",
+      "type": "registry:lib",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar-behavior"
+      ],
+      "dependencies": [
+        "effect@4.1.5",
+        "@effect/ui@https://pkg.pr.new/Effect-TS/ui/@effect/ui@5ea1d77",
+        "@effect/ui-kit@https://pkg.pr.new/Effect-TS/ui/@effect/ui-kit@5ea1d77"
+      ],
+      "files": [
+        {
+          "path": "src/behaviors/data-grid.ts",
+          "type": "registry:lib",
+          "target": "@ui/effect/behaviors/data-grid.ts"
+        }
+      ]
+    },
+    {
+      "name": "effect-data-grid",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/effect-calendar",
+        "@crease-effect/effect-popover-behavior",
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/crease-theme",
+        "@crease-effect/effect-data-grid-behavior"
+      ],
+      "files": [
+        {
+          "path": "src/ui/data-grid.ts",
+          "type": "registry:ui",
+          "target": "@ui/effect/ui/data-grid.ts"
+        }
+      ]
+    },
+    {
+      "name": "stylex-effect-components",
+      "type": "registry:ui",
+      "dependencies": ["@stylexjs/stylex@^0.19.2"],
+      "devDependencies": ["@stylexjs/unplugin@^0.19.2", "unplugin@^2.3.11"],
+      "registryDependencies": [
+        "@crease-effect/effect-button",
+        "@crease-effect/effect-dialog",
+        "@crease-effect/effect-combobox",
+        "@crease-effect/effect-calendar",
+        "@crease-effect/effect-select",
+        "@crease-effect/effect-popover",
+        "@crease-effect/effect-checkbox",
+        "@crease-effect/effect-switch",
+        "@crease-effect/effect-tooltip",
+        "@crease-effect/effect-tabs",
+        "@crease-effect/effect-accordion",
+        "@crease-effect/effect-collapsible",
+        "@crease-effect/effect-progress",
+        "@crease-effect/effect-separator",
+        "@crease-effect/effect-toggle",
+        "@crease-effect/effect-input",
+        "@crease-effect/effect-radio-group",
+        "@crease-effect/effect-slider",
+        "@crease-effect/effect-field",
+        "@crease-effect/effect-fieldset",
+        "@crease-effect/effect-aspect-ratio",
+        "@crease-effect/effect-blockquote",
+        "@crease-effect/effect-badge",
+        "@crease-effect/effect-kbd",
+        "@crease-effect/effect-label",
+        "@crease-effect/effect-visually-hidden",
+        "@crease-effect/effect-status-dot",
+        "@crease-effect/effect-skeleton",
+        "@crease-effect/effect-spinner",
+        "@crease-effect/effect-center",
+        "@crease-effect/effect-direction",
+        "@crease-effect/effect-toggle-group",
+        "@crease-effect/effect-input-otp",
+        "@crease-effect/effect-number-input",
+        "@crease-effect/effect-avatar",
+        "@crease-effect/effect-alert-dialog",
+        "@crease-effect/effect-stack",
+        "@crease-effect/effect-grid",
+        "@crease-effect/effect-section",
+        "@crease-effect/effect-textarea",
+        "@crease-effect/effect-native-select",
+        "@crease-effect/effect-form",
+        "@crease-effect/effect-card",
+        "@crease-effect/effect-alert",
+        "@crease-effect/effect-empty",
+        "@crease-effect/effect-table",
+        "@crease-effect/effect-code",
+        "@crease-effect/effect-typography",
+        "@crease-effect/effect-text",
+        "@crease-effect/effect-heading",
+        "@crease-effect/effect-scroll-area",
+        "@crease-effect/effect-toolbar",
+        "@crease-effect/effect-breadcrumb",
+        "@crease-effect/effect-avatar-group",
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/effect-context-menu",
+        "@crease-effect/effect-drawer",
+        "@crease-effect/effect-sheet",
+        "@crease-effect/effect-circular-progress",
+        "@crease-effect/effect-stat",
+        "@crease-effect/effect-bubble",
+        "@crease-effect/effect-token",
+        "@crease-effect/effect-map",
+        "@crease-effect/effect-map-controls",
+        "@crease-effect/effect-map-marker",
+        "@crease-effect/effect-map-popup",
+        "@crease-effect/effect-map-styles",
+        "@crease-effect/effect-map-localization",
+        "@crease-effect/effect-map-route",
+        "@crease-effect/effect-map-arc",
+        "@crease-effect/effect-map-cluster",
+        "@crease-effect/effect-map-geojson",
+        "@crease-effect/effect-date-input",
+        "@crease-effect/effect-time-input",
+        "@crease-effect/effect-date-time-input",
+        "@crease-effect/effect-date-picker",
+        "@crease-effect/effect-date-range-input",
+        "@crease-effect/effect-icon",
+        "@crease-effect/effect-field-status",
+        "@crease-effect/effect-indicator",
+        "@crease-effect/effect-input-group",
+        "@crease-effect/effect-button-group",
+        "@crease-effect/effect-link",
+        "@crease-effect/effect-pagination",
+        "@crease-effect/effect-thumbnail",
+        "@crease-effect/effect-hover-card",
+        "@crease-effect/effect-info-tip",
+        "@crease-effect/effect-item",
+        "@crease-effect/effect-list",
+        "@crease-effect/effect-marker",
+        "@crease-effect/effect-metadata-list",
+        "@crease-effect/effect-file-input",
+        "@crease-effect/effect-toast",
+        "@crease-effect/effect-action-bar",
+        "@crease-effect/effect-menubar",
+        "@crease-effect/effect-navigation-menu",
+        "@crease-effect/effect-more-menu",
+        "@crease-effect/effect-mobile-nav",
+        "@crease-effect/effect-top-nav",
+        "@crease-effect/effect-message",
+        "@crease-effect/effect-chat-reasoning",
+        "@crease-effect/effect-message-scroller",
+        "@crease-effect/effect-log-stream",
+        "@crease-effect/effect-attachment",
+        "@crease-effect/effect-selectable-card",
+        "@crease-effect/effect-timer",
+        "@crease-effect/effect-timestamp",
+        "@crease-effect/effect-banner",
+        "@crease-effect/effect-carousel",
+        "@crease-effect/effect-resizable",
+        "@crease-effect/effect-stepper",
+        "@crease-effect/effect-color-picker",
+        "@crease-effect/effect-sidebar",
+        "@crease-effect/effect-code-block",
+        "@crease-effect/effect-markdown",
+        "@crease-effect/effect-overflow-list",
+        "@crease-effect/effect-lightbox",
+        "@crease-effect/effect-command",
+        "@crease-effect/effect-multi-selector",
+        "@crease-effect/effect-list-input",
+        "@crease-effect/effect-tokenizer",
+        "@crease-effect/effect-transfer-list",
+        "@crease-effect/effect-tree-list",
+        "@crease-effect/effect-chart",
+        "@crease-effect/effect-data-table",
+        "@crease-effect/effect-data-grid"
+      ],
+      "files": [
+        { "path": "src/stylex/index.ts", "type": "registry:ui", "target": "@ui/effect/stylex/index.ts" },
+        { "path": "src/stylex/styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/styles.stylex.ts" },
+        { "path": "src/stylex/content-styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/content-styles.stylex.ts" },
+        { "path": "src/stylex/selector-styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/selector-styles.stylex.ts" },
+        { "path": "src/stylex/data-styles.stylex.ts", "type": "registry:ui", "target": "@ui/effect/stylex/data-styles.stylex.ts" }
+      ]
+    },
+    {
+      "name": "pleat-effect-components",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "@crease-effect/pleat-core",
+        "@crease-effect/effect-button",
+        "@crease-effect/effect-dialog",
+        "@crease-effect/effect-combobox",
+        "@crease-effect/effect-calendar",
+        "@crease-effect/effect-select",
+        "@crease-effect/effect-popover",
+        "@crease-effect/effect-checkbox",
+        "@crease-effect/effect-switch",
+        "@crease-effect/effect-tooltip",
+        "@crease-effect/effect-tabs",
+        "@crease-effect/effect-accordion",
+        "@crease-effect/effect-collapsible",
+        "@crease-effect/effect-progress",
+        "@crease-effect/effect-separator",
+        "@crease-effect/effect-toggle",
+        "@crease-effect/effect-input",
+        "@crease-effect/effect-radio-group",
+        "@crease-effect/effect-slider",
+        "@crease-effect/effect-field",
+        "@crease-effect/effect-fieldset",
+        "@crease-effect/effect-aspect-ratio",
+        "@crease-effect/effect-blockquote",
+        "@crease-effect/effect-badge",
+        "@crease-effect/effect-kbd",
+        "@crease-effect/effect-label",
+        "@crease-effect/effect-visually-hidden",
+        "@crease-effect/effect-status-dot",
+        "@crease-effect/effect-skeleton",
+        "@crease-effect/effect-spinner",
+        "@crease-effect/effect-center",
+        "@crease-effect/effect-direction",
+        "@crease-effect/effect-toggle-group",
+        "@crease-effect/effect-input-otp",
+        "@crease-effect/effect-number-input",
+        "@crease-effect/effect-avatar",
+        "@crease-effect/effect-alert-dialog",
+        "@crease-effect/effect-stack",
+        "@crease-effect/effect-grid",
+        "@crease-effect/effect-section",
+        "@crease-effect/effect-textarea",
+        "@crease-effect/effect-native-select",
+        "@crease-effect/effect-form",
+        "@crease-effect/effect-card",
+        "@crease-effect/effect-alert",
+        "@crease-effect/effect-empty",
+        "@crease-effect/effect-table",
+        "@crease-effect/effect-code",
+        "@crease-effect/effect-typography",
+        "@crease-effect/effect-text",
+        "@crease-effect/effect-heading",
+        "@crease-effect/effect-scroll-area",
+        "@crease-effect/effect-toolbar",
+        "@crease-effect/effect-breadcrumb",
+        "@crease-effect/effect-avatar-group",
+        "@crease-effect/effect-dropdown-menu",
+        "@crease-effect/effect-context-menu",
+        "@crease-effect/effect-drawer",
+        "@crease-effect/effect-sheet",
+        "@crease-effect/effect-circular-progress",
+        "@crease-effect/effect-stat",
+        "@crease-effect/effect-bubble",
+        "@crease-effect/effect-token",
+        "@crease-effect/effect-map",
+        "@crease-effect/effect-map-controls",
+        "@crease-effect/effect-map-marker",
+        "@crease-effect/effect-map-popup",
+        "@crease-effect/effect-map-styles",
+        "@crease-effect/effect-map-localization",
+        "@crease-effect/effect-map-route",
+        "@crease-effect/effect-map-arc",
+        "@crease-effect/effect-map-cluster",
+        "@crease-effect/effect-map-geojson",
+        "@crease-effect/effect-date-input",
+        "@crease-effect/effect-time-input",
+        "@crease-effect/effect-date-time-input",
+        "@crease-effect/effect-date-picker",
+        "@crease-effect/effect-date-range-input",
+        "@crease-effect/effect-icon",
+        "@crease-effect/effect-field-status",
+        "@crease-effect/effect-indicator",
+        "@crease-effect/effect-input-group",
+        "@crease-effect/effect-button-group",
+        "@crease-effect/effect-link",
+        "@crease-effect/effect-pagination",
+        "@crease-effect/effect-thumbnail",
+        "@crease-effect/effect-hover-card",
+        "@crease-effect/effect-info-tip",
+        "@crease-effect/effect-item",
+        "@crease-effect/effect-list",
+        "@crease-effect/effect-marker",
+        "@crease-effect/effect-metadata-list",
+        "@crease-effect/effect-file-input",
+        "@crease-effect/effect-toast",
+        "@crease-effect/effect-action-bar",
+        "@crease-effect/effect-menubar",
+        "@crease-effect/effect-navigation-menu",
+        "@crease-effect/effect-more-menu",
+        "@crease-effect/effect-mobile-nav",
+        "@crease-effect/effect-top-nav",
+        "@crease-effect/effect-message",
+        "@crease-effect/effect-chat-reasoning",
+        "@crease-effect/effect-message-scroller",
+        "@crease-effect/effect-log-stream",
+        "@crease-effect/effect-attachment",
+        "@crease-effect/effect-selectable-card",
+        "@crease-effect/effect-timer",
+        "@crease-effect/effect-timestamp",
+        "@crease-effect/effect-banner",
+        "@crease-effect/effect-carousel",
+        "@crease-effect/effect-resizable",
+        "@crease-effect/effect-stepper",
+        "@crease-effect/effect-color-picker",
+        "@crease-effect/effect-sidebar",
+        "@crease-effect/effect-code-block",
+        "@crease-effect/effect-markdown",
+        "@crease-effect/effect-overflow-list",
+        "@crease-effect/effect-lightbox",
+        "@crease-effect/effect-command",
+        "@crease-effect/effect-multi-selector",
+        "@crease-effect/effect-list-input",
+        "@crease-effect/effect-tokenizer",
+        "@crease-effect/effect-transfer-list",
+        "@crease-effect/effect-tree-list",
+        "@crease-effect/effect-chart",
+        "@crease-effect/effect-data-table",
+        "@crease-effect/effect-data-grid"
+      ],
+      "files": [
+        { "path": "src/pleat/index.ts", "type": "registry:ui", "target": "@ui/effect/pleat/index.ts" },
+        { "path": "src/pleat/styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/styles.ts" },
+        { "path": "src/pleat/content-styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/content-styles.ts" },
+        { "path": "src/pleat/selector-styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/selector-styles.ts" },
+        { "path": "src/pleat/data-styles.ts", "type": "registry:ui", "target": "@ui/effect/pleat/data-styles.ts" }
+      ]
+    }
+  ]
+}

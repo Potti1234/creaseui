@@ -1,0 +1,35 @@
+.timer-docs-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.timer-docs-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.timer-docs-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.timer-docs-label-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.timer-docs-supporting {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+}
+.timer-docs-large {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+}
+.timer-docs-body {
+  color: var(--foreground);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}

@@ -1,0 +1,49 @@
+.selectable-card-docs-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.selectable-card-docs-grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 26.25rem;
+  max-width: 100%;
+}
+.selectable-card-docs-grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  width: 25rem;
+  max-width: 100%;
+}
+.selectable-card-docs-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.selectable-card-docs-heading {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.selectable-card-docs-price {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+.selectable-card-docs-bold {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+.selectable-card-docs-supporting {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--muted-foreground);
+  margin: 0;
+}

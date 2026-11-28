@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Crease">
+  <rect width="64" height="64" rx="14" fill="#202126" />
+  <g transform="translate(10.2 6) scale(.0867)">
+    <path fill="#F5F0E7" d="M37 219c0-30 17-57 45-73L272 39c18-10 40-10 58 0l128 74L91 269c-29 13-54-8-54-41v-9Z" />
+    <path fill="#FF5A1F" d="M37 219c1 23 14 41 38 55l377 203-12 11L68 282c-21-12-31-30-31-54v-9Z" />
+    <path fill="#F5F0E7" d="M37 228c0 24 10 42 31 54l372 206-111 63c-18 10-40 10-58 0L68 434c-19-11-31-32-31-54V228Z" />
+  </g>
+</svg>

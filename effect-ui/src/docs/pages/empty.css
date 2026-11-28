@@ -1,0 +1,50 @@
+.empty-docs-shell {
+  width: 100%;
+  max-width: 36rem;
+}
+.empty-docs-dashed {
+  border: 1px dashed var(--border);
+}
+.empty-docs-background {
+  height: 100%;
+  min-height: 16rem;
+  background: color-mix(in oklab, var(--muted) 30%, transparent);
+}
+.empty-docs-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.empty-docs-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  text-underline-offset: 4px;
+}
+.empty-docs-link:hover {
+  text-decoration: underline;
+}
+.empty-docs-input-width {
+  width: 75%;
+  min-width: 16rem;
+}
+.empty-docs-support {
+  max-width: 20rem;
+}
+.empty-docs-support a {
+  text-decoration: underline;
+}
+.empty-docs-rtl {
+  direction: rtl;
+}
+.empty-docs-avatar {
+  filter: grayscale(1);
+}
+.empty-docs-group-avatar > * {
+  width: 3rem;
+  height: 3rem;
+  filter: grayscale(1);
+}

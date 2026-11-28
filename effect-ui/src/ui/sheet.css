@@ -1,0 +1,37 @@
+[data-slot='sheet-switcher-panel'] {
+  display: grid;
+  gap: 1rem;
+  min-height: 0;
+  outline: none;
+}
+
+[data-slot='sheet-switcher-panel'][data-retained] {
+  position: absolute;
+  inset: auto 1.25rem 1.25rem;
+  max-height: 100%;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 450ms ease;
+}
+
+[data-slot='sheet-switcher-panel'][data-switching] {
+  position: relative;
+  transition:
+    translate 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 450ms ease;
+}
+
+@starting-style {
+  [data-slot='sheet-switcher-panel'][data-switching] {
+    translate: 0 1rem;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='sheet-switcher-panel'][data-switching],
+  [data-slot='sheet-switcher-panel'][data-retained] {
+    transition: none;
+  }
+}

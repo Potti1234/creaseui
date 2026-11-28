@@ -1,0 +1,54 @@
+.badge-docs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.badge-docs-centered {
+  width: 100%;
+  justify-content: center;
+}
+
+.badge-docs-rtl {
+  direction: rtl;
+}
+
+.badge-docs-blue {
+  background-color: light-dark(
+    oklch(0.97 0.014 254.604),
+    oklch(0.282 0.091 267.935)
+  );
+  color: light-dark(oklch(0.488 0.243 264.376), oklch(0.809 0.105 251.813));
+}
+
+.badge-docs-green {
+  background-color: light-dark(
+    oklch(0.982 0.018 155.826),
+    oklch(0.266 0.065 152.934)
+  );
+  color: light-dark(oklch(0.527 0.154 150.069), oklch(0.871 0.15 154.449));
+}
+
+.badge-docs-sky {
+  background-color: light-dark(
+    oklch(0.977 0.013 236.62),
+    oklch(0.293 0.066 243.157)
+  );
+  color: light-dark(oklch(0.5 0.134 242.749), oklch(0.828 0.111 230.318));
+}
+
+.badge-docs-purple {
+  background-color: light-dark(
+    oklch(0.977 0.014 308.299),
+    oklch(0.291 0.149 302.717)
+  );
+  color: light-dark(oklch(0.496 0.265 301.924), oklch(0.827 0.119 306.383));
+}
+
+.badge-docs-red {
+  background-color: light-dark(
+    oklch(0.971 0.013 17.38),
+    oklch(0.258 0.092 26.042)
+  );
+  color: light-dark(oklch(0.505 0.213 27.518), oklch(0.808 0.114 19.571));
+}

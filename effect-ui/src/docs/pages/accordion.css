@@ -1,0 +1,23 @@
+.accordion-docs-example {
+  width: min(100%, 36rem);
+}
+
+.accordion-docs-borders {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.accordion-docs-borders [data-slot='accordion-item'] {
+  padding-inline: 1rem;
+}
+
+.accordion-docs-card {
+  width: min(100%, 24rem);
+  margin-inline: auto;
+}
+
+.accordion-docs-rtl {
+  width: min(100%, 28rem);
+  direction: rtl;
+}

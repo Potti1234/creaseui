@@ -1,0 +1,17 @@
+.avatar-group-docs-stack {
+  display: grid;
+  gap: 1.5rem;
+}
+.avatar-group-docs-section {
+  display: grid;
+  gap: 0.5rem;
+}
+.avatar-group-docs-label {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+.avatar-group-docs-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}

@@ -1,0 +1,15 @@
+[data-slot='selectable-card-body']
+  :is(
+    a[href],
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    label,
+    [contenteditable],
+    [tabindex]:not([tabindex='-1'])
+  ) {
+  position: relative;
+  z-index: 11;
+}

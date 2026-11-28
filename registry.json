@@ -11,6 +11,7 @@
     "src/ui/registry.json",
     "src/stylex/registry.json",
     "src/pleat/registry.json",
-    "packages/registry.json"
+    "packages/registry.json",
+    "effect-ui/registry.json"
   ]
 }

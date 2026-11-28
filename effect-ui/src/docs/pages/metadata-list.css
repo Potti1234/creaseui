@@ -1,0 +1,9 @@
+.metadata-docs-frame {
+  width: 100%;
+  max-width: 36rem;
+}
+.metadata-docs-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}

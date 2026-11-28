@@ -1,0 +1,19 @@
+.alert-dialog-docs-demo {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+}
+.alert-dialog-docs-rtl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+.alert-dialog-docs-status {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+.alert-dialog-docs-timer {
+  display: none;
+}

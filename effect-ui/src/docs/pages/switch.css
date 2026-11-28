@@ -1,0 +1,55 @@
+.switch-docs-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.switch-docs-horizontal {
+  display: flex;
+  width: 100%;
+  max-width: 24rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.switch-docs-content {
+  display: grid;
+  gap: 0.25rem;
+}
+.switch-docs-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+.switch-docs-description {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+.switch-docs-cards {
+  display: grid;
+  width: 100%;
+  max-width: 24rem;
+  gap: 0.75rem;
+}
+.switch-docs-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  cursor: pointer;
+}
+.switch-docs-card-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.switch-docs-sizes {
+  display: grid;
+  width: 10rem;
+  gap: 0.75rem;
+}
+.switch-docs-rtl {
+  direction: rtl;
+}
