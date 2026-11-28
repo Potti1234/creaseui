@@ -4786,3 +4786,45 @@ body:has(.effect-docs) {
 .create-page .payout > label:last-of-type {
   margin-top: 1.5625rem;
 }
+
+.create-page .create-card.balance {
+  padding-top: 1.3125rem;
+}
+.create-page .balance > p {
+  margin-bottom: -0.5rem;
+}
+.create-page .balance .create-status {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #d97706;
+  margin-left: 0.5625rem;
+}
+.create-page .balance .create-card-row {
+  margin-inline: 0.8125rem;
+}
+.create-page .balance .create-card-row:first-of-type {
+  margin-top: 1.3rem;
+}
+.create-page .balance-total {
+  border-top: 1px solid var(--border);
+  margin-top: 0.3rem;
+  padding-top: 0.55rem;
+  font-weight: 600;
+}
+.create-page .balance-note {
+  margin-top: 1.8rem;
+  font-size: 0.8125rem;
+}
+.create-page .balance .create-card-row:first-of-type {
+  margin-top: 1.8rem;
+}
+.create-page .balance .create-card-row:nth-of-type(2) {
+  margin-top: -0.0625rem;
+}
+.create-page .balance-total {
+  margin-top: 0.175rem;
+}
+.create-page .balance-note {
+  margin-top: 2.1125rem;
+}

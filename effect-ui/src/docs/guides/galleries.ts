@@ -1334,7 +1334,7 @@ const createGuide: DocsGuide = {
             .children(
               h.p.children('Claimable Balance'),
               h.strong.children('$0.00'),
-              h.span.class('create-status').children('● Pending Setup'),
+              h.span.class('create-status'),
               h.div
                 .class('create-card-row')
                 .children(
@@ -1346,6 +1346,17 @@ const createGuide: DocsGuide = {
                 .children(
                   h.span.children('Processing Fee'),
                   h.span.children('-$0.00'),
+                ),
+              h.div
+                .class('create-card-row balance-total')
+                .children(
+                  h.span.children('Total Ready to Claim'),
+                  h.span.children('$0.00 USD'),
+                ),
+              h.p
+                .class('balance-note')
+                .children(
+                  'Once your bank is connected, balances over $10.00 are automatically eligible for monthly distribution on the 15th of each month.',
                 ),
             ),
           createPlaceholder(h, 'Preferences', 'regular', 5, 445),
