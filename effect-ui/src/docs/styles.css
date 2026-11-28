@@ -4845,3 +4845,31 @@ body:has(.effect-docs) {
   height: 2.25rem;
   padding: 0;
 }
+.create-page .create-card-heading button {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  padding: 0;
+  font-size: 0;
+}
+.create-page .create-card-heading button::before {
+  content: '⌃';
+  font-size: 0.9rem;
+}
+.create-page .create-dividend-row {
+  min-height: 4.375rem;
+  padding-inline: 0.8125rem;
+}
+.create-page .create-dividend-income {
+  padding-top: 1.75rem;
+}
+.create-page .create-dividend-income .create-card-heading h2 {
+  margin-bottom: 0.25rem;
+}
+.create-page .create-dividend-income .create-dividend-row:first-of-type {
+  margin-top: 0.625rem;
+}
+.create-page .create-dividend-income .create-dividend-row:first-of-type {
+  margin-top: 1.1875rem;
+}

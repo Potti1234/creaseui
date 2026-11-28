@@ -1017,7 +1017,9 @@ const createPlaceholder = (
 ) =>
   h.section
     .key(title)
-    .class(`create-card create-placeholder ${tone}`)
+    .class(
+      `create-card create-placeholder ${tone} create-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+    )
     .style(height === undefined ? {} : { height: `${String(height)}px` })
     .children(...createPlaceholderChildren(h, title, lines))
 
