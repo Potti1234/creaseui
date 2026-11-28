@@ -551,6 +551,9 @@ const createPlaceholderChildren = (
   title: string,
   lines: number,
 ): View.Input<DocsMessage>[] => {
+  if (title === 'Loading Card') {
+    return []
+  }
   if (title === 'Preferences') {
     return [
       createHeading(
