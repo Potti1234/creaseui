@@ -601,31 +601,46 @@ const createPlaceholderChildren = (
 
   if (title === 'Kitchen Island') {
     return [
-      createHeading(h, 'Kitchen Island', 'Hue Color Ambient'),
       h.div
-        .class('create-toggle-row')
+        .class('create-card-heading create-kitchen-heading')
         .children(
-          h.strong.children('Kitchen Island enabled'),
+          h.div.children(
+            h.h2.children('Kitchen Island'),
+            h.p.children('Hue Color Ambient'),
+          ),
           h.span.class('create-toggle on').children(h.span),
         ),
-      h.div
-        .class('create-chip-row')
-        .children(
-          ['Cooking', 'Dining', 'Nightlight', 'Focus'].map(scene =>
-            h.span.key(scene).children(scene),
-          ),
+      h.div.class('create-chip-row create-scene-row').children(
+        ['Cooking', 'Dining', 'Nightlight', 'Focus'].map((scene, index) =>
+          h.span
+            .key(scene)
+            .class(index === 0 ? 'selected' : '')
+            .children(scene),
         ),
-      ...['Brightness', 'Color Temp', 'Volume', 'Fade'].map(label =>
+      ),
+      ...[
+        ['Brightness', '90%'],
+        ['Color Temp', '70%'],
+        ['Volume', '30%'],
+        ['Fade', '0%'],
+      ].map(([label, value]) =>
         h.div
-          .key(label)
+          .key(label ?? '')
           .class('create-slider-row')
           .children(
-            h.span.children(label),
-            h.div.class('create-slider').children(h.span),
+            h.span.class('create-slider-icon'),
+            h.span.class('create-slider-label').children(label ?? ''),
+            h.div
+              .class('create-slider')
+              .children(
+                h.i.style({ width: value ?? '0%' }),
+                h.span.style({ left: value ?? '0%' }),
+              ),
           ),
       ),
     ]
   }
+
   if (title === 'Savings Targets') {
     return [
       createHeading(
