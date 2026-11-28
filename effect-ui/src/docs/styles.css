@@ -3275,3 +3275,43 @@ body:has(.effect-docs) {
   display: inline-flex;
   width: 6.125rem;
 }
+
+.preview-table-head,
+.preview-table-row {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1.5fr) minmax(8rem, 1fr) minmax(
+      6rem,
+      0.8fr
+    ) 4rem minmax(8rem, 1fr);
+  align-items: center;
+  gap: 1rem;
+}
+.preview-table-row {
+  min-height: 3.8125rem;
+}
+.preview-table-row + .preview-table-row {
+  margin-top: -0.75rem;
+}
+
+.preview-table > div:first-child {
+  min-height: 4rem;
+}
+.preview-table .preview-tabs {
+  min-height: 4rem;
+  align-items: center;
+}
+.preview-table-footer {
+  display: flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+.preview-table .preview-tabs {
+  min-height: 4.125rem;
+}
+.preview-table-footer {
+  min-height: 1.8125rem;
+}

@@ -1514,13 +1514,31 @@ const dashboardPreview = (h: Html.H<DocsMessage>) =>
               h.span.children('Header'),
               h.span.children('Section Type'),
               h.span.children('Status'),
+              h.span.children('Target'),
+              h.span.children('Reviewer'),
             ),
           ...[
-            ['Introduction', 'Technical', 'Done'],
-            ['Architecture', 'Design', 'In Process'],
-            ['Launch plan', 'Marketing', 'Draft'],
-            ['Analytics spec', 'Technical', 'Review'],
-          ].map(([name, type, status]) =>
+            ['Cover page', 'Cover page', 'In Process', '18', 'Eddie Lake'],
+            [
+              'Table of contents',
+              'Table of contents',
+              'Done',
+              '29',
+              'Jamik Tashpulatov',
+            ],
+            ['Executive summary', 'Narrative', 'Done', '10', 'Assign reviewer'],
+            ['Technical approach', 'Narrative', 'Done', '27', 'Eddie Lake'],
+            ['Design', 'Narrative', 'In Process', '2', 'Assign reviewer'],
+            [
+              'Capabilities',
+              'Narrative',
+              'Not Started',
+              '20',
+              'Jamik Tashpulatov',
+            ],
+            ['Integration plan', 'Narrative', 'In Process', '19', 'Eddie Lake'],
+            ['Appendix', 'Appendix', 'Not Started', '12', 'Assign reviewer'],
+          ].map(([name, type, status, target, reviewer]) =>
             h.div
               .key(name ?? '')
               .class('preview-table-row')
@@ -1528,8 +1546,18 @@ const dashboardPreview = (h: Html.H<DocsMessage>) =>
                 h.span.children(name ?? ''),
                 h.span.children(type ?? ''),
                 h.b.children(status ?? ''),
+                h.span.children(target ?? ''),
+                h.span.children(reviewer ?? ''),
               ),
           ),
+          h.div
+            .class('preview-table-footer')
+            .children(
+              h.span.children('0 of 8 rows selected.'),
+              h.span.children('Rows per page 10'),
+              h.span.children('Page 1 of 1'),
+              h.span.children('Previous 1 Next'),
+            ),
         ),
       ),
     ),
