@@ -1129,11 +1129,8 @@ const createPlaceholderChildren = (
         'Choose what you want to be notified about.',
       ),
       h.div
-        .class('create-line')
-        .children(
-          h.span.children('Select all'),
-          h.span.class('create-toggle').children(h.span),
-        ),
+        .class('create-notification-check')
+        .children(h.i, h.span.children('Select all')),
       ...[
         ['Transaction alerts', 'Deposits, withdrawals, and transfers.'],
         ['Security alerts', 'Login attempts and account changes.'],
@@ -1142,18 +1139,22 @@ const createPlaceholderChildren = (
       ].map(([name, description]) =>
         h.div
           .key(name ?? '')
-          .class('create-toggle-row')
+          .class('create-notification-row')
           .children(
+            h.i,
             h.div.children(
               h.strong.children(name ?? ''),
               h.p.children(description ?? ''),
             ),
-            h.span.class('create-toggle').children(h.span),
           ),
       ),
-      h.button.attrs({ type: 'button' }).children('Save Preferences'),
+      h.button
+        .class('create-save-preferences')
+        .attrs({ type: 'button' })
+        .children('Save Preferences'),
     ]
   }
+
   if (title === 'Sidebar Nav') {
     return [
       h.div.class('create-sidebar-demo').children(
